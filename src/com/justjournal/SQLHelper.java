@@ -14,51 +14,39 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 import java.io.StringWriter;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
-public final class SQLHelper
-{
+public final class SQLHelper {
     private static Context ctx = null;
     private static DataSource ds = null;
 
-    SQLHelper()
-    {
+    SQLHelper() {
         try {
             ctx = new InitialContext();
-            ds = (DataSource) ctx.lookup( "java:comp/env/jdbc/jjDB" );
-        } catch ( Exception e ) {
+            ds = (DataSource) ctx.lookup("java:comp/env/jdbc/jjDB");
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static int executeNonQuery( final String commandText )
-            throws Exception
-    {
+    public static int executeNonQuery(final String commandText)
+            throws Exception {
         int RowsAffected = 0;
         Connection conn = null;
         Statement stmt = null;
 
-        if ( ctx == null || ds == null ) {
+        if (ctx == null || ds == null) {
             try {
                 ctx = new InitialContext();
-                ds = (DataSource) ctx.lookup( "java:comp/env/jdbc/jjDB" );
-            } catch ( Exception e ) {
+                ds = (DataSource) ctx.lookup("java:comp/env/jdbc/jjDB");
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
 
-        /* ORIGINAL
-        Driver DriverRecordset1 = (Driver) Class.forName( driverText ).newInstance();
-        Connection oConn = DriverManager.getConnection( connectURI, UserName, Password );
-
-
-
-        stmt.execute( commandText );
-        RowsAffected = stmt.getUpdateCount();
-
-        stmt.close();
-        oConn.close();
-        */
 
         try {
             conn = ds.getConnection();
@@ -71,13 +59,13 @@ public final class SQLHelper
              */
 
             stmt = conn.createStatement();
-            stmt.execute( commandText );
+            stmt.execute(commandText);
             RowsAffected = stmt.getUpdateCount();
             stmt.close();
 
             conn.close();
-        } catch ( Exception e ) {
-            throw new Exception( "Error getting connect or executing it", e );
+        } catch (Exception e) {
+            throw new Exception("Error getting connect or executing it", e);
         } finally {
             /*
              * Close any JDBC instances here that weren't
@@ -85,58 +73,42 @@ public final class SQLHelper
              * that we don't 'leak' resources...
              */
 
-                try {
-                    stmt.close();
-                } catch ( SQLException sqlEx ) {
-                    // ignore -- as we can't do anything about it here
-                }
+            try {
+                stmt.close();
+            } catch (SQLException sqlEx) {
+                // ignore -- as we can't do anything about it here
+            }
 
 
-                try {
-                    conn.close();
-                } catch ( SQLException sqlEx ) {
-                    // ignore -- as we can't do anything about it here
-                }
+            try {
+                conn.close();
+            } catch (SQLException sqlEx) {
+                // ignore -- as we can't do anything about it here
+            }
         }
 
         return RowsAffected;
     }
 
-    public static CachedRowSet executeResultSet( final String commandText )
-            throws Exception, ClassNotFoundException, InstantiationException, IllegalAccessException
-    {
+    public static CachedRowSet executeResultSet(final String commandText)
+            throws Exception, ClassNotFoundException, InstantiationException, IllegalAccessException {
         Connection conn = null;
         Statement stmt = null;
         ResultSet rs;
         CachedRowSet crs = null;
 
-        if ( ctx == null || ds == null ) {
+        if (ctx == null || ds == null) {
             try {
                 ctx = new InitialContext();
-                ds = (DataSource) ctx.lookup( "java:comp/env/jdbc/jjDB" );
-            } catch ( Exception e ) {
+                ds = (DataSource) ctx.lookup("java:comp/env/jdbc/jjDB");
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
 
-        /*
-        Driver DriverRecordset1 = (Driver) Class.forName( driverText ).newInstance();
-        Connection oConn = DriverManager.getConnection( connectURI, UserName, Password );
-        oConn.setReadOnly( true );
-        Statement stmt = oConn.createStatement();
-
-        ResultSet rs = stmt.executeQuery( commandText );
-        CachedRowSet crs = new CachedRowSet();
-        crs.populate( rs );
-
-        rs.close();
-        stmt.close();
-        oConn.close();
-        */
-
         try {
             conn = ds.getConnection();
-            conn.setReadOnly( true );
+            conn.setReadOnly(true);
 
             /*
              * Now, use normal JDBC programming to work with
@@ -146,18 +118,18 @@ public final class SQLHelper
              */
 
             stmt = conn.createStatement();
-            rs = stmt.executeQuery( commandText );
+            rs = stmt.executeQuery(commandText);
 
             crs = new CachedRowSet();
-            crs.populate( rs );
+            crs.populate(rs);
 
             rs.close();
             stmt.close();
 
-            conn.setReadOnly( false );
+            conn.setReadOnly(false);
             conn.close();
-        } catch ( Exception e ) {
-            throw new Exception( "Error getting connect or executing it", e );
+        } catch (Exception e) {
+            throw new Exception("Error getting connect or executing it", e);
         } finally {
             /*
              * Close any JDBC instances here that weren't
@@ -165,31 +137,30 @@ public final class SQLHelper
              * that we don't 'leak' resources...
              */
 
-                try {
-                    stmt.close();
-                } catch ( SQLException sqlEx ) {
-                    // ignore -- as we can't do anything about it here
-                }
-
-                try {
-                    conn.setReadOnly( false );
-                    conn.close();
-                } catch ( SQLException sqlEx ) {
-                    // ignore -- as we can't do anything about it here
-                }
-
+            try {
+                stmt.close();
+            } catch (SQLException sqlEx) {
+                // ignore -- as we can't do anything about it here
             }
+
+            try {
+                conn.setReadOnly(false);
+                conn.close();
+            } catch (SQLException sqlEx) {
+                // ignore -- as we can't do anything about it here
+            }
+
+        }
 
         return crs;
     }
 
-    public static String executeXMLResult( final String commandText )
-            throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException
-    {
+    public static String executeXMLResult(final String commandText)
+            throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         StringWriter sw = new StringWriter();
 
         // DB Access
-      //  Driver DriverRecordset1 = (Driver) Class.forName( driverText ).newInstance();
+        //  Driver DriverRecordset1 = (Driver) Class.forName( driverText ).newInstance();
         /*Connection oConn = DriverManager.getConnection( connectURI, UserName, Password );
         oConn.setReadOnly( true );
         Statement stmt = oConn.createStatement();
