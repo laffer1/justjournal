@@ -1,3 +1,36 @@
+/*
+Copyright (c) 2005, Lucas Holt
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are
+permitted provided that the following conditions are met:
+
+  Redistributions of source code must retain the above copyright notice, this list of
+  conditions and the following disclaimer.
+
+  Redistributions in binary form must reproduce the above copyright notice, this
+  list of conditions and the following disclaimer in the documentation and/or other
+  materials provided with the distribution.
+
+  Neither the name of the Just Journal nor the names of its contributors
+  may be used to endorse or promote products derived from this software without
+  specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
+GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+*/
 
 package com.justjournal;
 
@@ -9,72 +42,70 @@ import java.io.PrintWriter;
 
 /**
  * @author Lucas Holt
- * User: laffer1
- * Date: Aug 25, 2003
- * Time: 9:22:21 PM
+ *         User: laffer1
+ *         Date: Aug 25, 2003
+ *         Time: 9:22:21 PM
  */
-public final class SelectStyleSheet extends HttpServlet
-{
+public final class SelectStyleSheet extends HttpServlet {
 
-    protected void processRequest( HttpServletRequest request, HttpServletResponse response )
-            throws java.io.IOException
-    {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws java.io.IOException {
         // initial error condition is false
         boolean error = false;
 
         // Will be using session data, must initialize session, will not affect any current session
-        HttpSession session = request.getSession( true );
+        HttpSession session = request.getSession(true);
 
         // Retreive username
         //String username = "";
         //username = (String) session.getAttribute( "auth.user" );
 
         // Retreive user id
-        Integer userIDasi = (Integer) session.getAttribute( "auth.uid" );
+        Integer userIDasi = (Integer) session.getAttribute("auth.uid");
         // convert Integer to int type
         int userID = 0;
-        if ( userIDasi != null ) {
+        if (userIDasi != null) {
             userID = userIDasi.intValue();
         }
 
-        String styleSheet = request.getParameter( "css" );
+        String styleSheet = request.getParameter("css");
 
         // Send HTML type in http stream
-        response.setContentType( "text/html" );
+        response.setContentType("text/html");
         PrintWriter out = response.getWriter();
 
-        if ( styleSheet != null ) {
-            Integer cssId = new Integer( 1 );
+        if (styleSheet != null) {
+            Integer cssId = new Integer(1);
 
             try {
-                cssId = new Integer( styleSheet );
-            } catch ( Exception e ) {
+                cssId = new Integer(styleSheet);
+            } catch (Exception e) {
                 error = true;
             }
 
-            if ( error == false ) {
+            if (error == false) {
                 try {
                     String sqlStatement = "Update user_pref SET style='" + cssId + "' where id ='" + userID + "';";
-                    int rowsAffected = SQLHelper.executeNonQuery( sqlStatement );
-                    if ( rowsAffected < 1 ) {
+                    int rowsAffected = SQLHelper.executeNonQuery(sqlStatement);
+                    if (rowsAffected < 1) {
                         error = true;
                     } else {
-                        out.println( "Style has been changed." );
+                        out.println("Style has been changed.");
                     }
-                } catch ( Exception e ) {
+                } catch (Exception e) {
                     // record was not updated
                     error = true;
-                    out.println( e.getMessage() );
+                    out.println(e.getMessage());
                 }
             }
 
         } else {
-            webError.Display( "Error", "Stylesheet must be specified.", out );
+            webError.Display("Error", "Stylesheet must be specified.", out);
         }
 
 
-        if ( error == true ) {
-            webError.Display( "Error", "Unknown error has occured.", out );
+        if (error == true) {
+            webError.Display("Error", "Unknown error has occured.", out);
         }
 
         out.flush();
@@ -83,22 +114,19 @@ public final class SelectStyleSheet extends HttpServlet
     }
 
     // processes get requests
-    protected void doGet( HttpServletRequest request, HttpServletResponse response )
-            throws java.io.IOException
-    {
-        processRequest( request, response );
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws java.io.IOException {
+        processRequest(request, response);
     }
 
     // processes post requests
-    protected void doPost( HttpServletRequest request, HttpServletResponse response )
-            throws java.io.IOException
-    {
-        processRequest( request, response );
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws java.io.IOException {
+        processRequest(request, response);
     }
 
     // required function for servlets
-    public String getServletInfo()
-    {
+    public String getServletInfo() {
         return new String();
     }
 }
