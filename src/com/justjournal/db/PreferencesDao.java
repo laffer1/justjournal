@@ -1,3 +1,36 @@
+/*
+Copyright (c) 2005, Lucas Holt
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are
+permitted provided that the following conditions are met:
+
+  Redistributions of source code must retain the above copyright notice, this list of
+  conditions and the following disclaimer.
+
+  Redistributions in binary form must reproduce the above copyright notice, this
+  list of conditions and the following disclaimer in the documentation and/or other
+  materials provided with the distribution.
+
+  Neither the name of the Just Journal nor the names of its contributors
+  may be used to endorse or promote products derived from this software without
+  specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
+GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+*/
 
 package com.justjournal.db;
 
@@ -10,8 +43,7 @@ import sun.jdbc.rowset.CachedRowSet;
  * Date: Jan 16, 2004
  * Time: 12:07:17 PM
  */
-public class PreferencesDao
-{
+public class PreferencesDao {
     /**
      * Update the owner view only security feature.
      *
@@ -19,43 +51,39 @@ public class PreferencesDao
      * @param ownerOnly
      * @return
      */
-    public boolean updateSec( int userId, boolean ownerOnly )
-       {
-           boolean noError = true;
-           int records = 0;
-           String ownerview = "N";
+    public boolean updateSec(int userId, boolean ownerOnly) {
+        boolean noError = true;
+        int records = 0;
+        String ownerview = "N";
 
-           if (ownerOnly)
+        if (ownerOnly)
             ownerview = "Y";
 
-               final String sqlStmt = "Update user_pref SET owner_view_only='" + ownerview
-                       + "' WHERE id='" + userId + "' LIMIT 1;";
+        final String sqlStmt = "Update user_pref SET owner_view_only='" + ownerview
+                + "' WHERE id='" + userId + "' LIMIT 1;";
 
-               try
-               {
-                   records = SQLHelper.executeNonQuery( sqlStmt );
-               }
-               catch ( Exception e )
-               {
-                   noError = false;
-               }
+        try {
+            records = SQLHelper.executeNonQuery(sqlStmt);
+        } catch (Exception e) {
+            noError = false;
+        }
 
-               if ( records != 1 )
-                   noError = false;
+        if (records != 1)
+            noError = false;
 
 
-           return noError;
-       }
+        return noError;
+    }
 
     /**
      * Retrieves the journal preferences for a certain user including
      * style information, and privacy settings.
-     * @param userName  the user who needs their settings defined.
-     * @return  Preferences in cached rowset.
+     *
+     * @param userName the user who needs their settings defined.
+     * @return Preferences in cached rowset.
      */
-    public static CachedRowSet ViewJournalPreferences( final String userName )
-            throws Exception
-    {
+    public static CachedRowSet ViewJournalPreferences(final String userName)
+            throws Exception {
         CachedRowSet RS;
         String sqlStatement =
                 "SELECT user.name As name, user.id As id, user.since as since, up.style As style, up.allow_spider, " +
@@ -63,13 +91,10 @@ public class PreferencesDao
                 "FROM user, user_pref As up, user_style as st " +
                 "WHERE user.username='" + userName + "' AND user.id = up.id AND user.id=st.id;";
 
-        try
-        {
-            RS = SQLHelper.executeResultSet( sqlStatement );
-        }
-        catch ( Exception e1 )
-        {
-            throw new Exception( e1 );
+        try {
+            RS = SQLHelper.executeResultSet(sqlStatement);
+        } catch (Exception e1) {
+            throw new Exception(e1);
         }
 
         return RS;
