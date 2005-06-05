@@ -94,6 +94,7 @@ public class CachedHeadlineBean
 
         } else {
             String rssDoc;
+
             //Open the file for reading:
             u = new URL(uri);
             inputXML = u.openStream();
@@ -105,6 +106,7 @@ public class CachedHeadlineBean
             try {
                 rss.setUri(uri);
                 rss.setInterval(24);
+                rss.setContent(rssDoc);
                 dao.add(rss);
             } catch (java.lang.NullPointerException n) {
 
@@ -112,6 +114,5 @@ public class CachedHeadlineBean
 
         }
     }
-
 
 }
