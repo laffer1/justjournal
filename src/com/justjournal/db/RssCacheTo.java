@@ -41,6 +41,9 @@ package com.justjournal.db;
  * User: laffer1
  * Date: Apr 27, 2005
  * Time: 9:47:00 PM
+ *
+ * @author Lucas Holt
+ * @version 1.0
  */
 public final class RssCacheTo {
     int id;
