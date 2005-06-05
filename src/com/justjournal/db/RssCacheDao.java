@@ -52,7 +52,7 @@ public class RssCacheDao {
         int records = 0;
 
         final String sqlStmt =
-                "INSERT INTO rss_cache (interval, lastupdated, uri, content) values('"
+                "INSERT INTO rss_cache (`interval`, lastupdated, uri, content) values('"
                 + rss.getInterval() + "', now(),'"
                 + rss.getUri() + "','"
                 + rss.getContent()
@@ -113,7 +113,7 @@ public class RssCacheDao {
         CachedRowSet RS = null;
         DateTimeBean dt = new DateTimeBean();
         RssCacheTo rss = new RssCacheTo();
-        final String sqlStatement = "SELECT id, interval, lastupdated, uri, content FROM rss_subscriptions WHERE uri='"
+        final String sqlStatement = "SELECT id, `interval`, lastupdated, uri, content FROM rss_subscriptions WHERE uri='"
                 + uri + "';";
 
         try {
