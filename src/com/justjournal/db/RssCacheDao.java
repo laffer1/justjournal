@@ -42,6 +42,9 @@ import sun.jdbc.rowset.CachedRowSet;
  * User: laffer1
  * Date: Apr 27, 2005
  * Time: 9:46:51 PM
+ *
+ * @author Lucas Holt
+ * @version 1.0
  */
 public class RssCacheDao {
     public boolean add(RssCacheTo rss) {
