@@ -37,6 +37,7 @@ package com.justjournal;
 import com.justjournal.db.DateTimeBean;
 import com.justjournal.db.RssCacheDao;
 import com.justjournal.db.RssCacheTo;
+import org.apache.log4j.Category;
 
 import java.net.URL;
 
@@ -53,17 +54,25 @@ import java.net.URL;
 public class CachedHeadlineBean
         extends HeadlineBean {
 
+    private static Category log = Category.getInstance(CachedHeadlineBean.class.getName());
+
+
     protected void getRssDocument(final String uri)
             throws Exception {
+
+        if (log.isDebugEnabled())
+            log.debug("Starting com.justjournal.CachedHeadlineBean.getRssDocument()");
 
         RssCacheDao dao = new RssCacheDao();
         RssCacheTo rss;
         final java.util.GregorianCalendar calendarg = new java.util.GregorianCalendar();
 
-
         rss = dao.view(uri);
 
         if (rss != null) {
+            if (log.isDebugEnabled())
+                log.debug("Retrieved uri from database: " + uri);
+
             document = builder.parse(rss.getContent());
 
             DateTimeBean dt = rss.getLastUpdated();
@@ -95,6 +104,9 @@ public class CachedHeadlineBean
         } else {
             String rssDoc;
 
+            if (log.isDebugEnabled())
+                log.debug("Fetch uri: " + uri);
+
             //Open the file for reading:
             u = new URL(uri);
             inputXML = u.openStream();
@@ -109,7 +121,8 @@ public class CachedHeadlineBean
                 rss.setContent(rssDoc);
                 dao.add(rss);
             } catch (java.lang.NullPointerException n) {
-
+                if (log.isDebugEnabled())
+                    log.debug("Null pointer exception creating/adding rss cache object to db.");
             }
 
         }
