@@ -50,18 +50,20 @@ import java.net.URL;
  * User: laffer1
  * Date: Apr 27, 2005
  * Time: 8:15:45 PM
+ *
+ * @author Lucas Holt
+ * @version 1.0
  */
-public class CachedHeadlineBean
+public final class CachedHeadlineBean
         extends HeadlineBean {
 
     private static Category log = Category.getInstance(CachedHeadlineBean.class.getName());
-
 
     protected void getRssDocument(final String uri)
             throws Exception {
 
         if (log.isDebugEnabled())
-            log.debug("Starting com.justjournal.CachedHeadlineBean.getRssDocument()");
+            log.debug("Starting getRssDocument()");
 
         RssCacheDao dao = new RssCacheDao();
         RssCacheTo rss;
@@ -69,7 +71,7 @@ public class CachedHeadlineBean
 
         rss = dao.view(uri);
 
-        if (rss != null) {
+        if (rss != null && rss.getUri() != null && rss.getUri().length() > 10) {
             if (log.isDebugEnabled())
                 log.debug("Retrieved uri from database: " + uri);
 
@@ -101,6 +103,10 @@ public class CachedHeadlineBean
                 dao.update(rss);
             }
 
+            if (log.isDebugEnabled())
+                log.debug("Hit end.. no date change.");
+
+
         } else {
             String rssDoc;
 
@@ -110,10 +116,12 @@ public class CachedHeadlineBean
             //Open the file for reading:
             u = new URL(uri);
             inputXML = u.openStream();
-            rssDoc = inputXML.toString();
 
             builder = factory.newDocumentBuilder();
-            document = builder.parse(rssDoc);
+            document = builder.parse(inputXML);
+
+            rssDoc = document.toString();
+            log.debug(rssDoc);
 
             try {
                 rss.setUri(uri);

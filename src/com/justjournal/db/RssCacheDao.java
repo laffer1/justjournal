@@ -35,6 +35,7 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.db;
 
 import com.justjournal.SQLHelper;
+import org.apache.log4j.Category;
 import sun.jdbc.rowset.CachedRowSet;
 
 /**
@@ -47,13 +48,20 @@ import sun.jdbc.rowset.CachedRowSet;
  * @version 1.0
  */
 public class RssCacheDao {
+
+    private static Category log = Category.getInstance(RssCacheDao.class.getName());
+
     public boolean add(RssCacheTo rss) {
+
+        if (log.isDebugEnabled())
+            log.debug("Starting add()");
+
         boolean noError = true;
         int records = 0;
 
         final String sqlStmt =
                 "INSERT INTO rss_cache (`interval`, lastupdated, uri, content) values('"
-                + rss.getInterval() + "', now(),'"
+                + rss.getInterval() + "', NOW(),'"
                 + rss.getUri() + "','"
                 + rss.getContent()
                 + "');";
@@ -62,6 +70,9 @@ public class RssCacheDao {
             records = SQLHelper.executeNonQuery(sqlStmt);
         } catch (Exception e) {
             noError = false;
+
+            if (log.isDebugEnabled())
+                log.debug("SQL Query is: " + sqlStmt);
         }
 
         if (records != 1)
@@ -71,6 +82,10 @@ public class RssCacheDao {
     }
 
     public boolean update(RssCacheTo rss) {
+
+        if (log.isDebugEnabled())
+            log.debug("Starting update()");
+
         boolean noError = true;
         int records = 0;
 
@@ -82,6 +97,9 @@ public class RssCacheDao {
             records = SQLHelper.executeNonQuery(sqlStmt);
         } catch (Exception e) {
             noError = false;
+
+            if (log.isDebugEnabled())
+                log.debug("SQL Query is: " + sqlStmt);
         }
 
         if (records != 1)
@@ -91,6 +109,10 @@ public class RssCacheDao {
     }
 
     public boolean delete(RssCacheTo rss) {
+
+        if (log.isDebugEnabled())
+            log.debug("Starting delete()");
+
         boolean noError = true;
         int records = 0;
 
@@ -101,6 +123,9 @@ public class RssCacheDao {
             records = SQLHelper.executeNonQuery(sqlStmt);
         } catch (Exception e) {
             noError = false;
+
+            if (log.isDebugEnabled())
+                log.debug("SQL Query is: " + sqlStmt);
         }
 
         if (records != 1)
@@ -110,9 +135,13 @@ public class RssCacheDao {
     }
 
     public RssCacheTo view(final String uri) {
+
+        if (log.isDebugEnabled())
+            log.debug("Starting view()");
+
         CachedRowSet RS = null;
         DateTimeBean dt = new DateTimeBean();
-        RssCacheTo rss = new RssCacheTo();
+        RssCacheTo rss = null;
         final String sqlStatement = "SELECT id, `interval`, lastupdated, uri, content FROM rss_subscriptions WHERE uri='"
                 + uri + "';";
 
@@ -120,18 +149,21 @@ public class RssCacheDao {
             RS = SQLHelper.executeResultSet(sqlStatement);
 
             if (RS.next()) {
+                rss = new RssCacheTo();
 
                 rss.setId(RS.getInt("id"));
                 rss.setInterval(RS.getInt("interval"));
-                dt.set("lastupdated");
+                dt.set(RS.getString("lastupdated"));
                 rss.setLastUpdated(dt);
                 rss.setUri(RS.getString("uri"));
                 rss.setContent(RS.getString("content"));
-            } else
-                rss = null;
+            }
 
             RS.close();
         } catch (Exception e1) {
+            if (log.isDebugEnabled())
+                log.debug("SQL Query is: " + sqlStatement);
+
             try {
                 if (RS != null)
                     RS.close();

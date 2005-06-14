@@ -35,6 +35,7 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal;
 
 import com.justjournal.utility.Xml;
+import org.apache.log4j.Category;
 import org.w3c.dom.Document;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -62,6 +63,8 @@ import java.net.URL;
 
 public class HeadlineBean {
 
+    private static Category log = Category.getInstance(HeadlineBean.class.getName());
+
     // constants
     private static final char endl = '\n';
 
@@ -74,11 +77,16 @@ public class HeadlineBean {
 
     final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 
-    private void getRssDocument(final String uri)
+    protected void getRssDocument(final String uri)
             throws Exception {
+
+        if (log.isDebugEnabled())
+            log.debug("Starting getRssDocument()");
+
         //Open the file for reading:
         u = new URL(uri);
         inputXML = u.openStream();
+
         //Build document:
         builder = factory.newDocumentBuilder();
         document = builder.parse(inputXML);
@@ -86,6 +94,9 @@ public class HeadlineBean {
 
     public String parse(final String url) {
         try {
+            if (log.isDebugEnabled())
+                log.debug("Starting parse()");
+
             getRssDocument(url);
 
             // output variable
@@ -96,6 +107,10 @@ public class HeadlineBean {
             String contentDescription = "";
             String contentLastBuildDate = "";
             String contentGenerator = "";
+
+            if (log.isDebugEnabled())
+                log.debug("Prepare xml nodelists");
+
             org.w3c.dom.NodeList channelList = document.getElementsByTagName("channel");
             org.w3c.dom.NodeList chnodes = channelList.item(0).getChildNodes();
 
@@ -104,6 +119,9 @@ public class HeadlineBean {
             String imageLink = "";
             String imageWidth = null;
             String imageHeight = null;
+
+            if (log.isDebugEnabled())
+                log.debug("Iterate through the nodelists");
 
             for (int k = 0; k < chnodes.getLength(); k++) {
                 org.w3c.dom.Node curNode = chnodes.item(k);
@@ -138,12 +156,17 @@ public class HeadlineBean {
                 }
             }
 
+            if (log.isDebugEnabled())
+                log.debug("Prepare HTML output");
+
             // create header!
             sb.append("<div style=\"width: 100%; padding: .1in; background: #F2F2F2;\" class=\"ljfhead\">");
+            sb.append(endl);
 
             sb.append("<!-- Generator: ");
             sb.append(contentGenerator);
             sb.append(" -->");
+            sb.append(endl);
 
             if (imageUrl != null) {
                 sb.append("<span style=\"padding: 5px; float:left; width:");
@@ -165,20 +188,25 @@ public class HeadlineBean {
                 sb.append("\" alt=\"");
                 sb.append(imageTitle);
                 sb.append("\" /></a></span>");
+                sb.append(endl);
             }
 
             sb.append("<h3>");
             sb.append(contentTitle);
             sb.append("</h3>");
+            sb.append(endl);
 
             sb.append("<p>last build date: ");
             sb.append(contentLastBuildDate);
 
             sb.append("<br /><a href=\"" + contentLink + "\">source</a></p>");
+            sb.append(endl);
 
             sb.append("<div style=\"clear: both;\">&nbsp;</div>");
+            sb.append(endl);
 
             sb.append("</div>");
+            sb.append(endl);
 
             //Generate the NodeList;
             org.w3c.dom.NodeList nodeList = document.getElementsByTagName("item");
@@ -236,6 +264,7 @@ public class HeadlineBean {
             }
 
             sb.append("</ul>");
+            sb.append(endl);
 
             return sb.toString();
         } catch (Exception e) {
