@@ -50,7 +50,6 @@ import java.util.Iterator;
  * User: laffer1
  * Date: Jan 18, 2004
  * Time: 10:11:10 PM
- * To change this template use Options | File Templates.
  */
 public class Interface extends HttpServlet {
     final static String endl = "\r\n";

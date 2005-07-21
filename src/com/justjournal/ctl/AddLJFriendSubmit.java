@@ -43,7 +43,9 @@ import org.apache.log4j.Category;
  * User: laffer1
  * Date: Jan 9, 2004
  * Time: 2:16:04 PM
- * To change this template use Options | File Templates.
+ *
+ * @author Lucas Holt
+ * @version 1.0
  */
 public class AddLJFriendSubmit extends Protected {
     private static Category log = Category.getInstance(AddLJFriendSubmit.class.getName());
