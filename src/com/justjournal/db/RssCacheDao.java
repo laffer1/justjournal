@@ -91,7 +91,8 @@ public class RssCacheDao {
 
         final String sqlStmt =
                 "UPDATE rss_cache SET lastupdated=now()," +
-                " content='" + rss.getContent() + "';";
+                " content='" + rss.getContent() + "' WHERE uri='" +
+                rss.getUri() + "';";
 
         try {
             records = SQLHelper.executeNonQuery(sqlStmt);
@@ -142,7 +143,7 @@ public class RssCacheDao {
         CachedRowSet RS = null;
         DateTimeBean dt = new DateTimeBean();
         RssCacheTo rss = null;
-        final String sqlStatement = "SELECT id, `interval`, lastupdated, uri, content FROM rss_subscriptions WHERE uri='"
+        final String sqlStatement = "SELECT id, `interval`, lastupdated, uri, content FROM rss_cache WHERE uri='"
                 + uri + "';";
 
         try {
