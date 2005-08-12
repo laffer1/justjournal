@@ -216,7 +216,7 @@ public class HeadlineBean {
             //Generate the NodeList;
             org.w3c.dom.NodeList nodeList = document.getElementsByTagName("item");
 
-            sb.append("<ul>");
+            sb.append("<ul class=\"RssItems\">");
             sb.append(endl);
 
             for (int i = 0; i < nodeList.getLength(); i++) {
@@ -249,12 +249,7 @@ public class HeadlineBean {
                 if (link != null && title != null) {
                     sb.append("<li>");
 
-                    // some rss versions don't have a pub date per entry
-                    if (pubDate != null) {
-                        sb.append(pubDate);
-                        sb.append(" - ");
-                    }
-
+                    sb.append("<span class=\"RssItemTitle\">");
                     sb.append("<a href=\"");
                     sb.append(link);
                     sb.append("\" title=\"");
@@ -262,9 +257,19 @@ public class HeadlineBean {
                     sb.append("\" >");
                     sb.append(Xml.cleanString(title));
                     sb.append("</a>");
+                    sb.append("</span>");
+
+                    // some rss versions don't have a pub date per entry
+                    if (pubDate != null) {
+                        sb.append("<span class=\"RssItemPubDate\">");
+                        sb.append(pubDate);
+                        sb.append("</span>");
+                    }
 
                     sb.append("<br />");
+                    sb.append("<span class=\"RssItemDesc\">");
                     sb.append(description);
+                    sb.append("</span>");
 
                     sb.append("</li>");
                     sb.append(endl);
