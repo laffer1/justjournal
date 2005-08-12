@@ -95,7 +95,10 @@ public final class CachedHeadlineBean
                 }
                 buff.close();
 
-                rss.setContent(sbx.toString());
+                rss.setContent(sbx.toString().trim());
+                // sun can't make their own rss feeds complaint
+                if (rss.getContent().startsWith("<rss"))
+                    rss.setContent("<?xml version=\"1.0\"?>\n");
                 dao.update(rss);
             } else {
                 if (log.isDebugEnabled())
@@ -120,7 +123,10 @@ public final class CachedHeadlineBean
             try {
                 rss.setUri(uri);
                 rss.setInterval(24);
-                rss.setContent(sbx.toString());
+                rss.setContent(sbx.toString().trim());
+                // sun can't make their own rss feeds complaint
+                if (rss.getContent().startsWith("<rss"))
+                    rss.setContent("<?xml version=\"1.0\"?>\n");
                 dao.add(rss);
             } catch (java.lang.NullPointerException n) {
                 if (log.isDebugEnabled())
