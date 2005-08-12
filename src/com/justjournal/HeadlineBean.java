@@ -48,12 +48,13 @@ import java.net.URL;
  * converts it to HTML.
  *
  * @author Lucas Holt
- * @version 1.3
+ * @version 1.4
  * @since 1.0
  *        User: laffer1
  *        Date: Jul 22, 2003
  *        Time: 12:19:17
  *        <p/>
+ *        1.4 Fixed bugs when certain rss features are missing.
  *        1.3 now supports several RSS 2 features (non rdf format)
  *        1.2 added several properties to the output including
  *        the published date, and description.
@@ -65,10 +66,8 @@ public class HeadlineBean {
 
     private static Category log = Category.getInstance(HeadlineBean.class.getName());
 
-    // constants
     private static final char endl = '\n';
 
-    // vars
     protected URL u;
     protected InputStream inputXML;
     protected DocumentBuilder builder;
@@ -196,10 +195,16 @@ public class HeadlineBean {
             sb.append("</h3>");
             sb.append(endl);
 
-            sb.append("<p>last build date: ");
-            sb.append(contentLastBuildDate);
+            // some rss feeds don't have a last build date
+            if (contentLastBuildDate != null) {
+                sb.append("<p>last build date: ");
+                sb.append(contentLastBuildDate);
+                sb.append("<br />");
+            } else {
+                sb.append("<p>");
+            }
 
-            sb.append("<br /><a href=\"" + contentLink + "\">source</a></p>");
+            sb.append("<a href=\"" + contentLink + "\">source</a></p>");
             sb.append(endl);
 
             sb.append("<div style=\"clear: both;\">&nbsp;</div>");
@@ -244,8 +249,11 @@ public class HeadlineBean {
                 if (link != null && title != null) {
                     sb.append("<li>");
 
-                    sb.append(pubDate);
-                    sb.append(" - ");
+                    // some rss versions don't have a pub date per entry
+                    if (pubDate != null) {
+                        sb.append(pubDate);
+                        sb.append(" - ");
+                    }
 
                     sb.append("<a href=\"");
                     sb.append(link);
