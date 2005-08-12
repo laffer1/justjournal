@@ -55,7 +55,15 @@ import java.net.URL;
  * Time: 8:15:45 PM
  *
  * @author Lucas Holt
- * @version 1.0
+ * @version 1.4
+ * @since 1.2
+ *        <p/>
+ *        1.4 Attempt to catch case were RSS record content is empty in database.
+ *        1.3 Added sun fix to correct sun.com rss feeds (rss .92 issue?)
+ *        xml declaration was missing in feed and whitespace at front.
+ *        1.2 Fixed bug where records might not get updated.
+ *        1.1 optimized code
+ *        1.0 Initial release
  */
 public final class CachedHeadlineBean
         extends HeadlineBean {
@@ -97,8 +105,27 @@ public final class CachedHeadlineBean
 
                 rss.setContent(sbx.toString().trim());
                 // sun can't make their own rss feeds complaint
-                if (rss.getContent().startsWith("<rss"))
-                    rss.setContent("<?xml version=\"1.0\"?>\n");
+                if (rss.getContent().startsWith("<rss") == true)
+                    rss.setContent("<?xml version=\"1.0\"?>\n" + rss.getContent());
+                dao.update(rss);
+            } else if (rss.getContent() == null ||
+                    rss.getContent() != null && rss.getContent().equals("")) {
+                // empty rss record in database.  error?
+                if (log.isDebugEnabled())
+                    log.debug("getRssDocument() Empty RSS data: " + uri);
+                u = new URL(uri);
+                ir = new InputStreamReader(u.openStream(), "UTF-8");
+                buff = new BufferedReader(ir);
+                String input;
+                while ((input = buff.readLine()) != null) {
+                    sbx.append(StringUtil.replace(input, '\'', "\\\'"));
+                }
+                buff.close();
+
+                rss.setContent(sbx.toString().trim());
+                // sun can't make their own rss feeds complaint
+                if (rss.getContent().startsWith("<rss") == true)
+                    rss.setContent("<?xml version=\"1.0\"?>\n" + rss.getContent());
                 dao.update(rss);
             } else {
                 if (log.isDebugEnabled())
@@ -125,8 +152,8 @@ public final class CachedHeadlineBean
                 rss.setInterval(24);
                 rss.setContent(sbx.toString().trim());
                 // sun can't make their own rss feeds complaint
-                if (rss.getContent().startsWith("<rss"))
-                    rss.setContent("<?xml version=\"1.0\"?>\n");
+                if (rss.getContent().startsWith("<rss") == true)
+                    rss.setContent("<?xml version=\"1.0\"?>\n" + rss.getContent());
                 dao.add(rss);
             } catch (java.lang.NullPointerException n) {
                 if (log.isDebugEnabled())
