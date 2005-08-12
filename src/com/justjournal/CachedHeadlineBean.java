@@ -39,6 +39,9 @@ import com.justjournal.db.RssCacheDao;
 import com.justjournal.db.RssCacheTo;
 import org.apache.log4j.Category;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.net.URL;
 
 
@@ -67,73 +70,79 @@ public final class CachedHeadlineBean
 
         RssCacheDao dao = new RssCacheDao();
         RssCacheTo rss;
+        InputStreamReader ir;
+        StringBuffer sbx = new StringBuffer();
+        BufferedReader buff;
         final java.util.GregorianCalendar calendarg = new java.util.GregorianCalendar();
 
         rss = dao.view(uri);
 
         if (rss != null && rss.getUri() != null && rss.getUri().length() > 10) {
             if (log.isDebugEnabled())
-                log.debug("Retrieved uri from database: " + uri);
-
-            document = builder.parse(rss.getContent());
+                log.debug("Record found with uri: " + uri);
 
             DateTimeBean dt = rss.getLastUpdated();
 
-            if (dt.getYear() != calendarg.get(java.util.Calendar.YEAR)) {
+            if (dt.getDay() != calendarg.get(java.util.Calendar.DATE)) {
+                if (log.isDebugEnabled())
+                    log.debug("getRssDocument() Day doesn't match: " + uri);
                 u = new URL(uri);
-                inputXML = u.openStream();
+                ir = new InputStreamReader(u.openStream(), "UTF-8");
+                buff = new BufferedReader(ir);
+                String input;
+                while ((input = buff.readLine()) != null) {
+                    sbx.append(StringUtil.replace(input, '\'', "\\\'"));
+                }
+                buff.close();
 
-                rss.setContent(inputXML.toString());
+                rss.setContent(sbx.toString());
                 dao.update(rss);
+            } else {
+                if (log.isDebugEnabled())
+                    log.debug("Hit end.. no date change.");
             }
-
-            if (dt.getMonth() != calendarg.get(java.util.Calendar.MONTH)) {
-                u = new URL(uri);
-                inputXML = u.openStream();
-
-                rss.setContent(inputXML.toString());
-                dao.update(rss);
-            }
-
-            if (dt.getYear() != calendarg.get(java.util.Calendar.DATE)) {
-                u = new URL(uri);
-                inputXML = u.openStream();
-
-                rss.setContent(inputXML.toString());
-                dao.update(rss);
-            }
-
-            if (log.isDebugEnabled())
-                log.debug("Hit end.. no date change.");
-
 
         } else {
-            String rssDoc;
-
             if (log.isDebugEnabled())
                 log.debug("Fetch uri: " + uri);
-
+            rss = new RssCacheTo();
             //Open the file for reading:
             u = new URL(uri);
-            inputXML = u.openStream();
-
-            builder = factory.newDocumentBuilder();
-            document = builder.parse(inputXML);
-
-            rssDoc = document.toString();
-            log.debug(rssDoc);
+            ir = new InputStreamReader(u.openStream(), "UTF-8");
+            buff = new BufferedReader(ir);
+            String input;
+            while ((input = buff.readLine()) != null) {
+                sbx.append(StringUtil.replace(input, '\'', "\\\'"));
+            }
+            buff.close();
+            log.debug(sbx.toString());
 
             try {
                 rss.setUri(uri);
                 rss.setInterval(24);
-                rss.setContent(rssDoc);
+                rss.setContent(sbx.toString());
                 dao.add(rss);
             } catch (java.lang.NullPointerException n) {
                 if (log.isDebugEnabled())
                     log.debug("Null pointer exception creating/adding rss cache object to db.");
             }
-
         }
+        if (log.isDebugEnabled())
+            log.debug("getRssDocument() Retrieved uri from database: " + uri);
+
+        log.debug(sbx.toString());
+
+        StringReader sr = new StringReader(rss.getContent());
+
+        org.xml.sax.InputSource saxy = new org.xml.sax.InputSource(sr);
+        builder = factory.newDocumentBuilder();
+        document = builder.parse(saxy);
+
+
+        if (log.isDebugEnabled())
+            log.debug("Hit end of getRssDocument() for " + uri);
+
+
     }
 
 }

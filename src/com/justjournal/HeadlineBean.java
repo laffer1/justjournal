@@ -268,7 +268,7 @@ public class HeadlineBean {
 
             return sb.toString();
         } catch (Exception e) {
-            return "Error, could not process request: " + e.toString();
+            return "Error, could not process request: " + e.toString() + endl;
         }
     }
 
