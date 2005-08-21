@@ -56,11 +56,12 @@ import java.sql.Statement;
 public final class SQLHelper {
     private static Context ctx = null;
     private static DataSource ds = null;
+    private static String DbEnv = "java:comp/env/jdbc/jjDB";
 
     SQLHelper() {
         try {
             ctx = new InitialContext();
-            ds = (DataSource) ctx.lookup("java:comp/env/jdbc/jjDB");
+            ds = (DataSource) ctx.lookup(DbEnv);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -75,7 +76,7 @@ public final class SQLHelper {
         if (ctx == null || ds == null) {
             try {
                 ctx = new InitialContext();
-                ds = (DataSource) ctx.lookup("java:comp/env/jdbc/jjDB");
+                ds = (DataSource) ctx.lookup(DbEnv);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -134,7 +135,7 @@ public final class SQLHelper {
         if (ctx == null || ds == null) {
             try {
                 ctx = new InitialContext();
-                ds = (DataSource) ctx.lookup("java:comp/env/jdbc/jjDB");
+                ds = (DataSource) ctx.lookup(DbEnv);
             } catch (Exception e) {
                 e.printStackTrace();
             }
