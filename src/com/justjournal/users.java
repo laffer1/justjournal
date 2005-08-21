@@ -78,6 +78,7 @@ public final class users extends HttpServlet {
     private static final int RT_CALENDAR_MONTH = 6;
     private static final int RT_CALENDAR_DAY = 7;
     private static final int RT_RSS_SUBSCRIPTIONS = 8;
+    private static final int RT_SINGLE_ENTRY = 9;
     private static final char endl = '\n';
 
     private static Category log = Category.getInstance(users.class.getName());
@@ -145,6 +146,7 @@ public final class users extends HttpServlet {
         int year = 0;
         int month = 0;
         int day = 0;
+        int singleEntryId = 0;
 
         if (arrUriLength > 3) {
             if (arrUri[3].compareTo("friends") == 0) {
@@ -174,6 +176,11 @@ public final class users extends HttpServlet {
                     }
                 } else {
                     RequestType = RT_CALENDAR_NUMERIC;
+                }
+            } else if (arrUri[3].compareTo("entry") == 0) {
+                if (arrUri[4].matches("\\d")) {
+                    RequestType = RT_SINGLE_ENTRY;
+                    singleEntryId = Integer.parseInt(arrUri[3]);
                 }
             }
         }
@@ -390,6 +397,9 @@ public final class users extends HttpServlet {
                         case RT_CALENDAR_DAY:
                             getCalendarDay(year, month, day, userName, aUser, sb);
                             break;
+                        case RT_SINGLE_ENTRY:
+                            getSingleEntry(singleEntryId, userName, aUser, sb);
+                            break;
                     }
                 } catch (Exception ex) {
                     webError.Display(" Error",
@@ -485,6 +495,212 @@ public final class users extends HttpServlet {
 
         } catch (Exception e) {
             webError.Display("RSS Subscriptions Error", "Can not retrieve RSS content.", sb);
+        }
+    }
+
+    private static void getSingleEntry(final int singleEntryId, final String userName, final User aUser, final StringBuffer sb) {
+        if (log.isDebugEnabled())
+            log.debug("getSingleEntry: Loading DAO");
+
+        final EntryDAO edao = new EntryDAO();
+        EntryTo o;
+
+        try {
+            if (aUser.getUserName().compareTo(userName) == 0) {
+                o = edao.viewSingle(singleEntryId, true);  // should be true
+
+
+                if (log.isDebugEnabled())
+                    log.debug("getSingleEntry: User is logged in.");
+            } else {
+                o = edao.viewSingle(singleEntryId, false);
+
+                if (log.isDebugEnabled())
+                    log.debug("getSingleEntry: User is not logged in.");
+            }
+
+
+            // Format the current time.
+            final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+            final SimpleDateFormat formatmydate = new SimpleDateFormat("EEE, d MMM yyyy");
+            final SimpleDateFormat formatmytime = new SimpleDateFormat("h:mm a");
+            String curDate;
+
+            if (log.isDebugEnabled())
+                log.debug("getSingleEntry: Begin reading record.");
+
+
+            if (o != null && o.getId() > 0) {
+
+                // Parse the previous string back into a Date.
+                final ParsePosition pos = new ParsePosition(0);
+                final java.util.Date currentDate = formatter.parse(o.getDate().toString(), pos);
+
+                curDate = formatmydate.format(currentDate);
+
+                sb.append("<h2>");
+                sb.append(curDate);
+                sb.append("</h2>");
+                sb.append(endl);
+
+                sb.append("<div class=\"ebody\">");
+                sb.append(endl);
+
+                sb.append("<h3>");
+                sb.append("<span class=\"time\">");
+                sb.append(formatmytime.format(currentDate));
+                sb.append("</span> - <span class=\"subject\">");
+                sb.append(o.getSubject());
+                sb.append("</span></h3> ");
+                sb.append(endl);
+
+                sb.append("<div class=\"ebody\">");
+                sb.append(endl);
+
+                // autoformat controls whether new lines should be
+                // converted to br's.  If someone used html
+                // we don't want autoformat!
+                // We handle Windows/UNIX with the \n case and
+                // Mac OS Classic with \r
+                // TODO: A more complex system should be developed
+                if (o.getAutoFormat()) {
+                    sb.append("<p>");
+                    if (o.getBody().indexOf("\n") > -1)
+                        sb.append(StringUtil.replace(o.getBody(), '\n', "<br />"));
+                    else if (o.getBody().indexOf("\r") > -1)
+                        sb.append(StringUtil.replace(o.getBody(), '\r', "<br />"));
+                    else
+                    // we do not have any "new lines" but it might be
+                    // one long line.
+                        sb.append(o.getBody());
+
+                    sb.append("</p>");
+                } else {
+                    sb.append(o.getBody());
+                }
+
+                sb.append(endl);
+                sb.append("</div>");
+                sb.append(endl);
+
+                sb.append("<p>");
+
+                if (o.getSecurityLevel() == 0) {
+                    sb.append("<span class=\"security\">security: ");
+                    sb.append("<img src=\"/img/icon_private.gif\" alt=\"private\" /> ");
+                    sb.append("private");
+                    sb.append("</span><br />");
+                    sb.append(endl);
+                } else if (o.getSecurityLevel() == 1) {
+                    sb.append("<span class=\"security\">security: ");
+                    sb.append("<img src=\"/img/icon_protected.gif\" alt=\"friends\" /> ");
+                    sb.append("friends");
+                    sb.append("</span><br />");
+                    sb.append(endl);
+                }
+
+                if (o.getLocationId() > 0) {
+                    sb.append("<span class=\"location\">location: ");
+                    sb.append(o.getLocationName());
+                    sb.append("</span><br />");
+                    sb.append(endl);
+                }
+
+                if (o.getMoodName().length() > 0 && o.getMoodId() != 12) {
+                    final EmoticonDao emot = new EmoticonDao();
+                    final EmoticonTo emoto = emot.view(1, o.getMoodId());
+
+                    sb.append("<span class=\"mood\">mood: <img src=\"/images/emoticons/1/");
+                    sb.append(emoto.getFileName());
+                    sb.append("\" width=\"");
+                    sb.append(emoto.getWidth());
+                    sb.append("\" height=\"");
+                    sb.append(emoto.getHeight());
+                    sb.append("\" alt=\"");
+                    sb.append(o.getMoodName());
+                    sb.append("\" /> ");
+                    sb.append(o.getMoodName());
+                    sb.append("</span><br />");
+                    sb.append(endl);
+                }
+
+                if (o.getMusic().length() > 0) {
+                    sb.append("<span class=\"music\">music: ");
+                    sb.append(o.getMusic());
+                    sb.append("</span><br />");
+                    sb.append(endl);
+                }
+
+                sb.append("</p>");
+                sb.append(endl);
+
+                sb.append("<div>");
+                sb.append(endl);
+                sb.append("<table width=\"100%\"  border=\"0\">");
+                sb.append(endl);
+                sb.append("<tr>");
+                sb.append(endl);
+
+                if (aUser.getUserName().compareTo(userName) == 0) {
+                    sb.append("<td width=\"30\"><a title=\"Edit Entry\" href=\"/entry/edit.h?entryId=");
+                    sb.append(o.getId());
+                    sb.append("\"><img src=\"/images/compose-message.png\" width=\"24\" height=\"24\" alt=\"Edit\" /></a></td>");
+                    sb.append(endl);
+                    sb.append("<td width=\"30\"><a title=\"Delete Entry\" href=\"/entry/delete.h?entryId=");
+                    sb.append(o.getId());
+                    sb.append("\"><img src=\"/images/stock_calc-cancel.png\" width=\"24\" height=\"24\" alt=\"Delete\" /></a>");
+                    sb.append("</td>");
+                    sb.append(endl);
+                }
+
+                sb.append("<td width=\"30\"><a title=\"Add Favorite\" href=\"/favorite/entry.h?entryId=");
+                sb.append(o.getId());
+                sb.append("\"><img src=\"/images/favourites-24.png\" width=\"24\" height=\"24\" alt=\"Favorites\" /></a></td>");
+                sb.append(endl);
+
+                sb.append("<td><div align=\"right\">(");
+
+                switch (o.getCommentCount()) {
+                    case 0:
+                        break;
+                    case 1:
+                        sb.append("<a href=\"/comment/view.h?entryId=");
+                        sb.append(o.getId());
+                        sb.append("\">1 comment</a> | ");
+                        break;
+                    default:
+                        sb.append("<a href=\"/comment/view.h?entryId=");
+                        sb.append(o.getId());
+                        sb.append("\">");
+                        sb.append(o.getCommentCount());
+                        sb.append(" comments</a> | ");
+                }
+
+                sb.append("<a href=\"/comment/add.jsp?id=");
+                sb.append(o.getId());
+                sb.append("\">comment on this</a>)");
+
+
+                sb.append("</div></td>");
+                sb.append(endl);
+                sb.append("</tr>");
+                sb.append(endl);
+                sb.append("</table>");
+                sb.append(endl);
+                sb.append("</div>");
+                sb.append(endl);
+
+                sb.append("</div>");
+                sb.append(endl);
+            }
+
+        } catch (Exception e1) {
+            webError.Display("Error",
+                    "Unable to retrieve journal entry from data store.",
+                    sb);
+
+            if (log.isDebugEnabled())
+                log.debug("getSingleEntry: Exception is " + e1.getMessage() + "\n" + e1.toString());
         }
     }
 
@@ -1316,7 +1532,7 @@ public final class users extends HttpServlet {
             rss.setLink("http://www.justjournal.com/users/" + userName);
             rss.setDescription("Just Journal for " + userName);
             rss.setLanguage("en-us");
-            rss.setCopyright("Copyright 2004 " + pf.getName());  // todo: get date dynamically!
+            rss.setCopyright("Copyright 2005 " + pf.getName());  // todo: get date dynamically!
             rss.setWebMaster("webmaster@justjournal.com");
             rss.setManagingEditor(""); // TODO: get email address here
             rss.populate(edao.view(userName, false), userName);
