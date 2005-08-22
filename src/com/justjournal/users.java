@@ -177,11 +177,11 @@ public final class users extends HttpServlet {
                 } else {
                     RequestType = RT_CALENDAR_NUMERIC;
                 }
-            } else if (arrUri[3].compareTo("entry") == 0) {
-                if (arrUri[4].matches("\\d")) {
-                    RequestType = RT_SINGLE_ENTRY;
-                    singleEntryId = Integer.parseInt(arrUri[3]);
-                }
+            } else if (arrUri[3].compareTo("entry") == 0 && arrUriLength > 4) {
+                // TODO: bad if NaN.. need to fix this
+                RequestType = RT_SINGLE_ENTRY;
+                singleEntryId = Integer.parseInt(arrUri[4]);
+
             }
         }
 
