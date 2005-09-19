@@ -70,6 +70,103 @@ public final class loginAccount extends HttpServlet {
 
     }
 
+    private void htmlOutput(StringBuffer sb, String userName) {
+        // Begin HTML document.
+        sb.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"  \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">");
+        sb.append(endl);
+        sb.append("<html xmlns=\"http://www.w3.org/1999/xhtml\">");
+        sb.append(endl);
+        sb.append("<head>");
+        sb.append(endl);
+        sb.append("<title>JustJournal.com: Login</title>");
+        sb.append(endl);
+        sb.append("<link rel=\"stylesheet\" type=\"text/css\" media=\"screen\" title=\"default\" href=\"/layout1.css\">");
+        sb.append(endl);
+        sb.append("</head>");
+        sb.append(endl);
+
+        sb.append("<body>");
+        sb.append(endl);
+
+        sb.append("<!-- Header: Begin -->");
+        sb.append(endl);
+        sb.append("<div style=\"padding-bottom: 30px;\" id=\"header\">");
+        sb.append(endl);
+        sb.append("<span style=\"float: left; top: -14px; position: relative;\">");
+        sb.append("<img style=\" margin-top: 30px; margin-left: 30px;\" src=\"/images/jj-pencil3.gif\" />");
+        sb.append("</span>");
+        sb.append(endl);
+        sb.append("<img style=\"left: -50px; top: -120px; position: relative;\" alt=\"Blogging for life\" src=\"/images/bloglife.gif\" />");
+        sb.append("<img style=\"margin-top: 54px; margin-left: -120px;\" height=\"100\" width=\"445\" alt=\"Just Journal\" src=\"/images/jjheader2.gif\" />");
+        sb.append("</div>");
+        sb.append(endl);
+        sb.append("<!-- Header: End -->");
+        sb.append(endl);
+
+        sb.append("\t<!-- Menu: Begin -->");
+        sb.append(endl);
+        sb.append("\t<div id=\"menu\">");
+        sb.append(endl);
+
+        sb.append("\t<ul>");
+        sb.append(endl);
+        sb.append("\t\t<li><a href=\"/users/" + userName + "\">recent entries</a></li>");
+        sb.append(endl);
+        sb.append("\t\t<li><a href=\"/users/" + userName + "/calendar\">Calendar</a></li>");
+        sb.append(endl);
+        sb.append("\t\t<li><a href=\"/users/" + userName + "/friends\">Friends</a></li>");
+        sb.append(endl);
+        sb.append("\t\t<li><a href=\"/profile.jsp?user=" + userName + "\">Profile</a></li>");
+        sb.append(endl);
+        sb.append("\t</ul>");
+        sb.append(endl);
+
+        // General stuff...
+        sb.append("\t<ul>");
+        sb.append(endl);
+        sb.append("\t\t<li><a href=\"/update.jsp\">Update Journal</a></li>");
+        sb.append(endl);
+
+        // User is logged in.. give them the option to log out.
+        sb.append("\t\t<li><a href=\"/prefs/index.jsp\">Preferences</a></li>");
+        sb.append(endl);
+        sb.append("\t\t<li><a href=\"/logout.jsp\">Log Out</a></li>");
+        sb.append(endl);
+        sb.append("\t</ul>");
+        sb.append(endl);
+
+        sb.append("\t<p>RSS Syndication<br /><br />");
+        sb.append("<a href=\"/users/");
+        sb.append(userName);
+        sb.append("/rss\"><img src=\"/img/v4_xml.gif\" alt=\"RSS content feed\" /> Recent</a><br />");
+        sb.append("<a href=\"/users/");
+        sb.append(userName);
+        sb.append("/subscriptions\">Subscriptions</a>");
+        sb.append("\t</p>");
+        sb.append(endl);
+
+        sb.append("\t</div>");
+        sb.append(endl);
+        sb.append("\t<!-- Menu: End -->\n");
+        sb.append(endl);
+
+        // END MENU
+
+        sb.append("<div id=\"content\">");
+        sb.append(endl);
+        sb.append("\t<h2>Login</h2>");
+        sb.append(endl);
+        sb.append("\t<p><strong>You are logged in as " + userName + ".</strong></p>");
+        sb.append(endl);
+        sb.append("</div>");
+        sb.append(endl);
+
+        sb.append("</body>");
+        sb.append(endl);
+        sb.append("</html>");
+        sb.append(endl);
+    }
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      *
@@ -95,6 +192,12 @@ public final class loginAccount extends HttpServlet {
         String password = request.getParameter("password");
         String passwordHash = request.getParameter("password_hash").trim().toLowerCase();
 
+        String userAgent = request.getHeader("User-Agent");
+        boolean webClient = true;  // browser
+
+        if (userAgent != null && userAgent.indexOf("JustJournal") > -1)
+            webClient = false; // desktop client.. win/mac
+
         if (userName == null || userName.length() < 3) {
             blnError = true;
             webError.Display("Input Error",
@@ -116,117 +219,25 @@ public final class loginAccount extends HttpServlet {
 
                 if (passwordHash != null && passwordHash != "") {
                     if (log.isDebugEnabled())
-                        log.debug("Using SHA1  pass=" + passwordHash);
+                        log.debug("Using SHA1 pass=" + passwordHash);
 
                     userID = webLogin.validateSHA1(userName, passwordHash);
                 } else {
                     if (log.isDebugEnabled())
-                        log.debug("Using clear  pass=" + password);
+                        log.debug("Using clear pass=" + password);
 
                     userID = webLogin.validate(userName, password);
                 }
 
                 if (userID > 0) {
-                    session.setAttribute("auth.uid", new Integer(userID));
-                    session.setAttribute("auth.user", userName);
+                    if (!webClient) {
+                        sb.append("JJ.LOGIN.OK");
+                    } else {
+                        session.setAttribute("auth.uid", new Integer(userID));
+                        session.setAttribute("auth.user", userName);
 
-                    // Begin HTML document.
-                    sb.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"  \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">");
-                    sb.append(endl);
-                    sb.append("<html xmlns=\"http://www.w3.org/1999/xhtml\">");
-                    sb.append(endl);
-                    sb.append("<head>");
-                    sb.append(endl);
-                    sb.append("<title>JustJournal.com: Login</title>");
-                    sb.append(endl);
-                    sb.append("<link rel=\"stylesheet\" type=\"text/css\" media=\"screen\" title=\"default\" href=\"/layout1.css\">");
-                    sb.append(endl);
-                    sb.append("</head>");
-                    sb.append(endl);
-
-                    sb.append("<body>");
-                    sb.append(endl);
-
-                    sb.append("<div id=\"login\" style=\"color: silver; font-weight: bold;\">");
-                    sb.append(endl);
-                    sb.append("<img src=\"/images/jj-pencil.gif\" alt=\"jj pencil\" style=\"float: left;\" />");
-                    sb.append(endl);
-                    sb.append("</div>");
-                    sb.append(endl);
-
-                    sb.append("<!-- Header: Begin -->");
-                    sb.append(endl);
-                    sb.append("<div id=\"header\">");
-                    sb.append(endl);
-                    sb.append("\t<h1>JustJournal.com</h1>");
-                    sb.append(endl);
-                    sb.append("</div>");
-                    sb.append(endl);
-                    sb.append("<!-- Header: End -->");
-                    sb.append(endl);
-
-                    sb.append("\t<!-- Menu: Begin -->");
-                    sb.append(endl);
-                    sb.append("\t<div id=\"menu\">");
-                    sb.append(endl);
-
-                    sb.append("\t<ul>");
-                    sb.append(endl);
-                    sb.append("\t\t<li><a href=\"/users/" + userName + "\">recent entries</a></li>");
-                    sb.append(endl);
-                    sb.append("\t\t<li><a href=\"/users/" + userName + "/calendar\">Calendar</a></li>");
-                    sb.append(endl);
-                    sb.append("\t\t<li><a href=\"/users/" + userName + "/friends\">Friends</a></li>");
-                    sb.append(endl);
-                    sb.append("\t\t<li><a href=\"/profile.jsp?user=" + userName + "\">Profile</a></li>");
-                    sb.append(endl);
-                    sb.append("\t</ul>");
-                    sb.append(endl);
-
-                    // General stuff...
-                    sb.append("\t<ul>");
-                    sb.append(endl);
-                    sb.append("\t\t<li><a href=\"/update.jsp\">Update Journal</a></li>");
-                    sb.append(endl);
-
-                    // User is logged in.. give them the option to log out.
-                    sb.append("\t\t<li><a href=\"/prefs/index.jsp\">Preferences</a></li>");
-                    sb.append(endl);
-                    sb.append("\t\t<li><a href=\"/logout.jsp\">Log Out</a></li>");
-                    sb.append(endl);
-                    sb.append("\t</ul>");
-                    sb.append(endl);
-
-                    sb.append("\t<p>RSS Syndication<br /><br />");
-                    sb.append("<a href=\"/users/");
-                    sb.append(userName);
-                    sb.append("/rss\"><img src=\"/img/v4_xml.gif\" alt=\"RSS content feed\" /> Recent</a><br />");
-                    sb.append("<a href=\"/users/");
-                    sb.append(userName);
-                    sb.append("/subscriptions\">Subscriptions</a>");
-                    sb.append("\t</p>");
-                    sb.append(endl);
-
-                    sb.append("\t</div>");
-                    sb.append(endl);
-                    sb.append("\t<!-- Menu: End -->\n");
-                    sb.append(endl);
-
-                    // END MENU
-
-                    sb.append("<div id=\"content\">");
-                    sb.append(endl);
-                    sb.append("\t<h2>Login</h2>");
-                    sb.append(endl);
-                    sb.append("\t<p><strong>You are logged in as " + userName + ".</strong></p>");
-                    sb.append(endl);
-                    sb.append("</div>");
-                    sb.append(endl);
-
-                    sb.append("</body>");
-                    sb.append(endl);
-                    sb.append("</html>");
-                    sb.append(endl);
+                        htmlOutput(sb, userName);
+                    }
                 } else {
                     webError.Display("Authentication Error",
                             "Unable to login.  Please check your username and password.",
