@@ -48,7 +48,7 @@ import javax.servlet.http.HttpSession;
  * Login account servlet.
  *
  * @author Lucas Holt
- * @version 1.2
+ * @version 1.3
  *          Sat Jun 07 2003
  *          <p/>
  *          Version 1.1 changes to a stringbuffer for output.
@@ -56,18 +56,24 @@ import javax.servlet.http.HttpSession;
  *          <p/>
  *          1.2 fixed a bug with NULL pointer exceptions.
  *          <p/>
+ *          Mon Sep 19 2005
+ *          1.3 added JJ.LOGIN.FAIL and JJ.LOGIN.OK for desktop
+ *          clients.
+ *          <p/>
  *          TODO CONVERT TO MAVERICK CODE
+ * @since JJ 1.0
  */
 public final class loginAccount extends HttpServlet {
     private static final char endl = '\n';
     private static Category log = Category.getInstance(loginAccount.class.getName());
+    private static final String JJ_LOGIN_OK = "JJ.LOGIN.OK";
+    private static final String JJ_LOGIN_FAIL = "JJ.LOGIN.FAIL";
 
     /**
      * Initializes the servlet.
      */
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-
     }
 
     private void htmlOutput(StringBuffer sb, String userName) {
@@ -200,16 +206,22 @@ public final class loginAccount extends HttpServlet {
 
         if (userName == null || userName.length() < 3) {
             blnError = true;
-            webError.Display("Input Error",
-                    "username must be at least 3 characters.",
-                    sb);
+            if (webClient)
+                webError.Display("Input Error",
+                        "username must be at least 3 characters.",
+                        sb);
+            else
+                sb.append(JJ_LOGIN_FAIL);
         }
 
         if (passwordHash == null && password == null) {
             blnError = true;
-            webError.Display("Input Error",
-                    "Please input a password.",
-                    sb);
+            if (webClient)
+                webError.Display("Input Error",
+                        "Please input a password.",
+                        sb);
+            else
+                sb.append(JJ_LOGIN_FAIL);
         }
 
         if (blnError == false) {
@@ -231,7 +243,7 @@ public final class loginAccount extends HttpServlet {
 
                 if (userID > 0) {
                     if (!webClient) {
-                        sb.append("JJ.LOGIN.OK");
+                        sb.append(JJ_LOGIN_OK);
                     } else {
                         session.setAttribute("auth.uid", new Integer(userID));
                         session.setAttribute("auth.user", userName);
@@ -239,19 +251,25 @@ public final class loginAccount extends HttpServlet {
                         htmlOutput(sb, userName);
                     }
                 } else {
+                    if (webClient)
+                        webError.Display("Authentication Error",
+                                "Unable to login.  Please check your username and password.",
+                                sb);
+                    else
+                        sb.append(JJ_LOGIN_FAIL);
+                }
+            } catch (Exception e3) {
+                if (webClient)
                     webError.Display("Authentication Error",
                             "Unable to login.  Please check your username and password.",
                             sb);
-                }
-            } catch (Exception e3) {
-                webError.Display("Authentication Error",
-                        "Unable to login.  Please check your username and password.",
-                        sb);
+                else
+                    sb.append(JJ_LOGIN_FAIL);
             }
         }
 
         if (log.isDebugEnabled())
-            log.debug("Write out HTML  ");
+            log.debug("Write out Response  ");
         // output the result of our processing
         final ServletOutputStream outstream = response.getOutputStream();
         outstream.println(sb.toString());
