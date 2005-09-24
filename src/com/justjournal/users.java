@@ -1308,6 +1308,8 @@ public final class users extends HttpServlet {
                             "</span> - <span class=\"subject\"><a href=\"");
 
                     //TODO: fix bug where relative url is incorrect
+                    // Need to check if we are in a calendar state and
+                    // drop the extra parts on the request.
                     // it is appended 08/02/08/02 etc.
                     if (month < 10)
                         sb.append("0");
@@ -1530,11 +1532,14 @@ public final class users extends HttpServlet {
             Rss rss = new Rss();
             final EntryDAO edao = new EntryDAO();
 
+            final java.util.GregorianCalendar calendarg = new java.util.GregorianCalendar();
+            calendarg.setTime(new java.util.Date());
+
             rss.setTitle(userName);
             rss.setLink("http://www.justjournal.com/users/" + userName);
             rss.setDescription("Just Journal for " + userName);
             rss.setLanguage("en-us");
-            rss.setCopyright("Copyright 2005 " + pf.getName());  // todo: get date dynamically!
+            rss.setCopyright("Copyright " + calendarg.get(Calendar.YEAR) + " " + pf.getName());
             rss.setWebMaster("webmaster@justjournal.com");
             rss.setManagingEditor(""); // TODO: get email address here
             rss.populate(edao.view(userName, false), userName);
