@@ -204,8 +204,12 @@ public class HeadlineBean {
                 sb.append("<p>");
             }
 
-            sb.append("<a href=\"" + contentLink + "\">source</a></p>");
+            if (contentLink != null) {
+                sb.append("<a href=\"" + contentLink + "\">source</a>");
+            }
+            sb.append("</p>");
             sb.append(endl);
+
 
             sb.append("<div style=\"clear: both;\">&nbsp;</div>");
             sb.append(endl);
@@ -257,13 +261,13 @@ public class HeadlineBean {
                     sb.append("\" >");
                     sb.append(Xml.cleanString(title));
                     sb.append("</a>");
-                    sb.append("</span>");
+                    sb.append("</span> ");
 
                     // some rss versions don't have a pub date per entry
                     if (pubDate != null) {
-                        sb.append("<span class=\"RssItemPubDate\">");
+                        sb.append(" <span class=\"RssItemPubDate\">");
                         sb.append(pubDate);
-                        sb.append("</span>");
+                        sb.append("</span> ");
                     }
 
                     sb.append("<br />");
