@@ -68,6 +68,185 @@ public final class updateJournal extends HttpServlet {
         super.init(config);
     }
 
+    private void htmlOutput(StringBuffer sb, String userName, int userID) {
+        /* Initialize Preferences Object */
+        Preferences pf;
+        try {
+            pf = new Preferences(userName);
+        } catch (Exception ex) {
+            webError.Display("Load Error",
+                    "Preferences could not be loaded for user " + userName,
+                    sb);
+
+            return;  // no more processing required
+        }
+
+        // Begin HTML document.
+        sb.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"  \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">");
+        sb.append(endl);
+
+        sb.append("<html xmlns=\"http://www.w3.org/1999/xhtml\">");
+        sb.append(endl);
+
+        sb.append("<head>");
+        sb.append(endl);
+        if (pf.isSpiderAllowed() == false) {
+            sb.append("\t<meta name=\"robots\" content=\"noindex, nofollow, noarchive\" />");
+            sb.append(endl);
+            sb.append("\t<meta name=\"googlebot\" content=\"nosnippet\" />");
+            sb.append(endl);
+        }
+        sb.append("\t<title>");
+        sb.append(pf.getName());
+        sb.append("'s Journal</title>");
+        sb.append(endl);
+
+        /* User's custom style URL.. i.e. uri to css doc outside domain */
+        if (pf.getStyleUrl() != "" && pf.getStyleUrl() != null) {
+            sb.append("\t<link rel=\"stylesheet\" type=\"text/css\" media=\"screen\" href=\"");
+            sb.append(pf.getStyleUrl());
+            sb.append("\" />");
+            sb.append(endl);
+        } else {
+            /* use our template system instead */
+            sb.append("\t<link rel=\"stylesheet\" type=\"text/css\" media=\"screen\" href=\"/styles/" + pf.getStyleId() + ".css\" />");
+            sb.append(endl);
+        }
+
+        /* Optional style sheet overrides! */
+        if (pf.getStyleDoc() != "" && pf.getStyleDoc() != null) {
+            sb.append("<style type=\"text/css\" media=\"screen\">");
+            sb.append(endl);
+            sb.append("<!--");
+            sb.append(endl);
+            sb.append(pf.getStyleDoc());
+            sb.append("-->");
+            sb.append(endl);
+            sb.append("</style>");
+            sb.append(endl);
+        }
+        /* End overrides */
+        sb.append("</head>\n");
+
+        sb.append("<body>\n");
+
+        // BEGIN MENU
+        sb.append("\t<!-- Header: Begin -->");
+        sb.append(endl);
+        sb.append("\t\t<div id=\"header\">");
+        sb.append(endl);
+        sb.append("\t\t<h1>");
+        sb.append(pf.getName());
+        sb.append("'s Journal</h1>");
+        sb.append(endl);
+        sb.append("\t</div>");
+        sb.append(endl);
+        sb.append("\t<!-- Header: End -->\n");
+        sb.append(endl);
+
+        sb.append("\t<!-- Menu: Begin -->");
+        sb.append(endl);
+        sb.append("\t<div id=\"menu\">");
+        sb.append(endl);
+
+        sb.append("\t<p id=\"muser\">");
+        sb.append(endl);
+        sb.append("\t\t<a href=\"/users/");
+        sb.append(userName);
+        sb.append("\">recent entries</a><br />");
+        sb.append(endl);
+        sb.append("\t\t<a href=\"/users/" + userName + "/calendar\">Calendar</a><br />");
+        sb.append(endl);
+        sb.append("\t\t<a href=\"/users/" + userName + "/friends\">Friends</a><br />");
+        sb.append(endl);
+        sb.append("\t\t<a href=\"/users/" + userName + "/ljfriends\">LJ Friends</a><br />");
+        sb.append(endl);
+        sb.append("\t\t<a href=\"/profile.jsp?user=" + userName + "\">Profile</a><br />");
+        sb.append(endl);
+        sb.append("\t</p>");
+        sb.append(endl);
+
+        // General stuff...
+        sb.append("\t<p id=\"mgen\">");
+        sb.append(endl);
+        sb.append("\t\t<a href=\"/update.jsp\">Update Journal</a><br />");
+        sb.append(endl);
+
+        // Authentication menu choice
+        if (userID > 0) {
+            // User is logged in.. give them the option to log out.
+            sb.append("\t\t<a href=\"/prefs/index.jsp\">Preferences</a><br />");
+            sb.append(endl);
+            sb.append("\t\t<a href=\"/logout.jsp\">Log Out</a>");
+            sb.append(endl);
+        } else {
+            // User is logged out.. give then the option to login.
+            sb.append("\t\t<a href=\"/login.jsp\">Login</a>");
+            sb.append(endl);
+        }
+        sb.append("\t</p>");
+        sb.append(endl);
+
+        sb.append("\t<p>RSS Syndication<br /><br />");
+        sb.append("<a href=\"/users/");
+        sb.append(userName);
+        sb.append("/rss\"><img src=\"/img/v4_xml.gif\" alt=\"RSS content feed\" /> Recent</a><br />");
+        sb.append("<a href=\"/users/");
+        sb.append(userName);
+        sb.append("/subscriptions\">Subscriptions</a>");
+        sb.append("\t</p>");
+        sb.append(endl);
+
+        sb.append("\t</div>");
+        sb.append(endl);
+        sb.append("\t<!-- Menu: End -->\n");
+        sb.append(endl);
+        // END MENU
+
+        sb.append("\t<!-- Content: Begin -->");
+        sb.append(endl);
+        sb.append("\t<div id=\"content\">");
+        sb.append(endl);
+
+        if (userID > 0) {
+            sb.append("\t<p>You are logged in as <a href=\"/users/" + userName + "\"><img src=\"/images/user.gif\" alt=\"user\" />" + userName + "</a>.</p>");
+            sb.append(endl);
+        }
+
+        sb.append("\t\t<h2>Update Journal</h2>");
+        sb.append(endl);
+
+        sb.append("\t\t<p><strong>entry added</strong></p>");
+        sb.append(endl);
+        sb.append("\t\t<p><a href=\"/update.jsp\">Add another entry</a></p>");
+        sb.append(endl);
+        sb.append("\t\t<p><a href=\"/users/" + userName + "\">View journal</a></p>");
+        sb.append(endl);
+
+        sb.append("\t</div>");
+        sb.append(endl);
+        sb.append("\t<!-- Content: End -->");
+        sb.append(endl);
+        sb.append(endl);
+
+        sb.append("\t<!-- Footer: Begin -->");
+        sb.append(endl);
+        sb.append("\t<div id=\"footer\">");
+        sb.append(endl);
+        sb.append("\t\t<a href=\"/index.jsp\" title=\"JustJournal.com: Online Journals\">JustJournal.com</a> ");
+        sb.append("\t</div>");
+        sb.append(endl);
+
+        sb.append("\t<!-- Footer: End -->\n");
+        sb.append(endl);
+
+        sb.append("</body>");
+        sb.append(endl);
+        sb.append("</html>");
+        sb.append(endl);
+
+    }
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      *
@@ -75,7 +254,7 @@ public final class updateJournal extends HttpServlet {
      * @param response servlet response
      */
     protected void processRequest(final HttpServletRequest request, final HttpServletResponse response)
-            throws ServletException, java.io.IOException {
+            throws java.io.IOException {
 
         boolean blnError = false;
         final StringBuffer sb = new StringBuffer();
@@ -126,8 +305,8 @@ public final class updateJournal extends HttpServlet {
                     webError.Display("Authentication Error",
                             "Unable to login.  Please check your username and password.",
                             sb);
-
-                // TODO: Add error logic for desktop client.
+                else
+                    sb.append("JJ.LOGIN.FAIL");
             }
         }
 
@@ -181,8 +360,9 @@ public final class updateJournal extends HttpServlet {
             } catch (IllegalArgumentException e1) {
                 if (webClient)
                     webError.Display("Input Error", e1.getMessage(), sb);
+                else
+                    sb.append("JJ.JOURNAL.UPDATE.FAIL");
 
-                // TODO: Add error logic for desktop client
                 blnError = true;
             }
 
@@ -224,179 +404,21 @@ public final class updateJournal extends HttpServlet {
                     EntryDAO edao = new EntryDAO();
                     boolean result = edao.add(et);
 
-                    if (result == false && webClient)
-                        webError.Display("Error", "Error adding the journal entry", sb);
+                    if (result == false)
+                        if (webClient)
+                            webError.Display("Error", "Error adding the journal entry", sb);
+                        else
+                            sb.append("JJ.JOURNAL.UPDATE.FAIL");
                 }
-
 
                 // display message to user.
                 if (blnError == false) {
-
-                    /* Initialize Preferences Object */
-                    Preferences pf;
-                    try {
-                        pf = new Preferences(userName);
-                    } catch (Exception ex) {
-                        throw new ServletException(ex);
-                    }
-
-
-                    // Begin HTML document.
-                    sb.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"  \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">");
-                    sb.append(endl);
-
-                    sb.append("<html xmlns=\"http://www.w3.org/1999/xhtml\">");
-                    sb.append(endl);
-
-                    sb.append("<head>");
-                    sb.append(endl);
-                    if (pf.isSpiderAllowed() == false) {
-                        sb.append("\t<meta name=\"robots\" content=\"noindex, nofollow, noarchive\" />");
-                        sb.append(endl);
-                        sb.append("\t<meta name=\"googlebot\" content=\"nosnippet\" />");
-                        sb.append(endl);
-                    }
-                    sb.append("\t<title>" + pf.getName() + "'s Journal</title>");
-                    sb.append(endl);
-
-                    /* User's custom style URL.. i.e. uri to css doc outside domain */
-                    if (pf.getStyleUrl() != "" && pf.getStyleUrl() != null) {
-                        sb.append("\t<link rel=\"stylesheet\" type=\"text/css\" media=\"screen\" href=\"" + pf.getStyleUrl() + "\" />");
-                        sb.append(endl);
-                    } else {
-                        /* use our template system instead */
-                        sb.append("\t<link rel=\"stylesheet\" type=\"text/css\" media=\"screen\" href=\"/styles/" + pf.getStyleId() + ".css\" />");
-                        sb.append(endl);
-                    }
-
-                    /* Optional style sheet overrides! */
-                    if (pf.getStyleDoc() != "" && pf.getStyleDoc() != null) {
-                        sb.append("<style type=\"text/css\" media=\"screen\">");
-                        sb.append(endl);
-                        sb.append("<!--");
-                        sb.append(endl);
-                        sb.append(pf.getStyleDoc());
-                        sb.append("-->");
-                        sb.append(endl);
-                        sb.append("</style>");
-                        sb.append(endl);
-                    }
-                    /* End overrides */
-                    sb.append("</head>\n");
-
-                    sb.append("<body>\n");
-
-                    // BEGIN MENU
-                    sb.append("\t<!-- Header: Begin -->");
-                    sb.append(endl);
-                    sb.append("\t\t<div id=\"header\">");
-                    sb.append(endl);
-                    sb.append("\t\t<h1>" + pf.getName() + "'s Journal</h1>");
-                    sb.append(endl);
-                    sb.append("\t</div>");
-                    sb.append(endl);
-                    sb.append("\t<!-- Header: End -->\n");
-                    sb.append(endl);
-
-                    sb.append("\t<!-- Menu: Begin -->");
-                    sb.append(endl);
-                    sb.append("\t<div id=\"menu\">");
-                    sb.append(endl);
-
-                    sb.append("\t<p id=\"muser\">");
-                    sb.append(endl);
-                    sb.append("\t\t<a href=\"/users/" + userName + "\">recent entries</a><br />");
-                    sb.append(endl);
-                    sb.append("\t\t<a href=\"/users/" + userName + "/calendar\">Calendar</a><br />");
-                    sb.append(endl);
-                    sb.append("\t\t<a href=\"/users/" + userName + "/friends\">Friends</a><br />");
-                    sb.append(endl);
-                    sb.append("\t\t<a href=\"/users/" + userName + "/ljfriends\">LJ Friends</a><br />");
-                    sb.append(endl);
-                    sb.append("\t\t<a href=\"/profile.jsp?user=" + userName + "\">Profile</a><br />");
-                    sb.append(endl);
-                    sb.append("\t</p>");
-                    sb.append(endl);
-
-                    // General stuff...
-                    sb.append("\t<p id=\"mgen\">");
-                    sb.append(endl);
-                    sb.append("\t\t<a href=\"/update.jsp\">Update Journal</a><br />");
-                    sb.append(endl);
-
-                    // Authentication menu choice
-                    if (userID > 0) {
-                        // User is logged in.. give them the option to log out.
-                        sb.append("\t\t<a href=\"/prefs/index.jsp\">Preferences</a><br />");
-                        sb.append(endl);
-                        sb.append("\t\t<a href=\"/logout.jsp\">Log Out</a>");
-                        sb.append(endl);
-                    } else {
-                        // User is logged out.. give then the option to login.
-                        sb.append("\t\t<a href=\"/login.jsp\">Login</a>");
-                        sb.append(endl);
-                    }
-                    sb.append("\t</p>");
-                    sb.append(endl);
-
-                    sb.append("\t<p>RSS Syndication<br /><br />");
-                    sb.append("<a href=\"/users/");
-                    sb.append(userName);
-                    sb.append("/rss\"><img src=\"/img/v4_xml.gif\" alt=\"RSS content feed\" /> Recent</a><br />");
-                    sb.append("<a href=\"/users/");
-                    sb.append(userName);
-                    sb.append("/subscriptions\">Subscriptions</a>");
-                    sb.append("\t</p>");
-                    sb.append(endl);
-
-                    sb.append("\t</div>");
-                    sb.append(endl);
-                    sb.append("\t<!-- Menu: End -->\n");
-                    sb.append(endl);
-                    // END MENU
-
-                    sb.append("\t<!-- Content: Begin -->");
-                    sb.append(endl);
-                    sb.append("\t<div id=\"content\">");
-                    sb.append(endl);
-
-                    if (userID > 0) {
-                        sb.append("\t<p>You are logged in as <a href=\"/users/" + userName + "\"><img src=\"/images/user.gif\" alt=\"user\" />" + userName + "</a>.</p>");
-                        sb.append(endl);
-                    }
-
-                    sb.append("\t\t<h2>Update Journal</h2>");
-                    sb.append(endl);
-
-                    sb.append("\t\t<p><strong>entry added</strong></p>");
-                    sb.append(endl);
-                    sb.append("\t\t<p><a href=\"/update.jsp\">Add another entry</a></p>");
-                    sb.append(endl);
-                    sb.append("\t\t<p><a href=\"/users/" + userName + "\">View journal</a></p>");
-                    sb.append(endl);
-
-                    sb.append("\t</div>");
-                    sb.append(endl);
-                    sb.append("\t<!-- Content: End -->");
-                    sb.append(endl);
-                    sb.append(endl);
-
-                    sb.append("\t<!-- Footer: Begin -->");
-                    sb.append(endl);
-                    sb.append("\t<div id=\"footer\">");
-                    sb.append(endl);
-                    sb.append("\t\t<a href=\"/index.jsp\" title=\"JustJournal.com: Online Journals\">JustJournal.com</a> ");
-                    sb.append("\t</div>");
-                    sb.append(endl);
-
-                    sb.append("\t<!-- Footer: End -->\n");
-                    sb.append(endl);
-
-                    sb.append("</body>");
-                    sb.append(endl);
-                    sb.append("</html>");
-                    sb.append(endl);
+                    if (webClient)
+                        htmlOutput(sb, userName, userID);
+                    else
+                        sb.append("JJ.JOURNAL.UPDATE.OK");
                 }
+
 
                 // output the result of our processing
                 final ServletOutputStream outstream = response.getOutputStream();
@@ -405,10 +427,13 @@ public final class updateJournal extends HttpServlet {
             }
 
         } else {
+            if (webClient)
             // We couldn't authenticate.  Tell the user.
-            webError.Display("Authentication Error",
-                    "Unable to login.  Please check your username and password.",
-                    sb);
+                webError.Display("Authentication Error",
+                        "Unable to login.  Please check your username and password.",
+                        sb);
+            else
+                sb.append("JJ.LOGIN.FAIL");
 
             // output the result of our processing
             final ServletOutputStream outstream = response.getOutputStream();
@@ -425,7 +450,7 @@ public final class updateJournal extends HttpServlet {
      * @param response servlet response
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, java.io.IOException {
+            throws java.io.IOException {
         processRequest(request, response);
     }
 
@@ -436,7 +461,7 @@ public final class updateJournal extends HttpServlet {
      * @param response servlet response
      */
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, java.io.IOException {
+            throws java.io.IOException {
         processRequest(request, response);
     }
 
