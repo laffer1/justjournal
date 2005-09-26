@@ -36,10 +36,6 @@ package com.justjournal;
 
 import org.apache.log4j.Category;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -60,21 +56,13 @@ import javax.servlet.http.HttpSession;
  *          1.3 added JJ.LOGIN.FAIL and JJ.LOGIN.OK for desktop
  *          clients.
  *          <p/>
- *          TODO CONVERT TO MAVERICK CODE
  * @since JJ 1.0
  */
-public final class loginAccount extends HttpServlet {
-    private static final char endl = '\n';
+public final class loginAccount extends JustJournalBaseServlet {
     private static Category log = Category.getInstance(loginAccount.class.getName());
     private static final String JJ_LOGIN_OK = "JJ.LOGIN.OK";
     private static final String JJ_LOGIN_FAIL = "JJ.LOGIN.FAIL";
-
-    /**
-     * Initializes the servlet.
-     */
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-    }
+    private static final String JJ_LOGIN_ERROR = "JJ.LOGIN.ERROR";  // server error
 
     private void htmlOutput(StringBuffer sb, String userName) {
         // Begin HTML document.
@@ -141,14 +129,17 @@ public final class loginAccount extends HttpServlet {
         sb.append("\t</ul>");
         sb.append(endl);
 
-        sb.append("\t<p>RSS Syndication<br /><br />");
-        sb.append("<a href=\"/users/");
+        sb.append("\t<strong>RSS Syndication</strong>>");
+        sb.append("\t<ul>");
+        sb.append(endl);
+        sb.append("<li><a href=\"/users/");
         sb.append(userName);
-        sb.append("/rss\"><img src=\"/img/v4_xml.gif\" alt=\"RSS content feed\" /> Recent</a><br />");
-        sb.append("<a href=\"/users/");
+        sb.append("/rss\"><img src=\"/img/v4_xml.gif\" alt=\"RSS content feed\" /> Recent</a></li>");
+        sb.append("<li><a href=\"/users/");
         sb.append(userName);
-        sb.append("/subscriptions\">Subscriptions</a>");
-        sb.append("\t</p>");
+        sb.append("/subscriptions\">Subscriptions</a></li>");
+        sb.append(endl);
+        sb.append("\t</ul>");
         sb.append(endl);
 
         sb.append("\t</div>");
@@ -162,7 +153,7 @@ public final class loginAccount extends HttpServlet {
         sb.append(endl);
         sb.append("\t<h2>Login</h2>");
         sb.append(endl);
-        sb.append("\t<p><strong>You are logged in as " + userName + ".</strong></p>");
+        sb.append("\t<p>You are logged in as <a href=\"/users/" + userName + "\"><img src=\"/images/user.gif\" alt=\"user\" />" + userName + "</a>.</p>");
         sb.append(endl);
         sb.append("</div>");
         sb.append(endl);
@@ -173,38 +164,24 @@ public final class loginAccount extends HttpServlet {
         sb.append(endl);
     }
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
-     *
-     * @param request  servlet request
-     * @param response servlet response
-     */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws java.io.IOException {
-        final StringBuffer sb = new StringBuffer();
-        final HttpSession session = request.getSession(true);
-
-        response.setContentType("text/html");
-        response.setDateHeader("Expires", System.currentTimeMillis());
-        response.setDateHeader("Last-Modified", System.currentTimeMillis());
-        response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
-        response.setHeader("Pragma", "no-cache");
-
+    protected void execute(HttpServletRequest request, HttpServletResponse response, HttpSession session, StringBuffer sb) {
         boolean blnError = false;
-
-        // Validate the login
         int userID;
-        String userName = request.getParameter("username").toLowerCase();
-        String password = request.getParameter("password");
-        String passwordHash = request.getParameter("password_hash").trim().toLowerCase();
-
-        String userAgent = request.getHeader("User-Agent");
+        String userName = fixInput(request, "username");
+        String password = fixInput(request, "password");
+        String passwordHash = fixInput(request, "password_hash");
+        String userAgent = fixInput(request, "User-Agent");
         boolean webClient = true;  // browser
 
-        if (userAgent != null && userAgent.indexOf("JustJournal") > -1)
+        // adjust the case
+        userName = userName.toLowerCase();
+        passwordHash = passwordHash.toLowerCase();
+
+        // validate user input
+        if (userAgent.indexOf("JustJournal") > -1)
             webClient = false; // desktop client.. win/mac
 
-        if (userName == null || userName.length() < 3) {
+        if (userName.length() < 3) {
             blnError = true;
             if (webClient)
                 webError.Display("Input Error",
@@ -214,7 +191,7 @@ public final class loginAccount extends HttpServlet {
                 sb.append(JJ_LOGIN_FAIL);
         }
 
-        if (passwordHash == null && password == null) {
+        if (passwordHash.compareTo("") == 0 && password.compareTo("") == 0) {
             blnError = true;
             if (webClient)
                 webError.Display("Input Error",
@@ -229,7 +206,7 @@ public final class loginAccount extends HttpServlet {
                 if (log.isDebugEnabled())
                     log.debug("Attempting Login Validation  ");
 
-                if (passwordHash != null && passwordHash != "") {
+                if (passwordHash != "") {
                     if (log.isDebugEnabled())
                         log.debug("Using SHA1 pass=" + passwordHash);
 
@@ -270,32 +247,7 @@ public final class loginAccount extends HttpServlet {
 
         if (log.isDebugEnabled())
             log.debug("Write out Response  ");
-        // output the result of our processing
-        final ServletOutputStream outstream = response.getOutputStream();
-        outstream.println(sb.toString());
-        outstream.flush();
-    }
 
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request  servlet request
-     * @param response servlet response
-     */
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws java.io.IOException {
-        processRequest(request, response);
-    }
-
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request  servlet request
-     * @param response servlet response
-     */
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws java.io.IOException {
-        processRequest(request, response);
     }
 
     /**
