@@ -41,7 +41,10 @@ import java.util.Calendar;
  * User: laffer1
  * Date: Jan 4, 2004
  * Time: 3:11:01 PM
- * To change this template use Options | File Templates.
+ *
+ * @author Lucas Holt
+ * @version 1.2
+ * @since 1.0
  */
 public final class DateTimeBean {
     // default is epoch -1 sec
@@ -147,8 +150,7 @@ public final class DateTimeBean {
     }
 
     public String toString() {
-        final StringBuffer sb;
-        sb = new StringBuffer();
+        final StringBuffer sb = new StringBuffer();
 
         // 2004-01-04 14:24:18
 

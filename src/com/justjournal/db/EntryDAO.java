@@ -168,9 +168,7 @@ public final class EntryDAO {
         String sqlStmt2;
         String sqlStatement;
 
-
         sqlStatement = new StringBuffer().append("SELECT us.id As id, us.username, ").append("eh.date As date, eh.subject As subject, eh.music, eh.body, ").append("mood.title As moodt, location.title As location, eh.id As entryid, ").append("eh.security as security, eh.autoformat, eh.allow_comments, eh.email_comments, location.id as locationid, mood.id as moodid ").append("FROM user As us, entry As eh, ").append("mood, location ").append("WHERE eh.id='").append(entryId).append("' AND eh.uid='").append(userId).append("' AND us.id=eh.uid AND mood.id=eh.mood AND location.id=eh.location ORDER BY eh.date DESC, eh.id DESC LIMIT 1;").toString();
-
 
         try {
             rs = SQLHelper.executeResultSet(sqlStatement);
