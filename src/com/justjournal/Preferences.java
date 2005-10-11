@@ -48,11 +48,13 @@ import sun.jdbc.rowset.CachedRowSet;
  * journal, the user must login.  Public access is denied.
  *
  * @author Lucas Holt
- * @version 1.1
+ * @version 1.2
  * @since 1.0
  *        User: laffer1
  *        Date: Jul 11, 2003
  *        Time: 10:26:17 PM
+ *        <p/>
+ *        1.2 Added email field.
  */
 
 public final class Preferences {
@@ -68,6 +70,7 @@ public final class Preferences {
     private String styleUrl = "";
     private int emoticon = 1;  // default emoticon theme
     private int startYear = 2003;
+    private String emailAddress = "";
 
     public Preferences(String userName)
             throws Exception {
@@ -81,6 +84,7 @@ public final class Preferences {
                 this.styleId = RS.getInt("style");
                 this.styleDoc = RS.getString("cssdoc");
                 this.styleUrl = RS.getString("cssurl");
+                this.emailAddress = RS.getString("email");
 
                 if (RS.getInt("since") > 2003)
                     startYear = RS.getInt("since");
@@ -184,6 +188,14 @@ public final class Preferences {
         this.startYear = startYear;
     }
 
+    public String getEmailAddress() {
+        return this.emailAddress;
+    }
+
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
+    }
+
     public void recycle() {
         name = "";
         id = 0;  // user id
@@ -193,5 +205,6 @@ public final class Preferences {
         styleDoc = "";
         styleUrl = "";
         startYear = 2003;
+        emailAddress = "";
     }
 }
