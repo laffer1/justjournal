@@ -34,6 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.ctl;
 
+import com.justjournal.Preferences;
 import com.justjournal.db.CommentDao;
 import com.justjournal.db.EntryDAO;
 import com.justjournal.db.EntryTo;
@@ -45,7 +46,6 @@ import java.util.Collection;
  * User: laffer1
  * Date: Dec 31, 2003
  * Time: 3:25:21 PM
- * To change this template use Options | File Templates.
  */
 public class ViewComment extends ControllerAuth {
 
@@ -83,6 +83,11 @@ public class ViewComment extends ControllerAuth {
         this.comments = cdao.view(entryId);
         this.entry = edao.viewSingle(entryId, false);
 
+        Preferences pf = new Preferences(entry.getUserName());
+        if (pf.isPrivateJournal())
+            this.entry = new EntryTo();  // don't show the entry if the
+        // user wnats it private.
+        // TODO: show error to user.
         return SUCCESS;
     }
 }
