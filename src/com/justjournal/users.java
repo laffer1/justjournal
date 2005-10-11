@@ -1541,7 +1541,7 @@ public final class users extends HttpServlet {
             rss.setLanguage("en-us");
             rss.setCopyright("Copyright " + calendarg.get(Calendar.YEAR) + " " + pf.getName());
             rss.setWebMaster("webmaster@justjournal.com");
-            rss.setManagingEditor(""); // TODO: get email address here
+            rss.setManagingEditor(pf.getEmailAddress());
             rss.populate(edao.view(userName, false), userName);
             sb.append(rss.toXml());
         } catch (Exception e) {
