@@ -42,6 +42,8 @@ package com.justjournal;
 
 import com.justjournal.db.CommentDao;
 import com.justjournal.db.CommentTo;
+import com.justjournal.db.EntryDAO;
+import com.justjournal.db.EntryTo;
 import com.justjournal.utility.QueueMail;
 import com.justjournal.utility.Spelling;
 
@@ -72,9 +74,7 @@ public final class addComment extends JustJournalBaseServlet {
         boolean blnError = false;
 
         int userID = 0;
-        String userName;
-
-        userName = (String) session.getAttribute("auth.user");
+        String userName = (String) session.getAttribute("auth.user");
         final Integer userIDasi = (Integer) session.getAttribute("auth.uid");
         if (userIDasi != null) {
             userID = userIDasi.intValue();
@@ -116,6 +116,14 @@ public final class addComment extends JustJournalBaseServlet {
                 java.text.SimpleDateFormat fmt = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 java.sql.Date now = new java.sql.Date(System.currentTimeMillis());
                 comment.setDate(fmt.format(now));
+
+                EntryDAO dao = new EntryDAO();
+                EntryTo et = dao.viewSingle(comment.getEid(), false);
+
+                if (et.getAllowComments() == false)
+                    webError.Display("Comments Blocked",
+                            "The owner of this entry does not want" +
+                            "any comments.", sb);
             } catch (IllegalArgumentException e) {
                 webError.Display("Input Error",
                         e.getMessage(),
@@ -150,14 +158,11 @@ public final class addComment extends JustJournalBaseServlet {
                 session.setAttribute("spell.cbody", "");
                 session.setAttribute("spell.csubject", "");
 
-
-
                 // insert header fields
                 if (blnError == false) {
 
                     try {
                         CommentDao cdao = new CommentDao();
-
                         blnError = !cdao.add(comment);
 
                     } catch (Exception e1) {
@@ -167,11 +172,22 @@ public final class addComment extends JustJournalBaseServlet {
                     }
 
                     try {
-                        QueueMail mail = new QueueMail();
+                        EntryDAO dao = new EntryDAO();
+                        EntryTo et = dao.viewSingle(comment.getEid(), false);
+                        Preferences pf = new Preferences(et.getUserName());
 
-                        mail.setFromAddress("donotreply@jusetjournal.com");
-                        mail.setToAddress("");
-                        mail.setBody("");
+                        if (et.getEmailComments()) {
+                            QueueMail mail = new QueueMail();
+                            mail.setFromAddress("donotreply@justjournal.com");
+                            mail.setToAddress(pf.getEmailAddress());
+                            mail.setBody(comment.getUserName() + " said: \n"
+                                    + comment.getBody() + "\n\n in response to:"
+                                    + "http://www.justjournal.com/users/" + et.getUserName() +
+                                    "/entry/" + comment.getEid());
+                            mail.setSubject("JustJournal: Comment Notification");
+                            mail.setPurpose("comment_notify");
+                            mail.send();
+                        }
                     } catch (Exception e) {
 
                     }
@@ -267,15 +283,13 @@ public final class addComment extends JustJournalBaseServlet {
 
                     sb.append("\t<div id=\"content\">");
                     sb.append("\t\t<h2>Add Comment</h2>");
-                    sb.append("\t\t<p><strong>Comment added sucessfully</strong></p>");
+                    sb.append("\t\t<p><strong>Comment added successfully.</strong></p>");
                     sb.append("\t</div>");
 
                     sb.append("</body>");
                     sb.append("</html>");
                 }
-
             }
-
         } else {
             // We couldn't authenticate.  Tell the user.
             webError.Display("Authentication Error",
