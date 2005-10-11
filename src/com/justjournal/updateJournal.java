@@ -53,9 +53,13 @@ import javax.servlet.http.HttpSession;
  * to the update view to make changes.
  *
  * @author Lucas Holt
- * @version 1.3
+ * @version 1.4
  * @since 1.0
  *        Created on March 23, 2003, 12:42 PM
+ *        <p/>
+ *        1.4 Changed default behavior for allow comments flag.  Assumes
+ *        the user will uncheck a box to disable comments.  auto formatting
+ *        was changed in a similar manner for usability.
  */
 public final class updateJournal extends HttpServlet {
 
@@ -322,8 +326,8 @@ public final class updateJournal extends HttpServlet {
             int mood = Integer.valueOf(request.getParameter("mood")).intValue();
             String music = request.getParameter("music");
             String aformat = request.getParameter("aformat");
-            String discomments = request.getParameter("discomments");
-            String noemail = request.getParameter("noemail");
+            String allowcomment = request.getParameter("allow_comment");
+            String emailcomment = request.getParameter("email_comment");
 
             if (music == null)
                 music = "";
@@ -340,21 +344,21 @@ public final class updateJournal extends HttpServlet {
 
                 // the check box says disable auto format
                 if (aformat != null && aformat.equals("checked"))
-                    et.setAutoFormat(false);
-                else
                     et.setAutoFormat(true);
+                else
+                    et.setAutoFormat(false);
 
                 // disable comments
-                if (discomments != null && discomments.equals("checked"))
-                    et.setAllowComments(false);
-                else
+                if (allowcomment != null && allowcomment.equals("checked"))
                     et.setAllowComments(true);
+                else
+                    et.setAllowComments(false);
 
                 // disable email notifications
-                if (noemail != null && noemail.equals("checked"))
-                    et.setEmailComments(false);
-                else
+                if (emailcomment != null && emailcomment.equals("checked"))
                     et.setEmailComments(true);
+                else
+                    et.setEmailComments(false);
 
 
             } catch (IllegalArgumentException e1) {
