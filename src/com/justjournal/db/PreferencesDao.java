@@ -42,6 +42,12 @@ import sun.jdbc.rowset.CachedRowSet;
  * User: laffer1
  * Date: Jan 16, 2004
  * Time: 12:07:17 PM
+ *
+ * @author Lucas Holt
+ * @version 1.2
+ * @since 1.0
+ *        <p/>
+ *        1.2 Altered journal preferences query to include email address field.
  */
 public class PreferencesDao {
     /**
@@ -87,9 +93,9 @@ public class PreferencesDao {
         CachedRowSet RS;
         String sqlStatement =
                 "SELECT user.name As name, user.id As id, user.since as since, up.style As style, up.allow_spider, " +
-                "up.owner_view_only, st.url as cssurl, st.doc as cssdoc " +
-                "FROM user, user_pref As up, user_style as st " +
-                "WHERE user.username='" + userName + "' AND user.id = up.id AND user.id=st.id;";
+                "up.owner_view_only, st.url as cssurl, st.doc as cssdoc, uc.email as email " +
+                "FROM user, user_pref As up, user_style as st, uc.email As email " +
+                "WHERE user.username='" + userName + "' AND user.id = up.id AND user.id=st.id AND user.id=uc.id;";
 
         try {
             RS = SQLHelper.executeResultSet(sqlStatement);

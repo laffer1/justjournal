@@ -48,6 +48,8 @@ import java.util.ArrayList;
  */
 public final class CommentDao {
 
+    private BaseDao dao = new BaseDao();
+
     /**
      * Add a comment on a journal entry
      *
@@ -55,9 +57,6 @@ public final class CommentDao {
      * @return true if no error occured.
      */
     public boolean add(final CommentTo comment) {
-        boolean noError = true;
-        int records = 0;
-
 
         final String sqlStmt =
                 "Insert INTO comments (id,uid,eid,date,subject,body) values(NULL,'"
@@ -67,17 +66,7 @@ public final class CommentDao {
                 + StringUtil.replace(comment.getSubject(), '\'', "\\\'") + "','"
                 + StringUtil.replace(comment.getBody(), '\'', "\\\'") + "');";
 
-
-        try {
-            records = SQLHelper.executeNonQuery(sqlStmt);
-        } catch (Exception e) {
-            noError = false;
-        }
-
-        if (records != 1)
-            noError = false;
-
-        return noError;
+        return dao.add(sqlStmt);
     }
 
     /**
@@ -87,8 +76,6 @@ public final class CommentDao {
      * @return true if no error occured.
      */
     public boolean update(final CommentTo comment) {
-        boolean noError = true;
-
 
         final String sqlStmt = "Update comments SET subject='" +
                 StringUtil.replace(comment.getSubject(), '\'', "\\\'")
@@ -99,20 +86,7 @@ public final class CommentDao {
                 comment.getUserId() + "' AND eid='" +
                 comment.getEid() + "' LIMIT 1;";
 
-        /*    final String sqlStmt = "Update comments SET subject='" +
-             comment.getSubject() + "' AND body='" +
-             comment.getBody() + "' WHERE id='" +
-            comment.getId() + "' AND uid='" +
-            comment.getUserId() + "' AND eid='" +
-            comment.getEid() + "' LIMIT 1;";  */
-
-        try {
-            SQLHelper.executeNonQuery(sqlStmt);
-        } catch (Exception e) {
-            noError = false;
-        }
-
-        return noError;
+        return dao.edit(sqlStmt);
     }
 
     public boolean delete(final int commentId, final int userId) {
