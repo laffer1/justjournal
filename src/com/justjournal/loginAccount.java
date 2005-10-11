@@ -129,7 +129,7 @@ public final class loginAccount extends JustJournalBaseServlet {
         sb.append("\t</ul>");
         sb.append(endl);
 
-        sb.append("\t<strong>RSS Syndication</strong>>");
+        sb.append("\t<strong>RSS Syndication</strong>");
         sb.append("\t<ul>");
         sb.append(endl);
         sb.append("<li><a href=\"/users/");

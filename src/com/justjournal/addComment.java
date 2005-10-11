@@ -45,48 +45,32 @@ import com.justjournal.db.CommentTo;
 import com.justjournal.utility.QueueMail;
 import com.justjournal.utility.Spelling;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 
 /**
+ * Adds a comment associated to a journal entry.
+ *
  * @author Lucas Holt
- * @version 1.0
+ * @version 1.1
+ * @since 1.0
+ *        <p/>
+ *        1.1  Several bugs have been reported in this code.  Switched over to JustJournalBaseServlet
+ *        class which has been tested for a few weeks.
+ *        1.0  Initial release.  Allows comments associated with a specific journal entry
+ *        to be added.
  */
 
+/*  TODO:  FIX ERROR HANDLING IF DB TABLE IS MISSING!
+    TODO:  Consider switching to maverick */
+public final class addComment extends JustJournalBaseServlet {
 
-/*  TODO:  FIX ERROR HANDLING IF DB TABLE IS MISSING!*/
-public final class addComment extends HttpServlet {
-
-    static final char endl = '\n';
-
-    /**
-     * Initializes the servlet.
-     */
-    public void init(final ServletConfig config) throws ServletException {
-        super.init(config);
-
-    }
-
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
-     *
-     * @param request  servlet request
-     * @param response servlet response
-     */
-    protected void processRequest(final HttpServletRequest request,
-                                  final HttpServletResponse response)
-            throws java.io.IOException {
+    protected void execute(HttpServletRequest request, HttpServletResponse response, HttpSession session, StringBuffer sb) {
 
         boolean blnError = false;
-        final StringBuffer sb = new StringBuffer();
 
-        // start session if one does not exist.
-        final HttpSession session = request.getSession(true);
         int userID = 0;
         String userName;
 
@@ -95,14 +79,6 @@ public final class addComment extends HttpServlet {
         if (userIDasi != null) {
             userID = userIDasi.intValue();
         }
-
-
-        // Send HTML type in http stream
-        response.setContentType("text/html");
-        response.setDateHeader("Expires", System.currentTimeMillis());
-        response.setDateHeader("Last-Modified", System.currentTimeMillis());
-        response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
-        response.setHeader("Pragma", "no-cache");
 
         // Validate the login
 
@@ -129,6 +105,9 @@ public final class addComment extends HttpServlet {
                 String body = request.getParameter("body");
                 String subject = request.getParameter("subject");
 
+                if (subject == null)
+                    subject = "No Subject";
+
                 comment.setUserId(userID);
                 comment.setEid(Integer.valueOf(request.getParameter("id")).intValue());  // entry id
                 comment.setSubject(StringUtil.replace(subject, '\'', "\\\'"));
@@ -136,7 +115,6 @@ public final class addComment extends HttpServlet {
 
                 java.text.SimpleDateFormat fmt = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 java.sql.Date now = new java.sql.Date(System.currentTimeMillis());
-
                 comment.setDate(fmt.format(now));
             } catch (IllegalArgumentException e) {
                 webError.Display("Input Error",
@@ -160,7 +138,11 @@ public final class addComment extends HttpServlet {
                 session.setAttribute("spell.csuggest", sp.checkSpelling(comment.getBody()));
 
                 // redirect the user agent to the promised land.
-                response.sendRedirect("/comment/add.jsp?id=" + comment.getEid());
+                try {
+                    response.sendRedirect("/comment/add.jsp?id=" + comment.getEid());
+                } catch (IOException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
             } else {
                 // clear out spell check variables to be safe
                 // note this might be wrong still
@@ -294,46 +276,12 @@ public final class addComment extends HttpServlet {
 
             }
 
-
-            // output the result of our processing
-            ServletOutputStream outstream = response.getOutputStream();
-            outstream.println(sb.toString());
-            outstream.flush();
-
         } else {
             // We couldn't authenticate.  Tell the user.
             webError.Display("Authentication Error",
                     "Unable to login.  Please check your username and password.",
                     sb);
-
-
-            // output the result of our processing
-            ServletOutputStream outstream = response.getOutputStream();
-            outstream.println(sb.toString());
-            outstream.flush();
         }
-    }
-
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request  servlet request
-     * @param response servlet response
-     */
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws java.io.IOException {
-        processRequest(request, response);
-    }
-
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request  servlet request
-     * @param response servlet response
-     */
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws java.io.IOException {
-        processRequest(request, response);
     }
 
     /**
