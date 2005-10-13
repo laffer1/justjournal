@@ -75,4 +75,12 @@ public class JustJournalBaseServlet extends HttpServlet {
 
         return fixed.trim();
     }
+
+    protected String fixHeaderInput(HttpServletRequest request, String input) {
+        String fixed = request.getHeader(input);
+
+        if (fixed == null)
+            fixed = "";
+        return fixed.trim();
+    }
 }
