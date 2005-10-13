@@ -170,7 +170,7 @@ public final class loginAccount extends JustJournalBaseServlet {
         String userName = fixInput(request, "username");
         String password = fixInput(request, "password");
         String passwordHash = fixInput(request, "password_hash");
-        String userAgent = fixInput(request, "User-Agent");
+        String userAgent = fixHeaderInput(request, "User-Agent");
         boolean webClient = true;  // browser
 
         // adjust the case
