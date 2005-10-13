@@ -892,7 +892,11 @@ public final class users extends HttpServlet {
                 sb.append("\"><img src=\"/images/favourites-24.png\" width=\"24\" height=\"24\" alt=\"Favorites\" /></a></td>");
                 sb.append(endl);
 
-                sb.append("<td><div align=\"right\">(");
+                sb.append("<td><div align=\"right\"><a href=\"/users/" + o.getUserName() + "/entry/");
+                sb.append(o.getId());
+                sb.append("\">entry</a> ");
+
+                sb.append("(");
 
                 switch (o.getCommentCount()) {
                     case 0:
