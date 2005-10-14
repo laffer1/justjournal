@@ -40,10 +40,9 @@ package com.justjournal;
  *
  * @author Lucas Holt
  * @version 1.0
- *          Created by IntelliJ IDEA.
- *          User: laffer1
  *          Date: Jan 4, 2004
  *          Time: 9:59:35 PM
+ * @since 1.0
  */
 public final class User {
     private String userName = "";
