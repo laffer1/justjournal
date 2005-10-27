@@ -62,10 +62,12 @@ import java.util.regex.Pattern;
 /**
  * Journal viewer for JustJournal.
  * <p/>
+ * 1.4  Code cleanup
  * 1.3 (jan 04) added more RSS Support, owner security
  *
  * @author Lucas Holt
- * @version 1.3
+ * @version 1.4
+ * @since 1.0
  */
 public final class users extends HttpServlet {
     // constants
@@ -110,10 +112,16 @@ public final class users extends HttpServlet {
         final HttpSession session = request.getSession(true);
 
         // Does a username exist in session?  i.e. are we logged in?
-        User aUser = new User(); // authenticated user
-        aUser.setUserName((String) session.getAttribute("auth.user"));
-        aUser.setUserId((Integer) session.getAttribute("auth.uid"));
+        String authUserTemp = (String) session.getAttribute("auth.user");
+        Integer authUserIdTemp = (Integer) session.getAttribute("auth.uid");
+        User aUser = null;
 
+        try {
+            aUser = new User(authUserTemp); // authenticated user
+            aUser.setUserId(authUserIdTemp);
+        } catch (Exception ex) {
+
+        }
         /*
             Get username for Journal we are trying to view/access.
         */
@@ -192,7 +200,7 @@ public final class users extends HttpServlet {
         if (RequestType == RT_RSS) {
             response.setContentType("text/xml");
 
-            if (pf.isPrivateJournal() == false || aUser.getUserName().equals(userName))
+            if (!pf.isPrivateJournal() || (aUser != null && aUser.getUserName().equals(userName)))
                 getRSS(userName, pf, sb);
             else
                 sb.append("Security restriction");
@@ -223,22 +231,24 @@ public final class users extends HttpServlet {
 
             sb.append("<head>");
             sb.append(endl);
-            if (pf.isSpiderAllowed() == false) {
+            if (!pf.isSpiderAllowed()) {
                 sb.append("\t<meta name=\"robots\" content=\"noindex, nofollow, noarchive\" />");
                 sb.append(endl);
                 sb.append("\t<meta name=\"googlebot\" content=\"nosnippet\" />");
                 sb.append(endl);
             }
-            sb.append("\t<title>" + pf.getName() + "'s Journal</title>");
+            sb.append("\t<title>").append(pf.getName()).append("'s Journal</title>");
             sb.append(endl);
 
             /* User's custom style URL.. i.e. uri to css doc outside domain */
             if (pf.getStyleUrl() != null && !pf.getStyleUrl().equals("")) {
-                sb.append("\t<link rel=\"stylesheet\" type=\"text/css\" media=\"screen\" href=\"" + pf.getStyleUrl() + "\" />");
+                sb.append("\t<link rel=\"stylesheet\" type=\"text/css\" media=\"screen\" href=\"").append(pf.getStyleUrl()).append("\" />");
                 sb.append(endl);
             } else {
                 /* use our template system instead */
-                sb.append("\t<link rel=\"stylesheet\" type=\"text/css\" media=\"screen\" href=\"/styles/" + pf.getStyleId() + ".css\" />");
+                sb.append("\t<link rel=\"stylesheet\" type=\"text/css\" media=\"screen\" href=\"/styles/");
+                sb.append(pf.getStyleId());
+                sb.append(".css\" />");
                 sb.append(endl);
             }
 
@@ -261,7 +271,7 @@ public final class users extends HttpServlet {
 
             // if the user has owner only the first check will fail
             // but if they are logged in then they can see it anyway!
-            if (pf.isPrivateJournal() == false || aUser.getUserName().equals(userName)) {
+            if (!(pf.isPrivateJournal()) || aUser != null && aUser.getUserName().equals(userName)) {
 
                 // BEGIN MENU
                 sb.append("\t<!-- Header: Begin -->");
@@ -314,7 +324,7 @@ public final class users extends HttpServlet {
                 sb.append(endl);
 
                 // Authentication menu choice
-                if (aUser.getUserId() > 0) {
+                if (aUser != null && aUser.getUserId() > 0) {
                     // User is logged in.. give them the option to log out.
                     sb.append("\t\t<a href=\"/prefs/index.jsp\">Preferences</a><br />");
                     sb.append(endl);
@@ -350,7 +360,7 @@ public final class users extends HttpServlet {
                 sb.append("\t<div id=\"content\">");
                 sb.append(endl);
 
-                if (aUser.getUserId() > 0) {
+                if (aUser != null && aUser.getUserId() > 0) {
                     sb.append("\t<p>You are logged in as <a href=\"/users/");
                     sb.append(aUser.getUserName());
                     sb.append("\"><img src=\"/images/user.gif\" alt=\"user\" />");
@@ -507,7 +517,7 @@ public final class users extends HttpServlet {
             webError.Display("Invalid Entry Id", "The entry id was invalid for the journal entry you tried to view.", sb);
         } else {
             try {
-                if (aUser.getUserName().compareTo(userName) == 0) {
+                if (aUser != null && aUser.getUserName().compareTo(userName) == 0) {
                     o = edao.viewSingle(singleEntryId, true);  // should be true
 
 
@@ -642,7 +652,7 @@ public final class users extends HttpServlet {
                     sb.append("<tr>");
                     sb.append(endl);
 
-                    if (aUser.getUserName().compareTo(userName) == 0) {
+                    if (aUser != null && aUser.getUserName().compareTo(userName) == 0) {
                         sb.append("<td width=\"30\"><a title=\"Edit Entry\" href=\"/entry/edit.h?entryId=");
                         sb.append(o.getId());
                         sb.append("\"><img src=\"/images/compose-message.png\" width=\"24\" height=\"24\" alt=\"Edit\" /></a></td>");
@@ -714,7 +724,7 @@ public final class users extends HttpServlet {
         final Collection entries;
 
         try {
-            if (aUser.getUserName().compareTo(userName) == 0) {
+            if (aUser != null && aUser.getUserName().compareTo(userName) == 0) {
                 entries = edao.view(userName, true, skip);  // should be true
 
                 if (log.isDebugEnabled())
@@ -875,7 +885,7 @@ public final class users extends HttpServlet {
                 sb.append("<tr>");
                 sb.append(endl);
 
-                if (aUser.getUserName().compareTo(userName) == 0) {
+                if (aUser != null && aUser.getUserName().compareTo(userName) == 0) {
                     sb.append("<td width=\"30\"><a title=\"Edit Entry\" href=\"/entry/edit.h?entryId=");
                     sb.append(o.getId());
                     sb.append("\"><img src=\"/images/compose-message.png\" width=\"24\" height=\"24\" alt=\"Edit\" /></a></td>");
@@ -892,7 +902,7 @@ public final class users extends HttpServlet {
                 sb.append("\"><img src=\"/images/favourites-24.png\" width=\"24\" height=\"24\" alt=\"Favorites\" /></a></td>");
                 sb.append(endl);
 
-                sb.append("<td><div align=\"right\"><a href=\"/users/" + o.getUserName() + "/entry/");
+                sb.append("<td><div align=\"right\"><a href=\"/users/").append(o.getUserName()).append("/entry/");
                 sb.append(o.getId());
                 sb.append("\">entry</a> ");
 
@@ -965,7 +975,10 @@ public final class users extends HttpServlet {
         final EntryDAO edao = new EntryDAO();
         final Collection entries;
 
-        entries = edao.viewFriends(userId, aUser.getUserId());
+        if (aUser != null)
+            entries = edao.viewFriends(userId, aUser.getUserId());
+        else
+            entries = edao.viewFriends(userId, 0);
 
         sb.append("<h2>Friends</h2>");
         sb.append(endl);
@@ -1109,7 +1122,7 @@ public final class users extends HttpServlet {
                 sb.append("<tr>");
                 sb.append(endl);
 
-                if (aUser.getUserId() == o.getUserId()) {
+                if (aUser != null && aUser.getUserId() == o.getUserId()) {
                     sb.append("<td width=\"30\"><a title=\"Edit Entry\" href=\"/entry/edit.h?entryId=");
                     sb.append(o.getId());
                     sb.append("\"><img src=\"/images/compose-message.png\" width=\"24\" height=\"24\" alt=\"Edit\" /></a></td>");
@@ -1225,7 +1238,7 @@ public final class users extends HttpServlet {
             final CachedRowSet RS;
 
             // are we logged in?
-            if (aUser.getUserName().compareTo(userName) == 0) {
+            if (aUser != null && aUser.getUserName().compareTo(userName) == 0) {
                 RS = EntryDAO.ViewCalendarYear(year, userName, true);  // should be true
             } else {
                 RS = EntryDAO.ViewCalendarYear(year, userName, false);
@@ -1278,7 +1291,7 @@ public final class users extends HttpServlet {
         try {
 
             final CachedRowSet RS;
-            if (aUser.getUserName().compareTo(userName) == 0) {
+            if (aUser != null && aUser.getUserName().compareTo(userName) == 0) {
                 RS = EntryDAO.ViewCalendarMonth(year, month, userName, true);  // should be true
             } else {
                 RS = EntryDAO.ViewCalendarMonth(year, month, userName, false);
@@ -1304,22 +1317,20 @@ public final class users extends HttpServlet {
                     curDate = formatmydate.format(currentDate);
 
                     if (curDate.compareTo(lastDate) != 0) {
-                        sb.append("<p><strong>" + curDate + "</strong></p>");
+                        sb.append("<p><strong>").append(curDate).append("</strong></p>");
                         lastDate = curDate;
                     }
 
-                    sb.append("<p><span class=\"time\">" + formatmytime.format(currentDate) +
-                            "</span> - <span class=\"subject\"><a href=\"");
+                    sb.append("<p><span class=\"time\">").append(formatmytime.format(currentDate)).append("</span> - <span class=\"subject\"><a href=\"");
 
-                    //TODO: fix bug where relative url is incorrect
-                    // Need to check if we are in a calendar state and
-                    // drop the extra parts on the request.
-                    // it is appended 08/02/08/02 etc.
+                    /*TODO: fix bug where relative url is incorrect
+                       Need to check if we are in a calendar state and
+                       drop the extra parts on the request.
+                       it is appended 08/02/08/02 etc. */
                     if (month < 10)
                         sb.append("0");
 
-                    sb.append(month + "/" + curDate + "\">" +
-                            RS.getString("subject") + "</a></span></p> ");
+                    sb.append(month).append("/").append(curDate).append("\">").append(RS.getString("subject")).append("</a></span></p> ");
                     sb.append(endl);
                 }
             }
@@ -1329,8 +1340,6 @@ public final class users extends HttpServlet {
                     "An error has occured rendering calendar.",
                     sb);
         }
-
-        return;
     }
 
     /**
@@ -1361,7 +1370,7 @@ public final class users extends HttpServlet {
 
             final CachedRowSet RS;
 
-            if (aUser.getUserName().compareTo(userName) == 0) {
+            if (aUser != null && aUser.getUserName().compareTo(userName) == 0) {
                 RS = EntryDAO.ViewCalendarDay(year, month, day, userName, true);  // should be true
             } else {
                 RS = EntryDAO.ViewCalendarDay(year, month, day, userName, false);
@@ -1442,7 +1451,7 @@ public final class users extends HttpServlet {
                     }
 
                     if (RS.getInt("locid") > 0) {
-                        sb.append("<span class=\"location\">location: " + RS.getString("location") + "</span><br />");
+                        sb.append("<span class=\"location\">location: ").append(RS.getString("location")).append("</span><br />");
                         sb.append(endl);
                     }
 
@@ -1450,17 +1459,22 @@ public final class users extends HttpServlet {
                         final EmoticonDao emot = new EmoticonDao();
                         final EmoticonTo emoto = emot.view(1, RS.getInt("moodid"));
 
-                        sb.append("<span class=\"mood\">mood: <img src=\"/images/emoticons/1/"
-                                + emoto.getFileName() + "\" width=\"" + emoto.getWidth() + "\" height=\""
-                                + emoto.getHeight() +
-                                "\" alt=\"" + RS.getString("mood") + "\" /> "
-                                + RS.getString("mood") + "</span><br />");
-
+                        sb.append("<span class=\"mood\">mood: <img src=\"/images/emoticons/1/");
+                        sb.append(emoto.getFileName());
+                        sb.append("\" width=\"");
+                        sb.append(emoto.getWidth());
+                        sb.append("\" height=\"");
+                        sb.append(emoto.getHeight());
+                        sb.append("\" alt=\"");
+                        sb.append(RS.getString("mood"));
+                        sb.append("\" /> ");
+                        sb.append(RS.getString("mood"));
+                        sb.append("</span><br />");
                         sb.append(endl);
                     }
 
                     if (RS.getString("music").length() > 0) {
-                        sb.append("<span class=\"music\">music: " + RS.getString("music") + "</span><br />");
+                        sb.append("<span class=\"music\">music: ").append(RS.getString("music")).append("</span><br />");
                         sb.append(endl);
                     }
 
@@ -1475,17 +1489,18 @@ public final class users extends HttpServlet {
                         rsComment = SQLHelper.executeResultSet(sqlStmt);
 
 
-                        if (rsComment.next()) {
+                        if (rsComment.next())
+                        {
                             switch (rsComment.getInt("comid")) {
                                 case 0:
                                     break;
                                 case 1:
-                                    sb.append("<a href=\"/comment/view.h?entryId=" + RS.getString("entryid") +
-                                            "\">1 comment</a> | ");
+                                    sb.append("<a href=\"/comment/view.h?entryId=").append(RS.getString("entryid")).append(
+                                        "\">1 comment</a> | ");
                                     break;
                                 default:
-                                    sb.append("<a href=\"/comment/view.h?entryId=" + RS.getString("entryid") + "\">" +
-                                            rsComment.getInt("comid") + " comments</a> | ");
+                                    sb.append("<a href=\"/comment/view.h?entryId=").append(RS.getString("entryid") + "\">").append(
+                                        rsComment.getInt("comid")).append(" comments</a> | ");
                             }
                         }
                         rsComment.close();
@@ -1496,8 +1511,9 @@ public final class users extends HttpServlet {
                         if (rsComment != null)
                             rsComment.close();
                     }
-                    sb.append("<a href=\"/comment/add.jsp?id=" + RS.getString("entryid") +
-                            "\">comment on this</a>)</p>");
+                    sb.append("<a href=\"/comment/add.jsp?id=");
+                    sb.append(RS.getString("entryid"));
+                    sb.append("\">comment on this</a>)</p>");
                     sb.append(endl);
 
                     sb.append("</div>");
@@ -1514,8 +1530,6 @@ public final class users extends HttpServlet {
                     "An error has occured rendering calendar.",
                     sb);
         }
-
-        return;
     }
 
     /**
