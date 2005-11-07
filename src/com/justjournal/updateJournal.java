@@ -53,9 +53,11 @@ import javax.servlet.http.HttpSession;
  * to the update view to make changes.
  *
  * @author Lucas Holt
- * @version 1.4
+ * @version 1.4.1
  * @since 1.0
  *        Created on March 23, 2003, 12:42 PM
+ *        <p/>
+ *        1.4.1 Introduced some bug fixes with null handling.
  *        <p/>
  *        1.4 Changed default behavior for allow comments flag.  Assumes
  *        the user will uncheck a box to disable comments.  auto formatting
@@ -94,7 +96,7 @@ public final class updateJournal extends HttpServlet {
 
         sb.append("<head>");
         sb.append(endl);
-        if (pf.isSpiderAllowed() == false) {
+        if (!pf.isSpiderAllowed()) {
             sb.append("\t<meta name=\"robots\" content=\"noindex, nofollow, noarchive\" />");
             sb.append(endl);
             sb.append("\t<meta name=\"googlebot\" content=\"nosnippet\" />");
@@ -113,7 +115,7 @@ public final class updateJournal extends HttpServlet {
             sb.append(endl);
         } else {
             /* use our template system instead */
-            sb.append("\t<link rel=\"stylesheet\" type=\"text/css\" media=\"screen\" href=\"/styles/" + pf.getStyleId() + ".css\" />");
+            sb.append("\t<link rel=\"stylesheet\" type=\"text/css\" media=\"screen\" href=\"/styles/").append(pf.getStyleId()).append(".css\" />");
             sb.append(endl);
         }
 
@@ -159,13 +161,13 @@ public final class updateJournal extends HttpServlet {
         sb.append(userName);
         sb.append("\">recent entries</a><br />");
         sb.append(endl);
-        sb.append("\t\t<a href=\"/users/" + userName + "/calendar\">Calendar</a><br />");
+        sb.append("\t\t<a href=\"/users/").append(userName).append("/calendar\">Calendar</a><br />");
         sb.append(endl);
-        sb.append("\t\t<a href=\"/users/" + userName + "/friends\">Friends</a><br />");
+        sb.append("\t\t<a href=\"/users/").append(userName).append("/friends\">Friends</a><br />");
         sb.append(endl);
-        sb.append("\t\t<a href=\"/users/" + userName + "/ljfriends\">LJ Friends</a><br />");
+        sb.append("\t\t<a href=\"/users/").append(userName).append("/ljfriends\">LJ Friends</a><br />");
         sb.append(endl);
-        sb.append("\t\t<a href=\"/profile.jsp?user=" + userName + "\">Profile</a><br />");
+        sb.append("\t\t<a href=\"/profile.jsp?user=").append(userName).append("\">Profile</a><br />");
         sb.append(endl);
         sb.append("\t</p>");
         sb.append(endl);
@@ -213,7 +215,7 @@ public final class updateJournal extends HttpServlet {
         sb.append(endl);
 
         if (userID > 0) {
-            sb.append("\t<p>You are logged in as <a href=\"/users/" + userName + "\"><img src=\"/images/user.gif\" alt=\"user\" />" + userName + "</a>.</p>");
+            sb.append("\t<p>You are logged in as <a href=\"/users/").append(userName).append("\"><img src=\"/images/user.gif\" alt=\"user\" />").append(userName).append("</a>.</p>");
             sb.append(endl);
         }
 
@@ -224,7 +226,9 @@ public final class updateJournal extends HttpServlet {
         sb.append(endl);
         sb.append("\t\t<p><a href=\"/update.jsp\">Add another entry</a></p>");
         sb.append(endl);
-        sb.append("\t\t<p><a href=\"/users/" + userName + "\">View journal</a></p>");
+        sb.append("\t\t<p><a href=\"/users/");
+        sb.append(userName);
+        sb.append("\">View journal</a></p>");
         sb.append(endl);
 
         sb.append("\t</div>");
@@ -288,7 +292,7 @@ public final class updateJournal extends HttpServlet {
             response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
             response.setHeader("Pragma", "no-cache");
         } else {
-            response.setContentType("text/xml");
+            response.setContentType("text/plain");
             response.setDateHeader("Expires", System.currentTimeMillis());
             response.setDateHeader("Last-Modified", System.currentTimeMillis());
         }
@@ -296,11 +300,16 @@ public final class updateJournal extends HttpServlet {
         // Validate the login
         if (userID < 1) {
             try {
-                userName = request.getParameter("user").toLowerCase();
+                userName = request.getParameter("user");
+                if (userName != null)
+                    userName = userName.toLowerCase();
                 String password = request.getParameter("pass");
                 userID = webLogin.validate(userName, password);
 
-                if (request.getParameter("keeplogin").compareTo("checked") == 0) {
+                String keepLogin = request.getParameter("keeplogin");
+                if (keepLogin == null)
+                    keepLogin = "";
+                if (keepLogin.compareTo("checked") == 0) {
                     session.setAttribute("auth.uid", new Integer(userID));
                     session.setAttribute("auth.user", userName);
                 }
@@ -331,6 +340,17 @@ public final class updateJournal extends HttpServlet {
 
             if (music == null)
                 music = "";
+            if (aformat == null)
+                aformat = "";
+            if (allowcomment == null)
+                allowcomment = "";
+            if (emailcomment == null)
+                emailcomment = "";
+
+            music = music.trim();
+            aformat = aformat.trim();
+            allowcomment = allowcomment.trim();
+            emailcomment = emailcomment.trim();
 
             try {
                 et.setUserId(userID);
@@ -404,11 +424,11 @@ public final class updateJournal extends HttpServlet {
                 session.setAttribute("spell.mood", new Integer(0));
 
                 // insert header fields
-                if (blnError == false) {
+                if (!blnError) {
                     EntryDAO edao = new EntryDAO();
                     boolean result = edao.add(et);
 
-                    if (result == false)
+                    if (!result)
                         if (webClient)
                             webError.Display("Error", "Error adding the journal entry", sb);
                         else
@@ -416,7 +436,7 @@ public final class updateJournal extends HttpServlet {
                 }
 
                 // display message to user.
-                if (blnError == false) {
+                if (!blnError) {
                     if (webClient)
                         htmlOutput(sb, userName, userID);
                     else
