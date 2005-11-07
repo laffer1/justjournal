@@ -85,7 +85,9 @@ public final class addComment extends JustJournalBaseServlet {
         if (userID < 1) {
 
             try {
-                userName = request.getParameter("username").toLowerCase();
+                userName = request.getParameter("username");
+                if (userName != null)
+                    userName = userName.toLowerCase();
                 String password = request.getParameter("password");
                 userID = webLogin.validate(userName, password);
             } catch (Exception e3) {
@@ -120,7 +122,7 @@ public final class addComment extends JustJournalBaseServlet {
                 EntryDAO dao = new EntryDAO();
                 EntryTo et = dao.viewSingle(comment.getEid(), false);
 
-                if (et.getAllowComments() == false)
+                if (!et.getAllowComments())
                     webError.Display("Comments Blocked",
                             "The owner of this entry does not want" +
                             "any comments.", sb);
@@ -149,7 +151,9 @@ public final class addComment extends JustJournalBaseServlet {
                 try {
                     response.sendRedirect("/comment/add.jsp?id=" + comment.getEid());
                 } catch (IOException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    webError.Display("Redirect error",
+                        e.getMessage(),
+                        sb);
                 }
             } else {
                 // clear out spell check variables to be safe
@@ -159,7 +163,7 @@ public final class addComment extends JustJournalBaseServlet {
                 session.setAttribute("spell.csubject", "");
 
                 // insert header fields
-                if (blnError == false) {
+                if (!blnError) {
 
                     try {
                         CommentDao cdao = new CommentDao();
@@ -194,7 +198,7 @@ public final class addComment extends JustJournalBaseServlet {
                 }
 
                 // display message to user.
-                if (blnError == false) {
+                if (!blnError) {
                     // Begin HTML document.
                     sb.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"  \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">");
                     sb.append(endl);
@@ -239,15 +243,15 @@ public final class addComment extends JustJournalBaseServlet {
 
                     sb.append("\t<p id=\"muser\">");
                     sb.append(endl);
-                    sb.append("\t\t<a href=\"/users/" + userName + "\">recent entries</a><br />");
+                    sb.append("\t\t<a href=\"/users/").append(userName).append("\">recent entries</a><br />");
                     sb.append(endl);
-                    sb.append("\t\t<a href=\"/users/" + userName + "/calendar\">Calendar</a><br />");
+                    sb.append("\t\t<a href=\"/users/").append(userName).append("/calendar\">Calendar</a><br />");
                     sb.append(endl);
-                    sb.append("\t\t<a href=\"/users/" + userName + "/friends\">Friends</a><br />");
+                    sb.append("\t\t<a href=\"/users/").append(userName).append("/friends\">Friends</a><br />");
                     sb.append(endl);
-                    sb.append("\t\t<a href=\"/users/" + userName + "/ljfriends\">LJ Friends</a><br />");
+                    sb.append("\t\t<a href=\"/users/").append(userName).append("/ljfriends\">LJ Friends</a><br />");
                     sb.append(endl);
-                    sb.append("\t\t<a href=\"/profile.jsp?user=" + userName + "\">Profile</a><br />");
+                    sb.append("\t\t<a href=\"/profile.jsp?user=").append(userName).append("\">Profile</a><br />");
                     sb.append(endl);
                     sb.append("\t</p>");
                     sb.append(endl);
@@ -273,7 +277,7 @@ public final class addComment extends JustJournalBaseServlet {
                     sb.append("\t</p>");
                     sb.append(endl);
 
-                    sb.append("\t<p><a href=\"/users/" + userName + "/rss\"><img src=\"/img/v4_xml.gif\" alt=\"RSS content feed\" /></a></p>");
+                    sb.append("\t<p><a href=\"/users/").append(userName).append("/rss\"><img src=\"/img/v4_xml.gif\" alt=\"RSS content feed\" /></a></p>");
                     sb.append(endl);
 
                     sb.append("\t</div>");
