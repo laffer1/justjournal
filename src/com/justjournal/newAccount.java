@@ -111,7 +111,7 @@ public final class newAccount extends HttpServlet {
             webError.Display("Input Error",
                     "e-mail address must be valid.",
                     out);
-        } else if (StringUtil.isEmailValid(email) == false) {
+        } else if (!StringUtil.isEmailValid(email)) {
             blnError = true;
             webError.Display("Input Error",
                     "e-mail address must be valid.",
@@ -133,7 +133,7 @@ public final class newAccount extends HttpServlet {
         }
 
 
-        if (blnError == false) {
+        if (!blnError) {
             // add user sql
             String SqlStatement = "Insert INTO user (username,password,name) VALUES('" + username + "',sha1('" + password + "'),'" + fname + "');";
             String SqlStatement3 = "SELECT id FROM user WHERE username='" + username + "' LIMIT 1;";

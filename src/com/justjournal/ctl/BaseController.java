@@ -2,6 +2,8 @@ package com.justjournal.ctl;
 
 import com.justjournal.db.ResourcesDAO;
 import com.justjournal.db.ResourceTo;
+import com.justjournal.db.ContentTo;
+import com.justjournal.db.ContentDao;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.ServletConfig;
@@ -11,6 +13,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * User: laffer1
@@ -44,12 +48,40 @@ public class BaseController extends HttpServlet {
 
         if (res == null) {
             // return 404
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, "There is no such file \"" + path + "\".");
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, path );
 
         } else {
             if (res.getActive() == false) {
-                response.sendError(HttpServletResponse.SC_NOT_FOUND, "There is no such file \"" + path + "\".");
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, path );
             } else {
+
+                ContentDao con = new ContentDao();
+                ArrayList contents = con.view(res.getId());
+
+                final Iterator itr = contents.iterator();
+                ContentTo o = null;
+
+            for (int i = 0, n = contents.size(); i < n; i++) {
+                o = (ContentTo) itr.next();
+
+                if ( o.getPreferred() == true)
+                    break;
+
+            }
+                if ( o != null)  {
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    response.setContentType(o.getMimeType());
+                    response.setDateHeader("Expires", System.currentTimeMillis());
+                    response.setDateHeader("Last-Modified", System.currentTimeMillis());
+
+                    final ServletOutputStream outstream = response.getOutputStream();
+                    outstream.write(o.getData());
+                    outstream.flush();
+                } else {
+                    response.sendError(HttpServletResponse.SC_NOT_FOUND, path);
+                }
+
+
                 // TODO: add security
                 // PUBLIC = 2, PRIVATE = 0, FRIENDS = 1
                 if (res.getSecurityLevel() == 2) {
@@ -57,7 +89,7 @@ public class BaseController extends HttpServlet {
                 } else if (res.getSecurityLevel() == 1) {
 
                 } else {
-                    // private
+                    // private add forbidden message? or user handling?
 
                 }
             }

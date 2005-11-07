@@ -62,7 +62,7 @@ public final class loginAccount extends JustJournalBaseServlet {
     private static Category log = Category.getInstance(loginAccount.class.getName());
     private static final String JJ_LOGIN_OK = "JJ.LOGIN.OK";
     private static final String JJ_LOGIN_FAIL = "JJ.LOGIN.FAIL";
-    private static final String JJ_LOGIN_ERROR = "JJ.LOGIN.ERROR";  // server error
+    //private static final String JJ_LOGIN_ERROR = "JJ.LOGIN.ERROR";  // server error
 
     private void htmlOutput(StringBuffer sb, String userName) {
         // Begin HTML document.
@@ -104,13 +104,13 @@ public final class loginAccount extends JustJournalBaseServlet {
 
         sb.append("\t<ul>");
         sb.append(endl);
-        sb.append("\t\t<li><a href=\"/users/" + userName + "\">recent entries</a></li>");
+        sb.append("\t\t<li><a href=\"/users/").append(userName).append("\">recent entries</a></li>");
         sb.append(endl);
-        sb.append("\t\t<li><a href=\"/users/" + userName + "/calendar\">Calendar</a></li>");
+        sb.append("\t\t<li><a href=\"/users/").append(userName).append("/calendar\">Calendar</a></li>");
         sb.append(endl);
-        sb.append("\t\t<li><a href=\"/users/" + userName + "/friends\">Friends</a></li>");
+        sb.append("\t\t<li><a href=\"/users/").append(userName).append("/friends\">Friends</a></li>");
         sb.append(endl);
-        sb.append("\t\t<li><a href=\"/profile.jsp?user=" + userName + "\">Profile</a></li>");
+        sb.append("\t\t<li><a href=\"/profile.jsp?user=").append(userName).append("\">Profile</a></li>");
         sb.append(endl);
         sb.append("\t</ul>");
         sb.append(endl);
@@ -153,7 +153,7 @@ public final class loginAccount extends JustJournalBaseServlet {
         sb.append(endl);
         sb.append("\t<h2>Login</h2>");
         sb.append(endl);
-        sb.append("\t<p>You are logged in as <a href=\"/users/" + userName + "\"><img src=\"/images/user.gif\" alt=\"user\" />" + userName + "</a>.</p>");
+        sb.append("\t<p>You are logged in as <a href=\"/users/").append(userName).append("\"><img src=\"/images/user.gif\" alt=\"user\" />").append(userName).append("</a>.</p>");
         sb.append(endl);
         sb.append("</div>");
         sb.append(endl);
@@ -173,13 +173,21 @@ public final class loginAccount extends JustJournalBaseServlet {
         String userAgent = fixHeaderInput(request, "User-Agent");
         boolean webClient = true;  // browser
 
+
         // adjust the case
         userName = userName.toLowerCase();
         passwordHash = passwordHash.toLowerCase();
 
         // validate user input
-        if (userAgent.indexOf("JustJournal") > -1)
-            webClient = false; // desktop client.. win/mac
+        if (userAgent.toLowerCase().indexOf("justjournal") > -1)
+            webClient = false; // desktop client.. win/mac/java
+
+        if (log.isDebugEnabled())
+        {
+            log.debug("User Agent is: " + userAgent + endl);
+            log.debug("Is web client? " + webClient + endl);
+        }
+
 
         if (userName.length() < 3) {
             blnError = true;
@@ -201,12 +209,12 @@ public final class loginAccount extends JustJournalBaseServlet {
                 sb.append(JJ_LOGIN_FAIL);
         }
 
-        if (blnError == false) {
+        if (!blnError) {
             try {
                 if (log.isDebugEnabled())
                     log.debug("Attempting Login Validation  ");
 
-                if (passwordHash != "") {
+                if (passwordHash.compareTo("") != 0) {
                     if (log.isDebugEnabled())
                         log.debug("Using SHA1 pass=" + passwordHash);
 

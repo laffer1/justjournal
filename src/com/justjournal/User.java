@@ -34,6 +34,9 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal;
 
+import com.justjournal.db.UserDao;
+import com.justjournal.db.UserTo;
+
 /**
  * Represents a user's basic credentals including userId and
  * userName.
@@ -51,6 +54,39 @@ public final class User {
     private String firstName = ""; // real name
     private int since = 2003;  // starting year for account
     private Preferences preferences = null;
+
+    public User(String userName)
+    {
+        setUserName(userName);
+
+        UserDao ud = new UserDao();
+        UserTo ut = ud.view(userName);
+
+        setUserId(ut.getId());
+        setFirstName(ut.getName());
+
+    }
+
+    public User(int userId)
+    {
+        setUserId(userId);
+        
+        UserDao ud = new UserDao();
+        UserTo ut = ud.view(userId);
+
+        setUserName(ut.getUserName());
+        setFirstName(ut.getName());
+    }
+
+    public User(Integer userId)
+    {
+        setUserId(userId);
+    }
+
+    public User()
+    {
+
+    }
 
     /**
      * Retrieve the username associated with this user.
@@ -134,6 +170,8 @@ public final class User {
      */
     public void setType(final int type)
     {
+        if (type < 0)
+            throw new IllegalArgumentException("type must be greater than or equal to zero.");
         this.type = type;
     }
 
@@ -156,6 +194,15 @@ public final class User {
      */
     public void setFirstName(final String firstName)
     {
+        if (firstName == null)
+            throw new IllegalArgumentException("first name can not bell null.");
+
+        if (firstName.length() > 20)
+            throw new IllegalArgumentException("first name can not be longer than 20 characters.");
+
+        if (firstName.length() < 2)
+            throw new IllegalArgumentException("first name must be at least 2 characters.");
+
         this.firstName = firstName;
     }
 
@@ -181,6 +228,9 @@ public final class User {
      */
     public void setSince(final int since)
     {
+        if (since < 2003)
+            throw new IllegalArgumentException("Since must be at least the year 2003.");
+
         this.since = since;
     }
 
@@ -192,8 +242,8 @@ public final class User {
     public Preferences getPreferences()
     {
         try {
-        if (preferences == null)
-            preferences = new Preferences(userName);
+            if (preferences == null)
+                preferences = new Preferences(userName);
         } catch (Exception e) {
             preferences = null;
         }
