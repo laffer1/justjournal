@@ -493,7 +493,7 @@ public final class updateJournal extends HttpServlet {
      * Returns a short description of the servlet.
      */
     public String getServletInfo() {
-        return "adds a journal entry";
+        return "add a journal entry";
     }
 
 }

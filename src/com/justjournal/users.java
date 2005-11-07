@@ -1499,7 +1499,7 @@ public final class users extends HttpServlet {
                                         "\">1 comment</a> | ");
                                     break;
                                 default:
-                                    sb.append("<a href=\"/comment/view.h?entryId=").append(RS.getString("entryid") + "\">").append(
+                                    sb.append("<a href=\"/comment/view.h?entryId=").append(RS.getString("entryid")).append( "\">").append(
                                         rsComment.getInt("comid")).append(" comments</a> | ");
                             }
                         }

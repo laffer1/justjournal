@@ -53,7 +53,7 @@ public final class webLogin {
      *
      * @param UserName
      * @param Password
-     * @return
+     * @return userid of the user who logged in or 0 if the login failed.
      */
     public static final int validate(final String UserName, final String Password) {
         // the password is SHA1 encrypted in the sql server
@@ -120,7 +120,7 @@ public final class webLogin {
      * @param userName
      * @param password
      * @param newPass
-     * @return
+     * @return true if the password change worked.
      */
     public static final boolean changePass(final String userName,
                                            final String password,

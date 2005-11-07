@@ -79,7 +79,7 @@ public final class webError {
         sb.append("<body style=\"margin: 0;\">\n");
 
         sb.append("<div style=\"width: 100%; height: 100px; margin-top: 1in; margin-left: 0; margin-right: 0; position relative; text-align: center; background: orange; color: white;\">\n");
-        sb.append("<h1 style=\"font: 72pt Arial, Helvetica, sans-serif; letter-spacing: .2in;\">" + ErrTitle + "</h1>\n");
+        sb.append("<h1 style=\"font: 72pt Arial, Helvetica, sans-serif; letter-spacing: .2in;\">").append(ErrTitle).append("</h1>\n");
         sb.append("</div>\n");
 
         sb.append("<div style=\"margin: 1in; font: 12pt Arial, Helvetica, sans-serif;\">\n");
