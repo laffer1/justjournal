@@ -112,8 +112,9 @@ public final class addComment extends JustJournalBaseServlet {
 
                 comment.setUserId(userID);
                 comment.setEid(Integer.valueOf(request.getParameter("id")).intValue());  // entry id
-                comment.setSubject(StringUtil.replace(subject, '\'', "\\\'"));
-                comment.setBody(StringUtil.replace(body, '\'', "\\\'"));
+                // ' tick escaping done in comment DAO layer for subject and body.
+                comment.setSubject(subject);
+                comment.setBody(body);
 
                 java.text.SimpleDateFormat fmt = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 java.sql.Date now = new java.sql.Date(System.currentTimeMillis());
@@ -123,15 +124,20 @@ public final class addComment extends JustJournalBaseServlet {
                 EntryTo et = dao.viewSingle(comment.getEid(), false);
 
                 if (!et.getAllowComments())
+                {
                     webError.Display("Comments Blocked",
                             "The owner of this entry does not want" +
                             "any comments.", sb);
+                    blnError = true;
+                }
             } catch (IllegalArgumentException e) {
                 webError.Display("Input Error",
                         e.getMessage(),
                         sb);
             }
 
+
+            if (blnError) {
             String isSpellCheck = request.getParameter("spellcheck");
             if (isSpellCheck == null)
                 isSpellCheck = "";
@@ -196,7 +202,7 @@ public final class addComment extends JustJournalBaseServlet {
 
                     }
                 }
-
+            }
                 // display message to user.
                 if (!blnError) {
                     // Begin HTML document.
@@ -218,72 +224,78 @@ public final class addComment extends JustJournalBaseServlet {
 
                     sb.append("<body>\n");
 
-                    sb.append("<div id=\"login\" style=\"color: silver; font-weight: bold;\">");
-                    sb.append("<img src=\"/images/jj-pencil.gif\" alt=\"jj pencil\" style=\"float: left;\" />");
-                    sb.append("</div>");
-                    sb.append(endl);
+        // BEGIN MENU
+        sb.append("\t<!-- Header: Begin -->");
+        sb.append(endl);
+        sb.append("\t\t<div id=\"header\">");
+        sb.append(endl);
+        sb.append("\t\t<h1>");
+        //sb.append(pf.getName());
+        sb.append("'s Journal</h1>");
+        sb.append(endl);
+        sb.append("\t</div>");
+        sb.append(endl);
+        sb.append("\t<!-- Header: End -->\n");
+        sb.append(endl);
 
+        sb.append("\t<!-- Menu: Begin -->");
+        sb.append(endl);
+        sb.append("\t<div id=\"menu\">");
+        sb.append(endl);
 
-                    // BEGIN MENU
-                    sb.append("\t<!-- Header: Begin -->");
-                    sb.append(endl);
-                    sb.append("\t\t<div id=\"header\">");
-                    sb.append(endl);
-                    sb.append("\t\t<h1>JustJournal.com</h1>");
-                    sb.append(endl);
-                    sb.append("\t</div>");
-                    sb.append(endl);
-                    sb.append("\t<!-- Header: End -->\n");
-                    sb.append(endl);
+        sb.append("\t<p id=\"muser\">");
+        sb.append(endl);
+        sb.append("\t\t<a href=\"/users/");
+        sb.append(userName);
+        sb.append("\">recent entries</a><br />");
+        sb.append(endl);
+        sb.append("\t\t<a href=\"/users/").append(userName).append("/calendar\">Calendar</a><br />");
+        sb.append(endl);
+        sb.append("\t\t<a href=\"/users/").append(userName).append("/friends\">Friends</a><br />");
+        sb.append(endl);
+        sb.append("\t\t<a href=\"/users/").append(userName).append("/ljfriends\">LJ Friends</a><br />");
+        sb.append(endl);
+        sb.append("\t\t<a href=\"/profile.jsp?user=").append(userName).append("\">Profile</a><br />");
+        sb.append(endl);
+        sb.append("\t</p>");
+        sb.append(endl);
 
-                    sb.append("\t<!-- Menu: Begin -->");
-                    sb.append(endl);
-                    sb.append("\t<div id=\"menu\">");
-                    sb.append(endl);
+        // General stuff...
+        sb.append("\t<p id=\"mgen\">");
+        sb.append(endl);
+        sb.append("\t\t<a href=\"/update.jsp\">Update Journal</a><br />");
+        sb.append(endl);
 
-                    sb.append("\t<p id=\"muser\">");
-                    sb.append(endl);
-                    sb.append("\t\t<a href=\"/users/").append(userName).append("\">recent entries</a><br />");
-                    sb.append(endl);
-                    sb.append("\t\t<a href=\"/users/").append(userName).append("/calendar\">Calendar</a><br />");
-                    sb.append(endl);
-                    sb.append("\t\t<a href=\"/users/").append(userName).append("/friends\">Friends</a><br />");
-                    sb.append(endl);
-                    sb.append("\t\t<a href=\"/users/").append(userName).append("/ljfriends\">LJ Friends</a><br />");
-                    sb.append(endl);
-                    sb.append("\t\t<a href=\"/profile.jsp?user=").append(userName).append("\">Profile</a><br />");
-                    sb.append(endl);
-                    sb.append("\t</p>");
-                    sb.append(endl);
+        // Authentication menu choice
+        if (userID > 0) {
+            // User is logged in.. give them the option to log out.
+            sb.append("\t\t<a href=\"/prefs/index.jsp\">Preferences</a><br />");
+            sb.append(endl);
+            sb.append("\t\t<a href=\"/logout.jsp\">Log Out</a>");
+            sb.append(endl);
+        } else {
+            // User is logged out.. give then the option to login.
+            sb.append("\t\t<a href=\"/login.jsp\">Login</a>");
+            sb.append(endl);
+        }
+        sb.append("\t</p>");
+        sb.append(endl);
 
-                    // General stuff...
-                    sb.append("\t<p id=\"mgen\">");
-                    sb.append(endl);
-                    sb.append("\t\t<a href=\"/update.jsp\">Update Journal</a><br />");
-                    sb.append(endl);
+        sb.append("\t<p>RSS Syndication<br /><br />");
+        sb.append("<a href=\"/users/");
+        sb.append(userName);
+        sb.append("/rss\"><img src=\"/img/v4_xml.gif\" alt=\"RSS content feed\" /> Recent</a><br />");
+        sb.append("<a href=\"/users/");
+        sb.append(userName);
+        sb.append("/subscriptions\">Subscriptions</a>");
+        sb.append("\t</p>");
+        sb.append(endl);
 
-                    // Authentication menu choice
-                    if (userID > 0) {
-                        // User is logged in.. give them the option to log out.
-                        sb.append("\t\t<a href=\"/prefs/index.jsp\">Preferences</a><br />");
-                        sb.append(endl);
-                        sb.append("\t\t<a href=\"/logout.jsp\">Log Out</a>");
-                        sb.append(endl);
-                    } else {
-                        // User is logged out.. give then the option to login.
-                        sb.append("\t\t<a href=\"/login.jsp\">Login</a>");
-                        sb.append(endl);
-                    }
-                    sb.append("\t</p>");
-                    sb.append(endl);
-
-                    sb.append("\t<p><a href=\"/users/").append(userName).append("/rss\"><img src=\"/img/v4_xml.gif\" alt=\"RSS content feed\" /></a></p>");
-                    sb.append(endl);
-
-                    sb.append("\t</div>");
-                    sb.append(endl);
-                    sb.append("\t<!-- Menu: End -->\n");
-                    sb.append(endl);
+        sb.append("\t</div>");
+        sb.append(endl);
+        sb.append("\t<!-- Menu: End -->\n");
+        sb.append(endl);
+        // END MENU
 
                     sb.append("\t<div id=\"content\">");
                     sb.append("\t\t<h2>Add Comment</h2>");
