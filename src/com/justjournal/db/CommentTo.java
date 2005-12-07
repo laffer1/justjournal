@@ -108,11 +108,6 @@ public class CommentTo {
     public void setSubject(String subject)
             throws IllegalArgumentException {
 
-        /* Allow open subjects
-        if (subject.length() < 2)
-            throw new IllegalArgumentException("Illegal subject: " +
-                    subject); */
-
         if (subject.length() == 0)
             this.subject = "(no subject)";
         else
