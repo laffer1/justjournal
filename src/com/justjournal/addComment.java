@@ -56,9 +56,12 @@ import java.io.IOException;
  * Adds a comment associated to a journal entry.
  *
  * @author Lucas Holt
- * @version 1.1
+ * @version 1.2
  * @since 1.0
  *        <p/>
+ *        1.2  Comments weren't posting properly.  It appears a ! was missing in one of
+ *             the error handling blocks.  Also reformatted the code to make that
+ *             section more readable.
  *        1.1  Several bugs have been reported in this code.  Switched over to JustJournalBaseServlet
  *        class which has been tested for a few weeks.
  *        1.0  Initial release.  Allows comments associated with a specific journal entry
@@ -123,11 +126,10 @@ public final class addComment extends JustJournalBaseServlet {
                 EntryDAO dao = new EntryDAO();
                 EntryTo et = dao.viewSingle(comment.getEid(), false);
 
-                if (!et.getAllowComments())
-                {
+                if (!et.getAllowComments()) {
                     webError.Display("Comments Blocked",
                             "The owner of this entry does not want" +
-                            "any comments.", sb);
+                                    "any comments.", sb);
                     blnError = true;
                 }
             } catch (IllegalArgumentException e) {
@@ -136,73 +138,72 @@ public final class addComment extends JustJournalBaseServlet {
                         sb);
             }
 
+            if (!blnError) {
+                String isSpellCheck = request.getParameter("spellcheck");
+                if (isSpellCheck == null)
+                    isSpellCheck = "";
 
-            if (blnError) {
-            String isSpellCheck = request.getParameter("spellcheck");
-            if (isSpellCheck == null)
-                isSpellCheck = "";
+                if (isSpellCheck.compareTo("checked") == 0) {
+                    Spelling sp = new Spelling();
 
-            if (isSpellCheck.compareTo("checked") == 0) {
-                Spelling sp = new Spelling();
+                    // store everything
+                    session.setAttribute("spell.ccheck", "true");
+                    session.setAttribute("spell.cbody", comment.getBody());
+                    session.setAttribute("spell.csubject", comment.getSubject());
 
-                // store everything
-                session.setAttribute("spell.ccheck", "true");
-                session.setAttribute("spell.cbody", comment.getBody());
-                session.setAttribute("spell.csubject", comment.getSubject());
+                    //check the spelling now
+                    session.setAttribute("spell.csuggest", sp.checkSpelling(comment.getBody()));
 
-                //check the spelling now
-                session.setAttribute("spell.csuggest", sp.checkSpelling(comment.getBody()));
-
-                // redirect the user agent to the promised land.
-                try {
-                    response.sendRedirect("/comment/add.jsp?id=" + comment.getEid());
-                } catch (IOException e) {
-                    webError.Display("Redirect error",
-                        e.getMessage(),
-                        sb);
-                }
-            } else {
-                // clear out spell check variables to be safe
-                // note this might be wrong still
-                session.setAttribute("spell.ccheck", ""); //false
-                session.setAttribute("spell.cbody", "");
-                session.setAttribute("spell.csubject", "");
-
-                // insert header fields
-                if (!blnError) {
-
+                    // redirect the user agent to the promised land.
                     try {
-                        CommentDao cdao = new CommentDao();
-                        blnError = !cdao.add(comment);
-
-                    } catch (Exception e1) {
-                        blnError = true;
-                        webError.Display("Error", "Error adding comment", sb);
-                        //out.println( e1.getMessage() );
+                        response.sendRedirect("/comment/add.jsp?id=" + comment.getEid());
+                    } catch (IOException e) {
+                        webError.Display("Redirect error",
+                                e.getMessage(),
+                                sb);
                     }
+                } else {
+                    // clear out spell check variables to be safe
+                    // note this might be wrong still
+                    session.setAttribute("spell.ccheck", ""); //false
+                    session.setAttribute("spell.cbody", "");
+                    session.setAttribute("spell.csubject", "");
 
-                    try {
-                        EntryDAO dao = new EntryDAO();
-                        EntryTo et = dao.viewSingle(comment.getEid(), false);
-                        Preferences pf = new Preferences(et.getUserName());
+                    // insert header fields
+                    if (!blnError) {
 
-                        if (et.getEmailComments()) {
-                            QueueMail mail = new QueueMail();
-                            mail.setFromAddress("donotreply@justjournal.com");
-                            mail.setToAddress(pf.getEmailAddress());
-                            mail.setBody(comment.getUserName() + " said: \n"
-                                    + comment.getBody() + "\n\n in response to:"
-                                    + "http://www.justjournal.com/users/" + et.getUserName() +
-                                    "/entry/" + comment.getEid());
-                            mail.setSubject("JustJournal: Comment Notification");
-                            mail.setPurpose("comment_notify");
-                            mail.send();
+                        try {
+                            CommentDao cdao = new CommentDao();
+                            blnError = !cdao.add(comment);
+
+                        } catch (Exception e1) {
+                            blnError = true;
+                            webError.Display("Error", "Error adding comment", sb);
+                            //out.println( e1.getMessage() );
                         }
-                    } catch (Exception e) {
 
+                        try {
+                            EntryDAO dao = new EntryDAO();
+                            EntryTo et = dao.viewSingle(comment.getEid(), false);
+                            Preferences pf = new Preferences(et.getUserName());
+
+                            if (et.getEmailComments()) {
+                                QueueMail mail = new QueueMail();
+                                mail.setFromAddress("donotreply@justjournal.com");
+                                mail.setToAddress(pf.getEmailAddress());
+                                mail.setBody(comment.getUserName() + " said: \n"
+                                        + comment.getBody() + "\n\n in response to:"
+                                        + "http://www.justjournal.com/users/" + et.getUserName() +
+                                        "/entry/" + comment.getEid());
+                                mail.setSubject("JustJournal: Comment Notification");
+                                mail.setPurpose("comment_notify");
+                                mail.send();
+                            }
+                        } catch (Exception e) {
+
+                        }
                     }
                 }
-            }
                 // display message to user.
                 if (!blnError) {
                     // Begin HTML document.
@@ -224,78 +225,78 @@ public final class addComment extends JustJournalBaseServlet {
 
                     sb.append("<body>\n");
 
-        // BEGIN MENU
-        sb.append("\t<!-- Header: Begin -->");
-        sb.append(endl);
-        sb.append("\t\t<div id=\"header\">");
-        sb.append(endl);
-        sb.append("\t\t<h1>");
-        //sb.append(pf.getName());
-        sb.append("'s Journal</h1>");
-        sb.append(endl);
-        sb.append("\t</div>");
-        sb.append(endl);
-        sb.append("\t<!-- Header: End -->\n");
-        sb.append(endl);
+                    // BEGIN MENU
+                    sb.append("\t<!-- Header: Begin -->");
+                    sb.append(endl);
+                    sb.append("\t\t<div id=\"header\">");
+                    sb.append(endl);
+                    sb.append("\t\t<h1>");
+                    //sb.append(pf.getName());
+                    sb.append("'s Journal</h1>");
+                    sb.append(endl);
+                    sb.append("\t</div>");
+                    sb.append(endl);
+                    sb.append("\t<!-- Header: End -->\n");
+                    sb.append(endl);
 
-        sb.append("\t<!-- Menu: Begin -->");
-        sb.append(endl);
-        sb.append("\t<div id=\"menu\">");
-        sb.append(endl);
+                    sb.append("\t<!-- Menu: Begin -->");
+                    sb.append(endl);
+                    sb.append("\t<div id=\"menu\">");
+                    sb.append(endl);
 
-        sb.append("\t<p id=\"muser\">");
-        sb.append(endl);
-        sb.append("\t\t<a href=\"/users/");
-        sb.append(userName);
-        sb.append("\">recent entries</a><br />");
-        sb.append(endl);
-        sb.append("\t\t<a href=\"/users/").append(userName).append("/calendar\">Calendar</a><br />");
-        sb.append(endl);
-        sb.append("\t\t<a href=\"/users/").append(userName).append("/friends\">Friends</a><br />");
-        sb.append(endl);
-        sb.append("\t\t<a href=\"/users/").append(userName).append("/ljfriends\">LJ Friends</a><br />");
-        sb.append(endl);
-        sb.append("\t\t<a href=\"/profile.jsp?user=").append(userName).append("\">Profile</a><br />");
-        sb.append(endl);
-        sb.append("\t</p>");
-        sb.append(endl);
+                    sb.append("\t<p id=\"muser\">");
+                    sb.append(endl);
+                    sb.append("\t\t<a href=\"/users/");
+                    sb.append(userName);
+                    sb.append("\">recent entries</a><br />");
+                    sb.append(endl);
+                    sb.append("\t\t<a href=\"/users/").append(userName).append("/calendar\">Calendar</a><br />");
+                    sb.append(endl);
+                    sb.append("\t\t<a href=\"/users/").append(userName).append("/friends\">Friends</a><br />");
+                    sb.append(endl);
+                    sb.append("\t\t<a href=\"/users/").append(userName).append("/ljfriends\">LJ Friends</a><br />");
+                    sb.append(endl);
+                    sb.append("\t\t<a href=\"/profile.jsp?user=").append(userName).append("\">Profile</a><br />");
+                    sb.append(endl);
+                    sb.append("\t</p>");
+                    sb.append(endl);
 
-        // General stuff...
-        sb.append("\t<p id=\"mgen\">");
-        sb.append(endl);
-        sb.append("\t\t<a href=\"/update.jsp\">Update Journal</a><br />");
-        sb.append(endl);
+                    // General stuff...
+                    sb.append("\t<p id=\"mgen\">");
+                    sb.append(endl);
+                    sb.append("\t\t<a href=\"/update.jsp\">Update Journal</a><br />");
+                    sb.append(endl);
 
-        // Authentication menu choice
-        if (userID > 0) {
-            // User is logged in.. give them the option to log out.
-            sb.append("\t\t<a href=\"/prefs/index.jsp\">Preferences</a><br />");
-            sb.append(endl);
-            sb.append("\t\t<a href=\"/logout.jsp\">Log Out</a>");
-            sb.append(endl);
-        } else {
-            // User is logged out.. give then the option to login.
-            sb.append("\t\t<a href=\"/login.jsp\">Login</a>");
-            sb.append(endl);
-        }
-        sb.append("\t</p>");
-        sb.append(endl);
+                    // Authentication menu choice
+                    if (userID > 0) {
+                        // User is logged in.. give them the option to log out.
+                        sb.append("\t\t<a href=\"/prefs/index.jsp\">Preferences</a><br />");
+                        sb.append(endl);
+                        sb.append("\t\t<a href=\"/logout.jsp\">Log Out</a>");
+                        sb.append(endl);
+                    } else {
+                        // User is logged out.. give then the option to login.
+                        sb.append("\t\t<a href=\"/login.jsp\">Login</a>");
+                        sb.append(endl);
+                    }
+                    sb.append("\t</p>");
+                    sb.append(endl);
 
-        sb.append("\t<p>RSS Syndication<br /><br />");
-        sb.append("<a href=\"/users/");
-        sb.append(userName);
-        sb.append("/rss\"><img src=\"/img/v4_xml.gif\" alt=\"RSS content feed\" /> Recent</a><br />");
-        sb.append("<a href=\"/users/");
-        sb.append(userName);
-        sb.append("/subscriptions\">Subscriptions</a>");
-        sb.append("\t</p>");
-        sb.append(endl);
+                    sb.append("\t<p>RSS Syndication<br /><br />");
+                    sb.append("<a href=\"/users/");
+                    sb.append(userName);
+                    sb.append("/rss\"><img src=\"/img/v4_xml.gif\" alt=\"RSS content feed\" /> Recent</a><br />");
+                    sb.append("<a href=\"/users/");
+                    sb.append(userName);
+                    sb.append("/subscriptions\">Subscriptions</a>");
+                    sb.append("\t</p>");
+                    sb.append(endl);
 
-        sb.append("\t</div>");
-        sb.append(endl);
-        sb.append("\t<!-- Menu: End -->\n");
-        sb.append(endl);
-        // END MENU
+                    sb.append("\t</div>");
+                    sb.append(endl);
+                    sb.append("\t<!-- Menu: End -->\n");
+                    sb.append(endl);
+                    // END MENU
 
                     sb.append("\t<div id=\"content\">");
                     sb.append("\t\t<h2>Add Comment</h2>");
