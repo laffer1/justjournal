@@ -292,6 +292,14 @@ public final class users extends HttpServlet {
                 sb.append("\t<div id=\"menu\">");
                 sb.append(endl);
 
+                if (pf.showAvatar())
+                {
+                    sb.append("<img alt=\"avatar\" src=\"/image?id=");
+                    sb.append(pf.getId());
+                    sb.append("\"/>");
+                    sb.append(endl);
+                }
+
                 sb.append("\t<p id=\"muser\">");
                 sb.append(endl);
                 sb.append("\t\t<a href=\"/users/");
@@ -439,11 +447,12 @@ public final class users extends HttpServlet {
             sb.append(endl);
         }
 
+        response.setContentLength(sb.length());
         // output the result of our processing
         final ServletOutputStream outstream = response.getOutputStream();
-        outstream.println(sb.toString());
+        outstream.print(sb.toString());
         outstream.flush();
-
+        outstream.close();
     }
 
     private static void getLjFriends(final int id, final StringBuffer sb) {

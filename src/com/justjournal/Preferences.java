@@ -71,6 +71,7 @@ public final class Preferences {
     private int emoticon = 1;  // default emoticon theme
     private int startYear = 2003;
     private String emailAddress = "";
+    private boolean showAvatar = false;
 
     public Preferences(String userName)
             throws Exception {
@@ -89,18 +90,22 @@ public final class Preferences {
                 if (RS.getInt("since") > 2003)
                     startYear = RS.getInt("since");
 
-                // TODO: is this right?
                 if (RS.getString("allow_spider").equals("Y")) {
                     this.allowSpider = true;
                 } else {
                     this.allowSpider = false;
                 }
 
-                // TODO: is this right?
                 if (RS.getString("owner_view_only").equals("Y")) {
                     this.privateJournal = true;
                 } else {
                     this.privateJournal = false;
+                }
+
+                if (RS.getString("show_avatar").equals("Y")) {
+                    this.showAvatar = true;
+                } else {
+                    this.showAvatar = false;
                 }
             }
 
@@ -194,6 +199,16 @@ public final class Preferences {
 
     public void setEmailAddress(String emailAddress) {
         this.emailAddress = emailAddress;
+    }
+
+    public boolean showAvatar()
+    {
+        return showAvatar;
+    }
+
+    public void showAvatar( boolean showAvatar )
+    {
+        this.showAvatar = showAvatar;
     }
 
     public void recycle() {
