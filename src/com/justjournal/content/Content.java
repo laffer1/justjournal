@@ -34,6 +34,8 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.content;
 
+import com.justjournal.db.DateTimeBean;
+
 import java.util.Collection;
 
 /**
@@ -113,18 +115,18 @@ public interface Content {
     /**
      * Retrieve the date the item was created.
      *
-     * @return Date created as a string.. format varies by
+     * @return Date created as a DateTimeBean.. format varies by
      *         implementation.
      */
-    public String getDateCreated();
+    public DateTimeBean getDateCreated();
 
     /**
      * Sets the date the item was created.  Format varies
      * by implemenatation.
      *
-     * @param dateCreated date as string item was created.
+     * @param dateCreated date as DateTimeBean item was created.
      */
-    public void setDateCreated(String dateCreated);
+    public void setDateCreated(DateTimeBean dateCreated);
 
     /**
      * Retrieves the last modified date for the item.
@@ -132,7 +134,7 @@ public interface Content {
      * @return string version of date modfied.  Varies by
      *         implemenation in date format.
      */
-    public String getDateModified();
+    public DateTimeBean getDateModified();
 
     /**
      * Sets the date the item was last modified.  Varies
@@ -140,7 +142,7 @@ public interface Content {
      *
      * @param dateModified date as string of last modification.
      */
-    public void setDateModified(String dateModified);
+    public void setDateModified(DateTimeBean dateModified);
 
     /**
      * Retrieve additional properties of the meta data.  Follows the
@@ -156,12 +158,5 @@ public interface Content {
      * @param metaData MetaData collection of name/value pairs.
      */
     public void setMetaData(Collection metaData);
-
-    /**
-     * XML representation of the data.
-     *
-     * @return String version of an XML document.
-     */
-    public String toXML();
 
 }

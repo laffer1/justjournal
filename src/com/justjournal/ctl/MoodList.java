@@ -40,47 +40,31 @@ import java.util.Collection;
 
 /**
  * List moods used for journal entries.
- * 
+ *
  * @author Lucas Holt
  * @version 1.0
  * Date: Nov 10, 2005
  * Time: 3:51:59 PM
  * @since 1.0
  */
-public class MoodList extends ControllerErrorable {
+public class MoodList extends ControllerAuth {
     private static Category log = Category.getInstance(MoodList.class.getName());
-    protected Collection mood;
+    protected Collection moods;
 
-    public Collection getMood() {
-        return mood;
+    public Collection getMoods() {
+        return this.moods;
     }
 
-    public void setMood( Collection mood ) {
-        this.mood = mood;
-    }
-
-    protected String insidePerform() throws Exception {
+    public String perform() throws Exception {
         if (log.isDebugEnabled())
             log.debug("Loading DAO Objects  ");
 
-        MoodDao dao = new MoodDao();
-        boolean result;
+        // we are returning XML here :)
+        this.getCtx().getResponse().setContentType("text/xml");
 
-        if (!this.hasErrors()) {
-            mood = dao.view();
-            result = !mood.isEmpty();
-
-            if (log.isDebugEnabled())
-                log.debug("Was there an error with data tier?  " + !result);
-
-            if (!result)
-                addError("Unknown", "No moods found.");
-        }
-
-        if (this.hasErrors())
-            return ERROR;
-        else
-            return SUCCESS;
+        final MoodDao dao = new MoodDao();
+        this.moods = dao.view();
+        return SUCCESS;
     }
 
 }

@@ -32,69 +32,54 @@ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
 
-package com.justjournal.ctl;
+package com.justjournal.db;
 
-import com.justjournal.Preferences;
-import com.justjournal.db.CommentDao;
-import com.justjournal.db.EntryDAO;
-import com.justjournal.db.EntryTo;
-
-import java.util.Collection;
+import com.justjournal.SQLHelper;
 
 /**
- * Created by IntelliJ IDEA.
  * User: laffer1
- * Date: Dec 31, 2003
- * Time: 3:25:21 PM
+ * Date: Aug 22, 2005
+ * Time: 10:27:07 PM
  */
-public class ViewComment extends ControllerAuth {
+public class BaseDao {
+    public boolean add(String sql) {
+        boolean noError = true;
+        int records = 0;
 
-    protected EntryTo entry;
-    protected Collection comments;
-    protected int entryId;
-
-
-    public EntryTo getEntry() {
-        return this.entry;
-    }
-
-    public Collection getComments() {
-        return this.comments;
-    }
-
-
-    public String getMyLogin() {
-        return this.currentLoginName();
-    }
-
-    public int getEntryId() {
-        return this.entryId;
-    }
-
-    public void setEntryId(int entryId) {
-        this.entryId = entryId;
-    }
-
-
-    public String perform() throws Exception {
-        CommentDao cdao = new CommentDao();
-        EntryDAO edao = new EntryDAO();
-
-        this.comments = cdao.view(entryId);
-        this.entry = edao.viewSingle(entryId, false);
-
-        Preferences pf = new Preferences(entry.getUserName());
-
-        // user wants it private, has comments disabled for this entry
-        // or the security level is private.
-        if (pf.isPrivateJournal() ||
-                !this.entry.getAllowComments() ||
-                this.entry.getSecurityLevel() == 0 )
-        {
-            this.entry = new EntryTo();
-            return ERROR;
+        try {
+            records = SQLHelper.executeNonQuery(sql);
+        } catch (Exception e) {
+            noError = false;
         }
 
-        return SUCCESS;
+        if (records != 1)
+            noError = false;
+
+        return noError;
+    }
+
+    public boolean edit(String sql) {
+        boolean noError = true;
+
+        try {
+            SQLHelper.executeNonQuery(sql);
+        } catch (Exception e) {
+            noError = false;
+        }
+
+        return noError;
+
+    }
+
+    public boolean delete(String sql) {
+        boolean noError = true;
+
+        try {
+            SQLHelper.executeNonQuery(sql);
+        } catch (Exception e) {
+            noError = false;
+        }
+
+        return noError;
     }
 }
