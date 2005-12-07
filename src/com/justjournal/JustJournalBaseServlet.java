@@ -63,6 +63,11 @@ public class JustJournalBaseServlet extends HttpServlet {
         outstream.flush();
     }
 
+    public long getLastModified(HttpServletRequest request )
+    {
+        return new java.util.Date().getTime() / 1000 * 1000;
+    }
+
     protected void execute(HttpServletRequest request, HttpServletResponse response, HttpSession session, StringBuffer sb) {
 
     }
