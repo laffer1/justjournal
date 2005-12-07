@@ -44,9 +44,10 @@ import sun.jdbc.rowset.CachedRowSet;
  * Time: 12:07:17 PM
  *
  * @author Lucas Holt
- * @version 1.2
+ * @version 1.3
  * @since 1.0
  *        <p/>
+ *        1.3 Added show_avatar field select.
  *        1.2 Altered journal preferences query to include email address field.
  */
 public class PreferencesDao {
@@ -55,7 +56,7 @@ public class PreferencesDao {
      *
      * @param userId
      * @param ownerOnly
-     * @return
+     * @return true on success, false on any error
      */
     public boolean updateSec(int userId, boolean ownerOnly) {
         boolean noError = true;
@@ -91,11 +92,18 @@ public class PreferencesDao {
     public static CachedRowSet ViewJournalPreferences(final String userName)
             throws Exception {
         CachedRowSet RS;
+
+        if (userName == null)
+            throw new IllegalArgumentException("Missing username.");
+
+        if (userName.length() < 3)
+            throw new IllegalArgumentException("Username must be at least 3 characters");
+
         String sqlStatement =
                 "SELECT user.name As name, user.id As id, user.since as since, up.style As style, up.allow_spider, " +
-                "up.owner_view_only, st.url as cssurl, st.doc as cssdoc, uc.email as email " +
-                "FROM user, user_pref As up, user_style as st, uc.email As email " +
-                "WHERE user.username='" + userName + "' AND user.id = up.id AND user.id=st.id AND user.id=uc.id;";
+                "up.owner_view_only, st.url as cssurl, st.doc as cssdoc, uc.email as email, " +
+                "up.show_avatar as show_avatar FROM user, user_pref As up, user_style as st, user_contact As uc " +
+                "WHERE user.username='" + userName + "' AND user.id = up.id AND user.id=st.id AND user.id=uc.id LIMIT 1;";
 
         try {
             RS = SQLHelper.executeResultSet(sqlStatement);
