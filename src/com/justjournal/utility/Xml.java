@@ -48,7 +48,7 @@ public final class Xml {
      * to their equivalents.
      *
      * @param input
-     * @return
+     * @return A string with xml friendly escaped sequences.
      */
     public static String cleanString(String input) {
         String work = input;
