@@ -89,7 +89,7 @@ public class AddFavorite extends Protected {
 
         if (!this.hasErrors()) {
             try {
-                String sql = "addfavorite " + entryId + "," + this.currentLoginId() + ";";
+                String sql = "call addfavorite( " + this.currentLoginId() + "," + entryId + ");";
                 int result = SQLHelper.executeNonQuery(sql);
 
                 if (result != 1)
