@@ -62,11 +62,12 @@ import java.util.regex.Pattern;
 /**
  * Journal viewer for JustJournal.
  * <p/>
+ * 1.5  Avatar support.
  * 1.4  Code cleanup
  * 1.3 (jan 04) added more RSS Support, owner security
  *
  * @author Lucas Holt
- * @version 1.4
+ * @version 1.5
  * @since 1.0
  */
 public final class users extends HttpServlet {
@@ -199,6 +200,7 @@ public final class users extends HttpServlet {
 
         if (RequestType == RT_RSS) {
             response.setContentType("text/xml");
+            response.setBufferSize(8192);
 
             if (!pf.isPrivateJournal() || (aUser != null && aUser.getUserName().equals(userName)))
                 getRSS(userName, pf, sb);
@@ -217,6 +219,7 @@ public final class users extends HttpServlet {
             */
 
             response.setContentType("text/html");
+            response.setBufferSize(8192);
             response.setDateHeader("Expires", System.currentTimeMillis());
             response.setDateHeader("Last-Modified", System.currentTimeMillis());
             response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
@@ -265,6 +268,8 @@ public final class users extends HttpServlet {
                 sb.append(endl);
             }
             /* End overrides */
+            // rss alt link.
+            sb.append("<link rel=\"alternate\" type=\"application/rss+xml\" title=\"RSS\" href=\"http://www.justjournal.com/users/" + userName + "/rss\" />\n");
             sb.append("</head>\n");
 
             sb.append("<body>\n");
@@ -304,7 +309,7 @@ public final class users extends HttpServlet {
                 sb.append(endl);
                 sb.append("\t\t<a href=\"/users/");
                 sb.append(userName);
-                sb.append("\">recent entries</a><br />");
+                sb.append("\">Recent Entries</a><br />");
                 sb.append(endl);
                 sb.append("\t\t<a href=\"/users/");
                 sb.append(userName);
@@ -313,6 +318,9 @@ public final class users extends HttpServlet {
                 sb.append("\t\t<a href=\"/users/");
                 sb.append(userName);
                 sb.append("/friends\">Friends</a><br />");
+                sb.append(endl);
+                sb.append("\t\t<a href=\"/favorite/view.h");
+                sb.append("\">Favorites</a><br />");
                 sb.append(endl);
                 sb.append("\t\t<a href=\"/users/");
                 sb.append(userName);
@@ -346,15 +354,18 @@ public final class users extends HttpServlet {
                 sb.append("\t</p>");
                 sb.append(endl);
 
-                sb.append("\t<p>RSS Syndication<br /><br />");
+                sb.append("\t<p>");
                 sb.append("<a href=\"/users/");
                 sb.append(userName);
-                sb.append("/rss\"><img src=\"/img/v4_xml.gif\" alt=\"RSS content feed\" /> Recent</a><br />");
+                sb.append("/rss\"><img src=\"/images/rss2.gif\" alt=\"Journal RSS feed\" /></a><br />");
                 sb.append("<a href=\"/users/");
                 sb.append(userName);
-                sb.append("/subscriptions\">Subscriptions</a>");
+                sb.append("/subscriptions\">RSS Reader</a>");
                 sb.append("\t</p>");
                 sb.append(endl);
+
+                // display mini calendar in menu
+                getCalendarMini(userName,aUser,sb);
 
                 sb.append("\t</div>");
                 sb.append(endl);
@@ -671,12 +682,12 @@ public final class users extends HttpServlet {
                         sb.append("\"><img src=\"/images/stock_calc-cancel.png\" width=\"24\" height=\"24\" alt=\"Delete\" /></a>");
                         sb.append("</td>");
                         sb.append(endl);
-                    }
 
-                    sb.append("<td width=\"30\"><a title=\"Add Favorite\" href=\"/favorite/entry.h?entryId=");
-                    sb.append(o.getId());
-                    sb.append("\"><img src=\"/images/favourites-24.png\" width=\"24\" height=\"24\" alt=\"Favorites\" /></a></td>");
-                    sb.append(endl);
+                        sb.append("<td width=\"30\"><a title=\"Add Favorite\" href=\"/favorite/add.h?entryId=");
+                        sb.append(o.getId());
+                        sb.append("\"><img src=\"/images/favourites-24.png\" width=\"24\" height=\"24\" alt=\"Favorites\" /></a></td>");
+                        sb.append(endl);
+                    }
 
                     sb.append("<td><div align=\"right\">(");
 
@@ -686,20 +697,19 @@ public final class users extends HttpServlet {
                         case 1:
                             sb.append("<a href=\"/comment/view.h?entryId=");
                             sb.append(o.getId());
-                            sb.append("\">1 comment</a> | ");
+                            sb.append("\" title=\"View Comment\">1 comment</a> | ");
                             break;
                         default:
                             sb.append("<a href=\"/comment/view.h?entryId=");
                             sb.append(o.getId());
-                            sb.append("\">");
+                            sb.append("\" title=\"View Comments\">");
                             sb.append(o.getCommentCount());
                             sb.append(" comments</a> | ");
                     }
 
                     sb.append("<a href=\"/comment/add.jsp?id=");
                     sb.append(o.getId());
-                    sb.append("\">comment on this</a>)");
-
+                    sb.append("\" title=\"Leave a comment on this entry\">comment on this</a>)");
 
                     sb.append("</div></td>");
                     sb.append(endl);
@@ -754,11 +764,16 @@ public final class users extends HttpServlet {
             String curDate;
 
             // jump menu
-            sb.append("<p>Jump <a href=\"/users/");
-            sb.append(userName);
-            sb.append("?skip=");
-            sb.append((skip + 20));
-            sb.append("\">back 20 entries</a> ");
+            sb.append("<p>");
+
+            if (entries.size() > 19)
+            {
+                sb.append("Jump <a href=\"/users/");
+                sb.append(userName);
+                sb.append("?skip=");
+                sb.append((skip + 20));
+                sb.append("\">back 20 entries</a> ");
+            }
 
             if (skip > 0) {
                 sb.append(" or <a href=\"/users/");
@@ -767,7 +782,6 @@ public final class users extends HttpServlet {
                 sb.append((skip - 20));
                 sb.append("\">forward 20 entries</a>");
             }
-
             sb.append("</p>");
             sb.append(endl);
             // end jump menu
@@ -895,25 +909,25 @@ public final class users extends HttpServlet {
                 sb.append(endl);
 
                 if (aUser != null && aUser.getUserName().compareTo(userName) == 0) {
-                    sb.append("<td width=\"30\"><a title=\"Edit Entry\" href=\"/entry/edit.h?entryId=");
+                    sb.append("<td style=\"width: 30px\"><a title=\"Edit Entry\" href=\"/entry/edit.h?entryId=");
                     sb.append(o.getId());
                     sb.append("\"><img src=\"/images/compose-message.png\" width=\"24\" height=\"24\" alt=\"Edit\" /></a></td>");
                     sb.append(endl);
-                    sb.append("<td width=\"30\"><a title=\"Delete Entry\" href=\"/entry/delete.h?entryId=");
+                    sb.append("<td style=\"width: 30px\"><a title=\"Delete Entry\" href=\"/entry/delete.h?entryId=");
                     sb.append(o.getId());
                     sb.append("\"><img src=\"/images/stock_calc-cancel.png\" width=\"24\" height=\"24\" alt=\"Delete\" /></a>");
                     sb.append("</td>");
                     sb.append(endl);
+
+                    sb.append("<td style=\"width: 30px\"><a title=\"Add Favorite\" href=\"/favorite/add.h?entryId=");
+                    sb.append(o.getId());
+                    sb.append("\"><img src=\"/images/favourites-24.png\" width=\"24\" height=\"24\" alt=\"Favorites\" /></a></td>");
+                    sb.append(endl);
                 }
 
-                sb.append("<td width=\"30\"><a title=\"Add Favorite\" href=\"/favorite/entry.h?entryId=");
+                sb.append("<td><div style=\"float: right\"><a href=\"/users/").append(o.getUserName()).append("/entry/");
                 sb.append(o.getId());
-                sb.append("\"><img src=\"/images/favourites-24.png\" width=\"24\" height=\"24\" alt=\"Favorites\" /></a></td>");
-                sb.append(endl);
-
-                sb.append("<td><div align=\"right\"><a href=\"/users/").append(o.getUserName()).append("/entry/");
-                sb.append(o.getId());
-                sb.append("\">entry</a> ");
+                sb.append("\" title=\"Link to this entry\">link</a> ");
 
                 sb.append("(");
 
@@ -923,19 +937,19 @@ public final class users extends HttpServlet {
                     case 1:
                         sb.append("<a href=\"/comment/view.h?entryId=");
                         sb.append(o.getId());
-                        sb.append("\">1 comment</a> | ");
+                        sb.append("\" title=\"View Comment\">1 comment</a> | ");
                         break;
                     default:
                         sb.append("<a href=\"/comment/view.h?entryId=");
                         sb.append(o.getId());
-                        sb.append("\">");
+                        sb.append("\" title=\"View Comments\">");
                         sb.append(o.getCommentCount());
                         sb.append(" comments</a> | ");
                 }
 
                 sb.append("<a href=\"/comment/add.jsp?id=");
                 sb.append(o.getId());
-                sb.append("\">comment on this</a>)");
+                sb.append("\" title=\"Leave a comment on this entry\">comment on this</a>)");
 
 
                 sb.append("</div></td>");
@@ -1032,6 +1046,15 @@ public final class users extends HttpServlet {
 
                 sb.append("<div class=\"ebody\">");
                 sb.append(endl);
+
+                Preferences p = new Preferences(o.getUserName());
+                if (p.showAvatar())
+                {
+                     sb.append("<img alt=\"avatar\" style=\"float: right\" src=\"/image?id=");
+                     sb.append(o.getUserId());
+                     sb.append("\"/>");
+                     sb.append(endl);
+                }
 
                 sb.append("<h3>");
                 sb.append("<a href=\"/users/");
@@ -1141,13 +1164,12 @@ public final class users extends HttpServlet {
                     sb.append("\"><img src=\"/images/stock_calc-cancel.png\" width=\"24\" height=\"24\" alt=\"Delete\" /></a>");
                     sb.append("</td>");
                     sb.append(endl);
+
+                    sb.append("<td width=\"30\"><a title=\"Add Favorite\" href=\"/favorite/add.h?entryId=");
+                    sb.append(o.getId());
+                    sb.append("\"><img src=\"/images/favourites-24.png\" width=\"24\" height=\"24\" alt=\"Favorites\" /></a></td>");
+                    sb.append(endl);
                 }
-
-                sb.append("<td width=\"30\"><a title=\"Add Favorite\" href=\"/favorite/entry.h?entryId=");
-                sb.append(o.getId());
-                sb.append("\"><img src=\"/images/favourites-24.png\" width=\"24\" height=\"24\" alt=\"Favorites\" /></a></td>");
-                sb.append(endl);
-
                 sb.append("<td><div align=\"right\">(");
 
                 switch (o.getCommentCount()) {
@@ -1156,19 +1178,19 @@ public final class users extends HttpServlet {
                     case 1:
                         sb.append("<a href=\"/comment/view.h?entryId=");
                         sb.append(o.getId());
-                        sb.append("\">1 comment</a> | ");
+                        sb.append("\" title=\"View Comment\">1 comment</a> | ");
                         break;
                     default:
                         sb.append("<a href=\"/comment/view.h?entryId=");
                         sb.append(o.getId());
-                        sb.append("\">");
+                        sb.append("\" title=\"View Comments\">");
                         sb.append(o.getCommentCount());
                         sb.append(" comments</a> | ");
                 }
 
                 sb.append("<a href=\"/comment/add.jsp?id=");
                 sb.append(o.getId());
-                sb.append("\">comment on this</a>)");
+                sb.append("\" title=\"Leave a comment on this entry\">comment on this</a>)");
 
                 sb.append("</div></td>");
                 sb.append(endl);
@@ -1348,6 +1370,38 @@ public final class users extends HttpServlet {
             webError.Display(" Error",
                     "An error has occured rendering calendar.",
                     sb);
+        }
+    }
+
+    private static void getCalendarMini(
+                                         final String userName,
+                                         final User aUser,
+                                         final StringBuffer sb) {
+
+        try {
+
+            final CachedRowSet RS;
+            Calendar cal = new GregorianCalendar(java.util.TimeZone.getDefault());
+            int year = cal.get(Calendar.YEAR);
+            int month = cal.get(Calendar.MONTH) + 1; // zero based
+
+            if (aUser != null && aUser.getUserName().compareTo(userName) == 0) {
+                RS = EntryDAO.ViewCalendarMonth(year, month, userName, true);  // should be true
+            } else {
+                RS = EntryDAO.ViewCalendarMonth(year, month, userName, false);
+            }
+
+            if (RS == null) {
+                sb.append("<!-- could not render calendar -->");
+                sb.append(endl);
+            } else {
+                final Cal mycal = new Cal(RS);
+                mycal.setBaseUrl("/users/" + userName + "/");
+                sb.append(mycal.renderMini());
+            }
+
+        } catch (Exception e1) {
+
         }
     }
 
