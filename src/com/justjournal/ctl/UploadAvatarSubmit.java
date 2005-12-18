@@ -1,3 +1,37 @@
+/*
+Copyright (c) 2005, Lucas Holt
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are
+permitted provided that the following conditions are met:
+
+  Redistributions of source code must retain the above copyright notice, this list of
+  conditions and the following disclaimer.
+
+  Redistributions in binary form must reproduce the above copyright notice, this
+  list of conditions and the following disclaimer in the documentation and/or other
+  materials provided with the distribution.
+
+  Neither the name of the Just Journal nor the names of its contributors
+  may be used to endorse or promote products derived from this software without
+  specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
+GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+*/
+
 package com.justjournal.ctl;
 
 import org.apache.commons.fileupload.DiskFileUpload;
@@ -50,93 +84,113 @@ public class UploadAvatarSubmit extends Protected {
                 FileItem item = (FileItem) iter.next();
 
                 if (item.isFormField()) {
-                    // do stuff here
+                    // do stuff here... ignore for now
                     //
                 } else { // we're a file
-                    String fieldName = item.getFieldName();
-                    String fileName = item.getName();
+                    //String fieldName = item.getFieldName();
+                    //String fileName = item.getName();
                     String contentType = item.getContentType();
-                    boolean isInMemory = item.isInMemory();
+                    //boolean isInMemory = item.isInMemory();
                     long sizeInBytes = item.getSize();
 
-                    byte[] data = item.get();
+                    // must be large enough
+                    if (sizeInBytes > 500) {
+                        byte[] data = item.get();
 
-
-                    Context ctx;
-                    DataSource ds = null;
-                    Connection conn = null;
-                    PreparedStatement stmt = null; // insert statement
-                    PreparedStatement stmtOn = null; // turn on avatar preference.
-                    PreparedStatement stmtRemove = null; // delete old ones
-
-
-                    try {
-                        ctx = new InitialContext();
-                        ds = (DataSource) ctx.lookup("java:comp/env/jdbc/jjDB");
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                    try {
-                        conn = ds.getConnection();
-
-                        stmtRemove = conn.prepareStatement("DELETE FROM user_pic WHERE id=? LIMIT 1");
-                        stmtRemove.setInt(1,this.currentLoginId());
-                        stmtRemove.execute();
-
-                        // do the insert of the image
-                        stmt = conn.prepareStatement("INSERT INTO user_pic (id,mimetype,image) VALUES(?,?,?)");
-                        stmt.setInt(1, this.currentLoginId());
-                        stmt.setString(2, contentType);
-                        stmt.setBytes(3, data);
-                        stmt.execute();
-                        RowsAffected = stmt.getUpdateCount();
-                        stmt.close();
-
-                        // turn on avatars.
-                        stmtOn = conn.prepareStatement("UPDATE user_pref set show_avatar=? WHERE id=? LIMIT 1");
-                        stmtOn.setString(1,"Y");
-                        stmtOn.setInt(2, this.currentLoginId());
-                        stmtOn.execute();
-
-                        if (stmtOn.getUpdateCount() != 1)
-                            log.debug("error turning on avatar.");
-                        stmtOn.close();
-
-                        conn.close();
-                    } catch (Exception e) {
-                        log.debug(e.getMessage());
-                        throw new Exception("Error getting connect or executing it", e);
-                    } finally {
-                        /*
-                        * Close any JDBC instances here that weren't
-                        * explicitly closed during normal code path, so
-                        * that we don't 'leak' resources...
-                        */
+                        Context ctx;
+                        DataSource ds = null;
+                        Connection conn = null;
+                        PreparedStatement stmt = null; // insert statement
+                        PreparedStatement stmtOn = null; // turn on avatar preference.
+                        PreparedStatement stmtRemove = null; // delete old ones
 
                         try {
+                            ctx = new InitialContext();
+                            ds = (DataSource) ctx.lookup("java:comp/env/jdbc/jjDB");
+                        } catch (Exception e) {
+                            log.debug(e.getMessage());
+                            this.addError("Database", "Could not retrieve database resources.");
+                        }
+
+                        try {
+                            conn = ds.getConnection();
+
+                            stmtRemove = conn.prepareStatement("DELETE FROM user_pic WHERE id=? LIMIT 1");
+                            stmtRemove.setInt(1, this.currentLoginId());
+                            stmtRemove.execute();
+
+                            // do the insert of the image
+                            stmt = conn.prepareStatement("INSERT INTO user_pic (id,mimetype,image) VALUES(?,?,?)");
+                            stmt.setInt(1, this.currentLoginId());
+                            stmt.setString(2, contentType);
+                            stmt.setBytes(3, data);
+                            stmt.execute();
+                            RowsAffected = stmt.getUpdateCount();
                             stmt.close();
-                        } catch (SQLException sqlEx) {
-                            // ignore -- as we can't do anything about it here
-                        }
 
+                            // turn on avatars.
+                            stmtOn = conn.prepareStatement("UPDATE user_pref set show_avatar=? WHERE id=? LIMIT 1");
+                            stmtOn.setString(1, "Y");
+                            stmtOn.setInt(2, this.currentLoginId());
+                            stmtOn.execute();
 
-                        try {
+                            if (stmtOn.getUpdateCount() != 1)
+                                log.debug("error turning on avatar.");
+                            stmtOn.close();
+
                             conn.close();
-                        } catch (SQLException sqlEx) {
-                            // ignore -- as we can't do anything about it here
-                        }
-                    }
+                        } catch (Exception e) {
+                            log.debug(e.getMessage());
+                            throw new Exception("Error getting connect or executing it", e);
+                        } finally {
+                            /*
+                            * Close any JDBC instances here that weren't
+                            * explicitly closed during normal code path, so
+                            * that we don't 'leak' resources...
+                            */
 
+                            try {
+                                stmt.close();
+                            } catch (SQLException sqlEx) {
+                                // ignore -- as we can't do anything about it here
+                                log.debug(sqlEx.getMessage());
+                            }
+
+                            try {
+                                stmtOn.close();
+                            } catch (SQLException sqlEx) {
+                                // ignore -- as we can't do anything about it here
+                                log.debug(sqlEx.getMessage());
+                            }
+
+                            try {
+                                stmtRemove.close();
+                            } catch (SQLException sqlEx) {
+                                // ignore -- as we can't do anything about it here
+                                 log.debug(sqlEx.getMessage());
+                            }
+
+                            try {
+                                conn.close();
+                            } catch (SQLException sqlEx) {
+                                // ignore -- as we can't do anything about it here
+                                 log.debug(sqlEx.getMessage());
+                            }
+                        }
+
+                    } else {
+                        log.debug("File size is too small");
+                        addError("File","File size is too small.");
+                    }
                 }
             }
 
 
         }
 
-        if (RowsAffected == 1)
-            return SUCCESS;
-        else
+        if (hasErrors() || RowsAffected != 1)
             return ERROR;
+        else
+            return SUCCESS;
     }
 }
