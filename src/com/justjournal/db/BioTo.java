@@ -75,4 +75,22 @@ public class BioTo {
         return output.toString();
     }
 
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        final BioTo bioTo = (BioTo) o;
+
+        if (userId != bioTo.userId) return false;
+        if (!bio.equals(bioTo.bio)) return false;
+
+        return true;
+    }
+
+    public int hashCode() {
+        int result;
+        result = userId;
+        result = 29 * result + bio.hashCode();
+        return result;
+    }
 }

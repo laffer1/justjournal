@@ -91,4 +91,29 @@ public final class RssCacheTo {
     public void setContent(String content) {
         this.content = content;
     }
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        final RssCacheTo that = (RssCacheTo) o;
+
+        if (id != that.id) return false;
+        if (interval != that.interval) return false;
+        if (!content.equals(that.content)) return false;
+        if (!lastUpdated.equals(that.lastUpdated)) return false;
+        if (!uri.equals(that.uri)) return false;
+
+        return true;
+    }
+
+    public int hashCode() {
+        int result;
+        result = id;
+        result = 29 * result + interval;
+        result = 29 * result + lastUpdated.hashCode();
+        result = 29 * result + uri.hashCode();
+        result = 29 * result + content.hashCode();
+        return result;
+    }
 }

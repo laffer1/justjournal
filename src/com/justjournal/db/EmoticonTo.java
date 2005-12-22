@@ -117,4 +117,29 @@ public class EmoticonTo {
 
         return output.toString();
     }
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        final EmoticonTo that = (EmoticonTo) o;
+
+        if (height != that.height) return false;
+        if (moodId != that.moodId) return false;
+        if (moodTheme != that.moodTheme) return false;
+        if (width != that.width) return false;
+        if (!filename.equals(that.filename)) return false;
+
+        return true;
+    }
+
+    public int hashCode() {
+        int result;
+        result = filename.hashCode();
+        result = 29 * result + moodId;
+        result = 29 * result + moodTheme;
+        result = 29 * result + width;
+        result = 29 * result + height;
+        return result;
+    }
 }

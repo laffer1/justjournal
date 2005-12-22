@@ -73,4 +73,25 @@ public final class LJFriendTo {
     public String toString() {
         return Integer.toString(id) + "," + userName + "," + isCommunity;
     }
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        final LJFriendTo that = (LJFriendTo) o;
+
+        if (id != that.id) return false;
+        if (isCommunity != that.isCommunity) return false;
+        if (!userName.equals(that.userName)) return false;
+
+        return true;
+    }
+
+    public int hashCode() {
+        int result;
+        result = id;
+        result = 29 * result + userName.hashCode();
+        result = 29 * result + (isCommunity ? 1 : 0);
+        return result;
+    }
 }

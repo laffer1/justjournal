@@ -250,7 +250,7 @@ public final class EntryDAO {
         String sqlStmt2;
         String sqlStatement;
 
-        if (thisUser == true)  // no security
+        if (thisUser)  // no security
         {
             sqlStatement = new StringBuffer().append("SELECT us.id As id, us.username, ").append("eh.date As date, eh.subject As subject, eh.music, eh.body, ").append("mood.title As moodt, location.title As location, eh.id As entryid, ").append("eh.security as security, eh.autoformat, eh.allow_comments, eh.email_comments, location.id as locationid, mood.id as moodid ").append("FROM user As us, entry As eh, ").append("mood, location ").append("WHERE eh.id='").append(entryId).append("' AND us.id=eh.uid AND mood.id=eh.mood AND location.id=eh.location ORDER BY eh.date DESC, eh.id DESC LIMIT 1;").toString();
         } else {
@@ -355,7 +355,7 @@ public final class EntryDAO {
         EntryTo et;
         final int PAGE_SIZE = 20;
 
-        if (thisUser == true) {
+        if (thisUser) {
             if (log.isDebugEnabled())
                 log.debug("view: this user is logged in.");
 
@@ -595,7 +595,7 @@ public final class EntryDAO {
         String sqlStatement;
         CachedRowSet RS;
 
-        if (thisUser == true) {
+        if (thisUser) {
             // NO SECURITY RESTRICTION
             sqlStatement = "SELECT us.id As id, " +
                     " eh.date As date, " +
@@ -626,7 +626,7 @@ public final class EntryDAO {
         String sqlStatement;
         CachedRowSet RS;
 
-        if (thisUser == true) {
+        if (thisUser) {
             // NO SECURITY RESTRICTION
             sqlStatement = "SELECT us.id As id, " +
                     " eh.date As date, " +
@@ -660,7 +660,7 @@ public final class EntryDAO {
         String sqlStatement;
         CachedRowSet RS = null;
 
-        if (thisUser == true) {
+        if (thisUser) {
             // NO SECURITY RESTRICTION
             sqlStatement = "SELECT us.id As id, us.name As name, " +
                     "eh.date As date, eh.subject As subject, eh.music, eh.body, " +

@@ -71,4 +71,26 @@ public final class MoodTo {
     public void setName(final String name) {
         this.name = name;
     }
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        final MoodTo moodTo = (MoodTo) o;
+
+        if (id != moodTo.id) return false;
+        if (parent != moodTo.parent) return false;
+        if (!name.equals(moodTo.name)) return false;
+
+        return true;
+    }
+
+    public int hashCode() {
+        int result;
+        result = id;
+        result = 29 * result + parent;
+        result = 29 * result + name.hashCode();
+        return result;
+    }
+
 }

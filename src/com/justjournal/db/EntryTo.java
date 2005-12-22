@@ -405,4 +405,51 @@ public final class EntryTo {
         return output.toString();
     }
 
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        final EntryTo entryTo = (EntryTo) o;
+
+        if (allowComments != entryTo.allowComments) return false;
+        if (autoFormat != entryTo.autoFormat) return false;
+        if (commentCount != entryTo.commentCount) return false;
+        if (emailComments != entryTo.emailComments) return false;
+        if (id != entryTo.id) return false;
+        if (locationId != entryTo.locationId) return false;
+        if (moodId != entryTo.moodId) return false;
+        if (securityLevel != entryTo.securityLevel) return false;
+        if (userId != entryTo.userId) return false;
+        if (!body.equals(entryTo.body)) return false;
+        if (!date.equals(entryTo.date)) return false;
+        if (locationName != null ? !locationName.equals(entryTo.locationName) : entryTo.locationName != null) return false;
+        if (moodName != null ? !moodName.equals(entryTo.moodName) : entryTo.moodName != null) return false;
+        if (music != null ? !music.equals(entryTo.music) : entryTo.music != null) return false;
+        if (subject != null ? !subject.equals(entryTo.subject) : entryTo.subject != null) return false;
+        if (userName != null ? !userName.equals(entryTo.userName) : entryTo.userName != null) return false;
+
+        return true;
+    }
+
+    public int hashCode() {
+        int result;
+        result = id;
+        result = 29 * result + locationId;
+        result = 29 * result + moodId;
+        result = 29 * result + commentCount;
+        result = 29 * result + userId;
+        result = 29 * result + securityLevel;
+        result = 29 * result + date.hashCode();
+        result = 29 * result + (subject != null ? subject.hashCode() : 0);
+        result = 29 * result + body.hashCode();
+        result = 29 * result + (music != null ? music.hashCode() : 0);
+        result = 29 * result + (userName != null ? userName.hashCode() : 0);
+        result = 29 * result + (moodName != null ? moodName.hashCode() : 0);
+        result = 29 * result + (locationName != null ? locationName.hashCode() : 0);
+        result = 29 * result + (autoFormat ? 1 : 0);
+        result = 29 * result + (allowComments ? 1 : 0);
+        result = 29 * result + (emailComments ? 1 : 0);
+        return result;
+    }
+
 }

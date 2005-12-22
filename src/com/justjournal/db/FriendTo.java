@@ -83,4 +83,27 @@ public final class FriendTo {
         return Integer.toString(id) + "," + userName + ","
                 + ownerId + "," + ownerUserName;
     }
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        final FriendTo friendTo = (FriendTo) o;
+
+        if (id != friendTo.id) return false;
+        if (ownerId != friendTo.ownerId) return false;
+        if (!ownerUserName.equals(friendTo.ownerUserName)) return false;
+        if (!userName.equals(friendTo.userName)) return false;
+
+        return true;
+    }
+
+    public int hashCode() {
+        int result;
+        result = id;
+        result = 29 * result + userName.hashCode();
+        result = 29 * result + ownerId;
+        result = 29 * result + ownerUserName.hashCode();
+        return result;
+    }
 }

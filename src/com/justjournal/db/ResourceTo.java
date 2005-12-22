@@ -72,4 +72,27 @@ public class ResourceTo {
         }
     }
 
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        final ResourceTo that = (ResourceTo) o;
+
+        if (active != that.active) return false;
+        if (id != that.id) return false;
+        if (securityLevel != that.securityLevel) return false;
+        if (!name.equals(that.name)) return false;
+
+        return true;
+    }
+
+    public int hashCode() {
+        int result;
+        result = id;
+        result = 29 * result + name.hashCode();
+        result = 29 * result + (active ? 1 : 0);
+        result = 29 * result + securityLevel;
+        return result;
+    }
+
 }

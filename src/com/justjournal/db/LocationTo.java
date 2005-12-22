@@ -60,4 +60,23 @@ public class LocationTo {
     public void setName(String name) {
         this.name = name;
     }
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        final LocationTo that = (LocationTo) o;
+
+        if (id != that.id) return false;
+        if (!name.equals(that.name)) return false;
+
+        return true;
+    }
+
+    public int hashCode() {
+        int result;
+        result = id;
+        result = 29 * result + name.hashCode();
+        return result;
+    }
 }

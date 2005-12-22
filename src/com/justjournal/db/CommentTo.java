@@ -177,4 +177,33 @@ public class CommentTo {
         return output.toString();
     }
 
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        final CommentTo commentTo = (CommentTo) o;
+
+        if (eid != commentTo.eid) return false;
+        if (id != commentTo.id) return false;
+        if (userId != commentTo.userId) return false;
+        if (!body.equals(commentTo.body)) return false;
+        if (!date.equals(commentTo.date)) return false;
+        if (subject != null ? !subject.equals(commentTo.subject) : commentTo.subject != null) return false;
+        if (!userName.equals(commentTo.userName)) return false;
+
+        return true;
+    }
+
+    public int hashCode() {
+        int result;
+        result = id;
+        result = 29 * result + eid;
+        result = 29 * result + userId;
+        result = 29 * result + date.hashCode();
+        result = 29 * result + (subject != null ? subject.hashCode() : 0);
+        result = 29 * result + body.hashCode();
+        result = 29 * result + userName.hashCode();
+        return result;
+    }
+
 }

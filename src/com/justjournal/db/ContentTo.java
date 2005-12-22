@@ -1,5 +1,7 @@
 package com.justjournal.db;
 
+import java.util.Arrays;
+
 /**
  * User: laffer1
  * Date: Aug 15, 2005
@@ -123,5 +125,35 @@ public class ContentTo {
 
     public void setMetaData(String metaData) {
         this.metaData = metaData;
+    }
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        final ContentTo contentTo = (ContentTo) o;
+
+        if (dataSize != contentTo.dataSize) return false;
+        if (id != contentTo.id) return false;
+        if (preferred != contentTo.preferred) return false;
+        if (uriId != contentTo.uriId) return false;
+        if (userId != contentTo.userId) return false;
+        if (!Arrays.equals(data, contentTo.data)) return false;
+        if (metaData != null ? !metaData.equals(contentTo.metaData) : contentTo.metaData != null) return false;
+        if (mimeType != null ? !mimeType.equals(contentTo.mimeType) : contentTo.mimeType != null) return false;
+
+        return true;
+    }
+
+    public int hashCode() {
+        int result;
+        result = id;
+        result = 29 * result + uriId;
+        result = 29 * result + userId;
+        result = 29 * result + (mimeType != null ? mimeType.hashCode() : 0);
+        result = 29 * result + (preferred ? 1 : 0);
+        result = 29 * result + dataSize;
+        result = 29 * result + (metaData != null ? metaData.hashCode() : 0);
+        return result;
     }
 }

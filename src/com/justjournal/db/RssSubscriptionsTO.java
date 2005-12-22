@@ -65,4 +65,23 @@ public class RssSubscriptionsTO {
     public String toString() {
         return Integer.toString(id) + "," + uri;
     }
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        final RssSubscriptionsTO that = (RssSubscriptionsTO) o;
+
+        if (id != that.id) return false;
+        if (!uri.equals(that.uri)) return false;
+
+        return true;
+    }
+
+    public int hashCode() {
+        int result;
+        result = id;
+        result = 29 * result + uri.hashCode();
+        return result;
+    }
 }

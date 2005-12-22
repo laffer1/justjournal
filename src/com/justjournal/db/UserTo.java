@@ -172,4 +172,28 @@ public class UserTo {
         return sb.toString();
     }
 
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        final UserTo userTo = (UserTo) o;
+
+        if (id != userTo.id) return false;
+        if (name != null ? !name.equals(userTo.name) : userTo.name != null) return false;
+        if (password != null ? !password.equals(userTo.password) : userTo.password != null) return false;
+        if (passwordSha1 != null ? !passwordSha1.equals(userTo.passwordSha1) : userTo.passwordSha1 != null) return false;
+        if (!userName.equals(userTo.userName)) return false;
+
+        return true;
+    }
+
+    public int hashCode() {
+        int result;
+        result = id;
+        result = 29 * result + userName.hashCode();
+        result = 29 * result + (name != null ? name.hashCode() : 0);
+        result = 29 * result + (password != null ? password.hashCode() : 0);
+        result = 29 * result + (passwordSha1 != null ? passwordSha1.hashCode() : 0);
+        return result;
+    }
 }

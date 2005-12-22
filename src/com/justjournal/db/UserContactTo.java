@@ -114,4 +114,36 @@ public class UserContactTo {
     public void setHpUri(final String hpUri) {
         this.hpUri = hpUri;
     }
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        final UserContactTo that = (UserContactTo) o;
+
+        if (aim != null ? !aim.equals(that.aim) : that.aim != null) return false;
+        if (!email.equals(that.email)) return false;
+        if (hpTitle != null ? !hpTitle.equals(that.hpTitle) : that.hpTitle != null) return false;
+        if (hpUri != null ? !hpUri.equals(that.hpUri) : that.hpUri != null) return false;
+        if (icq != null ? !icq.equals(that.icq) : that.icq != null) return false;
+        if (msn != null ? !msn.equals(that.msn) : that.msn != null) return false;
+        if (phone != null ? !phone.equals(that.phone) : that.phone != null) return false;
+        if (yahoo != null ? !yahoo.equals(that.yahoo) : that.yahoo != null) return false;
+
+        return true;
+    }
+
+    public int hashCode() {
+        int result;
+        result = email.hashCode();
+        result = 29 * result + (icq != null ? icq.hashCode() : 0);
+        result = 29 * result + (aim != null ? aim.hashCode() : 0);
+        result = 29 * result + (yahoo != null ? yahoo.hashCode() : 0);
+        result = 29 * result + (msn != null ? msn.hashCode() : 0);
+        result = 29 * result + (phone != null ? phone.hashCode() : 0);
+        result = 29 * result + (hpTitle != null ? hpTitle.hashCode() : 0);
+        result = 29 * result + (hpUri != null ? hpUri.hashCode() : 0);
+        return result;
+    }
+
 }
