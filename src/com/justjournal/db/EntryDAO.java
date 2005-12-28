@@ -47,12 +47,15 @@ import java.util.Collection;
  * one is needed.
  *
  * @author Lucas Holt
- * @version 1.0
+ * @version 1.1
  * @see EntryTo
  * @since 1.0
  *        User: laffer1
  *        Date: Sep 20, 2003
  *        Time: 8:48:24 PM
+ *
+ * 1.1 Fixed a bug selecting older entries.  
+ * 1.0 initial release
  */
 public final class EntryDAO {
     final static int MAX_ENTRIES = 20;
@@ -368,7 +371,7 @@ public final class EntryDAO {
                     "mood, location " +
                     "WHERE us.userName='" + userName +
                     "' AND us.id=eh.uid AND mood.id=eh.mood AND location.id=eh.location ORDER BY eh.date DESC, eh.id DESC LIMIT "
-                    + Integer.toString(skip) + "," + Integer.toString(skip + PAGE_SIZE) + ";";
+                    + Integer.toString(skip) + "," + Integer.toString(PAGE_SIZE) + ";";
         } else {
             if (log.isDebugEnabled())
                 log.debug("view: this user is not logged in.");
@@ -382,7 +385,7 @@ public final class EntryDAO {
                     "mood, location " +
                     "WHERE us.userName='" + userName +
                     "' AND us.id=eh.uid AND mood.id=eh.mood AND location.id=eh.location AND eh.security=2 ORDER BY eh.date DESC, eh.id DESC LIMIT "
-                    + Integer.toString(skip) + "," + Integer.toString(skip + PAGE_SIZE) + ";";
+                    + Integer.toString(skip) + "," + Integer.toString(PAGE_SIZE) + ";";
         }
 
         try {
