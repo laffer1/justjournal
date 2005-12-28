@@ -34,9 +34,9 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.ctl;
 
-import com.justjournal.StringUtil;
 import com.justjournal.db.CommentDao;
 import com.justjournal.db.CommentTo;
+import com.justjournal.utility.StringUtil;
 import org.apache.log4j.Category;
 
 

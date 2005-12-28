@@ -40,7 +40,7 @@ POSSIBILITY OF SUCH DAMAGE.
 //  Copyright (c) 2003 __MyCompanyName__. All rights reserved.
 //
 
-package com.justjournal;
+package com.justjournal.utility;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

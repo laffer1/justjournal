@@ -92,7 +92,7 @@ public final class UpdateStyleSheetOverride
             }
         }
 
-        if (error == true) {
+        if (error) {
             webError.Display("Error", "Unknown error has occured.", out);
         }
 

@@ -33,25 +33,25 @@ POSSIBILITY OF SUCH DAMAGE.
 */
 package com.justjournal.ctl;
 
-import org.apache.log4j.Category;
-
-import java.util.Collection;
-import java.util.ArrayList;
-
 import com.justjournal.SQLHelper;
 import com.justjournal.db.EntryDAO;
 import com.justjournal.db.EntryTo;
+import org.apache.log4j.Category;
 import sun.jdbc.rowset.CachedRowSet;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * View the favorite entries list.
+ *
  * @author Lucas Holt
  * @version 1.0
  * @since 1.0
- *
- * Created:
- * Date: Dec 10, 2005
- * Time: 8:44:39 PM
+ *        <p/>
+ *        Created:
+ *        Date: Dec 10, 2005
+ *        Time: 8:44:39 PM
  */
 public class ViewFavorite extends Protected {
     private static Category log = Category.getInstance(ViewFavorite.class.getName());
@@ -60,6 +60,7 @@ public class ViewFavorite extends Protected {
 
     /**
      * Retrieve the collection of favorite entries
+     *
      * @return an arraylist containing EntryTo objects
      */
     public Collection getEntries() {
@@ -68,7 +69,8 @@ public class ViewFavorite extends Protected {
 
     /**
      * Get the current logged in user's username
-     * @return  username as string
+     *
+     * @return username as string
      */
     public String getMyLogin() {
         return this.currentLoginName();
@@ -81,37 +83,36 @@ public class ViewFavorite extends Protected {
      * @throws Exception
      */
     protected String insidePerform() throws Exception {
-         EntryDAO edao = new EntryDAO();
+        EntryDAO edao = new EntryDAO();
 
-           if (log.isDebugEnabled())
-               log.debug("insidePerform(): Attempting to view favorites");
+        if (log.isDebugEnabled())
+            log.debug("insidePerform(): Attempting to view favorites");
 
-           if (this.currentLoginId() < 1)
+        if (this.currentLoginId() < 1)
             addError("login", "The login timed out or is invalid.");
 
-           if (!this.hasErrors()) {
-               try {
-                   String sql = "viewfavorite " + this.currentLoginId() + ";";
-                   CachedRowSet rs = SQLHelper.executeResultSet(sql);
+        if (!this.hasErrors()) {
+            try {
+                String sql = "call viewfavorite(" + this.currentLoginId() + ");";
+                CachedRowSet rs = SQLHelper.executeResultSet(sql);
 
-                   while (rs.next())
-                   {
-                       int eid = rs.getInt("entryid");
-                       EntryTo et = edao.viewSingle(eid, false);
-                       entries.add(et);
-                   }
-               }
-               catch (Exception e) {
-                   addError("View Favorites", "Could not retrieve favorites.");
-                   if (log.isDebugEnabled())
-                       log.debug("insidePerform(): " + e.getMessage());
-               }
-           }
+                while (rs.next()) {
+                    int eid = rs.getInt("entryid");
+                    EntryTo et = edao.viewSingle(eid, false);
+                    entries.add(et);
+                }
+            }
+            catch (Exception e) {
+                addError("View Favorites", "Could not retrieve favorites.");
+                if (log.isDebugEnabled())
+                    log.debug("insidePerform(): " + e.getMessage());
+            }
+        }
 
-           if (this.hasErrors())
-               return ERROR;
-           else
-               return SUCCESS;
-       }
+        if (this.hasErrors())
+            return ERROR;
+        else
+            return SUCCESS;
+    }
 
 }

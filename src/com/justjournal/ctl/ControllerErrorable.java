@@ -48,11 +48,9 @@ import java.util.Map;
  * @author Lucas Holt
  * @version 1.0
  * @since 1.0
- *        Created by IntelliJ IDEA.
  *        User: laffer1
  *        Date: Dec 29, 2003
  *        Time: 6:51:38 PM
- *        To change this template use Options | File Templates.
  */
 public class ControllerErrorable extends ThrowawayBean2 {
     /**

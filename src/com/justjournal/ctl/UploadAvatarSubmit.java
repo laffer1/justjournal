@@ -58,7 +58,7 @@ public class UploadAvatarSubmit extends Protected {
     private static Category log = Category.getInstance(UploadAvatarSubmit.class.getName());
 
     public String getMyLogin() {
-        return this.currentLoginName();
+        return currentLoginName();
     }
 
     protected String insidePerform() throws Exception {
@@ -72,8 +72,8 @@ public class UploadAvatarSubmit extends Protected {
             DiskFileUpload upload = new DiskFileUpload();
 
             // set limits
-            upload.setSizeMax(10 * 1024);
-            upload.setSizeThreshold(10 * 1024);
+            upload.setSizeMax(15 * 1024);
+            upload.setSizeThreshold(15 * 1024);
             upload.setRepositoryPath("/tmp");  // should be changed.
 
             // process request
@@ -167,25 +167,22 @@ public class UploadAvatarSubmit extends Protected {
                                 stmtRemove.close();
                             } catch (SQLException sqlEx) {
                                 // ignore -- as we can't do anything about it here
-                                 log.debug(sqlEx.getMessage());
+                                log.debug(sqlEx.getMessage());
                             }
 
                             try {
                                 conn.close();
                             } catch (SQLException sqlEx) {
                                 // ignore -- as we can't do anything about it here
-                                 log.debug(sqlEx.getMessage());
+                                log.debug(sqlEx.getMessage());
                             }
                         }
-
                     } else {
                         log.debug("File size is too small");
-                        addError("File","File size is too small.");
+                        addError("File", "File size is too small.");
                     }
                 }
             }
-
-
         }
 
         if (hasErrors() || RowsAffected != 1)

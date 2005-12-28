@@ -37,6 +37,7 @@ package com.justjournal;
 import com.justjournal.db.EntryDAO;
 import com.justjournal.db.EntryTo;
 import com.justjournal.utility.Spelling;
+import com.justjournal.utility.StringUtil;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -443,7 +444,6 @@ public final class updateJournal extends HttpServlet {
                         sb.append("JJ.JOURNAL.UPDATE.OK");
                 }
 
-
                 // output the result of our processing
                 final ServletOutputStream outstream = response.getOutputStream();
                 outstream.println(sb.toString());
@@ -452,7 +452,7 @@ public final class updateJournal extends HttpServlet {
 
         } else {
             if (webClient)
-            // We couldn't authenticate.  Tell the user.
+                // We couldn't authenticate.  Tell the user.
                 webError.Display("Authentication Error",
                         "Unable to login.  Please check your username and password.",
                         sb);

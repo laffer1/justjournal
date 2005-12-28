@@ -38,6 +38,7 @@ import com.justjournal.Preferences;
 import com.justjournal.db.CommentDao;
 import com.justjournal.db.EntryDAO;
 import com.justjournal.db.EntryTo;
+import org.apache.log4j.Category;
 
 import java.util.Collection;
 
@@ -48,6 +49,7 @@ import java.util.Collection;
  * Time: 3:25:21 PM
  */
 public class ViewComment extends ControllerAuth {
+    private static Category log = Category.getInstance(ViewComment.class.getName());
 
     protected EntryTo entry;
     protected Collection comments;
@@ -89,8 +91,7 @@ public class ViewComment extends ControllerAuth {
         // or the security level is private.
         if (pf.isPrivateJournal() ||
                 !this.entry.getAllowComments() ||
-                this.entry.getSecurityLevel() == 0 )
-        {
+                this.entry.getSecurityLevel() == 0) {
             this.entry = new EntryTo();
             return ERROR;
         }

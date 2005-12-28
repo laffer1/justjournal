@@ -34,8 +34,6 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.utility;
 
-import com.justjournal.StringUtil;
-
 /**
  * @author Lucas Holt
  *         User: laffer1

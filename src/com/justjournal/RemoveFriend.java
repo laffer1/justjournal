@@ -43,18 +43,13 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.PrintWriter;
 
-public final class RemoveFriend extends HttpServlet {
+public final class RemoveFriend extends JustJournalBaseServlet {
 
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws java.io.IOException {
-        // Will be using session data, must initialize session, will not affect any current session
-        HttpSession session = request.getSession(true);
+    protected void execute(HttpServletRequest request, HttpServletResponse response, HttpSession session, StringBuffer sb) {
 
         // Retreive username
         // String username = "";
@@ -68,43 +63,23 @@ public final class RemoveFriend extends HttpServlet {
             userID = userIDasi.intValue();
         }
 
-        // Send HTML type in http stream
-        response.setContentType("text/html");
-        PrintWriter out = response.getWriter();
-
         // friend id that will be removed
-        String temp = request.getParameter("id");
+        String temp = fixInput(request, "id");
         int friendID = Integer.valueOf(temp).intValue();
-
-        // the value returned is currently not used
 
         try {
             String sqlStatement = "Delete FROM friends where id ='" + userID + "' and friendid='" + friendID + "' LIMIT 1;";
             int rowsAffected = SQLHelper.executeNonQuery(sqlStatement);
 
-            if (rowsAffected > 0)
-                out.println("Friend has been deleted.");
-            else
-                out.println("Error removing friend.");
+            if (rowsAffected > 0) {
+                sb.append("<p>Friend has been deleted.</p>");
+                sb.append(endl);
+            } else
+                webError.Display("Error", "Could not remove friend.", sb);
         } catch (Exception e) {
             // record was not deleted
-            out.println(e.getMessage());
+            webError.Display("Error", e.getMessage(), sb);
         }
-
-        out.flush();
-        return;
-    }
-
-    // processes get requests
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws java.io.IOException {
-        processRequest(request, response);
-    }
-
-    // processes post requests
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws java.io.IOException {
-        processRequest(request, response);
     }
 
     // required function for servlets
@@ -112,5 +87,3 @@ public final class RemoveFriend extends HttpServlet {
         return "Removes a friend";
     }
 }
-
-;

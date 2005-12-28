@@ -155,6 +155,8 @@ public final class loginAccount extends JustJournalBaseServlet {
         sb.append(endl);
         sb.append("\t<p>You are logged in as <a href=\"/users/").append(userName).append("\"><img src=\"/images/user.gif\" alt=\"user\" />").append(userName).append("</a>.</p>");
         sb.append(endl);
+        sb.append("\t<p><a href=\"/update.jsp\">Post a journal entry</a></p>");
+        sb.append(endl);
         sb.append("</div>");
         sb.append(endl);
 
@@ -173,7 +175,6 @@ public final class loginAccount extends JustJournalBaseServlet {
         String userAgent = fixHeaderInput(request, "User-Agent");
         boolean webClient = true;  // browser
 
-
         // adjust the case
         userName = userName.toLowerCase();
         passwordHash = passwordHash.toLowerCase();
@@ -182,8 +183,7 @@ public final class loginAccount extends JustJournalBaseServlet {
         if (userAgent.toLowerCase().indexOf("justjournal") > -1)
             webClient = false; // desktop client.. win/mac/java
 
-        if (log.isDebugEnabled())
-        {
+        if (log.isDebugEnabled()) {
             log.debug("User Agent is: " + userAgent + endl);
             log.debug("Is web client? " + webClient + endl);
         }

@@ -205,7 +205,7 @@ public class HeadlineBean {
             }
 
             if (contentLink != null) {
-                sb.append("<a href=\"" + contentLink + "\">source</a>");
+                sb.append("<a href=\"").append(contentLink).append("\">source</a>");
             }
             sb.append("</p>");
             sb.append(endl);

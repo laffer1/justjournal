@@ -34,10 +34,10 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.ctl;
 
-import com.justjournal.StringUtil;
 import com.justjournal.db.DateTimeBean;
 import com.justjournal.db.EntryDAO;
 import com.justjournal.db.EntryTo;
+import com.justjournal.utility.StringUtil;
 import org.apache.log4j.Category;
 
 /**

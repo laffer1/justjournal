@@ -58,10 +58,13 @@ public final class Cal {
     private final SimpleDateFormat shortdate = new SimpleDateFormat("yyyy-MM-dd");
 
     private final String[] days = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+    private final String[] daysSmall = {"S", "M", "T", "W", "R", "F", "S"};
 
     private final String[] months = {"January", "February", "March", "April",
-                                     "May", "June", "July", "August", "September",
-                                     "October", "November", "December"};
+            "May", "June", "July", "August", "September",
+            "October", "November", "December"};
+
+    private String baseUrl;
 
 
     public Cal(final CachedRowSet RS) {
@@ -71,6 +74,10 @@ public final class Cal {
 
         this.RS = RS;
         this.calculateEntryCounts();
+    }
+
+    public void setBaseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
     }
 
     private void calculateEntryCounts() {
@@ -172,7 +179,7 @@ public final class Cal {
             dayinweek = o.getFirstDayInWeek() - 1;
 
             for (int y = 0; y < java.lang.reflect.Array.getLength(o.storage); y++) {
-                if (dayinweek == 0 && blnFirstTime == false) {
+                if (dayinweek == 0 && !blnFirstTime) {
                     sb.append("<tr>\n");
                 }
 
@@ -239,4 +246,105 @@ public final class Cal {
         return sb.toString();
     }
 
+    public String renderMini() {
+        final StringBuffer sb = new StringBuffer();
+        CalMonth o;
+        final Iterator itr = Months.listIterator();
+
+        sb.append("<!-- Calendar Output -->\n");
+
+        for (int i = 0, n = Months.size(); i < n; i++) {
+            o = (CalMonth) itr.next();
+            sb.append("<table style=\"margin-top:.2in; border: thin solid black; font-size: .8em;\" cellpadding=\"1\" cellspacing=\"1\">\n");
+
+            sb.append("<caption>");
+            sb.append(months[o.monthid]);
+            sb.append(" ");
+            sb.append(o.getYear());
+            sb.append("</caption>\n");
+
+            sb.append("<tr>\n");
+            for (int x = 0; x < 7; x++) {
+                sb.append("<th style=\"background: #F2F2F2\" width=\"14%\">");
+                sb.append(daysSmall[x]);
+                sb.append("</th>\n");
+            }
+            sb.append("</tr>\n");
+
+            int dayinweek;
+            boolean blnFirstTime = true; // first time through
+            sb.append("<tr>\n");
+
+            if (o.getFirstDayInWeek() > 1)
+                sb.append("<td style=\"background: #F2F2F2\" colspan=\"" + (o.getFirstDayInWeek() - 1) + "\"></td>");
+
+            dayinweek = o.getFirstDayInWeek() - 1;
+
+            for (int y = 0; y < java.lang.reflect.Array.getLength(o.storage); y++) {
+                if (dayinweek == 0 && blnFirstTime == false) {
+                    sb.append("<tr>\n");
+                }
+
+                sb.append("<td style=\"background: white\" valign=\"top\">");
+
+                if (o.storage[y] == 0) {
+                    sb.append(y + 1);
+                } else {
+                    sb.append("<a href=\"");
+                    sb.append(baseUrl);
+
+                    // year
+                    sb.append(o.getYear());
+                    sb.append("/");
+
+                    // month
+                    if ((o.monthid + 1) < 10) {
+                        sb.append("0");
+                    }
+                    sb.append(o.monthid + 1);
+                    sb.append("/");
+
+                    // day
+                    if ((y + 1) < 10) {
+                        sb.append("0");
+                    }
+                    sb.append(y + 1);
+                    sb.append("\">");
+                    sb.append(y + 1);
+                    sb.append("</a>");
+                }
+                sb.append("</td>\n");
+
+                if (dayinweek == 6) {
+                    sb.append("</tr>\n");
+                    dayinweek = 0;
+                    blnFirstTime = false; // hiding this here makes it execute less.
+                } else {
+                    dayinweek++;
+                }
+
+            }
+
+            if (dayinweek <= 6 && dayinweek != 0) {
+                // this is seven because colspan is 1 based.  why do the
+                // extra addition +1
+                sb.append("<td style=\"background: #F2F2F2\" colspan=\"").append(7 - dayinweek).append(" \"></td>");
+                sb.append("</tr>\n");
+            }
+
+            sb.append("<tr>");
+            sb.append("<td style=\"background: #F2F2F2; text-align: center;\" colspan=\"7\"><a href=\"");
+            sb.append(baseUrl);
+            sb.append(o.getYear());
+            sb.append("/");
+            if ((o.monthid + 1) < 10)
+                sb.append("0");
+            sb.append(o.monthid + 1);
+            sb.append("\">View Subjects</a></td>");
+            sb.append("</tr>");
+            sb.append("</table>\n\n");
+
+        }
+        return sb.toString();
+    }
 }

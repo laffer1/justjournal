@@ -35,6 +35,7 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal;
 
 import com.justjournal.db.EntryTo;
+import com.justjournal.utility.StringUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -154,9 +155,8 @@ public final class Rss {
         String desc;
 
         sb.append("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n");
-        sb.append("<!DOCTYPE rss SYSTEM \"http://my.netscape.com/publish/formats/rss-0.91.dtd\">\n\n");
 
-        sb.append("<rss version=\"0.91\">\n");
+        sb.append("<rss version=\"2.0\">\n");
         sb.append("\t<channel>\n");
 
         sb.append("\t\t<title>");
@@ -186,6 +186,10 @@ public final class Rss {
         sb.append("\t\t<copyright>");
         sb.append(copyright);
         sb.append("</copyright>\n\n");
+
+        sb.append("\t\t<generator>JustJournal v1.0</generator>\n\n");
+        sb.append("\t\t<docs>http://blogs.law.harvard.edu/tech/rss</docs>\n\n");
+        sb.append("\t\t<ttl>360</ttl>\n\n");
 
         /* Iterator */
         RssItem o;

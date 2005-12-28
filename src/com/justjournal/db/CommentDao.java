@@ -35,7 +35,7 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.db;
 
 import com.justjournal.SQLHelper;
-import com.justjournal.StringUtil;
+import com.justjournal.utility.StringUtil;
 import sun.jdbc.rowset.CachedRowSet;
 
 import java.util.ArrayList;
@@ -60,11 +60,11 @@ public final class CommentDao {
 
         final String sqlStmt =
                 "Insert INTO comments (id,uid,eid,date,subject,body) values(NULL,'"
-                + comment.getUserId() + "','"
-                + comment.getEid() + "','"
-                + comment.getDate() + "','"
-                + StringUtil.replace(comment.getSubject(), '\'', "\\\'") + "','"
-                + StringUtil.replace(comment.getBody(), '\'', "\\\'") + "');";
+                        + comment.getUserId() + "','"
+                        + comment.getEid() + "','"
+                        + comment.getDate() + "','"
+                        + StringUtil.replace(comment.getSubject(), '\'', "\\\'") + "','"
+                        + StringUtil.replace(comment.getBody(), '\'', "\\\'") + "');";
 
         return dao.add(sqlStmt);
     }
@@ -136,7 +136,7 @@ public final class CommentDao {
         final CommentTo comment = new CommentTo();
         final String sqlStmt =
                 "Select user.username, comments.date,comments.subject,comments.body, comments.uid, comments.id As cid, comments.eid FROM comments,user WHERE comments.id='"
-                + commentId + "' AND comments.uid = user.id;";
+                        + commentId + "' AND comments.uid = user.id;";
 
         try {
             rs = SQLHelper.executeResultSet(sqlStmt);
@@ -173,7 +173,7 @@ public final class CommentDao {
         CommentTo comment;
         final String sqlStmt =
                 "Select user.username, comments.date,comments.subject,comments.body, comments.uid, comments.id As cid FROM comments,user WHERE comments.eid='"
-                + entryId + "' AND comments.uid = user.id;";
+                        + entryId + "' AND comments.uid = user.id;";
 
         try {
             rs = SQLHelper.executeResultSet(sqlStmt);

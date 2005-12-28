@@ -41,6 +41,7 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal;
 
 import com.justjournal.db.*;
+import com.justjournal.utility.StringUtil;
 import org.apache.log4j.Category;
 import sun.jdbc.rowset.CachedRowSet;
 
@@ -62,12 +63,13 @@ import java.util.regex.Pattern;
 /**
  * Journal viewer for JustJournal.
  * <p/>
+ * 1.6  User links viewing.
  * 1.5  Avatar support.
  * 1.4  Code cleanup
  * 1.3 (jan 04) added more RSS Support, owner security
  *
  * @author Lucas Holt
- * @version 1.5
+ * @version 1.6
  * @since 1.0
  */
 public final class users extends HttpServlet {
@@ -147,7 +149,6 @@ public final class users extends HttpServlet {
             throw new ServletException(ex);
         }
 
-
         // if the length is greater than three then the uri is like /users/laffer1/friends
 
         int RequestType = RT_ENTRIES;  //default
@@ -193,10 +194,8 @@ public final class users extends HttpServlet {
                 } catch (NumberFormatException e) {
                     singleEntryId = -1; // invalid entry id.  flag the problem.
                 }
-
             }
         }
-
 
         if (RequestType == RT_RSS) {
             response.setContentType("text/xml");
@@ -269,7 +268,7 @@ public final class users extends HttpServlet {
             }
             /* End overrides */
             // rss alt link.
-            sb.append("<link rel=\"alternate\" type=\"application/rss+xml\" title=\"RSS\" href=\"http://www.justjournal.com/users/" + userName + "/rss\" />\n");
+            sb.append("<link rel=\"alternate\" type=\"application/rss+xml\" title=\"RSS\" href=\"http://www.justjournal.com/users/").append(userName).append("/rss\" />\n");
             sb.append("</head>\n");
 
             sb.append("<body>\n");
@@ -297,8 +296,7 @@ public final class users extends HttpServlet {
                 sb.append("\t<div id=\"menu\">");
                 sb.append(endl);
 
-                if (pf.showAvatar())
-                {
+                if (pf.showAvatar()) {
                     sb.append("<img alt=\"avatar\" src=\"/image?id=");
                     sb.append(pf.getId());
                     sb.append("\"/>");
@@ -365,7 +363,10 @@ public final class users extends HttpServlet {
                 sb.append(endl);
 
                 // display mini calendar in menu
-                getCalendarMini(userName,aUser,sb);
+                getCalendarMini(userName, aUser, sb);
+
+                // user links display
+                getUserLinks(pf.getId(), sb);
 
                 sb.append("\t</div>");
                 sb.append(endl);
@@ -550,7 +551,6 @@ public final class users extends HttpServlet {
                         log.debug("getSingleEntry: User is not logged in.");
                 }
 
-
                 // Format the current time.
                 final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm");
                 final SimpleDateFormat formatmydate = new SimpleDateFormat("EEE, d MMM yyyy");
@@ -601,8 +601,8 @@ public final class users extends HttpServlet {
                         else if (o.getBody().indexOf("\r") > -1)
                             sb.append(StringUtil.replace(o.getBody(), '\r', "<br />"));
                         else
-                        // we do not have any "new lines" but it might be
-                        // one long line.
+                            // we do not have any "new lines" but it might be
+                            // one long line.
                             sb.append(o.getBody());
 
                         sb.append("</p>");
@@ -755,7 +755,6 @@ public final class users extends HttpServlet {
                     log.debug("getEntries: User is not logged in.");
             }
 
-
             // Format the current time.
             final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm");
             final SimpleDateFormat formatmydate = new SimpleDateFormat("EEE, d MMM yyyy");
@@ -766,8 +765,7 @@ public final class users extends HttpServlet {
             // jump menu
             sb.append("<p>");
 
-            if (entries.size() > 19)
-            {
+            if (entries.size() > 19) {
                 sb.append("Jump <a href=\"/users/");
                 sb.append(userName);
                 sb.append("?skip=");
@@ -837,8 +835,8 @@ public final class users extends HttpServlet {
                     else if (o.getBody().indexOf("\r") > -1)
                         sb.append(StringUtil.replace(o.getBody(), '\r', "<br />"));
                     else
-                    // we do not have any "new lines" but it might be
-                    // one long line.
+                        // we do not have any "new lines" but it might be
+                        // one long line.
                         sb.append(o.getBody());
 
                     sb.append("</p>");
@@ -1048,12 +1046,11 @@ public final class users extends HttpServlet {
                 sb.append(endl);
 
                 Preferences p = new Preferences(o.getUserName());
-                if (p.showAvatar())
-                {
-                     sb.append("<img alt=\"avatar\" style=\"float: right\" src=\"/image?id=");
-                     sb.append(o.getUserId());
-                     sb.append("\"/>");
-                     sb.append(endl);
+                if (p.showAvatar()) {
+                    sb.append("<img alt=\"avatar\" style=\"float: right\" src=\"/image?id=");
+                    sb.append(o.getUserId());
+                    sb.append("\"/>");
+                    sb.append(endl);
                 }
 
                 sb.append("<h3>");
@@ -1083,8 +1080,8 @@ public final class users extends HttpServlet {
                     else if (o.getBody().indexOf("\r") > -1)
                         sb.append(StringUtil.replace(o.getBody(), '\r', "<br />"));
                     else
-                    // we do not have any "new lines" but it might be
-                    // one long line.
+                        // we do not have any "new lines" but it might be
+                        // one long line.
                         sb.append(o.getBody());
 
                     sb.append("</p>");
@@ -1374,9 +1371,9 @@ public final class users extends HttpServlet {
     }
 
     private static void getCalendarMini(
-                                         final String userName,
-                                         final User aUser,
-                                         final StringBuffer sb) {
+            final String userName,
+            final User aUser,
+            final StringBuffer sb) {
 
         try {
 
@@ -1403,6 +1400,24 @@ public final class users extends HttpServlet {
         } catch (Exception e1) {
 
         }
+    }
+
+    private static void getUserLinks(final int userId,
+                                     final StringBuffer sb) {
+        // begin user links section
+        UserLinkDao ul = new UserLinkDao();
+        UserLinkTo link;
+        Collection links = ul.view(userId);
+
+        sb.append("\t<p>");
+        final Iterator itr = links.iterator();
+        for (int i = 0, n = links.size(); i < n; i++) {
+            link = (UserLinkTo) itr.next();
+            sb.append("<a href=\"").append(link.getUri()).append("\" title=\"").append(link.getTitle()).append("\">").append(link.getTitle()).append("</a><br />");
+        }
+        sb.append("\t</p>");
+        sb.append(endl);
+        // end user links section
     }
 
     /**
@@ -1552,18 +1567,17 @@ public final class users extends HttpServlet {
                         rsComment = SQLHelper.executeResultSet(sqlStmt);
 
 
-                        if (rsComment.next())
-                        {
+                        if (rsComment.next()) {
                             switch (rsComment.getInt("comid")) {
                                 case 0:
                                     break;
                                 case 1:
                                     sb.append("<a href=\"/comment/view.h?entryId=").append(RS.getString("entryid")).append(
-                                        "\">1 comment</a> | ");
+                                            "\">1 comment</a> | ");
                                     break;
                                 default:
-                                    sb.append("<a href=\"/comment/view.h?entryId=").append(RS.getString("entryid")).append( "\">").append(
-                                        rsComment.getInt("comid")).append(" comments</a> | ");
+                                    sb.append("<a href=\"/comment/view.h?entryId=").append(RS.getString("entryid")).append("\">").append(
+                                            rsComment.getInt("comid")).append(" comments</a> | ");
                             }
                         }
                         rsComment.close();

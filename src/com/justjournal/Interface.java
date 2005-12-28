@@ -35,6 +35,7 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal;
 
 import com.justjournal.db.*;
+import com.justjournal.utility.StringUtil;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -108,7 +109,7 @@ public class Interface extends HttpServlet {
             String hpassword = request.getParameter("hpassword");
 
             if (hpassword != null && hpassword.length() > 0)
-            //userID = webLogin.validateMd5( userName, hpassword );
+                //userID = webLogin.validateMd5( userName, hpassword );
                 errMsg = "Unsupported authenticated method.";
             else if (password != null && password.length() > 0)
                 userID = webLogin.validate(userName, password);
@@ -193,7 +194,6 @@ public class Interface extends HttpServlet {
                         MoodDao mdao = new MoodDao();
                         // TODO: add start at x number command!
                         Collection moods = mdao.view();
-
 
                         /* Iterator */
                         MoodTo o;
@@ -343,7 +343,6 @@ public class Interface extends HttpServlet {
                     blnError = true;
                 }
 
-
                 // insert header fields
                 if (blnError == false) {
                     EntryDAO edao = new EntryDAO();
@@ -352,7 +351,6 @@ public class Interface extends HttpServlet {
                     if (result == false)
                         webError.Display("Error", "Error adding the journal entry", sb);
                 }
-
 
                 // display message to user.
                 if (blnError == false) {
@@ -364,7 +362,6 @@ public class Interface extends HttpServlet {
                     } catch (Exception ex) {
                         throw new ServletException(ex);
                     }
-
 
                     // Begin HTML document.
                     sb.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"  \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">");

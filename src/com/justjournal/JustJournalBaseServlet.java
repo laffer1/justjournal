@@ -9,9 +9,13 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
- * User: laffer1
- * Date: Sep 25, 2005
- * Time: 9:04:00 PM
+ * Base servlet to do some of the repetative servlet initialization stuff.
+ *
+ * @author Lucas Holt
+ * @version 1.1
+ * @since 1.0
+ *        Date: Sep 25, 2005
+ *        Time: 9:04:00 PM
  */
 public class JustJournalBaseServlet extends HttpServlet {
     protected static final char endl = '\n';
@@ -47,10 +51,11 @@ public class JustJournalBaseServlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws java.io.IOException {
+        String contentType = "text/html";
         final StringBuffer sb = new StringBuffer();
         final HttpSession session = request.getSession(true);
 
-        response.setContentType("text/html");
+        response.setContentType(contentType);
         response.setDateHeader("Expires", System.currentTimeMillis());
         response.setDateHeader("Last-Modified", System.currentTimeMillis());
         response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
@@ -63,8 +68,7 @@ public class JustJournalBaseServlet extends HttpServlet {
         outstream.flush();
     }
 
-    public long getLastModified(HttpServletRequest request )
-    {
+    public long getLastModified(HttpServletRequest request) {
         return new java.util.Date().getTime() / 1000 * 1000;
     }
 

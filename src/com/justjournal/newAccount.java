@@ -34,6 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal;
 
+import com.justjournal.utility.StringUtil;
 import sun.jdbc.rowset.CachedRowSet;
 
 import javax.servlet.ServletConfig;

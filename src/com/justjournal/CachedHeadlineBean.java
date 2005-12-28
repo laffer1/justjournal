@@ -37,6 +37,7 @@ package com.justjournal;
 import com.justjournal.db.DateTimeBean;
 import com.justjournal.db.RssCacheDao;
 import com.justjournal.db.RssCacheTo;
+import com.justjournal.utility.StringUtil;
 import org.apache.log4j.Category;
 
 import java.io.BufferedReader;
