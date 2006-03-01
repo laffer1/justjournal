@@ -45,8 +45,8 @@ public final class UserLinkDao {
     }
 
     public Collection view(int userId) {
-        ArrayList links = new ArrayList();
-        String sql = "SELECT * FROM user_links WHERE id='" + userId + "';";
+        ArrayList links = new ArrayList(10);
+        String sql = "SELECT * FROM user_link WHERE id='" + userId + "';";
 
         try {
             CachedRowSet rs = SQLHelper.executeResultSet(sql);
