@@ -53,9 +53,9 @@ import java.util.Collection;
  *        User: laffer1
  *        Date: Sep 20, 2003
  *        Time: 8:48:24 PM
- *
- * 1.1 Fixed a bug selecting older entries.  
- * 1.0 initial release
+ *        <p/>
+ *        1.1 Fixed a bug selecting older entries.
+ *        1.0 initial release
  */
 public final class EntryDAO {
     final static int MAX_ENTRIES = 20;
@@ -496,7 +496,7 @@ public final class EntryDAO {
 
 
         else if (aUserId == 0)
-        // no user logged in.. just spit out public entries.
+            // no user logged in.. just spit out public entries.
             sqlStatement =
                     new StringBuffer().append("SELECT friends.friendid As id, us.username, eh.date as date, eh.subject as subject, eh.music, eh.body, eh.security, eh.autoformat, eh.allow_comments, eh.email_comments, mood.title as mood, mood.id as moodid, location.id as locid, location.title as location, eh.id As entryid FROM user as us, entry as eh, mood, location, friends WHERE friends.id='").append(userID).append("' AND friends.friendid = eh.uid AND mood.id=eh.mood AND location.id=eh.location AND friends.friendid=us.id AND eh.security=2 ORDER by eh.date DESC LIMIT 0,15;").toString();
         else
@@ -692,5 +692,98 @@ public final class EntryDAO {
         }
 
         return RS;
+    }
+
+    /**
+     * Retrieves top 15 posts from all user's public journal entries
+     * for submission on front page. (RSS feed, etc)
+     *
+     * @return Top 15 recent public entries
+     */
+    public Collection viewRecentAllUsers() {
+
+        if (log.isDebugEnabled())
+            log.debug("view: starting viewRecentAllusers().");
+
+        final int SIZE = 15;
+        final ArrayList entries = new ArrayList(SIZE);
+
+        String sqlStatement;
+        CachedRowSet rs = null;
+        EntryTo et;
+
+        // PUBLIC ONLY
+        sqlStatement = "SELECT us.id As id, us.userName, " +
+                "eh.date As date, eh.subject As subject, eh.music, eh.body, " +
+                "mood.title As moodt, location.title As location, eh.id As entryid, " +
+                "eh.security as security, eh.autoformat, eh.allow_comments, eh.email_comments, location.id as locationid, mood.id as moodid " +
+                "FROM user As us, entry As eh, " +
+                "mood, location " +
+                "WHERE " +
+                " us.id=eh.uid AND mood.id=eh.mood AND location.id=eh.location AND eh.security=2 ORDER BY eh.date DESC, eh.id DESC LIMIT "
+                + "0," + Integer.toString(SIZE) + ";";
+
+        try {
+            if (log.isDebugEnabled())
+                log.debug("viewRecentAllUsers: execute sql statement");
+
+            rs = SQLHelper.executeResultSet(sqlStatement);
+
+            while (rs.next()) {
+                if (log.isDebugEnabled())
+                    log.debug("viewRecentAllUsers: create EntryTo object and populate it.");
+
+                et = new EntryTo();
+
+                et.setUserName(rs.getString("userName"));
+                et.setId(rs.getInt("entryid"));
+                et.setUserId(rs.getInt("id"));
+                et.setDate(rs.getString("date"));
+                et.setSubject(rs.getString("subject"));
+                et.setBody(rs.getString("body"));
+                et.setLocationId(rs.getInt("locationid"));
+                et.setMoodId(rs.getInt("moodid"));
+                et.setMusic(rs.getString("music"));
+                et.setSecurityLevel(rs.getInt("security"));
+                et.setMoodName(rs.getString("moodt"));
+                et.setLocationName(rs.getString("location"));
+
+                if (rs.getString("email_comments").compareTo("Y") == 0)
+                    et.setEmailComments(true);
+                else
+                    et.setEmailComments(false);
+
+                if (rs.getString("allow_comments").compareTo("Y") == 0)
+                    et.setAllowComments(true);
+                else
+                    et.setAllowComments(false);
+
+                if (rs.getString("autoformat").compareTo("Y") == 0)
+                    et.setAutoFormat(true);
+                else
+                    et.setAutoFormat(false);
+
+                if (log.isDebugEnabled())
+                    log.debug("viewRecentAllUsers: ET contains " + et.toString());
+
+                entries.add(et);
+            }
+
+            rs.close();
+
+        } catch (Exception e1) {
+            if (log.isDebugEnabled())
+                log.debug("viewRecentAllUsers: exception is: " + e1.getMessage() + "\n" + e1.toString());
+
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (Exception e) {
+                    // NOTHING TO DO
+                }
+            }
+        }
+
+        return entries;
     }
 }
