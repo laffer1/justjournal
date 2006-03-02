@@ -44,6 +44,12 @@ public final class Xml {
     /**
      * converts characters that are special in xml
      * to their equivalents.
+     * <p/>
+     * This does not alter elements that may be part of DTDs
+     * such as HTML's &nbsp;.
+     * <p/>
+     * It currently does not handle numerical escapes as
+     * defined in XML either. &#xA0; etc
      *
      * @param input
      * @return A string with xml friendly escaped sequences.
@@ -54,6 +60,8 @@ public final class Xml {
         work = StringUtil.replace(work, '"', "&quot;");
         work = StringUtil.replace(work, '<', "&lt;");
         work = StringUtil.replace(work, '>', "&gt;");
+        work = StringUtil.replace(work, '&', "&amp;");
+        work = StringUtil.replace(work, '\'', "&apos;");
 
         return work;
     }
