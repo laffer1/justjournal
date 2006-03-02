@@ -43,8 +43,44 @@ package com.justjournal;
 public final class RssItem {
 
     private String title;
-    private String link;
+    private String link;     // link of exact item.
     private String description;
+    private String author;   // email address of author of item.
+    private String comments; // url of comments page for item.
+    private String pubDate;  // publication date.
+    private String guid;     // url to item, always works.
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public String getComments() {
+        return comments;
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
+    }
+
+    public String getPubDate() {
+        return pubDate;
+    }
+
+    public void setPubDate(String pubDate) {
+        this.pubDate = pubDate;
+    }
+
+    public String getGuid() {
+        return guid;
+    }
+
+    public void setGuid(String guid) {
+        this.guid = guid;
+    }
 
     public String getTitle() {
         return title;
