@@ -35,11 +35,10 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal;
 
 import com.justjournal.db.EntryTo;
-import com.justjournal.utility.StringUtil;
+import com.justjournal.utility.Xml;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * @author Lucas Holt
@@ -121,7 +120,7 @@ public final class Rss {
 
     // Methods
 
-    public void populate(Collection entries, String userName) {
+    public void populate(Collection entries) {
 
         RssItem item;
 
@@ -135,8 +134,10 @@ public final class Rss {
                 o = (EntryTo) itr.next();
                 item = new RssItem();
                 item.setTitle(o.getSubject());
-                item.setLink("http://www.justjournal.com/users/" + userName);
+                item.setLink("http://www.justjournal.com/users/" + o.getUserName());
                 item.setDescription(o.getBody());
+                item.setGuid("http://www.justjournal.com/users/" + o.getUserName() + "/entry/" + o.getId());
+                item.setPubDate(o.getDate().toString()); // TODO: fix date format
                 Add(item);
             }
 
@@ -152,7 +153,6 @@ public final class Rss {
     public String toXml() {
 
         StringBuffer sb = new StringBuffer();
-        String desc;
 
         sb.append("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n");
 
@@ -160,7 +160,7 @@ public final class Rss {
         sb.append("\t<channel>\n");
 
         sb.append("\t\t<title>");
-        sb.append(title);
+        sb.append(Xml.cleanString(title));
         sb.append("</title>\n");
 
         sb.append("\t\t<link>");
@@ -168,7 +168,7 @@ public final class Rss {
         sb.append("</link>\n");
 
         sb.append("\t\t<description>");
-        sb.append(description);
+        sb.append(Xml.cleanString(description));
         sb.append("</description>\n");
 
         sb.append("\t\t<language>");
@@ -185,11 +185,44 @@ public final class Rss {
 
         sb.append("\t\t<copyright>");
         sb.append(copyright);
-        sb.append("</copyright>\n\n");
+        sb.append("</copyright>\n");
 
-        sb.append("\t\t<generator>JustJournal v1.0</generator>\n\n");
-        sb.append("\t\t<docs>http://blogs.law.harvard.edu/tech/rss</docs>\n\n");
+        sb.append("\t\t<generator>JustJournal v1.0</generator>\n");
+        sb.append("\t\t<docs>http://blogs.law.harvard.edu/tech/rss</docs>\n");
         sb.append("\t\t<ttl>360</ttl>\n\n");
+
+        sb.append("\t\t<image>\n");
+
+        sb.append("\t\t\t<url>");
+        sb.append("http://www.justjournal.com/images/userclass_32.png");
+        sb.append("</url>\n");
+
+        sb.append("\t\t\t<title>");
+        sb.append(Xml.cleanString(title));
+        sb.append("</title>\n");
+
+        sb.append("\t\t\t<link>");
+        sb.append(link);
+        sb.append("</link>\n");
+
+        // max width 144, default if not here is 88
+        sb.append("\t\t\t<width>");
+        sb.append(32);
+        sb.append("</width>\n");
+
+        // max height is 400, default is 31
+        sb.append("\t\t\t<height>");
+        sb.append(32);
+        sb.append("</height>\n");
+
+        sb.append("\t\t</image>\n");
+
+        // last build date
+        // Sat, 07 Sep 2002 09:43:33 GMT
+        // someday get this format right
+        sb.append("\t\t<lastBuildDate>");
+        sb.append(date());
+        sb.append("</lastBuildDate>\n");
 
         /* Iterator */
         RssItem o;
@@ -201,22 +234,24 @@ public final class Rss {
             sb.append("\t\t<item>\n");
 
             sb.append("\t\t\t<title>");
-            sb.append(o.getTitle());
+            sb.append(Xml.cleanString(o.getTitle()));
             sb.append("</title>\n");
 
             sb.append("\t\t\t<link>");
             sb.append(o.getLink());
             sb.append("</link>\n");
 
-            // TODO: encode more characters!
-            desc = o.getDescription();
-            desc = StringUtil.replace(desc, '&', "&amp;");
-            desc = StringUtil.replace(desc, '<', "&lt;");
-            desc = StringUtil.replace(desc, '>', "&gt;");
-
             sb.append("\t\t\t<description>");
-            sb.append(desc);
+            sb.append(Xml.cleanString(o.getDescription()));
             sb.append("...</description>\n");
+
+            sb.append("\t\t\t<guid isPermaLink=\"true\">");
+            sb.append(o.getGuid());
+            sb.append("</guid>\n");
+
+            sb.append("\t\t\t<pubDate>");
+            sb.append(o.getPubDate());
+            sb.append("</pubDate>\n");
 
             sb.append("\t\t</item>\n");
         }
@@ -225,6 +260,15 @@ public final class Rss {
         sb.append("</rss>\n");
 
         return sb.toString();
+    }
+
+    private String date() {
+        //Sat, 07 Sep 2002 09:43:33 GMT
+        Calendar cal = new GregorianCalendar(java.util.TimeZone.getDefault());
+        java.util.Date current = cal.getTime();
+        final SimpleDateFormat formatmydate = new SimpleDateFormat("E, d MM yyyy H:m:s zz");
+
+        return formatmydate.format(current);
     }
 
     public void recycle() {
