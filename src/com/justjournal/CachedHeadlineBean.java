@@ -106,7 +106,7 @@ public final class CachedHeadlineBean
 
                 rss.setContent(sbx.toString().trim());
                 // sun can't make their own rss feeds complaint
-                if (rss.getContent().startsWith("<rss") == true)
+                if (rss.getContent().startsWith("<rss"))
                     rss.setContent("<?xml version=\"1.0\"?>\n" + rss.getContent());
                 dao.update(rss);
             } else if (rss.getContent() == null ||
@@ -125,7 +125,7 @@ public final class CachedHeadlineBean
 
                 rss.setContent(sbx.toString().trim());
                 // sun can't make their own rss feeds complaint
-                if (rss.getContent().startsWith("<rss") == true)
+                if (rss.getContent().startsWith("<rss"))
                     rss.setContent("<?xml version=\"1.0\"?>\n" + rss.getContent());
                 dao.update(rss);
             } else {
@@ -153,7 +153,7 @@ public final class CachedHeadlineBean
                 rss.setInterval(24);
                 rss.setContent(sbx.toString().trim());
                 // sun can't make their own rss feeds complaint
-                if (rss.getContent().startsWith("<rss") == true)
+                if (rss.getContent().startsWith("<rss"))
                     rss.setContent("<?xml version=\"1.0\"?>\n" + rss.getContent());
                 dao.add(rss);
             } catch (java.lang.NullPointerException n) {
@@ -171,7 +171,6 @@ public final class CachedHeadlineBean
         org.xml.sax.InputSource saxy = new org.xml.sax.InputSource(sr);
         builder = factory.newDocumentBuilder();
         document = builder.parse(saxy);
-
 
         if (log.isDebugEnabled())
             log.debug("Hit end of getRssDocument() for " + uri);
