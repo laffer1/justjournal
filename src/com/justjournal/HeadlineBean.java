@@ -42,6 +42,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Retrieves a RSS document using HTTP, parses the document, and
@@ -72,7 +74,6 @@ public class HeadlineBean {
     protected InputStream inputXML;
     protected DocumentBuilder builder;
     protected Document document;
-    private StringBuffer sb;
 
     final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 
@@ -99,7 +100,7 @@ public class HeadlineBean {
             getRssDocument(url);
 
             // output variable
-            sb = new StringBuffer();
+            final StringBuffer sb = new StringBuffer();
 
             String contentTitle = "";
             String contentLink = "";
@@ -204,6 +205,11 @@ public class HeadlineBean {
                 sb.append("<p>");
             }
 
+            if (contentDescription != null) {
+                sb.append(contentDescription);
+                sb.append("<br />");
+            }
+
             if (contentLink != null) {
                 sb.append("<a href=\"").append(contentLink).append("\">source</a>");
             }
@@ -223,7 +229,7 @@ public class HeadlineBean {
             sb.append("<ul class=\"RssItems\">");
             sb.append(endl);
 
-            for (int i = 0; i < nodeList.getLength(); i++) {
+            for (int i = 0; i < nodeList.getLength() && i < 16; i++) {
                 org.w3c.dom.NodeList childList = nodeList.item(i).getChildNodes();
                 // some of the properties of <items>
                 String link = null;
@@ -272,8 +278,21 @@ public class HeadlineBean {
 
                     sb.append("<br />");
                     sb.append("<span class=\"RssItemDesc\">");
-                    sb.append(description);
+                    /*
+                      /<(script|noscript|object|embed|style|frameset|frame|iframe)[>\s\S]*<\/\\1>/i /<\/?!?(param|link|meta|doctype|div|font)[^>]*>/i /(class|style|id)=\"[^\"]*\"/i
+                    */
+                    Pattern p = Pattern.compile("/<(script|noscript|object|embed|style|frameset|frame|iframe|link)[>\\s\\S]*<\\/\\1>/i");
+                    Matcher m = p.matcher(description);
+                    String result = m.replaceAll("");
+
+                    sb.append(result);
                     sb.append("</span>");
+
+                    sb.append("<span class=\"RssReadMore\"><a href=\"");
+                    sb.append("<a href=\"");
+                    sb.append(guid);
+                    sb.append("\">");
+                    sb.append("Read More</a></span>");
 
                     sb.append("</li>");
                     sb.append(endl);
