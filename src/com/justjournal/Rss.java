@@ -137,7 +137,7 @@ public final class Rss {
                 item.setLink("http://www.justjournal.com/users/" + o.getUserName());
                 item.setDescription(o.getBody());
                 item.setGuid("http://www.justjournal.com/users/" + o.getUserName() + "/entry/" + o.getId());
-                item.setPubDate(o.getDate().toString()); // TODO: fix date format
+                item.setPubDate(o.getDate().toPubDate());
                 Add(item);
             }
 
@@ -266,7 +266,7 @@ public final class Rss {
         //Sat, 07 Sep 2002 09:43:33 GMT
         Calendar cal = new GregorianCalendar(java.util.TimeZone.getDefault());
         java.util.Date current = cal.getTime();
-        final SimpleDateFormat formatmydate = new SimpleDateFormat("E, d MM yyyy H:m:s zz");
+        final SimpleDateFormat formatmydate = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zz");
 
         return formatmydate.format(current);
     }

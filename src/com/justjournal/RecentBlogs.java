@@ -50,7 +50,7 @@ public class RecentBlogs extends JustJournalBaseServlet {
     private static Category log = Category.getInstance(RecentBlogs.class.getName());
 
     protected void execute(HttpServletRequest request, HttpServletResponse response, HttpSession session, StringBuffer sb) {
-        response.setContentType("text/xml");
+        response.setContentType("application/rss+xml");
         // Create an RSS object, set the required
         // properites (title, description language, url)
         // and write it to the sb output.
@@ -68,7 +68,7 @@ public class RecentBlogs extends JustJournalBaseServlet {
             rss.setCopyright("Copyright " + calendarg.get(Calendar.YEAR) + " JustJournal.com and its blog account owners.");
             rss.setWebMaster("webmaster@justjournal.com");
             rss.setManagingEditor("webmaster@justjournal.com");
-            rss.populate(edao.viewRecentAllUsers(), "");
+            rss.populate(edao.viewRecentAllUsers());
             sb.append(rss.toXml());
 
         } catch (Exception e) {

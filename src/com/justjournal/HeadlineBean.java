@@ -88,6 +88,7 @@ public class HeadlineBean {
         inputXML = u.openStream();
 
         //Build document:
+        factory.setValidating(false);
         builder = factory.newDocumentBuilder();
         document = builder.parse(inputXML);
     }
@@ -104,7 +105,7 @@ public class HeadlineBean {
 
             String contentTitle = "";
             String contentLink = "";
-            String contentDescription = "";
+            // String contentDescription = "";
             String contentLastBuildDate = "";
             String contentGenerator = "";
 
@@ -130,8 +131,8 @@ public class HeadlineBean {
                     contentTitle = curNode.getChildNodes().item(0).getNodeValue();
                 } else if (curNode.getNodeName().equals("link")) {
                     contentLink = curNode.getChildNodes().item(0).getNodeValue();
-                } else if (curNode.getNodeName().equals("description")) {
-                    contentDescription = curNode.getChildNodes().item(0).getNodeValue();
+                    //} else if (curNode.getNodeName().equals("description")) {
+                    //    contentDescription = curNode.getChildNodes().item(0).getNodeValue();
                 } else if (curNode.getNodeName().equals("lastBuildDate")) {
                     contentLastBuildDate = curNode.getChildNodes().item(0).getNodeValue();
                 } else if (curNode.getNodeName().equals("generator")) {
@@ -205,10 +206,10 @@ public class HeadlineBean {
                 sb.append("<p>");
             }
 
-            if (contentDescription != null) {
+            /* if (contentDescription != null) {
                 sb.append(contentDescription);
                 sb.append("<br />");
-            }
+            }*/
 
             if (contentLink != null) {
                 sb.append("<a href=\"").append(contentLink).append("\">source</a>");

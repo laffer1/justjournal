@@ -74,8 +74,13 @@ public final class loginAccount extends JustJournalBaseServlet {
         sb.append(endl);
         sb.append("<title>JustJournal.com: Login</title>");
         sb.append(endl);
-        sb.append("<link rel=\"stylesheet\" type=\"text/css\" media=\"screen\" title=\"default\" href=\"/layout1.css\">");
+        sb.append("<link href=\"/layout1.css\" title=\"default\" media=\"all\" type=\"text/css\" rel=\"stylesheet\" />");
         sb.append(endl);
+        sb.append("<link href=\"/\" title=\"Home\" rel=\"home\" />");
+        sb.append(endl);
+        sb.append("<link href=\"/sitemap.jsp\" title=\"Site Map\" rel=\"contents\" />");
+        sb.append(endl);
+        sb.append("<link href=\"/support/\" title=\"Technical Support\" rel=\"help\" />");
         sb.append("</head>");
         sb.append(endl);
 
@@ -129,15 +134,14 @@ public final class loginAccount extends JustJournalBaseServlet {
         sb.append("\t</ul>");
         sb.append(endl);
 
-        sb.append("\t<strong>RSS Syndication</strong>");
         sb.append("\t<ul>");
         sb.append(endl);
         sb.append("<li><a href=\"/users/");
         sb.append(userName);
-        sb.append("/rss\"><img src=\"/img/v4_xml.gif\" alt=\"RSS content feed\" /> Recent</a></li>");
+        sb.append("/rss\"><img src=\"/images/rss2.gif\" alt=\"Journal RSS Feed\" /></a></li>");
         sb.append("<li><a href=\"/users/");
         sb.append(userName);
-        sb.append("/subscriptions\">Subscriptions</a></li>");
+        sb.append("/subscriptions\">RSS Reader</a></li>");
         sb.append(endl);
         sb.append("\t</ul>");
         sb.append(endl);
@@ -156,6 +160,15 @@ public final class loginAccount extends JustJournalBaseServlet {
         sb.append("\t<p>You are logged in as <a href=\"/users/").append(userName).append("\"><img src=\"/images/user.gif\" alt=\"user\" />").append(userName).append("</a>.</p>");
         sb.append(endl);
         sb.append("\t<p><a href=\"/update.jsp\">Post a journal entry</a></p>");
+        sb.append(endl);
+        sb.append("\t<p><a href=\"/users/").append(userName).append("/friends\">View friends entries.</a></p>");
+        sb.append(endl);
+        sb.append("</div>");
+        sb.append(endl);
+
+        sb.append("<div id=\"footer\">");
+        sb.append(endl);
+        sb.append("<p id=\"copyright\">&copy; 2003-2006 Lucas Holt.  All rights reserved.</p>");
         sb.append(endl);
         sb.append("</div>");
         sb.append(endl);

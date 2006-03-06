@@ -198,7 +198,7 @@ public final class users extends HttpServlet {
         }
 
         if (RequestType == RT_RSS) {
-            response.setContentType("text/xml");
+            response.setContentType("application/rss+xml");
             response.setBufferSize(8192);
 
             if (!pf.isPrivateJournal() || (aUser != null && aUser.getUserName().equals(userName)))
@@ -766,11 +766,11 @@ public final class users extends HttpServlet {
             sb.append("<p>");
 
             if (entries.size() > 19) {
-                sb.append("Jump <a href=\"/users/");
+                sb.append(" Go: <a href=\"/users/");
                 sb.append(userName);
                 sb.append("?skip=");
                 sb.append((skip + 20));
-                sb.append("\">back 20 entries</a> ");
+                sb.append("\">back</a> ");
             }
 
             if (skip > 0) {
@@ -778,7 +778,7 @@ public final class users extends HttpServlet {
                 sb.append(userName);
                 sb.append("?skip=");
                 sb.append((skip - 20));
-                sb.append("\">forward 20 entries</a>");
+                sb.append("\">forward</a>");
             }
             sb.append("</p>");
             sb.append(endl);
@@ -925,7 +925,7 @@ public final class users extends HttpServlet {
 
                 sb.append("<td><div style=\"float: right\"><a href=\"/users/").append(o.getUserName()).append("/entry/");
                 sb.append(o.getId());
-                sb.append("\" title=\"Link to this entry\">link</a> ");
+                sb.append("\" title=\"Link to this entry\">permalink</a> ");
 
                 sb.append("(");
 
@@ -1167,7 +1167,11 @@ public final class users extends HttpServlet {
                     sb.append("\"><img src=\"/images/favourites-24.png\" width=\"24\" height=\"24\" alt=\"Favorites\" /></a></td>");
                     sb.append(endl);
                 }
-                sb.append("<td><div align=\"right\">(");
+
+                sb.append("<td><div style=\"float: right\"><a href=\"/users/").append(o.getUserName()).append("/entry/");
+                sb.append(o.getId());
+                sb.append("\" title=\"Link to this entry\">permalink</a> ");
+                sb.append("(");
 
                 switch (o.getCommentCount()) {
                     case 0:
@@ -1404,20 +1408,20 @@ public final class users extends HttpServlet {
 
     private static void getUserLinks(final int userId,
                                      final StringBuffer sb) {
-        // begin user links section
         UserLinkDao ul = new UserLinkDao();
         UserLinkTo link;
         Collection links = ul.view(userId);
 
-        sb.append("\t<p>");
-        final Iterator itr = links.iterator();
-        for (int i = 0, n = links.size(); i < n; i++) {
-            link = (UserLinkTo) itr.next();
-            sb.append("<a href=\"").append(link.getUri()).append("\" title=\"").append(link.getTitle()).append("\">").append(link.getTitle()).append("</a><br />");
+        if (links.size() > 0) {
+            sb.append("\t<p style=\"padding-top: 3px;\"><strong>Links</strong><br />");
+            final Iterator itr = links.iterator();
+            for (int i = 0, n = links.size(); i < n; i++) {
+                link = (UserLinkTo) itr.next();
+                sb.append("<a href=\"").append(link.getUri()).append("\" title=\"").append(link.getTitle()).append("\">").append(link.getTitle()).append("</a><br />");
+            }
+            sb.append("\t</p>");
+            sb.append(endl);
         }
-        sb.append("\t</p>");
-        sb.append(endl);
-        // end user links section
     }
 
     /**
@@ -1637,7 +1641,7 @@ public final class users extends HttpServlet {
             rss.setCopyright("Copyright " + calendarg.get(Calendar.YEAR) + " " + pf.getName());
             rss.setWebMaster("webmaster@justjournal.com");
             rss.setManagingEditor(pf.getEmailAddress());
-            rss.populate(edao.view(userName, false), userName);
+            rss.populate(edao.view(userName, false));
             sb.append(rss.toXml());
         } catch (Exception e) {
             // oops we goofed somewhere.  Its not in the original spec
