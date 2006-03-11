@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2005, Lucas Holt
+Copyright (c) 2003-2006, Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -41,6 +41,7 @@ package com.justjournal.utility;
  *         Time: 11:39:50 AM
  */
 public final class Xml {
+
     /**
      * converts characters that are special in xml
      * to their equivalents.
@@ -54,13 +55,17 @@ public final class Xml {
      * @param input
      * @return A string with xml friendly escaped sequences.
      */
-    public static String cleanString(String input) {
+    public static String cleanString(final String input) {
         String work = input;
 
+        // warning, if this is already correct,
+        // the &amp replacement could really screw things
+        // up.  Need to somehow verify the document is ok
+        // or at least that & is alone?
+        work = StringUtil.replace(work, '&', "&amp;");
         work = StringUtil.replace(work, '"', "&quot;");
         work = StringUtil.replace(work, '<', "&lt;");
         work = StringUtil.replace(work, '>', "&gt;");
-        work = StringUtil.replace(work, '&', "&amp;");
         work = StringUtil.replace(work, '\'', "&apos;");
 
         return work;
