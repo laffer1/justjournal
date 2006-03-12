@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2005, Lucas Holt
+Copyright (c) 2004-2006, Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -34,14 +34,13 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.utility;
 
-import com.justjournal.SQLHelper;
+import com.justjournal.db.SQLHelper;
 
 /**
  * Created by IntelliJ IDEA.
  * User: laffer1
  * Date: Jan 16, 2004
  * Time: 12:54:58 PM
- * To change this template use Options | File Templates.
  */
 public final class QueueMail {
     // e-mail properties
@@ -51,48 +50,96 @@ public final class QueueMail {
     private String fromAddress = "";
     private String purpose = "";
 
+    public QueueMail() {
+
+    }
+
+    public QueueMail(String subject, String body, String toAddress, String fromAddress, String purpose) {
+        Subject = subject;
+        Body = body;
+        this.toAddress = toAddress;
+        this.fromAddress = fromAddress;
+        this.purpose = purpose;
+    }
+
     public static void main(String[] args) {
         // an instance must be created to use this for now.
         System.out.println("can not run this from command line");
-        return;
     }
 
     public void setSubject(String mailSubject) {
         Subject = mailSubject;
-        return;
     }
 
     public void setBody(String mailBody) {
         Body = mailBody;
-        return;
     }
 
     public void setToAddress(String mailToAddress) {
         toAddress = mailToAddress;
-        return;
     }
 
     public void setFromAddress(String mailFromAddress) {
         fromAddress = mailFromAddress;
-        return;
     }
 
     public void setPurpose(String mailPurpose) {
         purpose = mailPurpose;
-        return;
+    }
+
+    public String getSubject() {
+        return Subject;
+    }
+
+    public String getBody() {
+        return Body;
+    }
+
+    public String getToAddress() {
+        return toAddress;
+    }
+
+    public String getFromAddress() {
+        return fromAddress;
+    }
+
+    public String getPurpose() {
+        return purpose;
     }
 
     public void send()
             throws Exception {
 
-        String sqlstmt = "Insert INTO `queue_mail` ( `to` , `from` , `subject` , `body` , `purpose` ) VALUES( '" + toAddress + "' , '" + fromAddress + "' , '" + Subject + "' , '" + Body + "' , '" + purpose + "' );";
+        String sqlstmt = "Insert INTO `queue_mail` ( `to` , `from` , `subject` , `body` , `purpose` ) VALUES( '" + getToAddress() + "' , '" + getFromAddress() + "' , '" + getSubject() + "' , '" + getBody() + "' , '" + getPurpose() + "' );";
         int result = SQLHelper.executeNonQuery(sqlstmt);
 
         if (result != 1)
             throw new Exception("Couldn't add mail to queue");
-
-        return;
     }
 
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        final QueueMail queueMail = (QueueMail) o;
+
+        if (!getBody().equals(queueMail.getBody())) return false;
+        if (!getSubject().equals(queueMail.getSubject())) return false;
+        if (!getFromAddress().equals(queueMail.getFromAddress())) return false;
+        if (!getPurpose().equals(queueMail.getPurpose())) return false;
+        if (!getToAddress().equals(queueMail.getToAddress())) return false;
+
+        return true;
+    }
+
+    public int hashCode() {
+        int result;
+        result = getSubject().hashCode();
+        result = 29 * result + getBody().hashCode();
+        result = 29 * result + getToAddress().hashCode();
+        result = 29 * result + getFromAddress().hashCode();
+        result = 29 * result + getPurpose().hashCode();
+        return result;
+    }
 }
 
