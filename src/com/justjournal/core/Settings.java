@@ -39,7 +39,7 @@ package com.justjournal.core;
  * effect the entire site.  User preferences are seperate and
  * any negative setting here will supersede per user settings
  * like commentMailEnable = false would disable email comments
- * even if users have them turned on.
+ * even if Users have them turned on.
  * <p/>
  * Date: Mar 5, 2006
  * Time: 11:03:13 PM
@@ -84,7 +84,7 @@ public class Settings {
     private boolean tzLocalize;
     private boolean tzUseGMT;
 
-    /* users */
+    /* Users */
     private boolean userAllowNew;
 
     public Settings() {
