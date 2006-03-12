@@ -1,0 +1,72 @@
+March 2006
+
+This document is incomplete, but briefly outlines installing
+justjournal.
+
+JustJournal is developed on JDK 1.5 (java 5) on Mac OS X Tiger
+using MySQL 5 and Apache Tomcat 5.5.  It has been successfully
+deployed on FreeBSD 6 with the native 1.5 JDK using Apache
+Tomcat 5.5 and MySQL 5.
+
+Libraries needed for Just Journal:
+
+sun:
+Activation.jar  (JAF 1.02)
+mail.jar
+rowset.jar (sun.jdbc.CachedRowSet, old)
+standard.jar
+
+apache:
+commons-beanutils
+commons-collecitons 3.1
+commons-email 1.0 (probably not needed anymore)
+commons-fileupload 1.0
+commons-logging
+log4j 1.2.11 or 1.2.8
+
+Maverick: (Sf.net)
+maverick (2 years old, not sure on version right now)
+opt-domify
+opt-fop is currently not used
+domify (seperate project now)
+
+jdom
+
+mysql-connector-java (3.1.10 currently used)
+
+jazzy-core.jar (jazzy spell check engine sf.net)
+
+additional probably not used:
+jta-spec1_0_1.jar
+jstl.jar
+jdbc2_0-stdext.jar
+
+
+I am not currently using war file deployments.  I've been
+just pointing a context root in tomcat to a directory.  I'm working
+on war deployments.  In addition, a database connection reference
+must be created.  This is usually different among servlet container
+implemenatations.
+
+In tomcat, this might work in the web.xml
+ <resource-ref>
+        <description>DB Connection</description>
+        <res-ref-name>jdbc/jjDB</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+        <res-sharing-scope>Shareable</res-sharing-scope>
+    </resource-ref>
+
+The current problem with just journal aside from war deployment,
+is that it was a hack job originally and makes references both
+to the domain name and / throughout the code.  I'm working on a
+global settings class to fix these problems so the code is
+reusable.
+
+I'll include a web.xml and maverick.xml sample file eventually along
+with xsl style sheets and jsp files needed to make the site work.  I'm
+moving away from JSP currently toward XSL/XML.  Do to incompatibilities
+with recent domify versions, i'll either need to move to cvs maverick or
+drop it all together.
+
+The database documentation is in /database.
