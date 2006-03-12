@@ -85,7 +85,7 @@ public final class SelectStyleSheet extends HttpServlet {
                 error = true;
             }
 
-            if (error == false) {
+            if (!error) {
                 try {
                     String sqlStatement = "Update user_pref SET style='" + cssId + "' where id ='" + userID + "';";
                     int rowsAffected = SQLHelper.executeNonQuery(sqlStatement);
@@ -106,9 +106,8 @@ public final class SelectStyleSheet extends HttpServlet {
         }
 
 
-        if (error == true) {
+        if (error)
             WebError.Display("Error", "Unknown error has occured.", out);
-        }
 
         out.flush();
 
