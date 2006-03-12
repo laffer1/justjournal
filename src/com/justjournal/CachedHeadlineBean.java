@@ -169,6 +169,7 @@ public final class CachedHeadlineBean
         StringReader sr = new StringReader(rss.getContent());
 
         org.xml.sax.InputSource saxy = new org.xml.sax.InputSource(sr);
+        factory.setValidating(false);
         builder = factory.newDocumentBuilder();
         document = builder.parse(saxy);
 
