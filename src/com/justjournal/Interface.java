@@ -109,10 +109,10 @@ public class Interface extends HttpServlet {
             String hpassword = request.getParameter("hpassword");
 
             if (hpassword != null && hpassword.length() > 0)
-                //userID = webLogin.validateMd5( userName, hpassword );
+                //userID = WebLogin.validateMd5( userName, hpassword );
                 errMsg = "Unsupported authenticated method.";
             else if (password != null && password.length() > 0)
-                userID = webLogin.validate(userName, password);
+                userID = WebLogin.validate(userName, password);
             else
                 errMsg = "Invalid Password";
 
@@ -170,7 +170,7 @@ public class Interface extends HttpServlet {
                         sb.append(endl);
                         sb.append("menu_0_1_url");
                         sb.append(endl);
-                        sb.append("http://www.justjournal.com/users/" + userName);
+                        sb.append("http://www.justjournal.com/Users/" + userName);
                         sb.append(endl);
 
                         sb.append("menu_0_2_text");
@@ -179,7 +179,7 @@ public class Interface extends HttpServlet {
                         sb.append(endl);
                         sb.append("menu_0_2_url");
                         sb.append(endl);
-                        sb.append("http://www.justjournal.com/users/" + userName + "/calendar");
+                        sb.append("http://www.justjournal.com/Users/" + userName + "/calendar");
                         sb.append(endl);
 
                         sb.append("menu_0_count");
@@ -339,7 +339,7 @@ public class Interface extends HttpServlet {
 
 
                 } catch (IllegalArgumentException e1) {
-                    webError.Display("Input Error", e1.getMessage(), sb);
+                    WebError.Display("Input Error", e1.getMessage(), sb);
                     blnError = true;
                 }
 
@@ -349,7 +349,7 @@ public class Interface extends HttpServlet {
                     boolean result = edao.add(et);
 
                     if (result == false)
-                        webError.Display("Error", "Error adding the journal entry", sb);
+                        WebError.Display("Error", "Error adding the journal entry", sb);
                 }
 
                 // display message to user.
@@ -427,13 +427,13 @@ public class Interface extends HttpServlet {
 
                     sb.append("\t<p id=\"muser\">");
                     sb.append(endl);
-                    sb.append("\t\t<a href=\"/users/" + userName + "\">recent entries</a><br />");
+                    sb.append("\t\t<a href=\"/Users/" + userName + "\">recent entries</a><br />");
                     sb.append(endl);
-                    sb.append("\t\t<a href=\"/users/" + userName + "/calendar\">Calendar</a><br />");
+                    sb.append("\t\t<a href=\"/Users/" + userName + "/calendar\">Calendar</a><br />");
                     sb.append(endl);
-                    sb.append("\t\t<a href=\"/users/" + userName + "/friends\">Friends</a><br />");
+                    sb.append("\t\t<a href=\"/Users/" + userName + "/friends\">Friends</a><br />");
                     sb.append(endl);
-                    sb.append("\t\t<a href=\"/users/" + userName + "/ljfriends\">LJ Friends</a><br />");
+                    sb.append("\t\t<a href=\"/Users/" + userName + "/ljfriends\">LJ Friends</a><br />");
                     sb.append(endl);
                     sb.append("\t\t<a href=\"/profile.jsp?user=" + userName + "\">Profile</a><br />");
                     sb.append(endl);
@@ -462,7 +462,7 @@ public class Interface extends HttpServlet {
                     sb.append(endl);
 
                     sb.append("\t<p>RSS Syndication<br /><br />");
-                    sb.append("<a href=\"/users/" + userName + "/rss\"><img src=\"/img/v4_xml.gif\" alt=\"RSS content feed\" /> Recent</a>");
+                    sb.append("<a href=\"/Users/" + userName + "/rss\"><img src=\"/img/v4_xml.gif\" alt=\"RSS content feed\" /> Recent</a>");
                     sb.append("\t</p>");
                     sb.append(endl);
 
@@ -478,7 +478,7 @@ public class Interface extends HttpServlet {
                     sb.append(endl);
 
                     if (userID > 0) {
-                        sb.append("\t<p>You are logged in as <a href=\"/users/" + userName + "\"><img src=\"/images/user.gif\" alt=\"user\" />" + userName + "</a>.</p>");
+                        sb.append("\t<p>You are logged in as <a href=\"/Users/" + userName + "\"><img src=\"/images/user.gif\" alt=\"user\" />" + userName + "</a>.</p>");
                         sb.append(endl);
                     }
 
@@ -489,7 +489,7 @@ public class Interface extends HttpServlet {
                     sb.append(endl);
                     sb.append("\t\t<p><a href=\"/update.jsp\">Add another entry</a></p>");
                     sb.append(endl);
-                    sb.append("\t\t<p><a href=\"/users/" + userName + "\">View journal</a></p>");
+                    sb.append("\t\t<p><a href=\"/Users/" + userName + "\">View journal</a></p>");
                     sb.append(endl);
 
                     sb.append("\t</div>");

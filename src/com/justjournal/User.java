@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2005, Lucas Holt
+Copyright (c) 2005-2006, Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -55,8 +55,7 @@ public final class User {
     private int since = 2003;  // starting year for account
     private Preferences preferences = null;
 
-    public User(String userName)
-    {
+    public User(String userName) {
         setUserName(userName);
 
         UserDao ud = new UserDao();
@@ -67,10 +66,9 @@ public final class User {
 
     }
 
-    public User(int userId)
-    {
+    public User(int userId) {
         setUserId(userId);
-        
+
         UserDao ud = new UserDao();
         UserTo ut = ud.view(userId);
 
@@ -78,13 +76,11 @@ public final class User {
         setFirstName(ut.getName());
     }
 
-    public User(Integer userId)
-    {
+    public User(Integer userId) {
         setUserId(userId);
     }
 
-    public User()
-    {
+    public User() {
 
     }
 
@@ -129,6 +125,7 @@ public final class User {
     /**
      * Set the unique user id associated with this user account.
      * This unique identifier is an int where n >= 0.
+     *
      * @param userId A unique user id to set for the account.
      */
     public void setUserId(final int userId) {
@@ -157,8 +154,7 @@ public final class User {
      *
      * @return User account type.
      */
-    public int getType()
-    {
+    public int getType() {
         return this.type;
     }
 
@@ -168,32 +164,30 @@ public final class User {
      *
      * @param type Account type >= 0
      */
-    public void setType(final int type)
-    {
+    public void setType(final int type) {
         if (type < 0)
             throw new IllegalArgumentException("type must be greater than or equal to zero.");
         this.type = type;
     }
 
     /**
-     * Get the users first name as specified during
+     * Get the Users first name as specified during
      * the signup process. Name can not be longer than
      * 20 characters.
      *
      * @return user's first name
      */
-    public String getFirstName()
-    {
+    public String getFirstName() {
         return this.firstName;
     }
 
     /**
      * Set the first name of the user.  Name length is limited
      * to 20 characters.
+     *
      * @param firstName user's first name.
      */
-    public void setFirstName(final String firstName)
-    {
+    public void setFirstName(final String firstName) {
         if (firstName == null)
             throw new IllegalArgumentException("first name can not bell null.");
 
@@ -209,25 +203,23 @@ public final class User {
     /**
      * Retrieve the year when this user account was
      * created.
-     *
+     * <p/>
      * n >= 2003
      *
-     * @return  Year account was created.
+     * @return Year account was created.
      */
-    public int getSince()
-    {
+    public int getSince() {
         return this.since;
     }
 
     /**
      * Set the year when the user account was created.
-     *
+     * <p/>
      * n >= 2003
      *
      * @param since Year account was created.
      */
-    public void setSince(final int since)
-    {
+    public void setSince(final int since) {
         if (since < 2003)
             throw new IllegalArgumentException("Since must be at least the year 2003.");
 
@@ -239,8 +231,7 @@ public final class User {
      *
      * @return User Preferences
      */
-    public Preferences getPreferences()
-    {
+    public Preferences getPreferences() {
         try {
             if (preferences == null)
                 preferences = new Preferences(userName);

@@ -34,6 +34,8 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal;
 
+import com.justjournal.db.SQLHelper;
+
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -93,7 +95,7 @@ public final class UpdateStyleSheetOverride
         }
 
         if (error) {
-            webError.Display("Error", "Unknown error has occured.", out);
+            WebError.Display("Error", "Unknown error has occured.", out);
         }
 
         out.flush();

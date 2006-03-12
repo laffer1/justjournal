@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2005, Lucas Holt
+Copyright (c) 2005-2006, Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -65,7 +65,6 @@ public final class Cal {
             "October", "November", "December"};
 
     private String baseUrl;
-
 
     public Cal(final CachedRowSet RS) {
 
@@ -153,7 +152,7 @@ public final class Cal {
 
         for (int i = 0, n = Months.size(); i < n; i++) {
             o = (CalMonth) itr.next();
-            sb.append("<table style=\"margin-top:.2in; border: thin solid black;\" cellpadding=\"1\" cellspacing=\"1\" width=\"400\">\n");
+            sb.append("<table class=\"fullcalendar\" style=\"margin-top:.2in; border: thin solid black;\" cellpadding=\"1\" cellspacing=\"1\" width=\"400\">\n");
 
             sb.append("<caption>");
             sb.append(months[o.monthid]);
@@ -226,7 +225,7 @@ public final class Cal {
             if (dayinweek <= 6 && dayinweek != 0) {
                 // this is seven because colspan is 1 based.  why do the
                 // extra addition +1
-                sb.append("<td style=\"background: #F2F2F2\" colspan=\"" + (7 - dayinweek) + " \"></td>");
+                sb.append("<td style=\"background: #F2F2F2\" colspan=\"").append(7 - dayinweek).append(" \"></td>");
                 sb.append("</tr>\n");
             }
 
@@ -255,7 +254,7 @@ public final class Cal {
 
         for (int i = 0, n = Months.size(); i < n; i++) {
             o = (CalMonth) itr.next();
-            sb.append("<table style=\"margin-top:.2in; border: thin solid black; font-size: .8em;\" cellpadding=\"1\" cellspacing=\"1\">\n");
+            sb.append("<table class=\"minicalendar\" style=\"margin-top:.2in; border: thin solid black; font-size: .8em;\" cellpadding=\"1\" cellspacing=\"1\">\n");
 
             sb.append("<caption>");
             sb.append(months[o.monthid]);
@@ -281,7 +280,7 @@ public final class Cal {
             dayinweek = o.getFirstDayInWeek() - 1;
 
             for (int y = 0; y < java.lang.reflect.Array.getLength(o.storage); y++) {
-                if (dayinweek == 0 && blnFirstTime == false) {
+                if (dayinweek == 0 && !blnFirstTime) {
                     sb.append("<tr>\n");
                 }
 

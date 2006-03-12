@@ -43,6 +43,8 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal;
 
+import com.justjournal.db.SQLHelper;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -75,10 +77,10 @@ public final class RemoveFriend extends JustJournalBaseServlet {
                 sb.append("<p>Friend has been deleted.</p>");
                 sb.append(endl);
             } else
-                webError.Display("Error", "Could not remove friend.", sb);
+                WebError.Display("Error", "Could not remove friend.", sb);
         } catch (Exception e) {
             // record was not deleted
-            webError.Display("Error", e.getMessage(), sb);
+            WebError.Display("Error", e.getMessage(), sb);
         }
     }
 

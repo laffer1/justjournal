@@ -43,6 +43,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal;
 
+import com.justjournal.db.SQLHelper;
 import sun.jdbc.rowset.CachedRowSet;
 
 import javax.servlet.http.HttpServletRequest;
@@ -50,7 +51,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
- * Adds a friend to the users list for their friends page
+ * Adds a friend to the Users list for their friends page
  *
  * @author Caryn Holt, Lucas Holt
  * @version 1.1
@@ -84,7 +85,7 @@ public final class AddFriend extends JustJournalBaseServlet {
 
         if (friend1.length() == 0) {
             error = true;
-            webError.Display("Input Error", "One friend must be specified", sb);
+            WebError.Display("Input Error", "One friend must be specified", sb);
         } else {
             counter++;
         }
@@ -116,7 +117,7 @@ public final class AddFriend extends JustJournalBaseServlet {
         for (int i = 0; i < counter; i++) {
             // check if error condition is false
             if (!error) {
-                // query users table for user id
+                // query Users table for user id
                 String sqlStatement = "SELECT * FROM user where username='" + friends[i] + "' LIMIT 1;";
                 int friendID = 0;
                 try {
@@ -131,7 +132,7 @@ public final class AddFriend extends JustJournalBaseServlet {
                 }
                 // generate error if user id is not valid and set error condition to true
                 catch (Exception e) {
-                    webError.Display("Error", e.getMessage(), sb);
+                    WebError.Display("Error", e.getMessage(), sb);
                     error = true;
                 }
 
@@ -144,11 +145,11 @@ public final class AddFriend extends JustJournalBaseServlet {
                         int rowsAffected = SQLHelper.executeNonQuery(sqlStatement);
 
                         if (rowsAffected < 1)
-                            webError.Display("Error adding friend", "Unable to add friend.", sb);
+                            WebError.Display("Error adding friend", "Unable to add friend.", sb);
                     }
                     // if exception, set error condition to true, display message
                     catch (Exception e1) {
-                        webError.Display("Error", e1.getMessage(), sb);
+                        WebError.Display("Error", e1.getMessage(), sb);
                         error = true;
                     }
                 }

@@ -34,6 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal;
 
 import com.justjournal.db.EntryDAO;
+import com.justjournal.rss.Rss;
 import org.apache.log4j.Category;
 
 import javax.servlet.http.HttpServletRequest;
@@ -76,7 +77,7 @@ public class RecentBlogs extends JustJournalBaseServlet {
             // how to handle error conditions with rss.
             // html back isn't good, but what do we do?
             log.debug(e);
-            webError.Display("RSS ERROR", "Unable to retrieve RSS content.", sb);
+            WebError.Display("RSS ERROR", "Unable to retrieve RSS content.", sb);
         }
 
     }
