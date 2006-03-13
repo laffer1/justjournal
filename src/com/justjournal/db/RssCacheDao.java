@@ -34,7 +34,6 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
-import com.justjournal.SQLHelper;
 import org.apache.log4j.Category;
 import sun.jdbc.rowset.CachedRowSet;
 
@@ -61,10 +60,10 @@ public class RssCacheDao {
 
         final String sqlStmt =
                 "INSERT INTO rss_cache (`interval`, lastupdated, uri, content) values('"
-                + rss.getInterval() + "', NOW(),'"
-                + rss.getUri() + "','"
-                + rss.getContent()
-                + "');";
+                        + rss.getInterval() + "', NOW(),'"
+                        + rss.getUri() + "','"
+                        + rss.getContent()
+                        + "');";
 
         try {
             records = SQLHelper.executeNonQuery(sqlStmt);
@@ -91,8 +90,8 @@ public class RssCacheDao {
 
         final String sqlStmt =
                 "UPDATE rss_cache SET lastupdated=now()," +
-                " content='" + rss.getContent() + "' WHERE uri='" +
-                rss.getUri() + "';";
+                        " content='" + rss.getContent() + "' WHERE uri='" +
+                        rss.getUri() + "';";
 
         try {
             records = SQLHelper.executeNonQuery(sqlStmt);

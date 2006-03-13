@@ -1,6 +1,5 @@
 package com.justjournal.db;
 
-import com.justjournal.SQLHelper;
 import sun.jdbc.rowset.CachedRowSet;
 
 import java.util.ArrayList;
@@ -15,7 +14,7 @@ public class ContentDao {
     /**
      * Add content to the JJ CMS
      *
-     * @param content  Content to add
+     * @param content Content to add
      * @return true if no error occured.
      */
     public boolean add(final ContentTo content) {
@@ -24,13 +23,13 @@ public class ContentDao {
 
         final String sqlStmt =
                 "Insert INTO content (uri_id, userId, mime_type, preferred, datasize, data, metadata) values('"
-                + content.getUriId() + "','"
-                + content.getUserId() + "','"
-                + content.getMimeType() + "','"
-                + content.getPreferred() + "','"
-                + content.getDataSize() + "','"
-                + content.getData() + "','"
-                + content.getMetaData() + "');";
+                        + content.getUriId() + "','"
+                        + content.getUserId() + "','"
+                        + content.getMimeType() + "','"
+                        + content.getPreferred() + "','"
+                        + content.getDataSize() + "','"
+                        + content.getData() + "','"
+                        + content.getMetaData() + "');";
 
         try {
             records = SQLHelper.executeNonQuery(sqlStmt);
@@ -46,7 +45,7 @@ public class ContentDao {
 
     /**
      * change a comment on a journal entry.
-     *
+     * <p/>
      * This does not allow changes to userId or
      * verification at this time.
      *
@@ -59,7 +58,7 @@ public class ContentDao {
         final String sqlStmt = "Update comments SET mimeType='" +
                 content.getMimeType()
                 + "', preferred='" +
-                + (content.getPreferred() ? 1:0)
+                + (content.getPreferred() ? 1 : 0)
                 + "', datasize='"
                 + content.getDataSize()
                 + "', data='"
@@ -135,7 +134,7 @@ public class ContentDao {
         CachedRowSet rs = null;
         ContentTo content;
         final String sqlStmt =
-               "SELECT * from content WHERE uri_id='" + uriId + "' ORDER BY preferred;";
+                "SELECT * from content WHERE uri_id='" + uriId + "' ORDER BY preferred;";
 
         try {
             rs = SQLHelper.executeResultSet(sqlStmt);

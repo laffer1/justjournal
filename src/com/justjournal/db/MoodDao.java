@@ -34,7 +34,6 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
-import com.justjournal.SQLHelper;
 import sun.jdbc.rowset.CachedRowSet;
 
 import java.util.ArrayList;
@@ -42,10 +41,11 @@ import java.util.Collection;
 
 /**
  * Retrieve and acquire mood's for use with journal entries.
+ *
  * @author Lucas Holt
  * @version 1.0
- * Date: Jan 9, 2004
- * Time: 1:55:20 PM
+ *          Date: Jan 9, 2004
+ *          Time: 1:55:20 PM
  * @since 1.0
  */
 public final class MoodDao {

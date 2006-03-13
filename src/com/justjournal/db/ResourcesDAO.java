@@ -1,6 +1,5 @@
 package com.justjournal.db;
 
-import com.justjournal.SQLHelper;
 import org.apache.log4j.Category;
 import sun.jdbc.rowset.CachedRowSet;
 
@@ -23,9 +22,9 @@ public class ResourcesDAO {
 
         final String sqlStmt =
                 "INSERT INTO resources (name, active, security) values('"
-                + res.getName() + "','" + ((res.getActive() == true) ? "1" : "0") + "','"
-                + res.getSecurityLevel()
-                + "');";
+                        + res.getName() + "','" + ((res.getActive() == true) ? "1" : "0") + "','"
+                        + res.getSecurityLevel()
+                        + "');";
 
         try {
             records = SQLHelper.executeNonQuery(sqlStmt);
@@ -52,8 +51,8 @@ public class ResourcesDAO {
 
         final String sqlStmt =
                 "UPDATE resources SET active='" + res.getActive() + "'," +
-                " security='" + ((res.getActive() == true) ? "1" : "0") + "'" +
-                " WHERE id='" + res.getId() + "' LIMIT 1;";
+                        " security='" + ((res.getActive() == true) ? "1" : "0") + "'" +
+                        " WHERE id='" + res.getId() + "' LIMIT 1;";
 
         try {
             records = SQLHelper.executeNonQuery(sqlStmt);

@@ -34,7 +34,6 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
-import com.justjournal.SQLHelper;
 import sun.jdbc.rowset.CachedRowSet;
 
 import java.util.ArrayList;
@@ -53,10 +52,10 @@ public final class LJFriendDao {
 
         final String sqlStmt =
                 "INSERT INTO friends_lj (id,username,community) values('"
-                + lj.getId() + "','"
-                + lj.getUserName() + "','"
-                + (lj.getIsCommunity() ? 'Y' : 'N')
-                + "');";
+                        + lj.getId() + "','"
+                        + lj.getUserName() + "','"
+                        + (lj.getIsCommunity() ? 'Y' : 'N')
+                        + "');";
 
         try {
             records = SQLHelper.executeNonQuery(sqlStmt);

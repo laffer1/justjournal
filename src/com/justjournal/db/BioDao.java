@@ -34,7 +34,6 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
-import com.justjournal.SQLHelper;
 import sun.jdbc.rowset.CachedRowSet;
 
 /**
@@ -51,7 +50,7 @@ public class BioDao {
 
         final String sqlStmt =
                 "INSERT INTO user_bio (id,content) values(NULL,'"
-                + bio.getBio() + "');";
+                        + bio.getBio() + "');";
 
         try {
             records = SQLHelper.executeNonQuery(sqlStmt);

@@ -1,6 +1,5 @@
 package com.justjournal.db;
 
-import com.justjournal.SQLHelper;
 import sun.jdbc.rowset.CachedRowSet;
 
 import java.util.ArrayList;

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2005, Lucas Holt
+Copyright (c) 2005-2006, Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -34,7 +34,6 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
-import com.justjournal.SQLHelper;
 import sun.jdbc.rowset.CachedRowSet;
 
 /**
@@ -50,8 +49,8 @@ public class UserDao {
 
         final String sqlStmt =
                 "Insert INTO user (username,password,name) VALUES('"
-                + user.getUserName() + "',sha1('" + user.getPassword()
-                + "'),'" + user.getName() + "');";
+                        + user.getUserName() + "',sha1('" + user.getPassword()
+                        + "'),'" + user.getName() + "');";
 
         try {
             records = SQLHelper.executeNonQuery(sqlStmt);
@@ -96,7 +95,7 @@ public class UserDao {
      * should be deactivated.
      *
      * @param userId
-     * @return
+     * @return true if successful, false otherwise
      */
     public boolean delete(int userId) {
         boolean noError = true;
@@ -121,7 +120,7 @@ public class UserDao {
      * Does NOT retrieve password or sha1 password.
      *
      * @param userId
-     * @return
+     * @return user's info
      */
     public UserTo view(int userId) {
         UserTo user = new UserTo();
@@ -159,7 +158,7 @@ public class UserDao {
      * sha1 password.
      *
      * @param userName
-     * @return
+     * @return user's info
      */
     public UserTo view(String userName) {
         UserTo user = new UserTo();

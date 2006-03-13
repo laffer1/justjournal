@@ -34,7 +34,6 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
-import com.justjournal.SQLHelper;
 import sun.jdbc.rowset.CachedRowSet;
 
 import java.util.ArrayList;
@@ -54,9 +53,9 @@ final public class RssSubscriptionsDAO {
 
         final String sqlStmt =
                 "INSERT INTO rss_subscriptions (id,uri) values('"
-                + rss.getId() + "','"
-                + rss.getUri()
-                + "');";
+                        + rss.getId() + "','"
+                        + rss.getUri()
+                        + "');";
 
         try {
             records = SQLHelper.executeNonQuery(sqlStmt);

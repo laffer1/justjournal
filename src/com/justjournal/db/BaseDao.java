@@ -34,8 +34,6 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
-import com.justjournal.SQLHelper;
-
 /**
  * User: laffer1
  * Date: Aug 22, 2005

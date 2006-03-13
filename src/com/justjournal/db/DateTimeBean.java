@@ -34,6 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 /**
@@ -147,6 +148,16 @@ public final class DateTimeBean {
         day = calendarg.get(Calendar.DAY_OF_MONTH);
         hour = calendarg.get(Calendar.HOUR_OF_DAY);
         minutes = calendarg.get(Calendar.MINUTE);
+    }
+
+    public String toPubDate() {
+        //Sat, 07 Sep 2002 09:43:33 GMT
+        final java.util.GregorianCalendar cal =
+                new java.util.GregorianCalendar(year, month, day, hour, minutes);
+        final java.util.Date current = cal.getTime();
+        final SimpleDateFormat formatmydate = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zz");
+
+        return formatmydate.format(current);
     }
 
     public String toString() {

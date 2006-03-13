@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2005, Lucas Holt
+Copyright (c) 2003-2006, Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -34,7 +34,6 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
-import com.justjournal.SQLHelper;
 import com.justjournal.utility.StringUtil;
 import sun.jdbc.rowset.CachedRowSet;
 
@@ -109,7 +108,7 @@ public final class CommentDao {
     /**
      * Deletes comments belonging to a specific entry id.
      * used by the delete entry logic.  Not recommended for
-     * direct calls by users.
+     * direct calls by Users.
      *
      * @param entryId
      * @return
