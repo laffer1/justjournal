@@ -34,6 +34,11 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.core;
 
+import com.justjournal.db.SQLHelper;
+import sun.jdbc.rowset.CachedRowSet;
+
+import javax.servlet.ServletContext;
+
 /**
  * Global settings for the site.  Any changes here will
  * effect the entire site.  User preferences are seperate and
@@ -50,45 +55,145 @@ package com.justjournal.core;
  */
 public class Settings {
     /* paths */
-    private String baseUri;
-    private String fsPath;
-    private String contextPath;
+    private String baseUri = "http://localhost:8080/";
+    private String fsPath = ""; // file storage path.
+    private String contextPath = "";
 
     /* site settings */
-    private boolean siteEnable;
-    private String siteName;
-    private String siteAdmin;
-    private String siteAdminEmail;
-    private String siteBlog;
-    private boolean siteSearch;
-    private boolean siteDirectory;
-    private boolean siteRss;
+    private boolean siteEnable = true;
+    private String siteName = "";
+    private String siteAdmin = "";
+    private String siteAdminEmail = "";
+    private String siteBlog = "";  // blog about site activities, updates.
+    private boolean siteSearch = true;  // enable site search feature
+    private boolean siteDirectory = true;  // member directory
+    private boolean siteRss = true; // recent blog posts
 
     /* e-mail */
-    private boolean mailEnable;
-    private String mailHost;
-    private String mailPort;
-    private String mailUser;
-    private String mailPass;
-    private String mailFrom;
-    private String mailSubject;
+    private boolean mailEnable = true;
+    private String mailHost = "localhost";
+    private int mailPort = 25;
+    private String mailUser = "";
+    private String mailPass = "";
+    private String mailFrom = siteAdminEmail;
+    private String mailSubject = siteName + " Notification";
 
     /* comments */
-    private boolean commentEnable;
-    private boolean commentMailEnable;
-    private boolean commentEnableAnonymous;
+    private boolean commentEnable = true;
+    private boolean commentMailEnable = true;
+    private boolean commentEnableAnonymous = false;
 
     /* time */
-    private int tzOffset;
-    private String tzName;
-    private boolean tzLocalize;
-    private boolean tzUseGMT;
+    private int tzOffset = -5;
+    private String tzName = "EST";
+    private boolean tzLocalize = true;
+    private boolean tzUseGMT = true;
 
     /* Users */
-    private boolean userAllowNew;
+    private boolean userAllowNew = true;
 
     public Settings() {
+        try {
+            String name;
+            String value;
+            String sql = "SELECT * FROM settings;";
+            CachedRowSet rs = SQLHelper.executeResultSet(sql);
+            while (rs.next()) {
+                name = rs.getString(0);
+                value = rs.getString(1);
 
+                if (name.equalsIgnoreCase("baseuri"))
+                    baseUri = value;
+                else if (name.equalsIgnoreCase("fsPath"))
+                    fsPath = value;
+                else if (name.equalsIgnoreCase("contextPath"))
+                    contextPath = value;
+                else if (name.equalsIgnoreCase("siteEnable")) {
+                    if (value == "true")
+                        siteEnable = true;
+                    else
+                        siteEnable = false;
+                } else if (name.equalsIgnoreCase("siteName"))
+                    siteName = value;
+
+                else if (name.equalsIgnoreCase("siteAdmin"))
+                    siteAdmin = value;
+                else if (name.equalsIgnoreCase("siteAdminEmail"))
+                    siteAdminEmail = value;
+                else if (name.equalsIgnoreCase("siteBlog"))
+                    siteBlog = value;
+                else if (name.equalsIgnoreCase("siteSearch")) {
+                    if (value == "true")
+                        siteSearch = true;
+                    else
+                        siteSearch = false;
+                } else if (name.equalsIgnoreCase("siteDirectory")) {
+                    if (value == "true")
+                        siteDirectory = true;
+                    else
+                        siteDirectory = false;
+                } else if (name.equalsIgnoreCase("siteRss")) {
+                    if (value == "true")
+                        siteRss = true;
+                    else
+                        siteRss = false;
+                } else if (name.equalsIgnoreCase("mailEnable")) {
+                    if (value == "true")
+                        mailEnable = true;
+                    else
+                        mailEnable = false;
+                } else if (name.equalsIgnoreCase("mailHost"))
+                    mailHost = value;
+                else if (name.equalsIgnoreCase("mailPort"))
+                    mailPort = Integer.parseInt(value);
+                else if (name.equalsIgnoreCase("mailUser"))
+                    mailUser = value;
+                else if (name.equalsIgnoreCase("mailPass"))
+                    mailPass = value;
+                else if (name.equalsIgnoreCase("mailFrom"))
+                    mailFrom = value;
+                else if (name.equalsIgnoreCase("mailSubject"))
+                    mailSubject = value;
+                else if (name.equalsIgnoreCase("commentEnable")) {
+                    if (value == "true")
+                        commentEnable = true;
+                    else
+                        commentEnable = false;
+                } else if (name.equalsIgnoreCase("commentMailEnable")) {
+                    if (value == "true")
+                        commentMailEnable = true;
+                    else
+                        commentMailEnable = false;
+                } else if (name.equalsIgnoreCase("commentEnableAnonymous")) {
+                    if (value == "true")
+                        mailEnable = true;
+                    else
+                        mailEnable = false;
+                } else if (name.equalsIgnoreCase("tzOffset"))
+                    tzOffset = Integer.parseInt(value);
+                else if (name.equalsIgnoreCase("tzName"))
+                    tzName = value;
+                else if (name.equalsIgnoreCase("tzLocalize")) {
+                    if (value == "true")
+                        tzLocalize = true;
+                    else
+                        tzLocalize = false;
+                } else if (name.equalsIgnoreCase("tzUseGMT")) {
+                    if (value == "true")
+                        tzUseGMT = true;
+                    else
+                        tzUseGMT = false;
+                } else if (name.equalsIgnoreCase("userAllowNew")) {
+                    if (value == "true")
+                        userAllowNew = true;
+                    else
+                        userAllowNew = false;
+                }
+            }
+            rs.close();
+        } catch (Exception e) {
+
+        }
     }
 
     public String getBaseUri() {
@@ -195,11 +300,11 @@ public class Settings {
         this.mailHost = mailHost;
     }
 
-    public String getMailPort() {
+    public int getMailPort() {
         return mailPort;
     }
 
-    public void setMailPort(String mailPort) {
+    public void setMailPort(int mailPort) {
         this.mailPort = mailPort;
     }
 
@@ -297,6 +402,18 @@ public class Settings {
 
     public void setUserAllowNew(boolean userAllowNew) {
         this.userAllowNew = userAllowNew;
+    }
+
+    public static Settings getSettings(ServletContext ctx) {
+        Settings set;
+        synchronized (ctx) {
+            set = (Settings) ctx.getAttribute("JustJournal_Settings");
+            if (set == null) {
+                set = new Settings();
+                ctx.setAttribute("JustJournal_Settings", set);
+            }
+        }
+        return set;
     }
 
 }
