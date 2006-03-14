@@ -1,6 +1,9 @@
 package com.justjournal;
 
+import com.justjournal.core.Settings;
+
 import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
@@ -19,12 +22,15 @@ import javax.servlet.http.HttpSession;
  */
 public class JustJournalBaseServlet extends HttpServlet {
     protected static final char endl = '\n';
+    protected Settings set;
 
     /**
      * Initializes the servlet.
      */
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
+        ServletContext ctx = config.getServletContext();
+        set = Settings.getSettings(ctx);
     }
 
     /**
