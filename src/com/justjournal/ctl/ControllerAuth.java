@@ -34,7 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.ctl;
 
-import com.justjournal.webLogin;
+import com.justjournal.WebLogin;
 
 /**
  * Controller provides framework for authenticated services.
@@ -79,7 +79,7 @@ public class ControllerAuth extends ControllerErrorable {
      */
     protected boolean login(String userName, String password) {
 
-        int userId = webLogin.validate(userName, password);
+        int userId = WebLogin.validate(userName, password);
 
 
         if (userId < 1) {

@@ -1,16 +1,17 @@
 package com.justjournal.ctl;
 
-import com.justjournal.SQLHelper;
+import com.justjournal.db.SQLHelper;
 import org.apache.log4j.Category;
 
 /**
  * Delete a favorite journal entry reference.
+ *
  * @author Lucas Holt
  * @version 1.0
  * @since 1.0
- * User: laffer1
- * Date: Dec 15, 2005
- * Time: 10:08:31 PM
+ *        User: laffer1
+ *        Date: Dec 15, 2005
+ *        Time: 10:08:31 PM
  */
 public class DeleteFavorite extends Protected {
     private static Category log = Category.getInstance(DeleteFavorite.class.getName());

@@ -34,7 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.ctl;
 
-import com.justjournal.webLogin;
+import com.justjournal.WebLogin;
 import org.apache.log4j.Category;
 
 /**
@@ -86,7 +86,7 @@ public class ChangePasswordSubmit
             addError("login", "The login timed out or is invalid.");
 
         if (this.hasErrors() == false) {
-            result = webLogin.changePass(currentLoginName(), passCurrent, passNew);
+            result = WebLogin.changePass(currentLoginName(), passCurrent, passNew);
 
             if (log.isDebugEnabled())
                 log.debug("Was there an error with data tier?  " + !result);

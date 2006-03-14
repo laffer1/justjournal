@@ -33,18 +33,19 @@ POSSIBILITY OF SUCH DAMAGE.
 */
 package com.justjournal.ctl;
 
-import com.justjournal.SQLHelper;
+import com.justjournal.db.SQLHelper;
 import org.apache.log4j.Category;
 
 /**
- * Adds a favorite journal entry to the users list.
+ * Adds a favorite journal entry to the Users list.
+ *
  * @author Lucas Holt
  * @version 1.0
  * @since 1.0
- *
- * Created:
- * Date: Dec 10, 2005
- * Time: 8:44:39 PM
+ *        <p/>
+ *        Created:
+ *        Date: Dec 10, 2005
+ *        Time: 8:44:39 PM
  */
 public class AddFavorite extends Protected {
     private static Category log = Category.getInstance(AddFavorite.class.getName());
@@ -52,6 +53,7 @@ public class AddFavorite extends Protected {
 
     /**
      * Retrieves the current logged in user.
+     *
      * @return username as string
      */
     public String getMyLogin() {
@@ -60,6 +62,7 @@ public class AddFavorite extends Protected {
 
     /**
      * Retrieves the current entry id we are adding as a favorite
+     *
      * @return favorite entry id
      */
     public int getEntryId() {
@@ -68,6 +71,7 @@ public class AddFavorite extends Protected {
 
     /**
      * Sets the entry id we wish to make a favorite.
+     *
      * @param entryId id to add to our favorites list
      */
     public void setEntryId(int entryId) {
@@ -76,15 +80,15 @@ public class AddFavorite extends Protected {
 
     /**
      * Performs the action to create a favorite in our data store
+     *
      * @return the view to display upon completion (SUCCESS OR ERROR)
      * @throws Exception
      */
     protected String insidePerform() throws Exception {
-
         if (log.isDebugEnabled())
             log.debug("insidePerform(): Attempting to add favorite");
 
-         if (this.currentLoginId() < 1)
+        if (this.currentLoginId() < 1)
             addError("login", "The login timed out or is invalid.");
 
         if (!this.hasErrors()) {

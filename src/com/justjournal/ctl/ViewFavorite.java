@@ -33,9 +33,9 @@ POSSIBILITY OF SUCH DAMAGE.
 */
 package com.justjournal.ctl;
 
-import com.justjournal.SQLHelper;
 import com.justjournal.db.EntryDAO;
 import com.justjournal.db.EntryTo;
+import com.justjournal.db.SQLHelper;
 import org.apache.log4j.Category;
 import sun.jdbc.rowset.CachedRowSet;
 
