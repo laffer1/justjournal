@@ -34,17 +34,13 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.utility;
 
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.StringWriter;
+import java.io.*;
 
 /**
  * Created by IntelliJ IDEA.
  * User: laffer1
  * Date: Jul 11, 2003
  * Time: 10:05:02 PM
- * To change this template use Options | File Templates.
  */
 public final class FileIO {
 
@@ -73,5 +69,58 @@ public final class FileIO {
         myFW.close();
 
         return;
+    }
+
+    public boolean makeDirectory(String path) {
+        File dir = new File(path);
+        return dir.mkdir();
+    }
+
+    public boolean deleteDirectory(String path) {
+        File dir = new File(path);
+        if (dir.isDirectory())
+            return dir.delete();
+        else
+            return false;
+    }
+
+    public boolean deleteFile(String path) {
+        File f = new File(path);
+        if (f.isFile())
+            return f.delete();
+        else
+            return false;
+    }
+
+    public boolean touchFile(String path) {
+        File f = new File(path);
+
+        try {
+            return f.createNewFile();
+        } catch (IOException ef) {
+            return false;
+        }
+    }
+
+    public long fileLength(String path) {
+        File f = new File(path);
+        return f.length();
+    }
+
+    public long fileLastModified(String path) {
+        File f = new File(path);
+        return f.lastModified();
+    }
+
+    public boolean renameFile(String source, String destination) {
+        File s = new File(source);
+        File d = new File(destination);
+
+        return s.renameTo(d);
+    }
+
+    public String[] listFiles(String path) {
+        File dir = new File(path);
+        return dir.list();
     }
 }
