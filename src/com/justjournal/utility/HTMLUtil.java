@@ -1,7 +1,7 @@
 package com.justjournal.utility;
 
 /*---------------------------------------------------------------------------*\
-  $Id: HTMLUtil.java,v 1.1 2006/03/14 16:26:23 laffer1 Exp $
+  $Id: HTMLUtil.java,v 1.2 2006/03/14 16:29:46 laffer1 Exp $
   ---------------------------------------------------------------------------
   This software is released under a Berkeley-style license:
 
@@ -36,7 +36,7 @@ import java.util.regex.PatternSyntaxException;
  * Static class containing miscellaneous HTML-related utility methods.
  *
  * @author Copyright &copy; 2004 Brian M. Clapper
- * @version <tt>$Revision: 1.1 $</tt>
+ * @version <tt>$Revision: 1.2 $</tt>
  */
 public final class HTMLUtil {
     /*----------------------------------------------------------------------*\
@@ -141,16 +141,16 @@ public final class HTMLUtil {
 
         ResourceBundle bundle = getResourceBundle();
         StringBuffer buf = new StringBuffer();
-        Matcher matcher = null;
+        Matcher matcher;
 
         synchronized (HTMLUtil.class) {
             matcher = entityPattern.matcher(s);
         }
 
         for (; ;) {
-            String match = null;
+            String match;
             String preMatch = null;
-            String postMatch = null;
+            String postMatch;
 
             if (! matcher.find())
                 break;
@@ -179,11 +179,11 @@ public final class HTMLUtil {
                         if (Character.isDefined((char) cc))
                             buf.append((char) cc);
                         else
-                            buf.append("&#" + match + ";");
+                            buf.append("&#").append(match).append(";");
                     }
 
                     catch (NumberFormatException ex) {
-                        buf.append("&#" + match + ";");
+                        buf.append("&#").append(match).append(";");
                     }
                 }
             } else {
@@ -196,7 +196,7 @@ public final class HTMLUtil {
                 }
 
                 catch (MissingResourceException ex) {
-                    buf.append("&" + match + ";");
+                    buf.append("&").append(match).append(";");
                 }
             }
 
