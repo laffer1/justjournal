@@ -1,7 +1,7 @@
 package com.justjournal.utility;
 
 /*---------------------------------------------------------------------------*\
-  $Id: HTMLUtil.java,v 1.3 2006/03/14 16:31:57 laffer1 Exp $
+  $Id: HTMLUtil.java,v 1.4 2006/03/14 16:38:39 laffer1 Exp $
   ---------------------------------------------------------------------------
   This software is released under a Berkeley-style license:
 
@@ -36,7 +36,7 @@ import java.util.regex.PatternSyntaxException;
  * Static class containing miscellaneous HTML-related utility methods.
  *
  * @author Copyright &copy; 2004 Brian M. Clapper
- * @version <tt>$Revision: 1.3 $</tt>
+ * @version <tt>$Revision: 1.4 $</tt>
  */
 public final class HTMLUtil {
     /*----------------------------------------------------------------------*\
@@ -46,7 +46,7 @@ public final class HTMLUtil {
     /**
      * Resource bundle containing the character entity code mappings.
      */
-    private static final String BUNDLE_NAME = "org.clapper.util.text.HTMLUtil";
+    private static final String BUNDLE_NAME = "com.justjournal.utility.HTMLUtil";
 
     /*----------------------------------------------------------------------*\
                             Private Data Items
