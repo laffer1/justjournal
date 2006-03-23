@@ -1,0 +1,329 @@
+<?xml version="1.0"?>
+
+<maverick version="2.0" default-view-type="domify" default-transform-type="xslt">
+
+    <modules>
+        <view-factory type="domify" provider="org.infohazard.maverick.opt.view.DomifyViewFactory"/>
+    </modules>
+
+    <commands>
+        <command name="index">
+            <view type="document" path="index.xml">
+                <transform path="outside.xsl"/>
+            </view>
+        </command>
+
+        <command name="avatar/upload">
+            <view type="document" path="avatar/upload.xml">
+                <transform path="outside.xsl"/>
+            </view>
+        </command>
+
+        <command name="avatar/submit">
+            <controller class="com.justjournal.ctl.UploadAvatarSubmit"/>
+            <view name="success">
+                <transform path="avatar/submit.xsl"/>
+                <transform path="outside.xsl"/>
+            </view>
+            <view name="error">
+                <transform path="outside.xsl"/>
+            </view>
+            <view name="loginRequired" type="redirect" path="/login.jsp">
+            </view>
+        </command>
+
+        <command name="opensource/index">
+            <view type="document" path="opensource/index.xml">
+                <transform path="outside.xsl"/>
+            </view>
+        </command>
+
+        <command name="account/login">
+            <view type="document" path="account/login.xml">
+                <transform path="outside.xsl"/>
+            </view>
+        </command>
+
+        <command name="account/create">
+            <view type="document" path="account/create.xml">
+                <transform path="outside.xsl"/>
+            </view>
+        </command>
+
+        <command name="account/cancel">
+            <view type="document" path="account/cancel.xml">
+                <transform path="outside.xsl"/>
+            </view>
+        </command>
+
+        <command name="account/privacy">
+            <view type="document" path="account/privacy.xml">
+                <transform path="outside.xsl"/>
+            </view>
+        </command>
+
+        <command name="support/index">
+            <view type="document" path="support/index.xml">
+                <transform path="outside.xsl"/>
+            </view>
+        </command>
+
+        <command name="suport/bugs">
+            <view type="document" path="support/bugs.xml">
+                <transform path="outside.xsl"/>
+            </view>
+        </command>
+
+        <command name="sitemap">
+            <view type="document" path="sitemap.xsl">
+                <transform path="outside.xsl"/>
+            </view>
+        </command>
+
+        <command name="software/index">
+            <view type="document" path="software/index.xml">
+                <transform path="outside.xsl"/>
+            </view>
+        </command>
+
+        <command name="comment/view">
+            <controller class="com.justjournal.ctl.ViewComment"/>
+            <view name="success">
+                <transform path="comment/view.xsl"/>
+                <transform path="outside.xsl"/>
+            </view>
+            <view name="error">
+                <transform path="outside.xsl"/>
+            </view>
+        </command>
+
+        <command name="comment/delete">
+            <controller class="com.justjournal.ctl.DeleteComment"/>
+            <view name="success">
+                <transform path="comment/delete.xsl"/>
+                <transform path="outside.xsl"/>
+            </view>
+            <view name="error">
+                <transform path="outside.xsl"/>
+            </view>
+            <view name="loginRequired" type="redirect" path="/login.jsp">
+            </view>
+        </command>
+
+        <command name="comment/edit">
+            <controller class="com.justjournal.ctl.EditComment"/>
+            <view name="success">
+                <transform path="comment/edit.xsl"/>
+                <transform path="outside.xsl"/>
+            </view>
+            <view name="error">
+                <transform path="outside.xsl"/>
+            </view>
+            <view name="loginRequired" type="redirect" path="/login.jsp">
+            </view>
+        </command>
+
+        <command name="comment/editsubmit">
+            <controller class="com.justjournal.ctl.EditCommentSubmit"/>
+            <view name="success">
+                <transform path="comment/editsubmit.xsl"/>
+                <transform path="outside.xsl"/>
+            </view>
+            <view name="error">
+                <transform path="outside.xsl"/>
+            </view>
+            <view name="loginRequired" type="redirect" path="/login.jsp">
+            </view>
+        </command>
+
+        <command name="entry/edit">
+            <controller class="com.justjournal.ctl.EditEntry"/>
+            <view name="success">
+                <transform path="entry/edit.xsl"/>
+                <transform path="outside.xsl"/>
+            </view>
+            <view name="error">
+                <transform path="entry/error.xsl"/>
+                <transform path="outside.xsl"/>
+            </view>
+            <view name="loginRequired" type="redirect" path="/login.jsp">
+            </view>
+        </command>
+
+        <command name="entry/editsubmit">
+            <controller class="com.justjournal.ctl.EditEntrySubmit"/>
+            <view name="success">
+                <transform path="entry/editsubmit.xsl"/>
+                <transform path="outside.xsl"/>
+            </view>
+            <view name="error">
+                <transform path="entry/error.xsl"/>
+                <transform path="outside.xsl"/>
+            </view>
+            <view name="loginRequired" type="redirect" path="/login.jsp">
+            </view>
+        </command>
+
+        <command name="entry/delete">
+            <controller class="com.justjournal.ctl.DeleteEntry"/>
+            <view name="success">
+                <transform path="entry/delete.xsl"/>
+                <transform path="outside.xsl"/>
+            </view>
+            <view name="error">
+                <transform path="entry/deleteerror.xsl"/>
+                <transform path="outside.xsl"/>
+            </view>
+            <view name="loginRequired" type="redirect" path="/login.jsp">
+            </view>
+        </command>
+
+        <command name="prefs/addljfriend">
+            <controller class="com.justjournal.ctl.AddLJFriendSubmit"/>
+            <view name="success">
+                <transform path="outside.xsl"/>
+            </view>
+            <view name="error">
+                <transform path="outside.xsl"/>
+            </view>
+            <view name="loginRequired" type="redirect" path="/login.jsp">
+            </view>
+        </command>
+
+        <command name="prefs/deleteljfriend">
+            <controller class="com.justjournal.ctl.DeleteLJFriendSubmit"/>
+            <view name="success">
+                <transform path="outside.xsl"/>
+            </view>
+            <view name="error">
+                <transform path="outside.xsl"/>
+            </view>
+            <view name="loginRequired" type="redirect" path="/login.jsp">
+            </view>
+        </command>
+
+        <command name="prefs/addsubscription">
+            <controller class="com.justjournal.ctl.AddRssSubscriptionSubmit"/>
+            <view name="success">
+                <transform path="outside.xsl"/>
+            </view>
+            <view name="error">
+                <transform path="outside.xsl"/>
+            </view>
+            <view name="loginRequired" type="redirect" path="/login.jsp">
+            </view>
+        </command>
+
+        <command name="prefs/deletesubscription">
+            <controller class="com.justjournal.ctl.DeleteRssSubscriptionSubmit"/>
+            <view name="success">
+                <transform path="outside.xsl"/>
+            </view>
+            <view name="error">
+                <transform path="outside.xsl"/>
+            </view>
+            <view name="loginRequired" type="redirect" path="/login.jsp">
+            </view>
+        </command>
+
+        <command name="prefs/profilesubmit">
+            <controller class="com.justjournal.ctl.ProfilePrefSubmit"/>
+            <view name="success">
+                <transform path="outside.xsl"/>
+            </view>
+            <view name="error">
+                <transform path="outside.xsl"/>
+            </view>
+            <view name="loginRequired" type="redirect" path="/login.jsp">
+            </view>
+        </command>
+
+        <command name="prefs/securitysubmit">
+            <controller class="com.justjournal.ctl.SecurityPrefSubmit"/>
+            <view name="success">
+                <transform path="outside.xsl"/>
+            </view>
+            <view name="error">
+                <transform path="outside.xsl"/>
+            </view>
+            <view name="loginRequired" type="redirect" path="/login.jsp">
+            </view>
+        </command>
+
+        <command name="prefs/changepass">
+            <controller class="com.justjournal.ctl.ChangePasswordSubmit"/>
+            <view name="success">
+                <transform path="outside.xsl"/>
+            </view>
+            <view name="error">
+                <transform path="outside.xsl"/>
+            </view>
+            <view name="loginRequired" type="redirect" path="/login.jsp">
+            </view>
+        </command>
+
+        <command name="moodlist">
+            <controller class="com.justjournal.ctl.MoodList"/>
+            <view name="success">
+                <transform path="outside.xsl"/>
+            </view>
+            <view name="error">
+                <transform path="outside.xsl"/>
+            </view>
+        </command>
+
+        <command name="favorite/add">
+            <controller class="com.justjournal.ctl.AddFavorite"/>
+            <view name="success">
+                <transform path="favorite/add.xsl"/>
+                <transform path="outside.xsl"/>
+            </view>
+            <view name="error">
+                <transform path="outside.xsl"/>
+            </view>
+            <view name="loginRequired" type="redirect" path="/login.jsp">
+            </view>
+        </command>
+
+        <command name="favorite/delete">
+            <controller class="com.justjournal.ctl.DeleteFavorite"/>
+            <view name="success">
+                <transform path="favorite/delete.xsl"/>
+                <transform path="outside.xsl"/>
+            </view>
+            <view name="error">
+                <transform path="outside.xsl"/>
+            </view>
+            <view name="loginRequired" type="redirect" path="/login.jsp">
+            </view>
+        </command>
+
+        <command name="favorite/view">
+            <controller class="com.justjournal.ctl.ViewFavorite"/>
+            <view name="success">
+                <transform path="favorite/view.xsl"/>
+                <transform path="outside.xsl"/>
+            </view>
+            <view name="error">
+                <transform path="outside.xsl"/>
+            </view>
+            <view name="loginRequired" type="redirect" path="/login.jsp">
+            </view>
+        </command>
+
+        <command name="link/add">
+            <controller class="com.justjournal.ctl.AddLink"/>
+            <view name="success">
+                <transform path="link/add.xsl"/>
+                <transform path="outside.xsl"/>
+            </view>
+            <view name="error">
+                <transform path="outside.xsl"/>
+            </view>
+            <view name="loginRequired" type="redirect" path="/login.jsp">
+            </view>
+        </command>
+
+    </commands>
+
+</maverick>
