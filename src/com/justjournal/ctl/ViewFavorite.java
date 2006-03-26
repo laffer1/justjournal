@@ -55,7 +55,7 @@ import java.util.Collection;
  */
 public class ViewFavorite extends Protected {
     private static Category log = Category.getInstance(ViewFavorite.class.getName());
-    protected Collection entries = new ArrayList(20);
+    protected Collection<EntryTo> entries = new ArrayList<EntryTo>(20);
 
 
     /**
@@ -63,7 +63,7 @@ public class ViewFavorite extends Protected {
      *
      * @return an arraylist containing EntryTo objects
      */
-    public Collection getEntries() {
+    public Collection<EntryTo> getEntries() {
         return this.entries;
     }
 

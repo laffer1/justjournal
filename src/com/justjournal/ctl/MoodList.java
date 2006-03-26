@@ -31,10 +31,11 @@ TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
+
 package com.justjournal.ctl;
 
-import org.apache.log4j.Category;
 import com.justjournal.db.MoodDao;
+import org.apache.log4j.Category;
 
 import java.util.Collection;
 
@@ -43,8 +44,8 @@ import java.util.Collection;
  *
  * @author Lucas Holt
  * @version 1.0
- * Date: Nov 10, 2005
- * Time: 3:51:59 PM
+ *          Date: Nov 10, 2005
+ *          Time: 3:51:59 PM
  * @since 1.0
  */
 public class MoodList extends ControllerAuth {
@@ -62,8 +63,7 @@ public class MoodList extends ControllerAuth {
         // we are returning XML here :)
         this.getCtx().getResponse().setContentType("text/xml");
 
-        final MoodDao dao = new MoodDao();
-        this.moods = dao.view();
+        this.moods = MoodDao.view();
         return SUCCESS;
     }
 

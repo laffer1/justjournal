@@ -34,6 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.ctl;
 
+import com.justjournal.db.DateTime;
 import com.justjournal.db.DateTimeBean;
 import com.justjournal.db.EntryDAO;
 import com.justjournal.db.EntryTo;
@@ -152,7 +153,7 @@ public class EditEntrySubmit extends Protected {
 
         final EntryDAO edao = new EntryDAO();
         final EntryTo entry = new EntryTo();
-        final DateTimeBean myDate = new DateTimeBean();
+        final DateTime myDate = new DateTimeBean();
 
         if (this.currentLoginId() < 1)
             addError("login", "The login timed out or is invalid.");
