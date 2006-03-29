@@ -167,4 +167,26 @@ public final class StringUtil {
         return !invalidInput;
     }
 
+    /**
+     * Check the length of the string str using the
+     * minimum and maximum values provided.
+     *
+     * @param str
+     * @param minlength
+     * @param maxlength
+     * @return true if the str is between the constraints,
+     *         false if it violates them.
+     */
+    public static boolean lengthCheck(final String str, final int minlength, final int maxlength) {
+        int len = str.length();
+
+        if (len < minlength)
+            return false;
+
+        if (len > maxlength)
+            return false;
+
+        return true;
+    }
+
 }
