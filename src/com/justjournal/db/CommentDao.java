@@ -47,8 +47,6 @@ import java.util.ArrayList;
  */
 public final class CommentDao {
 
-    private BaseDao dao = new BaseDao();
-
     /**
      * Add a comment on a journal entry
      *
@@ -65,7 +63,7 @@ public final class CommentDao {
                         + StringUtil.replace(comment.getSubject(), '\'', "\\\'") + "','"
                         + StringUtil.replace(comment.getBody(), '\'', "\\\'") + "');";
 
-        return dao.add(sqlStmt);
+        return BaseDao.add(sqlStmt);
     }
 
     /**
@@ -85,10 +83,10 @@ public final class CommentDao {
                 comment.getUserId() + "' AND eid='" +
                 comment.getEid() + "' LIMIT 1;";
 
-        return dao.edit(sqlStmt);
+        return BaseDao.edit(sqlStmt);
     }
 
-    public boolean delete(final int commentId, final int userId) {
+    public static boolean delete(final int commentId, final int userId) {
         boolean noError = true;
         final String sqlStmt = "DELETE FROM comments WHERE id='" + commentId + "' AND uid='" + userId + "' LIMIT 1;";
 
@@ -111,9 +109,9 @@ public final class CommentDao {
      * direct calls by Users.
      *
      * @param entryId
-     * @return
+     * @return true on success, false on any error.
      */
-    public boolean deleteByEntry(final int entryId) {
+    public static boolean deleteByEntry(final int entryId) {
         boolean noError = true;
         final String sqlStmt = "DELETE FROM comments WHERE eid='" + entryId + "' LIMIT 1;";
 
@@ -130,7 +128,7 @@ public final class CommentDao {
         return noError;
     }
 
-    public CommentTo viewSingle(final int commentId) {
+    public static CommentTo viewSingle(final int commentId) {
         CachedRowSet rs = null;
         final CommentTo comment = new CommentTo();
         final String sqlStmt =
@@ -166,8 +164,8 @@ public final class CommentDao {
         return comment;
     }
 
-    public ArrayList view(final int entryId) {
-        final ArrayList comments = new ArrayList(5);  // 5 is average comments on entry?
+    public static ArrayList<CommentTo> view(final int entryId) {
+        final ArrayList<CommentTo> comments = new ArrayList<CommentTo>(5);  // 5 is average comments on entry?
         CachedRowSet rs = null;
         CommentTo comment;
         final String sqlStmt =

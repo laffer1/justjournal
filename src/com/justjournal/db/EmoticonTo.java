@@ -45,54 +45,54 @@ package com.justjournal.db;
  *        Date: Sep 22, 2003
  *        Time: 11:01:45 PM
  */
-public class EmoticonTo {
+public final class EmoticonTo {
     private String filename;
     private int moodId;
     private int moodTheme;
     private int width;
     private int height;
 
-    public String getFileName() {
+    public final String getFileName() {
         return filename;
     }
 
-    public void setFileName(String value) {
+    public final void setFileName(String value) {
         filename = value;
     }
 
-    public int getMoodId() {
+    public final int getMoodId() {
         return moodId;
     }
 
-    public void setMoodId(int value) {
+    public final void setMoodId(int value) {
         moodId = value;
     }
 
-    public int getMoodTheme() {
+    public final int getMoodTheme() {
         return moodTheme;
     }
 
-    public void setMoodTheme(int value) {
+    public final void setMoodTheme(int value) {
         moodTheme = value;
     }
 
-    public int getWidth() {
+    public final int getWidth() {
         return width;
     }
 
-    public void setWidth(int value) {
+    public final void setWidth(int value) {
         width = value;
     }
 
-    public int getHeight() {
+    public final int getHeight() {
         return height;
     }
 
-    public void setHeight(int value) {
+    public final void setHeight(int value) {
         height = value;
     }
 
-    public String toString() {
+    public final String toString() {
         StringBuffer output = new StringBuffer();
 
         output.append("mood id: ");
@@ -118,7 +118,7 @@ public class EmoticonTo {
         return output.toString();
     }
 
-    public boolean equals(Object o) {
+    public final boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
@@ -133,7 +133,7 @@ public class EmoticonTo {
         return true;
     }
 
-    public int hashCode() {
+    public final int hashCode() {
         int result;
         result = filename.hashCode();
         result = 29 * result + moodId;

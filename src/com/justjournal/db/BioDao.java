@@ -43,8 +43,8 @@ import sun.jdbc.rowset.CachedRowSet;
  * Time: 11:21:11 PM
  * To change this template use Options | File Templates.
  */
-public class BioDao {
-    public boolean add(BioTo bio) {
+public final class BioDao {
+    public static final boolean add(BioTo bio) {
         boolean noError = true;
         int records = 0;
 
@@ -64,7 +64,7 @@ public class BioDao {
         return noError;
     }
 
-    public boolean update(BioTo bio) {
+    public static final boolean update(BioTo bio) {
 
         boolean noError = true;
 
@@ -80,7 +80,7 @@ public class BioDao {
         return noError;
     }
 
-    public boolean delete(int userId) {
+    public static final boolean delete(int userId) {
         boolean noError = true;
 
         final String sqlStmt = "DELETE FROM user_bio WHERE id='" + userId + "' LIMIT 1;";
@@ -99,7 +99,7 @@ public class BioDao {
     }
 
 
-    public BioTo view(int userId) {
+    public static final BioTo view(int userId) {
         BioTo bio = new BioTo();
         CachedRowSet rs = null;
         String sqlStmt = "Select content from user_bio WHERE id='" + userId + "' Limit 1;";

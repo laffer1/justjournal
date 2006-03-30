@@ -46,7 +46,6 @@ import sun.jdbc.rowset.CachedRowSet;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
-import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -55,7 +54,7 @@ import java.sql.Statement;
 public final class SQLHelper {
     private static Context ctx = null;
     private static DataSource ds = null;
-    private static String DbEnv = "java:comp/env/jdbc/jjDB";
+    private static final String DbEnv = "java:comp/env/jdbc/jjDB";
 
     SQLHelper() {
         try {
@@ -125,7 +124,7 @@ public final class SQLHelper {
     }
 
     public static CachedRowSet executeResultSet(final String commandText)
-            throws Exception, ClassNotFoundException, InstantiationException, IllegalAccessException {
+            throws Exception {
         Connection conn = null;
         Statement stmt = null;
         ResultSet rs;
@@ -189,39 +188,41 @@ public final class SQLHelper {
         return crs;
     }
 
-    public static String executeXMLResult(final String commandText)
-            throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-        StringWriter sw = new StringWriter();
-
-        // DB Access
-        //  Driver DriverRecordset1 = (Driver) Class.forName( driverText ).newInstance();
-        /*Connection oConn = DriverManager.getConnection( connectURI, UserName, Password );
-        oConn.setReadOnly( true );
-        Statement stmt = oConn.createStatement();
-
-        ResultSet rs = stmt.executeQuery( commandText );
-        ResultSetMetaData rsmd = rs.getMetaData();
-
-        // Meta Data Properties
-        int numberOfColumns = rsmd.getColumnCount();
-        String[] namesOfColumns = new String[numberOfColumns];
-
-        // Create XML Document
-        sw.write( "<?xml version=\"1.0\" ?>\n\n" );
-        sw.write( "<records>\n" );
-
-        while ( rs.next() ) {
-            // sw.write( );
-        }
-
-        sw.write( "</records>" );
-        // End of XML Document Generation
-
-        //rsmd.close();
-        rs.close();  // close the disconnected recordset
-        stmt.close();
-        oConn.close();  */
-
-        return sw.toString();
-    }
+// --Commented out by Inspection START (3/24/06 11:08 PM):
+//    public static String executeXMLResult(final String commandText)
+//            throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+//        StringWriter sw = new StringWriter();
+//
+//        // DB Access
+//        //  Driver DriverRecordset1 = (Driver) Class.forName( driverText ).newInstance();
+//        /*Connection oConn = DriverManager.getConnection( connectURI, UserName, Password );
+//        oConn.setReadOnly( true );
+//        Statement stmt = oConn.createStatement();
+//
+//        ResultSet rs = stmt.executeQuery( commandText );
+//        ResultSetMetaData rsmd = rs.getMetaData();
+//
+//        // Meta Data Properties
+//        int numberOfColumns = rsmd.getColumnCount();
+//        String[] namesOfColumns = new String[numberOfColumns];
+//
+//        // Create XML Document
+//        sw.write( "<?xml version=\"1.0\" ?>\n\n" );
+//        sw.write( "<records>\n" );
+//
+//        while ( rs.next() ) {
+//            // sw.write( );
+//        }
+//
+//        sw.write( "</records>" );
+//        // End of XML Document Generation
+//
+//        //rsmd.close();
+//        rs.close();  // close the disconnected recordset
+//        stmt.close();
+//        oConn.close();  */
+//
+//        return sw.toString();
+//    }
+// --Commented out by Inspection STOP (3/24/06 11:08 PM)
 }

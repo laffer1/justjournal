@@ -46,7 +46,7 @@ import java.util.Collection;
  * Time: 7:04:41 PM
  */
 public final class LJFriendDao {
-    public boolean add(LJFriendTo lj) {
+    public static boolean add(LJFriendTo lj) {
         boolean noError = true;
         int records = 0;
 
@@ -69,7 +69,7 @@ public final class LJFriendDao {
         return noError;
     }
 
-    public boolean delete(LJFriendTo lj) {
+    public static boolean delete(LJFriendTo lj) {
         boolean noError = true;
         int records = 0;
 
@@ -89,8 +89,8 @@ public final class LJFriendDao {
         return noError;
     }
 
-    public Collection view(final int userId) {
-        ArrayList friends = new ArrayList(10);
+    public static Collection<LJFriendTo> view(final int userId) {
+        ArrayList<LJFriendTo> friends = new ArrayList<LJFriendTo>(10);
         CachedRowSet RS = null;
         LJFriendTo lj;
         final String sqlStatement = "SELECT username, community FROM friends_lj WHERE id='" + userId
@@ -104,7 +104,7 @@ public final class LJFriendDao {
 
                 lj.setId(userId);
                 lj.setUserName(RS.getString("username"));
-                lj.setIsCommunity(RS.getString("community").compareTo("Y") == 0 ? true : false);
+                lj.setIsCommunity(RS.getString("community").compareTo("Y") == 0);
 
                 friends.add(lj);
             }

@@ -40,7 +40,7 @@ package com.justjournal.db;
  * Date: Jan 21, 2004
  * Time: 12:59:36 PM
  */
-public class UserContactTo {
+public final class UserContactTo {
     private String email;
     private String icq;
     private String aim;
@@ -51,71 +51,71 @@ public class UserContactTo {
     private String hpUri;
 
 
-    public String getEmail() {
+    public final String getEmail() {
         return this.email;
     }
 
-    public void setEmail(final String email) {
+    public final void setEmail(final String email) {
         this.email = email;
     }
 
-    public String getIcq() {
+    public final String getIcq() {
         return this.icq;
     }
 
-    public void setIcq(final String icq) {
+    public final void setIcq(final String icq) {
         this.icq = icq;
     }
 
-    public String getAim() {
+    public final String getAim() {
         return this.aim;
     }
 
-    public void setAim(final String aim) {
+    public final void setAim(final String aim) {
         this.aim = aim;
     }
 
-    public String getYahoo() {
+    public final String getYahoo() {
         return this.yahoo;
     }
 
-    public void setYahoo(final String yahoo) {
+    public final void setYahoo(final String yahoo) {
         this.yahoo = yahoo;
     }
 
-    public String getMsn() {
+    public final String getMsn() {
         return this.msn;
     }
 
-    public void setMsn(final String msn) {
+    public final void setMsn(final String msn) {
         this.msn = msn;
     }
 
-    public String getPhone() {
+    public final String getPhone() {
         return this.phone;
     }
 
-    public void setPhone(final String phone) {
+    public final void setPhone(final String phone) {
         this.phone = phone;
     }
 
-    public String getHpTitle() {
+    public final String getHpTitle() {
         return this.hpTitle;
     }
 
-    public void setHpTitle(final String hpTitle) {
+    public final void setHpTitle(final String hpTitle) {
         this.hpTitle = hpTitle;
     }
 
-    public String getHpUri() {
+    public final String getHpUri() {
         return this.hpUri;
     }
 
-    public void setHpUri(final String hpUri) {
+    public final void setHpUri(final String hpUri) {
         this.hpUri = hpUri;
     }
 
-    public boolean equals(Object o) {
+    public final boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
@@ -133,7 +133,7 @@ public class UserContactTo {
         return true;
     }
 
-    public int hashCode() {
+    public final int hashCode() {
         int result;
         result = email.hashCode();
         result = 29 * result + (icq != null ? icq.hashCode() : 0);

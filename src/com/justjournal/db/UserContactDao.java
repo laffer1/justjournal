@@ -40,5 +40,5 @@ package com.justjournal.db;
  * Date: Jan 21, 2004
  * Time: 1:09:29 PM
  */
-public class UserContactDao {
+public final class UserContactDao {
 }

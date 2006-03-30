@@ -41,27 +41,27 @@ package com.justjournal.db;
  * Time: 11:21:22 PM
  * To change this template use Options | File Templates.
  */
-public class BioTo {
+public final class BioTo {
     private int userId;
     private String bio;
 
-    public int getUserId() {
+    public final int getUserId() {
         return this.userId;
     }
 
-    public void setUserId(int userId) {
+    public final void setUserId(int userId) {
         this.userId = userId;
     }
 
-    public String getBio() {
+    public final String getBio() {
         return this.bio;
     }
 
-    public void setBio(String bio) {
+    public final void setBio(String bio) {
         this.bio = bio;
     }
 
-    public String toString() {
+    public final String toString() {
         StringBuffer output = new StringBuffer();
 
         output.append("user id: ");
@@ -75,7 +75,7 @@ public class BioTo {
         return output.toString();
     }
 
-    public boolean equals(Object o) {
+    public final boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
@@ -87,7 +87,7 @@ public class BioTo {
         return true;
     }
 
-    public int hashCode() {
+    public final int hashCode() {
         int result;
         result = userId;
         result = 29 * result + bio.hashCode();

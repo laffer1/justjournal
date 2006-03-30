@@ -45,9 +45,9 @@ import java.util.Collection;
  * Date: Mar 19, 2005
  * Time: 9:17:55 PM
  */
-final public class RssSubscriptionsDAO {
+public final class RssSubscriptionsDAO {
 
-    public boolean add(RssSubscriptionsTO rss) {
+    public static boolean add(RssSubscriptionsTO rss) {
         boolean noError = true;
         int records = 0;
 
@@ -69,7 +69,7 @@ final public class RssSubscriptionsDAO {
         return noError;
     }
 
-    public boolean delete(RssSubscriptionsTO rss) {
+    public static boolean delete(RssSubscriptionsTO rss) {
         boolean noError = true;
         int records = 0;
 
@@ -88,8 +88,8 @@ final public class RssSubscriptionsDAO {
         return noError;
     }
 
-    public Collection view(final int userId) {
-        ArrayList rssfeeds = new ArrayList(10);
+    public static Collection<RssSubscriptionsTO> view(final int userId) {
+        ArrayList<RssSubscriptionsTO> rssfeeds = new ArrayList<RssSubscriptionsTO>(10);
         CachedRowSet RS = null;
         RssSubscriptionsTO rss;
         final String sqlStatement = "SELECT uri FROM rss_subscriptions WHERE id='"

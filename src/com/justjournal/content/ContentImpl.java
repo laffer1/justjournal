@@ -1,6 +1,6 @@
 package com.justjournal.content;
 
-import com.justjournal.db.DateTimeBean;
+import com.justjournal.db.DateTime;
 
 import java.util.Collection;
 
@@ -15,8 +15,8 @@ public class ContentImpl implements Content {
     private Byte[] content;
     private String format;
     private String author;
-    private DateTimeBean dateCreated;
-    private DateTimeBean dateModified;
+    private DateTime dateCreated;
+    private DateTime dateModified;
     private Collection metaData;
 
 
@@ -103,7 +103,7 @@ public class ContentImpl implements Content {
      * @return Date created as a string.. format varies by
      *         implementation.
      */
-    public DateTimeBean getDateCreated() {
+    public DateTime getDateCreated() {
         return dateCreated;
     }
 
@@ -113,8 +113,8 @@ public class ContentImpl implements Content {
      *
      * @param dateCreated date as string item was created.
      */
-    public void setDateCreated(DateTimeBean dateCreated) {
-       this.dateCreated = dateCreated;
+    public void setDateCreated(DateTime dateCreated) {
+        this.dateCreated = dateCreated;
     }
 
     /**
@@ -123,7 +123,7 @@ public class ContentImpl implements Content {
      * @return string version of date modfied.  Varies by
      *         implemenation in date format.
      */
-    public DateTimeBean getDateModified() {
+    public DateTime getDateModified() {
         return dateModified;
     }
 
@@ -133,7 +133,7 @@ public class ContentImpl implements Content {
      *
      * @param dateModified date as string of last modification.
      */
-    public void setDateModified(DateTimeBean dateModified) {
+    public void setDateModified(DateTime dateModified) {
         this.dateModified = dateModified;
     }
 
@@ -153,6 +153,6 @@ public class ContentImpl implements Content {
      * @param metaData MetaData collection of name/value pairs.
      */
     public void setMetaData(Collection metaData) {
-       this.metaData = metaData;
+        this.metaData = metaData;
     }
 }

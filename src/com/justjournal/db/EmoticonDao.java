@@ -42,9 +42,9 @@ import sun.jdbc.rowset.CachedRowSet;
  *         Date: Sep 22, 2003
  *         Time: 11:01:27 PM
  */
-public class EmoticonDao {
+public final class EmoticonDao {
 
-    public EmoticonTo view(int themeId, int moodId) {
+    public static final EmoticonTo view(int themeId, int moodId) {
         int id = moodId;  // start at mood id but change as neccessary
 
         String sqlStatement;

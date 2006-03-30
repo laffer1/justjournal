@@ -45,7 +45,7 @@ package com.justjournal.db;
  *         <p/>
  *         TODO: add the rest of the properties.
  */
-public class UserTo {
+public final class UserTo {
     private int id;          // the user id imposed by mysql
     private String userName;
     private String name;     // first name
@@ -58,7 +58,7 @@ public class UserTo {
      *
      * @return
      */
-    public int getId() {
+    public final int getId() {
         return this.id;
     }
 
@@ -67,7 +67,7 @@ public class UserTo {
      *
      * @param id
      */
-    public void setId(final int id) {
+    public final void setId(final int id) {
         this.id = id;
     }
 
@@ -76,7 +76,7 @@ public class UserTo {
      *
      * @return
      */
-    public String getUserName() {
+    public final String getUserName() {
         return this.userName;
     }
 
@@ -85,7 +85,7 @@ public class UserTo {
      *
      * @param userName
      */
-    public void setUserName(final String userName) {
+    public final void setUserName(final String userName) {
         this.userName = userName;
     }
 
@@ -94,7 +94,7 @@ public class UserTo {
      *
      * @return
      */
-    public String getName() {
+    public final String getName() {
         return this.name;
     }
 
@@ -103,7 +103,7 @@ public class UserTo {
      *
      * @param name
      */
-    public void setName(final String name) {
+    public final void setName(final String name) {
         this.name = name;
     }
 
@@ -115,7 +115,7 @@ public class UserTo {
      *
      * @return
      */
-    public String getPassword() {
+    public final String getPassword() {
         return this.password;
     }
 
@@ -127,7 +127,7 @@ public class UserTo {
      *
      * @param password
      */
-    public void setPassword(final String password) {
+    public final void setPassword(final String password) {
         this.password = password;
     }
 
@@ -136,7 +136,7 @@ public class UserTo {
      *
      * @return
      */
-    public String getPasswordSha1() {
+    public final String getPasswordSha1() {
         return this.passwordSha1;
     }
 
@@ -145,7 +145,7 @@ public class UserTo {
      *
      * @param passwordSha1
      */
-    public void setPasswordSha1(final String passwordSha1) {
+    public final void setPasswordSha1(final String passwordSha1) {
         this.passwordSha1 = passwordSha1;
     }
 
@@ -159,7 +159,7 @@ public class UserTo {
      *
      * @return
      */
-    public String toString() {
+    public final String toString() {
         StringBuffer sb = new StringBuffer();
 
         sb.append("id: ");
@@ -172,7 +172,7 @@ public class UserTo {
         return sb.toString();
     }
 
-    public boolean equals(Object o) {
+    public final boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
@@ -181,13 +181,14 @@ public class UserTo {
         if (id != userTo.id) return false;
         if (name != null ? !name.equals(userTo.name) : userTo.name != null) return false;
         if (password != null ? !password.equals(userTo.password) : userTo.password != null) return false;
-        if (passwordSha1 != null ? !passwordSha1.equals(userTo.passwordSha1) : userTo.passwordSha1 != null) return false;
+        if (passwordSha1 != null ? !passwordSha1.equals(userTo.passwordSha1) : userTo.passwordSha1 != null)
+            return false;
         if (!userName.equals(userTo.userName)) return false;
 
         return true;
     }
 
-    public int hashCode() {
+    public final int hashCode() {
         int result;
         result = id;
         result = 29 * result + userName.hashCode();

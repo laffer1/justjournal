@@ -50,7 +50,7 @@ public final class EntryTo {
     private int userId;
     private int securityLevel;
 
-    private DateTimeBean date;
+    private DateTime date;
 
     private String subject;
     private String body;
@@ -143,7 +143,7 @@ public final class EntryTo {
      * @return current date in a DateTimeBean
      * @see DateTimeBean
      */
-    public DateTimeBean getDate() {
+    public DateTime getDate() {
         return date;
     }
 
@@ -167,7 +167,7 @@ public final class EntryTo {
         if (date.length() < 6)
             throw new IllegalArgumentException("Illegal date: " +
                     date);
-        DateTimeBean newDate = new DateTimeBean();
+        DateTime newDate = new DateTimeBean();
 
         try {
             newDate.set(date);
@@ -184,14 +184,14 @@ public final class EntryTo {
      * @param date
      * @see DateTimeBean
      */
-    public void setDate(DateTimeBean date) {
+    public void setDate(DateTime date) {
         this.date = date;
     }
 
     /**
      * Retrieve the subject
      *
-     * @return
+     * @return The subject of the entry
      */
     public String getSubject() {
         return subject;
@@ -220,7 +220,7 @@ public final class EntryTo {
 
 
     /**
-     * @return
+     * @return the body in text or html with or without autoformat
      */
     public String getBody() {
         return body;
@@ -422,7 +422,8 @@ public final class EntryTo {
         if (userId != entryTo.userId) return false;
         if (!body.equals(entryTo.body)) return false;
         if (!date.equals(entryTo.date)) return false;
-        if (locationName != null ? !locationName.equals(entryTo.locationName) : entryTo.locationName != null) return false;
+        if (locationName != null ? !locationName.equals(entryTo.locationName) : entryTo.locationName != null)
+            return false;
         if (moodName != null ? !moodName.equals(entryTo.moodName) : entryTo.moodName != null) return false;
         if (music != null ? !music.equals(entryTo.music) : entryTo.music != null) return false;
         if (subject != null ? !subject.equals(entryTo.subject) : entryTo.subject != null) return false;

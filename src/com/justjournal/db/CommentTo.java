@@ -40,23 +40,23 @@ package com.justjournal.db;
  * Date: Dec 24, 2003
  * Time: 4:53:47 AM
  */
-public class CommentTo {
+public final class CommentTo {
 
     //id,uid,eid,date,subject,body
     private int id;
     private int eid;
     private int userId;
 
-    private DateTimeBean date;
+    private DateTime date;
     private String subject;
     private String body;
     private String userName;
 
-    public int getId() {
+    public final int getId() {
         return id;
     }
 
-    public void setId(int id)
+    public final void setId(int id)
             throws IllegalArgumentException {
         if (id < 0)
             throw new IllegalArgumentException("Illegal id: " +
@@ -65,11 +65,11 @@ public class CommentTo {
         this.id = id;
     }
 
-    public int getEid() {
+    public final int getEid() {
         return eid;
     }
 
-    public void setEid(int eid)
+    public final void setEid(int eid)
             throws IllegalArgumentException {
         if (eid < 0)
             throw new IllegalArgumentException("Illegal eid: " +
@@ -78,16 +78,16 @@ public class CommentTo {
         this.eid = eid;
     }
 
-    public DateTimeBean getDate() {
+    public final DateTime getDate() {
         return date;
     }
 
-    public void setDate(String date)
+    public final void setDate(String date)
             throws IllegalArgumentException {
         if (date.length() < 6)
             throw new IllegalArgumentException("Illegal date: " +
                     date);
-        DateTimeBean newDate = new DateTimeBean();
+        DateTime newDate = new DateTimeBean();
 
         try {
             newDate.set(date);
@@ -97,15 +97,15 @@ public class CommentTo {
         }
     }
 
-    public void setDate(DateTimeBean date) {
+    public final void setDate(DateTime date) {
         this.date = date;
     }
 
-    public String getSubject() {
+    public final String getSubject() {
         return subject;
     }
 
-    public void setSubject(String subject)
+    public final void setSubject(String subject)
             throws IllegalArgumentException {
 
         if (subject.length() == 0)
@@ -114,11 +114,11 @@ public class CommentTo {
             this.subject = subject;
     }
 
-    public String getBody() {
+    public final String getBody() {
         return body;
     }
 
-    public void setBody(String body)
+    public final void setBody(String body)
             throws IllegalArgumentException {
         if (body.length() < 2)
             throw new IllegalArgumentException("Illegal body: " +
@@ -127,11 +127,11 @@ public class CommentTo {
         this.body = body;
     }
 
-    public int getUserId() {
+    public final int getUserId() {
         return userId;
     }
 
-    public void setUserId(int uid)
+    public final void setUserId(int uid)
             throws IllegalArgumentException {
         if (uid < 0)
             throw new IllegalArgumentException("Illegal user id: " +
@@ -139,15 +139,15 @@ public class CommentTo {
         userId = uid;
     }
 
-    public String getUserName() {
+    public final String getUserName() {
         return userName;
     }
 
-    public void setUserName(String user) {
+    public final void setUserName(String user) {
         userName = user;
     }
 
-    public String toString() {
+    public final String toString() {
         StringBuffer output = new StringBuffer();
 
         output.append("comment id: ");
@@ -177,7 +177,7 @@ public class CommentTo {
         return output.toString();
     }
 
-    public boolean equals(Object o) {
+    public final boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
@@ -194,7 +194,7 @@ public class CommentTo {
         return true;
     }
 
-    public int hashCode() {
+    public final int hashCode() {
         int result;
         result = id;
         result = 29 * result + eid;

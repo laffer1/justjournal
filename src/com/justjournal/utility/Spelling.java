@@ -60,7 +60,7 @@ public final class Spelling
 
     private static String dictFile = "/usr/local/dict/english.0";
     private SpellChecker spellCheck;
-    private StringBuffer sb; // output variable
+    private StringBuilder sb; // output variable
 
     /**
      * Creates an instance of Spell dictionary and reads
@@ -118,7 +118,7 @@ public final class Spelling
      * @return String containing errors found in document.
      */
     public String checkSpelling(String inText) {
-        sb = new StringBuffer();
+        sb = new StringBuilder();
 
         try {
 

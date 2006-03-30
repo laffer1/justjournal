@@ -42,8 +42,8 @@ import sun.jdbc.rowset.CachedRowSet;
  * Date: Jan 21, 2004
  * Time: 12:32:03 PM
  */
-public class UserDao {
-    public boolean add(UserTo user) {
+public final class UserDao {
+    public static final boolean add(UserTo user) {
         boolean noError = true;
         int records = 0;
 
@@ -74,7 +74,7 @@ public class UserDao {
      * @return
      * @see com.justjournal.ctl.ChangePasswordSubmit
      */
-    public boolean update(UserTo user) {
+    public static final boolean update(UserTo user) {
         boolean noError = true;
 
         final String sqlStmt =
@@ -97,7 +97,7 @@ public class UserDao {
      * @param userId
      * @return true if successful, false otherwise
      */
-    public boolean delete(int userId) {
+    public static final boolean delete(int userId) {
         boolean noError = true;
 
         final String sqlStmt = "DELETE FROM user WHERE id='" + userId + "' LIMIT 1;";
@@ -122,7 +122,7 @@ public class UserDao {
      * @param userId
      * @return user's info
      */
-    public UserTo view(int userId) {
+    public static final UserTo view(int userId) {
         UserTo user = new UserTo();
         CachedRowSet rs = null;
         String sqlStmt = "SELECT username, name from user WHERE id='" + userId + "' Limit 1;";
@@ -160,7 +160,7 @@ public class UserDao {
      * @param userName
      * @return user's info
      */
-    public UserTo view(String userName) {
+    public static final UserTo view(String userName) {
         UserTo user = new UserTo();
         CachedRowSet rs = null;
         String sqlStmt = "SELECT id, name from user WHERE username='" + userName + "' Limit 1;";

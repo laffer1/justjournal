@@ -11,7 +11,7 @@ import java.util.Collection;
  * Time: 2:58:10 PM
  */
 public final class UserLinkDao {
-    private BaseDao dao = new BaseDao();
+    private final BaseDao dao = new BaseDao();
 
     /**
      * Add a link to the user link list.
@@ -28,7 +28,7 @@ public final class UserLinkDao {
         return dao.add(sqlStmt);
     }
 
-    public boolean delete(final UserLinkTo link) {
+    public static boolean delete(final UserLinkTo link) {
         boolean noError = true;
         final String sqlStmt = "DELETE FROM user_link WHERE id='" + link.getUserId() +
                 "' AND uri='" + link.getUri() +
@@ -43,8 +43,8 @@ public final class UserLinkDao {
         return noError;
     }
 
-    public Collection view(int userId) {
-        ArrayList links = new ArrayList(10);
+    public static Collection<UserLinkTo> view(int userId) {
+        ArrayList<UserLinkTo> links = new ArrayList<UserLinkTo>(10);
         String sql = "SELECT * FROM user_link WHERE id='" + userId + "';";
 
         try {

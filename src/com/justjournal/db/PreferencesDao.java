@@ -49,7 +49,7 @@ import sun.jdbc.rowset.CachedRowSet;
  *        1.3 Added show_avatar field select.
  *        1.2 Altered journal preferences query to include email address field.
  */
-public class PreferencesDao {
+public final class PreferencesDao {
     /**
      * Update the owner view only security feature.
      *
@@ -57,7 +57,7 @@ public class PreferencesDao {
      * @param ownerOnly
      * @return true on success, false on any error
      */
-    public boolean updateSec(int userId, boolean ownerOnly) {
+    public static final boolean updateSec(int userId, boolean ownerOnly) {
         boolean noError = true;
         int records = 0;
         String ownerview = "N";

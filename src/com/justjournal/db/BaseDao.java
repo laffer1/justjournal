@@ -39,8 +39,8 @@ package com.justjournal.db;
  * Date: Aug 22, 2005
  * Time: 10:27:07 PM
  */
-public class BaseDao {
-    public boolean add(String sql) {
+final class BaseDao {
+    public static final boolean add(String sql) {
         boolean noError = true;
         int records = 0;
 
@@ -56,7 +56,7 @@ public class BaseDao {
         return noError;
     }
 
-    public boolean edit(String sql) {
+    public static final boolean edit(String sql) {
         boolean noError = true;
 
         try {
@@ -69,7 +69,7 @@ public class BaseDao {
 
     }
 
-    public boolean delete(String sql) {
+    public static final boolean delete(String sql) {
         boolean noError = true;
 
         try {

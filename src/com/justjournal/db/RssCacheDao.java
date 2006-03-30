@@ -46,11 +46,11 @@ import sun.jdbc.rowset.CachedRowSet;
  * @author Lucas Holt
  * @version 1.0
  */
-public class RssCacheDao {
+public final class RssCacheDao {
 
-    private static Category log = Category.getInstance(RssCacheDao.class.getName());
+    private static final Category log = Category.getInstance(RssCacheDao.class.getName());
 
-    public boolean add(RssCacheTo rss) {
+    public static final boolean add(RssCacheTo rss) {
 
         if (log.isDebugEnabled())
             log.debug("Starting add()");
@@ -80,7 +80,7 @@ public class RssCacheDao {
         return noError;
     }
 
-    public boolean update(RssCacheTo rss) {
+    public static final boolean update(RssCacheTo rss) {
 
         if (log.isDebugEnabled())
             log.debug("Starting update()");
@@ -108,7 +108,7 @@ public class RssCacheDao {
         return noError;
     }
 
-    public boolean delete(RssCacheTo rss) {
+    public static final boolean delete(RssCacheTo rss) {
 
         if (log.isDebugEnabled())
             log.debug("Starting delete()");
@@ -134,13 +134,13 @@ public class RssCacheDao {
         return noError;
     }
 
-    public RssCacheTo view(final String uri) {
+    public static final RssCacheTo view(final String uri) {
 
         if (log.isDebugEnabled())
             log.debug("Starting view()");
 
         CachedRowSet RS = null;
-        DateTimeBean dt = new DateTimeBean();
+        DateTime dt = new DateTimeBean();
         RssCacheTo rss = null;
         final String sqlStatement = "SELECT id, `interval`, lastupdated, uri, content FROM rss_cache WHERE uri='"
                 + uri + "';";

@@ -47,7 +47,7 @@ import java.util.Calendar;
  * @version 1.2
  * @since 1.0
  */
-public final class DateTimeBean {
+public final class DateTimeBean implements DateTime {
     // default is epoch -1 sec
     private int day = 31;
     private int month = 12;

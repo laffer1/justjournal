@@ -48,9 +48,9 @@ import java.util.Collection;
  * Time: 1:55:49 PM
  * To change this template use Options | File Templates.
  */
-public class SecurityDao {
-    public Collection view() {
-        ArrayList security = new ArrayList(4);
+public final class SecurityDao {
+    public static final Collection<SecurityTo> view() {
+        ArrayList<SecurityTo> security = new ArrayList<SecurityTo>(4);
         CachedRowSet RS;
         SecurityTo sec;
         final String sqlStatement = "SELECT * FROM entry_security ORDER BY id ASC;";

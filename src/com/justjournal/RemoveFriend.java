@@ -69,6 +69,9 @@ public final class RemoveFriend extends JustJournalBaseServlet {
         String temp = fixInput(request, "id");
         int friendID = Integer.valueOf(temp).intValue();
 
+        if (friendID < 1)
+            WebError.Display("Error", "Must use a valid friend id.", sb);
+
         try {
             String sqlStatement = "Delete FROM friends where id ='" + userID + "' and friendid='" + friendID + "' LIMIT 1;";
             int rowsAffected = SQLHelper.executeNonQuery(sqlStatement);

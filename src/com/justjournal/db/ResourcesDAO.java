@@ -8,11 +8,11 @@ import sun.jdbc.rowset.CachedRowSet;
  * Date: Jul 24, 2005
  * Time: 10:45:48 AM
  */
-public class ResourcesDAO {
+public final class ResourcesDAO {
 
-    private static Category log = Category.getInstance(ResourcesDAO.class.getName());
+    private static final Category log = Category.getInstance(ResourcesDAO.class.getName());
 
-    public boolean add(ResourceTo res) {
+    public static final boolean add(ResourceTo res) {
 
         if (log.isDebugEnabled())
             log.debug("Starting add()");
@@ -21,10 +21,7 @@ public class ResourcesDAO {
         int records = 0;
 
         final String sqlStmt =
-                "INSERT INTO resources (name, active, security) values('"
-                        + res.getName() + "','" + ((res.getActive() == true) ? "1" : "0") + "','"
-                        + res.getSecurityLevel()
-                        + "');";
+                new StringBuilder().append("INSERT INTO resources (name, active, security) values('").append(res.getName()).append("','").append((res.getActive()) ? "1" : "0").append("','").append(res.getSecurityLevel()).append("');").toString();
 
         try {
             records = SQLHelper.executeNonQuery(sqlStmt);
@@ -41,7 +38,7 @@ public class ResourcesDAO {
         return noError;
     }
 
-    public boolean update(ResourceTo res) {
+    public static final boolean update(ResourceTo res) {
 
         if (log.isDebugEnabled())
             log.debug("Starting update()");
@@ -50,9 +47,7 @@ public class ResourcesDAO {
         int records = 0;
 
         final String sqlStmt =
-                "UPDATE resources SET active='" + res.getActive() + "'," +
-                        " security='" + ((res.getActive() == true) ? "1" : "0") + "'" +
-                        " WHERE id='" + res.getId() + "' LIMIT 1;";
+                new StringBuilder().append("UPDATE resources SET active='").append(res.getActive()).append("',").append(" security='").append((res.getActive()) ? "1" : "0").append("'").append(" WHERE id='").append(res.getId()).append("' LIMIT 1;").toString();
 
         try {
             records = SQLHelper.executeNonQuery(sqlStmt);
@@ -69,7 +64,7 @@ public class ResourcesDAO {
         return noError;
     }
 
-    public boolean delete(ResourceTo res) {
+    public static final boolean delete(ResourceTo res) {
 
         if (log.isDebugEnabled())
             log.debug("Starting delete()");
@@ -95,7 +90,7 @@ public class ResourcesDAO {
         return noError;
     }
 
-    public ResourceTo view(final String uri) {
+    public static final ResourceTo view(final String uri) {
 
         if (log.isDebugEnabled())
             log.debug("Starting view()");

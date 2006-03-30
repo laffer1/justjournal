@@ -145,11 +145,10 @@ public final class StringUtil {
      * @return true if the addres is valid.
      */
     public static boolean isEmailValid(String address) {
-        final Pattern p = Pattern.compile("[^A-Za-z0-9\\.\\@_\\-~#]+");
+        final Pattern p = Pattern.compile("[A-Za-z0-9\\.\\@_\\-~#]+");
         final Matcher m = p.matcher(address);
-        boolean invalidEmail = m.find();
 
-        return !invalidEmail;
+        return m.matches();
     }
 
     /**
@@ -160,11 +159,10 @@ public final class StringUtil {
      * @return boolean indicating alphanumeric status
      */
     public static boolean isAlphaNumeric(String input) {
-        final Pattern p = Pattern.compile("[\\W]+");
+        final Pattern p = Pattern.compile("[\\w]+");
         final Matcher m = p.matcher(input);
-        boolean invalidInput = m.find();
 
-        return !invalidInput;
+        return m.matches();
     }
 
     /**

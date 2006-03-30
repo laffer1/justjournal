@@ -5,36 +5,36 @@ package com.justjournal.db;
  * Date: Dec 22, 2005
  * Time: 2:58:39 PM
  */
-public class UserLinkTo {
+public final class UserLinkTo {
     private int userId;
     private String title;
     private String uri;
 
-    public int getUserId() {
+    public final int getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public final void setUserId(int userId) {
         this.userId = userId;
     }
 
-    public String getTitle() {
+    public final String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
+    public final void setTitle(String title) {
         this.title = title;
     }
 
-    public String getUri() {
+    public final String getUri() {
         return uri;
     }
 
-    public void setUri(String uri) {
+    public final void setUri(String uri) {
         this.uri = uri;
     }
 
-    public boolean equals(Object o) {
+    public final boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
@@ -47,7 +47,7 @@ public class UserLinkTo {
         return true;
     }
 
-    public int hashCode() {
+    public final int hashCode() {
         int result;
         result = userId;
         result = 29 * result + title.hashCode();
@@ -55,7 +55,7 @@ public class UserLinkTo {
         return result;
     }
 
-    public String toString() {
+    public final String toString() {
         return userId + "," + title + "," + uri;
     }
 

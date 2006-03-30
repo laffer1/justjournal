@@ -57,10 +57,10 @@ import java.util.Collection;
  *        1.0 initial release
  */
 public final class EntryDAO {
-    final static int MAX_ENTRIES = 20;
-    final static int MAX_FRIENDS = 15;
+    private final static int MAX_ENTRIES = 20;
+    private final static int MAX_FRIENDS = 15;
 
-    private static Category log = Category.getInstance(EntryDAO.class.getName());
+    private static final Category log = Category.getInstance(EntryDAO.class.getName());
 
     /**
      * Adds a journal entry to the data store.
@@ -68,7 +68,7 @@ public final class EntryDAO {
      * @param et journal entry object to be added
      * @return true if no error occured.
      */
-    public boolean add(final EntryTo et) {
+    public static boolean add(final EntryTo et) {
         boolean noError = true;
         int records = 0;
         String allowComments = "Y";
@@ -106,7 +106,7 @@ public final class EntryDAO {
      * @param et journal entry that needs to be altered.
      * @return true if no error occured.
      */
-    public boolean update(final EntryTo et) {
+    public static boolean update(final EntryTo et) {
         boolean noError = true;
         int records = 0;
         String allowComments = "Y";
@@ -141,7 +141,7 @@ public final class EntryDAO {
         return noError;
     }
 
-    public boolean delete(final int entryId, final int userId) {
+    public static boolean delete(final int entryId, final int userId) {
         boolean noError = true;
         int records = 0;
 
@@ -163,7 +163,7 @@ public final class EntryDAO {
         return noError;
     }
 
-    public EntryTo viewSingle(final int entryId, final int userId) {
+    public static EntryTo viewSingle(final int entryId, final int userId) {
         final EntryTo et = new EntryTo();
         CachedRowSet rs = null;
         CachedRowSet rsComment = null;
@@ -245,7 +245,7 @@ public final class EntryDAO {
 
     }
 
-    public EntryTo viewSingle(final int entryId, final boolean thisUser) {
+    public static EntryTo viewSingle(final int entryId, final boolean thisUser) {
         final EntryTo et = new EntryTo();
         CachedRowSet rs = null;
         CachedRowSet rsComment = null;
@@ -331,7 +331,7 @@ public final class EntryDAO {
         return et;
     }
 
-    public Collection view(final String userName, final boolean thisUser) {
+    public Collection<EntryTo> view(final String userName, final boolean thisUser) {
         return view(userName, thisUser, 0); // don't skip any!
     }
 
@@ -343,12 +343,12 @@ public final class EntryDAO {
      * @param skip     number of records to skip (in the past)
      * @return A <code>Collection</code> of entries.
      */
-    public Collection view(final String userName, final boolean thisUser, final int skip) {
+    public static Collection<EntryTo> view(final String userName, final boolean thisUser, final int skip) {
 
         if (log.isDebugEnabled())
             log.debug("view: starting view of entries.");
 
-        final ArrayList entries = new ArrayList(MAX_ENTRIES);
+        final ArrayList<EntryTo> entries = new ArrayList<EntryTo>(MAX_ENTRIES);
 
         String sqlStatement;
         String sqlStmt2; // for comment count
@@ -473,12 +473,12 @@ public final class EntryDAO {
         return entries;
     }
 
-    public Collection viewFriends(final int userID, final int aUserId)
+    public static Collection<EntryTo> viewFriends(final int userID, final int aUserId)
             throws IllegalArgumentException {
         if (log.isDebugEnabled())
             log.debug("viewFriends: Initializing");
 
-        final ArrayList entries = new ArrayList(MAX_FRIENDS);
+        final ArrayList<EntryTo> entries = new ArrayList<EntryTo>(MAX_FRIENDS);
         EntryTo et;
 
         String sqlStatement;
@@ -699,13 +699,13 @@ public final class EntryDAO {
      *
      * @return Top 15 recent public entries
      */
-    public Collection viewRecentAllUsers() {
+    public static Collection<EntryTo> viewRecentAllUsers() {
 
         if (log.isDebugEnabled())
             log.debug("view: starting viewRecentAllusers().");
 
         final int SIZE = 15;
-        final ArrayList entries = new ArrayList(SIZE);
+        final ArrayList<EntryTo> entries = new ArrayList<EntryTo>(SIZE);
 
         String sqlStatement;
         CachedRowSet rs = null;

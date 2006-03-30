@@ -47,8 +47,8 @@ import java.util.Collection;
  * To change this template use Options | File Templates.
  */
 public final class LocationDao {
-    public Collection view() {
-        ArrayList location = new ArrayList(4);
+    public static Collection<LocationTo> view() {
+        ArrayList<LocationTo> location = new ArrayList<LocationTo>(4);
         CachedRowSet RS;
         LocationTo loc;
         final String sqlStatement = "SELECT * FROM location ORDER BY title ASC;";

@@ -7,7 +7,7 @@ import java.util.Arrays;
  * Date: Aug 15, 2005
  * Time: 9:39:50 PM
  */
-public class ContentTo {
+public final class ContentTo {
 
     private int id;
     private int uriId;
@@ -18,12 +18,12 @@ public class ContentTo {
     private byte[] data;
     private String metaData;
 
-     /**
+    /**
      * Retrieves entry id as an int >0
      *
      * @return entry id
      */
-    public int getId() {
+    public final int getId() {
         return id;
     }
 
@@ -34,7 +34,7 @@ public class ContentTo {
      * @param id entry id to set
      * @throws IllegalArgumentException id < 0
      */
-    public void setId(int id)
+    public final void setId(int id)
             throws IllegalArgumentException {
         if (id < 0)
             throw new IllegalArgumentException("Illegal id: " +
@@ -43,57 +43,51 @@ public class ContentTo {
         this.id = id;
     }
 
-    public int getUriId() {
+    public final int getUriId() {
         return uriId;
     }
 
-    public void setUriId(int uriId)
+    public final void setUriId(int uriId)
             throws IllegalArgumentException {
         if (uriId < 0)
             throw new IllegalArgumentException("Illegal uriId: " + uriId);
         this.uriId = uriId;
     }
 
-    public int getUserId() {
+    public final int getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId)
-        throws IllegalArgumentException {
+    public final void setUserId(int userId)
+            throws IllegalArgumentException {
         if (userId < 0)
             throw new IllegalArgumentException("Illegal userId: " + userId);
         this.userId = userId;
     }
 
-    public String getMimeType()
-    {
+    public final String getMimeType() {
         return mimeType;
     }
 
-    public void setMimeType(String mimeType)
-        throws IllegalArgumentException
-    {
+    public final void setMimeType(String mimeType)
+            throws IllegalArgumentException {
         this.mimeType = mimeType;
     }
 
-    public boolean getPreferred()
-    {
+    public final boolean getPreferred() {
         return preferred;
     }
 
-    public void setPreferred(boolean preferred)
-    {
+    public final void setPreferred(boolean preferred) {
         this.preferred = preferred;
     }
 
-    public int getDataSize()
-    {
+    public final int getDataSize() {
         return dataSize;
     }
 
-    public void setDataSize(int dataSize)
-        throws IllegalArgumentException
-    {
+    public final void setDataSize(int dataSize)
+            throws IllegalArgumentException {
         if (dataSize < 0)
             throw new IllegalArgumentException("Illegal dataSize: " + dataSize);
         this.dataSize = dataSize;
@@ -105,7 +99,7 @@ public class ContentTo {
      *
      * @return body of content entity
      */
-    public byte[] getData() {
+    public final byte[] getData() {
         return data;
     }
 
@@ -114,20 +108,19 @@ public class ContentTo {
      *
      * @param data body of entry.
      */
-    public void setData(byte[] data) {
+    public final void setData(byte[] data) {
         this.data = data;
     }
 
-    public String getMetaData()
-    {
+    public final String getMetaData() {
         return metaData;
     }
 
-    public void setMetaData(String metaData) {
+    public final void setMetaData(String metaData) {
         this.metaData = metaData;
     }
 
-    public boolean equals(Object o) {
+    public final boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
@@ -145,7 +138,7 @@ public class ContentTo {
         return true;
     }
 
-    public int hashCode() {
+    public final int hashCode() {
         int result;
         result = id;
         result = 29 * result + uriId;

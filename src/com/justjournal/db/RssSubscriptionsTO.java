@@ -41,32 +41,32 @@ package com.justjournal.db;
  * Time: 9:19:40 PM
  * To change this template use File | Settings | File Templates.
  */
-public class RssSubscriptionsTO {
+public final class RssSubscriptionsTO {
     private int id;
     private String uri;
 
-    public int getId() {
+    public final int getId() {
         return this.id;
     }
 
-    public void setId(final int id) {
+    public final void setId(final int id) {
         this.id = id;
     }
 
-    public String getUri() {
+    public final String getUri() {
         return this.uri;
     }
 
-    public void setUri(final String uri) {
+    public final void setUri(final String uri) {
         this.uri = uri;
     }
 
 
-    public String toString() {
+    public final String toString() {
         return Integer.toString(id) + "," + uri;
     }
 
-    public boolean equals(Object o) {
+    public final boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
@@ -78,7 +78,7 @@ public class RssSubscriptionsTO {
         return true;
     }
 
-    public int hashCode() {
+    public final int hashCode() {
         int result;
         result = id;
         result = 29 * result + uri.hashCode();

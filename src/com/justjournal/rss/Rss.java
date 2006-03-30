@@ -59,7 +59,7 @@ public final class Rss {
     private String webMaster;
     private String managingEditor;
 
-    private ArrayList items = new ArrayList(MAX_LENGTH);
+    private ArrayList<RssItem> items = new ArrayList<RssItem>(MAX_LENGTH);
 
 
     public String getTitle() {
@@ -120,7 +120,7 @@ public final class Rss {
 
     // Methods
 
-    public void populate(Collection entries) {
+    public void populate(Collection<EntryTo> entries) {
 
         RssItem item;
 
@@ -128,15 +128,15 @@ public final class Rss {
         try {
 
             EntryTo o;
-            Iterator itr = entries.iterator();
+            Iterator<EntryTo> itr = entries.iterator();
 
             for (int x = 0, n = entries.size(); x < n && x < MAX_LENGTH; x++) {
-                o = (EntryTo) itr.next();
+                o = itr.next();
                 item = new RssItem();
                 item.setTitle(o.getSubject());
-                item.setLink("http://www.justjournal.com/Users/" + o.getUserName());
+                item.setLink("http://www.justjournal.com/users/" + o.getUserName());
                 item.setDescription(o.getBody());
-                item.setGuid("http://www.justjournal.com/Users/" + o.getUserName() + "/entry/" + o.getId());
+                item.setGuid("http://www.justjournal.com/users/" + o.getUserName() + "/entry/" + o.getId());
                 item.setPubDate(o.getDate().toPubDate());
                 Add(item);
             }
@@ -226,10 +226,10 @@ public final class Rss {
 
         /* Iterator */
         RssItem o;
-        Iterator itr = items.listIterator();
+        Iterator<RssItem> itr = items.listIterator();
         for (int i = 0, n = items.size(); i < n && i < MAX_LENGTH; i++)     // 15 is the limit for RSS
         {
-            o = (RssItem) itr.next();
+            o = itr.next();
 
             sb.append("\t\t<item>\n");
 

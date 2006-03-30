@@ -5,7 +5,7 @@ package com.justjournal.db;
  * Date: Jul 24, 2005
  * Time: 10:48:55 AM
  */
-public class ResourceTo {
+public final class ResourceTo {
     private int id;
     private String name;
     private boolean active;
@@ -16,7 +16,7 @@ public class ResourceTo {
      *
      * @return entry id
      */
-    public int getId() {
+    public final int getId() {
         return id;
     }
 
@@ -27,7 +27,7 @@ public class ResourceTo {
      * @param id entry id to set
      * @throws IllegalArgumentException id < 0
      */
-    public void setId(int id)
+    public final void setId(int id)
             throws IllegalArgumentException {
         if (id < 0)
             throw new IllegalArgumentException("Illegal id: " +
@@ -36,11 +36,11 @@ public class ResourceTo {
         this.id = id;
     }
 
-    public int getSecurityLevel() {
+    public final int getSecurityLevel() {
         return securityLevel;
     }
 
-    public void setSecurityLevel(int sec)
+    public final void setSecurityLevel(int sec)
             throws IllegalArgumentException {
         if (sec < 0)
             throw new IllegalArgumentException("Illegal security level: " +
@@ -48,19 +48,19 @@ public class ResourceTo {
         securityLevel = sec;
     }
 
-    public boolean getActive() {
+    public final boolean getActive() {
         return active;
     }
 
-    public void setActive(boolean active) {
+    public final void setActive(boolean active) {
         this.active = active;
     }
 
-    public String getName() {
+    public final String getName() {
         return name;
     }
 
-    public void setName(String name)
+    public final void setName(String name)
             throws IllegalArgumentException {
         if (name == null)
             throw new IllegalArgumentException("name can not be null");
@@ -72,7 +72,7 @@ public class ResourceTo {
         }
     }
 
-    public boolean equals(Object o) {
+    public final boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
@@ -86,7 +86,7 @@ public class ResourceTo {
         return true;
     }
 
-    public int hashCode() {
+    public final int hashCode() {
         int result;
         result = id;
         result = 29 * result + name.hashCode();

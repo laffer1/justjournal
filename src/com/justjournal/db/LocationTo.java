@@ -41,27 +41,27 @@ package com.justjournal.db;
  * Time: 1:55:03 PM
  * To change this template use Options | File Templates.
  */
-public class LocationTo {
+public final class LocationTo {
     private int id;
     private String name;
 
-    public int getId() {
+    public final int getId() {
         return this.id;
     }
 
-    public void setId(int id) {
+    public final void setId(int id) {
         this.id = id;
     }
 
-    public String getName() {
+    public final String getName() {
         return this.name;
     }
 
-    public void setName(String name) {
+    public final void setName(String name) {
         this.name = name;
     }
 
-    public boolean equals(Object o) {
+    public final boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
@@ -73,7 +73,7 @@ public class LocationTo {
         return true;
     }
 
-    public int hashCode() {
+    public final int hashCode() {
         int result;
         result = id;
         result = 29 * result + name.hashCode();

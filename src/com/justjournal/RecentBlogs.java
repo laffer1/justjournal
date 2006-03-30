@@ -57,7 +57,6 @@ public class RecentBlogs extends JustJournalBaseServlet {
         // and write it to the sb output.
         try {
             Rss rss = new Rss();
-            final EntryDAO edao = new EntryDAO();
 
             final java.util.GregorianCalendar calendarg = new java.util.GregorianCalendar();
             calendarg.setTime(new java.util.Date());
@@ -69,7 +68,7 @@ public class RecentBlogs extends JustJournalBaseServlet {
             rss.setCopyright("Copyright " + calendarg.get(Calendar.YEAR) + " JustJournal.com and its blog account owners.");
             rss.setWebMaster("webmaster@justjournal.com");
             rss.setManagingEditor("webmaster@justjournal.com");
-            rss.populate(edao.viewRecentAllUsers());
+            rss.populate(EntryDAO.viewRecentAllUsers());
             sb.append(rss.toXml());
 
         } catch (Exception e) {

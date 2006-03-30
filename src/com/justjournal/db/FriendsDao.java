@@ -47,8 +47,8 @@ import java.util.Collection;
  * To change this template use Options | File Templates.
  */
 public final class FriendsDao {
-    public Collection view(final int userId) {
-        ArrayList friends = new ArrayList(10);
+    public static Collection<FriendTo> view(final int userId) {
+        ArrayList<FriendTo> friends = new ArrayList<FriendTo>(10);
         CachedRowSet RS;
         FriendTo fr;
         final String sqlStatement = "SELECT friends.friendid, user.username FROM friends, user WHERE friends.id='"

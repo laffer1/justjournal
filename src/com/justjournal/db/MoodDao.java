@@ -55,8 +55,8 @@ public final class MoodDao {
      *
      * @return Collection of MoodTo objects.
      */
-    public Collection view() {
-        ArrayList moods = new ArrayList(125);
+    public static Collection<MoodTo> view() {
+        ArrayList<MoodTo> moods = new ArrayList<MoodTo>(125);
         MoodTo mood;
         final String sqlStatement = "SELECT id,parentmood,title FROM mood ORDER BY title ASC;";
 

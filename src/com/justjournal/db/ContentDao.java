@@ -9,7 +9,7 @@ import java.util.ArrayList;
  * Date: Aug 15, 2005
  * Time: 12:00:16 AM
  */
-public class ContentDao {
+public final class ContentDao {
 
     /**
      * Add content to the JJ CMS
@@ -17,7 +17,7 @@ public class ContentDao {
      * @param content Content to add
      * @return true if no error occured.
      */
-    public boolean add(final ContentTo content) {
+    public static final boolean add(final ContentTo content) {
         boolean noError = true;
         int records = 0;
 
@@ -52,7 +52,7 @@ public class ContentDao {
      * @param content A user comment to change
      * @return true if no error occured.
      */
-    public boolean update(final ContentTo content) {
+    public static final boolean update(final ContentTo content) {
         boolean noError = true;
 
         final String sqlStmt = "Update comments SET mimeType='" +
@@ -76,7 +76,7 @@ public class ContentDao {
         return noError;
     }
 
-    public boolean delete(final int id) {
+    public static final boolean delete(final int id) {
         boolean noError = true;
         final String sqlStmt = "DELETE FROM content WHERE id='" + id + " LIMIT 1;";
 
@@ -93,7 +93,7 @@ public class ContentDao {
         return noError;
     }
 
-    public ContentTo viewSingle(final int id) {
+    public static final ContentTo viewSingle(final int id) {
         CachedRowSet rs = null;
         final ContentTo content = new ContentTo();
         final String sqlStmt =
@@ -129,7 +129,7 @@ public class ContentDao {
         return content;
     }
 
-    public ArrayList view(final int uriId) {
+    public static final ArrayList view(final int uriId) {
         final ArrayList contents = new ArrayList(5);  // 5 is average comments on entry?
         CachedRowSet rs = null;
         ContentTo content;

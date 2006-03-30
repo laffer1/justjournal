@@ -46,11 +46,11 @@ package com.justjournal.db;
  * @version 1.0
  */
 public final class RssCacheTo {
-    int id;
-    int interval;
-    DateTimeBean lastUpdated;
-    String uri;
-    String content;
+    private int id;
+    private int interval;
+    private DateTime lastUpdated;
+    private String uri;
+    private String content;
 
     public int getId() {
         return id;
@@ -68,11 +68,11 @@ public final class RssCacheTo {
         this.interval = interval;
     }
 
-    public DateTimeBean getLastUpdated() {
+    public DateTime getLastUpdated() {
         return lastUpdated;
     }
 
-    public void setLastUpdated(DateTimeBean lastUpdated) {
+    public void setLastUpdated(DateTime lastUpdated) {
         this.lastUpdated = lastUpdated;
     }
 

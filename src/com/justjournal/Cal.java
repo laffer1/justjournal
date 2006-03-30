@@ -53,7 +53,7 @@ public final class Cal {
     private static final Category log = Category.getInstance(Cal.class.getName());
 
     private CachedRowSet RS;
-    private final ArrayList Months = new ArrayList(12);
+    private final ArrayList<CalMonth> Months = new ArrayList<CalMonth>(12);
     private final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
     private final SimpleDateFormat shortdate = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -102,13 +102,12 @@ public final class Cal {
                         monthPostCt[day - 1]++;
                 } else {
                     if (monthPostCt != null) {
-                        final int[] i = monthPostCt;
                         // get first day of month (falls on)
                         final ParsePosition pos2 = new ParsePosition(0);
                         // "yyyy-MM-dd"
                         final java.util.Date baseDate = shortdate.parse(year + "-" + (month + 1) + "-01", pos2);
 
-                        Months.add(new CalMonth(month, i, baseDate));
+                        Months.add(new CalMonth(month, monthPostCt, baseDate));
                     }
 
                     monthPostCt = new int[calendarg.getActualMaximum(java.util.Calendar.DAY_OF_MONTH)];
@@ -146,12 +145,12 @@ public final class Cal {
 
         final StringBuffer sb = new StringBuffer();
         CalMonth o;
-        final Iterator itr = Months.listIterator();
+        final Iterator<CalMonth> itr = Months.listIterator();
 
         sb.append("<!-- Calendar Output -->\n");
 
         for (int i = 0, n = Months.size(); i < n; i++) {
-            o = (CalMonth) itr.next();
+            o = itr.next();
             sb.append("<table class=\"fullcalendar\" style=\"margin-top:.2in; border: thin solid black;\" cellpadding=\"1\" cellspacing=\"1\" width=\"400\">\n");
 
             sb.append("<caption>");
@@ -162,7 +161,7 @@ public final class Cal {
 
             sb.append("<tr>\n");
             for (int x = 0; x < 7; x++) {
-                sb.append("<th style=\"background: #F2F2F2\" width=\"14%\">");
+                sb.append("<th style=\"background: #F2F2F2; width: 14%\">");
                 sb.append(days[x]);
                 sb.append("</th>\n");
             }
@@ -173,7 +172,7 @@ public final class Cal {
             sb.append("<tr>\n");
 
             if (o.getFirstDayInWeek() > 1)
-                sb.append("<td style=\"background: #F2F2F2\" colspan=\"" + (o.getFirstDayInWeek() - 1) + "\"></td>");
+                sb.append("<td style=\"background: #F2F2F2\" colspan=\"").append(o.getFirstDayInWeek() - 1).append("\"></td>");
 
             dayinweek = o.getFirstDayInWeek() - 1;
 
@@ -248,43 +247,43 @@ public final class Cal {
     public String renderMini() {
         final StringBuffer sb = new StringBuffer();
         CalMonth o;
-        final Iterator itr = Months.listIterator();
+        final Iterator<CalMonth> itr = Months.listIterator();
 
-        sb.append("<!-- Calendar Output -->\n");
+        sb.append("\t<!-- Calendar Output -->\n");
 
         for (int i = 0, n = Months.size(); i < n; i++) {
-            o = (CalMonth) itr.next();
-            sb.append("<table class=\"minicalendar\" style=\"margin-top:.2in; border: thin solid black; font-size: .8em;\" cellpadding=\"1\" cellspacing=\"1\">\n");
+            o = itr.next();
+            sb.append("\t<table class=\"minicalendar\" style=\"border: thin solid gray; font-size: .8em;\" cellpadding=\"1\" cellspacing=\"1\">\n");
 
-            sb.append("<caption>");
+            sb.append("\t\t<caption>");
             sb.append(months[o.monthid]);
             sb.append(" ");
             sb.append(o.getYear());
             sb.append("</caption>\n");
 
-            sb.append("<tr>\n");
+            sb.append("\t\t<thead>\n\t\t<tr>\n");
             for (int x = 0; x < 7; x++) {
-                sb.append("<th style=\"background: #F2F2F2\" width=\"14%\">");
+                sb.append("\t\t<th style=\"background: #F2F2F2; color: gray; width: 14%;\">");
                 sb.append(daysSmall[x]);
-                sb.append("</th>\n");
+                sb.append("\t\t</th>\n");
             }
-            sb.append("</tr>\n");
+            sb.append("\t\t</tr>\n</thead>\n");
 
             int dayinweek;
             boolean blnFirstTime = true; // first time through
-            sb.append("<tr>\n");
+            sb.append("\t\t<tbody>\n\t\t<tr>\n");
 
             if (o.getFirstDayInWeek() > 1)
-                sb.append("<td style=\"background: #F2F2F2\" colspan=\"" + (o.getFirstDayInWeek() - 1) + "\"></td>");
+                sb.append("\t\t<td style=\"background: #F2F2F2\" colspan=\"").append(o.getFirstDayInWeek() - 1).append("\"></td>");
 
             dayinweek = o.getFirstDayInWeek() - 1;
 
             for (int y = 0; y < java.lang.reflect.Array.getLength(o.storage); y++) {
                 if (dayinweek == 0 && !blnFirstTime) {
-                    sb.append("<tr>\n");
+                    sb.append("\t\t<tr>\n");
                 }
 
-                sb.append("<td style=\"background: white\" valign=\"top\">");
+                sb.append("\t\t<td style=\"background: white\" valign=\"top\">");
 
                 if (o.storage[y] == 0) {
                     sb.append(y + 1);
@@ -315,7 +314,7 @@ public final class Cal {
                 sb.append("</td>\n");
 
                 if (dayinweek == 6) {
-                    sb.append("</tr>\n");
+                    sb.append("\t\t</tr>\n");
                     dayinweek = 0;
                     blnFirstTime = false; // hiding this here makes it execute less.
                 } else {
@@ -339,9 +338,9 @@ public final class Cal {
             if ((o.monthid + 1) < 10)
                 sb.append("0");
             sb.append(o.monthid + 1);
-            sb.append("\">View Subjects</a></td>");
-            sb.append("</tr>");
-            sb.append("</table>\n\n");
+            sb.append("\">View Subjects</a></td>\n");
+            sb.append("\t\t</tr>\n\t\t</tbody>");
+            sb.append("\t</table>\n\n");
 
         }
         return sb.toString();
