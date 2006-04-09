@@ -1,7 +1,7 @@
 package com.justjournal.utility;
 
 /*---------------------------------------------------------------------------*\
-  $Id: HTMLUtil.java,v 1.4 2006/03/14 16:38:39 laffer1 Exp $
+  $Id: HTMLUtil.java,v 1.5 2006/04/09 00:42:12 laffer1 Exp $
   ---------------------------------------------------------------------------
   This software is released under a Berkeley-style license:
 
@@ -36,7 +36,7 @@ import java.util.regex.PatternSyntaxException;
  * Static class containing miscellaneous HTML-related utility methods.
  *
  * @author Copyright &copy; 2004 Brian M. Clapper
- * @version <tt>$Revision: 1.4 $</tt>
+ * @version <tt>$Revision: 1.5 $</tt>
  */
 public final class HTMLUtil {
     /*----------------------------------------------------------------------*\
@@ -122,8 +122,7 @@ public final class HTMLUtil {
     public static String convertCharacterEntities(String s) {
         // The resource bundle contains the mappings for symbolic entity
         // names like "amp". Note: Must protect matching and MatchResult in
-        // a critical section, for thread-safety. See javadocs for
-        // Perl5Util.
+        // a critical section, for thread-safety. 
 
         synchronized (HTMLUtil.class) {
             try {
@@ -246,6 +245,61 @@ public final class HTMLUtil {
         }
 
         return resourceBundle;
+    }
+
+    /**
+     * Looks through a string for Uniform Resource Indicators (URI)
+     * and converts them to HTML a tags.  (hyperlinks)
+     *
+     * @param input Text containing URIs
+     * @return Text with HTML a tags added.
+     */
+    public static String uriToLink(String input) {
+        String SubDomain = "(?i:[a-z0-9]|[a-z0-9][-a-z0-9]*[a-z0-9])";
+        String TopDomains = "(?x-i:com\\b        \n" +
+                "     |edu\\b        \n" +
+                "     |biz\\b        \n" +
+                "     |in(?:t|fo)\\b \n" +
+                "     |mil\\b        \n" +
+                "     |net\\b        \n" +
+                "     |org\\b        \n" +
+                "     |[a-z][a-z]\\b \n" + // country codes
+                ")                   \n";
+        String Hostname = "(?:" + SubDomain + "\\.)+" + TopDomains;
+
+        String NOT_IN = ";\"'<>()\\[\\]\\{\\}\\s\\x7F-\\xFF";
+        String NOT_END = "!.,?";
+        String ANYWHERE = "[^" + NOT_IN + NOT_END + "]";
+        String EMBEDDED = "[" + NOT_END + "]";
+        String UrlPath = "/" + ANYWHERE + "*(" + EMBEDDED + "+" + ANYWHERE + "+)*";
+
+        String Url =
+                "(?x:                                                \n" +
+                        "  \\b                                               \n" +
+                        "  ## match the hostname part                        \n" +
+                        "  (                                                 \n" +
+                        "    (?: ftp | http s? ): // [-\\w]+(\\.\\w[-\\w]*)+ \n" +
+                        "   |                                                \n" +
+                        "    " + Hostname + "                                \n" +
+                        "  )                                                 \n" +
+                        "  # allow optional port                             \n" +
+                        "  (?: \\d+ )?                                       \n" +
+                        "                                                    \n" +
+                        "  # rest of url is optional, and begins with /      \n" +
+                        " (?: " + UrlPath + ")?                              \n" +
+                        ")";
+
+        // Now convert string we've built up into a real regex object
+        Pattern UrlRegex = Pattern.compile(Url);
+        // Now ready to apply to raw text to find urls . . .
+
+        //final Pattern p = Pattern.compile("(\\sI\\n|^)(\\w+://[^\\s\\n]+)");
+
+        final Matcher m = UrlRegex.matcher(input);
+
+        input = m.replaceAll("<a href=\"$1\">$1</a>");
+        return input;
+
     }
 }
 

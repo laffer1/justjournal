@@ -46,7 +46,7 @@ import java.util.Iterator;
  * Storage for calendar months.
  *
  * @author Lucas Holt
- * @version 1.1
+ * @version 1.2
  * @see CalMonth
  */
 public final class Cal {
@@ -143,7 +143,7 @@ public final class Cal {
 
     public String render() {
 
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         CalMonth o;
         final Iterator<CalMonth> itr = Months.listIterator();
 
@@ -245,7 +245,7 @@ public final class Cal {
     }
 
     public String renderMini() {
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         CalMonth o;
         final Iterator<CalMonth> itr = Months.listIterator();
 
@@ -253,7 +253,7 @@ public final class Cal {
 
         for (int i = 0, n = Months.size(); i < n; i++) {
             o = itr.next();
-            sb.append("\t<table class=\"minicalendar\" style=\"border: thin solid gray; font-size: .8em;\" cellpadding=\"1\" cellspacing=\"1\">\n");
+            sb.append("\t<table class=\"minicalendar\" cellpadding=\"1\" cellspacing=\"1\">\n");
 
             sb.append("\t\t<caption>");
             sb.append(months[o.monthid]);
@@ -263,9 +263,9 @@ public final class Cal {
 
             sb.append("\t\t<thead>\n\t\t<tr>\n");
             for (int x = 0; x < 7; x++) {
-                sb.append("\t\t<th style=\"background: #F2F2F2; color: gray; width: 14%;\">");
+                sb.append("\t\t<th class=\"minicalendarth\">");
                 sb.append(daysSmall[x]);
-                sb.append("\t\t</th>\n");
+                sb.append("</th>\n");
             }
             sb.append("\t\t</tr>\n</thead>\n");
 
@@ -274,7 +274,7 @@ public final class Cal {
             sb.append("\t\t<tbody>\n\t\t<tr>\n");
 
             if (o.getFirstDayInWeek() > 1)
-                sb.append("\t\t<td style=\"background: #F2F2F2\" colspan=\"").append(o.getFirstDayInWeek() - 1).append("\"></td>");
+                sb.append("\t\t<td class=\"minicalendaroffrow\" colspan=\"").append(o.getFirstDayInWeek() - 1).append("\"></td>");
 
             dayinweek = o.getFirstDayInWeek() - 1;
 
@@ -283,7 +283,7 @@ public final class Cal {
                     sb.append("\t\t<tr>\n");
                 }
 
-                sb.append("\t\t<td style=\"background: white\" valign=\"top\">");
+                sb.append("\t\t<td class=\"minicalendarrow\">");
 
                 if (o.storage[y] == 0) {
                     sb.append(y + 1);
@@ -326,12 +326,12 @@ public final class Cal {
             if (dayinweek <= 6 && dayinweek != 0) {
                 // this is seven because colspan is 1 based.  why do the
                 // extra addition +1
-                sb.append("<td style=\"background: #F2F2F2\" colspan=\"").append(7 - dayinweek).append(" \"></td>");
+                sb.append("<td class=\"minicalendaroffrow\" colspan=\"").append(7 - dayinweek).append(" \"></td>");
                 sb.append("</tr>\n");
             }
 
             sb.append("<tr>");
-            sb.append("<td style=\"background: #F2F2F2; text-align: center;\" colspan=\"7\"><a href=\"");
+            sb.append("<td class=\"minicalendarsub\" colspan=\"7\"><a href=\"");
             sb.append(baseUrl);
             sb.append(o.getYear());
             sb.append("/");

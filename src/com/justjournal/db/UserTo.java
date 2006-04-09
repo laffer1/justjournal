@@ -51,12 +51,13 @@ public final class UserTo {
     private String name;     // first name
     private String password;
     private String passwordSha1;
+    private int since;
 
 
     /**
      * Retrieve the user id.
      *
-     * @return
+     * @return User id as an int >= 0
      */
     public final int getId() {
         return this.id;
@@ -74,7 +75,7 @@ public final class UserTo {
     /**
      * Retrieve the user name.
      *
-     * @return
+     * @return username
      */
     public final String getUserName() {
         return this.userName;
@@ -92,7 +93,7 @@ public final class UserTo {
     /**
      * get the first name of the user.
      *
-     * @return
+     * @return First Name of user
      */
     public final String getName() {
         return this.name;
@@ -113,7 +114,7 @@ public final class UserTo {
      * Passwords are not permenently stored
      * clear text.
      *
-     * @return
+     * @return Password of user in clear text
      */
     public final String getPassword() {
         return this.password;
@@ -134,7 +135,7 @@ public final class UserTo {
     /**
      * Retrieve SHA1 password.
      *
-     * @return
+     * @return hashed pasword
      */
     public final String getPasswordSha1() {
         return this.passwordSha1;
@@ -149,6 +150,14 @@ public final class UserTo {
         this.passwordSha1 = passwordSha1;
     }
 
+    public final int getSince() {
+        return since;
+    }
+
+    public final void setSince(final int since) {
+        this.since = since;
+    }
+
     /**
      * A string representation of the user
      * in the form
@@ -157,7 +166,7 @@ public final class UserTo {
      * Password fields are not returned
      * by this method.
      *
-     * @return
+     * @return Representation of some fields for debuging.
      */
     public final String toString() {
         StringBuffer sb = new StringBuffer();
@@ -168,6 +177,8 @@ public final class UserTo {
         sb.append(name);
         sb.append(", name: ");
         sb.append(name);
+        sb.append(", since: ");
+        sb.append(since);
 
         return sb.toString();
     }

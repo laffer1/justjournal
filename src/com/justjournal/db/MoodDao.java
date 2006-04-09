@@ -58,7 +58,29 @@ public final class MoodDao {
     public static Collection<MoodTo> view() {
         ArrayList<MoodTo> moods = new ArrayList<MoodTo>(125);
         MoodTo mood;
-        final String sqlStatement = "SELECT id,parentmood,title FROM mood ORDER BY title ASC;";
+        final String sqlStatement = "CALL listmoodsbytitle";
+
+        try {
+            final CachedRowSet RS = SQLHelper.executeResultSet(sqlStatement);
+
+            while (RS.next()) {
+                mood = new MoodTo();
+                mood.setId(RS.getInt("id"));
+                mood.setParent(RS.getInt("parentmood"));
+                mood.setName(RS.getString("title"));
+                moods.add(mood);
+            }
+        } catch (Exception e1) {
+
+        }
+
+        return moods;
+    }
+
+    public static Collection<MoodTo> viewByRelationship() {
+        ArrayList<MoodTo> moods = new ArrayList<MoodTo>(125);
+        MoodTo mood;
+        final String sqlStatement = "CALL listmoods";
 
         try {
             final CachedRowSet RS = SQLHelper.executeResultSet(sqlStatement);

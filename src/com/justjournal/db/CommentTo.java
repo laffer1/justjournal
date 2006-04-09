@@ -34,6 +34,8 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
+import com.justjournal.utility.HTMLUtil;
+
 /**
  * Created by IntelliJ IDEA.
  * User: laffer1
@@ -116,6 +118,14 @@ public final class CommentTo {
 
     public final String getBody() {
         return body;
+    }
+
+    public final String getBodyWithLinks() {
+        return HTMLUtil.uriToLink(body);
+    }
+
+    public final String getBodyWithoutHTML() {
+        return HTMLUtil.stripHTMLTags(body);
     }
 
     public final void setBody(String body)

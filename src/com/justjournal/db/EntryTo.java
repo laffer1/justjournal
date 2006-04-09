@@ -34,6 +34,8 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
+import com.justjournal.utility.HTMLUtil;
+
 /**
  * Journal entry transfer object.  Contains one journal entry.
  * Maps relationship between table "entry" and java.
@@ -224,6 +226,14 @@ public final class EntryTo {
      */
     public String getBody() {
         return body;
+    }
+
+    public String getBodyWithLinks() {
+        return HTMLUtil.uriToLink(body);
+    }
+
+    public String getBodyWithoutHTML() {
+        return HTMLUtil.stripHTMLTags(body);
     }
 
     public void setBody(String body)

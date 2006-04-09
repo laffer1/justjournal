@@ -36,6 +36,9 @@ package com.justjournal.db;
 
 import sun.jdbc.rowset.CachedRowSet;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 /**
  * Created by IntelliJ IDEA.
  * User: laffer1
@@ -187,6 +190,29 @@ public final class UserDao {
             }
         }
         return user;
+    }
+
+    public static final Collection<UserTo> memberList() {
+        ArrayList<UserTo> users = new ArrayList<UserTo>(125);
+        UserTo usr;
+        final String sqlStatement = "CALL memberlist";
+
+        try {
+            final CachedRowSet RS = SQLHelper.executeResultSet(sqlStatement);
+
+            while (RS.next()) {
+                usr = new UserTo();
+                usr.setId(RS.getInt(1));
+                usr.setUserName(RS.getString(2));
+                usr.setName(RS.getString(3));
+                usr.setSince(RS.getInt(4));
+                users.add(usr);
+            }
+        } catch (Exception e1) {
+
+        }
+
+        return users;
     }
 
 
