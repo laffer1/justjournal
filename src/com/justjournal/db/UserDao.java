@@ -40,12 +40,22 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- * Created by IntelliJ IDEA.
- * User: laffer1
- * Date: Jan 21, 2004
- * Time: 12:32:03 PM
+ * Access account information for a specific user or all users
+ * of Just Journal.
+ *
+ * @author Lucas Holt
+ * @version 1.0
+ * @since 1.0
  */
 public final class UserDao {
+
+    /**
+     * Add a user to justjournal including their name, username and
+     * password.
+     *
+     * @param user
+     * @return True if successful, false otherwise.
+     */
     public static final boolean add(UserTo user) {
         boolean noError = true;
         int records = 0;
@@ -128,7 +138,7 @@ public final class UserDao {
     public static final UserTo view(int userId) {
         UserTo user = new UserTo();
         CachedRowSet rs = null;
-        String sqlStmt = "SELECT username, name from user WHERE id='" + userId + "' Limit 1;";
+        String sqlStmt = "SELECT username, name, since from user WHERE id='" + userId + "' Limit 1;";
 
         try {
 
@@ -138,6 +148,7 @@ public final class UserDao {
                 user.setId(userId);
                 user.setUserName(rs.getString(1)); // username
                 user.setName(rs.getString(2)); // first name
+                user.setSince(rs.getInt(3));
             }
 
             rs.close();
@@ -166,7 +177,7 @@ public final class UserDao {
     public static final UserTo view(String userName) {
         UserTo user = new UserTo();
         CachedRowSet rs = null;
-        String sqlStmt = "SELECT id, name from user WHERE username='" + userName + "' Limit 1;";
+        String sqlStmt = "SELECT id, name, since from user WHERE username='" + userName + "' Limit 1;";
 
         try {
 
@@ -176,6 +187,7 @@ public final class UserDao {
                 user.setId(rs.getInt(1));
                 user.setUserName(userName);
                 user.setName(rs.getString(2)); // first name
+                user.setSince(rs.getInt(3));
             }
 
             rs.close();
@@ -192,6 +204,12 @@ public final class UserDao {
         return user;
     }
 
+    /**
+     * Retrieve the list of all users including their name,
+     * username, sign up year (since), and unique id.
+     *
+     * @return All users of just journal.
+     */
     public static final Collection<UserTo> memberList() {
         ArrayList<UserTo> users = new ArrayList<UserTo>(125);
         UserTo usr;
@@ -214,6 +232,5 @@ public final class UserDao {
 
         return users;
     }
-
 
 }
