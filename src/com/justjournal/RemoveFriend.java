@@ -49,6 +49,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+/**
+ * @author Caryn Holt
+ * @version $Id: RemoveFriend.java,v 1.6 2006/05/07 21:22:42 laffer1 Exp $
+ */
 public final class RemoveFriend extends JustJournalBaseServlet {
 
     protected void execute(HttpServletRequest request, HttpServletResponse response, HttpSession session, StringBuffer sb) {

@@ -54,7 +54,7 @@ import javax.servlet.http.HttpSession;
  * Adds a friend to the Users list for their friends page
  *
  * @author Caryn Holt, Lucas Holt
- * @version 1.1
+ * @version $Id: AddFriend.java,v 1.5 2006/05/07 21:22:42 laffer1 Exp $
  * @since 1.0
  */
 public final class AddFriend extends JustJournalBaseServlet {

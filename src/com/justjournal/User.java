@@ -42,7 +42,7 @@ import com.justjournal.db.UserTo;
  * userName.
  *
  * @author Lucas Holt
- * @version 1.0
+ * @version $Id: User.java,v 1.7 2006/05/07 21:22:42 laffer1 Exp $
  *          Date: Jan 4, 2004
  *          Time: 9:59:35 PM
  * @since 1.0

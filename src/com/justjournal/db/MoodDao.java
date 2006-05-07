@@ -58,7 +58,7 @@ public final class MoodDao {
     public static Collection<MoodTo> view() {
         ArrayList<MoodTo> moods = new ArrayList<MoodTo>(125);
         MoodTo mood;
-        final String sqlStatement = "CALL listmoodsbytitle";
+        final String sqlStatement = "CALL listmoodsbytitle()";
 
         try {
             final CachedRowSet RS = SQLHelper.executeResultSet(sqlStatement);
@@ -80,7 +80,7 @@ public final class MoodDao {
     public static Collection<MoodTo> viewByRelationship() {
         ArrayList<MoodTo> moods = new ArrayList<MoodTo>(125);
         MoodTo mood;
-        final String sqlStatement = "CALL listmoods";
+        final String sqlStatement = "CALL listmoods()";
 
         try {
             final CachedRowSet RS = SQLHelper.executeResultSet(sqlStatement);

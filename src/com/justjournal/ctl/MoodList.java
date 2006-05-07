@@ -48,7 +48,7 @@ import java.util.Collection;
  *          Time: 3:51:59 PM
  * @since 1.0
  */
-public class MoodList extends ControllerAuth {
+public class MoodList extends ControllerErrorable {
     private static Category log = Category.getInstance(MoodList.class.getName());
     protected Collection moods;
 

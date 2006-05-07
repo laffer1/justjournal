@@ -19,6 +19,8 @@ import java.io.BufferedInputStream;
  * User: laffer1
  * Date: Nov 22, 2005
  * Time: 9:31:28 PM
+ *
+ * @version $Id: Image.java,v 1.4 2006/05/07 21:22:42 laffer1 Exp $
  */
 public class Image extends HttpServlet {
 
@@ -65,6 +67,7 @@ public class Image extends HttpServlet {
             rs.close();
         } catch (Exception e) {
             log.debug("Could not load image: " + e.toString());
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
 }

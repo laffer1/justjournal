@@ -48,7 +48,7 @@ import sun.jdbc.rowset.CachedRowSet;
  * journal, the user must login.  Public access is denied.
  *
  * @author Lucas Holt
- * @version 1.2
+ * @version $Id: Preferences.java,v 1.6 2006/05/07 21:22:42 laffer1 Exp $
  * @since 1.0
  *        User: laffer1
  *        Date: Jul 11, 2003
@@ -201,13 +201,11 @@ public final class Preferences {
         this.emailAddress = emailAddress;
     }
 
-    public boolean showAvatar()
-    {
+    public boolean showAvatar() {
         return showAvatar;
     }
 
-    public void showAvatar( boolean showAvatar )
-    {
+    public void showAvatar(boolean showAvatar) {
         this.showAvatar = showAvatar;
     }
 

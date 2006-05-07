@@ -46,7 +46,7 @@ import java.util.Iterator;
  * Storage for calendar months.
  *
  * @author Lucas Holt
- * @version 1.2
+ * @version $Id: Cal.java,v 1.7 2006/05/07 21:22:42 laffer1 Exp $
  * @see CalMonth
  */
 public final class Cal {

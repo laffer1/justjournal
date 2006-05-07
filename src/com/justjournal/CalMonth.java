@@ -44,6 +44,7 @@ import java.util.GregorianCalendar;
  * day in the month as an integer.
  *
  * @author Lucas Holt
+ * @version $Id: CalMonth.java,v 1.3 2006/05/07 21:22:42 laffer1 Exp $
  */
 public final class CalMonth {
     public int[] storage = null;

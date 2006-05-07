@@ -47,10 +47,11 @@ import java.util.Collection;
 import java.util.Iterator;
 
 /**
- * Created by IntelliJ IDEA.
  * User: laffer1
  * Date: Jan 18, 2004
  * Time: 10:11:10 PM
+ *
+ * @version $Id: Interface.java,v 1.7 2006/05/07 21:22:42 laffer1 Exp $
  */
 public class Interface extends HttpServlet {
     final static String endl = "\r\n";
