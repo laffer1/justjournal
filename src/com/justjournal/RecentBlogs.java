@@ -47,7 +47,7 @@ import java.util.Calendar;
  * Date: Feb 26, 2006
  * Time: 10:44:18 AM
  *
- * @version $Id: RecentBlogs.java,v 1.5 2006/05/07 21:22:42 laffer1 Exp $
+ * @version $Id: RecentBlogs.java,v 1.6 2006/07/28 14:01:06 laffer1 Exp $
  */
 public class RecentBlogs extends JustJournalBaseServlet {
     private static Category log = Category.getInstance(RecentBlogs.class.getName());

@@ -15,7 +15,7 @@ import javax.servlet.http.HttpSession;
  * Base servlet to do some of the repetative servlet initialization stuff.
  *
  * @author Lucas Holt
- * @version $Id: JustJournalBaseServlet.java,v 1.8 2006/05/07 21:22:42 laffer1 Exp $
+ * @version $Id: JustJournalBaseServlet.java,v 1.9 2006/07/28 14:01:06 laffer1 Exp $
  * @since 1.0
  *        Date: Sep 25, 2005
  *        Time: 9:04:00 PM

@@ -20,7 +20,7 @@ import java.io.BufferedInputStream;
  * Date: Nov 22, 2005
  * Time: 9:31:28 PM
  *
- * @version $Id: Image.java,v 1.4 2006/05/07 21:22:42 laffer1 Exp $
+ * @version $Id: Image.java,v 1.5 2006/07/28 14:01:06 laffer1 Exp $
  */
 public class Image extends HttpServlet {
 

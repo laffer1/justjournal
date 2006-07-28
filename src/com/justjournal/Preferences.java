@@ -48,7 +48,7 @@ import sun.jdbc.rowset.CachedRowSet;
  * journal, the user must login.  Public access is denied.
  *
  * @author Lucas Holt
- * @version $Id: Preferences.java,v 1.6 2006/05/07 21:22:42 laffer1 Exp $
+ * @version $Id: Preferences.java,v 1.7 2006/07/28 14:01:06 laffer1 Exp $
  * @since 1.0
  *        User: laffer1
  *        Date: Jul 11, 2003

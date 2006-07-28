@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2005-2006, Lucas Holt
+Copyright (c) 2003-2006, Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -34,15 +34,17 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal;
 
+import com.justjournal.db.PreferencesDao;
 import com.justjournal.db.UserDao;
 import com.justjournal.db.UserTo;
+import sun.jdbc.rowset.CachedRowSet;
 
 /**
  * Represents a user's basic credentals including userId and
  * userName.
  *
  * @author Lucas Holt
- * @version $Id: User.java,v 1.7 2006/05/07 21:22:42 laffer1 Exp $
+ * @version $Id: User.java,v 1.8 2006/07/28 14:01:06 laffer1 Exp $
  *          Date: Jan 4, 2004
  *          Time: 9:59:35 PM
  * @since 1.0
@@ -52,28 +54,115 @@ public final class User {
     private int userId = 0;
     private int type = 0;
     private String firstName = ""; // real name
-    private int since = 2003;  // starting year for account
-    private Preferences preferences = null;
+    private int startYear = 2003;  // starting year for account
 
-    public User(String userName) {
+    private boolean allowSpider = false;
+    private boolean privateJournal = false;  // journal viewable only by owner.
+    private int styleId = 1;  // theme of journal?
+    private String styleDoc = "";
+    private String styleUrl = "";
+    private int emoticon = 1;  // default emoticon theme
+
+    private String emailAddress = "";
+    private boolean showAvatar = false;
+
+    public User(final String userName) throws Exception {
         setUserName(userName);
 
-        UserDao ud = new UserDao();
-        UserTo ut = ud.view(userName);
+        UserTo ut = UserDao.view(userName);
 
         setUserId(ut.getId());
         setFirstName(ut.getName());
 
+        try {
+            CachedRowSet RS = PreferencesDao.ViewJournalPreferences(userName);
+
+            if (RS.next()) {
+                this.styleId = RS.getInt("style");
+
+                if (RS.getString("cssdoc") == null)
+                    this.styleDoc = "";
+                else
+                    this.styleDoc = RS.getString("cssdoc");
+
+                if (RS.getString("cssurl") == null)
+                    this.styleUrl = "";
+                else
+                    this.styleUrl = RS.getString("cssurl");
+
+                this.emailAddress = RS.getString("email");
+
+                if (RS.getInt("since") > 2003)
+                    startYear = RS.getInt("since");
+
+                if (RS.getString("allow_spider").equals("Y")) {
+                    this.allowSpider = true;
+                } else {
+                    this.allowSpider = false;
+                }
+
+                if (RS.getString("owner_view_only").equals("Y")) {
+                    this.privateJournal = true;
+                } else {
+                    this.privateJournal = false;
+                }
+
+                if (RS.getString("show_avatar").equals("Y")) {
+                    this.showAvatar = true;
+                } else {
+                    this.showAvatar = false;
+                }
+            }
+
+            RS.close();
+        } catch (Exception ePrefs) {
+            throw new Exception("Error loading user information", ePrefs);
+        }
     }
 
-    public User(int userId) {
+    public User(int userId) throws Exception {
         setUserId(userId);
 
-        UserDao ud = new UserDao();
-        UserTo ut = ud.view(userId);
+        UserTo ut = UserDao.view(userId);
 
         setUserName(ut.getUserName());
         setFirstName(ut.getName());
+
+        try {
+            CachedRowSet RS = PreferencesDao.ViewJournalPreferences(userName);
+
+            if (RS.next()) {
+                this.styleId = RS.getInt("style");
+                this.styleDoc = RS.getString("cssdoc");
+                this.styleUrl = RS.getString("cssurl");
+                this.emailAddress = RS.getString("email");
+
+                if (RS.getInt("since") > 2003)
+                    startYear = RS.getInt("since");
+
+                if (RS.getString("allow_spider").equals("Y")) {
+                    this.allowSpider = true;
+                } else {
+                    this.allowSpider = false;
+                }
+
+                if (RS.getString("owner_view_only").equals("Y")) {
+                    this.privateJournal = true;
+                } else {
+                    this.privateJournal = false;
+                }
+
+                if (RS.getString("show_avatar").equals("Y")) {
+                    this.showAvatar = true;
+                } else {
+                    this.showAvatar = false;
+                }
+            }
+
+            RS.close();
+        } catch (Exception ePrefs) {
+            throw new Exception("Error loading user information", ePrefs);
+        }
     }
 
     public User(Integer userId) {
@@ -208,8 +297,8 @@ public final class User {
      *
      * @return Year account was created.
      */
-    public int getSince() {
-        return this.since;
+    public int getStartYear() {
+        return this.startYear;
     }
 
     /**
@@ -219,31 +308,93 @@ public final class User {
      *
      * @param since Year account was created.
      */
-    public void setSince(final int since) {
+    public void setStartYear(final int since) {
         if (since < 2003)
-            throw new IllegalArgumentException("Since must be at least the year 2003.");
+            throw new IllegalArgumentException("Start Year must be at least the year 2003.");
 
-        this.since = since;
+        this.startYear = since;
     }
 
-    /**
-     * Retrieve a copy of the preferences for the user.
-     *
-     * @return User Preferences
-     */
-    public Preferences getPreferences() {
-        try {
-            if (preferences == null)
-                preferences = new Preferences(userName);
-        } catch (Exception e) {
-            preferences = null;
-        }
+    public boolean isSpiderAllowed() {
+        return this.allowSpider;
+    }
 
-        return preferences;
+    public boolean isSpiderAllowed(boolean allowSpider) {
+        this.allowSpider = allowSpider;
+        return allowSpider;
+    }
+
+    public boolean isPrivateJournal() {
+        return this.privateJournal;
+    }
+
+    public boolean isPrivateJournal(boolean privateJournal) {
+        this.privateJournal = privateJournal;
+        return privateJournal;
+    }
+
+    public int getEmoticon() {
+        return emoticon;
+    }
+
+    public void setEmoticon(int value) {
+        this.emoticon = value;
+    }
+
+    public int getStyleId() {
+        return this.styleId;
+    }
+
+    public void setStyleId(int styleId) {
+        this.styleId = styleId;
+    }
+
+    public String getStyleDoc() {
+        return this.styleDoc;
+    }
+
+    public void setStyleDoc(String doc) {
+        this.styleDoc = doc;
+    }
+
+    public String getStyleUrl() {
+        return this.styleUrl;
+    }
+
+    public void setStyleUrl(String url) {
+        this.styleUrl = url;
+    }
+
+    public String getEmailAddress() {
+        return this.emailAddress;
+    }
+
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
+    }
+
+    public boolean showAvatar() {
+        return showAvatar;
+    }
+
+    public void showAvatar(boolean showAvatar) {
+        this.showAvatar = showAvatar;
     }
 
     public String toString() {
         return Integer.toString(userId) + "," + userName + "," + type +
-                "," + firstName + "," + since;
+                "," + firstName + "," + startYear;
+    }
+
+    public void recycle() {
+        firstName = "";
+        userId = 0;
+        styleId = 1;
+        allowSpider = false;
+        privateJournal = false;
+        styleDoc = "";
+        styleUrl = "";
+        startYear = 2003;
+        emailAddress = "";
     }
 }

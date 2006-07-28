@@ -44,22 +44,24 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal;
 
 import com.justjournal.db.SQLHelper;
+import com.justjournal.utility.FileIO;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 
 /**
  * @author Caryn Holt
- * @version $Id: RemoveFriend.java,v 1.6 2006/05/07 21:22:42 laffer1 Exp $
+ * @version $Id: RemoveFriend.java,v 1.7 2006/07/28 14:01:06 laffer1 Exp $
  */
 public final class RemoveFriend extends JustJournalBaseServlet {
 
     protected void execute(HttpServletRequest request, HttpServletResponse response, HttpSession session, StringBuffer sb) {
 
         // Retreive username
-        // String username = "";
-        //username = (String) session.getAttribute( "auth.user" );
+        String userName;
+        userName = (String) session.getAttribute("auth.user");
 
         // Retreive user id
         Integer userIDasi = (Integer) session.getAttribute("auth.uid");
@@ -81,8 +83,38 @@ public final class RemoveFriend extends JustJournalBaseServlet {
             int rowsAffected = SQLHelper.executeNonQuery(sqlStatement);
 
             if (rowsAffected > 0) {
-                sb.append("<p>Friend has been deleted.</p>");
-                sb.append(endl);
+                try {
+                    String template = FileIO.ReadTextFile("/home/jj/docs/journal_template.inc");
+                    String loginMenu;
+                    StringBuilder content = new StringBuilder();
+
+                    content.append("\t\t<h2>Remove Friend</h2>");
+                    content.append("\t\t<p>Your friend have been remove.</p>");
+
+                    // Authentication menu choice
+                    if (userID > 0) {
+                        // User is logged in.. give them the option to log out.
+                        loginMenu = ("\t\t<a href=\"/prefs/index.jsp\">Preferences</a><br />");
+
+                        loginMenu += ("\t\t<a href=\"/logout.jsp\">Log Out</a>");
+
+                    } else {
+                        // User is logged out.. give then the option to login.
+                        loginMenu = ("\t\t<a href=\"/login.jsp\">Login</a>");
+                    }
+
+                    template = template.replaceAll("\\$JOURNAL_TITLE\\$", "JustJournal.com: Add Comment");
+                    template = template.replaceAll("\\$USER\\$", userName);
+                    template = template.replaceAll("\\$USER_STYLESHEET\\$", "6.css");
+                    template = template.replaceAll("\\$USER_STYLESHEET_ADD\\$", "");
+                    template = template.replaceAll("\\$USER_AVATAR\\$", "");
+                    template = template.replaceAll("\\$RECENT_ENTRIES\\$", "");
+                    template = template.replaceAll("\\$LOGIN_MENU\\$", loginMenu);
+                    template = template.replaceAll("\\$CONTENT\\$", content.toString());
+                    sb.append(template);
+                } catch (IOException e) {
+                    WebError.Display("Internal Error", "Error dislaying page.", sb);
+                }
             } else
                 WebError.Display("Error", "Could not remove friend.", sb);
         } catch (Exception e) {

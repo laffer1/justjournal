@@ -16,7 +16,7 @@ import java.io.BufferedInputStream;
  * Diplay individual images in the user's photo album.
  *
  * @author Lucas Holt
- * @version $Id: AlbumImage.java,v 1.1 2006/05/02 03:49:52 laffer1 Exp $
+ * @version $Id: AlbumImage.java,v 1.2 2006/07/28 14:01:06 laffer1 Exp $
  */
 public class AlbumImage extends HttpServlet {
     private static Category log = Category.getInstance(AlbumImage.class.getName());

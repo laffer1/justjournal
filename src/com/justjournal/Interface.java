@@ -51,7 +51,7 @@ import java.util.Iterator;
  * Date: Jan 18, 2004
  * Time: 10:11:10 PM
  *
- * @version $Id: Interface.java,v 1.7 2006/05/07 21:22:42 laffer1 Exp $
+ * @version $Id: Interface.java,v 1.8 2006/07/28 14:01:06 laffer1 Exp $
  */
 public class Interface extends HttpServlet {
     final static String endl = "\r\n";
@@ -138,11 +138,11 @@ public class Interface extends HttpServlet {
                 getmenus = request.getParameter("getmenus");
 
                 try {
-                    Preferences pf = new Preferences(userName);
+                    User pf = new User(userName);
 
                     sb.append("name");
                     sb.append(endl);
-                    sb.append(pf.getName());
+                    sb.append(pf.getFirstName());
                     sb.append("'s Journal");
                     sb.append(endl);
 
@@ -162,7 +162,7 @@ public class Interface extends HttpServlet {
 
                     sb.append("message");
                     sb.append("Hello ");
-                    sb.append(pf.getName());
+                    sb.append(pf.getFirstName());
 
                     if (getmenus != null && getmenus.length() > 0) {
                         sb.append("menu_0_1_text");
@@ -357,9 +357,9 @@ public class Interface extends HttpServlet {
                 if (blnError == false) {
 
                     /* Initialize Preferences Object */
-                    Preferences pf;
+                    User pf;
                     try {
-                        pf = new Preferences(userName);
+                        pf = new User(userName);
                     } catch (Exception ex) {
                         throw new ServletException(ex);
                     }
@@ -379,7 +379,7 @@ public class Interface extends HttpServlet {
                         sb.append("\t<meta name=\"googlebot\" content=\"nosnippet\" />");
                         sb.append(endl);
                     }
-                    sb.append("\t<title>" + pf.getName() + "'s Journal</title>");
+                    sb.append("\t<title>" + pf.getFirstName() + "'s Journal</title>");
                     sb.append(endl);
 
                     /* User's custom style URL.. i.e. uri to css doc outside domain */
@@ -414,7 +414,7 @@ public class Interface extends HttpServlet {
                     sb.append(endl);
                     sb.append("\t\t<div id=\"header\">");
                     sb.append(endl);
-                    sb.append("\t\t<h1>" + pf.getName() + "'s Journal</h1>");
+                    sb.append("\t\t<h1>" + pf.getFirstName() + "'s Journal</h1>");
                     sb.append(endl);
                     sb.append("\t</div>");
                     sb.append(endl);

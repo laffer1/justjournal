@@ -44,17 +44,20 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal;
 
 import com.justjournal.db.SQLHelper;
+import com.justjournal.utility.FileIO;
+import com.justjournal.utility.StringUtil;
 import sun.jdbc.rowset.CachedRowSet;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 
 /**
  * Adds a friend to the Users list for their friends page
  *
  * @author Caryn Holt, Lucas Holt
- * @version $Id: AddFriend.java,v 1.5 2006/05/07 21:22:42 laffer1 Exp $
+ * @version $Id: AddFriend.java,v 1.6 2006/07/28 14:01:06 laffer1 Exp $
  * @since 1.0
  */
 public final class AddFriend extends JustJournalBaseServlet {
@@ -64,8 +67,8 @@ public final class AddFriend extends JustJournalBaseServlet {
         boolean error = false;
 
         // Retreive username
-        //String username = "";
-        //username = (String) session.getAttribute( "auth.user" );
+        String userName;
+        userName = (String) session.getAttribute("auth.user");
 
         // Retreive user id
         Integer userIDasi = (Integer) session.getAttribute("auth.uid");
@@ -83,7 +86,7 @@ public final class AddFriend extends JustJournalBaseServlet {
 
         int counter = 0;
 
-        if (friend1.length() == 0) {
+        if (!StringUtil.lengthCheck(friend1, 3, 15)) {
             error = true;
             WebError.Display("Input Error", "One friend must be specified", sb);
         } else {
@@ -154,8 +157,39 @@ public final class AddFriend extends JustJournalBaseServlet {
                     }
                 }
             }
-            sb.append("<p>Your friend(s) have been added.</p>");
-            sb.append(endl);
+
+            try {
+                String template = FileIO.ReadTextFile("/home/jj/docs/journal_template.inc");
+                String loginMenu;
+                StringBuilder content = new StringBuilder();
+
+                content.append("\t\t<h2>Add Friend</h2>");
+                content.append("\t\t<p>Your friend(s) have been added.</p>");
+
+                // Authentication menu choice
+                if (userID > 0) {
+                    // User is logged in.. give them the option to log out.
+                    loginMenu = ("\t\t<a href=\"/prefs/index.jsp\">Preferences</a><br />");
+
+                    loginMenu += ("\t\t<a href=\"/logout.jsp\">Log Out</a>");
+
+                } else {
+                    // User is logged out.. give then the option to login.
+                    loginMenu = ("\t\t<a href=\"/login.jsp\">Login</a>");
+                }
+
+                template = template.replaceAll("\\$JOURNAL_TITLE\\$", "JustJournal.com: Add Comment");
+                template = template.replaceAll("\\$USER\\$", userName);
+                template = template.replaceAll("\\$USER_STYLESHEET\\$", "6.css");
+                template = template.replaceAll("\\$USER_STYLESHEET_ADD\\$", "");
+                template = template.replaceAll("\\$USER_AVATAR\\$", "");
+                template = template.replaceAll("\\$RECENT_ENTRIES\\$", "");
+                template = template.replaceAll("\\$LOGIN_MENU\\$", loginMenu);
+                template = template.replaceAll("\\$CONTENT\\$", content.toString());
+                sb.append(template);
+            } catch (IOException e) {
+                WebError.Display("Internal Error", "Error dislaying page.", sb);
+            }
         }
     }
 }

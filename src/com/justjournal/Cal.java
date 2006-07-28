@@ -46,7 +46,7 @@ import java.util.Iterator;
  * Storage for calendar months.
  *
  * @author Lucas Holt
- * @version $Id: Cal.java,v 1.7 2006/05/07 21:22:42 laffer1 Exp $
+ * @version $Id: Cal.java,v 1.8 2006/07/28 14:01:06 laffer1 Exp $
  * @see CalMonth
  */
 public final class Cal {
@@ -151,7 +151,7 @@ public final class Cal {
 
         for (int i = 0, n = Months.size(); i < n; i++) {
             o = itr.next();
-            sb.append("<table class=\"fullcalendar\" style=\"margin-top:.2in; border: thin solid black;\" cellpadding=\"1\" cellspacing=\"1\" width=\"400\">\n");
+            sb.append("<table class=\"fullcalendar\" cellpadding=\"1\" cellspacing=\"1\">\n");
 
             sb.append("<caption>");
             sb.append(months[o.monthid]);
@@ -159,20 +159,24 @@ public final class Cal {
             sb.append(o.getYear());
             sb.append("</caption>\n");
 
+            sb.append("<thead>\n");
             sb.append("<tr>\n");
             for (int x = 0; x < 7; x++) {
-                sb.append("<th style=\"background: #F2F2F2; width: 14%\">");
+                sb.append("\t<th class=\"fullcalendarth\">");
                 sb.append(days[x]);
                 sb.append("</th>\n");
             }
             sb.append("</tr>\n");
+            sb.append("</thead>\n");
+
+            sb.append("<tbody>\n");
 
             int dayinweek;
             boolean blnFirstTime = true; // first time through
             sb.append("<tr>\n");
 
             if (o.getFirstDayInWeek() > 1)
-                sb.append("<td style=\"background: #F2F2F2\" colspan=\"").append(o.getFirstDayInWeek() - 1).append("\"></td>");
+                sb.append("\t<td class=\"fullcalendaroffrow\" colspan=\"").append(o.getFirstDayInWeek() - 1).append("\"></td>");
 
             dayinweek = o.getFirstDayInWeek() - 1;
 
@@ -181,7 +185,7 @@ public final class Cal {
                     sb.append("<tr>\n");
                 }
 
-                sb.append("<td style=\"background: white\" valign=\"top\"><strong>");
+                sb.append("\t<td class=\"fullcalendarrow\"><strong>");
                 sb.append(y + 1);
                 sb.append("</strong><br /><span style=\"float: right;\">");
                 if (o.storage[y] == 0) {
@@ -224,20 +228,21 @@ public final class Cal {
             if (dayinweek <= 6 && dayinweek != 0) {
                 // this is seven because colspan is 1 based.  why do the
                 // extra addition +1
-                sb.append("<td style=\"background: #F2F2F2\" colspan=\"").append(7 - dayinweek).append(" \"></td>");
+                sb.append("\t<td class=\"fullcalendaroffrow\" colspan=\"").append(7 - dayinweek).append(" \"></td>");
                 sb.append("</tr>\n");
             }
 
-            sb.append("<tr>");
-            sb.append("<td style=\"background: #F2F2F2; text-align: center;\" colspan=\"7\"><a href=\"");
+            sb.append("<tr>\n");
+            sb.append("\t<td class=\"fullcalendarsub\" colspan=\"7\"><a href=\"");
             sb.append(o.getYear());
             sb.append("/");
             if ((o.monthid + 1) < 10) {
                 sb.append("0");
             }
             sb.append(o.monthid + 1);
-            sb.append("\">View Subjects</a></td>");
-            sb.append("</tr>");
+            sb.append("\">View Subjects</a></td>\n");
+            sb.append("</tr>\n");
+            sb.append("</tbody>\n");
             sb.append("</table>\n\n");
 
         }
@@ -263,11 +268,11 @@ public final class Cal {
 
             sb.append("\t\t<thead>\n\t\t<tr>\n");
             for (int x = 0; x < 7; x++) {
-                sb.append("\t\t<th class=\"minicalendarth\">");
+                sb.append("\t\t\t<th class=\"minicalendarth\">");
                 sb.append(daysSmall[x]);
                 sb.append("</th>\n");
             }
-            sb.append("\t\t</tr>\n</thead>\n");
+            sb.append("\t\t</tr>\n\t\t</thead>\n");
 
             int dayinweek;
             boolean blnFirstTime = true; // first time through
@@ -326,12 +331,12 @@ public final class Cal {
             if (dayinweek <= 6 && dayinweek != 0) {
                 // this is seven because colspan is 1 based.  why do the
                 // extra addition +1
-                sb.append("<td class=\"minicalendaroffrow\" colspan=\"").append(7 - dayinweek).append(" \"></td>");
-                sb.append("</tr>\n");
+                sb.append("\t\t<td class=\"minicalendaroffrow\" colspan=\"").append(7 - dayinweek).append(" \"></td>");
+                sb.append("\t\t</tr>\n");
             }
 
-            sb.append("<tr>");
-            sb.append("<td class=\"minicalendarsub\" colspan=\"7\"><a href=\"");
+            sb.append("\t\t<tr>");
+            sb.append("\t\t<td class=\"minicalendarsub\" colspan=\"7\"><a href=\"");
             sb.append(baseUrl);
             sb.append(o.getYear());
             sb.append("/");
