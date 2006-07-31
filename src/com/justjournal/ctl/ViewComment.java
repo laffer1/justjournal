@@ -34,7 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.ctl;
 
-import com.justjournal.Preferences;
+import com.justjournal.User;
 import com.justjournal.db.CommentDao;
 import com.justjournal.db.EntryDAO;
 import com.justjournal.db.EntryTo;
@@ -85,11 +85,11 @@ public class ViewComment extends ControllerAuth {
         this.comments = cdao.view(entryId);
         this.entry = edao.viewSingle(entryId, false);
 
-        Preferences pf = new Preferences(entry.getUserName());
+        User user = new User(entry.getUserName());
 
         // user wants it private, has comments disabled for this entry
         // or the security level is private.
-        if (pf.isPrivateJournal() ||
+        if (user.isPrivateJournal() ||
                 !this.entry.getAllowComments() ||
                 this.entry.getSecurityLevel() == 0) {
             this.entry = new EntryTo();

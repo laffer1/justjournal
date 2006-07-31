@@ -133,7 +133,7 @@ public class BaseController extends HttpServlet {
      * Based on code from Maverick Dispatch.java
      *
      * @param request
-     * @return
+     * @return url path
      */
     protected String getPath(HttpServletRequest request) {
         // If we are include()ed from a RequestDispatcher, the real request

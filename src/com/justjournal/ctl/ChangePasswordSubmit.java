@@ -85,13 +85,13 @@ public class ChangePasswordSubmit
         if (this.currentLoginId() < 1)
             addError("login", "The login timed out or is invalid.");
 
-        if (this.hasErrors() == false) {
+        if (!this.hasErrors()) {
             result = WebLogin.changePass(currentLoginName(), passCurrent, passNew);
 
             if (log.isDebugEnabled())
                 log.debug("Was there an error with data tier?  " + !result);
 
-            if (result == false)
+            if (!result)
                 addError("Unknown", "Error changing password.  Did you type in your old password correctly?");
         }
 

@@ -5,8 +5,10 @@ import org.apache.log4j.Category;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLEncoder;
 
 /**
  * User: laffer1
@@ -17,22 +19,30 @@ public class RestPing {
 
     private static Category log = Category.getInstance(RestPing.class.getName());
 
-    private String uri = "http://rpc.weblogs.com/pingSiteForm";
+    private String pingUri = "http://rpc.weblogs.com/pingSiteForm";
+    private String uri;
     private String name;
     private String changesURL;
 
     public boolean ping() {
         URL u;
         URLConnection uc;
-
-        // build uri
-        uri = uri + "?name=" + name + "&url=" + uri + "&changesUrl=" + changesURL;
+        String address;
 
         try {
-            u = new URL(getUri());
+            // build uri
+            address = pingUri + "?name=" + URLEncoder.encode(name, "UTF-8") +
+                    "&url=" + URLEncoder.encode(uri, "UTF-8") +
+                    "&changesUrl=" + URLEncoder.encode(changesURL, "UTF-8");
+
+            URI tmpuri = new URI(address);
+            u = tmpuri.toURL();
         } catch (Exception me) {
+            log.debug("Couldn't create URL. " + me.getMessage());
             return false;
         }
+
+        log.debug(u.toExternalForm());
 
         try {
             uc = u.openConnection();
@@ -46,12 +56,12 @@ public class RestPing {
 
             in.close();
 
-            if (log.isDebugEnabled())
-                log.debug(uri + "\n" + input);
+            log.debug(uri + "\n" + input);
 
             return true; // todo: parse result and adjust this as necessary.
 
         } catch (IOException e) {
+            log.debug("IO Error: " + e.getMessage());
             return false;
         }
     }

@@ -44,7 +44,7 @@ import sun.jdbc.rowset.CachedRowSet;
  * userName.
  *
  * @author Lucas Holt
- * @version $Id: User.java,v 1.8 2006/07/28 14:01:06 laffer1 Exp $
+ * @version $Id: User.java,v 1.9 2006/07/31 17:34:49 laffer1 Exp $
  *          Date: Jan 4, 2004
  *          Time: 9:59:35 PM
  * @since 1.0
@@ -384,6 +384,15 @@ public final class User {
     public String toString() {
         return Integer.toString(userId) + "," + userName + "," + type +
                 "," + firstName + "," + startYear;
+    }
+
+    /**
+     * Fetch the User's Title for their journal.
+     *
+     * @return journal title
+     */
+    public String getJournalName() {
+        return firstName + "'s Journal";
     }
 
     public void recycle() {
