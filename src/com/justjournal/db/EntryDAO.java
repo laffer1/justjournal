@@ -702,7 +702,7 @@ public final class EntryDAO {
     public static Collection<EntryTo> viewRecentAllUsers() {
 
         if (log.isDebugEnabled())
-            log.debug("view: starting viewRecentAllusers().");
+            log.debug("view: starting viewRecentAllUsers().");
 
         final int SIZE = 15;
         final ArrayList<EntryTo> entries = new ArrayList<EntryTo>(SIZE);
@@ -773,6 +773,92 @@ public final class EntryDAO {
         } catch (Exception e1) {
             if (log.isDebugEnabled())
                 log.debug("viewRecentAllUsers: exception is: " + e1.getMessage() + "\n" + e1.toString());
+
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (Exception e) {
+                    // NOTHING TO DO
+                }
+            }
+        }
+
+        return entries;
+    }
+
+    /**
+     * Retrieve the 15 most recent journal entries from unique users.  So
+     * if I post 10 entries, it will only select the most recent entry
+     * and the entries of 14 other users.  (another words 1 per user)
+     *
+     * @return Entries from 15 different users (most recent)
+     */
+    public static Collection<EntryTo> viewRecentUniqueUsers() {
+
+        if (log.isDebugEnabled())
+            log.debug("view: starting viewRecentUniqueUsers().");
+
+        final int SIZE = 15;
+        final ArrayList<EntryTo> entries = new ArrayList<EntryTo>(SIZE);
+
+        String sqlStatement;
+        CachedRowSet rs = null;
+        EntryTo et;
+
+        // PUBLIC ONLY
+        sqlStatement = "call entry_view_latest_rss();";
+
+        try {
+            if (log.isDebugEnabled())
+                log.debug("viewRecentUniqueUsers: execute sql statement");
+
+            rs = SQLHelper.executeResultSet(sqlStatement);
+
+            while (rs.next()) {
+                if (log.isDebugEnabled())
+                    log.debug("viewRecentUniqueUsers: create EntryTo object and populate it.");
+
+                et = new EntryTo();
+
+                et.setUserName(rs.getString("userName"));
+                et.setId(rs.getInt("entryid"));
+                et.setUserId(rs.getInt("id"));
+                et.setDate(rs.getString("date"));
+                et.setSubject(rs.getString("subject"));
+                et.setBody(rs.getString("body"));
+                et.setLocationId(rs.getInt("locationid"));
+                et.setMoodId(rs.getInt("moodid"));
+                et.setMusic(rs.getString("music"));
+                et.setSecurityLevel(rs.getInt("security"));
+                et.setMoodName(rs.getString("moodt"));
+                et.setLocationName(rs.getString("location"));
+
+                if (rs.getString("email_comments").compareTo("Y") == 0)
+                    et.setEmailComments(true);
+                else
+                    et.setEmailComments(false);
+
+                if (rs.getString("allow_comments").compareTo("Y") == 0)
+                    et.setAllowComments(true);
+                else
+                    et.setAllowComments(false);
+
+                if (rs.getString("autoformat").compareTo("Y") == 0)
+                    et.setAutoFormat(true);
+                else
+                    et.setAutoFormat(false);
+
+                if (log.isDebugEnabled())
+                    log.debug("viewRecentUniqueUsers: ET contains " + et.toString());
+
+                entries.add(et);
+            }
+
+            rs.close();
+
+        } catch (Exception e1) {
+            if (log.isDebugEnabled())
+                log.debug("viewRecentUniqueUsers: exception is: " + e1.getMessage() + "\n" + e1.toString());
 
             if (rs != null) {
                 try {
