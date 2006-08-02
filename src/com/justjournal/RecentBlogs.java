@@ -47,7 +47,7 @@ import java.util.Calendar;
  * Date: Feb 26, 2006
  * Time: 10:44:18 AM
  *
- * @version $Id: RecentBlogs.java,v 1.6 2006/07/28 14:01:06 laffer1 Exp $
+ * @version $Id: RecentBlogs.java,v 1.7 2006/08/02 14:40:51 laffer1 Exp $
  */
 public class RecentBlogs extends JustJournalBaseServlet {
     private static Category log = Category.getInstance(RecentBlogs.class.getName());
@@ -60,7 +60,7 @@ public class RecentBlogs extends JustJournalBaseServlet {
         try {
             Rss rss = new Rss();
 
-            final java.util.GregorianCalendar calendarg = new java.util.GregorianCalendar();
+            final java.util.GregorianCalendar calendarg = new java.util.GregorianCalendar(java.util.TimeZone.getDefault());
             calendarg.setTime(new java.util.Date());
 
             rss.setTitle("JJ New Posts");
