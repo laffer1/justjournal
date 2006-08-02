@@ -34,6 +34,8 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
+import org.apache.log4j.Category;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -48,6 +50,8 @@ import java.util.Calendar;
  * @since 1.0
  */
 public final class DateTimeBean implements DateTime {
+    private static Category log = Category.getInstance(DateTimeBean.class.getName());
+
     // default is epoch -1 sec
     private int day = 31;
     private int month = 12;
@@ -127,9 +131,12 @@ public final class DateTimeBean implements DateTime {
 
     public void set(final String mysqlDate)
             throws java.text.ParseException {
+
+        log.debug("Set date by mysql date: " + mysqlDate);
+
         final java.text.SimpleDateFormat fmt = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         final java.util.Date myDate = fmt.parse(mysqlDate);
-        final java.util.GregorianCalendar calendarg = new java.util.GregorianCalendar();
+        final java.util.GregorianCalendar calendarg = new java.util.GregorianCalendar(java.util.TimeZone.getDefault());
 
         calendarg.setTime(myDate);
         year = calendarg.get(Calendar.YEAR);
@@ -137,10 +144,13 @@ public final class DateTimeBean implements DateTime {
         day = calendarg.get(Calendar.DAY_OF_MONTH);
         hour = calendarg.get(Calendar.HOUR_OF_DAY);
         minutes = calendarg.get(Calendar.MINUTE);
+
+        log.debug("Internal values: " + year + "-" + month + "-" + day + " " + hour + ":" + minutes);
+
     }
 
     public void set(final java.util.Date date) {
-        final java.util.GregorianCalendar calendarg = new java.util.GregorianCalendar();
+        final java.util.GregorianCalendar calendarg = new java.util.GregorianCalendar(java.util.TimeZone.getDefault());
 
         calendarg.setTime(date);
         year = calendarg.get(Calendar.YEAR);
@@ -148,12 +158,15 @@ public final class DateTimeBean implements DateTime {
         day = calendarg.get(Calendar.DAY_OF_MONTH);
         hour = calendarg.get(Calendar.HOUR_OF_DAY);
         minutes = calendarg.get(Calendar.MINUTE);
+
+        log.debug("Internal values: " + year + "-" + month + "-" + day + " " + hour + ":" + minutes);
     }
 
     public String toPubDate() {
         //Sat, 07 Sep 2002 09:43:33 GMT
         final java.util.GregorianCalendar cal =
-                new java.util.GregorianCalendar(year, month, day, hour, minutes);
+                new java.util.GregorianCalendar(year, month - 1, day, hour, minutes);
+
         final java.util.Date current = cal.getTime();
         final SimpleDateFormat formatmydate = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zz");
 
