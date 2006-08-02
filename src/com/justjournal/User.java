@@ -44,13 +44,13 @@ import sun.jdbc.rowset.CachedRowSet;
  * userName.
  *
  * @author Lucas Holt
- * @version $Id: User.java,v 1.9 2006/07/31 17:34:49 laffer1 Exp $
+ * @version $Id: User.java,v 1.10 2006/08/02 13:35:01 laffer1 Exp $
  *          Date: Jan 4, 2004
  *          Time: 9:59:35 PM
  * @since 1.0
  */
 public final class User {
-    private String userName = "";
+    private String userName = "*";
     private int userId = 0;
     private int type = 0;
     private String firstName = ""; // real name

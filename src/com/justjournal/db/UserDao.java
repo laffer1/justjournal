@@ -213,7 +213,7 @@ public final class UserDao {
     public static final Collection<UserTo> memberList() {
         ArrayList<UserTo> users = new ArrayList<UserTo>(125);
         UserTo usr;
-        final String sqlStatement = "CALL memberlist";
+        final String sqlStatement = "call memberlist();";
 
         try {
             final CachedRowSet RS = SQLHelper.executeResultSet(sqlStatement);
@@ -226,6 +226,8 @@ public final class UserDao {
                 usr.setSince(RS.getInt(4));
                 users.add(usr);
             }
+
+            RS.close();
         } catch (Exception e1) {
 
         }
