@@ -198,7 +198,7 @@ public class HeadlineBean {
             sb.append(endl);
 
             // some rss feeds don't have a last build date
-            if (contentLastBuildDate != null) {
+            if (contentLastBuildDate != null && contentLastBuildDate.length() > 0) {
                 sb.append("<p>last build date: ");
                 sb.append(contentLastBuildDate);
                 sb.append("<br />");
@@ -272,7 +272,7 @@ public class HeadlineBean {
 
                     // some rss versions don't have a pub date per entry
                     if (pubDate != null) {
-                        sb.append(" <span class=\"RssItemPubDate\">");
+                        sb.append(" <br /><span class=\"RssItemPubDate\">");
                         sb.append(pubDate);
                         sb.append("</span> ");
                     }
