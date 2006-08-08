@@ -47,38 +47,36 @@ import org.apache.log4j.Category;
 public class DeleteRssSubscriptionSubmit extends Protected {
     private static Category log =
             Category.getInstance(AddRssSubscriptionSubmit.class.getName());
-    protected String uri;  // lj username
+    protected int subId;
 
-    public String getUri() {
-        return uri;
+    public int getSubId() {
+        return subId;
     }
 
-    public void setUserName(String uri) {
-        this.uri = uri;
+    public void setSubId(int subId) {
+        this.subId = subId;
     }
 
     protected String insidePerform() throws Exception {
         if (log.isDebugEnabled())
             log.debug("Loading DAO Objects  ");
 
-        RssSubscriptionsDAO dao = new RssSubscriptionsDAO();
         RssSubscriptionsTO to = new RssSubscriptionsTO();
         boolean result;
 
-
-        if (uri == null || uri.length() < 10 || uri.length() > 1024)
-            addError("uri", "The RSS feed URI is invalid.");
+        if (subId < 1)
+            addError("subId", "The subscription id was not found.");
 
         if (this.currentLoginId() < 1)
             addError("login", "The login timed out or is invalid.");
 
-        if (this.hasErrors() == false) {
+        if (!this.hasErrors()) {
             to.setId(this.currentLoginId());
-            to.setUri(this.uri);
+            to.setSubscriptionId(this.subId);
 
-            result = dao.delete(to);
+            result = RssSubscriptionsDAO.delete(to);
 
-            if (result == false)
+            if (!result)
                 addError("Unknown", "Could not delete subscription.");
         }
 

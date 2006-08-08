@@ -73,8 +73,8 @@ public final class RssSubscriptionsDAO {
         boolean noError = true;
         int records = 0;
 
-        final String sqlStmt = "DELETE FROM rss_subscriptions WHERE id='" + rss.getId() +
-                "' AND uri='" + rss.getUri() + "' LIMIT 1;";
+        final String sqlStmt = "DELETE FROM rss_subscriptions WHERE subid='" + rss.getSubscriptionId() +
+                "' AND id='" + rss.getId() + "' LIMIT 1;";
 
         try {
             records = SQLHelper.executeNonQuery(sqlStmt);
@@ -92,7 +92,7 @@ public final class RssSubscriptionsDAO {
         ArrayList<RssSubscriptionsTO> rssfeeds = new ArrayList<RssSubscriptionsTO>(10);
         CachedRowSet RS = null;
         RssSubscriptionsTO rss;
-        final String sqlStatement = "SELECT uri FROM rss_subscriptions WHERE id='"
+        final String sqlStatement = "SELECT uri, subid FROM rss_subscriptions WHERE id='"
                 + userId + "';";
 
         try {
@@ -103,6 +103,7 @@ public final class RssSubscriptionsDAO {
 
                 rss.setId(userId);
                 rss.setUri(RS.getString("uri"));
+                rss.setSubscriptionId(RS.getInt("subid"));
 
                 rssfeeds.add(rss);
             }

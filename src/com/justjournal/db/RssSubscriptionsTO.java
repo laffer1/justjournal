@@ -35,15 +35,14 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.db;
 
 /**
- * Created by IntelliJ IDEA.
  * User: laffer1
  * Date: Mar 19, 2005
  * Time: 9:19:40 PM
- * To change this template use File | Settings | File Templates.
  */
 public final class RssSubscriptionsTO {
     private int id;
     private String uri;
+    private int subscriptionId;
 
     public final int getId() {
         return this.id;
@@ -51,6 +50,14 @@ public final class RssSubscriptionsTO {
 
     public final void setId(final int id) {
         this.id = id;
+    }
+
+    public final int getSubscriptionId() {
+        return this.subscriptionId;
+    }
+
+    public final void setSubscriptionId(final int subscriptionId) {
+        this.subscriptionId = subscriptionId;
     }
 
     public final String getUri() {
@@ -61,9 +68,9 @@ public final class RssSubscriptionsTO {
         this.uri = uri;
     }
 
-
     public final String toString() {
-        return Integer.toString(id) + "," + uri;
+        return Integer.toString(id) + "," + uri + "," +
+                Integer.toString(subscriptionId);
     }
 
     public final boolean equals(Object o) {
@@ -74,6 +81,7 @@ public final class RssSubscriptionsTO {
 
         if (id != that.id) return false;
         if (!uri.equals(that.uri)) return false;
+        if (subscriptionId != that.subscriptionId) return false;
 
         return true;
     }
@@ -81,7 +89,7 @@ public final class RssSubscriptionsTO {
     public final int hashCode() {
         int result;
         result = id;
-        result = 29 * result + uri.hashCode();
+        result = 29 * result + uri.hashCode() * subscriptionId;
         return result;
     }
 }
