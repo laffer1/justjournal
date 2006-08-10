@@ -50,7 +50,7 @@ import javax.servlet.ServletContext;
  * Time: 11:03:13 PM
  *
  * @author Lucas Holt
- * @version 1.0
+ * @version $id$
  * @since 1.0
  */
 public class Settings {
@@ -99,8 +99,8 @@ public class Settings {
             String sql = "SELECT * FROM settings;";
             CachedRowSet rs = SQLHelper.executeResultSet(sql);
             while (rs.next()) {
-                name = rs.getString(0);
-                value = rs.getString(1);
+                name = rs.getString("name");
+                value = rs.getString("value");
 
                 if (name.equalsIgnoreCase("baseuri"))
                     baseUri = value;
@@ -192,7 +192,7 @@ public class Settings {
             }
             rs.close();
         } catch (Exception e) {
-
+            System.out.println("Settings: " + e.getMessage());
         }
     }
 
