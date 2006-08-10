@@ -34,9 +34,10 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.utility;
 
-import javax.mail.Message;
-import javax.mail.Session;
-import javax.mail.Transport;
+import com.justjournal.core.Settings;
+
+import javax.mail.*;
+import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.naming.Context;
@@ -45,6 +46,7 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.Date;
 import java.util.Properties;
 
 /**
@@ -68,9 +70,17 @@ public class MailSender extends Thread {
             Connection conn = ds.getConnection();
             System.out.println("MailSender: DB Connection up");
 
+            Settings set = new Settings();
             Properties props = new Properties();
-            props.put("mail.smtp.host", "localhost");
-            Session s = Session.getInstance(props, null);
+            props.put("mail.smtp.host", set.getMailHost());
+            props.put("mail.smtp.user", set.getMailUser());
+            props.put("mail.smtp.auth", "true");
+
+            props.put("mail.smtp.port", set.getMailPort());
+            Session s = Session.getInstance(props, new ForcedAuthenticator());
+
+            System.out.println("MailSender: " + set.getMailUser() + "@" +
+                    set.getMailHost() + ":" + set.getMailPort());
 
             while (true) {
                 try {
@@ -81,19 +91,30 @@ public class MailSender extends Thread {
                     while (rs.next()) {
                         boolean sentok = true;
 
-                        InternetAddress from = new InternetAddress(rs.getString("from"));
-                        InternetAddress to = new InternetAddress(rs.getString("to"));
-                        MimeMessage message = new MimeMessage(s);
-                        message.setFrom(from);
-                        message.addRecipient(Message.RecipientType.TO, to);
-                        message.setSubject(rs.getString("subject"));
-                        message.setText(rs.getString("body"));
-
                         try {
-                            Transport.send(message);
+                            InternetAddress from = new InternetAddress(rs.getString("from"));
+                            InternetAddress to = new InternetAddress(rs.getString("to"));
+
+                            MimeMessage message = new MimeMessage(s);
+                            message.setFrom(from);
+                            message.setRecipient(Message.RecipientType.TO, to);
+                            message.setSubject(rs.getString("subject"));
+                            message.setText(rs.getString("body"));
+                            message.setSentDate(new Date());
+                            message.saveChanges();
+
+                            Address [] a = {to};
+                            Transport t = s.getTransport("smtp");
+                            t.connect();
+                            t.sendMessage(message, a);
+                            t.close();
+                            //Transport.send(message);
+                        } catch (AddressException e) {
+                            sentok = false;
+                            System.out.println("MailSender: Invalid address. " + e.getMessage());
                         } catch (javax.mail.MessagingException me) {
                             sentok = false;
-                            System.out.println("MailSender: Send failed." + me.getMessage());
+                            System.out.println("MailSender: Send failed." + me.getMessage() + " : " + me.toString());
                         }
 
                         if (sentok) {
@@ -125,6 +146,14 @@ public class MailSender extends Thread {
         }
 
         System.out.println("MailSender: Quit");
+    }
+
+    class ForcedAuthenticator extends Authenticator {
+        public PasswordAuthentication getPasswordAuthentication() {
+            Settings set = new Settings();
+            //System.out.println("ForcedAuthenticator: " + set.getMailUser() + " " + set.getMailPass());
+            return new PasswordAuthentication(set.getMailUser(), set.getMailPass());
+        }
     }
 }
 
