@@ -42,7 +42,7 @@ import sun.jdbc.rowset.CachedRowSet;
  * other information.
  *
  * @author Lucas Holt
- * @version $id$
+ * @version $Id: Statistics.java,v 1.2 2006/10/14 00:30:15 laffer1 Exp $
  */
 public class Statistics {
 
