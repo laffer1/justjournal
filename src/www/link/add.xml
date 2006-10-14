@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page>
+    <title>Just Journal: Links: Add</title>
+
+    <content>
+        <h2>Add a link</h2>
+
+        <p>Each journal has a links section. You can add your favorite links
+            or links that relate to your journal's content.</p>
+
+        <div style="width: 500px; padding: 5px; margin: 0;">
+            <form name="addlink" method="POST" action="addsubmit.h">
+
+                <fieldset>
+                    <legend>
+                        <strong>Link</strong>
+                        <br/>
+                    </legend>
+
+                    <div class="row">
+                        <span class="label">
+                            <label for="title">Title</label>
+                        </span>
+
+                        <span class="formw">
+                            <input name="title" id="title" type="text" value=""/>
+                        </span>
+                    </div>
+
+                    <div class="row">
+                        <span class="label">
+                            <label for="uri">URI</label>
+                        </span>
+
+                        <span class="formw">
+                            <input name="uri" id="uri" type="text" value=""/>
+                        </span>
+                    </div>
+
+                </fieldset>
+
+                <div class="row">
+                    <input type="submit" name="submit" value="Add Link"/>
+                </div>
+            </form>
+        </div>
+
+    </content>
+</page>

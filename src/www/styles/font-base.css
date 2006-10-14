@@ -1,0 +1,59 @@
+/* font-base.css  for justjournal.com */
+html, body {
+    font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    line-height: 14px;
+    text-decoration: none;
+    color: #333333;
+    background-color: white;
+}
+
+h1 {
+    font-size: 1.8em;
+}
+
+h2 {
+    font-size: 1.6em;
+}
+
+h3 {
+    font-size: 1.5em;
+}
+
+h4 {
+    font-size: 1.4em;
+}
+
+h5 {
+    font-size: 1.3em;
+}
+
+h6 {
+    font-size: 1.2em;
+}
+
+p {
+    font-size: 1em;
+    line-height: 1.2em;
+}
+
+table {
+    font-size: 1em;
+    line-height: 1.2em;
+}
+
+table td {
+    font-size: 1em;
+    line-height: 1.2em;
+}
+
+table th {
+    font-size: 1.2em;
+    line-height: 1.5em;
+    text-align: center;
+}
+
+form {
+    font-size: 1em;
+    line-height: 1.2em;
+}

@@ -1,0 +1,117 @@
+/* modern style base */
+
+body {
+    margin: 0;
+    padding: 0;
+    line-height: 16px;
+}
+
+h1 {
+    margin: 0;
+    padding: 0;
+    padding-left: 11px;
+    padding-top: 10px;
+    font-size: 24px;
+    letter-spacing: 0.09em;
+    font-variant: small-caps;
+}
+
+h2 {
+    color: #666666;
+    font-size: 14px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    background-color: transparent;
+    text-transform: uppercase;
+    border: 0 none;
+    border-bottom: 1px;
+    border-style: dotted;
+    border-color: #666666;
+    margin-top: 2em;
+    margin-left: 0;
+    margin-bottom: 5px;
+    margin-right: 0;
+    padding: 0;
+    padding-bottom: 4px;
+}
+
+h3 {
+    margin-top: 20px;
+    margin-bottom: 5px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #99CC66;
+    background-color: transparent;
+}
+
+dl {
+    font: 10pt Verdana, Arial, Helvetica, sans-serif;
+}
+
+dt {
+    font-size: 12pt;
+}
+
+p {
+    font: 10pt / 14pt Verdana, Arial, Helvetica, sans-serif;
+    margin: 0 0 16px 0;
+    padding: 0;
+}
+
+.ebody {
+    font: 10pt / 14pt Verdana, Arial, Helvetica, sans-serif;
+}
+
+img {
+    border: 0 none;
+}
+
+#header {
+    position: relative;
+    left: 0;
+    top: 0;
+    text-align: left;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    height: 42px;
+    font-family: Helvetica, Arial, sans-serif;
+    clear: both;
+}
+
+#Content>p {
+    margin: 0;
+}
+
+#Content>p+p {
+    text-indent: 30px;
+}
+
+#content {
+    margin: 0 50px 50px 200px;
+    padding: 10px;
+}
+
+#menu {
+    position: absolute;
+    top: 100px;
+    left: 20px;
+    width: 172px;
+    padding: 10px;
+    line-height: 17px; /* Again, the ugly brilliant hack. */
+    voice-family: "\"}\"";
+    voice-family: inherit;
+    width: 150px;
+}
+
+/* Again, "be nice to Opera 5". */
+body>#Menu {
+    width: 150px;
+}
+
+#footer {
+    position: relative;
+    margin-left: 200px;
+    font: 10pt verdana, Arial, sans-serif;
+    padding: 10px;
+}

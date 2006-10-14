@@ -1,0 +1,52 @@
+/* Mini calendar and calendar styles */
+.minicalendar {
+    border: thin solid gray;
+    font-size: .8em;
+    margin-bottom: 20px;
+}
+
+.minicalendarth {
+    background: #F2F2F2;
+    color: gray;
+    width: 14%;
+}
+
+.minicalendaroffrow {
+    background: #F2F2F2;
+}
+
+.minicalendarrow {
+    background: white;
+    vertical-align: top;
+}
+
+.minicalendarsub {
+    background: #F2F2F2;
+    text-align: center;
+}
+
+.fullcalendar {
+    margin-top: .2in;
+    border: thin solid black;
+    width: 400px;
+}
+
+.fullcalendarth {
+    background: #F2F2F2;
+    color: gray;
+    width: 14%;
+}
+
+.fullcalendaroffrow {
+    background: #F2F2F2;
+}
+
+.fullcalendarrow {
+    background: white;
+    vertical-align: top;
+}
+
+.fullcalendarsub {
+    background: #F2F2F2;
+    text-align: center;
+}
