@@ -109,7 +109,7 @@ public class Settings {
                 else if (name.equalsIgnoreCase("contextPath"))
                     contextPath = value;
                 else if (name.equalsIgnoreCase("siteEnable")) {
-                    if (value == "true")
+                    if (value.equalsIgnoreCase("true"))
                         siteEnable = true;
                     else
                         siteEnable = false;
@@ -123,22 +123,22 @@ public class Settings {
                 else if (name.equalsIgnoreCase("siteBlog"))
                     siteBlog = value;
                 else if (name.equalsIgnoreCase("siteSearch")) {
-                    if (value == "true")
+                    if (value.equalsIgnoreCase("true"))
                         siteSearch = true;
                     else
                         siteSearch = false;
                 } else if (name.equalsIgnoreCase("siteDirectory")) {
-                    if (value == "true")
+                    if (value.equalsIgnoreCase("true"))
                         siteDirectory = true;
                     else
                         siteDirectory = false;
                 } else if (name.equalsIgnoreCase("siteRss")) {
-                    if (value == "true")
+                    if (value.equalsIgnoreCase("true"))
                         siteRss = true;
                     else
                         siteRss = false;
                 } else if (name.equalsIgnoreCase("mailEnable")) {
-                    if (value == "true")
+                    if (value.equalsIgnoreCase("true"))
                         mailEnable = true;
                     else
                         mailEnable = false;
@@ -155,17 +155,17 @@ public class Settings {
                 else if (name.equalsIgnoreCase("mailSubject"))
                     mailSubject = value;
                 else if (name.equalsIgnoreCase("commentEnable")) {
-                    if (value == "true")
+                    if (value.equalsIgnoreCase("true"))
                         commentEnable = true;
                     else
                         commentEnable = false;
                 } else if (name.equalsIgnoreCase("commentMailEnable")) {
-                    if (value == "true")
+                    if (value.equalsIgnoreCase("true"))
                         commentMailEnable = true;
                     else
                         commentMailEnable = false;
                 } else if (name.equalsIgnoreCase("commentEnableAnonymous")) {
-                    if (value == "true")
+                    if (value.equalsIgnoreCase("true"))
                         mailEnable = true;
                     else
                         mailEnable = false;
@@ -174,17 +174,17 @@ public class Settings {
                 else if (name.equalsIgnoreCase("tzName"))
                     tzName = value;
                 else if (name.equalsIgnoreCase("tzLocalize")) {
-                    if (value == "true")
+                    if (value.equalsIgnoreCase("true"))
                         tzLocalize = true;
                     else
                         tzLocalize = false;
                 } else if (name.equalsIgnoreCase("tzUseGMT")) {
-                    if (value == "true")
+                    if (value.equalsIgnoreCase("true"))
                         tzUseGMT = true;
                     else
                         tzUseGMT = false;
                 } else if (name.equalsIgnoreCase("userAllowNew")) {
-                    if (value == "true")
+                    if (value.equalsIgnoreCase("true"))
                         userAllowNew = true;
                     else
                         userAllowNew = false;
