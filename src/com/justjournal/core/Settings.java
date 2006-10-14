@@ -50,7 +50,7 @@ import javax.servlet.ServletContext;
  * Time: 11:03:13 PM
  *
  * @author Lucas Holt
- * @version $id$
+ * @version $Id: Settings.java,v 1.8 2006/10/14 00:27:45 laffer1 Exp $
  * @since 1.0
  */
 public class Settings {
