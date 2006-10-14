@@ -1,0 +1,8 @@
+User-agent: TurnitinBot
+Disallow: /
+
+User-agent: sitecheck.internetseer.com
+Disallow: /
+
+User-agent: psbot
+Disallow: /

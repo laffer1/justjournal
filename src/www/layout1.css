@@ -1,0 +1,249 @@
+/*
+	CSS 2.0
+	JustJournal.com 1.12 GUI Style Sheet
+	created: March 2003
+	revised: August 2005
+	author: lucas holt
+*/
+
+body {
+    font: 12px Arial, Helvetica, sans-serif;
+    color: #333;
+    background-color: #FFFFF6;
+    background-attachment: fixed;
+    background-image: url( /images/bgjj2.gif );
+    background-repeat: repeat-y;
+    background-position: right;
+    margin: 20px;
+}
+
+h1 {
+    font-size: 1.2em;
+    font-weight: 400;
+    color: white;
+    margin: 0;
+    padding: 0;
+    display: inline;
+    letter-spacing: .1in;
+}
+
+h2 {
+    color: #F99E22;
+    font-size: 1.4em;
+    background: transparent;
+}
+
+h3 {
+    color: gray;
+    font-size: 1.2em;
+    background-color: transparent;
+}
+
+img {
+    border: 0;
+}
+
+dl {
+    font: 10pt Verdana, Arial, Helvetica, sans-serif;
+}
+
+dt {
+    font-size: 10pt;
+}
+
+p {
+    font: 1em Verdana, Arial, Helvetica, sans-serif;
+    line-height: 1.5em;
+}
+
+p.firstone:first-letter {
+    font-size: 1.8em;
+    font-family: Georgia, "Times New Roman", Times, serif
+}
+
+li {
+    font: 10pt / 12pt Verdana, Arial, Helvetica, sans-serif;
+}
+
+a:link {
+    color: #29AECE;
+    background-color: transparent;
+    text-decoration: none;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+
+a:visited {
+    color: #07a;
+    background-color: transparent;
+    text-decoration: none;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+
+a:active {
+    color: navy;
+    background-color: transparent;
+    text-decoration: none;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+
+a:hover {
+    color: navy;
+    background-color: transparent;
+    text-decoration: underline;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+
+div.row {
+    clear: both;
+    padding-top: 5px;
+}
+
+div.row span.label {
+    float: left;
+    width: 140px;
+    text-align: right;
+}
+
+div.row span.formw {
+    float: right;
+    width: 600px;
+    text-align: left;
+}
+
+div.spacer {
+    clear: both;
+}
+
+.rightflt {
+    float: right;
+}
+
+.smallf {
+    font-size: 9pt;
+    line-height: 10pt;
+}
+
+#login {
+    position: relative;
+    margin-top: 10px;
+    margin-bottom: 0;
+    padding-bottom: 0;
+    height: 33px;
+    width: 96%;
+    margin-left: 2%;
+    margin-right: 2%;
+    z-index: 2;
+}
+
+#menu ul a:link, #menu ul a:visited {
+    display: block;
+}
+
+#menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* hack to fix IE/Win's broken rendering of block-level anchors in lists */
+#menu li {
+    border-bottom: 1px solid #EEE;
+}
+
+/* fix for browsers that don't need the hack */
+html>body #menu li {
+    border-bottom: none;
+}
+
+#menu {
+    position: absolute;
+    top: 220px;
+    left: 50px;
+    width: 160px;
+    margin: 0px;
+    padding: 0px;
+    border: 1px solid #29AECE;
+    font-size: 90%;
+    color: white;
+    background: white;
+}
+
+#menu strong {
+    padding: 2px 0px 2px 10px;
+    display: block;
+    background-color: #6FCADE;
+}
+
+#menu a {
+    display: block;
+    border-top: 1px solid #29AECE;
+    padding: 2px 0px 2px 10px;
+    color: navy;
+}
+
+#menu a:hover {
+    background-color: #29AECE;
+    color: white;
+}
+
+#content {
+    width: 600px;
+    margin: 0 50px 10px 200px;
+    padding: 10px;
+
+}
+
+#footer {
+    color: #333;
+    margin: 0;
+    padding: 0;
+    font: 10pt Verdana, Arial, Helvetica, sans-serif;
+}
+
+#footnav {
+    padding-left: 200px;
+}
+
+#copyright {
+    padding-left: 200px;
+}
+
+@media
+screen
+{
+
+fieldset {
+    border: 2px dashed #6FCADE;
+    background: white;
+    color: #333;
+}
+
+legend {
+    color: navy;
+    font-weight: bold;
+}
+
+input {
+    font-family: Verdana, sans-serif;
+    font-size: 8pt;
+    color: white;
+    background-color: navy;
+    font-weight: bold;
+}
+
+select {
+    font-family: Verdana, sans-serif;
+    font-size: 10pt;
+    color: white;
+    background-color: navy;
+    font-weight: bold;
+}
+
+#searchbox {
+    font-family: Verdana, sans-serif;
+    font-size: 10pt;
+    color: black;
+    background-color: white;
+}
+
+}
