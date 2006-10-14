@@ -43,6 +43,10 @@ import javax.servlet.ServletContextListener;
  * User: laffer1
  * Date: Mar 11, 2006
  * Time: 11:23:55 AM
+ *
+ * @author Lucas Holt
+ * @version $Id: MailServletContextListener.java,v 1.5 2006/10/14 00:29:03 laffer1 Exp $
+ * @since 1.0
  */
 public class MailServletContextListener
         implements ServletContextListener {
