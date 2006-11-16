@@ -91,8 +91,8 @@ public class AddLink extends Protected {
                 ul.setUri(uri);
                 ul.setUserId(this.currentLoginId());
 
-                if (!dao.add(ul)) ;
-                addError("Add Link", "Error adding link.");
+                if (!dao.add(ul))
+                    addError("Add Link", "Error adding link.");
             }
             catch (Exception e) {
                 addError("Add Link", "Could not add the link.");
