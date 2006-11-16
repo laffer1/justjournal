@@ -44,7 +44,7 @@ import sun.jdbc.rowset.CachedRowSet;
  * userName.
  *
  * @author Lucas Holt
- * @version $Id: User.java,v 1.10 2006/08/02 13:35:01 laffer1 Exp $
+ * @version $Id: User.java,v 1.11 2006/11/16 19:10:38 laffer1 Exp $
  *          Date: Jan 4, 2004
  *          Time: 9:59:35 PM
  * @since 1.0
@@ -65,6 +65,8 @@ public final class User {
 
     private String emailAddress = "";
     private boolean showAvatar = false;
+
+    private String journalName = "";
 
     public User(final String userName) throws Exception {
         setUserName(userName);
@@ -91,6 +93,11 @@ public final class User {
                     this.styleUrl = RS.getString("cssurl");
 
                 this.emailAddress = RS.getString("email");
+
+                if (RS.getString("journal_name") == null)
+                    this.journalName = "";
+                else
+                    this.journalName = RS.getString("journal_name");
 
                 if (RS.getInt("since") > 2003)
                     startYear = RS.getInt("since");
@@ -133,9 +140,23 @@ public final class User {
 
             if (RS.next()) {
                 this.styleId = RS.getInt("style");
-                this.styleDoc = RS.getString("cssdoc");
-                this.styleUrl = RS.getString("cssurl");
+
+                if (RS.getString("cssdoc") == null)
+                    this.styleDoc = "";
+                else
+                    this.styleDoc = RS.getString("cssdoc");
+
+                if (RS.getString("cssurl") == null)
+                    this.styleUrl = "";
+                else
+                    this.styleUrl = RS.getString("cssurl");
+
                 this.emailAddress = RS.getString("email");
+
+                if (RS.getString("journal_name") == null)
+                    this.journalName = "";
+                else
+                    this.journalName = RS.getString("journal_name");
 
                 if (RS.getInt("since") > 2003)
                     startYear = RS.getInt("since");
@@ -392,7 +413,10 @@ public final class User {
      * @return journal title
      */
     public String getJournalName() {
-        return firstName + "'s Journal";
+        if (journalName.compareTo("") == 0)
+            journalName = firstName + "'s Journal";
+
+        return journalName;
     }
 
     public void recycle() {
@@ -405,5 +429,6 @@ public final class User {
         styleUrl = "";
         startYear = 2003;
         emailAddress = "";
+        journalName = "";
     }
 }

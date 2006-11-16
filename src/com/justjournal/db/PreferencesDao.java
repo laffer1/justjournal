@@ -101,7 +101,7 @@ public final class PreferencesDao {
         String sqlStatement =
                 "SELECT user.name As name, user.id As id, user.since as since, up.style As style, up.allow_spider, " +
                         "up.owner_view_only, st.url as cssurl, st.doc as cssdoc, uc.email as email, " +
-                        "up.show_avatar as show_avatar FROM user, user_pref As up, user_style as st, user_contact As uc " +
+                        "up.show_avatar as show_avatar, up.journal_name as journal_name FROM user, user_pref As up, user_style as st, user_contact As uc " +
                         "WHERE user.username='" + userName + "' AND user.id = up.id AND user.id=st.id AND user.id=uc.id LIMIT 1;";
 
         try {
