@@ -33,7 +33,7 @@
     <h3>Change Password</h3>
 
     <div style="width: 700px; padding: 5px; margin: 0">
-        <form name="frmPasswd" method="post" action="changepass">
+        <form name="frmPasswd" method="post" action="changepass.h">
             <fieldset>
                 <legend><strong>Account Password</strong><br/></legend>
 
