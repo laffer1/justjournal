@@ -44,7 +44,7 @@ import sun.jdbc.rowset.CachedRowSet;
  * userName.
  *
  * @author Lucas Holt
- * @version $Id: User.java,v 1.11 2006/11/16 19:10:38 laffer1 Exp $
+ * @version $Id: User.java,v 1.12 2006/11/22 02:46:08 laffer1 Exp $
  *          Date: Jan 4, 2004
  *          Time: 9:59:35 PM
  * @since 1.0
@@ -404,7 +404,7 @@ public final class User {
 
     public String toString() {
         return Integer.toString(userId) + "," + userName + "," + type +
-                "," + firstName + "," + startYear;
+                "," + firstName + "," + startYear + "," + journalName;
     }
 
     /**
