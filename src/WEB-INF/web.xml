@@ -119,6 +119,19 @@
         <servlet-class>com.justjournal.RecentBlogs</servlet-class>
     </servlet>
 
+    <servlet>
+        <display-name>Photo Album Image</display-name>
+        <servlet-name>AlbumImage</servlet-name>
+        <servlet-class>com.justjournal.AlbumImage</servlet-class>
+    </servlet>
+
+
+    <servlet>
+        <display-name>Journal Title</display-name>
+        <servlet-name>JournalTitle</servlet-name>
+        <servlet-class>com.justjournal.ctl.JournalTitle</servlet-class>
+    </servlet>
+
     <servlet-mapping>
         <servlet-name>dispatcher</servlet-name>
         <url-pattern>*.h</url-pattern>
@@ -182,6 +195,16 @@
     <servlet-mapping>
         <servlet-name>RecentBlogs</servlet-name>
         <url-pattern>/RecentBlogs</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>AlbumImage</servlet-name>
+        <url-pattern>/AlbumImage</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>JournalTitle</servlet-name>
+        <url-pattern>/prefs/JournalTitle</url-pattern>
     </servlet-mapping>
 
     <welcome-file-list>
