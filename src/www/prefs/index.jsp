@@ -33,6 +33,9 @@
     <h3>Journal</h3>
 
     <dl>
+        <dt><a href="title.jsp"><strong>Journal Title</strong></a></dt>
+        <dd>Change the name of your journal as seen at the top of it.</dd>
+
         <dt><a href="friends.jsp"><strong>Friends</strong></a></dt>
         <dd>Define who your friends are. This will effect who will appear on your friends page along with
             the security of your journal entries.</dd>
