@@ -138,7 +138,7 @@ public final class UserDao {
     public static final UserTo view(int userId) {
         UserTo user = new UserTo();
         CachedRowSet rs = null;
-        String sqlStmt = "SELECT username, name, since from user WHERE id='" + userId + "' Limit 1;";
+        String sqlStmt = "SELECT username, name, since FROM user WHERE id='" + userId + "' LIMIT 1;";
 
         try {
 
@@ -146,9 +146,9 @@ public final class UserDao {
 
             if (rs.next()) {
                 user.setId(userId);
-                user.setUserName(rs.getString(1)); // username
-                user.setName(rs.getString(2)); // first name
-                user.setSince(rs.getInt(3));
+                user.setUserName(rs.getString("username")); // username
+                user.setName(rs.getString("name")); // first name
+                user.setSince(rs.getInt("since"));
             }
 
             rs.close();
@@ -184,10 +184,10 @@ public final class UserDao {
             rs = SQLHelper.executeResultSet(sqlStmt);
 
             if (rs.next()) {
-                user.setId(rs.getInt(1));
+                user.setId(rs.getInt("id"));
                 user.setUserName(userName);
-                user.setName(rs.getString(2)); // first name
-                user.setSince(rs.getInt(3));
+                user.setName(rs.getString("name")); // first name
+                user.setSince(rs.getInt("since"));
             }
 
             rs.close();
