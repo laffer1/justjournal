@@ -1,7 +1,7 @@
 package com.justjournal.utility;
 
 /*---------------------------------------------------------------------------*\
-  $Id: HTMLUtil.java,v 1.5 2006/04/09 00:42:12 laffer1 Exp $
+  $Id: HTMLUtil.java,v 1.6 2006/11/24 18:42:49 laffer1 Exp $
   ---------------------------------------------------------------------------
   This software is released under a Berkeley-style license:
 
@@ -36,7 +36,7 @@ import java.util.regex.PatternSyntaxException;
  * Static class containing miscellaneous HTML-related utility methods.
  *
  * @author Copyright &copy; 2004 Brian M. Clapper
- * @version <tt>$Revision: 1.5 $</tt>
+ * @version <tt>$Revision: 1.6 $</tt>
  */
 public final class HTMLUtil {
     /*----------------------------------------------------------------------*\
@@ -300,6 +300,43 @@ public final class HTMLUtil {
         input = m.replaceAll("<a href=\"$1\">$1</a>");
         return input;
 
+    }
+
+    /**
+     * Determine the correct mime type to send for content type in an
+     * HTTP response for XHTML documents.
+     * <p/>
+     * Does not handle q values currently.
+     * <p/>
+     * Based on http://www.workingwith.me.uk/articles/scripting/mimetypes
+     *
+     * @param httpAccept The HTTP_ACCEPT HTTP Header for a request
+     * @param userAgent  The USER_AGENT HTTP Header for a request
+     * @return Correct XHTML mime type for the user agent.
+     */
+    public static String determineMimeType(String httpAccept, String userAgent) {
+
+        String mimeType = "text/html";
+        //String testpattern = "/application\\/html\\+xml;q=0(\\.[1-9]+)/i";
+
+        if (httpAccept == null)
+            httpAccept = "";
+
+        if (userAgent == null)
+            userAgent = "";
+
+        if (httpAccept.indexOf("application/xhtml+xml") > -1) {
+            // warning the q value is not checked.  This value
+            // determines how much the browser likes the match.
+            // 0 bad 1 good (range 0.0-1.0)
+            return "application/xhtml+xml";
+        } else if (userAgent.indexOf("W3C_Validator") > -1) {
+            // The W3C Validator does not advertise its support for
+            // the correct mime type.
+            return "application/xhtml+xml";
+        } else {
+            return mimeType;
+        }
     }
 }
 
