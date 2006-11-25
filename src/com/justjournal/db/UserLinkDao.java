@@ -21,8 +21,8 @@ public final class UserLinkDao {
      */
     public boolean add(final UserLinkTo link) {
 
-        final String sqlStmt = "Insert into user_link (id,title,uri) VALUES('"
-                + link.getUserId() + "','" + link.getTitle() + "','"
+        final String sqlStmt = "Insert into user_link (linkid,id,title,uri) VALUES('"
+                + link.getId() + "','" + link.getUserId() + "','" + link.getTitle() + "','"
                 + link.getUri() + "');";
 
         return dao.add(sqlStmt);
@@ -31,8 +31,8 @@ public final class UserLinkDao {
     public static boolean delete(final UserLinkTo link) {
         boolean noError = true;
         final String sqlStmt = "DELETE FROM user_link WHERE id='" + link.getUserId() +
-                "' AND uri='" + link.getUri() +
-                "' AND title='" + link.getTitle() + "' LIMIT 1;";
+                "' AND linkid='" + link.getId() +
+                "' LIMIT 1;";
 
         try {
             SQLHelper.executeNonQuery(sqlStmt);
@@ -51,7 +51,7 @@ public final class UserLinkDao {
             CachedRowSet rs = SQLHelper.executeResultSet(sql);
 
             while (rs.next()) {
-                links.add(new UserLinkTo(rs.getInt("id"),
+                links.add(new UserLinkTo(rs.getInt("linkid"), rs.getInt("id"),
                         rs.getString("title"), rs.getString("uri")));
 
             }
