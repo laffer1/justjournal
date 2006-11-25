@@ -35,6 +35,17 @@
 	<p id="mrss">
 		<a href="/users/$USER$/rss"><img src="/images/rss2.gif" alt="Journal RSS feed" /></a><br />
         <a href="/users/$USER$/subscriptions">RSS Reader</a>
+        <a style="padding-top: 20px; padding-bottom: 20px;"
+        href="http://my.msn.com/addtomymsn.armx?id=rss&amp;ut=http://www.justjournal.com/users/$USER$/rss"><img src="/images/rss_mymsn.gif" alt="Add to My MSN" /></a>
+        <br />
+		<a style="padding-top: 20px; padding-bottom: 20px;"
+		href="http://www.live.com/?add=http://www.justjournal.com/users/$USER$/rss"><img src="/images/rss_windowslive.gif" alt="Add to Windows Live" /></a>
+        <br />
+		<a style="padding-top: 20px; padding-bottom: 20px;"
+		href="http://add.my.yahoo.com/rss?url=http://www.justjournal.com/users/$USER$/rss"><img src="/images/rss_myyahoo.gif" alt="Add to My Yahoo§" /></a>
+        <br />
+		<a style="padding-top: 20px; padding-bottom: 20px;"
+		href="http://www.bloglines.com/sub/http://www.justjournal.com/users/$USER$/rss"><img src="/images/rss_bloglines.gif" alt="Add to Bloglines" /></a>
 	</p>
 	$RECENT_ENTRIES$
     </div>
