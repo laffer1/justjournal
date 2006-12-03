@@ -51,6 +51,7 @@
         function FCKeditor_OnComplete(editorInstance)
         {
             document.getElementById("aformat").checked = false;
+            document.getElementById("aformatrow").visibility = "hidden";
         }
     </script>
     <style type="text/css" media="all">
@@ -316,7 +317,7 @@
 			</span>
 </div>
 
-<div class="row">
+<div class="row" id="aformatrow">
 			<span class="formw"><input type="checkbox" name="aformat" id="aformat"
                                        value="checked" checked="checked"/>
 			<label for="aformat">auto-formatting</label>
