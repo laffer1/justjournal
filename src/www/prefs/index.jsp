@@ -52,8 +52,8 @@
         <dt><a href="subscriptions.jsp"><strong>Subscriptions</strong></a></dt>
         <dd>Control the RSS feeds displayed on your journal under subscriptions.</dd>
 
-        <dt><a href="../link/add.jsp"><strong>Add Links</strong></a></dt>
-        <dd>Add links to your journal.</dd>
+        <dt><a href="../link/index.jsp"><strong>Add/Delete Links</strong></a></dt>
+        <dd>Add or delete links on the side of your journal.</dd>
     </dl>
 
     <h3>Style</h3>
