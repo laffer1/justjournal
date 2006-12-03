@@ -125,11 +125,16 @@
         <servlet-class>com.justjournal.AlbumImage</servlet-class>
     </servlet>
 
-
     <servlet>
         <display-name>Journal Title</display-name>
         <servlet-name>JournalTitle</servlet-name>
         <servlet-class>com.justjournal.ctl.JournalTitle</servlet-class>
+    </servlet>
+
+    <servlet>
+        <display-name>Delete Link</display-name>
+        <servlet-name>DeleteLink</servlet-name>
+        <servlet-class>com.justjournal.ctl.DeleteLink</servlet-class>
     </servlet>
 
     <servlet-mapping>
@@ -205,6 +210,11 @@
     <servlet-mapping>
         <servlet-name>JournalTitle</servlet-name>
         <url-pattern>/prefs/JournalTitle</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>DeleteLink</servlet-name>
+        <url-pattern>/link/DeleteLink</url-pattern>
     </servlet-mapping>
 
     <welcome-file-list>
