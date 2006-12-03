@@ -34,18 +34,120 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.ctl;
 
-/**
- * User: laffer1
- * Date: Dec 28, 2005
- * Time: 2:03:33 PM
- */
-public class DeleteLink extends Protected {
+import com.justjournal.JustJournalBaseServlet;
+import com.justjournal.WebError;
+import com.justjournal.User;
+import com.justjournal.utility.FileIO;
+import com.justjournal.db.UserLinkDao;
+import com.justjournal.db.UserLinkTo;
+import org.apache.log4j.Category;
 
-    public String getMyLogin() {
-        return this.currentLoginName();
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+/**
+ * Delete a user link as displayed on the users journal.
+ *
+ * @author Lucas Holt
+ * @version $Id: DeleteLink.java,v 1.4 2006/12/03 03:10:01 laffer1 Exp $
+ */
+public class DeleteLink extends JustJournalBaseServlet {
+    private static Category log = Category.getInstance(DeleteLink.class.getName());
+
+    protected void execute(HttpServletRequest request, HttpServletResponse response, HttpSession session, StringBuffer sb) {
+        int linkId;
+        UserLinkDao dao = new UserLinkDao();
+        UserLinkTo link = new UserLinkTo();
+
+        // Retreive user id
+        Integer userIDasi = (Integer) session.getAttribute("auth.uid");
+        // convert Integer to int type
+        int userID = 0;
+        if (userIDasi != null) {
+            userID = userIDasi.intValue();
+        }
+
+        // Retreive username
+        String userName;
+        userName = (String) session.getAttribute("auth.user");
+
+        try {
+            linkId = Integer.parseInt(fixInput(request, "id"));
+        } catch (Exception e) {
+            /* todo: lookup parse exception name */
+            linkId = 0;
+
+            if (log.isDebugEnabled())
+                log.debug("Invalid link delete request " + e.getMessage());
+        }
+
+        if (linkId > 0) {
+            /* valid link id */
+            link.setUserId(userID);
+            link.setId(linkId);
+
+            if (dao.delete(link)) {
+                htmlOutput(sb, userName);
+            } else {
+                WebError.Display("Error", "Failed to delete link.", sb);
+                if (log.isDebugEnabled())
+                    log.debug("Failed to delete link. id=" + linkId +
+                            ", userId=" + userID);
+            }
+        } else {
+            /* invalid link id */
+            WebError.Display("Error", "Invalid link id.", sb);
+            if (log.isDebugEnabled())
+                log.debug("Failed to delete link. id=" + linkId +
+                        ", userId=" + userID);
+        }
     }
 
-    protected String insidePerform() throws Exception {
-        return SUCCESS;
+    private void htmlOutput(StringBuffer sb, String userName) {
+
+        try {
+            String template = FileIO.ReadTextFile("/home/jj/docs/journal_template.inc");
+            String loginMenu;
+            StringBuilder content = new StringBuilder();
+            User user = new User(userName);
+
+            content.append("\t\t<h2>Preferences</h2>");
+            content.append(endl);
+            content.append("\t<p>You are logged in as <a href=\"/users/").append(userName).append("\"><img src=\"/images/userclass_16.png\" alt=\"user\" />").append(userName).append("</a>.</p>");
+            content.append(endl);
+            content.append("\t<h3>Delete Link</h3>");
+            content.append(endl);
+            content.append("\t<p>The link has been deleted.</p>");
+            content.append(endl);
+            content.append("\t<p><a href=\"/prefs/index.jsp\">Return to preferences.</a></p>");
+            content.append(endl);
+
+            // User is logged in.. give them the option to log out.
+            loginMenu = ("\t\t<a href=\"/prefs/index.jsp\">Preferences</a><br />");
+
+            loginMenu += ("\t\t<a href=\"/logout.jsp\">Log Out</a>");
+
+            template = template.replaceAll("\\$JOURNAL_TITLE\\$", user.getJournalName());
+            template = template.replaceAll("\\$USER\\$", userName);
+            template = template.replaceAll("\\$USER_STYLESHEET\\$", user.getStyleId() + ".css");
+            template = template.replaceAll("\\$USER_STYLESHEET_ADD\\$", user.getStyleDoc());
+            if (user.showAvatar()) {
+                String av = "\t\t<img alt=\"avatar\" src=\"/image?id="
+                        + user.getUserId() + "\"/>";
+                template = template.replaceAll("\\$USER_AVATAR\\$", av);
+            } else
+                template = template.replaceAll("\\$USER_AVATAR\\$", "");
+            template = template.replaceAll("\\$RECENT_ENTRIES\\$", "");
+            template = template.replaceAll("\\$LOGIN_MENU\\$", loginMenu);
+            template = template.replaceAll("\\$CONTENT\\$", content.toString());
+            sb.append(template);
+        } catch (Exception e) {
+            WebError.Display("Internal Error", "Error dislaying page. " + e.getMessage(), sb);
+        }
+    }
+
+    public String getServletInfo() {
+        return "Delete user link.";
     }
 }
