@@ -37,7 +37,7 @@
     %>
     <jsp:include page="../prefs/inc_login.jsp" flush="false"/>
 
-    <div style="width: 700px; padding: 5px; margin: 0;">
+    <div style="width: 500px; padding: 5px; margin: 0;">
         <form name="frmAddLinks" method="post" action="addsubmit.h">
             <fieldset>
                 <legend><strong>Link Information</strong><br/></legend>
@@ -52,9 +52,9 @@
                     <span class="formw"><input type="text" name="uri" id="uri" size="20" maxlength="255"/></span>
                 </div>
 
+                <!-- Hack to fix spacing problem.. especially with text boxes -->
+                <div class="spacer">&nbsp;</div>
             </fieldset>
-            <!-- Hack to fix spacing problem.. especially with text boxes -->
-            <div class="spacer">&nbsp;</div>
 
             <div class="row"><span class="formw"><input type="submit" name="submit" value="Add Link"/></span></div>
 

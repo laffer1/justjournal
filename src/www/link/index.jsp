@@ -67,7 +67,7 @@
                            title="<%=o.getTitle()%>"><%=o.getTitle()%></a>
                     </td>
                     <td>
-                        <a href="delete.h?<%=o.getId()%>" title="Delete Link">Delete</a>
+                        <a href="DeleteLink?<%=o.getId()%>" title="Delete Link">Delete</a>
 
                     </td>
                 </tr>
