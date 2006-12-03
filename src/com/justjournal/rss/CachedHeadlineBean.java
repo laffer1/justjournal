@@ -49,22 +49,16 @@ import java.net.URL;
 /**
  * Stores RSS content collected from the internet into a datastore,
  * retrieves stored versions, and spits out HTML to render them.
- * <p/>
- * Created by IntelliJ IDEA.
- * User: laffer1
- * Date: Apr 27, 2005
- * Time: 8:15:45 PM
  *
  * @author Lucas Holt
- * @version 1.4
- * @since 1.2
- *        <p/>
- *        1.4 Attempt to catch case were RSS record content is empty in database.
- *        1.3 Added sun fix to correct sun.com rss feeds (rss .92 issue?)
- *        xml declaration was missing in feed and whitespace at front.
- *        1.2 Fixed bug where records might not get updated.
- *        1.1 optimized code
- *        1.0 Initial release
+ * @version $Id: CachedHeadlineBean.java,v 1.4 2006/12/03 19:36:17 laffer1 Exp $
+ *          <p/>   Previously version was incremented manually.
+ *          1.4 Attempt to catch case were RSS record content is empty in database.
+ *          1.3 Added sun fix to correct sun.com rss feeds (rss .92 issue?)
+ *          xml declaration was missing in feed and whitespace at front.
+ *          1.2 Fixed bug where records might not get updated.
+ *          1.1 optimized code
+ *          1.0 Initial release
  */
 public final class CachedHeadlineBean
         extends HeadlineBean {
