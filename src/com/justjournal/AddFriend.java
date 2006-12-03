@@ -57,7 +57,7 @@ import java.io.IOException;
  * Adds a friend to the Users list for their friends page
  *
  * @author Caryn Holt, Lucas Holt
- * @version $Id: AddFriend.java,v 1.6 2006/07/28 14:01:06 laffer1 Exp $
+ * @version $Id: AddFriend.java,v 1.7 2006/12/03 19:33:13 laffer1 Exp $
  * @since 1.0
  */
 public final class AddFriend extends JustJournalBaseServlet {
@@ -121,7 +121,7 @@ public final class AddFriend extends JustJournalBaseServlet {
             // check if error condition is false
             if (!error) {
                 // query Users table for user id
-                String sqlStatement = "SELECT * FROM user where username='" + friends[i] + "' LIMIT 1;";
+                String sqlStatement = "SELECT id FROM user where username='" + friends[i] + "' LIMIT 1;";
                 int friendID = 0;
                 try {
                     CachedRowSet record;
