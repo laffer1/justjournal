@@ -38,7 +38,6 @@ import com.justjournal.WebLogin;
 import org.apache.log4j.Category;
 
 /**
- * Created by IntelliJ IDEA.
  * User: laffer1
  * Date: Mar 30, 2005
  * Time: 4:37:00 PM
