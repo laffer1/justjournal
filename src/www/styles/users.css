@@ -1,4 +1,4 @@
-/* Mini calendar and calendar styles */
+/* Mini calendar, calendar, and RSS styles */
 .minicalendar {
     border: thin solid gray;
     font-size: .8em;
@@ -49,4 +49,70 @@
 .fullcalendarsub {
     background: #F2F2F2;
     text-align: center;
+}
+
+/* RSS Feed Reader/Subscription */
+
+.RssItems {
+
+}
+
+.RssItem {
+    margin: 1em 0 1.5em 3.5em;
+    padding: 10px;
+    padding-bottom: 1.5em;
+}
+
+.RssItemTitle {
+    font-size: 1.2em;
+    line-height: 1.5;
+    background-color: #F2F2F2;
+    color: black;
+    padding: 5px;
+    -moz-border-radius: 10%;
+    -moz-opacity: .75;
+}
+
+.RssItemTitle:hover {
+    color: white;
+    background-color: black;
+}
+
+.RssItemTitle a, .RssItemTitle a:visited, .RssItemTitle a:link {
+    color: gray;
+    font-weight: bold;
+    text-decoration: none;
+    background: transparent;
+}
+
+.RssItemTitle a:hover {
+    color: silver;
+    background: transparent;
+    text-decoration: none;
+}
+
+.RssItemPubDate {
+    font-size: 10px;
+    display: block;
+    float: left;
+    color: gray;
+    margin-top: .2em;
+}
+
+.RssItemDesc {
+    font-size: 10px;
+    line-height: 1.5;
+    color: black;
+    margin: 1em 0 0 0;
+    padding: 0;
+}
+
+.RssReadMore {
+    display: block;
+    clear: both;
+}
+
+.RssTechnoratiTrack {
+    display: block;
+    float: right;
 }

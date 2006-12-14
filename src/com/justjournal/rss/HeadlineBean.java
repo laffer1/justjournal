@@ -42,6 +42,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.InputStream;
 import java.net.URL;
+import java.net.URI;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -50,12 +51,13 @@ import java.util.regex.Pattern;
  * converts it to HTML.
  *
  * @author Lucas Holt
- * @version 1.4
+ * @version $Id: HeadlineBean.java,v 1.4 2006/12/14 05:49:42 laffer1 Exp $
  * @since 1.0
  *        User: laffer1
  *        Date: Jul 22, 2003
  *        Time: 12:19:17
  *        <p/>
+ *        Switch to cvs versioning.
  *        1.4 Fixed bugs when certain rss features are missing.
  *        1.3 now supports several RSS 2 features (non rdf format)
  *        1.2 added several properties to the output including
@@ -105,7 +107,7 @@ public class HeadlineBean {
 
             String contentTitle = "";
             String contentLink = "";
-            // String contentDescription = "";
+            String contentDescription = "";
             String contentLastBuildDate = "";
             String contentGenerator = "";
 
@@ -131,8 +133,8 @@ public class HeadlineBean {
                     contentTitle = curNode.getChildNodes().item(0).getNodeValue();
                 } else if (curNode.getNodeName().equals("link")) {
                     contentLink = curNode.getChildNodes().item(0).getNodeValue();
-                    //} else if (curNode.getNodeName().equals("description")) {
-                    //    contentDescription = curNode.getChildNodes().item(0).getNodeValue();
+                } else if (curNode.getNodeName().equals("description")) {
+                    contentDescription = curNode.getChildNodes().item(0).getNodeValue();
                 } else if (curNode.getNodeName().equals("lastBuildDate")) {
                     contentLastBuildDate = curNode.getChildNodes().item(0).getNodeValue();
                 } else if (curNode.getNodeName().equals("generator")) {
@@ -170,11 +172,18 @@ public class HeadlineBean {
             sb.append(endl);
 
             if (imageUrl != null) {
-                sb.append("<span style=\"padding: 5px; float:left; width:");
-                sb.append(imageWidth);
-                sb.append("px; height:");
-                sb.append(imageHeight);
-                sb.append("px; position: relative;\">");
+                sb.append("<span style=\"padding: 5px; float:left; ");
+                if (imageWidth != null && Integer.parseInt(imageWidth) > 0) {
+                    sb.append("width:");
+                    sb.append(imageWidth);
+                    sb.append("px; ");
+                }
+                if (imageHeight != null && Integer.parseInt(imageHeight) > 0) {
+                    sb.append("height:");
+                    sb.append(imageHeight);
+                    sb.append("px; ");
+                }
+                sb.append("position: relative;\">");
 
                 sb.append("<a href=\"");
                 sb.append(imageLink);
@@ -182,24 +191,36 @@ public class HeadlineBean {
 
                 sb.append("<img src=\"");
                 sb.append(imageUrl);
-                sb.append("\" height=\"");
-                sb.append(imageHeight);
-                sb.append("\" width=\"");
-                sb.append(imageWidth);
+                if (imageHeight != null && imageWidth != null
+                        && Integer.parseInt(imageWidth) > 0 && Integer.parseInt(imageHeight) > 0) {
+                    // Only add height and width attributes if they are defined in the feed.
+                    sb.append("\" height=\"");
+                    sb.append(imageHeight);
+                    sb.append("\" width=\"");
+                    sb.append(imageWidth);
+                }
                 sb.append("\" alt=\"");
+                sb.append(imageTitle);
+                sb.append("\" title=\"");
                 sb.append(imageTitle);
                 sb.append("\" /></a></span>");
                 sb.append(endl);
             }
 
-            sb.append("<h3>");
+            sb.append("<h3 ");
+            if (contentDescription != null) {
+                sb.append("title=\"");
+                sb.append(contentDescription);
+                sb.append("\"");
+            }
+            sb.append(">");
             sb.append(contentTitle);
             sb.append("</h3>");
             sb.append(endl);
 
             // some rss feeds don't have a last build date
             if (contentLastBuildDate != null && contentLastBuildDate.length() > 0) {
-                sb.append("<p>last build date: ");
+                sb.append("<p>Updated: ");
                 sb.append(contentLastBuildDate);
                 sb.append("<br />");
             } else {
@@ -212,7 +233,7 @@ public class HeadlineBean {
             }*/
 
             if (contentLink != null) {
-                sb.append("<a href=\"").append(contentLink).append("\">source</a>");
+                sb.append("<a href=\"").append(contentLink).append("\">[" + contentLink + "]</a>");
             }
             sb.append("</p>");
             sb.append(endl);
@@ -227,7 +248,7 @@ public class HeadlineBean {
             //Generate the NodeList;
             org.w3c.dom.NodeList nodeList = document.getElementsByTagName("item");
 
-            sb.append("<ul class=\"RssItems\">");
+            sb.append("<ol class=\"RssItems\">");
             sb.append(endl);
 
             for (int i = 0; i < nodeList.getLength() && i < 16; i++) {
@@ -258,9 +279,10 @@ public class HeadlineBean {
 
                 // assert the basic properties are there.
                 if (link != null && title != null) {
-                    sb.append("<li>");
+                    sb.append("<li class=\"RssItem\">");
 
-                    sb.append("<span class=\"RssItemTitle\">");
+                    sb.append("<span onclick=\"expandcontent(this, 'r").append(url.hashCode()).append("_").append(i).append("')\" class=\"RssItemTitle\">");
+                    sb.append("<span class=\"showstate\"></span> ");
                     sb.append("<a href=\"");
                     sb.append(link);
                     sb.append("\" title=\"");
@@ -268,14 +290,10 @@ public class HeadlineBean {
                     sb.append("\" >");
                     sb.append(Xml.cleanString(title));
                     sb.append("</a>");
-                    sb.append("</span> ");
+                    sb.append("</span>");
+                    sb.append(endl);
 
-                    // some rss versions don't have a pub date per entry
-                    if (pubDate != null) {
-                        sb.append(" <br /><span class=\"RssItemPubDate\">");
-                        sb.append(pubDate);
-                        sb.append("</span> ");
-                    }
+                    sb.append("<div id=\"r").append(url.hashCode()).append("_").append(i).append("\" class=\"switchcontent\">");
 
                     sb.append("<br />");
                     sb.append("<span class=\"RssItemDesc\">");
@@ -289,18 +307,37 @@ public class HeadlineBean {
                     sb.append(result);
                     sb.append("</span>");
 
-                    sb.append("<span class=\"RssReadMore\"><a href=\"");
+                    sb.append(" <span class=\"RssReadMore\">");
                     sb.append("<a href=\"");
-                    sb.append(guid);
+                    sb.append(link); // TODO: was guid ... why
                     sb.append("\">");
                     sb.append("Read More</a></span>");
+                    sb.append(endl);
+
+                    // some rss versions don't have a pub date per entry
+                    if (pubDate != null) {
+                        sb.append(" <br /><span class=\"RssItemPubDate\">");
+                        sb.append(pubDate);
+                        sb.append("</span>");
+                        sb.append(endl);
+                    }
+
+                    sb.append("<div class=\"RssTechnoratiTrack\"><a title=\"Technorati Trackback\"");
+                    sb.append(" href=\"http://www.technorati.com/cosmos/search.html?url=");
+                    sb.append(link);
+                    sb.append("\"><img src=\"/images/technorati.gif\" alt=\"Technorati Logo\" /></a>");
+                    sb.append("</div>");
+                    sb.append(endl);
+
+                    sb.append("</div>");
+                    sb.append(endl);
 
                     sb.append("</li>");
                     sb.append(endl);
                 }
             }
 
-            sb.append("</ul>");
+            sb.append("</ol>");
             sb.append(endl);
 
             return sb.toString();
