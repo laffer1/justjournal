@@ -494,11 +494,11 @@ public final class EntryDAO {
         instead do 1:1 on user:auth user
         */
 
-        if (aUserId > 0)
+        if (aUserId > 0 && (userID == aUserId))
             sqlStatement =
                     new StringBuffer().append("SELECT friends.friendid As id, us.username, eh.date as date, eh.subject as subject, eh.music, eh.body, eh.security, eh.autoformat, eh.allow_comments, eh.email_comments, mood.title as mood, mood.id as moodid, location.id as locid, location.title as location, eh.id As entryid FROM user as us, entry as eh, mood, location, friends WHERE friends.id='").append(userID).append("' AND friends.friendid = eh.uid AND mood.id=eh.mood AND location.id=eh.location AND friends.friendid=us.id AND (eh.security=2 OR (eh.security=1 AND friends.friendid IN (SELECT friendid FROM friends WHERE friends.id='").append(userID).append("')) ) ORDER by eh.date DESC LIMIT 0,15;").toString();
-        else if (aUserId == 0)
-            // no user logged in.. just spit out public entries.
+        else if (aUserId >= 0)
+            // no user logged in or another user's friends page.. just spit out public entries.
             sqlStatement =
                     new StringBuffer().append("SELECT friends.friendid As id, us.username, eh.date as date, eh.subject as subject, eh.music, eh.body, eh.security, eh.autoformat, eh.allow_comments, eh.email_comments, mood.title as mood, mood.id as moodid, location.id as locid, location.title as location, eh.id As entryid FROM user as us, entry as eh, mood, location, friends WHERE friends.id='").append(userID).append("' AND friends.friendid = eh.uid AND mood.id=eh.mood AND location.id=eh.location AND friends.friendid=us.id AND eh.security=2 ORDER by eh.date DESC LIMIT 0,15;").toString();
         else
