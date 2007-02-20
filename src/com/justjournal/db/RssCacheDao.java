@@ -160,6 +160,7 @@ public final class RssCacheDao {
             }
 
             RS.close();
+            RS = null;
         } catch (Exception e1) {
             if (log.isDebugEnabled())
                 log.debug("SQL Query is: " + sqlStatement);
