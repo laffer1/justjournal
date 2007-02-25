@@ -235,4 +235,32 @@ public final class UserDao {
         return users;
     }
 
+    /**
+     * Retrieve the last five users to sign up.
+     * @return collection of UserTo's. 
+     */
+     public static final Collection<UserTo> newUsers() {
+        ArrayList<UserTo> users = new ArrayList<UserTo>(5);
+        UserTo usr;
+        final String sqlStatement = "SELECT * FROM user ORDER by id DESC Limit 0,5;";
+
+        try {
+            final CachedRowSet RS = SQLHelper.executeResultSet(sqlStatement);
+
+            while (RS.next()) {
+                usr = new UserTo();
+                usr.setId(RS.getInt(1));
+                usr.setUserName(RS.getString(2));
+                usr.setName(RS.getString(3));
+                usr.setSince(RS.getInt(4));
+                users.add(usr);
+            }
+
+            RS.close();
+        } catch (Exception e1) {
+
+        }
+
+        return users;
+    }
 }
