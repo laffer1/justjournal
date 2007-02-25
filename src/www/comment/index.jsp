@@ -3,6 +3,10 @@
 <%@ page import="com.justjournal.utility.StringUtil" %>
 <%@ page import="java.util.Collection" %>
 <%@ page import="java.util.Iterator" %>
+<%@ page import="com.justjournal.utility.Xml" %>
+<%--
+Displays user comments on a particular journal entry.
+--%>
 <%
     int eid;
     boolean nopermission = false;
@@ -13,7 +17,7 @@
         eid = 0;
     }
 
-    if (eid == 0) {
+    if (eid <= 0) {
         response.reset();
         response.sendError(500, "bad entry id");
         response.flushBuffer();
@@ -23,18 +27,42 @@
 
     Collection comments = CommentDao.view(eid);
 
-    EntryTo entry = EntryDAO.viewSingle(eid, false);
+    EntryTo entry = EntryDAO.viewSingle(eid, true);
 
-    User pf = new User(entry.getUserName());
-
-    // user wants it private, has comments disabled for this entry
-    // or the security level is private.
-    if (pf.isPrivateJournal() ||
-            !entry.getAllowComments() ||
-            entry.getSecurityLevel() == 0) {
-        entry = new EntryTo();
-        nopermission = true;
+    User pf;
+    try {
+        pf = new User(entry.getUserName());
+    } catch (Exception e) {
+        response.reset();
+        response.sendError(500, "Error loading entry owner preferences.");
+        response.flushBuffer();
+        return;
     }
+
+    /* Error retrieving user preferences. */
+    if (pf == null)
+        nopermission = true;
+
+    /* Entry owner wants a private journal. */
+    if (pf != null && pf.isPrivateJournal())
+        nopermission = true;
+
+    /* Entry owner doesn't want comments on this entry. */
+    if (entry != null && !entry.getAllowComments())
+        nopermission = true;
+
+    /* Entry is private */
+    if (entry != null && entry.getSecurityLevel() == 0)
+        nopermission = true;
+
+    /* Strange error.  Entry is garbage */
+    if (entry.getUserId() == 0)
+        nopermission = true;
+
+    /* non-Entry owner is viewing a friends entry */
+    if ((aUser == null || !aUser.equalsIgnoreCase(entry.getUserName())) &&
+            entry.getSecurityLevel() == 1)
+        nopermission = true;
 %>
 <?xml version="1.0" encoding="iso-8859-1"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -43,7 +71,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-    <title><%=entry.getUserName()%>: <%=entry.getSubject()%></title>
+    <title>
+        <% if (!(nopermission)) { %>
+        <%=entry.getUserName()%>: <%=entry.getSubject()%>
+        <% } %>
+    </title>
     <link rel="stylesheet" type="text/css" href="../layout.css" media="all"/>
     <link rel="stylesheet" type="text/css" href="../font-normal.css" media="all"/>
     <link rel="home" title="Home" href="../index.jsp"/>
@@ -57,74 +89,112 @@
 
 <div id="content">
 
-    <jsp:include page="../inc_login.jsp" flush="false"/>
+<jsp:include page="../inc_login.jsp" flush="false"/>
 
-    <% if (nopermission) { %>
-    <p>The entry is private or does not allow comments.</p>
-    <% } else { %>
+<% if (nopermission) { %>
+<h2>Error</h2>
 
-    <p>
-        <img src="../images/userclass_16.png" alt="user"/><a href="../users/<%=entry.getUserName()%>"
-                                                             title="<%=entry.getUserName()%>">
-        <%=entry.getUserName()%></a>
+<p>The entry is private or does not allow comments.</p>
+<% } else { %>
 
-        <% DateTime dte = entry.getDate(); %>
-        wrote @ <%=dte.toPubDate()%>
-    </p>
+<p>
+    <img src="../images/userclass_16.png" alt="user"/><a href="../users/<%=entry.getUserName()%>"
+                                                         title="<%=entry.getUserName()%>"><%=entry.getUserName()%></a>
 
-    <h3><%=entry.getSubject()%></h3>
-    <%
+    <% DateTime dte = entry.getDate(); %>
+    wrote on <%=dte.toPubDate()%>
+</p>
 
-        if (entry.getAutoFormat()) {
-            String tmpBody = entry.getBody();
+<h3><%=entry.getSubject()%></h3>
+<%
+
+    if (entry.getAutoFormat()) {
+        String tmpBody = entry.getBody();
+%>
+<p>
+    <% if (tmpBody.indexOf("\n") > -1) { %>
+    <%=(StringUtil.replace(tmpBody, '\n', "<br />"))%>
+    <% } else if (entry.getBody().indexOf("\r") > -1) { %>
+    <%=(StringUtil.replace(tmpBody, '\r', "<br />"))%>
+    <% } else {
+        // we do not have any "new lines" but it might be
+        // one long line.
     %>
-    <p>
-        <% if (tmpBody.indexOf("\n") > -1) { %>
-        <%=(StringUtil.replace(tmpBody, '\n', "<br />"))%>
-        <% } else if (entry.getBody().indexOf("\r") > -1) { %>
-        <%=(StringUtil.replace(tmpBody, '\r', "<br />"))%>
-        <% } else {
-            // we do not have any "new lines" but it might be
-            // one long line.
-        %>
-        <%=tmpBody%>
-        <% } %>
-    </p>
-    <% } else { %>
-    <%=entry.getBody()%>
+    <%=tmpBody%>
+    <% } %>
+</p>
+<% } else { %>
+<%=entry.getBody()%>
+<% } %>
+
+<p>
+
+    <% if (entry.getSecurityLevel() == 0) { %>
+    <span class="security">security:
+    <img src="../img/icon_private.gif" alt="private"/> private
+    </span><br/>
+    <% } else if (entry.getSecurityLevel() == 1) { %>
+    <span class="security">security:
+    <img src="../img/icon_protected.gif" alt="friends"/>
+    friends
+    </span><br/>
     <% } %>
 
-    <div class="commentcount">
-        <%=entry.getCommentCount()%> comments
-    </div>
+    <% if (entry.getLocationId() > 0) { %>
+    <span class="location">location:
+    <%=entry.getLocationName()%>
+    </span><br/>
+    <% } %>
 
-    <div class="rightflt">
-        <a href="add.jsp?id=<%=eid%>" title="Add Comment">Add Comment</a>
-    </div>
+    <% if (entry.getMoodName().length() > 0 && entry.getMoodId() != 12) { %>
+    <% final EmoticonTo emoto = EmoticonDao.view(1, entry.getMoodId()); %>
+    <span class="mood">mood: <img src="../images/emoticons/1/<%=emoto.getFileName()%>"
+                                  width="<%=emoto.getWidth()%>"
+                                  height="<%=emoto.getHeight()%>"
+                                  alt="<%=entry.getMoodName()%>"/>
+    <%=entry.getMoodName()%>
+    </span><br/>
+    <% } %>
 
-    <%
-        CommentTo o;
-        final Iterator itr = comments.iterator();
+    <% if (entry.getMusic().length() > 0) { %>
+    <span class="music">music:
+    <%=Xml.cleanString(entry.getMusic())%>
+    </span><br/>
+    <% } %>
 
-        for (int i = 0, n = comments.size(); i < n; i++) {
-            o = (CommentTo) itr.next();
+</p>
 
-    %>
-    <div class="comment">
+<div class="commentcount">
+    <%=entry.getCommentCount()%> comments
+</div>
 
-        <div class="chead">
-            <h3><span class="subject"><%=o.getSubject()%></span></h3>
-            <img src="../images/userclass_16.png" alt="user"/>
-            <a href="../users/<%=o.getUserName()%>" title="<%=o.getUserName()%>">
-                <%=o.getUserName()%>
-            </a>
+<div class="rightflt">
+    <a href="add.jsp?id=<%=eid%>" title="Add Comment">Add Comment</a>
+</div>
 
-            <br/><span class="time"><%=o.getDate().toPubDate()%></span>
+<%
+    CommentTo o;
+    final Iterator itr = comments.iterator();
 
-            <%
-                if (aUser != null && aUser.equalsIgnoreCase(o.getUserName())) {
-            %>
-            <br/><span class="actions">
+    for (int i = 0, n = comments.size(); i < n; i++) {
+        o = (CommentTo) itr.next();
+
+%>
+<div class="comment">
+
+    <div class="chead">
+        <h3><span class="subject"><%=o.getSubject()%></span></h3>
+        <img src="../images/userclass_16.png" alt="user"/>
+        <a href="../users/<%=o.getUserName()%>" title="<%=o.getUserName()%>">
+            <%=o.getUserName()%>
+        </a>
+
+        <br/><span class="time"><%=o.getDate().toPubDate()%></span>
+
+        <%
+            if (aUser != null && aUser.equalsIgnoreCase(o.getUserName())) {
+        %>
+        <br/><span class="actions">
 				    <a href="edit.h?commentId=<%=o.getId()%>" title="Edit Comment">
                         <img src="../images/compose-message.png" alt="Edit Comment" width="24" height="24"/>
                     </a>
@@ -133,15 +203,15 @@
                         <img src="../images/stock_calc-cancel.png" alt="Delete Comment" width="24" height="24"/>
                     </a>
                     </span>
-            <% } %>
-        </div>
-
-        <p><%=o.getBody()%></p>
+        <% } %>
     </div>
-    <%
-            } // end for loop
-        } // end nopermission if
-    %>
+
+    <p><%=o.getBody()%></p>
+</div>
+<%
+        } // end for loop
+    } // end nopermission if
+%>
 </div>
 
 <jsp:include page="../footer.inc" flush="false"/>
