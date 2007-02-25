@@ -44,7 +44,7 @@ import sun.jdbc.rowset.CachedRowSet;
  * userName.
  *
  * @author Lucas Holt
- * @version $Id: User.java,v 1.12 2006/11/22 02:46:08 laffer1 Exp $
+ * @version $Id: User.java,v 1.13 2007/02/25 02:39:00 laffer1 Exp $
  *          Date: Jan 4, 2004
  *          Time: 9:59:35 PM
  * @since 1.0
@@ -299,7 +299,7 @@ public final class User {
      */
     public void setFirstName(final String firstName) {
         if (firstName == null)
-            throw new IllegalArgumentException("first name can not bell null.");
+            throw new IllegalArgumentException("first name can not be null.");
 
         if (firstName.length() > 20)
             throw new IllegalArgumentException("first name can not be longer than 20 characters.");
