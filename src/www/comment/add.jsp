@@ -1,4 +1,9 @@
-<%@ page contentType="text/html; charset=iso-8859-1" language="java" import="null" %>
+<%@ page contentType="text/html; charset=iso-8859-1" language="java" %>
+<%--
+Form to add a journal entry.  Forwards the request to a servlet.
+
+$Id: add.jsp,v 1.2 2007/02/25 16:53:46 laffer1 Exp $
+--%>
 <%
     int eid;
 
@@ -8,7 +13,7 @@
         eid = 0;
     }
 
-// Get the session user input
+    // Get the session user input
     String sbody = (String) session.getAttribute("spell.cbody");
     String ssubject = (String) session.getAttribute("spell.csubject");
 
@@ -70,7 +75,7 @@
     <jsp:include page="../inc_login.jsp" flush="false"/>
 
     <div style="width: 500px; padding: 5px; margin: 0">
-        <form method="post" action="/addComment" name="frmAddComment">
+        <form method="post" action="../addComment" name="frmAddComment">
             <input type="hidden" name="id" value="<%=eid%>"/>
             <%
                 Integer userID = (Integer) session.getAttribute("auth.uid");
