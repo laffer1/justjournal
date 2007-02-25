@@ -6,6 +6,8 @@
 <%@ page import="com.justjournal.utility.Xml" %>
 <%--
 Displays user comments on a particular journal entry.
+
+$Id: index.jsp,v 1.3 2007/02/25 16:51:08 laffer1 Exp $
 --%>
 <%
     int eid;
