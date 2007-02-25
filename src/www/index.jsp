@@ -1,4 +1,8 @@
 <%@ page import="com.justjournal.core.Statistics" %>
+<%@ page import="com.justjournal.db.UserDao"%>
+<%@ page import="java.util.Collection"%>
+<%@ page import="java.util.Iterator"%>
+<%@ page import="com.justjournal.db.UserTo"%>
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <%@ page contentType="text/html; charset=utf-8" language="java" %>
@@ -151,6 +155,31 @@
             </tr>
         </table>
 
+         <table style="border: thin solid #F2F2F2;">
+             <caption>New Members</caption>
+<%
+    Collection users = UserDao.newUsers();
+    int i = 0;
+    for (java.util.Iterator iterator = users.iterator(); iterator.hasNext();) {
+        UserTo o = (UserTo) iterator.next();
+
+        if (i % 2 == 0) {
+%>
+
+            <tr style="font-size: 10px; background: #F2F2F2;">
+                <td><a href="users/<%=o.getUserName()%>"><%=o.getUserName()%></a></td>
+            </tr>
+<%      } else { %>
+            <tr style="font-size: 10px;">
+                <td><a href="users/<%=o.getUserName()%>"><%=o.getUserName()%></a></td>
+            </tr>
+<%
+        }
+        i++;
+    }
+%>
+        </table>
+
         <p><a href="RecentBlogs"><img src="images/rss2.gif" alt="Recent Blogs RSS"/></a></p>
     </div>
 
@@ -163,11 +192,11 @@
             entries for yourself, friends' entries to share with those close to you or public entries you wish to share
             with the Internet.</p>
 
-        <p style=" padding-bottom: 10px"><a href="create.jsp"><img src="images/jj_btn_create_an_account.gif"
+        <p style="padding-bottom: 10px"><a href="create.jsp"><img src="images/jj_btn_create_an_account.gif"
                                                                    alt="Create an account"/></a></p>
     </div>
 
-    <p style="clear: both;"></p>
+    <p style="clear: both;">&nbsp; </p>
 
     <div id="ticker"></div>
 
