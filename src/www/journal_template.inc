@@ -26,6 +26,7 @@
 		<a href="/users/$USER$/friends">Friends</a><br />
 		<a href="/favorite/view.h">Favorites</a><br />
 		<a href="/users/$USER$/ljfriends">LJ Friends</a><br />
+		<a href="/users/$USER$/pictures">Pictures</a><br />
 		<a href="/profile.jsp?user=$USER$">Profile</a><br />
 	</p>
 	<p id="mgen">
