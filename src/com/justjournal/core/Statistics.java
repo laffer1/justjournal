@@ -36,15 +36,18 @@ package com.justjournal.core;
 
 import com.justjournal.db.SQLHelper;
 import sun.jdbc.rowset.CachedRowSet;
+import org.apache.log4j.Category;
 
 /**
  * Track the number of users, entry and comment statistics, and
  * other information.
  *
  * @author Lucas Holt
- * @version $Id: Statistics.java,v 1.2 2006/10/14 00:30:15 laffer1 Exp $
+ * @version $Id: Statistics.java,v 1.3 2007/03/21 01:39:11 laffer1 Exp $
  */
 public class Statistics {
+
+    private static Category log = Category.getInstance(Statistics.class.getName());
 
     /**
      * Determine the number of users registered.
@@ -64,7 +67,7 @@ public class Statistics {
 
             rs.close();
         } catch (Exception e) {
-
+            log.error("users(): " + e.getMessage());
         }
 
         return count;
@@ -76,22 +79,55 @@ public class Statistics {
      * @return The number of entries or -1 on error.
      */
     public int entries() {
-        int count = -1;
         String sql = "SELECT count(*) FROM entry;";
 
-        try {
-            CachedRowSet rs = SQLHelper.executeResultSet(sql);
+        return sqlCount(sql);
+    }
 
-            if (rs.next()) {
-                count = rs.getInt(1);
-            }
+    /**
+     * Percentage of public entries as compared to total.
+     * @return public entries as %
+     */
+    public int publicEntries() {
+        int percent;
+        String sql = "SELECT count(*) FROM entry WHERE security='2';";
 
-            rs.close();
-        } catch (Exception e) {
+        percent = (int)(((float)sqlCount(sql) / (float)entries()) * 100);
 
-        }
+        if (log.isDebugEnabled())
+            log.debug("publicEntries(): percent is " + percent);
 
-        return count;
+        return percent;
+    }
+
+    /**
+     * Percentage of friends entries as compared to total.
+     * @return friends entries as %
+     */
+    public int friendsEntries() {
+        int percent;
+        String sql = "SELECT count(*) FROM entry WHERE security='1';";
+        percent = (int) (((float)sqlCount(sql) / (float)entries()) * 100);
+
+        if (log.isDebugEnabled())
+            log.debug("friendsEntries(): percent is " + percent);
+
+        return percent;
+    }
+
+    /**
+     * Percentage of private entries as compared to total.
+     * @return private entries as %
+     */
+    public int privateEntries() {
+        int percent;
+        String sql = "SELECT count(*) FROM entry WHERE security='0';";
+        percent = (int) (((float)sqlCount(sql) / (float)entries()) * 100);
+
+        if (log.isDebugEnabled())
+            log.debug("privateEntries(): percent is " + percent);
+
+        return percent;
     }
 
     /**
@@ -100,22 +136,9 @@ public class Statistics {
      * @return The number of comments or -1 on error.
      */
     public int comments() {
-        int count = -1;
         String sql = "SELECT count(*) FROM comments;";
 
-        try {
-            CachedRowSet rs = SQLHelper.executeResultSet(sql);
-
-            if (rs.next()) {
-                count = rs.getInt(1);
-            }
-
-            rs.close();
-        } catch (Exception e) {
-
-        }
-
-        return count;
+        return sqlCount(sql);
     }
 
     /**
@@ -124,8 +147,22 @@ public class Statistics {
      * @return The number of styles or -1 on error.
      */
     public int styles() {
-        int count = -1;
         String sql = "SELECT count(*) FROM style;";
+
+        return sqlCount(sql);
+    }
+
+    /**
+     * Perform a sql query returning a scalar int value
+     * typically form a count(*)
+     * @param sql
+     * @return int scalar from sql query
+     */
+    private int sqlCount(String sql) {
+        int count = -1;
+
+        if (log.isDebugEnabled())
+            log.debug("sqlCount(): sql is " + sql);
 
         try {
             CachedRowSet rs = SQLHelper.executeResultSet(sql);
@@ -136,8 +173,11 @@ public class Statistics {
 
             rs.close();
         } catch (Exception e) {
-
+            log.error("sqlCount(): " + e.getMessage());
         }
+
+        if (log.isDebugEnabled())
+            log.debug("sqlCount(): count is " + count);
 
         return count;
     }
