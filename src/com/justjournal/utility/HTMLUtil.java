@@ -1,7 +1,7 @@
 package com.justjournal.utility;
 
 /*---------------------------------------------------------------------------*\
-  $Id: HTMLUtil.java,v 1.6 2006/11/24 18:42:49 laffer1 Exp $
+  $Id: HTMLUtil.java,v 1.7 2007/03/21 01:44:11 laffer1 Exp $
   ---------------------------------------------------------------------------
   This software is released under a Berkeley-style license:
 
@@ -36,7 +36,7 @@ import java.util.regex.PatternSyntaxException;
  * Static class containing miscellaneous HTML-related utility methods.
  *
  * @author Copyright &copy; 2004 Brian M. Clapper
- * @version <tt>$Revision: 1.6 $</tt>
+ * @version <tt>$Revision: 1.7 $</tt>
  */
 public final class HTMLUtil {
     /*----------------------------------------------------------------------*\
@@ -289,15 +289,16 @@ public final class HTMLUtil {
                         " (?: " + UrlPath + ")?                              \n" +
                         ")";
 
+        String url2 = "((ftp|https?://(.*?))\\s)";
         // Now convert string we've built up into a real regex object
-        Pattern UrlRegex = Pattern.compile(Url);
+        Pattern UrlRegex = Pattern.compile(url2);
         // Now ready to apply to raw text to find urls . . .
 
         //final Pattern p = Pattern.compile("(\\sI\\n|^)(\\w+://[^\\s\\n]+)");
 
         final Matcher m = UrlRegex.matcher(input);
 
-        input = m.replaceAll("<a href=\"$1\">$1</a>");
+        input = m.replaceAll("<a href=\"$2\">$2</a>");
         return input;
 
     }

@@ -1,7 +1,6 @@
 <%@ page import="com.justjournal.core.Statistics" %>
 <%@ page import="com.justjournal.db.UserDao"%>
 <%@ page import="java.util.Collection"%>
-<%@ page import="java.util.Iterator"%>
 <%@ page import="com.justjournal.db.UserTo"%>
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -146,38 +145,25 @@
                 <td><%=s.entries()%></td>
             </tr>
             <tr style="font-size: 10px; background: #F2F2F2;">
+                <td>Public Entries</td>
+                <td><%=s.publicEntries()%>%</td>
+            </tr>
+            <tr style="font-size: 10px;">
+                <td>Friends Entries</td>
+                <td><%=s.friendsEntries()%>%</td>
+            </tr>
+            <tr style="font-size: 10px; background: #F2F2F2;">
+                <td>Private Entries</td>
+                <td><%=s.privateEntries()%>%</td>
+            </tr>
+            <tr style="font-size: 10px;">
                 <td>Comments</td>
                 <td><%=s.comments()%></td>
             </tr>
-            <tr style="font-size: 10px;">
+            <tr style="font-size: 10px; background: #F2F2F2;">
                 <td>Blog Styles</td>
                 <td><%=s.styles()%></td>
             </tr>
-        </table>
-
-         <table style="border: thin solid #F2F2F2;">
-             <caption>New Members</caption>
-<%
-    Collection users = UserDao.newUsers();
-    int i = 0;
-    for (java.util.Iterator iterator = users.iterator(); iterator.hasNext();) {
-        UserTo o = (UserTo) iterator.next();
-
-        if (i % 2 == 0) {
-%>
-
-            <tr style="font-size: 10px; background: #F2F2F2;">
-                <td><a href="users/<%=o.getUserName()%>"><%=o.getUserName()%></a></td>
-            </tr>
-<%      } else { %>
-            <tr style="font-size: 10px;">
-                <td><a href="users/<%=o.getUserName()%>"><%=o.getUserName()%></a></td>
-            </tr>
-<%
-        }
-        i++;
-    }
-%>
         </table>
 
         <p><a href="RecentBlogs"><img src="images/rss2.gif" alt="Recent Blogs RSS"/></a></p>
@@ -193,10 +179,48 @@
             with the Internet.</p>
 
         <p style="padding-bottom: 10px"><a href="create.jsp"><img src="images/jj_btn_create_an_account.gif"
-                                                                   alt="Create an account"/></a></p>
+                                                                alt="Create an account"/></a></p>
     </div>
 
-    <p style="clear: both;">&nbsp; </p>
+    <p style="clear: both;">&nbsp;</p>
+
+    <table style="border: thin solid #F2F2F2;">
+        <caption>New Members</caption>
+        <thead>
+            <tr style="font-size: 9px; color: white; background: black;">
+                <th>Name</th>
+                <th>User</th>
+                <th>Since</th>
+                <th>Profile</th>
+            </tr>
+        </thead>
+<%
+    Collection users = UserDao.newUsers();
+    int i = 0;
+    for (java.util.Iterator iterator = users.iterator(); iterator.hasNext();) {
+        UserTo o = (UserTo) iterator.next();
+
+        if (i % 2 == 0) {
+%>
+            <tr style="font-size: 10px; background: #F2F2F2;">
+                <td><%=o.getName()%></td>
+                <td><a href="users/<%=o.getUserName()%>"><%=o.getUserName()%></a></td>
+                <td><%=o.getSince()%></td>
+                <td><a href="profile.jsp?user=<%=o.getUserName()%>">My Profile</a></td>
+            </tr>
+<%      } else { %>
+            <tr style="font-size: 10px;">
+                 <td><%=o.getName()%></td>
+                 <td><a href="users/<%=o.getUserName()%>"><%=o.getUserName()%></a></td>
+                 <td><%=o.getSince()%></td>
+                 <td><a href="profile.jsp?user=<%=o.getUserName()%>">My Profile</a></td>
+            </tr>
+<%
+        }
+        i++;
+    }
+%>
+        </table>
 
     <div id="ticker"></div>
 

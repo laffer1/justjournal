@@ -1,25 +1,25 @@
 package com.justjournal.ctl;
 
 import com.justjournal.JustJournalBaseServlet;
-import com.justjournal.WebError;
 import com.justjournal.User;
-import com.justjournal.utility.StringUtil;
+import com.justjournal.WebError;
 import com.justjournal.utility.FileIO;
-import org.apache.log4j.Category;
-import org.apache.commons.fileupload.FileUpload;
+import com.justjournal.utility.StringUtil;
 import org.apache.commons.fileupload.DiskFileUpload;
 import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUpload;
+import org.apache.log4j.Category;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.naming.Context;
-import javax.naming.InitialContext;
 import javax.sql.DataSource;
-import java.util.List;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * User: laffer1
@@ -27,7 +27,7 @@ import java.sql.SQLException;
  * Time: 4:56:26 PM
  */
 public class AddPicture extends JustJournalBaseServlet {
-     private static Category log = Category.getInstance(AddPicture.class.getName());
+    private static Category log = Category.getInstance(AddPicture.class.getName());
 
     protected void execute(HttpServletRequest request, HttpServletResponse response, HttpSession session, StringBuffer sb) {
         boolean blnError = false;
@@ -46,45 +46,62 @@ public class AddPicture extends JustJournalBaseServlet {
             userID = userIDasi.intValue();
         }
 
+        /* Make sure we are logged in */
+        if (userID < 1) {
+            WebError.Display("Error", "You must be logged in to upload a picture.", sb);
+            return;
+        }
+
         boolean isMultipart = FileUpload.isMultipartContent(request);
+        log.debug("Multipart: " + isMultipart);
 
         if (isMultipart) {
             log.debug("we have a multipart file upload");
             DiskFileUpload upload = new DiskFileUpload();
 
             // set limits
-            upload.setSizeMax(15 * 1024);
-            upload.setSizeThreshold(15 * 1024);
+            upload.setSizeMax(1000 * 1024 * 10);
+            upload.setSizeThreshold(1000 * 1024 * 10);
             upload.setRepositoryPath("/tmp");  // should be changed.
 
             // process request
             List /* FileItem */ items;
+            FileItem fi = null;
             try {
+                log.debug("Try to parse request");
                 items = upload.parseRequest(request);
 
-                for (Object item1 : items) {
+                for (Object item1 : items)
+                {
+                    log.debug("inside for each loop");
                     FileItem item = (FileItem) item1;
 
-                    if (item.isFormField()) {
-                        // do stuff here... ignore for now
-                        //
-                        if (item.getName().compareTo("title") == 0)
-                            if (StringUtil.lengthCheck(item.getString(), 2, 150))
+                    if (item.getFieldName().equals("title")) {
+                          if (StringUtil.lengthCheck(item.getString(), 2, 150))
                                 title = item.getString();
-                            else {
-                                WebError.Display("Input Error", "Title must be 2 to 150 characters.",sb);
-                                blnError = true;
-                            }
-                    } else { // we're a file
+                          else {
+                              WebError.Display("Input Error", "Title must be 2 to 150 characters.", sb);
+                              return;
+                          }
+                    } else {
+                        if (!item.isFormField() && item.getFieldName().equals("pic"))
+                            fi = item;
+                    }
+                }
+
+
+                if (fi != null)
+                {
+                        // we're a file
                         //String fieldName = item.getFieldName();
                         //String fileName = item.getName();
-                        String contentType = item.getContentType();
+                        String contentType = fi.getContentType();
                         //boolean isInMemory = item.isInMemory();
-                        long sizeInBytes = item.getSize();
+                        long sizeInBytes = fi.getSize();
 
                         // must be large enough
                         if (sizeInBytes > 500) {
-                            byte[] data = item.get();
+                            byte[] data = fi.get();
 
                             Context ctx;
                             DataSource ds = null;
@@ -95,7 +112,7 @@ public class AddPicture extends JustJournalBaseServlet {
                                 ctx = new InitialContext();
                                 ds = (DataSource) ctx.lookup("java:comp/env/jdbc/jjDB");
                             } catch (Exception e) {
-                                log.debug(e.getMessage());
+                                log.error(e.getMessage());
                                 blnError = true;
                                 WebError.Display("Database", "Could not retrieve database resources.", sb);
                             }
@@ -115,8 +132,11 @@ public class AddPicture extends JustJournalBaseServlet {
                                     stmt.close();
 
                                     conn.close();
+
+                                    if (log.isDebugEnabled())
+                                        log.debug("RowsAffected: " + RowsAffected);
                                 } catch (Exception e) {
-                                    log.debug(e.getMessage());
+                                    log.error(e.getMessage());
                                     throw new Exception("Error getting connect or executing it", e);
                                 } finally {
                                     /*
@@ -129,34 +149,35 @@ public class AddPicture extends JustJournalBaseServlet {
                                         stmt.close();
                                     } catch (SQLException sqlEx) {
                                         // ignore -- as we can't do anything about it here
-                                        log.debug(sqlEx.getMessage());
+                                        log.error(sqlEx.getMessage());
                                     }
 
                                     try {
                                         conn.close();
                                     } catch (SQLException sqlEx) {
                                         // ignore -- as we can't do anything about it here
-                                        log.debug(sqlEx.getMessage());
+                                        log.error(sqlEx.getMessage());
                                     }
                                 }
                             }
                         } else {
-                            log.debug("File size is too small");
+                            log.error("File size is too small");
                             WebError.Display("File", "File size is too small.", sb);
+                            blnError = true;
                         }
                     }
-                }
-        } catch (Exception e) {
-            blnError = true;
-                 WebError.Display("Error",
-                    "Unknown",
-                    sb);
-        }
+            } catch (Exception e) {
+                blnError = true;
+                log.error(e.getMessage());
+                WebError.Display("Error",
+                        "Unknown",
+                        sb);
+            }
 
-        }
+        } /* is multipart */
 
-        if (RowsAffected != 1) {
-             WebError.Display("Database",
+        if (!blnError && RowsAffected != 1) {
+            WebError.Display("Database",
                     "Database Error.  Please try again later.",
                     sb);
             blnError = true;

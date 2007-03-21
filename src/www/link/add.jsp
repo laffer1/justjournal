@@ -25,9 +25,11 @@
 <jsp:include page="../header.inc" flush="false"/>
 
 <div id="content">
-    <h2>Add Link</h2>
+    <h2>Preferences</h2>
 
     <jsp:include page="../inc_login.jsp" flush="false"/>
+
+    <h3>Add Links</h3>
 
     <p>Each journal has a links section. You can add your favorite links
         or links that relate to your journal's content.</p>

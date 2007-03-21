@@ -46,7 +46,7 @@ import java.util.Iterator;
  * Storage for calendar months.
  *
  * @author Lucas Holt
- * @version $Id: Cal.java,v 1.8 2006/07/28 14:01:06 laffer1 Exp $
+ * @version $Id: Cal.java,v 1.9 2007/03/21 01:44:32 laffer1 Exp $
  * @see CalMonth
  */
 public final class Cal {
@@ -279,7 +279,7 @@ public final class Cal {
             sb.append("\t\t<tbody>\n\t\t<tr>\n");
 
             if (o.getFirstDayInWeek() > 1)
-                sb.append("\t\t<td class=\"minicalendaroffrow\" colspan=\"").append(o.getFirstDayInWeek() - 1).append("\"></td>");
+                sb.append("\t\t<td class=\"minicalendaroffrow\" colspan=\"").append(o.getFirstDayInWeek() - 1).append("\"></td>\n");
 
             dayinweek = o.getFirstDayInWeek() - 1;
 
@@ -335,7 +335,7 @@ public final class Cal {
                 sb.append("\t\t</tr>\n");
             }
 
-            sb.append("\t\t<tr>");
+            sb.append("\t\t<tr>\n");
             sb.append("\t\t<td class=\"minicalendarsub\" colspan=\"7\"><a href=\"");
             sb.append(baseUrl);
             sb.append(o.getYear());
@@ -344,7 +344,7 @@ public final class Cal {
                 sb.append("0");
             sb.append(o.monthid + 1);
             sb.append("\">View Subjects</a></td>\n");
-            sb.append("\t\t</tr>\n\t\t</tbody>");
+            sb.append("\t\t</tr>\n\t\t</tbody>\n");
             sb.append("\t</table>\n\n");
 
         }

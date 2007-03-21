@@ -1,5 +1,11 @@
 <%@ page contentType="text/html; charset=iso-8859-1" language="java" import="com.justjournal.db.*" %>
 <%
+    response.setHeader("Vary", "Accept"); // content negotiation
+    response.setDateHeader("Expires", System.currentTimeMillis());
+    response.setDateHeader("Last-Modified", System.currentTimeMillis());
+    response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
+    response.setHeader("Pragma", "no-cache");
+
     // date stuff
     java.text.SimpleDateFormat fmt = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     java.sql.Date now = new java.sql.Date(System.currentTimeMillis());
@@ -272,8 +278,6 @@
                   if (smood != null) {
                       ismood = smood.intValue();
                   }
-                  // debug
-                  out.println("<!- mood " + ismood + " -->");
 
                   for (java.util.Iterator iterator = MoodDao.view().iterator(); iterator.hasNext();) {
                       MoodTo o = (MoodTo) iterator.next();

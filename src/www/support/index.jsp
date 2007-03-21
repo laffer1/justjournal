@@ -100,11 +100,11 @@
     <h3>Getting Started</h3>
 
     <dl>
-        <dt><a href="../create.jsp"><strong>Create A Journal</strong></a>
-        <dd>Come and create your very own JustJournal!
+        <dt><a href="../create.jsp"><strong>Create A Journal</strong></a></dt>
+        <dd>Come and create your very own JustJournal!</dd>
 
-            <dt><a href="../update.jsp"><strong>Update Journal</strong></a>
-        <dd>Update your JustJournal from the web.
+        <dt><a href="../update.jsp"><strong>Update Journal</strong></a></dt>
+        <dd>Update your JustJournal from the web.</dd>
     </dl>
 
 </div>

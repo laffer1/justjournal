@@ -163,6 +163,18 @@ input {
     font-weight: 400;
 }
 
+input:focus {
+    background-color: #FFFF99;
+}
+
+input:hover {
+    background-color: #FFFF99;
+}
+
+input[type="button"]:hover {
+    background-color: #FFFF99;
+}
+
 select {
     font-family: Verdana, sans-serif;
     font-size: 10pt;
@@ -171,8 +183,20 @@ select {
     font-weight: 400;
 }
 
+select:hover {
+    background-color: #FFFF99;
+}
+
 textarea {
     background-color: #F2F2F2;
+}
+
+textarea:focus {
+    background-color: #FFFF99;
+}
+
+textarea:hover {
+    background-color: #FFFF99;
 }
 
 #searchbox {

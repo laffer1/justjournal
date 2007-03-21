@@ -12,7 +12,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-    <title>JustJournal.com: Preferences</title>
+    <title>JustJournal.com: Preferences: Add Picture</title>
     <link rel="stylesheet" type="text/css" href="../layout.css" media="all"/>
     <link rel="stylesheet" type="text/css" href="../font-normal.css" media="all"/>
     <link rel="home" title="Home" href="../index.jsp"/>
@@ -33,12 +33,18 @@
 
     <jsp:include page="inc_login.jsp" flush="false"/>
 
-    <h3>Add Pictures</h3>
+    <h3>Add Picture</h3>
 
-    <div style="width: 700px; padding: 5px; margin: 0">
+    <p>Pictures can be uploaded in JPEG, GIF or PNG format.  All pictures
+    are publicly accesible regardless of your journal security settings.
+    Pictures must not infringe on copyright nor be considered
+    &quot; indecent &quot; under United States law.</p>
+
+    <div style="width: 500px; padding: 5px; margin: 0">
         <form name="frmPictureUpload" method="post" action="AddPicture" enctype="multipart/form-data">
             <fieldset>
                 <legend><strong>Select Picture</strong><br/></legend>
+
 
                 <div class="row">
                     <span class="label"><label for="title">Title</label></span>
@@ -46,6 +52,7 @@
                       <input name="title" id="title" value="" type="text" />
                     </span>
                 </div>
+                
 
                 <div class="row">
                     <span class="label"><label for="pic">Picture</label></span>

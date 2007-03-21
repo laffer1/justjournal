@@ -4,10 +4,12 @@
 <%@ page import="java.util.Collection" %>
 <%@ page import="java.util.Iterator" %>
 <%@ page import="com.justjournal.utility.Xml" %>
+<%@ page import="com.justjournal.WebError"%>
+<%@ page import="java.io.PrintWriter"%>
 <%--
 Displays user comments on a particular journal entry.
 
-$Id: index.jsp,v 1.3 2007/02/25 16:51:08 laffer1 Exp $
+$Id: index.jsp,v 1.4 2007/03/21 01:45:53 laffer1 Exp $
 --%>
 <%
     int eid;
@@ -20,9 +22,12 @@ $Id: index.jsp,v 1.3 2007/02/25 16:51:08 laffer1 Exp $
     }
 
     if (eid <= 0) {
-        response.reset();
-        response.sendError(500, "bad entry id");
-        response.flushBuffer();
+        //response.reset();
+        //response.sendError(500, "bad entry id");
+        //response.flushBuffer();
+        PrintWriter out2 = response.getWriter();
+        WebError.Display("Error", "Invalid entry id.",out2);
+        return;
     }
 
     String aUser = (String) session.getAttribute("auth.user");
@@ -107,11 +112,11 @@ $Id: index.jsp,v 1.3 2007/02/25 16:51:08 laffer1 Exp $
     wrote on <%=dte.toPubDate()%>
 </p>
 
-<h3><%=entry.getSubject()%></h3>
+<h3><%=Xml.cleanString(entry.getSubject())%></h3>
 <%
 
     if (entry.getAutoFormat()) {
-        String tmpBody = entry.getBody();
+        String tmpBody = entry.getBodyWithLinks();
 %>
 <p>
     <% if (tmpBody.indexOf("\n") > -1) { %>
@@ -185,7 +190,7 @@ $Id: index.jsp,v 1.3 2007/02/25 16:51:08 laffer1 Exp $
 <div class="comment">
 
     <div class="chead">
-        <h3><span class="subject"><%=o.getSubject()%></span></h3>
+        <h3><span class="subject"><%=Xml.cleanString(o.getSubject())%></span></h3>
         <img src="../images/userclass_16.png" alt="user"/>
         <a href="../users/<%=o.getUserName()%>" title="<%=o.getUserName()%>">
             <%=o.getUserName()%>
@@ -208,7 +213,7 @@ $Id: index.jsp,v 1.3 2007/02/25 16:51:08 laffer1 Exp $
         <% } %>
     </div>
 
-    <p><%=o.getBody()%></p>
+    <p><%=Xml.cleanString(o.getBody())%></p>
 </div>
 <%
         } // end for loop

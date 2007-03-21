@@ -84,6 +84,14 @@
         <dt><a href="../avatar/upload.h"><strong>Avatar</strong></a></dt>
         <dd>Upload an avatar to represent your account. (user picture)</dd>
     </dl>
+
+    <h3>Pictures</h3>
+
+    <dl>
+        <dt><a href="picture_upload.jsp"><strong>Add Picture</strong></a></dt>
+        <dd>Add a picture to your journal.</dd>
+    </dl>
+
     <% } else { %>
     <p>You must <a href="../login.jsp">login</a> before you can edit your preferences.</p>
     <% } %>

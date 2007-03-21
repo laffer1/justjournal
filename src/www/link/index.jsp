@@ -31,6 +31,8 @@
 <div id="content">
     <h2>Preferences</h2>
 
+    <jsp:include page="../inc_login.jsp" flush="false"/>
+
     <h3>Links</h3>
 
     <p>View and delete your links below. You may also
@@ -67,7 +69,7 @@
                            title="<%=o.getTitle()%>"><%=o.getTitle()%></a>
                     </td>
                     <td>
-                        <a href="DeleteLink?<%=o.getId()%>" title="Delete Link">Delete</a>
+                        <a href="DeleteLink?id=<%=o.getId()%>" title="Delete Link">Delete</a>
 
                     </td>
                 </tr>

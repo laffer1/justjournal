@@ -242,7 +242,7 @@ public final class UserDao {
      public static final Collection<UserTo> newUsers() {
         ArrayList<UserTo> users = new ArrayList<UserTo>(5);
         UserTo usr;
-        final String sqlStatement = "SELECT * FROM user ORDER by id DESC Limit 0,5;";
+        final String sqlStatement = "SELECT id, username, name, since FROM user ORDER by id DESC Limit 0,5;";
 
         try {
             final CachedRowSet RS = SQLHelper.executeResultSet(sqlStatement);
