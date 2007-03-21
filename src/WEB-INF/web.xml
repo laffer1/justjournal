@@ -126,6 +126,12 @@
     </servlet>
 
     <servlet>
+            <display-name>Add Picture</display-name>
+            <servlet-name>AddPicture</servlet-name>
+            <servlet-class>com.justjournal.ctl.AddPicture</servlet-class>
+    </servlet>
+
+    <servlet>
         <display-name>Journal Title</display-name>
         <servlet-name>JournalTitle</servlet-name>
         <servlet-class>com.justjournal.ctl.JournalTitle</servlet-class>
@@ -205,6 +211,11 @@
     <servlet-mapping>
         <servlet-name>AlbumImage</servlet-name>
         <url-pattern>/AlbumImage</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+           <servlet-name>AddPicture</servlet-name>
+           <url-pattern>/prefs/AddPicture</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>
