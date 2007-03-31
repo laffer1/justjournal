@@ -47,13 +47,6 @@
     </servlet>
 
     <servlet>
-        <display-name>JJ Content Management System</display-name>
-        <servlet-name>jjcms</servlet-name>
-        <servlet-class>com.justjournal.ctl.BaseController</servlet-class>
-        <load-on-startup>2</load-on-startup>
-    </servlet>
-
-    <servlet>
         <display-name>Users Viewer</display-name>
         <servlet-name>users</servlet-name>
         <servlet-class>com.justjournal.Users</servlet-class>
@@ -126,9 +119,15 @@
     </servlet>
 
     <servlet>
-            <display-name>Add Picture</display-name>
-            <servlet-name>AddPicture</servlet-name>
-            <servlet-class>com.justjournal.ctl.AddPicture</servlet-class>
+        <display-name>Add Picture</display-name>
+        <servlet-name>AddPicture</servlet-name>
+        <servlet-class>com.justjournal.ctl.AddPicture</servlet-class>
+    </servlet>
+
+    <servlet>
+        <display-name>Remove Picture</display-name>
+        <servlet-name>DeletePicture</servlet-name>
+        <servlet-class>com.justjournal.ctl.DeletePicture</servlet-class>
     </servlet>
 
     <servlet>
@@ -146,11 +145,6 @@
     <servlet-mapping>
         <servlet-name>dispatcher</servlet-name>
         <url-pattern>*.h</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>jjcms</servlet-name>
-        <url-pattern>*.hspx</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>
@@ -214,8 +208,13 @@
     </servlet-mapping>
 
     <servlet-mapping>
-           <servlet-name>AddPicture</servlet-name>
-           <url-pattern>/prefs/AddPicture</url-pattern>
+        <servlet-name>AddPicture</servlet-name>
+        <url-pattern>/prefs/AddPicture</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>DeletePicture</servlet-name>
+        <url-pattern>/prefs/DeletePicture</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>
