@@ -50,7 +50,7 @@
 
             <tr>
                 <td><%=Recordset1.getString("title")%></td>
-                <td><a href="RemovePicture?id=<%=Recordset1.getString( "id" )%>">[remove]</a></td>
+                <td><a href="DeletePicture?id=<%=Recordset1.getString( "id" )%>">[remove]</a></td>
             </tr>
 
             <%
