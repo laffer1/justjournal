@@ -19,7 +19,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-    <title>JustJournal.com: Preferences</title>
+    <title>JustJournal.com: Preferences: Friends</title>
     <link rel="stylesheet" type="text/css" href="../layout.css" media="all"/>
     <link rel="stylesheet" type="text/css" href="../font-normal.css" media="all"/>
     <link rel="home" title="Home" href="../index.jsp"/>

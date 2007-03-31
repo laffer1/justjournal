@@ -73,14 +73,10 @@
     <dl>
         <dt><a href="passwd.jsp"><strong>Password</strong></a></dt>
         <dd>Change your account password.</dd>
-    </dl>
 
-    <dl>
         <dt><a href="profile.jsp"><strong>Account &amp; Profile</strong></a></dt>
         <dd>Change your e-mail address, chat client, and other information.</dd>
-    </dl>
 
-    <dl>
         <dt><a href="../avatar/upload.h"><strong>Avatar</strong></a></dt>
         <dd>Upload an avatar to represent your account. (user picture)</dd>
     </dl>
@@ -90,6 +86,9 @@
     <dl>
         <dt><a href="picture_upload.jsp"><strong>Add Picture</strong></a></dt>
         <dd>Add a picture to your journal.</dd>
+
+        <dt><a href="picture_remove.jsp"><strong>Remove Picture</strong></a></dt>
+        <dd>Remove a picture from your journal.</dd>
     </dl>
 
     <% } else { %>
