@@ -40,6 +40,8 @@ import sun.jdbc.rowset.CachedRowSet;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import com.justjournal.User;
+
 /**
  * Provides access to journal entries in the data tier.  Several parts of this
  * class could be optimized.  We are using several database connects when only
@@ -823,38 +825,41 @@ public final class EntryDAO {
 
                 et = new EntryTo();
 
-                et.setUserName(rs.getString("userName"));
-                et.setId(rs.getInt("entryid"));
-                et.setUserId(rs.getInt("id"));
-                et.setDate(rs.getString("date"));
-                et.setSubject(rs.getString("subject"));
-                et.setBody(rs.getString("body"));
-                et.setLocationId(rs.getInt("locationid"));
-                et.setMoodId(rs.getInt("moodid"));
-                et.setMusic(rs.getString("music"));
-                et.setSecurityLevel(rs.getInt("security"));
-                et.setMoodName(rs.getString("moodt"));
-                et.setLocationName(rs.getString("location"));
+                if (!new User(rs.getString("userName")).isPrivateJournal() )
+                {
+                    et.setUserName(rs.getString("userName"));
+                    et.setId(rs.getInt("entryid"));
+                    et.setUserId(rs.getInt("id"));
+                    et.setDate(rs.getString("date"));
+                    et.setSubject(rs.getString("subject"));
+                    et.setBody(rs.getString("body"));
+                    et.setLocationId(rs.getInt("locationid"));
+                    et.setMoodId(rs.getInt("moodid"));
+                    et.setMusic(rs.getString("music"));
+                    et.setSecurityLevel(rs.getInt("security"));
+                    et.setMoodName(rs.getString("moodt"));
+                    et.setLocationName(rs.getString("location"));
 
-                if (rs.getString("email_comments").compareTo("Y") == 0)
-                    et.setEmailComments(true);
-                else
-                    et.setEmailComments(false);
+                    if (rs.getString("email_comments").compareTo("Y") == 0)
+                        et.setEmailComments(true);
+                    else
+                        et.setEmailComments(false);
 
-                if (rs.getString("allow_comments").compareTo("Y") == 0)
-                    et.setAllowComments(true);
-                else
-                    et.setAllowComments(false);
+                    if (rs.getString("allow_comments").compareTo("Y") == 0)
+                        et.setAllowComments(true);
+                    else
+                        et.setAllowComments(false);
 
-                if (rs.getString("autoformat").compareTo("Y") == 0)
-                    et.setAutoFormat(true);
-                else
-                    et.setAutoFormat(false);
+                    if (rs.getString("autoformat").compareTo("Y") == 0)
+                        et.setAutoFormat(true);
+                    else
+                        et.setAutoFormat(false);
 
-                if (log.isDebugEnabled())
-                    log.debug("viewRecentUniqueUsers: ET contains " + et.toString());
+                    if (log.isDebugEnabled())
+                        log.debug("viewRecentUniqueUsers: ET contains " + et.toString());
 
-                entries.add(et);
+                    entries.add(et);
+                }
             }
 
             rs.close();
