@@ -79,9 +79,8 @@ public class UploadAvatarSubmit extends Protected {
             // process request
             List /*FileItem*/ items = upload.parseRequest(req);
 
-            Iterator iter = items.iterator();
-            while (iter.hasNext()) {
-                FileItem item = (FileItem) iter.next();
+            for (Object item1 : items) {
+                FileItem item = (FileItem) item1;
 
                 if (item.isFormField()) {
                     // do stuff here... ignore for now
