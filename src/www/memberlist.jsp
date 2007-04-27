@@ -6,6 +6,7 @@
 <%@ page import="java.util.Collection" %>
 <%@ page import="java.util.Iterator" %>
 <%@ page import="static com.justjournal.db.UserDao.*" %>
+<%@ page import="com.justjournal.User"%>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -25,6 +26,8 @@
 <div id="content">
     <h2>Member List</h2>
 
+    <p>A list of public journals.  Private blogs are not listed.</p>
+
     <table border="0" cellpadding="1" cellspacing="1">
         <thead>
             <tr style="background: black; color: white; font: Verdana, Arial 10pt;">
@@ -40,23 +43,34 @@
                 Collection members = memberList();
                 UserTo o;
                 Iterator itr = members.iterator();
+                int a = 0; // added user
 
                 for (int i = 0, n = members.size(); i < n; i++) {
                     o = (UserTo) itr.next();
 
-                    if (i % 2 == 0) { %>
-            <tr style="background: white;">
-                <%      } else { %>
+                    try {
+                        if (!new User(o.getUserName()).isPrivateJournal())
+                        {
+                            if (a % 2 == 0) { %>
+             <tr style="background: white;">
+                        <% } else { %>
             <tr style="background: #F2F2F2;">
-                <% } %>
+                         <% } %>
                 <td><a href="users/<%=o.getUserName() %>"><%=o.getUserName() %></a></td>
                 <td><%=o.getName() %></td>
                 <td><%=o.getSince() %></td>
                 <td><a href="profile.jsp?user=<%=o.getUserName() %>">view profile</a></td>
             </tr>
-            <% } %>
+            <%              a++;
+                       }
+            } catch (Exception e) {
+
+            }
+                }%>
         </tbody>
     </table>
+
+    <p>Total members: <%=members.size()%>, Listed members: <%=a%></p>
 </div>
 
 <jsp:include page="footer.inc" flush="false"/>
