@@ -49,7 +49,7 @@ import javax.servlet.http.HttpSession;
  * Base servlet to do some of the repetative servlet initialization stuff.
  *
  * @author Lucas Holt
- * @version $Id: JustJournalBaseServlet.java,v 1.10 2006/12/03 19:33:13 laffer1 Exp $
+ * @version $Id: JustJournalBaseServlet.java,v 1.11 2007/04/27 06:22:36 laffer1 Exp $
  * @since 1.0
  *        Date: Sep 25, 2005
  *        Time: 9:04:00 PM
@@ -91,11 +91,12 @@ public class JustJournalBaseServlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws java.io.IOException {
-        String contentType = "text/html";
+        String contentType = "text/html; charset=utf-8";
         final StringBuffer sb = new StringBuffer();
         final HttpSession session = request.getSession(true);
 
         response.setContentType(contentType);
+        response.setBufferSize(8192);
         response.setDateHeader("Expires", System.currentTimeMillis());
         response.setDateHeader("Last-Modified", System.currentTimeMillis());
         response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
@@ -103,9 +104,11 @@ public class JustJournalBaseServlet extends HttpServlet {
 
         execute(request, response, session, sb);
 
+        response.setContentLength(sb.length());
         final ServletOutputStream outstream = response.getOutputStream();
-        outstream.println(sb.toString());
+        outstream.print(sb.toString());
         outstream.flush();
+        outstream.close();
     }
 
     public long getLastModified(HttpServletRequest request) {
