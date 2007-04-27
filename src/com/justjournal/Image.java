@@ -44,6 +44,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 
 /**
  * Image viewer servlet to display userpics and other images
@@ -53,7 +54,7 @@ import java.io.BufferedInputStream;
  * Date: Nov 22, 2005
  * Time: 9:31:28 PM
  *
- * @version $Id: Image.java,v 1.6 2006/12/03 19:33:13 laffer1 Exp $
+ * @version $Id: Image.java,v 1.7 2007/04/27 06:20:54 laffer1 Exp $
  */
 public class Image extends HttpServlet {
 
@@ -73,6 +74,8 @@ public class Image extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws java.io.IOException {
 
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
         String id = request.getParameter("id");
 
         if (id == null) {
@@ -85,13 +88,15 @@ public class Image extends HttpServlet {
             CachedRowSet rs = SQLHelper.executeResultSet("call getimage(" + id + ");");
             if (rs.next()) {
                 response.setContentType(rs.getString("mimetype").trim());
-                final ServletOutputStream outstream = response.getOutputStream();
-                BufferedInputStream img = new BufferedInputStream(rs.getBinaryStream("image"));
+               BufferedInputStream img = new BufferedInputStream(rs.getBinaryStream("image"));
                 byte[] buf = new byte[4 * 1024]; // 4k buffer
                 int len;
                 while ((len = img.read(buf, 0, buf.length)) != -1)
-                    outstream.write(buf, 0, len);
+                    baos.write(buf, 0, len);
 
+                response.setContentLength(baos.size());
+                final ServletOutputStream outstream = response.getOutputStream();
+                baos.writeTo(outstream);
                 outstream.flush();
                 outstream.close();
             } else
