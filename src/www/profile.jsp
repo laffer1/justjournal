@@ -76,11 +76,18 @@
 
 <div id="content">
 
-    <% if (Recordset1.next()) { %>
+<% if (Recordset1.next()) {
+       User user = new User(username);
+
+       if (!user.isPrivateJournal())
+       {
+%>
+
+
     <h2>Profile for <%=username%></h2>
 
 <%
-    User user = new User(username);
+
     if (user.showAvatar())
     { %>
     <p><img src="image?id=<%=user.getUserId()%>" alt="<%=username%> 's avatar" /></p>
@@ -173,9 +180,10 @@
         <% } %>
     </p>
 
-    <% } else { %>
+<%  }
+} else { %>
     <p>Error accessing profile. The user either doesn't exist or there is an unknown error.</p>
-    <% } %>
+<% } %>
 
 </div>
 
