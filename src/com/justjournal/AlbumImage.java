@@ -45,12 +45,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 
 /**
  * Diplay individual images in the user's photo album.
  *
  * @author Lucas Holt
- * @version $Id: AlbumImage.java,v 1.3 2006/12/03 19:33:13 laffer1 Exp $
+ * @version $Id: AlbumImage.java,v 1.4 2007/04/27 06:21:42 laffer1 Exp $
  */
 public class AlbumImage extends HttpServlet {
     private static Category log = Category.getInstance(AlbumImage.class.getName());
@@ -69,6 +70,7 @@ public class AlbumImage extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws java.io.IOException {
 
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
         String id = request.getParameter("id");
 
         if (id == null) {
@@ -81,13 +83,15 @@ public class AlbumImage extends HttpServlet {
             CachedRowSet rs = SQLHelper.executeResultSet("call getalbumimage(" + id + ");");
             if (rs.next()) {
                 response.setContentType(rs.getString("mimetype").trim());
-                final ServletOutputStream outstream = response.getOutputStream();
                 BufferedInputStream img = new BufferedInputStream(rs.getBinaryStream("image"));
                 byte[] buf = new byte[4 * 1024]; // 4k buffer
                 int len;
                 while ((len = img.read(buf, 0, buf.length)) != -1)
-                    outstream.write(buf, 0, len);
+                    baos.write(buf, 0, len);
 
+                response.setContentLength(baos.size());
+                final ServletOutputStream outstream = response.getOutputStream();
+                baos.writeTo(outstream);
                 outstream.flush();
                 outstream.close();
             } else
