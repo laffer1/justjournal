@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=iso-8859-1" language="java" import="com.justjournal.db.*" %>
+<%@ page import="com.justjournal.User"%>
 <%
     response.setHeader("Vary", "Accept"); // content negotiation
     response.setDateHeader("Expires", System.currentTimeMillis());
@@ -216,12 +217,19 @@
                       issec = ssec.intValue();
                   }
 
+                  /* Check to see if the Journal is marked private */
+                  boolean prvt = (ival > 0 &&
+                          new User((String)session.getAttribute("auth.user")).isPrivateJournal()) ? true : false;
+
+
                   for (java.util.Iterator iterator = SecurityDao.view().iterator(); iterator.hasNext();) {
                       SecurityTo o = (SecurityTo) iterator.next();
 
                       out.print("\t<option value=\"" + o.getId());
 
-                      if (o.getName().compareTo("public") == 0
+                      if (prvt && o.getName().compareTo("private") == 0)
+                          out.print("\" selected=\"selected\">");
+                      else if ( (o.getName().compareTo("public") == 0 && !prvt)
                               || o.getId() == issec)
                           out.print("\" selected=\"selected\">");
                       else
