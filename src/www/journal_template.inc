@@ -5,7 +5,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 	<title>$JOURNAL_TITLE$</title>
-	<link rel=stylesheet" type="text/css" href="/styles/users.css"/>
+	<link rel="stylesheet" type="text/css" href="/styles/users.css"/>
 	<link rel="stylesheet" type="text/css" media="screen" href="/styles/$USER_STYLESHEET$" />
     <link rel="alternate" type="application/rss+xml" title="RSS" href="http://www.justjournal.com/users/$USER$/rss" />
     $USER_STYLESHEET_ADD$
@@ -33,21 +33,37 @@
 		<a href="/update.jsp">Update Journal</a><br />
 		$LOGIN_MENU$
 	</p>
-	<p id="mrss">
-		<a href="/users/$USER$/rss"><img src="/images/rss2.gif" alt="Journal RSS feed" /></a><br />
-        <a href="/users/$USER$/subscriptions">RSS Reader</a>
-        <a style="padding-top: 20px; padding-bottom: 20px;"
-        href="http://my.msn.com/addtomymsn.armx?id=rss&amp;ut=http://www.justjournal.com/users/$USER$/rss"><img src="/images/rss_mymsn.gif" alt="Add to My MSN" /></a>
-        <br />
-		<a style="padding-top: 20px; padding-bottom: 20px;"
-		href="http://www.live.com/?add=http://www.justjournal.com/users/$USER$/rss"><img src="/images/rss_windowslive.gif" alt="Add to Windows Live" /></a>
-        <br />
-		<a style="padding-top: 20px; padding-bottom: 20px;"
-		href="http://add.my.yahoo.com/rss?url=http://www.justjournal.com/users/$USER$/rss"><img src="/images/rss_myyahoo.gif" alt="Add to My Yahoo§" /></a>
-        <br />
-		<a style="padding-top: 20px; padding-bottom: 20px;"
-		href="http://www.bloglines.com/sub/http://www.justjournal.com/users/$USER$/rss"><img src="/images/rss_bloglines.gif" alt="Add to Bloglines" /></a>
-	</p>
+
+    <p id="mrss">
+    	<a href="/users/$USER$/subscriptions">RSS Reader</a><br />
+    	<a href="/users/$USER$/rss"><img src="/images/rss2.gif" alt="Journal RSS feed" /></a><br />
+    </p>
+
+    <p id="mrssmsn">
+    	<a href="http://my.msn.com/addtomymsn.armx?id=rss&amp;ut=http://www.justjournal.com/users/$USER$/rss"><img src="/images/rss_mymsn.gif" alt="Add to My MSN" /></a><br />
+    </p>
+
+    <p id="mrsswindowslive">
+    	<a href="http://www.live.com/?add=http://www.justjournal.com/users/$USER$/rss"><img src="/images/rss_windowslive.gif" alt="Add to Windows Live" /></a><br />
+    </p>
+
+    <p id="mrssyahoo">
+    	<a href="http://add.my.yahoo.com/rss?url=http://www.justjournal.com/users/$USER$/rss"><img src="/images/rss_myyahoo.gif" alt="Add to My Yahoo§" /></a><br />
+    </p>
+
+    <p id="mrssbloglines">
+    	<a href="http://www.bloglines.com/sub/http://www.justjournal.com/users/$USER$/rss"><img src="/images/rss_bloglines.gif" alt="Add to Bloglines" /></a><br />
+    </p>
+
+    <p id="mtechnosearch">
+    	<a href="http://www.justjournal.com/users/$USER$/tsearch">Search via Technorati</a><br />
+    </p>
+
+    <p id="mpdfrtf">
+    	<a href="http://www.justjournal.com/users/$USER$/pdf">PDF</a><br />
+    	<a href="http://www.justjournal.com/users/$USER$/rtf">RTF</a><br />
+    </p>
+
 	$RECENT_ENTRIES$
     </div>
 	<!-- Menu: End -->
