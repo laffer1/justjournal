@@ -475,6 +475,140 @@ public final class EntryDAO {
         return entries;
     }
 
+       /**
+     * viewAll retrieves journal entries from the database.
+     *
+     * @param userName user who own's the entries.
+     * @param thisUser is the owner the one accessing the data
+     * @return A <code>Collection</code> of entries.
+     */
+    public static Collection<EntryTo> viewAll(final String userName, final boolean thisUser) {
+
+        if (log.isDebugEnabled())
+            log.debug("viewAll: starting view of entries.");
+
+        final ArrayList<EntryTo> entries = new ArrayList<EntryTo>(MAX_ENTRIES);
+
+        String sqlStatement;
+        String sqlStmt2; // for comment count
+        CachedRowSet rs = null;
+        CachedRowSet rsComment = null;
+        EntryTo et;
+
+        if (thisUser) {
+            if (log.isDebugEnabled())
+                log.debug("view: this user is logged in.");
+
+            // NO SECURITY RESTRICTION
+            sqlStatement = "SELECT us.id As id, " +
+                    "eh.date As date, eh.subject As subject, eh.music, eh.body, " +
+                    "mood.title As moodt, location.title As location, eh.id As entryid, " +
+                    "eh.security as security, eh.autoformat, eh.allow_comments, eh.email_comments, location.id as locationid, mood.id as moodid " +
+                    "FROM user As us, entry As eh, " +
+                    "mood, location " +
+                    "WHERE us.userName='" + userName +
+                    "' AND us.id=eh.uid AND mood.id=eh.mood AND location.id=eh.location ORDER BY eh.date DESC, eh.id DESC; ";
+        } else {
+            if (log.isDebugEnabled())
+                log.debug("view: this user is not logged in.");
+
+            // PUBLIC ONLY
+            sqlStatement = "SELECT us.id As id, " +
+                    "eh.date As date, eh.subject As subject, eh.music, eh.body, " +
+                    "mood.title As moodt, location.title As location, eh.id As entryid, " +
+                    "eh.security as security, eh.autoformat, eh.allow_comments, eh.email_comments, location.id as locationid, mood.id as moodid " +
+                    "FROM user As us, entry As eh, " +
+                    "mood, location " +
+                    "WHERE us.userName='" + userName +
+                    "' AND us.id=eh.uid AND mood.id=eh.mood AND location.id=eh.location AND eh.security=2 ORDER BY eh.date DESC, eh.id DESC;";
+        }
+
+        try {
+            if (log.isDebugEnabled())
+                log.debug("viewAll: execute sql statement");
+
+            rs = SQLHelper.executeResultSet(sqlStatement);
+
+            while (rs.next()) {
+                if (log.isDebugEnabled())
+                    log.debug("viewAll: create EntryTo object and populate it.");
+
+                et = new EntryTo();
+
+                et.setUserName(userName);
+
+                et.setId(rs.getInt("entryid"));
+                et.setUserId(rs.getInt("id"));
+                et.setDate(rs.getString("date"));
+                et.setSubject(rs.getString("subject"));
+                et.setBody(rs.getString("body"));
+                et.setLocationId(rs.getInt("locationid"));
+                et.setMoodId(rs.getInt("moodid"));
+                et.setMusic(rs.getString("music"));
+                et.setSecurityLevel(rs.getInt("security"));
+                et.setMoodName(rs.getString("moodt"));
+                et.setLocationName(rs.getString("location"));
+
+                if (rs.getString("email_comments").compareTo("Y") == 0)
+                    et.setEmailComments(true);
+                else
+                    et.setEmailComments(false);
+
+                if (rs.getString("allow_comments").compareTo("Y") == 0)
+                    et.setAllowComments(true);
+                else
+                    et.setAllowComments(false);
+
+                if (rs.getString("autoformat").compareTo("Y") == 0)
+                    et.setAutoFormat(true);
+                else
+                    et.setAutoFormat(false);
+
+
+                try {
+                    sqlStmt2 = "SELECT count(comments.id) As comid FROM comments WHERE eid='" + rs.getString("entryid") + "';";
+                    rsComment = SQLHelper.executeResultSet(sqlStmt2);
+                    if (rsComment.next()) {
+                        if (rsComment.getInt("comid") > 0)
+                            et.setCommentCount(rsComment.getInt("comid"));
+                    }
+
+                    rsComment.close();
+                    rsComment = null; // dont close twice
+                } catch (Exception ex) {
+                    if (rsComment != null) {
+                        try {
+                            rsComment.close();
+                        } catch (Exception e) {
+                            // NOTHING TO DO
+                        }
+                    }
+                }
+
+                if (log.isDebugEnabled())
+                    log.debug("viewAll: ET contains " + et.toString());
+
+                entries.add(et);
+            }
+
+            rs.close();
+
+        } catch (Exception e1) {
+            if (log.isDebugEnabled())
+                log.debug("viewAll: exception is: " + e1.getMessage() + "\n" + e1.toString());
+
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (Exception e) {
+                    // NOTHING TO DO
+                }
+            }
+        }
+
+        return entries;
+    }
+
     public static Collection<EntryTo> viewFriends(final int userID, final int aUserId)
             throws IllegalArgumentException {
         if (log.isDebugEnabled())
