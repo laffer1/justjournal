@@ -182,7 +182,7 @@
                                                                 alt="Create an account"/></a></p>
     </div>
 
-    <p style="clear: both;">&nbsp;</p>
+    <p style="clear: both;">&#160;</p>
 
     <table style="border: thin solid #F2F2F2;">
         <caption>New Members</caption>
@@ -223,6 +223,8 @@
         </table>
 
     <div id="ticker"></div>
+    
+    <script type="text/javascript" src="http://www.ohloh.net/projects/5088;badge_js"></script>
 
 </div>
 
