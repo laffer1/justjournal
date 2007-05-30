@@ -138,7 +138,7 @@ public final class UserDao {
     public static final UserTo view(int userId) {
         UserTo user = new UserTo();
         CachedRowSet rs = null;
-        String sqlStmt = "SELECT username, name, since FROM user WHERE id='" + userId + "' LIMIT 1;";
+        String sqlStmt = "SELECT username, name, since, lastlogin FROM user WHERE id='" + userId + "' LIMIT 1;";
 
         try {
 
@@ -149,6 +149,9 @@ public final class UserDao {
                 user.setUserName(rs.getString("username")); // username
                 user.setName(rs.getString("name")); // first name
                 user.setSince(rs.getInt("since"));
+                if (rs.getString("lastlogin") != null) {
+                    user.setLastLogin(rs.getString("lastlogin"));
+                }
             }
 
             rs.close();
@@ -177,7 +180,7 @@ public final class UserDao {
     public static final UserTo view(String userName) {
         UserTo user = new UserTo();
         CachedRowSet rs = null;
-        String sqlStmt = "SELECT id, name, since from user WHERE username='" + userName + "' Limit 1;";
+        String sqlStmt = "SELECT id, name, since, lastlogin from user WHERE username='" + userName + "' Limit 1;";
 
         try {
 
@@ -188,6 +191,9 @@ public final class UserDao {
                 user.setUserName(userName);
                 user.setName(rs.getString("name")); // first name
                 user.setSince(rs.getInt("since"));
+                if (rs.getString("lastlogin") != null) {
+                    user.setLastLogin(rs.getString("lastlogin"));
+                }
             }
 
             rs.close();

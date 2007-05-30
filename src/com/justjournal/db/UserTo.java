@@ -38,8 +38,7 @@ package com.justjournal.db;
  * Represents a user most basic properties.
  *
  * @author Lucas Holt
- *         Created by IntelliJ IDEA.
- *         User: laffer1
+ * @version $Id: UserTo.java,v 1.7 2007/05/30 21:57:23 laffer1 Exp $
  *         Date: Jan 21, 2004
  *         Time: 12:20:53 PM
  *         <p/>
@@ -52,6 +51,7 @@ public final class UserTo {
     private String password;
     private String passwordSha1;
     private int since;
+    private DateTime lastLogin;
 
 
     /**
@@ -70,6 +70,46 @@ public final class UserTo {
      */
     public final void setId(final int id) {
         this.id = id;
+    }
+
+     /**
+     * Retrieve last login date as a <code>DateTimeBean</code>
+     *
+     * @return last login in a DateTimeBean
+     * @see DateTimeBean
+     */
+    public DateTime getLastLogin() {
+         return lastLogin;
+    }
+
+    /**
+     * Set the date using a string in the form
+     * 2004-01-30 22:02
+     * <p/>
+     * TODO: create a parser to check the date
+     * more thoroughly.  DateTimeBean will throw
+     * an exception if the format is wrong though!
+     *
+     * @param date
+     * @throws IllegalArgumentException null or len < 6
+     * @see DateTimeBean
+     */
+    public void setLastLogin(String date)
+            throws IllegalArgumentException {
+        if (date == null)
+            throw new IllegalArgumentException("Illegal date: null");
+
+        if (date.length() < 6)
+            throw new IllegalArgumentException("Illegal date: " +
+                    date);
+        DateTime newDate = new DateTimeBean();
+
+        try {
+            newDate.set(date);
+            this.lastLogin = newDate;
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Illegal date");
+        }
     }
 
     /**
@@ -179,6 +219,8 @@ public final class UserTo {
         sb.append(name);
         sb.append(", since: ");
         sb.append(since);
+        sb.append(", lastLogin:");
+        sb.append(lastLogin);
 
         return sb.toString();
     }

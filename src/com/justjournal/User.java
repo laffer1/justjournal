@@ -34,9 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal;
 
-import com.justjournal.db.PreferencesDao;
-import com.justjournal.db.UserDao;
-import com.justjournal.db.UserTo;
+import com.justjournal.db.*;
 import sun.jdbc.rowset.CachedRowSet;
 
 /**
@@ -44,7 +42,7 @@ import sun.jdbc.rowset.CachedRowSet;
  * userName.
  *
  * @author Lucas Holt
- * @version $Id: User.java,v 1.13 2007/02/25 02:39:00 laffer1 Exp $
+ * @version $Id: User.java,v 1.14 2007/05/30 21:57:08 laffer1 Exp $
  *          Date: Jan 4, 2004
  *          Time: 9:59:35 PM
  * @since 1.0
@@ -67,6 +65,7 @@ public final class User {
     private boolean showAvatar = false;
 
     private String journalName = "";
+    private DateTime lastLogin;
 
     public User(final String userName) throws Exception {
         setUserName(userName);
@@ -75,6 +74,7 @@ public final class User {
 
         setUserId(ut.getId());
         setFirstName(ut.getName());
+        lastLogin = ut.getLastLogin();
 
         try {
             CachedRowSet RS = PreferencesDao.ViewJournalPreferences(userName);
@@ -134,6 +134,7 @@ public final class User {
 
         setUserName(ut.getUserName());
         setFirstName(ut.getName());
+        lastLogin = ut.getLastLogin();
 
         try {
             CachedRowSet RS = PreferencesDao.ViewJournalPreferences(userName);
@@ -308,6 +309,10 @@ public final class User {
             throw new IllegalArgumentException("first name must be at least 2 characters.");
 
         this.firstName = firstName;
+    }
+
+    public DateTime getLastLogin() {
+        return lastLogin;
     }
 
     /**
