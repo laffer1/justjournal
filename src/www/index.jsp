@@ -1,10 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<%@ page contentType="text/html; charset=utf-8" language="java" %>
 <%@ page import="com.justjournal.core.Statistics" %>
 <%@ page import="com.justjournal.db.UserDao"%>
 <%@ page import="java.util.Collection"%>
 <%@ page import="com.justjournal.db.UserTo"%>
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<%@ page contentType="text/html; charset=utf-8" language="java" %>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
     <title>Just Journal: Free Online Journals</title>
@@ -20,7 +20,6 @@
         #quickmenu {
             float: right;
             width: 200px;
-            height: 300px;
         }
 
         #blurb {
@@ -115,9 +114,11 @@
             <li><a href="create.jsp">Create Account</a></li>
             <li><a href="cancel.jsp">Cancel Account</a></li>
             <li><a href="http://www.cafepress.com/justjournal">Purchase JJ Merchandise</a></li>
+            <li><a href="login.jsp">Login</a></li>
             <li><a href="memberlist.jsp">Member List</a></li>
-            <li><a href="users/jjsite">Site Journal</a></li>
             <li><a href="opensource/index.jsp">Open Source</a></li>
+            <li><a href="users/jjsite">Site Journal</a></li>
+            <li><a href="update.jsp">Update Journal</a></li>
         </ul>
 
         <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
@@ -166,25 +167,25 @@
             </tr>
         </table>
 
-        <p><a href="RecentBlogs"><img src="images/rss2.gif" alt="Recent Blogs RSS"/></a></p>
+        <p><img src="images/feed.gif" alt="Feed"/> <a href="RecentBlogs">Recent Blog Entries</a></p>
+
+        <script type="text/javascript" src="http://www.ohloh.net/projects/5088;badge_js"></script>
     </div>
 
     <div id="blurb">
         <p class="firstone"
-           style="background: white url(images/firstone.png) no-repeat; text-align: justify; line-height: 1.8em; margin-right: 30px; padding-top: 0">
+           style="background: white url(images/firstone.png) no-repeat;
+           text-align: justify; line-height: 1.8em; margin-right: 30px; padding-top: 0">
             Just
             Journal is an online journal service, also
             known as a "blog." You can publish private
             entries for yourself, friends' entries to share with those close to you or public entries you wish to share
             with the Internet.</p>
 
-        <p style="padding-bottom: 10px"><a href="create.jsp"><img src="images/jj_btn_create_an_account.gif"
+        <p style="padding-bottom: 10px;"><a href="create.jsp"><img src="images/jj_btn_create_an_account.gif"
                                                                 alt="Create an account"/></a></p>
-    </div>
 
-    <p style="clear: both;">&#160;</p>
-
-    <table style="border: thin solid #F2F2F2;">
+        <table style="border: thin solid #F2F2F2;">
         <caption>New Members</caption>
         <thead>
             <tr style="font-size: 9px; color: white; background: black;">
@@ -200,32 +201,27 @@
     for (java.util.Iterator iterator = users.iterator(); iterator.hasNext();) {
         UserTo o = (UserTo) iterator.next();
 
-        if (i % 2 == 0) {
-%>
+        if (i % 2 == 0) { %>
             <tr style="font-size: 10px; background: #F2F2F2;">
+<%      } else { %>
+            <tr style="font-size: 10px;">
+<%      } %>
                 <td><%=o.getName()%></td>
-                <td><a href="users/<%=o.getUserName()%>"><%=o.getUserName()%></a></td>
+                <td><img src="images/userclass_16.png" alt="user icon" />
+                    <a href="users/<%=o.getUserName()%>"><%=o.getUserName()%></a></td>
                 <td><%=o.getSince()%></td>
                 <td><a href="profile.jsp?user=<%=o.getUserName()%>">My Profile</a></td>
             </tr>
-<%      } else { %>
-            <tr style="font-size: 10px;">
-                 <td><%=o.getName()%></td>
-                 <td><a href="users/<%=o.getUserName()%>"><%=o.getUserName()%></a></td>
-                 <td><%=o.getSince()%></td>
-                 <td><a href="profile.jsp?user=<%=o.getUserName()%>">My Profile</a></td>
-            </tr>
 <%
-        }
         i++;
     }
 %>
         </table>
+    </div>
+
+    <p style="clear: both;">&#160;</p>
 
     <div id="ticker"></div>
-    
-    <script type="text/javascript" src="http://www.ohloh.net/projects/5088;badge_js"></script>
-
 </div>
 
 <jsp:include page="footer.inc" flush="false"/>
