@@ -76,7 +76,8 @@
 
 	<!-- Footer: Begin -->
 	<div id="footer">
-		<a href="/index.jsp" title="JustJournal.com: Online Journals">JustJournal.com</a> 	</div>
+		<a href="/index.jsp" title="JustJournal.com: Online Journals">JustJournal.com</a>
+    </div>
 	<!-- Footer: End -->
 
 </body>
