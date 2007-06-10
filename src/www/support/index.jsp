@@ -48,7 +48,7 @@
         <li>RSS representation of recent entries (public entries only)</li>
         <li>125 moods</li>
         <li>View friends on LJ, Add / Remove</li>
-        <li>5 Themes</li>
+        <li>13 Themes</li>
         <li>Customize Journal colors and layout through CSS.</li>
         <li>LJ Friends page now shows some HTML code, user pictures, hyperlinks
             to LJ journals (via user image)</li>
@@ -59,7 +59,7 @@
         <li>Autoformat preference so html can be added safely (not in comments)</li>
         <li>RSS subscriptions (other sources)</li>
         <li>Favorites</li>
-        <li>Client for Windows 98/2000/ME/XP</li>
+        <li>Client for Windows 98/2000/ME/XP/Vista</li>
         <li>RSS 2.0</li>
     </ul>
 
@@ -73,19 +73,14 @@
         <li>Profile (waiting on user preferences)</li>
         <li>Pictures</li>
         <li>Cancel Account</li>
-        <li>Password reset</li>
+        <li>Password reset (works if you know your password already)</li>
         <li>More Style Templates (always)</li>
         <li>HTML templates (this one is on the back burner)</li>
-        <li>Security Level ( password protected ). This partially works. The comment
-            viewer still displays entries if they are set public.</li>
         <li>Client for Mac OS X</li>
         <li>Java Client (in progress)</li>
         <li>Considering adding support for RSS 1.0 RDF</li>
+        <li>Atom support</li>
         <li>Export Journal as XML</li>
-        <li>Ditching JSP in favor of new template system based on open standards
-            including XML and XSL. This would allow me to revise the journal viewer
-            to use XML directly which was my original plan. I'm experimenting with this now.
-            The entry edit system uses XML.</li>
         <li>Communities. Caryn is working on this. (stalled) </li>
         <li>Photo gallery</li>
         <li>custom links</li>
