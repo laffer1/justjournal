@@ -34,17 +34,17 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal;
 
 import com.justjournal.db.SQLHelper;
+import com.justjournal.utility.ServletUtilities;
 import org.apache.log4j.Category;
 import sun.jdbc.rowset.CachedRowSet;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
+
 
 /**
  * Image viewer servlet to display userpics and other images
@@ -54,24 +54,14 @@ import java.io.ByteArrayOutputStream;
  * Date: Nov 22, 2005
  * Time: 9:31:28 PM
  *
- * @version $Id: Image.java,v 1.7 2007/04/27 06:20:54 laffer1 Exp $
+ * @version $Id: Image.java,v 1.8 2007/06/27 20:15:49 laffer1 Exp $
  */
-public class Image extends HttpServlet {
+public final class Image extends HttpServlet {
 
-    private static Category log = Category.getInstance(Image.class.getName());
-
-    /**
-     * Initializes the servlet.
-     *
-     * @param config
-     * @throws javax.servlet.ServletException
-     */
-    public void init(final ServletConfig config) throws ServletException {
-        super.init(config);
-    }
+    private static final Category log = Category.getInstance(Image.class.getName());
 
     // processes get requests
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected final void doGet(HttpServletRequest request, HttpServletResponse response)
             throws java.io.IOException {
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -85,6 +75,7 @@ public class Image extends HttpServlet {
 
         try {
             response.reset();
+            response.setHeader("Expires", ServletUtilities.createExpiresHeader(180));
             CachedRowSet rs = SQLHelper.executeResultSet("call getimage(" + id + ");");
             if (rs.next()) {
                 response.setContentType(rs.getString("mimetype").trim());
