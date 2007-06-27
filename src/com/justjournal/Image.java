@@ -54,7 +54,7 @@ import java.io.ByteArrayOutputStream;
  * Date: Nov 22, 2005
  * Time: 9:31:28 PM
  *
- * @version $Id: Image.java,v 1.8 2007/06/27 20:15:49 laffer1 Exp $
+ * @version $Id: Image.java,v 1.9 2007/06/27 20:20:24 laffer1 Exp $
  */
 public final class Image extends HttpServlet {
 
@@ -65,10 +65,16 @@ public final class Image extends HttpServlet {
             throws java.io.IOException {
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Integer id;
 
-        String id = request.getParameter("id");
+        try {
+            id = new Integer(request.getParameter("id"));
+        } catch (Exception e) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
 
-        if (id == null) {
+        if (id.intValue() < 1) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
