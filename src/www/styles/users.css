@@ -116,3 +116,13 @@
     display: block;
     float: right;
 }
+
+#box1 {
+   visibility: hidden;
+   border: 1px solid gray;
+   position: absolute;
+   background: #F8F8F8;
+   padding: 0;
+   width: 250px;
+   z-index: 10;
+ }

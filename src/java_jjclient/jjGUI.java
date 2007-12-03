@@ -6,11 +6,11 @@ import java.awt.event.ActionEvent;
 import java.awt.*;
 
 /**
+ * @author Caryn Holt
  * Created by IntelliJ IDEA.
  * User: caryn
  * Date: Oct 31, 2005
  * Time: 11:18:49 AM
- * To change this template use File | Settings | File Templates.
  */
 public class jjGUI implements ActionListener {
 

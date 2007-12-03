@@ -189,6 +189,14 @@ function hasnum(pw) {
                     </span>
                 </div>
 
+                <div class="row">
+                    <span class="label">Captcha</span>
+                    <span class="formw">
+                        <img src="Captcha.jpg" alt="" /><br/>
+                        <input type="text" name="captcha" id="captcha" />
+                    </span>
+                </div>
+
                 <!-- Hack to fix spacing problem.. especially with text boxes -->
                 <div class="spacer">
                     &nbsp;

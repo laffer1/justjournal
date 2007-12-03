@@ -36,12 +36,33 @@
         view normal HTML webpages.</p>
 
     <p>Learn more about the <a href="windows.jsp">Windows client</a>.</p>
+    
+    <h3>Mac OS X</h3>
+    
+    <p><a href="JustJournal_Dash.zip">Just Journal widget 1.0</a> for Dashboard. 
+    This client only allows you to post public blog entries. </p>
+    
+    <p><strong>Beta!</strong> <a href="JustJournal_Dash_1.1.zip">JJ widget 1.1</a> for Dashboard. 
+    This is a development version that supports public/friends only/private posts
+    and tries to fix bugs saving the username and password.</p>
+    
+    <p>Mac OS X 10.4 Tiger is required. If you're using Safari, click the download link. When 
+    the widget download is complete, Show Dashboard, click the Plus sign to display 
+    the Widget Bar and click the widget's icon in the Widget Bar to open it. 
+    If you're using a browser other than Safari, click the download link. When 
+    the widget download is complete, unarchive it and place it in /Library/Widgets/ 
+    in your home folder. Show Dashboard, click the Plus sign to display the Widget 
+    Bar and click the widget's icon in the Widget Bar to open it.</p>
+
+    <h3>Java</h3>
 
     <p>A Java client is under development for use on all computers that can support
         jre 1.4 including Macintosh. When the client is stable, it will be posted on this
         site. A native Macintosh client is planned for the future.</p>
 
     <p>Learn more about the <a href="http://groups.mac.com/javajj">Java Client </a></p>
+
+    <h3>Write your own</h3>
 
     <p>If you are interested in using Just Journal server software
         on your website or in developing Just Journal, please view
