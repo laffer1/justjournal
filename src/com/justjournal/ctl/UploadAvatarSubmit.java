@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2005, Lucas Holt
+Copyright (c) 2005-2007, Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -49,6 +49,9 @@ import java.sql.SQLException;
 import java.util.List;
 
 /**
+ * @author Lucas Holt
+ * @version $Id: UploadAvatarSubmit.java,v 1.7 2007/12/03 19:03:43 laffer1 Exp $
+ * 
  * User: laffer1
  * Date: Dec 15, 2005
  * Time: 11:51:21 PM
@@ -118,7 +121,7 @@ public class UploadAvatarSubmit extends Protected {
                             stmtRemove.execute();
 
                             // do the insert of the image
-                            stmt = conn.prepareStatement("INSERT INTO user_pic (id,mimetype,image) VALUES(?,?,?)");
+                            stmt = conn.prepareStatement("INSERT INTO user_pic (id, date_modified, mimetype, image) VALUES(?,Now(),?,?)");
                             stmt.setInt(1, this.currentLoginId());
                             stmt.setString(2, contentType);
                             stmt.setBytes(3, data);

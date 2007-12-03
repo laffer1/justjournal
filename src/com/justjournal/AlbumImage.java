@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2006, Lucas Holt
+Copyright (c) 2006-2007, Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -35,6 +35,7 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal;
 
 import com.justjournal.db.SQLHelper;
+import com.justjournal.utility.ServletUtilities;
 import org.apache.log4j.Category;
 import sun.jdbc.rowset.CachedRowSet;
 
@@ -51,7 +52,7 @@ import java.io.ByteArrayOutputStream;
  * Diplay individual images in the user's photo album.
  *
  * @author Lucas Holt
- * @version $Id: AlbumImage.java,v 1.4 2007/04/27 06:21:42 laffer1 Exp $
+ * @version $Id: AlbumImage.java,v 1.5 2007/12/03 19:01:56 laffer1 Exp $
  */
 public class AlbumImage extends HttpServlet {
     private static Category log = Category.getInstance(AlbumImage.class.getName());
@@ -71,15 +72,24 @@ public class AlbumImage extends HttpServlet {
             throws java.io.IOException {
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        String id = request.getParameter("id");
+        Integer id;
 
-        if (id == null) {
+        try {
+            id = new Integer(request.getParameter("id"));
+        } catch (Exception e) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+
+        if (id.intValue() < 1) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
 
         try {
             response.reset();
+            response.setHeader("Expires", ServletUtilities.createExpiresHeader(180));
+
             CachedRowSet rs = SQLHelper.executeResultSet("call getalbumimage(" + id + ");");
             if (rs.next()) {
                 response.setContentType(rs.getString("mimetype").trim());

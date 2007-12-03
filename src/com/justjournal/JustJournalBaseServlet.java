@@ -49,7 +49,7 @@ import javax.servlet.http.HttpSession;
  * Base servlet to do some of the repetative servlet initialization stuff.
  *
  * @author Lucas Holt
- * @version $Id: JustJournalBaseServlet.java,v 1.11 2007/04/27 06:22:36 laffer1 Exp $
+ * @version $Id: JustJournalBaseServlet.java,v 1.12 2007/12/03 19:02:26 laffer1 Exp $
  * @since 1.0
  *        Date: Sep 25, 2005
  *        Time: 9:04:00 PM
@@ -92,7 +92,7 @@ public class JustJournalBaseServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws java.io.IOException {
         String contentType = "text/html; charset=utf-8";
-        final StringBuffer sb = new StringBuffer();
+        final StringBuffer sb = new StringBuffer(512);
         final HttpSession session = request.getSession(true);
 
         response.setContentType(contentType);
