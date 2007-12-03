@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2003-2006, Lucas Holt
+Copyright (c) 2003-2007, Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -35,14 +35,19 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.rss;
 
 import com.justjournal.db.EntryTo;
+import com.justjournal.db.SQLHelper;
 import com.justjournal.utility.Xml;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import sun.jdbc.rowset.CachedRowSet;
+
 /**
+ * Create an RSS feed as a string.  This should be a valid XML document.
+ * Implements RSS 2
  * @author Lucas Holt
- * @version 1.1
+ * @version $Id: Rss.java,v 1.4 2007/12/03 19:04:43 laffer1 Exp $
  * @since 1.0
  *        User: laffer1
  *        Date: Aug 27, 2003
@@ -143,6 +148,47 @@ public final class Rss {
 
         } catch (Exception e) {
 
+        }
+    }
+
+     public void populateImageList( int userid, String userName ) {
+
+        RssItem item;
+
+        // TODO: this sucks... need to make this reusable
+
+        CachedRowSet rs = null;
+        String imageTitle;
+        String sqlStmt = "SELECT id, title, mimetype, BIT_LENGTH(image) As imglen FROM user_images WHERE owner='" + userid + "' ORDER BY id DESC;";
+
+        try {
+
+            rs = SQLHelper.executeResultSet(sqlStmt);
+
+            while (rs.next()) {
+                imageTitle = rs.getString("title");
+                item = new RssItem();
+                item.setTitle(imageTitle);
+                item.setLink("http://www.justjournal.com/users/" + userName + "/pictures");
+                item.setDescription("");
+                item.setGuid("http://www.justjournal.com/AlbumImage?id=" + rs.getString("id"));
+                item.setEnclosureURL("http://www.justjournal.com/AlbumImage?id=" + rs.getString("id"));
+                item.setEnclosureType(rs.getString("mimetype").trim());
+                item.setEnclosureLength(new Integer(rs.getInt("imglen") / 8).toString());
+                //item.setPubDate();
+                Add(item);
+            }
+
+            rs.close();
+
+        } catch (Exception e1) {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (Exception e) {
+                    // NOTHING TO DO
+                }
+            }
         }
     }
 
@@ -252,6 +298,18 @@ public final class Rss {
             sb.append("\t\t\t<pubDate>");
             sb.append(o.getPubDate());
             sb.append("</pubDate>\n");
+
+            /* file attachment rss 2 feature
+            <enclosure url="http://www.scripting.com/mp3s/touchOfGrey.mp3"
+            length="5588242" type="audio/mpeg"/>
+            */
+            if (o.getEnclosureURL() != null && o.getEnclosureURL().length() > 0) {
+                sb.append("\t\t\t<enclosure url=\"" + o.getEnclosureURL());
+                sb.append("\" length=\"" + o.getEnclosureLength());
+                sb.append("\" type=\"");
+                sb.append(o.getEnclosureType());
+                sb.append("\" />\n");
+            }
 
             sb.append("\t\t</item>\n");
         }

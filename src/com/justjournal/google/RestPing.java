@@ -46,7 +46,7 @@ import java.io.IOException;
 
 /**
  * @author Lucas Holt
- * @version $Id: RestPing.java,v 1.1 2007/12/03 19:04:15 laffer1 Exp $
+ * @version $Id: RestPing.java,v 1.2 2007/12/03 19:04:27 laffer1 Exp $
  */
 public class RestPing {
 
