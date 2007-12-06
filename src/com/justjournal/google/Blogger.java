@@ -20,18 +20,18 @@ import com.justjournal.utility.StringUtil;
  * User: laffer1
  * Date: Dec 3, 2007
  * Time: 4:21:42 PM
- * $Id: Blogger.java,v 1.2 2007/12/06 02:08:22 laffer1 Exp $
+ * $Id: Blogger.java,v 1.3 2007/12/06 06:02:33 laffer1 Exp $
  *
  * A blogger 1 compatible interface
  *
  */
 public class Blogger {
 
-    public String getUsersInfo( String appkey, String username, String password)
+    public HashMap getUsersInfo( String appkey, String username, String password)
     {
-        String result = "";
         int userId;
         boolean blnError = false;
+        HashMap s = new HashMap();
 
 
         if (!StringUtil.lengthCheck(username, 3, 15)) {
@@ -47,34 +47,11 @@ public class Blogger {
         try {
             User user = new User(userId);
 
-            result = "<struct>\n";
-
-            result += "<member>\n";
-            result += "<name>" + "nickname" + "</name>\n";
-            result += "<value>" + user.getUserName() + "</value>\n";
-            result += "</member>\n";
-
-            result += "<member>\n";
-            result += "<name>" + "userid" + "</name>\n";
-            result += "<value>" + userId + "</value>\n";
-            result += "</member>\n";
-
-            result += "<member>\n";
-            result += "<name>" + "url" + "</name>\n";
-            result += "<value>" + "http://www.justjournal.com/users/" + user.getUserName() + "</value>\n";
-            result += "</member>\n";
-
-            result += "<member>\n";
-            result += "<name>" + "email" + "</name>\n";
-            result += "<value>" + user.getEmailAddress() + "</value>\n";
-            result += "</member>\n";
-
-            result += "<member>\n";
-            result += "<name>" + "firstname" + "</name>\n";
-            result += "<value>" + user.getFirstName() + "</value>\n";
-            result += "</member>\n";
-
-            result += "</struct>\n";
+            s.put("nickname", user.getUserName());
+            s.put("userid", userId);
+            s.put("url", "http://www.justjournal.com/users/" + user.getUserName());
+            s.put("email", user.getEmailAddress());
+            s.put("firstname", user.getFirstName());
 
         } catch (Exception e) {
             blnError = true;
@@ -82,29 +59,18 @@ public class Blogger {
 
         if (blnError)
         {
-            result = "<struct>\n";
-
-            result += "<member>\n";
-            result += "<name>" + "faultCode" + "</name>\n";
-            result += "<value><int>4</int>" + "</value>\n";
-            result += "</member>\n";
-
-            result += "<member>\n";
-            result += "<name>" + "faultString" + "</name>\n";
-            result += "<value><string>" + "User authentication failed: " + username + "</string></value>\n";
-            result += "</member>\n";
-
-            result += "</struct>\n";
+            s.clear();
+            s.put("faultCode", 4);
+            s.put("faultString", "User authentication failed: " + username );
 
         }
 
 
-        return result;
+        return s;
     }
 
     public ArrayList getUsersBlogs( String appkey, String username, String password)
     {
-        String result = "";
         int userId;
         boolean blnError = false;
         ArrayList a = new ArrayList();
