@@ -20,7 +20,7 @@ import com.justjournal.utility.StringUtil;
  * User: laffer1
  * Date: Dec 3, 2007
  * Time: 4:21:42 PM
- * $Id: Blogger.java,v 1.1 2007/12/06 02:00:16 laffer1 Exp $
+ * $Id: Blogger.java,v 1.2 2007/12/06 02:08:22 laffer1 Exp $
  *
  * A blogger 1 compatible interface
  *
@@ -108,6 +108,7 @@ public class Blogger {
         int userId;
         boolean blnError = false;
         ArrayList a = new ArrayList();
+        HashMap s = new HashMap();
 
 
         if (!StringUtil.lengthCheck(username, 3, 15)) {
@@ -123,28 +124,9 @@ public class Blogger {
         try {
             User user = new User(userId);
 
-            HashMap s = new HashMap();
-            //s.put("url",)
-
-            result = "<array><data><value><struct>\n";
-
-            result += "<member>\n";
-            result += "<name>" + "url" + "</name>\n";
-            result += "<value>" + "http://www.justjournal.com/users/" + user.getUserName() + "</value>\n";
-            result += "</member>\n";
-
-            result += "<member>\n";
-            result += "<name>" + "blogid" + "</name>\n";
-            result += "<value>" + userId + "</value>\n";
-            result += "</member>\n";
-
-
-            result += "<member>\n";
-            result += "<name>" + "blogName" + "</name>\n";
-            result += "<value>" + user.getJournalName() + "</value>\n";
-            result += "</member>\n";
-
-            result += "</struct></value></data></array>\n";
+            s.put("url",  "http://www.justjournal.com/users/" + user.getUserName());
+            s.put("blogid", userId);
+            s.put("blogName", user.getJournalName());
 
         } catch (Exception e) {
             blnError = true;
@@ -152,22 +134,12 @@ public class Blogger {
 
         if (blnError)
         {
-            result = "<struct>\n";
-
-            result += "<member>\n";
-            result += "<name>" + "faultCode" + "</name>\n";
-            result += "<value><int>4</int>" + "</value>\n";
-            result += "</member>\n";
-
-            result += "<member>\n";
-            result += "<name>" + "faultString" + "</name>\n";
-            result += "<value><string>" + "User authentication failed: " + username + "</string></value>\n";
-            result += "</member>\n";
-
-            result += "</struct>\n";
-
+            s.clear();
+            s.put("faultCode", 4);
+            s.put("faultString", "User authentication failed: " + username );                   
         }
 
+        a.add(s);
 
         return a;
     }
