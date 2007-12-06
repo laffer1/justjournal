@@ -17,7 +17,7 @@ import java.util.HashMap;
  * User: laffer1
  * Date: Dec 3, 2007
  * Time: 4:21:42 PM
- * $Id: Blogger.java,v 1.4 2007/12/06 19:20:40 laffer1 Exp $
+ * $Id: Blogger.java,v 1.5 2007/12/06 19:32:26 laffer1 Exp $
  * <p/>
  * A blogger 1 compatible interface exposed by XML-RPC
  */
@@ -25,6 +25,18 @@ public class Blogger {
 
     private static Category log = Category.getInstance(Blogger.class.getName());
 
+    /**
+     * Fetch the users personal information including their username, userid,
+     * email address and name.
+     *
+     * The Blogger API defines nickname, userid, url, email, firstname and lastname here.  We don't track
+     * last name.
+     *
+     * @param appkey  Not used but required by Blogger API
+     * @param username username to authenticate/check
+     * @param password the account secret
+     * @return A HashMap of the users personal info or an error code as a hashmap
+     */
     public HashMap getUsersInfo(String appkey, String username, String password) {
         int userId;
         boolean blnError = false;
@@ -64,6 +76,18 @@ public class Blogger {
         return s;
     }
 
+
+     /**
+     * Fetch the users blogs.  JJ only supports 1 blog per user right now.  Still this must be a list
+     * of all blogs.
+     *
+     * The Blogger API defines url, blogid and blogName.
+     *
+     * @param appkey  Not used but required by Blogger API
+     * @param username username to authenticate/check
+     * @param password the account secret
+     * @return A list of hash maps for each blog
+     */
     public ArrayList getUsersBlogs(String appkey, String username, String password) {
         int userId;
         boolean blnError = false;
@@ -104,6 +128,17 @@ public class Blogger {
     }
 
 
+    /**
+     * Create a new blog entry using the limited feautres of the blogger api.
+     *
+     * @param appkey  Ignored but required
+     * @param blogid Ignored since JJ supports 1 blog per user.  Just the UID anyway.
+     * @param username Username of blog owner.
+     * @param password password of blog owner.
+     * @param content  The body/content of the blog (no subjects)
+     * @param publish  A boolean representing the publish state of the entry.  JJ does not support drafts yet.
+     * @return The entry id of the entry as a string or an error.  
+     */
     public String newPost(String appkey, String blogid, String username, String password, String content, Boolean publish) {
         String result = "";
         int userId;
