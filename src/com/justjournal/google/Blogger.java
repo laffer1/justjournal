@@ -44,12 +44,13 @@ import com.justjournal.utility.StringUtil;
 import org.apache.log4j.Category;
 
 import java.util.*;
+import java.io.Serializable;
 
 /**
  * User: laffer1
  * Date: Dec 3, 2007
  * Time: 4:21:42 PM
- * $Id: Blogger.java,v 1.8 2007/12/09 05:45:37 laffer1 Exp $
+ * $Id: Blogger.java,v 1.9 2007/12/09 18:26:45 laffer1 Exp $
  * <p/>
  * A blogger 1 compatible interface exposed by XML-RPC
  * <p/>
@@ -63,9 +64,10 @@ import java.util.*;
  * blogger.getTemplate: Returns the main or archive index template of a given blog.
  * blogger.setTemplate: Edits the main or archive index template of a given blog.
  */
+@SuppressWarnings({"UnusedParameters"})
 public class Blogger {
 
-    private static Category log = Category.getInstance(Blogger.class.getName());
+    private static final Category log = Category.getInstance(Blogger.class.getName());
 
     /**
      * Fetch the users personal information including their username, userid,
@@ -79,10 +81,10 @@ public class Blogger {
      * @param password the account secret
      * @return A HashMap of the users personal info or an error code as a hashmap
      */
-    public HashMap getUsersInfo(String appkey, String username, String password) {
+    public HashMap<String, Serializable> getUsersInfo(String appkey, String username, String password) {
         int userId;
         boolean blnError = false;
-        HashMap s = new HashMap();
+        HashMap<String, Serializable> s = new HashMap<String, Serializable>();
 
 
         if (!StringUtil.lengthCheck(username, 3, 15)) {
@@ -133,11 +135,11 @@ public class Blogger {
      * @param password the account secret
      * @return A list of hash maps for each blog
      */
-    public ArrayList getUsersBlogs(String appkey, String username, String password) {
+    public ArrayList<HashMap<Object, Serializable>> getUsersBlogs(String appkey, String username, String password) {
         int userId;
         boolean blnError = false;
-        ArrayList a = new ArrayList();
-        HashMap s = new HashMap();
+        ArrayList<HashMap<Object, Serializable>> a = new ArrayList<HashMap<Object, Serializable>>();
+        HashMap<Object, Serializable> s = new HashMap<Object, Serializable>();
 
 
         if (!StringUtil.lengthCheck(username, 3, 15)) {
@@ -187,13 +189,13 @@ public class Blogger {
      * @param publish  A boolean representing the publish state of the entry.  JJ does not support drafts yet.
      * @return The entry id of the entry as a string or an error.
      */
-    public Object newPost(String appkey, String blogid, String username, String password, String content, Boolean publish) {
+    public Serializable newPost(String appkey, String blogid, String username, String password, String content, Boolean publish) {
         String result = "";
         int userId;
         boolean blnError = false;
         final EntryTo et = new EntryTo();
         EntryTo et2;
-        HashMap s = new HashMap();
+        HashMap<String, Serializable> s = new HashMap<String, Serializable>();
 
         if (!StringUtil.lengthCheck(username, 3, 15)) {
             blnError = true;
@@ -247,8 +249,6 @@ public class Blogger {
 
     /**
      * Modify a blog entry using the limited feautres of the blogger api.
-     * <p/>
-     * TODO: make this work
      *
      * @param appkey   Ignored but required
      * @param postid   entry id as a string
@@ -258,10 +258,10 @@ public class Blogger {
      * @param publish  A boolean representing the publish state of the entry.  JJ does not support drafts yet.
      * @return The entry id of the entry as a string or an error.
      */
-    public Object editPost(String appkey, String postid, String username, String password, String content, Boolean publish) {
+    public Serializable editPost(String appkey, String postid, String username, String password, String content, Boolean publish) {
         int userId;
         boolean blnError = false;
-        HashMap s = new HashMap();
+        HashMap<String, Serializable> s = new HashMap<String, Serializable>();
 
         int eid = 0;
 
@@ -395,19 +395,19 @@ public class Blogger {
      * <p/>
      * URI of example: http://www.sixapart.com/developers/xmlrpc/blogger_api/bloggergetrecentposts.html
      *
-     * @param appkey
-     * @param blogid
-     * @param username
-     * @param password
-     * @param numberOfPosts
-     * @return
+     * @param appkey        Unused, but required by Blogger API
+     * @param blogid        Unused, but required by Blogger API
+     * @param username      user to check
+     * @param password      password for user
+     * @param numberOfPosts The max number of posts to get.  (we should match this exactly)
+     * @return An arraylist of posts or a hashmap of error info.
      */
-    public Object getRecentPosts(String appkey, String blogid, String username, String password, int numberOfPosts) {
-        ArrayList arr = new ArrayList(numberOfPosts);
-        Collection total;
+    public Cloneable getRecentPosts(String appkey, String blogid, String username, String password, int numberOfPosts) {
+        ArrayList<HashMap<Object, Serializable>> arr = new ArrayList<HashMap<Object, Serializable>>(numberOfPosts);
+        Collection<EntryTo> total;
         Boolean blnError = false;
         int userId;
-        HashMap s = new HashMap();
+        HashMap<String, Serializable> s = new HashMap<String, Serializable>();
 
         if (!StringUtil.lengthCheck(username, 3, 15)) {
             blnError = true;
@@ -426,12 +426,12 @@ public class Blogger {
 
         total = EntryDAO.viewAll(username, true);
 
-        Iterator it = total.iterator();
+        Iterator<EntryTo> it = total.iterator();
 
         for (int i = 0; i < numberOfPosts; i++)
             if (it.hasNext()) {
-                HashMap entry = new HashMap();
-                EntryTo e = (EntryTo) it.next();
+                HashMap<Object, Serializable> entry = new HashMap<Object, Serializable>();
+                EntryTo e = it.next();
                 entry.put("link", "http://www.justjournal.com/users/" + e.getUserName() + "/entry/" + e.getId());
                 entry.put("permaLink", "http://www.justjournal.com/users/" + e.getUserName() + "/entry/" + e.getId());
                 entry.put("userid", Integer.toString(e.getUserId()));
@@ -451,11 +451,11 @@ public class Blogger {
         return arr;
     }
 
-    public Object getPost(String appkey, String postid, String username, String password) {
+    public HashMap<Object, Serializable> getPost(String appkey, String postid, String username, String password) {
         Boolean blnError = false;
         int userId;
-        HashMap s = new HashMap();
-        HashMap entry = new HashMap();
+        HashMap<Object, Serializable> s = new HashMap<Object, Serializable>();
+        HashMap<Object, Serializable> entry = new HashMap<Object, Serializable>();
         EntryTo e;
 
         if (!StringUtil.lengthCheck(username, 3, 15)) {
