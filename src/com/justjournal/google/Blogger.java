@@ -45,12 +45,13 @@ import org.apache.log4j.Category;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.IllegalFormatException;
 
 /**
  * User: laffer1
  * Date: Dec 3, 2007
  * Time: 4:21:42 PM
- * $Id: Blogger.java,v 1.6 2007/12/06 19:43:36 laffer1 Exp $
+ * $Id: Blogger.java,v 1.7 2007/12/09 03:49:49 laffer1 Exp $
  * <p/>
  * A blogger 1 compatible interface exposed by XML-RPC
  * <p/>
@@ -182,12 +183,13 @@ public class Blogger {
      * @param publish  A boolean representing the publish state of the entry.  JJ does not support drafts yet.
      * @return The entry id of the entry as a string or an error.
      */
-    public String newPost(String appkey, String blogid, String username, String password, String content, Boolean publish) {
+    public Object newPost(String appkey, String blogid, String username, String password, String content, Boolean publish) {
         String result = "";
         int userId;
         boolean blnError = false;
         final EntryTo et = new EntryTo();
         EntryTo et2;
+        HashMap s = new HashMap();
 
         if (!StringUtil.lengthCheck(username, 3, 15)) {
             blnError = true;
@@ -227,20 +229,10 @@ public class Blogger {
         }
 
         if (blnError) {
-            result = "<struct>\n";
-
-            result += "<member>\n";
-            result += "<name>" + "faultCode" + "</name>\n";
-            result += "<value><int>4</int>" + "</value>\n";
-            result += "</member>\n";
-
-            result += "<member>\n";
-            result += "<name>" + "faultString" + "</name>\n";
-            result += "<value><string>" + "User authentication failed: " + username + "</string></value>\n";
-            result += "</member>\n";
-
-            result += "</struct>\n";
-
+            s.clear();
+            s.put("faultCode", 4);
+            s.put("faultString", "User authentication failed: " + username);
+            return s;
         }
 
         return result;
@@ -259,12 +251,12 @@ public class Blogger {
      * @param publish  A boolean representing the publish state of the entry.  JJ does not support drafts yet.
      * @return The entry id of the entry as a string or an error.
      */
-    public String editPost(String appkey, String postid, String username, String password, String content, Boolean publish) {
-        String result = "";
+    public Object editPost(String appkey, String postid, String username, String password, String content, Boolean publish) {
         int userId;
         boolean blnError = false;
-        final EntryTo et = new EntryTo();
-        EntryTo et2;
+        HashMap s = new HashMap();
+
+        int eid = 0;
 
         if (!StringUtil.lengthCheck(username, 3, 15)) {
             blnError = true;
@@ -277,49 +269,37 @@ public class Blogger {
         userId = WebLogin.validate(username, password);
 
         try {
-            User user = new User(userId);
-            et.setUserId(userId);
-            DateTime d = new DateTimeBean();
-            d.set(new java.util.Date());
-            et.setDate(d);
-            //   et.setSubject(StringUtil.replace(request.getParameter("subject"), '\'', "\\\'"));
-            et.setBody(StringUtil.replace(content, '\'', "\\\'"));
-            //et.setMusic(StringUtil.replace(music, '\'', "\\\'"));
-            et.setSecurityLevel(2);   // public
-            et.setLocationId(0); // not specified
-            et.setMoodId(12);    // not specified
-            et.setAutoFormat(true);
-            et.setAllowComments(true);
-            et.setEmailComments(true);
-            et.setUserId(userId);
-            et.setUserName(user.getUserName());
-
-            EntryDAO.add(et);
-            et2 = EntryDAO.viewSingle(et);
-            result = Integer.toString(et2.getId());
-
-        } catch (Exception e) {
+            eid = Integer.parseInt(postid);
+        } catch (IllegalFormatException ex) {
             blnError = true;
-            log.debug(e.getMessage());
         }
 
-        if (blnError) {
-            result = "<struct>\n";
-
-            result += "<member>\n";
-            result += "<name>" + "faultCode" + "</name>\n";
-            result += "<value><int>4</int>" + "</value>\n";
-            result += "</member>\n";
-
-            result += "<member>\n";
-            result += "<name>" + "faultString" + "</name>\n";
-            result += "<value><string>" + "User authentication failed: " + username + "</string></value>\n";
-            result += "</member>\n";
-
-            result += "</struct>\n";
-
+        if (!blnError && eid > 0) {
+            try {
+                /* we're just updating the content aka body as this is the
+           only thing the protocol supports. */
+                EntryTo et2 = EntryDAO.viewSingle(eid, userId);
+                et2.setBody(StringUtil.replace(content, '\'', "\\\'"));
+                EntryDAO.update(et2);
+            } catch (Exception e) {
+                blnError = true;
+                log.debug(e.getMessage());
+            }
         }
 
-        return result;
+        if (eid < 1) {
+            s.put("faultCode", 4);
+            s.put("faultString", "Invalid entry id " + postid);
+
+        } else if (blnError) {
+            s.clear();
+            s.put("faultCode", 4);
+            s.put("faultString", "User authentication failed: " + username);
+
+        } else {
+            return !blnError; /* ie true per spec */
+        }
+
+        return s;
     }
 }
