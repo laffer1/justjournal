@@ -333,6 +333,89 @@ public final class EntryDAO {
         return et;
     }
 
+    public static EntryTo viewSingle(final EntryTo ets) {
+        final EntryTo et = new EntryTo();
+        CachedRowSet rs = null;
+        CachedRowSet rsComment = null;
+        String sqlStmt2;
+        String sqlStatement;
+
+        sqlStatement = new StringBuffer().append("SELECT us.id As id, us.username, ").append("eh.date As date, eh.subject As subject, eh.music, eh.body, ").append("mood.title As moodt, location.title As location, eh.id As entryid, ").append("eh.security as security, eh.autoformat, eh.allow_comments, eh.email_comments, location.id as locationid, mood.id as moodid ").append("FROM user As us, entry As eh, ").append("mood, location ").append("WHERE us=id=").append(ets.getUserId()).append(" AND eh.date='").append(ets.getDate().toString()).append("' AND eh.body='").append(ets.getBody()).append("'" + " us.id=eh.uid AND mood.id=eh.mood AND location.id=eh.location ORDER BY eh.date DESC, eh.id DESC LIMIT 1;").toString();
+
+
+        try {
+            rs = SQLHelper.executeResultSet(sqlStatement);
+
+            if (rs.next()) {
+
+                et.setUserName(rs.getString("username"));
+
+                et.setId(rs.getInt("entryid"));
+                et.setUserId(rs.getInt("id"));
+                et.setDate(rs.getString("date"));
+                et.setSubject(rs.getString("subject"));
+                et.setBody(rs.getString("body"));
+                et.setLocationId(rs.getInt("locationid"));
+                et.setMoodId(rs.getInt("moodid"));
+                et.setMusic(rs.getString("music"));
+                et.setSecurityLevel(rs.getInt("security"));
+                et.setMoodName(rs.getString("moodt"));
+                et.setLocationName(rs.getString("location"));
+
+                if (rs.getString("email_comments").compareTo("Y") == 0)
+                    et.setEmailComments(true);
+                else
+                    et.setEmailComments(false);
+
+                if (rs.getString("allow_comments").compareTo("Y") == 0)
+                    et.setAllowComments(true);
+                else
+                    et.setAllowComments(false);
+
+                if (rs.getString("autoformat").compareTo("Y") == 0)
+                    et.setAutoFormat(true);
+                else
+                    et.setAutoFormat(false);
+
+                try {
+                    sqlStmt2 = "SELECT count(comments.id) As comid FROM comments WHERE eid='" + rs.getString("entryid") + "';";
+                    rsComment = SQLHelper.executeResultSet(sqlStmt2);
+                    if (rsComment.next()) {
+                        if (rsComment.getInt("comid") > 0)
+                            et.setCommentCount(rsComment.getInt("comid"));
+                    }
+
+                    rsComment.close();
+                    rsComment = null;
+                } catch (Exception ex) {
+                    if (rsComment != null) {
+                        try {
+                            rsComment.close();
+                        } catch (Exception e) {
+                            // NOTHING TO DO
+                        }
+                    }
+                }
+
+            }
+
+            rs.close();
+
+        } catch (Exception e1) {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (Exception e) {
+                    // NOTHING TO DO
+                }
+            }
+        }
+
+
+        return et;
+    }
+
+
     public Collection<EntryTo> view(final String userName, final boolean thisUser) {
         return view(userName, thisUser, 0); // don't skip any!
     }
@@ -475,7 +558,7 @@ public final class EntryDAO {
         return entries;
     }
 
-       /**
+    /**
      * viewAll retrieves journal entries from the database.
      *
      * @param userName user who own's the entries.
@@ -732,7 +815,7 @@ public final class EntryDAO {
     public static CachedRowSet ViewCalendarYear(final int year,
                                                 final String userName,
                                                 final boolean thisUser)
-            throws java.lang.ClassNotFoundException, java.lang.IllegalAccessException, Exception {
+            throws Exception {
         String sqlStatement;
         CachedRowSet RS;
 
@@ -762,7 +845,7 @@ public final class EntryDAO {
                                                  final int month,
                                                  final String userName,
                                                  final boolean thisUser)
-            throws java.lang.ClassNotFoundException, java.lang.IllegalAccessException, Exception {
+            throws Exception {
 
         String sqlStatement;
         CachedRowSet RS;
@@ -959,8 +1042,7 @@ public final class EntryDAO {
 
                 et = new EntryTo();
 
-                if (!new User(rs.getString("userName")).isPrivateJournal() )
-                {
+                if (!new User(rs.getString("userName")).isPrivateJournal()) {
                     et.setUserName(rs.getString("userName"));
                     et.setId(rs.getInt("entryid"));
                     et.setUserId(rs.getInt("id"));
