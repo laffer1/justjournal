@@ -50,7 +50,7 @@ import java.io.Serializable;
  * User: laffer1
  * Date: Dec 3, 2007
  * Time: 4:21:42 PM
- * $Id: Blogger.java,v 1.9 2007/12/09 18:26:45 laffer1 Exp $
+ * $Id: Blogger.java,v 1.10 2007/12/13 20:18:19 laffer1 Exp $
  * <p/>
  * A blogger 1 compatible interface exposed by XML-RPC
  * <p/>
@@ -444,13 +444,22 @@ public class Blogger {
                 entry.put("mt_keywords", "");
                 entry.put("title", e.getSubject());
                 entry.put("mt_text_more", "");
-                entry.put("dateCreated", e.getDate().toString()); /* TODO: needs to be iso8601 */
+                entry.put("dateCreated", e.getDate().toDate()); /* TODO: needs to be iso8601 */
                 arr.add(entry);
             }
 
         return arr;
     }
 
+    /**
+     * Get a single blog entry by the post id (aka entry id)
+     *
+     * @param appkey   For google compatibility.. not used
+     * @param postid   the entry id to fetch
+     * @param username the username of the entry
+     * @param password the password of the entry
+     * @return a signle entry as a hashmap for consumption by xml-rpc
+     */
     public HashMap<Object, Serializable> getPost(String appkey, String postid, String username, String password) {
         Boolean blnError = false;
         int userId;
@@ -487,7 +496,7 @@ public class Blogger {
         entry.put("mt_keywords", "");
         entry.put("title", e.getSubject());
         entry.put("mt_text_more", "");
-        entry.put("dateCreated", e.getDate().toString()); /* TODO: needs to be iso8601 */
+        entry.put("dateCreated", e.getDate().toDate()); /* TODO: needs to be iso8601 */
 
         return entry;
     }
