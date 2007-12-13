@@ -50,7 +50,7 @@ import java.io.Serializable;
  * User: laffer1
  * Date: Dec 3, 2007
  * Time: 4:21:42 PM
- * $Id: Blogger.java,v 1.10 2007/12/13 20:18:19 laffer1 Exp $
+ * $Id: Blogger.java,v 1.11 2007/12/13 20:57:03 laffer1 Exp $
  * <p/>
  * A blogger 1 compatible interface exposed by XML-RPC
  * <p/>
@@ -438,6 +438,7 @@ public class Blogger {
                 entry.put("mt_allow_pings", 0);     /* TODO: on or off? */
                 entry.put("mt_allow_comments", 1);  /* TODO: on or off? */
                 entry.put("description", e.getBodyWithoutHTML());  /* TODO: change format? */
+                entry.put("content", e.getBodyWithoutHTML());  /* TODO: change format? */
                 entry.put("mt_convert_breaks", 0);                 /* TODO: research what these are... */
                 entry.put("postid", Integer.toString(e.getId()));
                 entry.put("mt_excerpt", e.getBodyWithoutHTML());
@@ -490,6 +491,7 @@ public class Blogger {
         entry.put("mt_allow_pings", 0);     /* TODO: on or off? */
         entry.put("mt_allow_comments", 1);  /* TODO: on or off? */
         entry.put("description", e.getBodyWithoutHTML());  /* TODO: change format? */
+        entry.put("content", e.getBodyWithoutHTML());  /* TODO: change format? */
         entry.put("mt_convert_breaks", 0);                 /* TODO: research what these are... */
         entry.put("postid", Integer.toString(e.getId()));
         entry.put("mt_excerpt", e.getBodyWithoutHTML());
