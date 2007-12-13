@@ -50,7 +50,7 @@ import java.io.Serializable;
  * User: laffer1
  * Date: Dec 3, 2007
  * Time: 4:21:42 PM
- * $Id: Blogger.java,v 1.11 2007/12/13 20:57:03 laffer1 Exp $
+ * $Id: Blogger.java,v 1.12 2007/12/13 21:43:13 laffer1 Exp $
  * <p/>
  * A blogger 1 compatible interface exposed by XML-RPC
  * <p/>
@@ -216,9 +216,11 @@ public class Blogger {
                 DateTime d = new DateTimeBean();
                 d.set(new java.util.Date());
                 et.setDate(d);
+                et.setSubject("");
                 //   et.setSubject(StringUtil.replace(request.getParameter("subject"), '\'', "\\\'"));
                 et.setBody(StringUtil.replace(content, '\'', "\\\'"));
                 //et.setMusic(StringUtil.replace(music, '\'', "\\\'"));
+                et.setMusic("");
                 et.setSecurityLevel(2);   // public
                 et.setLocationId(0); // not specified
                 et.setMoodId(12);    // not specified
