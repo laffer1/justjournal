@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2006, Lucas Holt
+Copyright (c) 2006, 2007  Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -34,10 +34,15 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
+import java.util.Date;
+
 /**
+ * An interface for just journal's sql friendly dates.
  * User: laffer1
  * Date: Mar 24, 2006
  * Time: 11:22:14 PM
+ *
+ * @author Lucas Holt
  */
 public interface DateTime {
     int getDay();
@@ -64,6 +69,8 @@ public interface DateTime {
             throws java.text.ParseException;
 
     void set(java.util.Date date);
+
+    Date toDate();
 
     String toPubDate();
 

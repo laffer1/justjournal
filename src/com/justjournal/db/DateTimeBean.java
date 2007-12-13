@@ -38,6 +38,7 @@ import org.apache.log4j.Category;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by IntelliJ IDEA.
@@ -171,6 +172,13 @@ public final class DateTimeBean implements DateTime {
         final SimpleDateFormat formatmydate = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zz");
 
         return formatmydate.format(current);
+    }
+
+    public Date toDate() {
+        final java.util.GregorianCalendar cal =
+                new java.util.GregorianCalendar(year, month - 1, day, hour, minutes);
+
+        return cal.getTime();
     }
 
     public String toString() {
