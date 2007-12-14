@@ -50,7 +50,7 @@ import java.io.Serializable;
  * User: laffer1
  * Date: Dec 3, 2007
  * Time: 4:21:42 PM
- * $Id: Blogger.java,v 1.12 2007/12/13 21:43:13 laffer1 Exp $
+ * $Id: Blogger.java,v 1.13 2007/12/14 01:07:10 laffer1 Exp $
  * <p/>
  * A blogger 1 compatible interface exposed by XML-RPC
  * <p/>
@@ -247,6 +247,70 @@ public class Blogger {
         }
 
         return result;
+    }
+
+
+    /**
+     * Delete a blog entry.
+     * <p/>
+     * This is an extension to the Blogger API common on several other platforms including Six Apart's stuff.
+     * http://www.sixapart.com/developers/xmlrpc/blogger_api/bloggerdeletepost.html
+     *
+     * @param appkey   Not used, but for compatibility.
+     * @param postid   blog entry id
+     * @param username owner of blog
+     * @param password password for that blog
+     * @param publish  ignored.
+     * @return true on success, hashmap on error.
+     */
+    public Serializable deletePost(String appkey, String postid, String username, String password, boolean publish) {
+        int userId;
+        boolean blnError = false;
+        HashMap<String, Serializable> s = new HashMap<String, Serializable>();
+
+        int eid = 0;
+
+        if (!StringUtil.lengthCheck(username, 3, 15)) {
+            blnError = true;
+        }
+
+        if (!StringUtil.lengthCheck(password, 5, 18)) {
+            blnError = true;
+        }
+
+        userId = WebLogin.validate(username, password);
+        if (userId < 1)
+            blnError = true;
+
+        try {
+            eid = Integer.parseInt(postid);
+        } catch (IllegalFormatException ex) {
+            blnError = true;
+        }
+
+        if (!blnError && eid > 0) {
+            try {
+                EntryDAO.delete(eid, userId);
+            } catch (Exception e) {
+                blnError = true;
+                log.debug(e.getMessage());
+            }
+        }
+
+        if (eid < 1) {
+            s.put("faultCode", 4);
+            s.put("faultString", "Invalid entry id " + postid);
+
+        } else if (blnError) {
+            s.clear();
+            s.put("faultCode", 4);
+            s.put("faultString", "User authentication failed: " + username);
+
+        } else {
+            return !blnError; /* ie true per spec */
+        }
+
+        return s;
     }
 
     /**
