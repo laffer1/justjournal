@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2003-2006, Lucas Holt
+Copyright (c) 2003-2007, Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -51,6 +51,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+
+/**
+ * A simple datatbase connectivity solution.  Depends on Sun's beta CachedRowSet.
+ *
+ * @author Lucas Holt
+ * @version $Id: SQLHelper.java,v 1.4 2007/12/23 01:39:06 laffer1 Exp $
+ * @since 1.0
+ */
 public final class SQLHelper {
     private static Context ctx = null;
     private static DataSource ds = null;
@@ -65,12 +73,16 @@ public final class SQLHelper {
         }
     }
 
-    public static int executeNonQuery(final String commandText)
-            throws Exception {
-        int RowsAffected = 0;
-        Connection conn = null;
-        Statement stmt = null;
-
+    /**
+     * Connect to the Database Server.
+     * <p/>
+     * Caller must call close() on the connection when they are done.
+     *
+     * @return Active database connection
+     * @throws java.sql.SQLException The database connection failed
+     */
+    public static Connection getConn()
+            throws java.sql.SQLException {
         if (ctx == null || ds == null) {
             try {
                 ctx = new InitialContext();
@@ -80,9 +92,17 @@ public final class SQLHelper {
             }
         }
 
+        return ds.getConnection();
+    }
+
+    public static int executeNonQuery(final String commandText)
+            throws Exception {
+        int RowsAffected = 0;
+        Connection conn = null;
+        Statement stmt = null;
 
         try {
-            conn = ds.getConnection();
+            conn = getConn();
 
             /*
              * Now, use normal JDBC programming to work with
@@ -110,6 +130,8 @@ public final class SQLHelper {
                 stmt.close();
             } catch (SQLException sqlEx) {
                 // ignore -- as we can't do anything about it here
+            } catch (NullPointerException e) {
+
             }
 
 
@@ -117,6 +139,8 @@ public final class SQLHelper {
                 conn.close();
             } catch (SQLException sqlEx) {
                 // ignore -- as we can't do anything about it here
+            } catch (NullPointerException e) {
+
             }
         }
 
@@ -130,17 +154,8 @@ public final class SQLHelper {
         ResultSet rs;
         CachedRowSet crs = null;
 
-        if (ctx == null || ds == null) {
-            try {
-                ctx = new InitialContext();
-                ds = (DataSource) ctx.lookup(DbEnv);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
         try {
-            conn = ds.getConnection();
+            conn = getConn();
             conn.setReadOnly(true);
 
             /*
@@ -174,6 +189,8 @@ public final class SQLHelper {
                 stmt.close();
             } catch (SQLException sqlEx) {
                 // ignore -- as we can't do anything about it here
+            } catch (NullPointerException e) {
+
             }
 
             try {
@@ -181,6 +198,8 @@ public final class SQLHelper {
                 conn.close();
             } catch (SQLException sqlEx) {
                 // ignore -- as we can't do anything about it here
+            } catch (NullPointerException e) {
+
             }
 
         }
