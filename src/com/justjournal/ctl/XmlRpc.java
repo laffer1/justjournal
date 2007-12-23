@@ -34,27 +34,22 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.ctl;
 
-import java.util.Random;
-import java.util.HashMap;
+import com.justjournal.google.Blogger;
+import redstone.xmlrpc.XmlRpcServlet;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import redstone.xmlrpc.XmlRpcServlet;
-import com.justjournal.google.Blogger;
 
 /**
  * User: laffer1
  * Date: Dec 3, 2007
  * Time: 4:13:53 PM
- * $Id: XmlRpc.java,v 1.1 2007/12/06 02:00:15 laffer1 Exp $
- *
+ * $Id: XmlRpc.java,v 1.2 2007/12/23 02:34:05 laffer1 Exp $
  */
 public class XmlRpc extends XmlRpcServlet {
-    public void init( ServletConfig servletConfig ) throws ServletException
-    {
-        super.init( servletConfig );
+    public void init(ServletConfig servletConfig) throws ServletException {
+        super.init(servletConfig);
 
         getXmlRpcServer().addInvocationHandler("blogger", new Blogger());
-        getXmlRpcServer().addInvocationHandler( "SimpleDatabase", new HashMap() );
-        getXmlRpcServer().addInvocationHandler( "RandomNumberGenerator", new Random() );
     }
 }
