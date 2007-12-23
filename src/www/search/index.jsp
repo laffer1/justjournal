@@ -74,7 +74,7 @@
             Connection conn;
             PreparedStatement pstmt;
             ResultSet rs = null;
-            String sqlStmt = "SELECT user.id AS id, user.username AS username, user.name AS name, user_contact.email As email FROM user, user_contact WHERE ";
+            String sqlStmt = "SELECT user.id AS id, user.username AS username, user.name AS name, user_contact.email As email FROM user, user_contact, user_pref WHERE user.id=user_pref.id AND user_pref.owner_view_only = 'N' AND ";
 
             if (type.equalsIgnoreCase("username"))
                 sqlStmt += "username like ?";
@@ -182,7 +182,7 @@
         if (bquery.length() > 0) {
             try {
                 BaseSearch b = new BaseSearch();
-                b.setBaseQuery("SELECT entry.subject AS subject, entry.body AS body, entry.date AS date, entry.id AS id, user.username AS username from entry, user WHERE entry.uid = user.id AND entry.security=2 AND ");
+                b.setBaseQuery("SELECT entry.subject AS subject, entry.body AS body, entry.date AS date, entry.id AS id, user.username AS username from entry, user, user_pref WHERE entry.uid = user.id AND entry.uid=user_pref.id AND user_pref.owner_view_only = 'N' AND entry.security=2 AND ");
                 b.setFields("subject body");
                 b.setMaxResults(20);
                 brs = b.search(bquery);
