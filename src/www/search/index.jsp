@@ -1,10 +1,15 @@
-<%@ page import="com.justjournal.db.SQLHelper" %>
-<%@ page import="java.sql.Connection" %>
-<%@ page import="java.sql.PreparedStatement" %>
-<%@ page import="java.sql.ResultSet" %>
 <?xml version="1.0" encoding="iso-8859-1"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <%@ page contentType="text/html; charset=iso-8859-1" language="java" %>
+<%@ page import="com.justjournal.db.SQLHelper" %>
+<%@ page import="com.justjournal.search.BaseSearch" %>
+<%@ page import="com.justjournal.utility.Xml" %>
+<%@ page import="sun.jdbc.rowset.CachedRowSet" %>
+<%@ page import="java.sql.Connection" %>
+<%@ page import="java.sql.PreparedStatement" %>
+<%@ page import="java.sql.ResultSet" %>
+<%@ page import="java.text.ParsePosition" %>
+<%@ page import="java.text.SimpleDateFormat" %>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>Just Journal: Search</title>
@@ -23,6 +28,9 @@
 <%
 
     String type = request.getParameter("type");
+    String query = request.getParameter("query");
+    if (query == null)
+        query = "";
 %>
 
 <div id="content">
@@ -47,7 +55,7 @@
                     <option value="phone">phone number</option>
                 </select>
 
-                <input type="text" name="query" id="query"/>
+                <input type="text" name="query" id="query" value="<%=query%>"/>
                 <input type="submit" name="Submit" value="Find" id="Submit"/>
             </p>
         </fieldset>
@@ -55,7 +63,7 @@
 </div>
 
 <%
-    String query = request.getParameter("query");
+
     Boolean err = false;
     int a = 0;
 
@@ -63,27 +71,27 @@
         if (query.length() > 0 && type.length() > 0) {
 
 
-            Connection conn = null;
+            Connection conn;
             PreparedStatement pstmt;
             ResultSet rs = null;
             String sqlStmt = "SELECT user.id AS id, user.username AS username, user.name AS name, user_contact.email As email FROM user, user_contact WHERE ";
 
             if (type.equalsIgnoreCase("username"))
-                sqlStmt += "username like '%?%'";
+                sqlStmt += "username like ?";
             else if (type.equalsIgnoreCase("name"))
-                sqlStmt += "name like '%?%'";
+                sqlStmt += "name like ?";
             else if (type.equalsIgnoreCase("e-mail"))
-                sqlStmt += "user_contact.email like '%?%'";
+                sqlStmt += "user_contact.email like ?";
             else if (type.equalsIgnoreCase("aim"))
-                sqlStmt += "user_contact.aim like '%?%'";
+                sqlStmt += "user_contact.aim like ?";
             else if (type.equalsIgnoreCase("yahoo"))
-                sqlStmt += "user_contact.yahoo like '%?%'";
+                sqlStmt += "user_contact.yahoo like ?";
             else if (type.equalsIgnoreCase("msn"))
-                sqlStmt += "user_contact.msn like '%?%'";
+                sqlStmt += "user_contact.msn like ?";
             else if (type.equalsIgnoreCase("icq"))
-                sqlStmt += "user_contact.icq like '%?%'";
+                sqlStmt += "user_contact.icq like ?";
             else if (type.equalsIgnoreCase("phone"))
-                sqlStmt += "user_contact.phone like '%?%'";
+                sqlStmt += "user_contact.phone like ?";
             else
                 err = true;
 
@@ -93,7 +101,7 @@
                 if (!err) {
                     conn = SQLHelper.getConn();
                     pstmt = conn.prepareStatement(sqlStmt);
-                    pstmt.setString(1, query);
+                    pstmt.setString(1, "%" + query + "%");
                     rs = pstmt.executeQuery();
 
 %>
@@ -134,6 +142,7 @@
                 }
 
             } catch (Exception e1) {
+                //out.print(e1.getMessage());
                 if (rs != null) {
                     try {
                         rs.close();
@@ -144,49 +153,93 @@
             }
         }
     }
+
+    // blog search    start
+
+    String bquery = request.getParameter("bquery");
+    if (bquery == null)
+        bquery = "";
 %>
 
-<!-- SiteSearch Google -->
-<form method="get" action="http://www.google.com/custom" target="_top">
-    <table border="0" bgcolor="#ffffff">
-        <tr>
-            <td nowrap="nowrap" valign="top" align="left" height="32">
-                <a href="http://www.google.com/">
-                    <img src="http://www.google.com/logos/Logo_25wht.gif" border="0" alt="Google" align="middle"/></a>
-            </td>
-            <td nowrap="nowrap">
-                <input type="hidden" name="domains" value="www.justjournal.com"/>
-                <input type="text" name="q" size="31" maxlength="255" value=""/>
-                <input type="submit" name="sa" value="Search"/>
-        <tr>
-            <td>&nbsp;</td>
-            <td nowrap="nowrap">
-                <table>
-                    <tr>
-                        <td>
-                            <input type="radio" name="sitesearch" value="" checked="checked"/>
-                        </td>
-                        <td>
-                            <input type="radio" name="sitesearch" value="www.justjournal.com"/>
-                            <font size="-1" color="black">www.justjournal.com</font>
-                        </td>
-                    </tr>
-                </table>
-                <input type="hidden" name="client" value="pub-1321195614665440"/>
-                <input type="hidden" name="forid" value="1"/>
-                <input type="hidden" name="ie" value="ISO-8859-1"/>
-                <input type="hidden" name="oe" value="ISO-8859-1"/>
-                <input type="hidden" name="safe" value="active"/>
-                <input type="hidden" name="flav" value="0000"/>
-                <input type="hidden" name="sig" value="9aOfGVz0Kz6fXBrN"/>
-                <input type="hidden" name="cof"
-                       value="GALT:#9A2C06;GL:1;DIV:#33FFFF;VLC:D03500;AH:center;BGC:99CCFF;LBGC:CCE5F9;ALC:440066;LC:440066;T:336699;GFNT:223472;GIMP:223472;LH:50;LW:267;L:http://www.justjournal.com/images/jjngtitle2.gif;S:http://www.justjournal.com/;FORID:1"/>
-                <input type="hidden" name="hl" value="en"/>
-            </td>
-        </tr>
-    </table>
-</form>
-<!-- SiteSearch Google -->
+<div style="width: 600px;">
+    <form action="index.jsp" method="get" name="bsearch" id="bsearch">
+        <fieldset>
+            <legend><strong>Search Blogs for</strong><br/></legend>
+            <p>
+                <input type="text" name="bquery" id="bquery" value="<%=bquery%>"/>
+                <input type="submit" name="BlogSearch" value="Find" id="BlogSearch"/>
+            </p>
+
+            <p>Displays first 20 public entries containing the search terms.</p>
+        </fieldset>
+    </form>
+</div>
+
+<%
+    CachedRowSet brs = null;
+
+    if (bquery != null) {
+        if (bquery.length() > 0) {
+            try {
+                BaseSearch b = new BaseSearch();
+                b.setBaseQuery("SELECT entry.subject AS subject, entry.body AS body, entry.date AS date, entry.id AS id, user.username AS username from entry, user WHERE entry.uid = user.id AND entry.security=2 AND ");
+                b.setFields("subject body");
+                b.setMaxResults(20);
+                brs = b.search(bquery);
+%>
+
+<h3>Blog Search Results</h3>
+
+<%
+
+                while (brs.next()) {
+
+                    // Format the current time.
+                    final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+                    final SimpleDateFormat formatmydate = new SimpleDateFormat("EEE, d MMM yyyy");
+                    final SimpleDateFormat formatmytime = new SimpleDateFormat("h:mm a");
+                    String curDate;
+
+                    // Parse the previous string back into a Date.
+                    final ParsePosition pos = new ParsePosition(0);
+                    final java.util.Date currentDate = formatter.parse(brs.getString("date"), pos);
+
+                    curDate = formatmydate.format(currentDate);
+
+                    out.print("<h4 style=\"color: orange;\">");
+                    out.print(curDate);
+                    out.println("</h4>");
+
+
+                    out.println("<div class=\"ebody\">");
+
+                    out.print("<h5>");
+                    out.print("<img src=\"/images/userclass_16.png\" alt=\"user\"/> <a href=\"../users/" + brs.getString("username") + "\" style=\"font-size: 12px;\">" + brs.getString("username") + "</a>");
+                    out.print(" - <span class=\"time\">");
+                    out.print(formatmytime.format(currentDate));
+                    out.print("</span> - <span class=\"subject\"><a href=\"../users/" + brs.getString("username") + "/entry/" + brs.getString("id") + "\">");
+                    out.print(Xml.cleanString(brs.getString("subject")));
+                    out.println("</a></span></h5> ");
+
+                    out.println("<div class=\"ebody\">");
+                    out.println(brs.getString("body"));
+                    out.println("</div>");
+                }
+
+                brs.close();
+
+            } catch (Exception e1) {
+                if (brs != null) {
+                    try {
+                        brs.close();
+                    } catch (Exception e) {
+                        // NOTHING TO DO
+                    }
+                }
+            }
+        }
+    }
+%>
 
 </div>
 
