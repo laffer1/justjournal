@@ -1,11 +1,11 @@
 /* layout.css for justjournal.com */
 
 body {
-    background: white url( images/background.png ) repeat-x;
+    background: white;
     padding: 0;
-    margin-left: .5in;
-    margin-right: .5in;
-    margin-top: 40px;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
     margin-bottom: 40px;
 }
 
@@ -93,13 +93,23 @@ p.firstone:first-letter {
     font-family: Georgia, "Times New Roman", Times, serif;
 }
 
+#header {
+    background: transparent url( "images/jj_header_bg.gif" ) repeat-x;
+}
+
+#header img {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
 #content {
-    margin-top: 1em;
-    padding-top: .5em;
+    margin-top: 0;
+    padding-top: 0;
     padding-bottom: .5em;
-    padding-left: 2ex;
-    padding-right: 2ex;
     width: 600px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 #footer {
@@ -108,7 +118,12 @@ p.firstone:first-letter {
     color: gray;
     background-color: transparent;
     border-top: 1px solid gray;
-    width: 600px;
+}
+
+#footer p {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
 }
 
 div.row {
