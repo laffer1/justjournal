@@ -1,15 +1,16 @@
 package com.justjournal.atom;
 
 import com.justjournal.db.EntryTo;
+import com.justjournal.utility.DateConvert;
 import com.justjournal.utility.Xml;
 
 import java.util.*;
-import java.text.SimpleDateFormat;
 
 /**
  * Create an atom feed.
+ *
  * @author Lucas Holt
- * @version $Id: AtomFeed.java,v 1.1 2007/06/04 05:55:13 laffer1 Exp $
+ * @version $Id: AtomFeed.java,v 1.2 2007/12/26 05:14:36 laffer1 Exp $
  */
 public final class AtomFeed {
 
@@ -63,14 +64,14 @@ public final class AtomFeed {
                 o = itr.next();
                 item = new AtomEntry();
                 item.setId("urn:jj:justjournal.com:atom1:" + o.getUserName()
-                        +":" + o.getId());
+                        + ":" + o.getId());
                 item.setTitle(o.getSubject());
                 item.setContent(o.getBody());
                 item.setLink("http://www.justjournal.com/users/" + o.getUserName() + "/entry/" + o.getId());
                 item.setPublished(o.getDate().toPubDate());
                 item.setUpdated(o.getDate().toPubDate());
                 Add(item);
-               }
+            }
         } catch (Exception e) {
         }
     }
@@ -89,20 +90,20 @@ public final class AtomFeed {
 
     public String toXml() {
 
-          StringBuffer sb = new StringBuffer();
+        StringBuffer sb = new StringBuffer();
 
-          sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+        sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 
-          sb.append("<feed xmlns=\"http://www.w3.org/2005/Atom\"\n" +
-                  "      xml:lang=\"en\"\n" +
-                  "      xml:base=\"http://www.justjournal.com\">\n");
-          sb.append("\t<id>urn:jj:justjournal.com:atom1:");
+        sb.append("<feed xmlns=\"http://www.w3.org/2005/Atom\"\n" +
+                "      xml:lang=\"en\"\n" +
+                "      xml:base=\"http://www.justjournal.com\">\n");
+        sb.append("\t<id>urn:jj:justjournal.com:atom1:");
         sb.append(userName);
-          sb.append("</id>\n");
+        sb.append("</id>\n");
 
-          sb.append("\t\t<title>");
-          sb.append(Xml.cleanString(title));
-          sb.append("</title>\n");
+        sb.append("\t\t<title>");
+        sb.append(Xml.cleanString(title));
+        sb.append("</title>\n");
 
         sb.append("\t<author>\n\t\t<name>");
         sb.append(authorName);
@@ -125,62 +126,62 @@ public final class AtomFeed {
         href="http://www.justjournal.com/users/laffer1/atom" title="Luke"/>
         */
 
-          /* Iterator */
-          AtomEntry o;
-          Iterator<AtomEntry> itr = items.listIterator();
-          for (int i = 0, n = items.size(); i < n && i < MAX_LENGTH; i++)     // 15 is the limit for RSS
-          {
-              o = itr.next();
+        /* Iterator */
+        AtomEntry o;
+        Iterator<AtomEntry> itr = items.listIterator();
+        for (int i = 0, n = items.size(); i < n && i < MAX_LENGTH; i++)     // 15 is the limit for RSS
+        {
+            o = itr.next();
 
-              sb.append("\t\t<entry>\n");
+            sb.append("\t\t<entry>\n");
 
-              sb.append("\t\t\t<id>");
-              sb.append(o.getId());
-              sb.append("</id>\n");
+            sb.append("\t\t\t<id>");
+            sb.append(o.getId());
+            sb.append("</id>\n");
 
-              sb.append("\t\t\t<title>");
-              sb.append(Xml.cleanString(o.getTitle()));
-              sb.append("</title>\n");
+            sb.append("\t\t\t<title>");
+            sb.append(Xml.cleanString(o.getTitle()));
+            sb.append("</title>\n");
 
-              sb.append("\t\t\t<link rel=\"alternate\" type=\"text/html\" href=\"");
-              sb.append(o.getLink());
-              sb.append("\"/>\n");
+            sb.append("\t\t\t<link rel=\"alternate\" type=\"text/html\" href=\"");
+            sb.append(o.getLink());
+            sb.append("\"/>\n");
 
-              sb.append("\t\t\t<published>");
-              sb.append(o.getPublished());
-              sb.append("</published>\n");
+            sb.append("\t\t\t<published>");
+            sb.append(o.getPublished());
+            sb.append("</published>\n");
 
-              sb.append("\t\t\t<updated>");
-              sb.append(o.getUpdated());
-              sb.append("</updated>\n");
+            sb.append("\t\t\t<updated>");
+            sb.append(o.getUpdated());
+            sb.append("</updated>\n");
 
-              if (o.getSummary() != null) {
+            if (o.getSummary() != null) {
                 sb.append("\t\t\t<summary>");
                 sb.append(o.getSummary());
                 sb.append("</summary>\n");
-              }
+            }
 
-              if (o.getContent() != null) {
+            if (o.getContent() != null) {
                 sb.append("\t\t\t<content type=\"html\">");
                 sb.append(o.getContent());
                 sb.append("</content>\n");
-              }
+            }
 
-              sb.append("\t\t</entry>\n");
-          }
+            sb.append("\t\t</entry>\n");
+        }
 
-          sb.append("\t</feed>\n");
+        sb.append("\t</feed>\n");
 
-          return sb.toString();
-      }
+        return sb.toString();
+    }
 
     private String date() {
         //Sat, 07 Sep 2002 09:43:33 GMT
         Calendar cal = new GregorianCalendar(java.util.TimeZone.getDefault());
         java.util.Date current = cal.getTime();
-        final SimpleDateFormat formatmydate = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zz");
+        //final SimpleDateFormat formatmydate = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zz");
 
-        return formatmydate.format(current);
+        return DateConvert.encode3339(current);
     }
 
     public String getId() {
