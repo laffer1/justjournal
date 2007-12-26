@@ -43,6 +43,7 @@ import java.util.Date;
  * Time: 11:22:14 PM
  *
  * @author Lucas Holt
+ * @version $Id: DateTime.java,v 1.4 2007/12/26 06:02:35 laffer1 Exp $
  */
 public interface DateTime {
     int getDay();
@@ -73,6 +74,8 @@ public interface DateTime {
     Date toDate();
 
     String toPubDate();
+
+    String toRFC3339();
 
     String toString();
 }

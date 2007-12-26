@@ -1,15 +1,20 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <%@ page contentType="text/html; charset=iso-8859-1" language="java" %>
-<%@ page import="com.justjournal.db.SQLHelper" %>
+<%@ page import="com.justjournal.User" %>
+<%@ page import="com.justjournal.WebError" %>
+<%@ page import="com.justjournal.core.Statistics" %>
+<%@ page import="com.justjournal.db.*" %>
 <%@ page import="com.justjournal.search.BaseSearch" %>
+<%@ page import="com.justjournal.utility.StringUtil" %>
 <%@ page import="com.justjournal.utility.Xml" %>
 <%@ page import="sun.jdbc.rowset.CachedRowSet" %>
-<%@ page import="java.sql.Connection" %>
-<%@ page import="java.sql.PreparedStatement" %>
-<%@ page import="java.sql.ResultSet" %>
+<%@ page import="java.io.PrintWriter" %>
+<%@ page import="java.sql.*" %>
 <%@ page import="java.text.ParsePosition" %>
 <%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.Collection" %>
+<%@ page import="java.util.Iterator" %>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>Just Journal: Search</title>
@@ -156,6 +161,8 @@
 
     // blog search    start
 
+    String bsort = request.getParameter("bsort");
+    String bmax = request.getParameter("bmax");
     String bquery = request.getParameter("bquery");
     if (bquery == null)
         bquery = "";
@@ -184,7 +191,18 @@
                 BaseSearch b = new BaseSearch();
                 b.setBaseQuery("SELECT entry.subject AS subject, entry.body AS body, entry.date AS date, entry.id AS id, user.username AS username from entry, user, user_pref WHERE entry.uid = user.id AND entry.uid=user_pref.id AND user_pref.owner_view_only = 'N' AND entry.security=2 AND ");
                 b.setFields("subject body");
-                b.setMaxResults(20);
+                if (bmax != null && bmax.length() > 0)
+                    try {
+                        b.setMaxResults(Integer.parseInt(bmax));
+                    } catch (Exception e) {
+                        b.setMaxResults(20);
+                    }
+                else
+                    b.setMaxResults(20);
+                if (bsort != null && bsort.equalsIgnoreCase("d"))
+                    b.setSortDescending("date");
+                else
+                    b.setSortAscending("date");
                 brs = b.search(bquery);
 %>
 

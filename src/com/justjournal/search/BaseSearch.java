@@ -43,7 +43,7 @@ import java.util.Arrays;
 
 /**
  * @author Lucas Holt
- * @version $Id: BaseSearch.java,v 1.2 2007/12/23 04:15:26 laffer1 Exp $
+ * @version $Id: BaseSearch.java,v 1.3 2007/12/26 06:02:35 laffer1 Exp $
  */
 public class BaseSearch {
     private static Category log = Category.getInstance(BaseSearch.class.getName());
@@ -52,6 +52,7 @@ public class BaseSearch {
     protected ArrayList<String> fieldlist = new ArrayList<String>();
     protected int maxresults = 30;
     protected String baseQuery;
+    protected String sort;
 
     public void setMaxResults(int results) {
         maxresults = results;
@@ -65,6 +66,16 @@ public class BaseSearch {
     public void setFields(String fields) {
         String q[] = fields.split("\\s");
         fieldlist.addAll(Arrays.asList(q));
+    }
+
+    public void setSortAscending(String field) {
+        if (field != null && field.length() > 0)
+            sort = "ORDER BY " + field;
+    }
+
+    public void setSortDescending(String field) {
+        if (field != null && field.length() > 0)
+            sort = "ORDER BY " + field + " DESC";
     }
 
     public CachedRowSet search(String query) {
@@ -105,7 +116,7 @@ public class BaseSearch {
             sqlStmt += ") and ";
         }
 
-        sqlStmt += " 1=1 LIMIT 0," + maxresults + ";";
+        sqlStmt += " 1=1 " + sort + " LIMIT 0," + maxresults + ";";
 
         try {
             rs = SQLHelper.executeResultSet(sqlStmt);

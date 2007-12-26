@@ -36,11 +36,12 @@ package com.justjournal.rss;
 
 /**
  * An RSS Item is one entry in an RSS feed.
+ *
  * @author Lucas Holt
- * @version $Id: RssItem.java,v 1.3 2007/12/03 19:04:43 laffer1 Exp $
- *         User: laffer1
- *         Date: Aug 28, 2003
- *         Time: 12:19:36 AM
+ * @version $Id: RssItem.java,v 1.4 2007/12/26 06:02:34 laffer1 Exp $
+ *          User: laffer1
+ *          Date: Aug 28, 2003
+ *          Time: 12:19:36 AM
  */
 public final class RssItem {
 
@@ -63,6 +64,7 @@ public final class RssItem {
     /**
      * URL pointed to an object to embed in the feed.  MP3,
      * images, and other elements make good candidates.
+     *
      * @return URL
      */
     public String getEnclosureURL() {
@@ -71,9 +73,10 @@ public final class RssItem {
 
     /**
      * We want to embed something in our feed.
+     *
      * @param enclosureURL A string reepresentation of a
-     * valid URL pointing to a resource such as a jpeg,
-     * mp3, etc.
+     *                     valid URL pointing to a resource such as a jpeg,
+     *                     mp3, etc.
      */
     public void setEnclosureURL(String enclosureURL) {
         this.enclosureURL = enclosureURL;
@@ -81,6 +84,7 @@ public final class RssItem {
 
     /**
      * Size of item pointed to by the URL.
+     *
      * @return Number of bytes as a string.
      */
     public String getEnclosureLength() {

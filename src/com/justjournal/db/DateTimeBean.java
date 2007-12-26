@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2005, Lucas Holt
+Copyright (c) 2005, 2006, 2007 Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -34,6 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
+import com.justjournal.utility.DateConvert;
 import org.apache.log4j.Category;
 
 import java.text.SimpleDateFormat;
@@ -47,7 +48,7 @@ import java.util.Date;
  * Time: 3:11:01 PM
  *
  * @author Lucas Holt
- * @version 1.2
+ * @version $Id: DateTimeBean.java,v 1.8 2007/12/26 06:02:35 laffer1 Exp $
  * @since 1.0
  */
 public final class DateTimeBean implements DateTime {
@@ -172,6 +173,10 @@ public final class DateTimeBean implements DateTime {
         final SimpleDateFormat formatmydate = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zz");
 
         return formatmydate.format(current);
+    }
+
+    public String toRFC3339() {
+        return DateConvert.encode3339(toDate());
     }
 
     public Date toDate() {

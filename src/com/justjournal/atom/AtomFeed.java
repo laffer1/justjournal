@@ -10,7 +10,7 @@ import java.util.*;
  * Create an atom feed.
  *
  * @author Lucas Holt
- * @version $Id: AtomFeed.java,v 1.2 2007/12/26 05:14:36 laffer1 Exp $
+ * @version $Id: AtomFeed.java,v 1.3 2007/12/26 06:02:35 laffer1 Exp $
  */
 public final class AtomFeed {
 
@@ -113,7 +113,7 @@ public final class AtomFeed {
         sb.append(alternateLink);
         sb.append("\"/>\n");
 
-        sb.append("<link rel=\"self\" type=\"text/xml\" href=\"");
+        sb.append("<link rel=\"self\" href=\"");
         sb.append(selfLink);
         sb.append("\"/>\n");
 

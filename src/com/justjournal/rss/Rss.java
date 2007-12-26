@@ -37,17 +37,17 @@ package com.justjournal.rss;
 import com.justjournal.db.EntryTo;
 import com.justjournal.db.SQLHelper;
 import com.justjournal.utility.Xml;
+import sun.jdbc.rowset.CachedRowSet;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import sun.jdbc.rowset.CachedRowSet;
-
 /**
  * Create an RSS feed as a string.  This should be a valid XML document.
  * Implements RSS 2
+ *
  * @author Lucas Holt
- * @version $Id: Rss.java,v 1.4 2007/12/03 19:04:43 laffer1 Exp $
+ * @version $Id: Rss.java,v 1.5 2007/12/26 06:02:35 laffer1 Exp $
  * @since 1.0
  *        User: laffer1
  *        Date: Aug 27, 2003
@@ -63,9 +63,9 @@ public final class Rss {
     private String copyright;
     private String webMaster;
     private String managingEditor;
+    private String selfLink;
 
     private ArrayList<RssItem> items = new ArrayList<RssItem>(MAX_LENGTH);
-
 
     public String getTitle() {
         return title;
@@ -123,6 +123,14 @@ public final class Rss {
         this.webMaster = webMaster;
     }
 
+    public String getSelfLink() {
+        return this.selfLink;
+    }
+
+    public void setSelfLink(String selfLink) {
+        this.selfLink = selfLink;
+    }
+
     // Methods
 
     public void populate(Collection<EntryTo> entries) {
@@ -151,7 +159,7 @@ public final class Rss {
         }
     }
 
-     public void populateImageList( int userid, String userName ) {
+    public void populateImageList(int userid, String userName) {
 
         RssItem item;
 
@@ -202,7 +210,7 @@ public final class Rss {
 
         sb.append("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n");
 
-        sb.append("<rss version=\"2.0\">\n");
+        sb.append("<rss version=\"2.0\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n");
         sb.append("\t<channel>\n");
 
         sb.append("\t\t<title>");
@@ -304,8 +312,8 @@ public final class Rss {
             length="5588242" type="audio/mpeg"/>
             */
             if (o.getEnclosureURL() != null && o.getEnclosureURL().length() > 0) {
-                sb.append("\t\t\t<enclosure url=\"" + o.getEnclosureURL());
-                sb.append("\" length=\"" + o.getEnclosureLength());
+                sb.append("\t\t\t<enclosure url=\"").append(o.getEnclosureURL());
+                sb.append("\" length=\"").append(o.getEnclosureLength());
                 sb.append("\" type=\"");
                 sb.append(o.getEnclosureType());
                 sb.append("\" />\n");
@@ -313,7 +321,8 @@ public final class Rss {
 
             sb.append("\t\t</item>\n");
         }
-
+        if (selfLink != null && selfLink.length() > 0)
+            sb.append("<atom:link href=\"").append(selfLink).append("rel=\"self\" type=\"application/rss+xml\" />");
         sb.append("\t</channel>\n");
         sb.append("</rss>\n");
 
@@ -337,6 +346,7 @@ public final class Rss {
         copyright = "";
         webMaster = "";
         managingEditor = "";
+        selfLink = "";
 
         items.clear();
     }
