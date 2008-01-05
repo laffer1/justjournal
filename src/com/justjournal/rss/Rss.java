@@ -47,7 +47,7 @@ import java.util.*;
  * Implements RSS 2
  *
  * @author Lucas Holt
- * @version $Id: Rss.java,v 1.5 2007/12/26 06:02:35 laffer1 Exp $
+ * @version $Id: Rss.java,v 1.6 2008/01/05 16:54:12 laffer1 Exp $
  * @since 1.0
  *        User: laffer1
  *        Date: Aug 27, 2003
@@ -322,7 +322,7 @@ public final class Rss {
             sb.append("\t\t</item>\n");
         }
         if (selfLink != null && selfLink.length() > 0)
-            sb.append("<atom:link href=\"").append(selfLink).append("rel=\"self\" type=\"application/rss+xml\" />");
+            sb.append("<atom:link href=\"").append(selfLink).append("\" rel=\"self\" type=\"application/rss+xml\" />");
         sb.append("\t</channel>\n");
         sb.append("</rss>\n");
 

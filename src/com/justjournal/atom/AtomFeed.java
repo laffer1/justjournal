@@ -10,7 +10,7 @@ import java.util.*;
  * Create an atom feed.
  *
  * @author Lucas Holt
- * @version $Id: AtomFeed.java,v 1.3 2007/12/26 06:02:35 laffer1 Exp $
+ * @version $Id: AtomFeed.java,v 1.4 2008/01/05 16:54:12 laffer1 Exp $
  */
 public final class AtomFeed {
 
@@ -68,8 +68,8 @@ public final class AtomFeed {
                 item.setTitle(o.getSubject());
                 item.setContent(o.getBody());
                 item.setLink("http://www.justjournal.com/users/" + o.getUserName() + "/entry/" + o.getId());
-                item.setPublished(o.getDate().toPubDate());
-                item.setUpdated(o.getDate().toPubDate());
+                item.setPublished(o.getDate().toRFC3339());
+                item.setUpdated(o.getDate().toRFC3339());
                 Add(item);
             }
         } catch (Exception e) {
@@ -119,7 +119,7 @@ public final class AtomFeed {
 
         sb.append("<updated>");
         sb.append(date());
-        sb.append("</updated>");
+        sb.append("</updated>\n");
 
         /*
         <link rel="service.feed" type="application/x.atom+xml"
@@ -163,7 +163,7 @@ public final class AtomFeed {
 
             if (o.getContent() != null) {
                 sb.append("\t\t\t<content type=\"html\">");
-                sb.append(o.getContent());
+                sb.append(Xml.cleanString(o.getContent()));
                 sb.append("</content>\n");
             }
 
