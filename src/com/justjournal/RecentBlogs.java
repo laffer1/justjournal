@@ -48,7 +48,7 @@ import java.util.Calendar;
  * Date: Feb 26, 2006
  * Time: 10:44:18 AM
  *
- * @version $Id: RecentBlogs.java,v 1.9 2008/02/18 01:36:05 laffer1 Exp $
+ * @version $Id: RecentBlogs.java,v 1.10 2008/02/18 03:55:29 laffer1 Exp $
  */
 public class RecentBlogs extends JustJournalBaseServlet {
     private static Category log = Category.getInstance(RecentBlogs.class.getName());
@@ -72,6 +72,7 @@ public class RecentBlogs extends JustJournalBaseServlet {
             rss.setCopyright("Copyright " + calendarg.get(Calendar.YEAR) + " JustJournal.com and its blog account owners.");
             rss.setWebMaster(set.getSiteAdminEmail() + " (" + set.getSiteAdmin() + ")");
             rss.setManagingEditor(set.getSiteAdminEmail() + " (" + set.getSiteAdmin() + ")");
+            rss.setSelfLink(set.getBaseUri() + "RecentBlogs");
             rss.populate(EntryDAO.viewRecentUniqueUsers());
             sb.append(rss.toXml());
 
