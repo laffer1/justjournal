@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2005-2006, Lucas Holt
+Copyright (c) 2005-2008, Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -40,6 +40,7 @@ import org.apache.log4j.Category;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.util.Calendar;
 
 /**
@@ -47,29 +48,30 @@ import java.util.Calendar;
  * Date: Feb 26, 2006
  * Time: 10:44:18 AM
  *
- * @version $Id: RecentBlogs.java,v 1.8 2006/08/02 17:48:18 laffer1 Exp $
+ * @version $Id: RecentBlogs.java,v 1.9 2008/02/18 01:36:05 laffer1 Exp $
  */
 public class RecentBlogs extends JustJournalBaseServlet {
     private static Category log = Category.getInstance(RecentBlogs.class.getName());
 
     protected void execute(HttpServletRequest request, HttpServletResponse response, HttpSession session, StringBuffer sb) {
-        response.setContentType("application/rss+xml");
+        response.setContentType("application/rss+xml;charset=ISO-8859-1");
+
         // Create an RSS object, set the required
         // properites (title, description language, url)
         // and write it to the sb output.
         try {
             Rss rss = new Rss();
 
-            final java.util.GregorianCalendar calendarg = new java.util.GregorianCalendar(java.util.TimeZone.getDefault());
+            final java.util.GregorianCalendar calendarg = new java.util.GregorianCalendar(java.util.TimeZone.getTimeZone("UTC"));
             calendarg.setTime(new java.util.Date());
 
             rss.setTitle("JJ New Posts");
-            rss.setLink("http://www.justjournal.com/");
+            rss.setLink(set.getBaseUri());
             rss.setDescription("New blog posts on Just Journal");
             rss.setLanguage("en-us");
             rss.setCopyright("Copyright " + calendarg.get(Calendar.YEAR) + " JustJournal.com and its blog account owners.");
-            rss.setWebMaster("webmaster@justjournal.com");
-            rss.setManagingEditor("webmaster@justjournal.com");
+            rss.setWebMaster(set.getSiteAdminEmail() + " (" + set.getSiteAdmin() + ")");
+            rss.setManagingEditor(set.getSiteAdminEmail() + " (" + set.getSiteAdmin() + ")");
             rss.populate(EntryDAO.viewRecentUniqueUsers());
             sb.append(rss.toXml());
 
@@ -78,7 +80,12 @@ public class RecentBlogs extends JustJournalBaseServlet {
             // how to handle error conditions with rss.
             // html back isn't good, but what do we do?
             log.debug(e);
-            WebError.Display("RSS ERROR", "Unable to retrieve RSS content.", sb);
+            try {
+                response.sendError(500);
+            } catch (IOException e1) {
+                log.debug(e1);
+            }
+            //WebError.Display("RSS ERROR", "Unable to retrieve RSS content.", sb);
         }
 
     }
