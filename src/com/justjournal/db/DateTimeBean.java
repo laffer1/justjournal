@@ -40,15 +40,16 @@ import org.apache.log4j.Category;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 /**
- * Created by IntelliJ IDEA.
- * User: laffer1
- * Date: Jan 4, 2004
- * Time: 3:11:01 PM
+ * Represent a date in just journal.  Allows the conversion of dates between
+ * java Date objects and MySQL representations of dates.
+ * <p/>
+ * TODO: implement time zones completely.  Add items to interface.
  *
  * @author Lucas Holt
- * @version $Id: DateTimeBean.java,v 1.8 2007/12/26 06:02:35 laffer1 Exp $
+ * @version $Id: DateTimeBean.java,v 1.9 2008/02/18 03:57:06 laffer1 Exp $
  * @since 1.0
  */
 public final class DateTimeBean implements DateTime {
@@ -60,6 +61,7 @@ public final class DateTimeBean implements DateTime {
     private int year = 1969;
     private int hour = 23;
     private int minutes = 59;
+    private TimeZone tz = TimeZone.getTimeZone("UTC");
 
     public int getDay() {
         return this.day;
@@ -165,27 +167,48 @@ public final class DateTimeBean implements DateTime {
     }
 
     public String toPubDate() {
-        //Sat, 07 Sep 2002 09:43:33 GMT
-        final java.util.GregorianCalendar cal =
-                new java.util.GregorianCalendar(year, month - 1, day, hour, minutes);
-
-        final java.util.Date current = cal.getTime();
-        final SimpleDateFormat formatmydate = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zz");
-
-        return formatmydate.format(current);
+        return DateConvert.encode822(toDate());
     }
 
     public String toRFC3339() {
         return DateConvert.encode3339(toDate());
     }
 
+    public String toBlogDate() {
+        final java.util.GregorianCalendar cal =
+                new java.util.GregorianCalendar(year, month - 1, day, hour, minutes);
+        final SimpleDateFormat formatmydate = new SimpleDateFormat("EEE, d MMM yyyy");
+        formatmydate.setTimeZone(tz);
+        return formatmydate.format(cal.getTime());
+    }
+
+    public String toBlogTime() {
+        final java.util.GregorianCalendar cal =
+                new java.util.GregorianCalendar(year, month - 1, day, hour, minutes);
+        final SimpleDateFormat formatmytime = new SimpleDateFormat("h:mm a");
+        formatmytime.setTimeZone(tz);
+        return formatmytime.format(cal.getTime());
+    }
+
+    /**
+     * Get the date represented by this instance with the time zone
+     * set.
+     *
+     * @return java Date with tz
+     */
     public Date toDate() {
         final java.util.GregorianCalendar cal =
                 new java.util.GregorianCalendar(year, month - 1, day, hour, minutes);
-
+        //cal.setTimeZone(tz);
+        cal.setTimeZone(TimeZone.getDefault());
         return cal.getTime();
     }
 
+    /**
+     * Retrieves the raw date without time zone set
+     *
+     * @return raw date
+     */
     public String toString() {
         final StringBuffer sb = new StringBuffer();
 
