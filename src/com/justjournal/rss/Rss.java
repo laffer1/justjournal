@@ -36,6 +36,7 @@ package com.justjournal.rss;
 
 import com.justjournal.db.EntryTo;
 import com.justjournal.db.SQLHelper;
+import com.justjournal.utility.DateConvert;
 import com.justjournal.utility.Xml;
 import sun.jdbc.rowset.CachedRowSet;
 
@@ -47,7 +48,7 @@ import java.util.*;
  * Implements RSS 2
  *
  * @author Lucas Holt
- * @version $Id: Rss.java,v 1.6 2008/01/05 16:54:12 laffer1 Exp $
+ * @version $Id: Rss.java,v 1.7 2008/02/18 03:56:39 laffer1 Exp $
  * @since 1.0
  *        User: laffer1
  *        Date: Aug 27, 2003
@@ -248,7 +249,7 @@ public final class Rss {
         sb.append("\t\t<image>\n");
 
         sb.append("\t\t\t<url>");
-        sb.append("http://www.justjournal.com/images/userclass_32.png");
+        sb.append("http://www.justjournal.com/images/jj_icon_flower.png");
         sb.append("</url>\n");
 
         sb.append("\t\t\t<title>");
@@ -261,12 +262,12 @@ public final class Rss {
 
         // max width 144, default if not here is 88
         sb.append("\t\t\t<width>");
-        sb.append(32);
+        sb.append(64);
         sb.append("</width>\n");
 
         // max height is 400, default is 31
         sb.append("\t\t\t<height>");
-        sb.append(32);
+        sb.append(64);
         sb.append("</height>\n");
 
         sb.append("\t\t</image>\n");
@@ -275,7 +276,7 @@ public final class Rss {
         // Sat, 07 Sep 2002 09:43:33 GMT
         // someday get this format right
         sb.append("\t\t<lastBuildDate>");
-        sb.append(date());
+        sb.append(DateConvert.encode822());
         sb.append("</lastBuildDate>\n");
 
         /* Iterator */
@@ -331,7 +332,7 @@ public final class Rss {
 
     private String date() {
         //Sat, 07 Sep 2002 09:43:33 GMT
-        Calendar cal = new GregorianCalendar(java.util.TimeZone.getDefault());
+        Calendar cal = new GregorianCalendar(java.util.TimeZone.getTimeZone("UTC"));
         java.util.Date current = cal.getTime();
         final SimpleDateFormat formatmydate = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zz");
 
