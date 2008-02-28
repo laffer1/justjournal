@@ -70,6 +70,11 @@
         in your home folder. Show Dashboard, click the Plus sign to display the Widget
         Bar and click the widget's icon in the Widget Bar to open it.</p>
 
+    <h3>*NIX</h3>
+
+    <p>A command line client for MidnightBSD and other operating systems is
+        now available. (Feb 27, 2008) <a href="unix.jsp">Learn more</a></p>
+
     <h3>Java</h3>
 
     <p>A Java client is under development for use on all computers that can support
