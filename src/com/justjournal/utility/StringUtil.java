@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2005, Lucas Holt
+Copyright (c) 2003, 2005, 2008 Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -32,14 +32,6 @@ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
 
-//
-//  stringUtil.java
-//
-//
-//  Created by Lucas Holt on Sun Jun 01 2003.
-//  Copyright (c) 2003 __MyCompanyName__. All rights reserved.
-//
-
 package com.justjournal.utility;
 
 import java.util.regex.Matcher;
@@ -52,6 +44,8 @@ import java.util.regex.Pattern;
  * @author Lucas Holt
  * @version 1.1
  * @since 1.0
+ *        <p/>
+ *        Sun Jun 01 2003
  */
 public final class StringUtil {
 
@@ -84,6 +78,7 @@ public final class StringUtil {
      * @param base Original string to modify
      * @param ch   Character to replace
      * @param str  Modified string after completion.
+     * @return
      */
     public static String replace(String base, char ch, String str) {
         return (base.indexOf(ch) < 0) ? base :
@@ -141,7 +136,7 @@ public final class StringUtil {
      * Email address generally contain more characters
      * than this.  (flawed)
      *
-     * @param address
+     * @param address an email address to check
      * @return true if the addres is valid.
      */
     public static boolean isEmailValid(String address) {
@@ -166,12 +161,26 @@ public final class StringUtil {
     }
 
     /**
+     * Checks a string to find non alpha characters.
+     * if found, it returns false.
+     *
+     * @param input a string to check for alpha chars.
+     * @return boolean indicating alpha status
+     */
+    public static boolean isAlpha(String input) {
+        final Pattern p = Pattern.compile("[A-Za-z]+");
+        final Matcher m = p.matcher(input);
+
+        return m.matches();
+    }
+
+    /**
      * Check the length of the string str using the
      * minimum and maximum values provided.
      *
-     * @param str
-     * @param minlength
-     * @param maxlength
+     * @param str       string to check
+     * @param minlength the minimum length
+     * @param maxlength the max length
      * @return true if the str is between the constraints,
      *         false if it violates them.
      */

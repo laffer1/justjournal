@@ -34,11 +34,13 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
+import com.justjournal.utility.StringUtil;
+
 /**
  * A tag is a form of metadata about a blog entry.  It is similar to a category.
  *
  * @author Lucas Holt
- * @version $Id: Tag.java,v 1.1 2008/04/25 21:28:11 laffer1 Exp $
+ * @version $Id: Tag.java,v 1.2 2008/04/25 21:39:04 laffer1 Exp $
  *          <p/>
  *          Date: Apr 25, 2008
  *          Time: 5:13:16 PM
@@ -59,6 +61,8 @@ public class Tag {
             throw new IllegalArgumentException("Name must be set");
         if (name.length() > 30)
             throw new IllegalArgumentException("Name cannot be longer than 30 characters.");
+        if (!StringUtil.isAlpha(name))
+            throw new IllegalArgumentException("Name contains invalid characters.  Must be A-Za-z");
         if (id < 1)
             throw new IllegalArgumentException("Tag id must be > 0");
 
@@ -76,6 +80,8 @@ public class Tag {
             throw new IllegalArgumentException("Name must be set");
         if (name.length() > 30)
             throw new IllegalArgumentException("Name cannot be longer than 30 characters.");
+        if (!StringUtil.isAlpha(name))
+            throw new IllegalArgumentException("Name contains invalid characters.  Must be A-Za-z");
 
         this.id = 0;
         this.name = name;
@@ -120,6 +126,9 @@ public class Tag {
             throw new IllegalArgumentException("Name must be set");
         if (name.length() > 30)
             throw new IllegalArgumentException("Name cannot be longer than 30 characters.");
+
+        if (!StringUtil.isAlpha(name))
+            throw new IllegalArgumentException("Name contains invalid characters.  Must be A-Za-z");
 
         this.name = name;
     }
