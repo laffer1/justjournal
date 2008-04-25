@@ -40,7 +40,7 @@ import com.justjournal.utility.StringUtil;
  * A tag is a form of metadata about a blog entry.  It is similar to a category.
  *
  * @author Lucas Holt
- * @version $Id: Tag.java,v 1.2 2008/04/25 21:39:04 laffer1 Exp $
+ * @version $Id: Tag.java,v 1.3 2008/04/25 21:41:58 laffer1 Exp $
  *          <p/>
  *          Date: Apr 25, 2008
  *          Time: 5:13:16 PM
@@ -67,7 +67,7 @@ public class Tag {
             throw new IllegalArgumentException("Tag id must be > 0");
 
         this.id = id;
-        this.name = name;
+        this.name = name.toLowerCase();
     }
 
     /**
@@ -84,7 +84,7 @@ public class Tag {
             throw new IllegalArgumentException("Name contains invalid characters.  Must be A-Za-z");
 
         this.id = 0;
-        this.name = name;
+        this.name = name.toLowerCase();
     }
 
     /**
@@ -130,6 +130,6 @@ public class Tag {
         if (!StringUtil.isAlpha(name))
             throw new IllegalArgumentException("Name contains invalid characters.  Must be A-Za-z");
 
-        this.name = name;
+        this.name = name.toLowerCase();
     }
 }
