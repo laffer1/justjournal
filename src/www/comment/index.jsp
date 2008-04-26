@@ -1,15 +1,15 @@
 <%@ page contentType="text/html; charset=iso-8859-1" language="java"
-         import="com.justjournal.User, com.justjournal.db.*" %>
+         import="com.justjournal.User, com.justjournal.WebError" %>
+<%@ page import="com.justjournal.db.*" %>
 <%@ page import="com.justjournal.utility.StringUtil" %>
+<%@ page import="com.justjournal.utility.Xml" %>
+<%@ page import="java.io.PrintWriter" %>
 <%@ page import="java.util.Collection" %>
 <%@ page import="java.util.Iterator" %>
-<%@ page import="com.justjournal.utility.Xml" %>
-<%@ page import="com.justjournal.WebError"%>
-<%@ page import="java.io.PrintWriter"%>
 <%--
 Displays user comments on a particular journal entry.
 
-$Id: index.jsp,v 1.4 2007/03/21 01:45:53 laffer1 Exp $
+$Id: index.jsp,v 1.5 2008/04/26 17:06:30 laffer1 Exp $
 --%>
 <%
     int eid;
@@ -26,7 +26,7 @@ $Id: index.jsp,v 1.4 2007/03/21 01:45:53 laffer1 Exp $
         //response.sendError(500, "bad entry id");
         //response.flushBuffer();
         PrintWriter out2 = response.getWriter();
-        WebError.Display("Error", "Invalid entry id.",out2);
+        WebError.Display("Error", "Invalid entry id.", out2);
         return;
     }
 
@@ -106,13 +106,15 @@ $Id: index.jsp,v 1.4 2007/03/21 01:45:53 laffer1 Exp $
 
 <p>
     <img src="../images/userclass_16.png" alt="user"/><a href="../users/<%=entry.getUserName()%>"
-                                                         title="<%=entry.getUserName()%>"><%=entry.getUserName()%></a>
+                                                         title="<%=entry.getUserName()%>"><%=entry.getUserName()%>
+</a>
 
     <% DateTime dte = entry.getDate(); %>
     wrote on <%=dte.toPubDate()%>
 </p>
 
-<h3><%=Xml.cleanString(entry.getSubject())%></h3>
+<h3><%=Xml.cleanString(entry.getSubject())%>
+</h3>
 <%
 
     if (entry.getAutoFormat()) {
@@ -138,11 +140,11 @@ $Id: index.jsp,v 1.4 2007/03/21 01:45:53 laffer1 Exp $
 
     <% if (entry.getSecurityLevel() == 0) { %>
     <span class="security">security:
-    <img src="../img/icon_private.gif" alt="private"/> private
+    <img src="../images/icon_private.gif" alt="private"/> private
     </span><br/>
     <% } else if (entry.getSecurityLevel() == 1) { %>
     <span class="security">security:
-    <img src="../img/icon_protected.gif" alt="friends"/>
+    <img src="../images/icon_protected.gif" alt="friends"/>
     friends
     </span><br/>
     <% } %>
@@ -213,7 +215,8 @@ $Id: index.jsp,v 1.4 2007/03/21 01:45:53 laffer1 Exp $
         <% } %>
     </div>
 
-    <p><%=Xml.cleanString(o.getBody())%></p>
+    <p><%=Xml.cleanString(o.getBody())%>
+    </p>
 </div>
 <%
         } // end for loop
