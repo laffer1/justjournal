@@ -35,15 +35,15 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.core;
 
 import com.justjournal.db.SQLHelper;
-import sun.jdbc.rowset.CachedRowSet;
 import org.apache.log4j.Category;
+import sun.jdbc.rowset.CachedRowSet;
 
 /**
  * Track the number of users, entry and comment statistics, and
  * other information.
  *
  * @author Lucas Holt
- * @version $Id: Statistics.java,v 1.3 2007/03/21 01:39:11 laffer1 Exp $
+ * @version $Id: Statistics.java,v 1.4 2008/04/26 18:02:37 laffer1 Exp $
  */
 public class Statistics {
 
@@ -86,13 +86,14 @@ public class Statistics {
 
     /**
      * Percentage of public entries as compared to total.
+     *
      * @return public entries as %
      */
-    public int publicEntries() {
-        int percent;
+    public float publicEntries() {
+        float percent;
         String sql = "SELECT count(*) FROM entry WHERE security='2';";
 
-        percent = (int)(((float)sqlCount(sql) / (float)entries()) * 100);
+        percent = (((float) sqlCount(sql) / (float) entries()) * 100);
 
         if (log.isDebugEnabled())
             log.debug("publicEntries(): percent is " + percent);
@@ -102,12 +103,13 @@ public class Statistics {
 
     /**
      * Percentage of friends entries as compared to total.
+     *
      * @return friends entries as %
      */
-    public int friendsEntries() {
-        int percent;
+    public float friendsEntries() {
+        float percent;
         String sql = "SELECT count(*) FROM entry WHERE security='1';";
-        percent = (int) (((float)sqlCount(sql) / (float)entries()) * 100);
+        percent = (((float) sqlCount(sql) / (float) entries()) * 100);
 
         if (log.isDebugEnabled())
             log.debug("friendsEntries(): percent is " + percent);
@@ -117,12 +119,13 @@ public class Statistics {
 
     /**
      * Percentage of private entries as compared to total.
+     *
      * @return private entries as %
      */
-    public int privateEntries() {
-        int percent;
+    public float privateEntries() {
+        float percent;
         String sql = "SELECT count(*) FROM entry WHERE security='0';";
-        percent = (int) (((float)sqlCount(sql) / (float)entries()) * 100);
+        percent = (((float) sqlCount(sql) / (float) entries()) * 100);
 
         if (log.isDebugEnabled())
             log.debug("privateEntries(): percent is " + percent);
@@ -155,6 +158,7 @@ public class Statistics {
     /**
      * Perform a sql query returning a scalar int value
      * typically form a count(*)
+     *
      * @param sql
      * @return int scalar from sql query
      */
