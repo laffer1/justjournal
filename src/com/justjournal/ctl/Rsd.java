@@ -17,7 +17,7 @@ import javax.servlet.http.HttpSession;
  * http://cyber.law.harvard.edu/blogs/gems/tech/rsd.html
  *
  * @author Lucas Holt
- * @version $Id: Rsd.java,v 1.3 2008/04/26 14:44:56 laffer1 Exp $
+ * @version $Id: Rsd.java,v 1.4 2008/04/26 21:37:19 laffer1 Exp $
  *          <p/>
  *          User: laffer1
  *          Date: Apr 26, 2008
@@ -54,7 +54,10 @@ public class Rsd extends JustJournalBaseServlet {
             sb.append("</homePageLink>\n");
             // APIS we support.
             sb.append("\t<apis>\n");
-            sb.append("\t\t<api name=\"Blogger\" preferred=\"true\" apiLink=\"http://www.justjournal.com/xml-rpc\" blogID=\"");
+            sb.append("\t\t<api name=\"Blogger\" preferred=\"false\" apiLink=\"http://www.justjournal.com/xml-rpc\" blogID=\"");
+            sb.append(user.getUserName());
+            sb.append("\" />\n");
+            sb.append("\t\t<api name=\"MetaWeblog\" preferred=\"true\" apiLink=\"http://www.justjournal.com/xml-rpc\" blogID=\"");
             sb.append(user.getUserName());
             sb.append("\" />\n");
             sb.append("\t</apis>\n");
