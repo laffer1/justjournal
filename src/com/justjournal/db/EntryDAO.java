@@ -1206,7 +1206,7 @@ public final class EntryDAO {
             for (ListIterator t = deadTags.listIterator(); t.hasNext();) {
                 String dele = (String) t.next();
                 int tagid = getTagId(dele);
-                String sql2 = "DELETE FROM entry_tags where entryid=('" + entryId + "' and tagid='" + tagid + "' LIMIT 1;";
+                String sql2 = "DELETE FROM entry_tags where entryid='" + entryId + "' and tagid='" + tagid + "' LIMIT 1;";
                 SQLHelper.executeNonQuery(sql2);
             }
 
