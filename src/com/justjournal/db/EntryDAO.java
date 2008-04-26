@@ -1276,5 +1276,44 @@ public final class EntryDAO {
 
         return tagid;
     }
+
+    /**
+     * Retrieve the list of tags the user has used on blog entries at this point in time.
+     *
+     * @param userId A userid to lookup
+     * @return a list of tags
+     */
+    public static ArrayList<Tag> getUserTags(int userId) {
+        String sqlStatement;
+        CachedRowSet rs = null;
+        ArrayList<Tag> tags = new ArrayList<Tag>();
+
+        // PUBLIC ONLY
+        sqlStatement = " SELECT tags.id As id, tags.name As name FROM tags, entry_tags, entry WHERE entry.uid='" + userId
+                + "' AND tags.id = entry_tags.tagid AND entry.id = entry_tags.entryid;";
+
+        try {
+            rs = SQLHelper.executeResultSet(sqlStatement);
+
+            while (rs.next()) {
+                tags.add(new Tag(rs.getInt("id"), rs.getString("name")));
+            }
+
+            rs.close();
+
+        } catch (Exception e1) {
+            log.error(e1.getMessage() + "\n" + e1.toString());
+
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (Exception e) {
+                    // NOTHING TO DO
+                }
+            }
+        }
+
+        return tags;
+    }
 }
 
