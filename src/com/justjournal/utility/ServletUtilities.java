@@ -48,13 +48,19 @@ import java.util.Locale;
  * 1999 Marty Hall; may be freely used or adapted.
  *
  * @author Lucas Holt
- * @version $Id: ServletUtilities.java,v 1.2 2007/12/03 19:05:14 laffer1 Exp $
+ * @version $Id: ServletUtilities.java,v 1.3 2008/04/26 03:13:36 laffer1 Exp $
  */
 
 public class ServletUtilities {
     public static final String DOCTYPE =
             "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">";
 
+    /**
+     * Create a HTML 4 doctype and header
+     *
+     * @param title HTML Document Title
+     * @return A preformatted header
+     */
     public static String headWithTitle(String title) {
         return (DOCTYPE + "\n" +
                 "<html>\n" +
@@ -66,12 +72,17 @@ public class ServletUtilities {
      * Read a parameter with the specified name, convert it to an int,
      * and return it. Return the designated default value if the parameter
      * doesn't exist or if it is an illegal integer format.
+     *
+     * @param request      Incoming Servlet Request
+     * @param paramName    Name of the request parameter.
+     * @param defaultValue The value to use in case of error
+     * @return default value on err or correct value
      */
 
     public static int getIntParameter(HttpServletRequest request,
                                       String paramName,
                                       int defaultValue) {
-        String paramString = request.getParameter(paramName);
+        final String paramString = request.getParameter(paramName);
         int paramValue;
         try {
             paramValue = Integer.parseInt(paramString);
@@ -81,6 +92,14 @@ public class ServletUtilities {
         return (paramValue);
     }
 
+    /**
+     * Retrieve a cookie that has been set previously.
+     *
+     * @param cookies      The cookies to scan
+     * @param cookieName   name of the cookie
+     * @param defaultValue value for errors or not founds.
+     * @return The value of the cookie or a default on err
+     */
     public static String getCookieValue(Cookie[] cookies,
                                         String cookieName,
                                         String defaultValue) {
@@ -101,13 +120,13 @@ public class ServletUtilities {
      * @return expires header
      */
     public static String createExpiresHeader(int minutes) {
-        SimpleDateFormat sdf = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z", Locale.US);
-        Calendar cal = Calendar.getInstance();
+        final SimpleDateFormat sdf = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z", Locale.US);
+        final Calendar cal = Calendar.getInstance();
 
         cal.add(Calendar.MINUTE, minutes);
 
-        long millis = cal.getTimeInMillis();
-        Date d = new Date(millis);
+        final long millis = cal.getTimeInMillis();
+        final Date d = new Date(millis);
 
         return sdf.format(d);
     }
