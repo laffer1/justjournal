@@ -34,6 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.ctl;
 
+import com.justjournal.MetaWeblog.MetaWeblog;
 import com.justjournal.google.Blogger;
 import redstone.xmlrpc.XmlRpcServlet;
 
@@ -44,12 +45,13 @@ import javax.servlet.ServletException;
  * User: laffer1
  * Date: Dec 3, 2007
  * Time: 4:13:53 PM
- * $Id: XmlRpc.java,v 1.2 2007/12/23 02:34:05 laffer1 Exp $
+ * $Id: XmlRpc.java,v 1.3 2008/04/26 20:59:54 laffer1 Exp $
  */
 public class XmlRpc extends XmlRpcServlet {
     public void init(ServletConfig servletConfig) throws ServletException {
         super.init(servletConfig);
 
         getXmlRpcServer().addInvocationHandler("blogger", new Blogger());
+        getXmlRpcServer().addInvocationHandler("metaWeblog", new MetaWeblog());
     }
 }
