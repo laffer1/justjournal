@@ -42,7 +42,7 @@ import java.util.regex.Pattern;
  * A generalized string manipulation library.
  *
  * @author Lucas Holt
- * @version 1.1
+ * @version $Id: StringUtil.java,v 1.6 2008/04/26 03:07:25 laffer1 Exp $
  * @since 1.0
  *        <p/>
  *        Sun Jun 01 2003
@@ -78,7 +78,7 @@ public final class StringUtil {
      * @param base Original string to modify
      * @param ch   Character to replace
      * @param str  Modified string after completion.
-     * @return
+     * @return The new string
      */
     public static String replace(String base, char ch, String str) {
         return (base.indexOf(ch) < 0) ? base :
@@ -89,9 +89,9 @@ public final class StringUtil {
     /**
      * Replace certain characters in a string with a new substring.
      *
-     * @param base
-     * @param delim
-     * @param str
+     * @param base  The original string
+     * @param delim The delimiter
+     * @param str   the substring
      * @return Modified string after operations.
      */
     public static String replace(String base, String delim, String[] str) {
