@@ -47,7 +47,7 @@ import java.util.*;
  * The MetaWeblog API interface for blogging.  Similar to Blogger 1.0 API.
  *
  * @author Lucas Holt
- * @version $Id: MetaWeblog.java,v 1.1 2008/04/26 20:59:54 laffer1 Exp $
+ * @version $Id: MetaWeblog.java,v 1.2 2008/04/26 21:23:59 laffer1 Exp $
  *          <p/>
  *          User: laffer1
  *          Date: Apr 26, 2008
@@ -342,7 +342,12 @@ public class MetaWeblog {
                 EntryTo et2 = EntryDAO.viewSingle(eid, userId);
                 et2.setSubject((String) content.get("title"));
                 et2.setBody(StringUtil.replace((String) content.get("description"), '\'', "\\\'"));
+                /* TODO: add date update support */
                 EntryDAO.update(et2);
+                String tag[] = (String[]) content.get("categories");
+                ArrayList<String> tags = new ArrayList<String>(tag.length);
+                tags.addAll(Arrays.asList(tag));
+                EntryDAO.setTags(eid, tags);
             } catch (Exception e) {
                 blnError = true;
                 log.debug(e.getMessage());
@@ -498,6 +503,9 @@ public class MetaWeblog {
                 entry.put("title", e.getSubject());
                 entry.put("mt_text_more", "");
                 entry.put("dateCreated", e.getDate().toDate()); /* TODO: needs to be iso8601 */
+                ArrayList<String> tags = EntryDAO.getTags(e.getId());
+                String str[] = (String[]) tags.toArray(new String[tags.size()]);
+                entry.put("categories", str); // according to microsoft it's a string array
                 arr.add(entry);
             }
 
@@ -550,6 +558,9 @@ public class MetaWeblog {
         entry.put("title", e.getSubject());
         entry.put("mt_text_more", "");
         entry.put("dateCreated", e.getDate().toDate()); /* TODO: needs to be iso8601 */
+        ArrayList<String> tags = EntryDAO.getTags(e.getId());
+        String str[] = (String[]) tags.toArray(new String[tags.size()]);
+        entry.put("categories", str); // according to microsoft it's a string array
 
         return entry;
     }
@@ -578,8 +589,8 @@ public class MetaWeblog {
 
         tags = EntryDAO.getUserTags(userId);
 
-        for (ListIterator cur = tags.listIterator(); cur.hasNext();) {
-            Tag curtag = (Tag) cur.next(); // get the tag
+        for (ListIterator<Tag> cur = tags.listIterator(); cur.hasNext();) {
+            Tag curtag = cur.next(); // get the tag
             HashMap<Object, Serializable> entry = new HashMap<Object, Serializable>();
             entry.put("description", curtag.getName());
             entry.put("title", curtag.getName());
