@@ -43,7 +43,7 @@ import java.util.Arrays;
 
 /**
  * @author Lucas Holt
- * @version $Id: BaseSearch.java,v 1.3 2007/12/26 06:02:35 laffer1 Exp $
+ * @version $Id: BaseSearch.java,v 1.4 2008/04/26 17:09:43 laffer1 Exp $
  */
 public class BaseSearch {
     private static Category log = Category.getInstance(BaseSearch.class.getName());
@@ -79,6 +79,9 @@ public class BaseSearch {
     }
 
     public CachedRowSet search(String query) {
+        if (log.isDebugEnabled()) {
+            log.debug("search() called with " + query);
+        }
         CachedRowSet result;
         parseQuery(query);
 
@@ -119,6 +122,9 @@ public class BaseSearch {
         sqlStmt += " 1=1 " + sort + " LIMIT 0," + maxresults + ";";
 
         try {
+            if (log.isDebugEnabled()) {
+                log.debug("realSearch() called on " + sqlStmt);
+            }
             rs = SQLHelper.executeResultSet(sqlStmt);
 
         } catch (Exception e) {

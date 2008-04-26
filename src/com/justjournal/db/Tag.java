@@ -40,12 +40,12 @@ import com.justjournal.utility.StringUtil;
  * A tag is a form of metadata about a blog entry.  It is similar to a category.
  *
  * @author Lucas Holt
- * @version $Id: Tag.java,v 1.3 2008/04/25 21:41:58 laffer1 Exp $
+ * @version $Id: Tag.java,v 1.4 2008/04/26 17:09:43 laffer1 Exp $
  *          <p/>
  *          Date: Apr 25, 2008
  *          Time: 5:13:16 PM
  */
-public class Tag {
+public final class Tag {
     private int id; // Unique id to represent the global tag
     private String name; // common string representation for public consumption
     // timestamp comes later

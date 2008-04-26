@@ -48,10 +48,10 @@ import java.util.Locale;
  * 1999 Marty Hall; may be freely used or adapted.
  *
  * @author Lucas Holt
- * @version $Id: ServletUtilities.java,v 1.3 2008/04/26 03:13:36 laffer1 Exp $
+ * @version $Id: ServletUtilities.java,v 1.4 2008/04/26 17:09:43 laffer1 Exp $
  */
 
-public class ServletUtilities {
+public final class ServletUtilities {
     public static final String DOCTYPE =
             "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">";
 
