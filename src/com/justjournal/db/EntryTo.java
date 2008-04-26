@@ -36,6 +36,9 @@ package com.justjournal.db;
 
 import com.justjournal.utility.HTMLUtil;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 /**
  * Journal entry transfer object.  Contains one journal entry.
  * Maps relationship between table "entry" and java.
@@ -64,6 +67,8 @@ public final class EntryTo {
     private boolean autoFormat = true;
     private boolean allowComments = true;
     private boolean emailComments = true;
+
+    private ArrayList tags = new ArrayList();
 
 
     /**
@@ -347,6 +352,14 @@ public final class EntryTo {
 
     public void setAutoFormat(boolean autoFormat) {
         this.autoFormat = autoFormat;
+    }
+
+    public Collection getTags() {
+        return tags;
+    }
+
+    public void setTags(ArrayList tag) {
+        this.tags = tag;
     }
 
     public String toString() {
