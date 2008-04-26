@@ -11,10 +11,13 @@ import javax.servlet.http.HttpSession;
 /**
  * An implementation of Really Simple Discovery (RSD).
  * <p/>
- * A list of points that blogging clients can use to post entries by "autodiscovery".
+ * A list of points that blogging clients can use to post entries by "autodiscovery".  This is used by blog clients
+ * such as Microsoft's Live Writer.
+ * <p/>
+ * http://cyber.law.harvard.edu/blogs/gems/tech/rsd.html
  *
  * @author Lucas Holt
- * @version $Id: Rsd.java,v 1.2 2008/04/26 14:43:36 laffer1 Exp $
+ * @version $Id: Rsd.java,v 1.3 2008/04/26 14:44:56 laffer1 Exp $
  *          <p/>
  *          User: laffer1
  *          Date: Apr 26, 2008
