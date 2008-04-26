@@ -209,6 +209,8 @@ public final class EntryDAO {
                 else
                     et.setAutoFormat(false);
 
+                et.setTags(getTags(entryId));
+
                 try {
                     sqlStmt2 = "SELECT count(comments.id) As comid FROM comments WHERE eid='" + rs.getString("entryid") + "';";
                     rsComment = SQLHelper.executeResultSet(sqlStmt2);
@@ -296,6 +298,8 @@ public final class EntryDAO {
                 else
                     et.setAutoFormat(false);
 
+                et.setTags(getTags(entryId));
+
                 try {
                     sqlStmt2 = "SELECT count(comments.id) As comid FROM comments WHERE eid='" + rs.getString("entryid") + "';";
                     rsComment = SQLHelper.executeResultSet(sqlStmt2);
@@ -377,6 +381,8 @@ public final class EntryDAO {
                     et.setAutoFormat(true);
                 else
                     et.setAutoFormat(false);
+
+                et.setTags(getTags(rs.getInt("entryid")));
 
                 try {
                     sqlStmt2 = "SELECT count(comments.id) As comid FROM comments WHERE eid='" + rs.getString("entryid") + "';";
@@ -514,6 +520,7 @@ public final class EntryDAO {
                 else
                     et.setAutoFormat(false);
 
+                et.setTags(getTags(rs.getInt("entryid")));
 
                 try {
                     sqlStmt2 = "SELECT count(comments.id) As comid FROM comments WHERE eid='" + rs.getString("entryid") + "';";
@@ -648,6 +655,7 @@ public final class EntryDAO {
                 else
                     et.setAutoFormat(false);
 
+                et.setTags(getTags(rs.getInt("entryid")));
 
                 try {
                     sqlStmt2 = "SELECT count(comments.id) As comid FROM comments WHERE eid='" + rs.getString("entryid") + "';";
@@ -764,6 +772,8 @@ public final class EntryDAO {
                     et.setAutoFormat(true);
                 else
                     et.setAutoFormat(false);
+
+                et.setTags(getTags(rs.getInt("entryid")));
 
                 try {
                     sqlStmt2 = "SELECT count(comments.id) As comid FROM comments WHERE eid='" + rs.getString("entryid") + "';";
@@ -985,6 +995,8 @@ public final class EntryDAO {
                 else
                     et.setAutoFormat(false);
 
+                et.setTags(getTags(rs.getInt("entryid")));
+
                 if (log.isDebugEnabled())
                     log.debug("viewRecentAllUsers: ET contains " + et.toString());
 
@@ -1072,6 +1084,8 @@ public final class EntryDAO {
                     else
                         et.setAutoFormat(false);
 
+                    et.setTags(getTags(rs.getInt("entryid")));
+
                     if (log.isDebugEnabled())
                         log.debug("viewRecentUniqueUsers: ET contains " + et.toString());
 
@@ -1104,7 +1118,7 @@ public final class EntryDAO {
      * @param entryId The unique identifier for an entry
      * @return An arraylist of tag names
      */
-    public ArrayList<String> getTags(int entryId) {
+    public static ArrayList<String> getTags(int entryId) {
         final ArrayList<String> tags = new ArrayList<String>();
 
         String sqlStatement;
@@ -1146,7 +1160,7 @@ public final class EntryDAO {
      * @param tags    An arralist of tags
      * @return true on success, false otherwise
      */
-    public boolean setTags(int entryId, ArrayList tags) {
+    public static boolean setTags(int entryId, ArrayList tags) {
         boolean noError = true;
         ArrayList<String> current = getTags(entryId);
         ArrayList<String> newTags = new ArrayList<String>();
@@ -1224,7 +1238,7 @@ public final class EntryDAO {
      * @param tagname The "name" of the tag
      * @return tag id
      */
-    public int getTagId(String tagname) {
+    public static int getTagId(String tagname) {
         int tagid = 0;
         String sqlStatement;
         CachedRowSet rs = null;
