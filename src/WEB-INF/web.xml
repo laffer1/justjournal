@@ -143,6 +143,12 @@
     </servlet>
 
     <servlet>
+        <display-name>RSD</display-name>
+        <servlet-name>rsd</servlet-name>
+        <servlet-class>com.justjournal.ctl.Rsd</servlet-class>
+    </servlet>
+
+    <servlet>
         <display-name>Captcha</display-name>
         <servlet-name>Captcha</servlet-name>
         <servlet-class>nl.captcha.servlet.CaptchaServlet</servlet-class>
@@ -245,6 +251,11 @@
     <servlet-mapping>
         <servlet-name>DeleteLink</servlet-name>
         <url-pattern>/link/DeleteLink</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>rsd</servlet-name>
+        <url-pattern>/rsd</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>
