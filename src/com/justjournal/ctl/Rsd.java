@@ -14,7 +14,7 @@ import javax.servlet.http.HttpSession;
  * A list of points that blogging clients can use to post entries by "autodiscovery".
  *
  * @author Lucas Holt
- * @version $Id: Rsd.java,v 1.1 2008/04/26 14:42:04 laffer1 Exp $
+ * @version $Id: Rsd.java,v 1.2 2008/04/26 14:43:36 laffer1 Exp $
  *          <p/>
  *          User: laffer1
  *          Date: Apr 26, 2008
@@ -32,7 +32,7 @@ public class Rsd extends JustJournalBaseServlet {
 
     protected void execute(HttpServletRequest request, HttpServletResponse response, HttpSession session, StringBuffer sb) {
         try {
-            response.setContentType("text/xml; charset=utf-8");
+            response.setContentType("application/rsd+xml; charset=utf-8");
 
             String blogID = request.getParameter("blogID");
             if (blogID == null || blogID.length() < 2) {
