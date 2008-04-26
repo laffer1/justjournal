@@ -198,15 +198,15 @@
         </tr>
         <tr style="font-size: 10px; background: #F2F2F2;">
             <td>Public Entries</td>
-            <td><%=s.publicEntries()%>%</td>
+            <td><%=String.format("%.2f", s.publicEntries())%>%</td>
         </tr>
         <tr style="font-size: 10px;">
             <td>Friends Entries</td>
-            <td><%=s.friendsEntries()%>%</td>
+            <td><%=String.format("%.2f", s.friendsEntries())%>%</td>
         </tr>
         <tr style="font-size: 10px; background: #F2F2F2;">
             <td>Private Entries</td>
-            <td><%=s.privateEntries()%>%</td>
+            <td><%=String.format("%.2f", s.privateEntries())%>%</td>
         </tr>
         <tr style="font-size: 10px;">
             <td>Comments</td>
