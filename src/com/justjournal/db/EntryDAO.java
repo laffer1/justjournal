@@ -34,13 +34,14 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
+import com.justjournal.User;
+import com.justjournal.utility.StringUtil;
 import org.apache.log4j.Category;
 import sun.jdbc.rowset.CachedRowSet;
 
 import java.util.ArrayList;
 import java.util.Collection;
-
-import com.justjournal.User;
+import java.util.ListIterator;
 
 /**
  * Provides access to journal entries in the data tier.  Several parts of this
@@ -1095,4 +1096,171 @@ public final class EntryDAO {
 
         return entries;
     }
+
+
+    /**
+     * Retrieve the tag names for a given blog entry
+     *
+     * @param entryId The unique identifier for an entry
+     * @return An arraylist of tag names
+     */
+    public ArrayList<String> getTags(int entryId) {
+        final ArrayList<String> tags = new ArrayList<String>();
+
+        String sqlStatement;
+        CachedRowSet rs = null;
+
+        // PUBLIC ONLY
+        sqlStatement = " SELECT tags.name As name FROM tags, entry_tags WHERE entry_tags.entryid='" + entryId
+                + "' AND tags.id = entry_tags.tagid;";
+
+        try {
+            rs = SQLHelper.executeResultSet(sqlStatement);
+
+            while (rs.next()) {
+                tags.add(rs.getString("name"));
+            }
+
+            rs.close();
+
+        } catch (Exception e1) {
+            log.error(e1.getMessage() + "\n" + e1.toString());
+
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (Exception e) {
+                    // NOTHING TO DO
+                }
+            }
+        }
+        return tags;
+    }
+
+
+    /**
+     * Add and delete tags for blog entries.
+     * TODO: Finish implementation
+     *
+     * @param entryId The entry the tags should associate with
+     * @param tags    An arralist of tags
+     * @return true on success, false otherwise
+     */
+    public boolean setTags(int entryId, ArrayList tags) {
+        boolean noError = true;
+        ArrayList<String> current = getTags(entryId);
+        ArrayList<String> newTags = new ArrayList<String>();
+        ArrayList<String> deadTags = new ArrayList<String>();
+
+        // delete test
+        for (ListIterator cur = current.listIterator(); cur.hasNext();) {
+            String curtag = (String) cur.next(); // get the tag
+            boolean inlist = false;
+            // Compare the current list with the "new" list of tags.
+            for (ListIterator t = tags.listIterator(); t.hasNext();) {
+                String newtag = (String) t.next();
+                if (curtag.equalsIgnoreCase(newtag)) {
+                    inlist = true;
+                    break; // in both lists so we can skip it.
+                }
+            }
+
+            // The tag is in the database, but not in the new list so it must be deleted.
+            if (!inlist)
+                deadTags.add(curtag);
+        }
+
+        // add test
+        for (ListIterator t = tags.listIterator(); t.hasNext();) {
+            String newtag = (String) t.next(); // get the tag
+            boolean inlist = false;
+            // Compare the current list with the "new" list of tags.
+            for (ListIterator cur = current.listIterator(); cur.hasNext();) {
+                String curtag = (String) cur.next();
+                if (newtag.equalsIgnoreCase(curtag)) {
+                    inlist = true;
+                    break; // in both lists so we can skip it.
+                }
+            }
+
+            // The tag is in the new list, but not in the database so it must be added.
+            if (!inlist)
+                newTags.add(newtag);
+        }
+
+        try {
+            // add new tags
+            for (ListIterator t = newTags.listIterator(); t.hasNext();) {
+                String newt = (String) t.next();
+                int tagid = getTagId(newt);
+                if (tagid < 1) {
+                    String sql = "INSERT INTO tags (name), values('" + newt + "');";
+                    SQLHelper.executeNonQuery(sql);
+                    tagid = getTagId(newt);
+                }
+                String sql2 = "INSERT INTO entry_tags (entryid, tagid) VALUES('" + entryId + "','" + tagid + "');";
+                SQLHelper.executeNonQuery(sql2);
+            }
+
+            // delete old tags
+            for (ListIterator t = deadTags.listIterator(); t.hasNext();) {
+                String dele = (String) t.next();
+                int tagid = getTagId(dele);
+                String sql2 = "DELETE FROM entry_tags where entryid=('" + entryId + "' and tagid='" + tagid + "' LIMIT 1;";
+                SQLHelper.executeNonQuery(sql2);
+            }
+
+        } catch (Exception e) {
+            noError = false;
+        }
+
+        return noError;
+    }
+
+
+    /**
+     * Find the tag id that matches the name
+     *
+     * @param tagname The "name" of the tag
+     * @return tag id
+     */
+    public int getTagId(String tagname) {
+        int tagid = 0;
+        String sqlStatement;
+        CachedRowSet rs = null;
+
+        if (tagname == null || tagname.equalsIgnoreCase(""))
+            throw new IllegalArgumentException("Name must be set");
+        if (tagname.length() > 30)
+            throw new IllegalArgumentException("Name cannot be longer than 30 characters.");
+        if (!StringUtil.isAlpha(tagname))
+            throw new IllegalArgumentException("Name contains invalid characters.  Must be A-Za-z");
+
+        // PUBLIC ONLY
+        sqlStatement = " SELECT id FROM tags WHERE name='" + tagname.toLowerCase() + "';";
+
+        try {
+            rs = SQLHelper.executeResultSet(sqlStatement);
+
+            if (rs.next()) {
+                tagid = rs.getInt("id");
+            }
+
+            rs.close();
+
+        } catch (Exception e1) {
+            log.error(e1.getMessage() + "\n" + e1.toString());
+
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (Exception e) {
+                    // NOTHING TO DO
+                }
+            }
+        }
+
+        return tagid;
+    }
 }
+
