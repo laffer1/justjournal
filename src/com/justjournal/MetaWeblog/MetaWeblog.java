@@ -47,11 +47,13 @@ import java.util.*;
  * The MetaWeblog API interface for blogging.  Similar to Blogger 1.0 API.
  *
  * @author Lucas Holt
- * @version $Id: MetaWeblog.java,v 1.2 2008/04/26 21:23:59 laffer1 Exp $
+ * @version $Id: MetaWeblog.java,v 1.3 2008/04/26 23:21:18 laffer1 Exp $
  *          <p/>
  *          User: laffer1
  *          Date: Apr 26, 2008
  *          Time: 2:46:56 PM
+ *          <p/>
+ *          TODO: Implement the media method
  */
 @SuppressWarnings({"UnusedParameters"})
 public class MetaWeblog {
@@ -211,15 +213,15 @@ public class MetaWeblog {
                 et.setSecurityLevel(2);   // public
                 et.setLocationId(0); // not specified
                 et.setMoodId(12);    // not specified
-                et.setAutoFormat(true);
+                et.setAutoFormat(false);
                 et.setAllowComments(true);
                 et.setEmailComments(true);
-                et.setUserId(userId);
                 et.setUserName(user.getUserName());
 
                 EntryDAO.add(et);
                 et2 = EntryDAO.viewSingle(et);
                 result = Integer.toString(et2.getId());
+                log.debug("Result is: " + result);
 
             } catch (Exception e) {
                 blnError = true;
@@ -228,7 +230,7 @@ public class MetaWeblog {
 
         if (blnError) {
             s.clear();
-            s.put("faultCode", 4);
+            s.put("faultCode", 2041);
             s.put("faultString", "User authentication failed: " + username);
             return s;
         }
