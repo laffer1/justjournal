@@ -1,5 +1,17 @@
-<%@ page contentType="text/html; charset=iso-8859-1" language="java" import="com.justjournal.db.*" %>
-<%@ page import="com.justjournal.User"%>
+<%@ page contentType="text/html; charset=iso-8859-1" language="java" import="com.justjournal.User" %>
+<%@ page import="com.justjournal.WebError" %>
+<%@ page import="com.justjournal.core.Statistics" %>
+<%@ page import="com.justjournal.db.*" %>
+<%@ page import="com.justjournal.search.BaseSearch" %>
+<%@ page import="com.justjournal.utility.StringUtil" %>
+<%@ page import="com.justjournal.utility.Xml" %>
+<%@ page import="sun.jdbc.rowset.CachedRowSet" %>
+<%@ page import="java.io.PrintWriter" %>
+<%@ page import="java.sql.*" %>
+<%@ page import="java.text.ParsePosition" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.Collection" %>
+<%@ page import="java.util.Iterator" %>
 <%
     response.setHeader("Vary", "Accept"); // content negotiation
     response.setDateHeader("Expires", System.currentTimeMillis());
@@ -15,6 +27,7 @@
     String sbody = (String) session.getAttribute("spell.body");
     String smusic = (String) session.getAttribute("spell.music");
     String ssubject = (String) session.getAttribute("spell.subject");
+    String stags = (String) session.getAttribute("spell.tags");
 
     if (sbody == null)
         sbody = "";
@@ -24,6 +37,9 @@
 
     if (ssubject == null)
         ssubject = "";
+
+    if (stags == null)
+        stags = "";
 
 %>
 <?xml version="1.0" encoding="iso-8859-1"?>
@@ -184,7 +200,8 @@
     <div class="row">
         <span class="label"><label for="body">Body</label></span>
         <span class="formw"><textarea id="body" name="body" style="width: 100%" cols="50"
-                                      rows="20"><%=sbody%></textarea></span>
+                                      rows="20"><%=sbody%>
+        </textarea></span>
     </div>
 
     <div class="row">
@@ -219,7 +236,7 @@
 
                   /* Check to see if the Journal is marked private */
                   boolean prvt = (ival > 0 &&
-                          new User((String)session.getAttribute("auth.user")).isPrivateJournal()) ? true : false;
+                          new User((String) session.getAttribute("auth.user")).isPrivateJournal()) ? true : false;
 
 
                   for (java.util.Iterator iterator = SecurityDao.view().iterator(); iterator.hasNext();) {
@@ -229,7 +246,7 @@
 
                       if (prvt && o.getName().compareTo("private") == 0)
                           out.print("\" selected=\"selected\">");
-                      else if ( (o.getName().compareTo("public") == 0 && !prvt)
+                      else if ((o.getName().compareTo("public") == 0 && !prvt)
                               || o.getId() == issec)
                           out.print("\" selected=\"selected\">");
                       else
@@ -308,6 +325,11 @@
               %>
           </select>
 	  </span>
+</div>
+
+<div class="row">
+    <span class="label"><label for="tags">Tags</label></span>
+    <span class="formw"><input type="text" name="tags" id="tags" size="30" value="<%=stags%>"/></span>
 </div>
 
 <div class="row">
