@@ -132,7 +132,7 @@
     <div class="row">
         <span class="label"><label for="user">Username</label></span>
 			<span class="formw"><input type="text" name="user" id="user" size="18" maxlength="15"
-                                       style="background: url(images/userclass_16.png) no-repeat; background-color: #fff; background-position: 0px 1px; padding-left: 18px; color: black; font-weight: bold;"/></span>
+                                       style="background: url(images/userclass_16.png) no-repeat; background-color: #fff; background-position: 0 1px; padding-left: 18px; color: black; font-weight: bold;"/></span>
     </div>
 
     <div class="row">
@@ -235,8 +235,13 @@
                   }
 
                   /* Check to see if the Journal is marked private */
-                  boolean prvt = (ival > 0 &&
-                          new User((String) session.getAttribute("auth.user")).isPrivateJournal()) ? true : false;
+                  boolean prvt = false;
+                  try {
+                      prvt = (ival > 0 &&
+                              new User((String) session.getAttribute("auth.user")).isPrivateJournal());
+                  } catch (Exception e) {
+                      // ignore exception.
+                  }
 
 
                   for (java.util.Iterator iterator = SecurityDao.view().iterator(); iterator.hasNext();) {
@@ -270,7 +275,7 @@
                       isloc = sloc.intValue();
                   }
 
-                  for (java.util.Iterator iterator = LocationDao.view().iterator(); iterator.hasNext();) {
+                  for (Iterator iterator = LocationDao.view().iterator(); iterator.hasNext();) {
                       LocationTo o = (LocationTo) iterator.next();
                       out.print("\t<option value=\"" + o.getId());
 
@@ -304,7 +309,7 @@
                       ismood = smood.intValue();
                   }
 
-                  for (java.util.Iterator iterator = MoodDao.view().iterator(); iterator.hasNext();) {
+                  for (Iterator iterator = MoodDao.view().iterator(); iterator.hasNext();) {
                       MoodTo o = (MoodTo) iterator.next();
                       out.print("\t<option value=\"" + o.getId());
 
