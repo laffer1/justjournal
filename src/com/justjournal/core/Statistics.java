@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2006, Lucas Holt
+Copyright (c) 2006, 2008 Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -43,7 +43,7 @@ import sun.jdbc.rowset.CachedRowSet;
  * other information.
  *
  * @author Lucas Holt
- * @version $Id: Statistics.java,v 1.4 2008/04/26 18:02:37 laffer1 Exp $
+ * @version $Id: Statistics.java,v 1.5 2008/05/01 04:41:56 laffer1 Exp $
  */
 public class Statistics {
 
@@ -152,6 +152,16 @@ public class Statistics {
     public int styles() {
         String sql = "SELECT count(*) FROM style;";
 
+        return sqlCount(sql);
+    }
+
+    /**
+     * Determine the number of Tags used on the site.
+     *
+     * @return tag count or -1 on error.
+     */
+    public int tags() {
+        String sql = "SELECT count(*) FROM tags;";
         return sqlCount(sql);
     }
 

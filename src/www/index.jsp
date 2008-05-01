@@ -218,6 +218,11 @@
             <td><%=s.styles()%>
             </td>
         </tr>
+        <tr style="font-size: 10px;">
+            <td>Tags</td>
+            <td><%=s.tags()%>
+            </td>
+        </tr>
     </table>
 
     <p><img src="images/feed.gif" alt="Feed"/> <a href="RecentBlogs">Recent Blog Entries</a></p>
