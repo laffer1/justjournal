@@ -200,8 +200,7 @@
     <div class="row">
         <span class="label"><label for="body">Body</label></span>
         <span class="formw"><textarea id="body" name="body" style="width: 100%" cols="50"
-                                      rows="20"><%=sbody%>
-        </textarea></span>
+            rows="20"><%=sbody%></textarea></span>
     </div>
 
     <div class="row">
