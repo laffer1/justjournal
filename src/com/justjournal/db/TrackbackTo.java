@@ -35,10 +35,10 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.db;
 
 /**
- * A Trackback request
+ * A Trackback ping
  *
  * @author Lucas Holt
- * @version $Id: TrackbackTo.java,v 1.4 2008/05/05 08:32:35 laffer1 Exp $
+ * @version $Id: TrackbackTo.java,v 1.5 2008/05/05 09:36:16 laffer1 Exp $
  *          User: laffer1
  *          Date: May 5, 2008
  *          Time: 3:11:11 AM

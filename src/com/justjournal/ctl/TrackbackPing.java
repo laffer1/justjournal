@@ -46,11 +46,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
- * Trackback and Post-IT Pings
+ * Trackback and Post-IT Pings inbound
  * http://wellformedweb.org/story/9
  *
  * @author Lucas Holt
- * @version $Id: TrackbackPing.java,v 1.3 2008/05/05 08:39:37 laffer1 Exp $
+ * @version $Id: TrackbackPing.java,v 1.4 2008/05/05 09:36:16 laffer1 Exp $
  *          User: laffer1
  *          Date: Aug 10, 2006
  *          Time: 8:25:03 PM
