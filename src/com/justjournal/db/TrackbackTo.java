@@ -36,14 +36,14 @@ package com.justjournal.db;
 
 
 enum TrackbackType {
-    Trackback, Pingback, PostIt;
+    trackback, pingback, postit;
 };
 
 /**
  * A Trackback request
  *
  * @author Lucas Holt
- * @version $Id: TrackbackTo.java,v 1.1 2008/05/05 07:25:32 laffer1 Exp $
+ * @version $Id: TrackbackTo.java,v 1.2 2008/05/05 07:55:22 laffer1 Exp $
  *          User: laffer1
  *          Date: May 5, 2008
  *          Time: 3:11:11 AM
