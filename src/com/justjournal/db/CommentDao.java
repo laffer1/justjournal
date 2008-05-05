@@ -40,10 +40,13 @@ import sun.jdbc.rowset.CachedRowSet;
 import java.util.ArrayList;
 
 /**
- * Created by IntelliJ IDEA.
- * User: laffer1
- * Date: Dec 25, 2003
- * Time: 2:19:28 PM
+ * Manipulate and fetch comments
+ *
+ * @author Lucas Holt
+ * @version $Id: CommentDao.java,v 1.7 2008/05/05 08:19:03 laffer1 Exp $
+ *          User: laffer1
+ *          Date: Dec 25, 2003
+ *          Time: 2:19:28 PM
  */
 public final class CommentDao {
 

@@ -37,10 +37,14 @@ package com.justjournal.db;
 import com.justjournal.utility.HTMLUtil;
 
 /**
- * Created by IntelliJ IDEA.
- * User: laffer1
- * Date: Dec 24, 2003
- * Time: 4:53:47 AM
+ * A comment
+ *
+ * @author Lucas Holt
+ * @version $Id: CommentTo.java,v 1.8 2008/05/05 08:19:04 laffer1 Exp $
+ *          <p/>
+ *          User: laffer1
+ *          Date: Dec 24, 2003
+ *          Time: 4:53:47 AM
  */
 public final class CommentTo {
 
