@@ -28,6 +28,7 @@
     String smusic = (String) session.getAttribute("spell.music");
     String ssubject = (String) session.getAttribute("spell.subject");
     String stags = (String) session.getAttribute("spell.tags");
+    String strackback = (String) session.getAttribute("spell.trackback");
 
     if (sbody == null)
         sbody = "";
@@ -40,6 +41,9 @@
 
     if (stags == null)
         stags = "";
+
+    if (strackback == null)
+        strackback = "";
 
 %>
 <?xml version="1.0" encoding="iso-8859-1"?>
@@ -339,6 +343,11 @@
 <div class="row">
     <span class="label"><label for="music">Music</label></span>
     <span class="formw"><input type="text" name="music" id="music" size="30" value="<%=smusic%>"/></span>
+</div>
+
+<div class="row">
+    <span class="label"><label for="trackback">Trackback</label></span>
+    <span class="formw"><input type="text" name="trackback" id="trackback" size="30" value="<%=strackback%>"/></span>
 </div>
 
 <div class="row">
