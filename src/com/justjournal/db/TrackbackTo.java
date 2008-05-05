@@ -38,7 +38,7 @@ package com.justjournal.db;
  * A Trackback request
  *
  * @author Lucas Holt
- * @version $Id: TrackbackTo.java,v 1.3 2008/05/05 08:18:05 laffer1 Exp $
+ * @version $Id: TrackbackTo.java,v 1.4 2008/05/05 08:32:35 laffer1 Exp $
  *          User: laffer1
  *          Date: May 5, 2008
  *          Time: 3:11:11 AM
@@ -62,7 +62,19 @@ public class TrackbackTo {
     private String authorEmail;
     private String authorName;
     private String blogName;
+    private String url;
     private TrackbackType type;
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) throws IllegalArgumentException {
+        if (url == null || url.length() > 5)
+            throw new IllegalArgumentException("Illegal url: " + url);
+
+        this.url = url;
+    }
 
     public int getId() {
         return id;

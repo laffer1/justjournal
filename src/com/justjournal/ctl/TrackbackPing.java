@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2006, Lucas Holt
+Copyright (c) 2006,2008 Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -35,17 +35,25 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.ctl;
 
 import com.justjournal.JustJournalBaseServlet;
+import com.justjournal.db.TrackbackDao;
+import com.justjournal.db.TrackbackTo;
+import com.justjournal.db.TrackbackType;
+import com.justjournal.utility.ServletUtilities;
+import org.apache.log4j.Category;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.log4j.Category;
-
 /**
- * User: laffer1
- * Date: Aug 10, 2006
- * Time: 8:25:03 PM
+ * Trackback and Post-IT Pings
+ * http://wellformedweb.org/story/9
+ *
+ * @author Lucas Holt
+ * @version $Id: TrackbackPing.java,v 1.2 2008/05/05 08:32:35 laffer1 Exp $
+ *          User: laffer1
+ *          Date: Aug 10, 2006
+ *          Time: 8:25:03 PM
  */
 public class TrackbackPing extends JustJournalBaseServlet {
 
@@ -64,21 +72,57 @@ public class TrackbackPing extends JustJournalBaseServlet {
     protected void execute(HttpServletRequest request, HttpServletResponse response, HttpSession session, StringBuffer sb) {
         try {
             response.setContentType("text/xml; charset=utf-8");
+            Boolean istrackback = true;
 
-            String postID = request.getParameter("entryID");
-            if (postID == null || postID.length() < 1) {
-                throw new IllegalArgumentException("Missing required parameter \"entryID\"");
-            }
+            int postId = ServletUtilities.getIntParameter(request, "entryID", 0);
+            if (postId > 1)
+                throw new IllegalArgumentException("entry id is missing");
 
             String url = request.getParameter("url");
             if (url == null || url.length() < 1) {
                 throw new IllegalArgumentException("Missing required parameter \"url\"");
             }
             String title = request.getParameter("title");
+            String name = request.getParameter("name");  // post-it format title
             String blogName = request.getParameter("blog_name");
             String excerpt = request.getParameter("excerpt");
+            String comment = request.getParameter("comment");
+            String email = request.getParameter("email");
 
-            // todo ... action for the trackback.
+            // todo ... validate trackback.
+            // TODO: add pingback support which looks xmlrpc-ish
+            TrackbackDao tbdao = new TrackbackDao();
+
+            TrackbackTo tb = new TrackbackTo();
+            if (title != null && title.length() > 0)  // trackback
+                tb.setSubject(title);
+            else if (name != null && name.length() > 0) {// post it
+                tb.setSubject(name);
+                istrackback = false;
+            }
+
+            if (excerpt != null && excerpt.length() > 0)
+                tb.setBody(excerpt);
+            else if (comment != null && comment.length() > 0) {
+                tb.setBlogName(blogName);
+                istrackback = false;
+            }
+
+            if (email != null && email.length() > 0)
+                tb.setAuthorEmail(email);  // TODO: validate
+
+            if (istrackback)
+                tb.setType(TrackbackType.trackback);
+            else
+                tb.setType(TrackbackType.postit); // don't do pingbacks yet.  http://wellformedweb.org/story/9#ping_back_note
+
+            tb.setEntryId(postId);
+
+            java.text.SimpleDateFormat fmt = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            java.sql.Date now = new java.sql.Date(System.currentTimeMillis());
+            tb.setDate(fmt.format(now));
+
+            tbdao.add(tb);
 
             sb.append(XML_HEADER);
             sb.append(RESPONSE);
