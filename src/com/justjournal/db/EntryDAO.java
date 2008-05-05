@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2005, Lucas Holt
+Copyright (c) 2003-2008 Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -1301,7 +1301,7 @@ public final class EntryDAO {
         ArrayList<Tag> tags = new ArrayList<Tag>();
 
         // PUBLIC ONLY
-        sqlStatement = " SELECT tags.id As id, tags.name As name FROM tags, entry_tags, entry WHERE entry.uid='" + userId
+        sqlStatement = " SELECT DISTINCT tags.id As id, tags.name As name FROM tags, entry_tags, entry WHERE entry.uid='" + userId
                 + "' AND tags.id = entry_tags.tagid AND entry.id = entry_tags.entryid;";
 
         try {
