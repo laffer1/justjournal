@@ -34,16 +34,11 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
-
-enum TrackbackType {
-    trackback, pingback, postit;
-};
-
 /**
  * A Trackback request
  *
  * @author Lucas Holt
- * @version $Id: TrackbackTo.java,v 1.2 2008/05/05 07:55:22 laffer1 Exp $
+ * @version $Id: TrackbackTo.java,v 1.3 2008/05/05 08:18:05 laffer1 Exp $
  *          User: laffer1
  *          Date: May 5, 2008
  *          Time: 3:11:11 AM
@@ -66,6 +61,7 @@ public class TrackbackTo {
     private String body;
     private String authorEmail;
     private String authorName;
+    private String blogName;
     private TrackbackType type;
 
     public int getId() {
@@ -121,6 +117,17 @@ public class TrackbackTo {
             this.subject = "(no subject)";
         else
             this.subject = subject;
+    }
+
+    public String getBlogName() {
+        return blogName;
+    }
+
+    public void setBlogName(String blogName) throws IllegalArgumentException {
+        if (blogName.length() == 0)
+            this.blogName = "";  // TODO: Hardcode something like subjects have?
+        else
+            this.blogName = blogName;
     }
 
     public String getBody() {
