@@ -43,7 +43,7 @@ import java.util.ArrayList;
  * Manipulate trackback storage
  *
  * @author Lucas Holt
- * @version $Id: TrackbackDao.java,v 1.2 2008/05/05 08:18:05 laffer1 Exp $
+ * @version $Id: TrackbackDao.java,v 1.3 2008/05/05 08:39:37 laffer1 Exp $
  *          User: laffer1
  *          Date: May 5, 2008
  *          Time: 3:06:12 AM
@@ -68,7 +68,7 @@ public final class TrackbackDao {
         type  (trackback, pingback, post-it)
         */
         final String sqlStmt =
-                "Insert INTO trackback (id,eid,date,subject,body,author_email,author_name,blogname,type) values(NULL,'"
+                "Insert INTO trackback (id,eid,date,subject,body,author_email,author_name,blogname,url,type) values(NULL,'"
                         + tb.getEntryId() + "','"
                         + tb.getDate() + "','"
                         + StringUtil.replace(tb.getSubject(), '\'', "\\\'") + "','"
@@ -76,6 +76,7 @@ public final class TrackbackDao {
                         + tb.getAuthorEmail() + "','"
                         + tb.getAuthorName() + "','"
                         + tb.getBlogName() + "','"
+                        + tb.getUrl() + "','"
                         + tb.getType().toString()
                         + "');";
 
@@ -89,13 +90,15 @@ public final class TrackbackDao {
      * @return true if no error occured.
      */
     public boolean update(final TrackbackTo tb) {
-        // TODO: Consider allowing alter of type? blogname?
+        // TODO: Consider allowing alter of type?
         final String sqlStmt = "Update trackback SET subject='" +
                 StringUtil.replace(tb.getSubject(), '\'', "\\\'")
                 + "', body='" +
                 StringUtil.replace(tb.getBody(), '\'', "\\\'")
                 + "', author_email='" + tb.getAuthorEmail()
                 + "', author_name='" + tb.getAuthorName()
+                + "', url='" + tb.getUrl()
+                + "', blogname='" + tb.getBlogName()
                 + "' WHERE id='" +
                 tb.getId() + "' AND eid='" +
                 tb.getEntryId()
@@ -162,7 +165,7 @@ public final class TrackbackDao {
         CachedRowSet rs = null;
         final TrackbackTo tb = new TrackbackTo();
         final String sqlStmt =
-                "Select trackback.date, trackback.subject, trackback.body, trackback.id, trackback.author_email, trackback.author_name, blogname, trackback.type, trackback.eid FROM trackback WHERE trackback.id='"
+                "Select date, subject, body, id, author_email, author_name, blogname, url, type, eid FROM trackback WHERE trackback.id='"
                         + trackbackId + "';";
 
         try {
@@ -178,6 +181,7 @@ public final class TrackbackDao {
                 tb.setAuthorName(rs.getString("author_name"));
                 tb.setAuthorEmail(rs.getString("author_email"));
                 tb.setBlogName(rs.getString("blogname"));
+                tb.setUrl(rs.getString("url"));
 
                 String type = rs.getString("type");
 
@@ -215,7 +219,7 @@ public final class TrackbackDao {
         CachedRowSet rs = null;
         TrackbackTo tb;
         final String sqlStmt =
-                "Select trackback.date, trackback.subject, trackback.body, trackback.id, trackback.author_email, trackback.author_name, blogname, trackback.type, trackback.eid FROM trackback WHERE trackback.eid='"
+                "Select date, subject, body, id, author_email, author_name, blogname, url, type, eid FROM trackback WHERE trackback.eid='"
                         + entryId + "';";
 
         try {
@@ -233,6 +237,7 @@ public final class TrackbackDao {
                 tb.setAuthorName(rs.getString("author_name"));
                 tb.setAuthorEmail(rs.getString("author_email"));
                 tb.setBlogName(rs.getString("blogname"));
+                tb.setUrl(rs.getString("url"));
 
                 String type = rs.getString("type");
 

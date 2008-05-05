@@ -50,7 +50,7 @@ import javax.servlet.http.HttpSession;
  * http://wellformedweb.org/story/9
  *
  * @author Lucas Holt
- * @version $Id: TrackbackPing.java,v 1.2 2008/05/05 08:32:35 laffer1 Exp $
+ * @version $Id: TrackbackPing.java,v 1.3 2008/05/05 08:39:37 laffer1 Exp $
  *          User: laffer1
  *          Date: Aug 10, 2006
  *          Time: 8:25:03 PM
@@ -70,6 +70,7 @@ public class TrackbackPing extends JustJournalBaseServlet {
 
 
     protected void execute(HttpServletRequest request, HttpServletResponse response, HttpSession session, StringBuffer sb) {
+        log.debug("Begin TrackbackPing Request");
         try {
             response.setContentType("text/xml; charset=utf-8");
             Boolean istrackback = true;
@@ -132,6 +133,7 @@ public class TrackbackPing extends JustJournalBaseServlet {
             sb.append(END_RESPONSE);
 
         } catch (Exception e) {
+            log.error("TrackbackPing exception: " + e.getMessage());
             sb.delete(0, sb.length() - 1);
             sb.append(XML_HEADER);
             sb.append(RESPONSE);
