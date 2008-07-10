@@ -40,7 +40,7 @@ import com.justjournal.utility.StringUtil;
  * A tag is a form of metadata about a blog entry.  It is similar to a category.
  *
  * @author Lucas Holt
- * @version $Id: Tag.java,v 1.4 2008/04/26 17:09:43 laffer1 Exp $
+ * @version $Id: Tag.java,v 1.5 2008/07/10 00:47:52 laffer1 Exp $
  *          <p/>
  *          Date: Apr 25, 2008
  *          Time: 5:13:16 PM
@@ -48,6 +48,7 @@ import com.justjournal.utility.StringUtil;
 public final class Tag {
     private int id; // Unique id to represent the global tag
     private String name; // common string representation for public consumption
+    private int count;
     // timestamp comes later
 
     /**
@@ -68,6 +69,7 @@ public final class Tag {
 
         this.id = id;
         this.name = name.toLowerCase();
+        count = 0; // default
     }
 
     /**
@@ -85,6 +87,7 @@ public final class Tag {
 
         this.id = 0;
         this.name = name.toLowerCase();
+        count = 0; // default
     }
 
     /**
@@ -105,6 +108,23 @@ public final class Tag {
         if (id < 1)
             throw new IllegalArgumentException("Tag id must be > 0");
         this.id = id;
+    }
+
+
+    /**
+     * The number of tags
+     * @return  tag count
+     */
+    public int getCount() {
+        return count;
+    }
+
+    /**
+     * Set the number of tag instances
+     * @param count number of tags
+     */
+    public void setCount(int count) {
+        this.count = count;
     }
 
     /**

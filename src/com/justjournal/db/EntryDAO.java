@@ -1298,17 +1298,26 @@ public final class EntryDAO {
     public static ArrayList<Tag> getUserTags(int userId) {
         String sqlStatement;
         CachedRowSet rs = null;
+        CachedRowSet rs2;
         ArrayList<Tag> tags = new ArrayList<Tag>();
 
         // PUBLIC ONLY
-        sqlStatement = " SELECT DISTINCT tags.id As id, tags.name As name FROM tags, entry_tags, entry WHERE entry.uid='" + userId
+        sqlStatement = "SELECT DISTINCT tags.id As id, tags.name As name FROM tags, entry_tags, entry WHERE entry.uid='" + userId
                 + "' AND tags.id = entry_tags.tagid AND entry.id = entry_tags.entryid;";
 
         try {
             rs = SQLHelper.executeResultSet(sqlStatement);
-
             while (rs.next()) {
-                tags.add(new Tag(rs.getInt("id"), rs.getString("name")));
+                Tag t =  new Tag(rs.getInt("id"), rs.getString("name"));
+                try {
+                    rs2 = SQLHelper.executeResultSet("SELECT count(*) FROM tags, entry_tags, entry WHERE entry.uid='" + userId + "' AND tags.id='" + rs.getInt("id") + "' AND tags.id = entry_tags.tagid AND entry.id = entry_tags.entryid;");
+                    if (rs2.next())
+                        t.setCount(rs2.getInt(1));
+                    rs2.close();
+                } catch (Exception e) {
+                    log.error("Can't get tag count: " + e.getMessage());
+                }
+                tags.add(t);
             }
 
             rs.close();

@@ -126,3 +126,22 @@
     width: 250px;
     z-index: 10;
 }
+
+.TagCloud {
+
+}
+
+.TagCloudSmall {
+    font-size: 1em;
+    font-weight: 200;
+}
+
+.TagCloudMedium {
+    font-size: 1.6em;
+    font-weight: 400;
+}
+
+.TagCloundLarge {
+    font-size: 2.3em;
+    font-weight: 700;
+}
