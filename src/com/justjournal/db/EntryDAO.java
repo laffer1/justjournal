@@ -831,6 +831,35 @@ public final class EntryDAO {
         return entries;
     }
 
+    /**
+     * Count the number of blog entries for a given year and user.
+     *
+     * @param year     The year
+     * @param userName The user
+     * @return integer count of entries.
+     * @throws Exception Database exception
+     */
+    public static int calendarCount(final int year, final String userName)
+            throws Exception {
+
+        String sqlStatement;
+        CachedRowSet RS;
+        int count = 0;
+
+        sqlStatement = "SELECT count(*) " +
+                " FROM user As us, entry As eh " +
+                " WHERE us.username = '" + userName +
+                "' AND YEAR(eh.date)=" + year + " AND us.id = eh.uid;";
+
+        RS = SQLHelper.executeResultSet(sqlStatement);
+
+        if (RS.next())
+            count = RS.getInt(1);
+        RS.close();
+
+        return count;
+    }
+
     public static CachedRowSet ViewCalendarYear(final int year,
                                                 final String userName,
                                                 final boolean thisUser)
@@ -894,20 +923,24 @@ public final class EntryDAO {
         return RS;
     }
 
-    public static CachedRowSet ViewCalendarDay(final int year,
+    public static Collection ViewCalendarDay(final int year,
                                                final int month,
                                                final int day,
                                                final String userName,
                                                final boolean thisUser) {
 
+        final int SIZE = 15;
+        final ArrayList<EntryTo> entries = new ArrayList<EntryTo>(SIZE);
+
         String sqlStatement;
-        CachedRowSet RS = null;
+        CachedRowSet rs = null;
+        EntryTo et;
 
         if (thisUser) {
             // NO SECURITY RESTRICTION
             sqlStatement = "SELECT us.id As id, us.name As name, " +
-                    "eh.date As date, eh.subject As subject, eh.music, eh.body, " +
-                    "mood.title As mood, location.title As location, mood.id as moodid, location.id as locid, eh.id As entryid, eh.security " +
+                    "eh.date As date, eh.subject As subject, eh.music, eh.body, eh.autoformat, eh.allow_comments, eh.email_comments, " +
+                    "mood.title As moodt, location.title As location, mood.id as moodid, location.id as locid, eh.id As entryid, eh.security " +
                     "FROM user As us, entry As eh, " +
                     "mood, location " +
                     "WHERE us.userName='" + userName + "' AND YEAR(eh.date)=" + year + " AND MONTH(eh.date)=" + month +
@@ -916,8 +949,8 @@ public final class EntryDAO {
         } else {
             // PUBLIC ONLY
             sqlStatement = "SELECT us.id As id, us.name As name, " +
-                    "eh.date As date, eh.subject As subject, eh.music, eh.body, " +
-                    "mood.title As mood, location.title As location, mood.id as moodid, location.id as locid, eh.id As entryid, eh.security " +
+                    "eh.date As date, eh.subject As subject, eh.music, eh.body, eh.autoformat, eh.allow_comments, eh.email_comments, " +
+                    "mood.title As moodt, location.title As location, mood.id as moodid, location.id as locid, eh.id As entryid, eh.security " +
                     "FROM user As us, entry As eh, " +
                     "mood, location " +
                     "WHERE us.userName='" + userName + "' AND YEAR(eh.date)=" + year + " AND MONTH(eh.date)=" + month +
@@ -926,12 +959,68 @@ public final class EntryDAO {
         }
 
         try {
-            RS = SQLHelper.executeResultSet(sqlStatement);
-        } catch (Exception e1) {
+            if (log.isDebugEnabled())
+                log.debug("viewCalendarDay: execute sql statement");
 
+            rs = SQLHelper.executeResultSet(sqlStatement);
+
+            while (rs.next()) {
+                if (log.isDebugEnabled())
+                    log.debug("viewCalendarDay: create EntryTo object and populate it.");
+
+                et = new EntryTo();
+
+                et.setUserName(userName);
+                et.setId(rs.getInt("entryid"));
+                et.setUserId(rs.getInt("id"));
+                et.setDate(rs.getString("date"));
+                et.setSubject(rs.getString("subject"));
+                et.setBody(rs.getString("body"));
+                et.setLocationId(rs.getInt("locationid"));
+                et.setMoodId(rs.getInt("moodid"));
+                et.setMusic(rs.getString("music"));
+                et.setSecurityLevel(rs.getInt("security"));
+                et.setMoodName(rs.getString("moodt"));
+                et.setLocationName(rs.getString("location"));
+
+                if (rs.getString("email_comments").compareTo("Y") == 0)
+                    et.setEmailComments(true);
+                else
+                    et.setEmailComments(false);
+
+                if (rs.getString("allow_comments").compareTo("Y") == 0)
+                    et.setAllowComments(true);
+                else
+                    et.setAllowComments(false);
+
+                if (rs.getString("autoformat").compareTo("Y") == 0)
+                    et.setAutoFormat(true);
+                else
+                    et.setAutoFormat(false);
+
+                et.setTags(getTags(rs.getInt("entryid")));
+
+                if (log.isDebugEnabled())
+                    log.debug("viewCalendarDay: ET contains " + et.toString());
+
+                entries.add(et);
+            }
+
+            rs.close();
+
+        } catch (Exception e1) {
+                log.error("viewCalendarDay: exception is: " + e1.getMessage() + "\n" + e1.toString());
+
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (Exception e) {
+                    // NOTHING TO DO
+                }
+            }
         }
 
-        return RS;
+        return entries;
     }
 
     /**
@@ -1308,7 +1397,7 @@ public final class EntryDAO {
         try {
             rs = SQLHelper.executeResultSet(sqlStatement);
             while (rs.next()) {
-                Tag t =  new Tag(rs.getInt("id"), rs.getString("name"));
+                Tag t = new Tag(rs.getInt("id"), rs.getString("name"));
                 try {
                     rs2 = SQLHelper.executeResultSet("SELECT count(*) FROM tags, entry_tags, entry WHERE entry.uid='" + userId + "' AND tags.id='" + rs.getInt("id") + "' AND tags.id = entry_tags.tagid AND entry.id = entry_tags.entryid;");
                     if (rs2.next())
