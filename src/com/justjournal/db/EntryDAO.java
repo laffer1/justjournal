@@ -941,8 +941,7 @@ public final class EntryDAO {
             sqlStatement = "SELECT us.id As id, us.name As name, " +
                     "eh.date As date, eh.subject As subject, eh.music, eh.body, eh.autoformat, eh.allow_comments, eh.email_comments, " +
                     "mood.title As moodt, location.title As location, mood.id as moodid, location.id as locid, eh.id As entryid, eh.security " +
-                    "FROM user As us, entry As eh, " +
-                    "mood, location " +
+                    "FROM user As us, entry As eh, mood, location " +
                     "WHERE us.userName='" + userName + "' AND YEAR(eh.date)=" + year + " AND MONTH(eh.date)=" + month +
                     " AND DAYOFMONTH(eh.date)=" + day +
                     " AND us.id=eh.uid AND mood.id=eh.mood AND location.id=eh.location ORDER BY eh.date DESC, eh.id DESC;";
@@ -951,8 +950,7 @@ public final class EntryDAO {
             sqlStatement = "SELECT us.id As id, us.name As name, " +
                     "eh.date As date, eh.subject As subject, eh.music, eh.body, eh.autoformat, eh.allow_comments, eh.email_comments, " +
                     "mood.title As moodt, location.title As location, mood.id as moodid, location.id as locid, eh.id As entryid, eh.security " +
-                    "FROM user As us, entry As eh, " +
-                    "mood, location " +
+                    "FROM user As us, entry As eh, mood, location " +
                     "WHERE us.userName='" + userName + "' AND YEAR(eh.date)=" + year + " AND MONTH(eh.date)=" + month +
                     " AND DAYOFMONTH(eh.date)=" + day +
                     " AND us.id=eh.uid AND mood.id=eh.mood AND location.id=eh.location AND eh.security=2 ORDER BY eh.date DESC, eh.id DESC;";
@@ -976,7 +974,7 @@ public final class EntryDAO {
                 et.setDate(rs.getString("date"));
                 et.setSubject(rs.getString("subject"));
                 et.setBody(rs.getString("body"));
-                et.setLocationId(rs.getInt("locationid"));
+                et.setLocationId(rs.getInt("locid"));
                 et.setMoodId(rs.getInt("moodid"));
                 et.setMusic(rs.getString("music"));
                 et.setSecurityLevel(rs.getInt("security"));
