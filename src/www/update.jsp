@@ -68,10 +68,10 @@
             oFCKeditor.BasePath = '/FCKeditor/';
             oFCKeditor.Height = 300;
             oFCKeditor.Width = 400;
+            oFCKeditor.Config["CustomConfigurationsPath"] = '/js/fckconfig.js';
             oFCKeditor.Config['SkinPath'] = '/FCKeditor/editor/skins/office2003/';
             oFCKeditor.Config['AutoDetectLanguage'] = true;
-            oFCKeditor.EnableSafari = false;
-            oFCKeditor.ToolbarSet = 'Basic';
+            oFCKeditor.ToolbarSet = 'JJ';
             oFCKeditor.ReplaceTextarea();
         }
 
@@ -79,11 +79,10 @@
         {
             document.getElementById("aformat").checked = false;
             document.getElementById("aformatrow").visibility = "hidden";
+            document.getElementById("newlinetext").visibility = "hidden";
         }
     </script>
     <style type="text/css" media="all">
-        <!--
-
         div.row {
             clear: both;
             padding-top: 5px;
@@ -104,8 +103,6 @@
         div.spacer {
             clear: both;
         }
-
-        -->
     </style>
 </head>
 
@@ -207,7 +204,7 @@
             rows="20"><%=sbody%></textarea></span>
     </div>
 
-    <div class="row">
+    <div class="row" id="newlinetext">
         <span class="formw">by default, newlines will be auto-formatted to &lt;br&gt;</span>
     </div>
 
