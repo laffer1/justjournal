@@ -42,7 +42,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.InputStream;
 import java.net.URL;
-import java.net.URI;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -51,7 +50,7 @@ import java.util.regex.Pattern;
  * converts it to HTML.
  *
  * @author Lucas Holt
- * @version $Id: HeadlineBean.java,v 1.4 2006/12/14 05:49:42 laffer1 Exp $
+ * @version $Id: HeadlineBean.java,v 1.5 2008/07/17 02:24:59 laffer1 Exp $
  * @since 1.0
  *        User: laffer1
  *        Date: Jul 22, 2003
@@ -91,6 +90,8 @@ public class HeadlineBean {
 
         //Build document:
         factory.setValidating(false);
+        factory.setIgnoringComments(true);
+        factory.setCoalescing(true);
         builder = factory.newDocumentBuilder();
         document = builder.parse(inputXML);
     }
@@ -233,7 +234,7 @@ public class HeadlineBean {
             }*/
 
             if (contentLink != null) {
-                sb.append("<a href=\"").append(contentLink).append("\">[" + contentLink + "]</a>");
+                sb.append("<a href=\"").append(contentLink).append("\">[").append(contentLink).append("]</a>");
             }
             sb.append("</p>");
             sb.append(endl);
@@ -283,6 +284,9 @@ public class HeadlineBean {
 
                     sb.append("<span onclick=\"expandcontent(this, 'r").append(url.hashCode()).append("_").append(i).append("')\" class=\"RssItemTitle\">");
                     sb.append("<span class=\"showstate\"></span> ");
+                    sb.append("<!-- guid: ");
+                    sb.append(guid);
+                    sb.append(" -->");
                     sb.append("<a href=\"");
                     sb.append(link);
                     sb.append("\" title=\"");
@@ -341,6 +345,8 @@ public class HeadlineBean {
             sb.append(endl);
 
             return sb.toString();
+        } catch (java.io.FileNotFoundException e404) {
+            return "404 Not Found. The feed is no longer available. " + url + endl;
         } catch (Exception e) {
             return "Error, could not process request: " + e.toString() + endl;
         }
