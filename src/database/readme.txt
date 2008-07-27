@@ -1,4 +1,4 @@
-Just Journal currently runs on MySQL 5.0.18.  Included in this directory
+Just Journal currently runs on MySQL 5.0.51a.  Included in this directory
 are sql files to create the tables and stored procedures needed to run JJ.
 
 MySQL Version Compatibility
