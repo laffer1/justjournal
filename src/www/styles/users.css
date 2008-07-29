@@ -127,21 +127,31 @@
     z-index: 10;
 }
 
+/* Tags */
+
 .TagCloud {
 
 }
 
 .TagCloudSmall {
     font-size: 1em;
-    font-weight: 200;
 }
 
 .TagCloudMedium {
     font-size: 1.6em;
-    font-weight: 400;
 }
 
 .TagCloundLarge {
     font-size: 2.3em;
-    font-weight: 700;
+}
+
+/* Hit Counter */
+
+.hitcountcountrol {
+    background-color: white;
+    color: black;
+    border: thin solid black;
+    filter:alpha(opacity=50);   /* Internet Explorer       */
+    -moz-opacity:0.5;           /* Mozilla 1.6 and below   */
+    opacity: 0.5;               /* newer Mozilla and CSS-3 */
 }

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2005, Lucas Holt
+Copyright (c) 2005 Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -38,9 +38,14 @@ import com.justjournal.WebLogin;
 import org.apache.log4j.Category;
 
 /**
+ * Change the password for a blog owner
+ * 
  * User: laffer1
  * Date: Mar 30, 2005
  * Time: 4:37:00 PM
+ *
+ * @author Lucas Holt
+ * @version $Id: ChangePasswordSubmit.java,v 1.6 2008/07/29 11:59:42 laffer1 Exp $
  */
 public class ChangePasswordSubmit
         extends Protected {

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2005, Lucas Holt
+Copyright (c) 2005 Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -42,20 +42,30 @@ import java.util.Collection;
 /**
  * List moods used for journal entries.
  *
+ * Date: Nov 10, 2005
+ * Time: 3:51:59 PM
+ *
  * @author Lucas Holt
- * @version 1.0
- *          Date: Nov 10, 2005
- *          Time: 3:51:59 PM
+ * @version $Id: MoodList.java,v 1.6 2008/07/29 11:59:43 laffer1 Exp $
  * @since 1.0
  */
 public class MoodList extends ControllerErrorable {
     private static Category log = Category.getInstance(MoodList.class.getName());
     protected Collection moods;
 
+    /**
+     * All moods usable by blogs
+     * @return mood list
+     */
     public Collection getMoods() {
         return this.moods;
     }
 
+    /**
+     * Render the mood list in XML
+     * @return xml document
+     * @throws Exception
+     */
     public String perform() throws Exception {
         if (log.isDebugEnabled())
             log.debug("Loading DAO Objects  ");

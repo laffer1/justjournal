@@ -10,7 +10,7 @@ import sun.jdbc.rowset.CachedRowSet;
  * TODO: Lock the insert/update code at the database level.  stored proc?
  *
  * @author Lucas Holt
- * @version $Id: HitCounter.java,v 1.1 2008/07/27 11:17:02 laffer1 Exp $
+ * @version $Id: HitCounter.java,v 1.2 2008/07/29 11:59:37 laffer1 Exp $
  *          User: laffer1
  *          Date: Jul 27, 2008
  *          Time: 6:33:49 AM
@@ -25,7 +25,12 @@ public class HitCounter {
      * @throws Exception Database access or creation error
      */
     public void insert(String resource) throws Exception {
-        SQLHelper.executeNonQuery("Insert into hitcount (resource) VALUES(" + resource + ");");
+        try {
+            SQLHelper.executeNonQuery("Insert into hitcount (resource) VALUES('" + resource + "');");
+        } catch (Exception e) {
+            log.error("insert(): resource: " + resource + " exception: " + e.getMessage());
+            throw new Exception("Could not create resource: " + resource);
+        }
     }
 
     /**
@@ -35,7 +40,8 @@ public class HitCounter {
      * @throws Exception database access error
      */
     public void update(String resource, int count) throws Exception {
-        SQLHelper.executeNonQuery("UPDATE hitcount set count= " + count + " WHERE resource=\"" + resource + "\");");
+        if (count > 0)
+        SQLHelper.executeNonQuery("UPDATE hitcount set count='" + count + "' WHERE resource='" + resource + "';");
     }
 
     /**
@@ -53,7 +59,7 @@ public class HitCounter {
             else
                 update(resource, count + 1);
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("increment(): " + e.getMessage());
         }
 
         return count + 1;
@@ -75,7 +81,7 @@ public class HitCounter {
                 count = rs.getInt(1);
 
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("count(): " + e.getMessage());
         }
 
         return count;

@@ -53,7 +53,7 @@ public final class UserDao {
      * Add a user to justjournal including their name, username and
      * password.
      *
-     * @param user
+     * @param user User Instance
      * @return True if successful, false otherwise.
      */
     public static final boolean add(UserTo user) {
@@ -83,8 +83,8 @@ public final class UserDao {
      * passwords can be changed via the
      * <code>com.justjournal.ctl.ChangePasswordSubmit</code> class.
      *
-     * @param user
-     * @return
+     * @param user  User Instance
+     * @return  true on success
      * @see com.justjournal.ctl.ChangePasswordSubmit
      */
     public static final boolean update(UserTo user) {
@@ -107,7 +107,7 @@ public final class UserDao {
      * should not be called by cancel account.  Accounts
      * should be deactivated.
      *
-     * @param userId
+     * @param userId  Unique User ID
      * @return true if successful, false otherwise
      */
     public static final boolean delete(int userId) {
@@ -132,7 +132,7 @@ public final class UserDao {
      * Retrieve a user given the user id.
      * Does NOT retrieve password or sha1 password.
      *
-     * @param userId
+     * @param userId  Unique User ID
      * @return user's info
      */
     public static final UserTo view(int userId) {
@@ -174,7 +174,7 @@ public final class UserDao {
      * Does not retrieve the password or
      * sha1 password.
      *
-     * @param userName
+     * @param userName  User's username
      * @return user's info
      */
     public static final UserTo view(String userName) {

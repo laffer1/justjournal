@@ -163,6 +163,7 @@
         <li><a href="memberlist.jsp">Member List</a></li>
         <li><a href="opensource/index.jsp">Open Source</a></li>
         <li><a href="users/jjsite">Site Journal</a></li>
+        <li><a href="tags.jsp">Tag Cloud</a></li>
         <li><a href="update.jsp">Update Journal</a></li>
     </ul>
 

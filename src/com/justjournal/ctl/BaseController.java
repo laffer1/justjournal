@@ -49,15 +49,29 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
+ * Base controller.  Provides an abstraction from some of the Servlet API.
+ * 
  * User: laffer1
  * Date: Jul 21, 2005
  * Time: 7:12:44 PM
+ *
+ * @author Lucas Holt
+ * @version $Id: BaseController.java,v 1.5 2008/07/29 11:59:43 laffer1 Exp $
  */
 public class BaseController extends HttpServlet {
+
+    /**
+     * Initialize the Controller
+     * @param config Servlet Configuration
+     * @throws ServletException Servlet Exception
+     */
     public void init(final ServletConfig config) throws ServletException {
         super.init(config);
     }
 
+    /**
+     * Clean up after the Controller
+     */
     public void destroy() {
     }
 

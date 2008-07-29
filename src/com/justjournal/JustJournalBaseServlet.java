@@ -47,16 +47,18 @@ import javax.servlet.http.HttpSession;
 
 /**
  * Base servlet to do some of the repetative servlet initialization stuff.
+ * 
+ * Date: Sep 25, 2005
+ * Time: 9:04:00 PM
  *
  * @author Lucas Holt
- * @version $Id: JustJournalBaseServlet.java,v 1.12 2007/12/03 19:02:26 laffer1 Exp $
+ * @version $Id: JustJournalBaseServlet.java,v 1.13 2008/07/29 11:59:38 laffer1 Exp $
  * @since 1.0
- *        Date: Sep 25, 2005
- *        Time: 9:04:00 PM
+
  */
 public class JustJournalBaseServlet extends HttpServlet {
-    protected static final char endl = '\n';
-    protected Settings set;
+    protected static final char endl = '\n';  /* end of line character for output */
+    protected Settings set;  /* Global Just Journal web app settings */
 
     /**
      * Initializes the servlet.
@@ -119,6 +121,12 @@ public class JustJournalBaseServlet extends HttpServlet {
 
     }
 
+    /**
+     * Get a string input parameter guaranteed not to be null
+     * @param request Servlet Request
+     * @param input Name of the parameter
+     * @return Trimmed, Not null string from parameter
+     */
     protected String fixInput(HttpServletRequest request, String input) {
         String fixed = request.getParameter(input);
 
@@ -128,6 +136,12 @@ public class JustJournalBaseServlet extends HttpServlet {
         return fixed.trim();
     }
 
+      /**
+     * Get a string header guaranteed not to be null
+     * @param request Servlet Request
+     * @param input Name of the header
+     * @return Trimmed, Not null string from header
+     */
     protected String fixHeaderInput(HttpServletRequest request, String input) {
         String fixed = request.getHeader(input);
 

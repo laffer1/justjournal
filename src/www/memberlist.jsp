@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <%@ page contentType="text/html; charset=iso-8859-1" language="java" %>
-<%@ page import="com.justjournal.db.UserTo" %>
+<%@ page import="com.justjournal.User" %>
+<%@ page import="com.justjournal.WebError" %>
+<%@ page import="com.justjournal.core.Statistics" %>
+<%@ page import="static com.justjournal.db.UserDao.*" %>
+<%@ page import="com.justjournal.db.*"%>
+<%@ page import="com.justjournal.search.BaseSearch" %>
+<%@ page import="com.justjournal.utility.StringUtil" %>
+<%@ page import="com.justjournal.utility.Xml" %>
+<%@ page import="sun.jdbc.rowset.CachedRowSet" %>
+<%@ page import="java.io.PrintWriter" %>
+<%@ page import="java.sql.*" %>
+<%@ page import="java.text.ParsePosition" %>
+<%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.Collection" %>
 <%@ page import="java.util.Iterator" %>
-<%@ page import="static com.justjournal.db.UserDao.*" %>
-<%@ page import="com.justjournal.User"%>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -17,6 +27,21 @@
     <link rel="home" title="Home" href="index.jsp"/>
     <link rel="contents" title="Site Map" href="sitemap.jsp"/>
     <link rel="help" title="Technical Support" href="support/index.jsp"/>
+    <style type="text/css" xml:space="preserve">
+        .ltm {
+           background-color: white;
+        }
+
+        .dtm {
+            background-color: #F2F2F2;
+        }
+
+        .tbhead {
+            background-color: black;
+            color: white;
+            font: Verdana, Arial 10px;    
+        }
+    </style>
 </head>
 
 <body>
@@ -28,9 +53,9 @@
 
     <p>A list of public journals.  Private blogs are not listed.</p>
 
-    <table border="0" cellpadding="1" cellspacing="1">
+    <table border="0" cellpadding="1" cellspacing="1" style="border: thin solid #F2F2F2; font-size: 10px;">
         <thead>
-            <tr style="background: black; color: white; font: Verdana, Arial 10pt;">
+            <tr class="tbhead">
                 <th>Members</th>
                 <th>Name</th>
                 <th>Journal Created</th>
@@ -38,7 +63,7 @@
             </tr>
         </thead>
 
-        <tbody style="font: 8pt Verdana, Arial, sans-serif;">
+        <tbody>
             <%
                 Collection members = memberList();
                 UserTo o;
@@ -52,9 +77,9 @@
                         if (!new User(o.getUserName()).isPrivateJournal())
                         {
                             if (a % 2 == 0) { %>
-             <tr style="background: white;">
+            <tr class="ltm">
                         <% } else { %>
-            <tr style="background: #F2F2F2;">
+            <tr class="dtm">
                          <% } %>
                 <td><a href="users/<%=o.getUserName() %>"><%=o.getUserName() %></a></td>
                 <td><%=o.getName() %></td>

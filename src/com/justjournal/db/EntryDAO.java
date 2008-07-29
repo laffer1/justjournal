@@ -431,7 +431,7 @@ public final class EntryDAO {
     }
 
 
-    public Collection<EntryTo> view(final String userName, final boolean thisUser) {
+    public static Collection<EntryTo> view(final String userName, final boolean thisUser) {
         return view(userName, thisUser, 0); // don't skip any!
     }
 

@@ -53,6 +53,7 @@ import java.util.Map;
  *        Time: 6:51:38 PM
  */
 public class ControllerErrorable extends ThrowawayBean2 {
+    
     /**
      */
     protected Map errors;

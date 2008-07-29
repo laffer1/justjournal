@@ -2,7 +2,7 @@
 <%--
 Form to add a journal entry.  Forwards the request to a servlet.
 
-$Id: add.jsp,v 1.2 2007/02/25 16:53:46 laffer1 Exp $
+$Id: add.jsp,v 1.3 2008/07/29 11:59:45 laffer1 Exp $
 --%>
 <%
     int eid;
@@ -53,7 +53,7 @@ $Id: add.jsp,v 1.2 2007/02/25 16:53:46 laffer1 Exp $
 
         div.row span.formw {
             float: right;
-            width: 335px;
+            width: 340px;
             text-align: left;
         }
 
@@ -74,7 +74,7 @@ $Id: add.jsp,v 1.2 2007/02/25 16:53:46 laffer1 Exp $
 
     <jsp:include page="../inc_login.jsp" flush="false"/>
 
-    <div style="width: 500px; padding: 5px; margin: 0">
+    <div style="width: 505px; padding: 5px; margin: 0">
         <form method="post" action="../addComment" name="frmAddComment">
             <input type="hidden" name="id" value="<%=eid%>"/>
             <%
