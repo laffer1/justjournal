@@ -38,8 +38,8 @@
 
     <p>Account</p>
     <ul>
-        <li><a href="create.jsp">New</a></li>
-        <li><a href="cancel.jsp">Cancel</a></li>
+        <li><a href="create.jsp" title="Create a new account">New</a></li>
+        <li><a href="cancel.jsp" title="Discontinue Just Journal service">Cancel</a></li>
         <li><a href="prefs/index.jsp">Preferences</a></li>
         <li><a href="login.jsp">Login</a></li>
         <li><a href="logout.jsp">Logout</a></li>
@@ -60,13 +60,14 @@
         <li><a href="software/index.jsp">Index</a></li>
         <li><a href="software/windows.jsp">Windows Client</a></li>
         <li><a href="opensource/index.jsp">Open Source</a></li>
-        <li><a href="http://sourceforge.net/projects/justjournal">Source Forge CVS</a></li>
+        <li><a href="http://sourceforge.net/projects/justjournal" title="View the source code repository">Source Forge CVS</a></li>
     </ul>
 
     <p>Journal</p>
     <ul>
-        <li><a href="update.jsp">Update</a></li>
-        <li><a href="tags.jsp">Tag Cloud</a></li>
+        <li><a href="mob/index.jsp" title="Just Journal Mobile (for Cell Phones)">Just Journal Mobile</a></li>
+        <li><a href="update.jsp" title="Create Journal Entries">Update</a></li>
+        <li><a href="tags.jsp" title="View Tags used on JustJournal blogs">Tag Cloud</a></li>
     </ul>
 </div>
 
