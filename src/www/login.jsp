@@ -1,3 +1,17 @@
+<%@ page import="com.justjournal.User" %>
+<%@ page import="com.justjournal.WebError" %>
+<%@ page import="com.justjournal.core.Statistics" %>
+<%@ page import="com.justjournal.db.*" %>
+<%@ page import="com.justjournal.search.BaseSearch" %>
+<%@ page import="com.justjournal.utility.StringUtil" %>
+<%@ page import="com.justjournal.utility.Xml" %>
+<%@ page import="sun.jdbc.rowset.CachedRowSet" %>
+<%@ page import="java.io.PrintWriter" %>
+<%@ page import="java.sql.*" %>
+<%@ page import="java.text.ParsePosition" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.Collection" %>
+<%@ page import="java.util.Iterator" %>
 <%@ page contentType="text/html; charset=iso-8859-1" language="java" %>
 <?xml version="1.0" encoding="iso-8859-1"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -41,7 +55,6 @@
     </style>
     <script language="JavaScript" type="text/javascript" src="js/sha1.js"></script>
     <script language="JavaScript" type="text/javascript">
-        <!--
         function sendForm(formid, checkuser)
         {
 
@@ -76,7 +89,6 @@
             loginform.password.value = "";  // dont send clear-text password!
             return true;
         }
-        -->
     </script>
 </head>
 
@@ -87,8 +99,8 @@
 <div id="content">
     <h2>Login</h2>
 
-    <p>The password policy recently changed. If your password contains
-        certain special characters, you will need to reset it. ()*+-=,:;? ^ &amp; % are no longer allowed.
+    <p>If your password contains certain special characters, you will need to reset it.
+        ()*+-=,:;? ^ &amp; % are no longer allowed.
         You may e-mail luke@justjournal.com to have a temporary password
         set which you can then change.</p>
 
