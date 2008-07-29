@@ -161,7 +161,7 @@
         <li><a href="cancel.jsp">Cancel Account</a></li>
         <li><a href="http://www.cafepress.com/justjournal">Purchase JJ Merchandise</a></li>
         <li><a href="memberlist.jsp">Member List</a></li>
-        <li><a href="mob/index.jsp">Just Journal Mobile (Cell Phone Version)</a></li>
+        <li><a href="mob/index.jsp" title="Just Journal Mobile for Cell Phones">Just Journal Mobile</a></li>
         <li><a href="opensource/index.jsp">Open Source</a></li>
         <li><a href="users/jjsite">Site Journal</a></li>
         <li><a href="tags.jsp">Tag Cloud</a></li>

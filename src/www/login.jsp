@@ -111,7 +111,7 @@
         so that your password is encrypted. (padlock)
     </p>
 
-    <div style="width: 400px; padding: 5px; margin: 0px;">
+    <div style="width: 400px; padding: 5px; margin: 0;">
         <form method="post" name="alogin" action="./loginAccount" id="blogin">
             <input type="hidden" name="password_hash" id="ipassword_hash" value=""/>
 
