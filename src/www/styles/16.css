@@ -1,0 +1,134 @@
+/* DEFAULT THEME */
+
+@import "font-base.css";
+@import "users.css";
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: helvetica, arial, sans-serif;
+    color: #333;
+    background: white url("../images/Backgrounds/16.gif");
+}
+
+h1 {
+    font-size: 15pt;
+    font-weight: 600;
+    font-family: "Comic Sans MS", fantasy;
+    color: white;
+    margin: 0;
+    padding: 0;
+    display: inline;
+    letter-spacing: 10px;
+}
+
+h2 {
+    color: white;
+    letter-spacing: 3px;
+    word-spacing: 10px;
+    font-weight: 600;
+    background: transparent;
+}
+
+h3 {
+    color: silver;
+    font-size: 12pt;
+    background-color: transparent;
+}
+
+dl {
+    font: 10pt Verdana, Arial, Helvetica, sans-serif;
+}
+
+dt {
+    font-size: 12pt;
+}
+
+p {
+    font: 10pt / 12pt Verdana, Arial, Helvetica, sans-serif;
+    margin: 0 0 16px 0;
+    padding: 0;
+}
+
+img {
+    border: 0;
+}
+
+#Content>p {
+    margin: 0;
+}
+
+#Content>p+p {
+    text-indent: 30px;
+}
+
+a:link {
+    color: #a05aad;
+    background-color: transparent;
+    font-size: 11px;
+    text-decoration: none;
+    font-weight: 600;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+
+a:visited {
+    color: #00bff3;
+    background-color: transparent;
+    font-size: 11px;
+    text-decoration: none;
+    font-weight: 600;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+
+a:active {
+    color: #a05aad;
+    background-color: transparent;
+    font-size: 11px;
+    text-decoration: none;
+    font-weight: 600;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+
+a:hover {
+    color: #ec008c;
+    background-color: transparent;
+    font-size: 11px;
+    text-decoration: none;
+    font-weight: 600;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+
+#header {
+    margin: 0;
+    padding: 10px 10px 10px 10px;
+    position: fixed;
+    background: black;
+    width: 100%;
+    max-width: 100%;
+    height: 50px;
+    text-align: center;
+}
+
+#content {
+    margin: 0 50px 50px 200px;
+    padding: 10px;
+    padding-top: 100px;
+}
+
+#menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 10px;
+    width: 150px;
+    height: 100%;
+    background: white;
+    overflow: scroll;
+}
+
+#footer {
+    position: relative;
+    margin-left: 200px;
+    font: 10pt verdana, Arial, sans-serif;
+    padding: 10px;
+}
