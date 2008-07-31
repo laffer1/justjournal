@@ -1,3 +1,17 @@
+<%@ page import="com.justjournal.User" %>
+<%@ page import="com.justjournal.WebError" %>
+<%@ page import="com.justjournal.core.Statistics" %>
+<%@ page import="com.justjournal.db.*" %>
+<%@ page import="com.justjournal.search.BaseSearch" %>
+<%@ page import="com.justjournal.utility.StringUtil" %>
+<%@ page import="com.justjournal.utility.Xml" %>
+<%@ page import="sun.jdbc.rowset.CachedRowSet" %>
+<%@ page import="java.io.PrintWriter" %>
+<%@ page import="java.sql.*" %>
+<%@ page import="java.text.ParsePosition" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.Collection" %>
+<%@ page import="java.util.Iterator" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
@@ -32,7 +46,7 @@
 
     <h3>Change Password</h3>
 
-    <div style="width: 700px; padding: 5px; margin: 0">
+    <div style="width: 600px; padding: 5px; margin: 0">
         <form name="frmPasswd" method="post" action="changepass.h">
             <fieldset>
                 <legend><strong>Account Password</strong><br/></legend>
