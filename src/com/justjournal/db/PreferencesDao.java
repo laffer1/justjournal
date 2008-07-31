@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2005, Lucas Holt
+Copyright (c) 2005, 2008 Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -37,13 +37,12 @@ package com.justjournal.db;
 import sun.jdbc.rowset.CachedRowSet;
 
 /**
- * Created by IntelliJ IDEA.
  * User: laffer1
  * Date: Jan 16, 2004
  * Time: 12:07:17 PM
  *
  * @author Lucas Holt
- * @version 1.3
+ * @version $Id: PreferencesDao.java,v 1.9 2008/07/31 21:21:07 laffer1 Exp $
  * @since 1.0
  *        <p/>
  *        1.3 Added show_avatar field select.
@@ -53,8 +52,8 @@ public final class PreferencesDao {
     /**
      * Update the owner view only security feature.
      *
-     * @param userId
-     * @param ownerOnly
+     * @param userId  userid of blog owner
+     * @param ownerOnly  if the blog is private
      * @return true on success, false on any error
      */
     public static final boolean updateSec(int userId, boolean ownerOnly) {
@@ -87,6 +86,7 @@ public final class PreferencesDao {
      *
      * @param userName the user who needs their settings defined.
      * @return Preferences in cached rowset.
+     * @throws Exception SQL exception
      */
     public static CachedRowSet ViewJournalPreferences(final String userName)
             throws Exception {
@@ -101,13 +101,13 @@ public final class PreferencesDao {
         String sqlStatement =
                 "SELECT user.name As name, user.id As id, user.since as since, up.style As style, up.allow_spider, " +
                         "up.owner_view_only, st.url as cssurl, st.doc as cssdoc, uc.email as email, " +
-                        "up.show_avatar as show_avatar, up.journal_name as journal_name FROM user, user_pref As up, user_style as st, user_contact As uc " +
+                        "up.show_avatar as show_avatar, up.journal_name as journal_name, ubio.content as bio FROM user, user_bio as ubio, user_pref As up, user_style as st, user_contact As uc " +
                         "WHERE user.username='" + userName + "' AND user.id = up.id AND user.id=st.id AND user.id=uc.id LIMIT 1;";
 
         try {
             RS = SQLHelper.executeResultSet(sqlStatement);
         } catch (Exception e1) {
-            throw new Exception(e1);
+            throw new Exception("Couldn't get preferences: " + e1.getMessage());
         }
 
         return RS;

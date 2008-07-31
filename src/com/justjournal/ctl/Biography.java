@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2006, 2008 Lucas Holt
+Copyright (c) 2008 Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -46,19 +46,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+
 /**
- * Modify the journal title
+ * Modify the biography
  *
  * @author Lucas Holt
- * @version $Id: JournalTitle.java,v 1.3 2008/07/31 21:21:09 laffer1 Exp $
+ * @version $Id: Biography.java,v 1.1 2008/07/31 21:21:08 laffer1 Exp $
  */
-public class JournalTitle extends JustJournalBaseServlet {
+public class Biography extends JustJournalBaseServlet {
 
     private static Category log = Category.getInstance(JournalTitle.class.getName());
 
     protected void execute(HttpServletRequest request, HttpServletResponse response, HttpSession session, StringBuffer sb) {
         boolean blnError = false;
-        String jtitle = fixInput(request, "jtitle");
+        String bio = fixInput(request, "bio");
 
         // Retreive username
         String userName;
@@ -72,7 +73,7 @@ public class JournalTitle extends JustJournalBaseServlet {
             userID = userIDasi.intValue();
         }
 
-        if (!StringUtil.lengthCheck(jtitle, 5, 150)) {
+        if (!StringUtil.lengthCheck(bio, 5, 150)) {
             blnError = true;
             WebError.Display("Input Error",
                     "Journal title must be 5-150 characters.",
@@ -85,13 +86,13 @@ public class JournalTitle extends JustJournalBaseServlet {
                     log.debug("Attempting user prefs update  ");
 
                 if (userID > 0) {
-                    String strSQL = "UPDATE user_pref SET journal_name='" +
-                            StringUtil.replace(jtitle, '\'', "\\\'") + "' WHERE id='" + userID + "' LIMIT 1;";
+                    String strSQL = "UPDATE user_bio SET content='" +
+                            StringUtil.replace(bio, '\'', "\\\'") + "' WHERE id='" + userID + "' LIMIT 1;";
                     if (SQLHelper.executeNonQuery(strSQL) == 1)
                         htmlOutput(sb, userName);
                     else
                         WebError.Display("Databaase error",
-                                "Unable to update the journal title.", sb);
+                                "Unable to update the bio.", sb);
 
 
                 } else {
@@ -122,9 +123,9 @@ public class JournalTitle extends JustJournalBaseServlet {
             content.append(endl);
             content.append("\t<p>You are logged in as <a href=\"/users/").append(userName).append("\"><img src=\"/images/userclass_16.png\" alt=\"user\" />").append(userName).append("</a>.</p>");
             content.append(endl);
-            content.append("\t<h3>Journal Title</h3>");
+            content.append("\t<h3>Biography</h3>");
             content.append(endl);
-            content.append("\t<p>The title has been updated.</p>");
+            content.append("\t<p>Your bio has been updated.</p>");
             content.append(endl);
             content.append("\t<p><a href=\"/prefs/index.jsp\">Return to preferences.</a></p>");
             content.append(endl);
@@ -154,6 +155,7 @@ public class JournalTitle extends JustJournalBaseServlet {
     }
 
     public String getServletInfo() {
-        return "Journal Title Management";
+        return "Biography Management";
     }
 }
+

@@ -34,7 +34,10 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal;
 
-import com.justjournal.db.*;
+import com.justjournal.db.DateTime;
+import com.justjournal.db.PreferencesDao;
+import com.justjournal.db.UserDao;
+import com.justjournal.db.UserTo;
 import sun.jdbc.rowset.CachedRowSet;
 
 /**
@@ -42,7 +45,7 @@ import sun.jdbc.rowset.CachedRowSet;
  * userName.
  *
  * @author Lucas Holt
- * @version $Id: User.java,v 1.14 2007/05/30 21:57:08 laffer1 Exp $
+ * @version $Id: User.java,v 1.15 2008/07/31 21:21:08 laffer1 Exp $
  *          Date: Jan 4, 2004
  *          Time: 9:59:35 PM
  * @since 1.0
@@ -66,6 +69,7 @@ public final class User {
 
     private String journalName = "";
     private DateTime lastLogin;
+    private String biography = "";
 
     public User(final String userName) throws Exception {
         setUserName(userName);
@@ -98,6 +102,11 @@ public final class User {
                     this.journalName = "";
                 else
                     this.journalName = RS.getString("journal_name");
+               
+                if (RS.getString("bio") == null)
+                    this.biography = "";
+                else
+                    this.biography = RS.getString("bio");
 
                 if (RS.getInt("since") > 2003)
                     startYear = RS.getInt("since");
@@ -158,6 +167,11 @@ public final class User {
                     this.journalName = "";
                 else
                     this.journalName = RS.getString("journal_name");
+
+                if (RS.getString("bio") == null)
+                    this.biography = "";
+                else
+                    this.biography = RS.getString("bio");              
 
                 if (RS.getInt("since") > 2003)
                     startYear = RS.getInt("since");
@@ -424,6 +438,14 @@ public final class User {
         return journalName;
     }
 
+    public String getBiography() {
+        return biography;
+    }
+
+    public void setBiography(String biography) {
+        this.biography = biography;
+    }
+
     public void recycle() {
         firstName = "";
         userId = 0;
@@ -435,5 +457,6 @@ public final class User {
         startYear = 2003;
         emailAddress = "";
         journalName = "";
+        biography = "";
     }
 }
