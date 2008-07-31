@@ -1,6 +1,6 @@
-$Id: INSTALL,v 1.3 2008/07/31 20:16:36 laffer1 Exp $
+$Id: INSTALL,v 1.4 2008/07/31 20:18:13 laffer1 Exp $
 
-March 2006
+July 2008
 
 This document is incomplete, but briefly outlines installing
 justjournal.
@@ -104,3 +104,5 @@ The database documentation is in /database.
 
 ant:
 I've recently created an ant build script.  We'll be moving to this over time.
+
+In addition to deploying the war file, you'll also need to add/edit some default settings in the just journal database under settings.
