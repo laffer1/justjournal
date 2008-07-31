@@ -1,3 +1,5 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <%@ page import="com.justjournal.User" %>
 <%@ page import="com.justjournal.WebError" %>
 <%@ page import="com.justjournal.core.Statistics" %>
@@ -20,8 +22,6 @@
         ival = userID.intValue();
     }
 %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 

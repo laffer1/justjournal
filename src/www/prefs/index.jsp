@@ -1,3 +1,8 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
 <%@ page import="com.justjournal.User" %>
 <%@ page import="com.justjournal.WebError" %>
 <%@ page import="com.justjournal.core.Statistics" %>
@@ -12,10 +17,7 @@
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.Collection" %>
 <%@ page import="java.util.Iterator" %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
     <title>Just Journal: Preferences</title>
