@@ -40,7 +40,9 @@ Tasks to be done
 		<copy todir="${build.dir}\WEB-INF\lib">
 			<fileset dir="${lib.dir}"/>
 		</copy>
-
+		<copy todir="${build.dir}">
+			<fileset dir="${basedir}" includes="LICENSE" />
+		</copy>
 	</target>		
 
 	<target name="war" depends="copy">
