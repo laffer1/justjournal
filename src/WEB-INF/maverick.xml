@@ -26,60 +26,6 @@
             </view>
         </command>
 
-        <command name="opensource/index">
-            <view type="document" path="opensource/index.xml">
-                <transform path="outside.xsl"/>
-            </view>
-        </command>
-
-        <command name="account/login">
-            <view type="document" path="account/login.xml">
-                <transform path="outside.xsl"/>
-            </view>
-        </command>
-
-        <command name="account/create">
-            <view type="document" path="account/create.xml">
-                <transform path="outside.xsl"/>
-            </view>
-        </command>
-
-        <command name="account/cancel">
-            <view type="document" path="account/cancel.xml">
-                <transform path="outside.xsl"/>
-            </view>
-        </command>
-
-        <command name="account/privacy">
-            <view type="document" path="account/privacy.xml">
-                <transform path="outside.xsl"/>
-            </view>
-        </command>
-
-        <command name="support/index">
-            <view type="document" path="support/index.xml">
-                <transform path="outside.xsl"/>
-            </view>
-        </command>
-
-        <command name="suport/bugs">
-            <view type="document" path="support/bugs.xml">
-                <transform path="outside.xsl"/>
-            </view>
-        </command>
-
-        <command name="sitemap">
-            <view type="document" path="sitemap.xsl">
-                <transform path="outside.xsl"/>
-            </view>
-        </command>
-
-        <command name="software/index">
-            <view type="document" path="software/index.xml">
-                <transform path="outside.xsl"/>
-            </view>
-        </command>
-
         <command name="comment/delete">
             <controller class="com.justjournal.ctl.DeleteComment"/>
             <view name="success">
