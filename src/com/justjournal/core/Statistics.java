@@ -36,14 +36,15 @@ package com.justjournal.core;
 
 import com.justjournal.db.SQLHelper;
 import org.apache.log4j.Category;
-import sun.jdbc.rowset.CachedRowSet;
+
+import javax.sql.rowset.CachedRowSet;
 
 /**
  * Track the number of users, entry and comment statistics, and
  * other information.
  *
  * @author Lucas Holt
- * @version $Id: Statistics.java,v 1.5 2008/05/01 04:41:56 laffer1 Exp $
+ * @version $Id: Statistics.java,v 1.6 2008/08/01 14:35:54 laffer1 Exp $
  */
 public class Statistics {
 

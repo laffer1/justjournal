@@ -35,15 +35,15 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.db;
 
 import com.justjournal.utility.StringUtil;
-import sun.jdbc.rowset.CachedRowSet;
 
+import javax.sql.rowset.CachedRowSet;
 import java.util.ArrayList;
 
 /**
  * Manipulate trackback storage
  *
  * @author Lucas Holt
- * @version $Id: TrackbackDao.java,v 1.3 2008/05/05 08:39:37 laffer1 Exp $
+ * @version $Id: TrackbackDao.java,v 1.4 2008/08/01 14:35:47 laffer1 Exp $
  *          User: laffer1
  *          Date: May 5, 2008
  *          Time: 3:06:12 AM

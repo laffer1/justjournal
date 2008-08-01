@@ -35,7 +35,8 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.db;
 
 import org.apache.log4j.Category;
-import sun.jdbc.rowset.CachedRowSet;
+
+import javax.sql.rowset.CachedRowSet;
 
 /**
  * Created by IntelliJ IDEA.

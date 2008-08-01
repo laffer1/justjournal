@@ -35,8 +35,8 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal;
 
 import org.apache.log4j.Category;
-import sun.jdbc.rowset.CachedRowSet;
 
+import javax.sql.rowset.CachedRowSet;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -46,7 +46,7 @@ import java.util.Iterator;
  * Storage for calendar months.
  *
  * @author Lucas Holt
- * @version $Id: Cal.java,v 1.9 2007/03/21 01:44:32 laffer1 Exp $
+ * @version $Id: Cal.java,v 1.10 2008/08/01 14:35:52 laffer1 Exp $
  * @see CalMonth
  */
 public final class Cal {

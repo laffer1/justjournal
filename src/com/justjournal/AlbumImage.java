@@ -37,7 +37,6 @@ package com.justjournal;
 import com.justjournal.db.SQLHelper;
 import com.justjournal.utility.ServletUtilities;
 import org.apache.log4j.Category;
-import sun.jdbc.rowset.CachedRowSet;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -45,6 +44,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.rowset.CachedRowSet;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 
@@ -52,7 +52,7 @@ import java.io.ByteArrayOutputStream;
  * Diplay individual images in the user's photo album.
  *
  * @author Lucas Holt
- * @version $Id: AlbumImage.java,v 1.5 2007/12/03 19:01:56 laffer1 Exp $
+ * @version $Id: AlbumImage.java,v 1.6 2008/08/01 14:35:54 laffer1 Exp $
  */
 public class AlbumImage extends HttpServlet {
     private static Category log = Category.getInstance(AlbumImage.class.getName());

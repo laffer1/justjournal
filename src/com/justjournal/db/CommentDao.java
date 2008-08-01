@@ -35,15 +35,15 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.db;
 
 import com.justjournal.utility.StringUtil;
-import sun.jdbc.rowset.CachedRowSet;
 
+import javax.sql.rowset.CachedRowSet;
 import java.util.ArrayList;
 
 /**
  * Manipulate and fetch comments
  *
  * @author Lucas Holt
- * @version $Id: CommentDao.java,v 1.7 2008/05/05 08:19:03 laffer1 Exp $
+ * @version $Id: CommentDao.java,v 1.8 2008/08/01 14:35:45 laffer1 Exp $
  *          User: laffer1
  *          Date: Dec 25, 2003
  *          Time: 2:19:28 PM

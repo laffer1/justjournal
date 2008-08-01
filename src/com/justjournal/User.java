@@ -38,14 +38,15 @@ import com.justjournal.db.DateTime;
 import com.justjournal.db.PreferencesDao;
 import com.justjournal.db.UserDao;
 import com.justjournal.db.UserTo;
-import sun.jdbc.rowset.CachedRowSet;
+
+import javax.sql.rowset.CachedRowSet;
 
 /**
  * Represents a user's basic credentals including userId and
  * userName.
  *
  * @author Lucas Holt
- * @version $Id: User.java,v 1.15 2008/07/31 21:21:08 laffer1 Exp $
+ * @version $Id: User.java,v 1.16 2008/08/01 14:35:51 laffer1 Exp $
  *          Date: Jan 4, 2004
  *          Time: 9:59:35 PM
  * @since 1.0

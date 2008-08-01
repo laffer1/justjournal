@@ -34,7 +34,9 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
-import sun.jdbc.rowset.CachedRowSet;
+import org.apache.log4j.Category;
+
+import javax.sql.rowset.CachedRowSet;
 
 /**
  * User: laffer1
@@ -42,13 +44,16 @@ import sun.jdbc.rowset.CachedRowSet;
  * Time: 12:07:17 PM
  *
  * @author Lucas Holt
- * @version $Id: PreferencesDao.java,v 1.10 2008/08/01 11:41:11 laffer1 Exp $
+ * @version $Id: PreferencesDao.java,v 1.11 2008/08/01 14:35:47 laffer1 Exp $
  * @since 1.0
  *        <p/>
  *        1.3 Added show_avatar field select.
  *        1.2 Altered journal preferences query to include email address field.
  */
 public final class PreferencesDao {
+
+    private static Category log = Category.getInstance(PreferencesDao.class.getName());
+    
     /**
      * Update the owner view only security feature.
      *
@@ -71,6 +76,7 @@ public final class PreferencesDao {
             records = SQLHelper.executeNonQuery(sqlStmt);
         } catch (Exception e) {
             noError = false;
+            log.error(e.getMessage());
         }
 
         if (records != 1)
@@ -107,6 +113,7 @@ public final class PreferencesDao {
         try {
             RS = SQLHelper.executeResultSet(sqlStatement);
         } catch (Exception e1) {
+             log.error(e1.getMessage());
             throw new Exception("Couldn't get preferences: " + e1.getMessage());
         }
 

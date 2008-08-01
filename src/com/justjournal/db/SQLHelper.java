@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2003-2007, Lucas Holt
+Copyright (c) 2003, 2004, 2005, 2006, 2007, 2008 Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -41,11 +41,12 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
-import sun.jdbc.rowset.CachedRowSet;
+import com.sun.rowset.CachedRowSetImpl;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
+import javax.sql.rowset.CachedRowSet;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -56,7 +57,7 @@ import java.sql.Statement;
  * A simple datatbase connectivity solution.  Depends on Sun's beta CachedRowSet.
  *
  * @author Lucas Holt
- * @version $Id: SQLHelper.java,v 1.4 2007/12/23 01:39:06 laffer1 Exp $
+ * @version $Id: SQLHelper.java,v 1.5 2008/08/01 14:35:49 laffer1 Exp $
  * @since 1.0
  */
 public final class SQLHelper {
@@ -152,7 +153,7 @@ public final class SQLHelper {
         Connection conn = null;
         Statement stmt = null;
         ResultSet rs;
-        CachedRowSet crs = null;
+        CachedRowSetImpl crs = null;
 
         try {
             conn = getConn();
@@ -168,7 +169,7 @@ public final class SQLHelper {
             stmt = conn.createStatement();
             rs = stmt.executeQuery(commandText);
 
-            crs = new CachedRowSet();
+            crs = new CachedRowSetImpl();
             crs.populate(rs);
 
             rs.close();

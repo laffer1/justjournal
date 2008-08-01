@@ -36,14 +36,14 @@ package com.justjournal.search;
 
 import com.justjournal.db.SQLHelper;
 import org.apache.log4j.Category;
-import sun.jdbc.rowset.CachedRowSet;
 
+import javax.sql.rowset.CachedRowSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
  * @author Lucas Holt
- * @version $Id: BaseSearch.java,v 1.4 2008/04/26 17:09:43 laffer1 Exp $
+ * @version $Id: BaseSearch.java,v 1.5 2008/08/01 14:35:55 laffer1 Exp $
  */
 public class BaseSearch {
     private static Category log = Category.getInstance(BaseSearch.class.getName());

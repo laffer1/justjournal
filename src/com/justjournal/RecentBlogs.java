@@ -48,7 +48,7 @@ import java.util.Calendar;
  * Date: Feb 26, 2006
  * Time: 10:44:18 AM
  *
- * @version $Id: RecentBlogs.java,v 1.10 2008/02/18 03:55:29 laffer1 Exp $
+ * @version $Id: RecentBlogs.java,v 1.11 2008/08/01 14:35:50 laffer1 Exp $
  */
 public class RecentBlogs extends JustJournalBaseServlet {
     private static Category log = Category.getInstance(RecentBlogs.class.getName());
@@ -74,8 +74,8 @@ public class RecentBlogs extends JustJournalBaseServlet {
             rss.setManagingEditor(set.getSiteAdminEmail() + " (" + set.getSiteAdmin() + ")");
             rss.setSelfLink(set.getBaseUri() + "RecentBlogs");
             rss.populate(EntryDAO.viewRecentUniqueUsers());
-            sb.append(rss.toXml());
 
+            sb.append(rss.toXml());
         } catch (Exception e) {
             // oops we goofed somewhere.  Its not in the original spec
             // how to handle error conditions with rss.

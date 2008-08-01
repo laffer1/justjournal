@@ -46,18 +46,18 @@ package com.justjournal;
 import com.justjournal.db.SQLHelper;
 import com.justjournal.utility.FileIO;
 import com.justjournal.utility.StringUtil;
-import sun.jdbc.rowset.CachedRowSet;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.sql.rowset.CachedRowSet;
 import java.io.IOException;
 
 /**
  * Adds a friend to the Users list for their friends page
  *
  * @author Caryn Holt, Lucas Holt
- * @version $Id: AddFriend.java,v 1.7 2006/12/03 19:33:13 laffer1 Exp $
+ * @version $Id: AddFriend.java,v 1.8 2008/08/01 14:35:52 laffer1 Exp $
  * @since 1.0
  */
 public final class AddFriend extends JustJournalBaseServlet {

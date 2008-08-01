@@ -37,8 +37,8 @@ import com.justjournal.db.EntryDAO;
 import com.justjournal.db.EntryTo;
 import com.justjournal.db.SQLHelper;
 import org.apache.log4j.Category;
-import sun.jdbc.rowset.CachedRowSet;
 
+import javax.sql.rowset.CachedRowSet;
 import java.util.ArrayList;
 import java.util.Collection;
 

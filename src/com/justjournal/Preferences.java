@@ -35,7 +35,8 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal;
 
 import com.justjournal.db.PreferencesDao;
-import sun.jdbc.rowset.CachedRowSet;
+
+import javax.sql.rowset.CachedRowSet;
 
 /**
  * Loads and stores preferences for a just journal user
@@ -48,7 +49,7 @@ import sun.jdbc.rowset.CachedRowSet;
  * journal, the user must login.  Public access is denied.
  *
  * @author Lucas Holt
- * @version $Id: Preferences.java,v 1.7 2006/07/28 14:01:06 laffer1 Exp $
+ * @version $Id: Preferences.java,v 1.8 2008/08/01 14:35:52 laffer1 Exp $
  * @since 1.0
  *        User: laffer1
  *        Date: Jul 11, 2003

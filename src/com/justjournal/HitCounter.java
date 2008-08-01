@@ -2,7 +2,8 @@ package com.justjournal;
 
 import com.justjournal.db.SQLHelper;
 import org.apache.log4j.Category;
-import sun.jdbc.rowset.CachedRowSet;
+
+import javax.sql.rowset.CachedRowSet;
 
 /**
  * Count access attempts to a resource
@@ -10,7 +11,7 @@ import sun.jdbc.rowset.CachedRowSet;
  * TODO: Lock the insert/update code at the database level.  stored proc?
  *
  * @author Lucas Holt
- * @version $Id: HitCounter.java,v 1.2 2008/07/29 11:59:37 laffer1 Exp $
+ * @version $Id: HitCounter.java,v 1.3 2008/08/01 14:35:51 laffer1 Exp $
  *          User: laffer1
  *          Date: Jul 27, 2008
  *          Time: 6:33:49 AM

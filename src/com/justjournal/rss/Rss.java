@@ -38,8 +38,8 @@ import com.justjournal.db.EntryTo;
 import com.justjournal.db.SQLHelper;
 import com.justjournal.utility.DateConvert;
 import com.justjournal.utility.Xml;
-import sun.jdbc.rowset.CachedRowSet;
 
+import javax.sql.rowset.CachedRowSet;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -48,7 +48,7 @@ import java.util.*;
  * Implements RSS 2
  *
  * @author Lucas Holt
- * @version $Id: Rss.java,v 1.7 2008/02/18 03:56:39 laffer1 Exp $
+ * @version $Id: Rss.java,v 1.8 2008/08/01 14:35:54 laffer1 Exp $
  * @since 1.0
  *        User: laffer1
  *        Date: Aug 27, 2003

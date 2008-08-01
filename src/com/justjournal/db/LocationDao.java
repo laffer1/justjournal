@@ -34,8 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
-import sun.jdbc.rowset.CachedRowSet;
-
+import javax.sql.rowset.CachedRowSet;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -44,7 +43,6 @@ import java.util.Collection;
  * User: laffer1
  * Date: Jan 9, 2004
  * Time: 1:54:42 PM
- * To change this template use Options | File Templates.
  */
 public final class LocationDao {
     public static Collection<LocationTo> view() {

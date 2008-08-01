@@ -35,9 +35,9 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.core;
 
 import com.justjournal.db.SQLHelper;
-import sun.jdbc.rowset.CachedRowSet;
 
 import javax.servlet.ServletContext;
+import javax.sql.rowset.CachedRowSet;
 
 /**
  * Global settings for the site.  Any changes here will
@@ -50,7 +50,7 @@ import javax.servlet.ServletContext;
  * Time: 11:03:13 PM
  *
  * @author Lucas Holt
- * @version $Id: Settings.java,v 1.8 2006/10/14 00:27:45 laffer1 Exp $
+ * @version $Id: Settings.java,v 1.9 2008/08/01 14:35:54 laffer1 Exp $
  * @since 1.0
  */
 public class Settings {
