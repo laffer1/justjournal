@@ -42,7 +42,7 @@ import sun.jdbc.rowset.CachedRowSet;
  * Time: 12:07:17 PM
  *
  * @author Lucas Holt
- * @version $Id: PreferencesDao.java,v 1.9 2008/07/31 21:21:07 laffer1 Exp $
+ * @version $Id: PreferencesDao.java,v 1.10 2008/08/01 11:41:11 laffer1 Exp $
  * @since 1.0
  *        <p/>
  *        1.3 Added show_avatar field select.
@@ -102,7 +102,7 @@ public final class PreferencesDao {
                 "SELECT user.name As name, user.id As id, user.since as since, up.style As style, up.allow_spider, " +
                         "up.owner_view_only, st.url as cssurl, st.doc as cssdoc, uc.email as email, " +
                         "up.show_avatar as show_avatar, up.journal_name as journal_name, ubio.content as bio FROM user, user_bio as ubio, user_pref As up, user_style as st, user_contact As uc " +
-                        "WHERE user.username='" + userName + "' AND user.id = up.id AND user.id=st.id AND user.id=uc.id LIMIT 1;";
+                        "WHERE user.username='" + userName + "' AND user.id = up.id AND user.id=st.id AND user.id=uc.id AND user.id = ubio.id LIMIT 1;";
 
         try {
             RS = SQLHelper.executeResultSet(sqlStatement);
