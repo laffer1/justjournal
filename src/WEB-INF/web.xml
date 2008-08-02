@@ -164,6 +164,12 @@
     </servlet>
 
     <servlet>
+        <display-name>Biography</display-name>
+        <servlet-name>Biography</servlet-name>
+        <servlet-class>com.justjournal.ctl.Biography</servlet-class>
+    </servlet>
+
+    <servlet>
         <display-name>Captcha</display-name>
         <servlet-name>Captcha</servlet-name>
         <servlet-class>nl.captcha.servlet.CaptchaServlet</servlet-class>
@@ -262,6 +268,11 @@
     <servlet-mapping>
         <servlet-name>DeleteLink</servlet-name>
         <url-pattern>/link/DeleteLink</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>Biography</servlet-name>
+        <url-pattern>/prefs/Biography</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>

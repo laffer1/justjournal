@@ -38,7 +38,7 @@ package com.justjournal.db;
  * Represents a user most basic properties.
  *
  * @author Lucas Holt
- * @version $Id: UserTo.java,v 1.7 2007/05/30 21:57:23 laffer1 Exp $
+ * @version $Id: UserTo.java,v 1.8 2008/08/02 19:38:33 laffer1 Exp $
  *         Date: Jan 21, 2004
  *         Time: 12:20:53 PM
  *         <p/>
@@ -66,7 +66,7 @@ public final class UserTo {
     /**
      * Set the user id.
      *
-     * @param id
+     * @param id  user id
      */
     public final void setId(final int id) {
         this.id = id;
@@ -90,7 +90,7 @@ public final class UserTo {
      * more thoroughly.  DateTimeBean will throw
      * an exception if the format is wrong though!
      *
-     * @param date
+     * @param date  last login date
      * @throws IllegalArgumentException null or len < 6
      * @see DateTimeBean
      */
@@ -124,7 +124,7 @@ public final class UserTo {
     /**
      * Set the user name.
      *
-     * @param userName
+     * @param userName account name
      */
     public final void setUserName(final String userName) {
         this.userName = userName;
@@ -142,7 +142,7 @@ public final class UserTo {
     /**
      * Set the first name of the user.
      *
-     * @param name
+     * @param name User's first name
      */
     public final void setName(final String name) {
         this.name = name;
@@ -166,7 +166,7 @@ public final class UserTo {
      * not stored perminently in clear
      * text password.
      *
-     * @param password
+     * @param password user's password
      */
     public final void setPassword(final String password) {
         this.password = password;
@@ -184,7 +184,7 @@ public final class UserTo {
     /**
      * Set SHA1 password.
      *
-     * @param passwordSha1
+     * @param passwordSha1 user's hashed password
      */
     public final void setPasswordSha1(final String passwordSha1) {
         this.passwordSha1 = passwordSha1;

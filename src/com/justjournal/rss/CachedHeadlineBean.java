@@ -51,7 +51,7 @@ import java.net.URL;
  * retrieves stored versions, and spits out HTML to render them.
  *
  * @author Lucas Holt
- * @version $Id: CachedHeadlineBean.java,v 1.4 2006/12/03 19:36:17 laffer1 Exp $
+ * @version $Id: CachedHeadlineBean.java,v 1.5 2008/08/02 19:38:35 laffer1 Exp $
  *          <p/>   Previously version was incremented manually.
  *          1.4 Attempt to catch case were RSS record content is empty in database.
  *          1.3 Added sun fix to correct sun.com rss feeds (rss .92 issue?)

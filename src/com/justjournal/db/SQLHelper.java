@@ -57,7 +57,7 @@ import java.sql.Statement;
  * A simple datatbase connectivity solution.  Depends on Sun's beta CachedRowSet.
  *
  * @author Lucas Holt
- * @version $Id: SQLHelper.java,v 1.5 2008/08/01 14:35:49 laffer1 Exp $
+ * @version $Id: SQLHelper.java,v 1.6 2008/08/02 19:38:33 laffer1 Exp $
  * @since 1.0
  */
 public final class SQLHelper {

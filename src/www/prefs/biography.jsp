@@ -1,4 +1,17 @@
 <%@ page import="com.justjournal.User" %>
+<%@ page import="com.justjournal.WebError" %>
+<%@ page import="com.justjournal.core.Statistics" %>
+<%@ page import="com.justjournal.db.*" %>
+<%@ page import="com.justjournal.search.BaseSearch" %>
+<%@ page import="com.justjournal.utility.StringUtil" %>
+<%@ page import="com.justjournal.utility.Xml" %>
+<%@ page import="javax.sql.rowset.CachedRowSet" %>
+<%@ page import="java.io.PrintWriter" %>
+<%@ page import="java.sql.*" %>
+<%@ page import="java.text.ParsePosition" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.Collection" %>
+<%@ page import="java.util.Iterator" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
@@ -40,13 +53,13 @@
 your blog private. Plain text only.</p>
 
 <div style="width: 600px; padding: 5px; margin: 0">
-    <form name="frmProfile" method="post" action="profilesubmit.h">
+    <!-- Servlet mapped to /prefs/Biography -->
+    <form name="frmProfile" method="post" action="Biography">
         <fieldset>
             <legend><strong>User Bio</strong><br/></legend>
 
             <div class="row">
-                <span class="label"><label for="bio">bio</label></span>
-                <span class="formw"><textarea id="bio" name="bio" style="width: 100%" cols="50" rows="20"><%=user.getBiography()%></textarea></span>
+                <textarea id="bio" name="bio" style="width: 100%" cols="50" rows="20"><%=user.getBiography()%></textarea>
             </div>
 
         </fieldset>

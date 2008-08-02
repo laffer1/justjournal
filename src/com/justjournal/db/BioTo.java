@@ -34,14 +34,15 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
+import java.io.Serializable;
+
 /**
  * Created by IntelliJ IDEA.
  * User: laffer1
  * Date: Jan 3, 2004
  * Time: 11:21:22 PM
- * To change this template use Options | File Templates.
  */
-public final class BioTo {
+public final class BioTo implements Serializable {
     private int userId;
     private String bio;
 

@@ -216,7 +216,7 @@ public final class UserDao {
      * @return All users of just journal.
      */
     public static final Collection<UserTo> memberList() {
-        ArrayList<UserTo> users = new ArrayList<UserTo>(125);
+        ArrayList<UserTo> users = new ArrayList<UserTo>(650);
         UserTo usr;
         final String sqlStatement = "call memberlist();";
 
