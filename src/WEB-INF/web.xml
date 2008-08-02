@@ -58,11 +58,32 @@
         <servlet-class>com.justjournal.Image</servlet-class>
     </servlet>
 
+<servlet>
+    <servlet-name>xml-rpc</servlet-name>
+    <servlet-class>com.justjournal.ctl.XmlRpc</servlet-class>
+    <init-param>
+        <param-name>streamMessages</param-name>
+        <param-value>1</param-value>
+    </init-param>
+    <init-param> <!-- Optional! Defaults to text/xml and ISO-8859-1 -->
+        <param-name>contentType</param-name>
+        <param-value>text/xml; charset=ISO-8859-1</param-value>
+    </init-param>
+    <load-on-startup>2</load-on-startup>
+</servlet>
+
     <servlet>
         <display-name>Journal Update</display-name>
         <servlet-name>updateJournal</servlet-name>
         <servlet-class>com.justjournal.UpdateJournal</servlet-class>
     </servlet>
+
+  <servlet>
+        <display-name>RSD</display-name>
+        <servlet-name>rsd</servlet-name>
+        <servlet-class>com.justjournal.ctl.Rsd</servlet-class>
+    </servlet>
+
 
     <servlet>
         <display-name>JJ Login</display-name>
@@ -143,30 +164,15 @@
     </servlet>
 
     <servlet>
-        <display-name>RSD</display-name>
-        <servlet-name>rsd</servlet-name>
-        <servlet-class>com.justjournal.ctl.Rsd</servlet-class>
-    </servlet>
-
-    <servlet>
         <display-name>Captcha</display-name>
         <servlet-name>Captcha</servlet-name>
         <servlet-class>nl.captcha.servlet.CaptchaServlet</servlet-class>
     </servlet>
 
-    <servlet>
-        <servlet-name>xml-rpc</servlet-name>
-        <servlet-class>com.justjournal.ctl.XmlRpc</servlet-class>
-        <init-param>
-            <param-name>streamMessages</param-name>
-            <param-value>1</param-value>
-        </init-param>
-        <init-param> <!-- Optional! Defaults to text/xml and ISO-8859-1 -->
-            <param-name>contentType</param-name>
-            <param-value>text/xml; charset=ISO-8859-1</param-value>
-        </init-param>
-        <load-on-startup>2</load-on-startup>
-    </servlet>
+    <servlet-mapping>
+        <servlet-name>rsd</servlet-name>
+        <url-pattern>/rsd</url-pattern>
+    </servlet-mapping>
 
     <servlet-mapping>
         <servlet-name>dispatcher</servlet-name>
@@ -182,6 +188,11 @@
         <servlet-name>image</servlet-name>
         <url-pattern>/image</url-pattern>
     </servlet-mapping>
+
+<servlet-mapping>
+    <servlet-name>xml-rpc</servlet-name>
+    <url-pattern>/xml-rpc/*</url-pattern>
+</servlet-mapping>
 
     <servlet-mapping>
         <servlet-name>updateJournal</servlet-name>
@@ -254,18 +265,8 @@
     </servlet-mapping>
 
     <servlet-mapping>
-        <servlet-name>rsd</servlet-name>
-        <url-pattern>/rsd</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
         <servlet-name>Captcha</servlet-name>
         <url-pattern>/Captcha.jpg</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>xml-rpc</servlet-name>
-        <url-pattern>/xml-rpc/*</url-pattern>
     </servlet-mapping>
 
     <welcome-file-list>
