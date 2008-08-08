@@ -1,12 +1,13 @@
 <%@ page language="java"
-         import="java.sql.Connection" %>
-<%@ page import="java.sql.DriverManager" %>
-<%@ page import="java.sql.ResultSet" %>
-<%@ page import="java.sql.Statement" %>
+         import="com.justjournal.User" %>
+<%@ page import="com.justjournal.WebError" %>
+<%@ page import="com.justjournal.db.SQLHelper" %>
+<%@ page import="com.justjournal.db.UserDao" %>
 <%@ page import="com.justjournal.utility.StringUtil"%>
-<%@ page import="com.justjournal.WebError"%>
+<%@ page import="javax.sql.rowset.CachedRowSet"%>
 <%@ page import="java.io.PrintWriter"%>
-<%@ page import="com.justjournal.User"%>
+<%@ page import="java.util.Collection"%>
+<%@ page import="java.util.Iterator" %>
 <%@ include file="Connections/jjdb.jsp" %>
 <%
     response.setContentType("text/html");
@@ -28,26 +29,12 @@
         return;
     }
 
-    Connection ConnRecordset1;
-    Statement stmt;
-    Statement stmt2;
-    Statement stmt3;
-    ResultSet Recordset1;
-    ResultSet Recordset2;
-    ResultSet Recordset3;
+    CachedRowSet Recordset1;
 
     try {
-        ConnRecordset1 = DriverManager.getConnection(MM_jjdb_STRING, MM_jjdb_USERNAME, MM_jjdb_PASSWORD);
-        stmt = ConnRecordset1.createStatement();
-        stmt2 = ConnRecordset1.createStatement();
-        stmt3 = ConnRecordset1.createStatement();
-        String commandText = "SELECT user.id, user.type, user.name, user_bio.content As bio, user_contact.email, user_contact.icq, user_contact.aim, user_contact.yahoo, user_contact.msn, user_contact.hp_uri, user_contact.hp_title, user_contact.phone, user_location.city, user_location.state, user_location.country, user_location.zip FROM user, user_bio, user_contact, user_location WHERE user.username=\"" + username + "\" AND user_bio.id = user.id  AND user_contact.id = user.id AND user_location.id = user.id LIMIT 1;";
-        String commandText2 = "SELECT friends.friendid as fif, (SELECT user.username from user WHERE user.id=fif) FROM friends, user WHERE user.username=\"" + username + "\" AND user.id=friends.id;";
-        String commandText3 = "SELECT friends.id as fif, (SELECT user.username from user WHERE user.id=fif) FROM friends, user WHERE user.username=\"" + username + "\" AND user.id=friends.friendid;";
-        Recordset1 = stmt.executeQuery(commandText);
-        Recordset2 = stmt2.executeQuery(commandText2);
-        Recordset3 = stmt3.executeQuery(commandText3);
-    } catch (java.sql.SQLException sqlex) {
+        String commandText = "SELECT user.id, user.type, user.name, user_bio.content As bio, user_contact.email, user_contact.icq, user_contact.aim, user_contact.yahoo, user_contact.msn, user_contact.hp_uri, user_contact.hp_title, user_contact.phone, user_location.city, user_location.state, user_location.country, user_location.zip FROM user, user_bio, user_contact, user_location WHERE user.username=\"" + username + "\" AND user_bio.id = user.id AND user_contact.id = user.id AND user_location.id = user.id LIMIT 1;";
+       Recordset1 = SQLHelper.executeResultSet(commandText);
+    } catch (Exception sqlex) {
         PrintWriter out2 = response.getWriter();
         WebError.Display("Error",
                         "Unable to retrieve profile.",
@@ -76,7 +63,7 @@
 
 <div id="content">
 
-<% if (Recordset1.next()) {
+<% if (Recordset1 != null && Recordset1.next()) {
        User user = new User(username);
 
        if (!user.isPrivateJournal())
@@ -159,24 +146,42 @@
 
     <h3><a href="users/<%=username%>/friends">Friends</a></h3>
 
+<%
+
+    Collection friends = UserDao.friends(username);
+
+    Iterator f = friends.iterator();
+    String fr;
+%>
+
     <p>
-        <% if (Recordset2.next()) { %>
+        <% if (f.hasNext()) { %>
         <img src="images/userclass_16.png" alt="users" />
-        <a href="users/<%=Recordset2.getString(2)%>"><%=Recordset2.getString(2)%></a>
+        <a href="users/<%= fr = (String) f.next()%>"><%=fr%></a>
         <% }
-            while (Recordset2.next()) { %>
-        , <a href="users/<%=Recordset2.getString(2)%>"><%=Recordset2.getString(2)%></a>
+            while (f.hasNext() ) {
+               fr = (String) f.next();
+        %>
+        , <a href="users/<%=fr%>"><%=fr%></a>
         <% } %>
     </p>
 
     <h3>Friend of</h3>
+<%
+
+    Collection friendsof = UserDao.friendsof(username);
+
+    Iterator fo = friendsof.iterator();
+    String fro;
+%>
 
     <p>
-        <% if (Recordset3.next()) { %>
-        <a href="users/<%=Recordset3.getString(2)%>"><%=Recordset3.getString(2)%></a>
+        <% if (fo.hasNext()) { %>
+        <a href="users/<%= fro = (String) fo.next()%>"><%=fro%></a>
         <% }
-            while (Recordset3.next()) { %>
-        , <a href="users/<%=Recordset3.getString(2)%>"><%=Recordset3.getString(2)%></a>
+            while (fo.hasNext()) {
+                fro = (String) fo.next(); %>
+        , <a href="users/<%=fro%>"><%=fro%></a>
         <% } %>
     </p>
 
@@ -194,13 +199,9 @@
 <%
     try {
         Recordset1.close();
-        stmt.close();
-        Recordset2.close();
-        stmt2.close();
-        Recordset3.close();
-        stmt3.close();
-        ConnRecordset1.close();
     } catch (java.sql.SQLException sqlex) {
+
+    } catch (NullPointerException nex) {
 
     }
 %>

@@ -268,4 +268,42 @@ public final class UserDao {
 
         return users;
     }
+
+    public static final Collection<String> friends(String username) {
+        ArrayList<String> friends = new ArrayList<String>();
+        final String sql =  "SELECT friends.friendid as fif, (SELECT user.username from user WHERE user.id=fif) FROM friends, user WHERE user.username=\"" + username + "\" AND user.id=friends.id;";
+
+        try {
+            final CachedRowSet RS = SQLHelper.executeResultSet(sql);
+
+            while (RS.next()) {
+                friends.add(RS.getString(2));
+            }
+
+            RS.close();
+        } catch (Exception e1) {
+
+        }
+
+        return friends;
+    }
+
+     public static final Collection<String> friendsof(String username) {
+        ArrayList<String> friends = new ArrayList<String>();
+        final String sql =  "SELECT friends.id as fif, (SELECT user.username from user WHERE user.id=fif) FROM friends, user WHERE user.username=\"" + username + "\" AND user.id=friends.friendid;";
+   
+        try {
+            final CachedRowSet RS = SQLHelper.executeResultSet(sql);
+
+            while (RS.next()) {
+                friends.add(RS.getString(2));
+            }
+
+            RS.close();
+        } catch (Exception e1) {
+
+        }
+
+        return friends;
+    }
 }
