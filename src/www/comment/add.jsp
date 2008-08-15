@@ -2,7 +2,7 @@
 <%--
 Form to add a journal entry.  Forwards the request to a servlet.
 
-$Id: add.jsp,v 1.3 2008/07/29 11:59:45 laffer1 Exp $
+$Id: add.jsp,v 1.4 2008/08/15 13:54:03 laffer1 Exp $
 --%>
 <%
     int eid;
@@ -47,7 +47,7 @@ $Id: add.jsp,v 1.3 2008/07/29 11:59:45 laffer1 Exp $
 
         div.row span.label {
             float: left;
-            width: 140px;
+            width: 135px;
             text-align: right;
         }
 
@@ -89,16 +89,18 @@ $Id: add.jsp,v 1.3 2008/07/29 11:59:45 laffer1 Exp $
             <fieldset>
                 <legend><strong>Login Information</strong><br/></legend>
 
-                <div class="row">
-                    <span class="label"><label for="username">Username</label></span>
-                    <span class="formw"><input type="text" name="username" id="username" size="25"/></span>
-                </div>
+                  <div class="row">
+        <span class="label"><label for="username">Username</label></span>
+			<span class="formw"><input type="text" name="username" id="username" size="18" maxlength="15"
+                                       style="background: url(../images/userclass_16.png) no-repeat; background-color: #fff; background-position: 0 1px; padding-left: 18px; color: black; font-weight: bold;"/></span>
+    </div>
 
-                <div class="row">
-                    <span class="label"><label for="password">Password</label></span>
-			<span class="formw"><input type="password" name="password" id="password" size="25"/>
+    <div class="row">
+        <span class="label"><label for="password">Password</label></span>
+			<span class="formw"><input type="password" name="password" id="password" size="18" maxlength="18"
+                                       style="background: white; color: black; font-weight: bold;"/>
 			</span>
-                </div>
+    </div>
 
                 <!-- Hack to fix spacing problem.. especially with text boxes -->
                 <div class="spacer">&nbsp;</div>
