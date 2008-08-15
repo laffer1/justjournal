@@ -1,11 +1,12 @@
-<%@ page contentType="text/html; charset=iso-8859-1" language="java" import="com.justjournal.User" %>
+<?xml version="1.0" encoding="UTF-8"?>
+<%@ page contentType="text/html; charset=UTF-8" language="java" import="com.justjournal.User" %>
 <%@ page import="com.justjournal.WebError" %>
 <%@ page import="com.justjournal.core.Statistics" %>
 <%@ page import="com.justjournal.db.*" %>
 <%@ page import="com.justjournal.search.BaseSearch" %>
 <%@ page import="com.justjournal.utility.StringUtil" %>
 <%@ page import="com.justjournal.utility.Xml" %>
-<%@ page import="sun.jdbc.rowset.CachedRowSet" %>
+<%@ page import="javax.sql.rowset.CachedRowSet" %>
 <%@ page import="java.io.PrintWriter" %>
 <%@ page import="java.sql.*" %>
 <%@ page import="java.text.ParsePosition" %>
@@ -20,7 +21,8 @@
     response.setHeader("Pragma", "no-cache");
 
     // date stuff
-    java.text.SimpleDateFormat fmt = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    java.text.SimpleDateFormat fmtdate = new java.text.SimpleDateFormat("yyyy-MM-dd");
+    java.text.SimpleDateFormat fmttime = new java.text.SimpleDateFormat("HH:mm:ss");
     java.sql.Date now = new java.sql.Date(System.currentTimeMillis());
 
 // Get the session user input
@@ -46,14 +48,13 @@
         strackback = "";
 
 %>
-<?xml version="1.0" encoding="iso-8859-1"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-    <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"/>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
     <title>JustJournal.com: Update Journal</title>
     <link rel="stylesheet" type="text/css" href="layout.css" media="all"/>
     <link rel="stylesheet" type="text/css" href="font-normal.css" media="all"/>
@@ -67,7 +68,7 @@
             var oFCKeditor = new FCKeditor('body');
             oFCKeditor.BasePath = '/FCKeditor/';
             oFCKeditor.Height = 300;
-            oFCKeditor.Width = 400;
+            oFCKeditor.Width = 572;
             oFCKeditor.Config["CustomConfigurationsPath"] = '/js/fckconfig.js';
             oFCKeditor.Config['SkinPath'] = '/FCKeditor/editor/skins/office2003/';
             oFCKeditor.Config['AutoDetectLanguage'] = true;
@@ -78,9 +79,26 @@
         function FCKeditor_OnComplete(editorInstance)
         {
             document.getElementById("aformat").checked = false;
-            document.getElementById("aformatrow").visibility = "hidden";
-            document.getElementById("newlinetext").visibility = "hidden";
+            document.getElementById("aformatrow").style.visibility = "hidden";
+            document.getElementById("newlinetext").style.visibility = "hidden";
+            document.getElementById("aformatrow").style.display="none";
+            document.getElementById("newlinetext").style.display="none";
         }
+    </script>
+    <style type="text/css">
+        @import "js/dijit/themes/soria/soria.css";
+        @import "js/dojo/resources/dojo.css";
+    </style>
+    <script type="text/javascript" src="js/dojo/dojo.js" djConfig="parseOnLoad: true">//iesucks</script>
+    <script type="text/javascript" src="js/dijit/dijit.js">//iesucks</script>
+    <script type="text/javascript">
+        dojo.require("dijit.form.FilteringSelect");
+        dojo.require("dijit.form.TimeTextBox");
+        dojo.require("dijit.form.DateTextBox");
+        dojo.require("dijit.form.TextBox");
+        dojo.require("dijit.form.ValidationTextBox");
+        dojo.require("dojox.validate.regexp");
+        dojo.require("dojo.parser");
     </script>
     <style type="text/css" media="all">
         div.row {
@@ -103,6 +121,17 @@
         div.spacer {
             clear: both;
         }
+
+        fieldset {
+            border: 2px solid #6FCADE;
+            background: white;
+            color: #333;
+        }
+
+        legend {
+           color: navy;
+           font-weight: bold;
+        }
     </style>
 </head>
 
@@ -116,7 +145,7 @@
 <p>Post a journal entry.</p>
 
 <div style="width: 575px; padding: 5px; margin: 0;">
-<form method="post" action="updateJournal" name="frmUpdateJournal">
+<form method="post" action="updateJournal" name="frmUpdateJournal" id="frmUpdateJournal">
 
 <%
     Integer userID = (Integer) session.getAttribute("auth.uid");
@@ -166,14 +195,25 @@
 
     <div class="row">
         <span class="label"><label for="date">Date</label></span>
-	  <span class="formw"><input name="date" id="date" value="<%=fmt.format( now ) %>" size="25" maxlength="19"/>
+	  <span class="formw"><input name="date" id="date" value="<%=fmtdate.format( now ) %>" size="15" maxlength="10"
+              dojoType="dijit.form.DateTextBox" />
 	  </span>
     </div>
 
     <div class="row">
+        <span class="label"><label for="time">Time</label></span>
+        <span class="formw"><input name="time" id="time" value="T<%=fmttime.format( now ) %>" size="15" maxlength="8"
+                dojoType="dijit.form.TimeTextBox"
+      constraints="{timePattern:'HH:mm:ss'}"
+      required="true"
+      invalidMessage="Invalid time. Use HH:mm:ss where HH is 00 - 23 hours." /></span>
+    </div>
+
+    <div class="row">
         <span class="label"><label for="subject">Subject</label></span>
-	  <span class="formw"><input name="subject" type="text" id="subject" size="25" maxlength="150"
-                                 value="<%=ssubject%>"/>
+	  <span class="formw"><input name="subject" type="text" id="subject" size="30" maxlength="150"
+                                 value="<%=ssubject%>" dojoType="dijit.form.TextBox"
+                trim="true" />
 	  (optional)</span>
     </div>
     <%
@@ -198,10 +238,8 @@
         }
     %>
 
-    <div class="row">
-        <span class="label"><label for="body">Body</label></span>
-        <span class="formw"><textarea id="body" name="body" style="width: 100%" cols="50"
-            rows="20"><%=sbody%></textarea></span>
+    <div class="row"><textarea id="body" name="body" style="width: 100%" cols="60"
+            rows="20"><%=sbody%></textarea>
     </div>
 
     <div class="row" id="newlinetext">
@@ -210,7 +248,7 @@
 
     <div class="row">
 			<span class="formw"><input type="checkbox" name="spellcheck" id="spellcheck"
-                                       value="checked"/>
+                                       value="checked" />
 			<label for="spellcheck">Spell check entry before posting</label>
 			</span>
     </div>
@@ -226,7 +264,7 @@
 <div class="row">
     <span class="label"><label for="security">Security</label></span>
 	  <span class="formw">
-	  	<select id="security" name="security" size="1">
+	  	<select id="security" name="security" size="1" dojoType="dijit.form.FilteringSelect" autoComplete="false" invalidMessage="Invalid security setting">
               <%
                   Integer ssec = (Integer) session.getAttribute("spell.security");
                   int issec = 0;
@@ -267,7 +305,7 @@
 <div class="row">
     <span class="label"><label for="location">Location</label></span>
 	  <span class="formw">
-	  	<select id="location" name="location" size="1">
+	  	<select id="location" name="location" size="1" dojoType="dijit.form.FilteringSelect" autoComplete="false" invalidMessage="Invalid location">
               <%
                   Integer sloc = (Integer) session.getAttribute("spell.location");
                   int isloc = -1;
@@ -301,7 +339,7 @@
 <div class="row">
     <span class="label"><label for="mood"><a href="moodlist.jsp" title="List of Moods">Mood</a></label></span>
 	  <span class="formw">
-	  	<select id="mood" name="mood" size="1">
+	  	<select id="mood" name="mood" size="1" dojoType="dijit.form.FilteringSelect" autoComplete="false" invalidMessage="Invalid mood">
               <%
                   Integer smood = (Integer) session.getAttribute("spell.mood");
                   int ismood = -1;
@@ -334,37 +372,45 @@
 
 <div class="row">
     <span class="label"><label for="tags">Tags</label></span>
-    <span class="formw"><input type="text" name="tags" id="tags" size="30" value="<%=stags%>"/></span>
+    <span class="formw"><input type="text" name="tags" id="tags" size="30" value="<%=stags%>" dojoType="dijit.form.TextBox"
+                trim="true" lowercase="true" /></span>
 </div>
 
 <div class="row">
     <span class="label"><label for="music">Music</label></span>
-    <span class="formw"><input type="text" name="music" id="music" size="30" value="<%=smusic%>"/></span>
+    <span class="formw"><input type="text" name="music" id="music" size="30" value="<%=smusic%>" dojoType="dijit.form.TextBox"
+                trim="true" propercase="true" /></span>
 </div>
 
 <div class="row">
     <span class="label"><label for="trackback">Trackback</label></span>
-    <span class="formw"><input type="text" name="trackback" id="trackback" size="30" value="<%=strackback%>"/></span>
+    <span class="formw"><input type="text" name="trackback" id="trackback" size="30" value="<%=strackback%>"
+                 dojoType="dijit.form.ValidationTextBox"
+    regExpGen="dojox.regexp.url"
+    trim="true"
+    required="false"
+    constraints={scheme:true}
+    invalidMessage="Invalid URL.  Be sure to include the scheme, http://..." /></span>
 </div>
 
 <div class="row">
 			<span class="formw"><input type="checkbox" name="allow_comment" id="allow_comment"
-                                       value="checked" checked="checked"/>
+                                       value="checked" checked="checked" />
 			<label for="allow_comment">Allow comments on this entry</label>
 			</span>
 </div>
 
 <div class="row">
 			<span class="formw"><input type="checkbox" name="email_comment" id="email_comment"
-                                       value="checked" checked="checked"/>
+                                       value="checked" checked="checked" />
 			<label for="email_comment">Email comments to me</label>
 			</span>
 </div>
 
 <div class="row" id="aformatrow">
 			<span class="formw"><input type="checkbox" name="aformat" id="aformat"
-                                       value="checked" checked="checked"/>
-			<label for="aformat">auto-formatting</label>
+                                       value="checked" checked="checked" />
+			<label for="aformat">Auto-formatting</label>
 			</span>
 </div>
 

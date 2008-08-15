@@ -81,10 +81,6 @@ public class EditEntry extends Protected {
     }
 
     protected String insidePerform() throws Exception {
-        final EntryDAO edao = new EntryDAO();
-        final SecurityDao sdao = new SecurityDao();
-        final MoodDao mdao = new MoodDao();
-        final LocationDao ldao = new LocationDao();
 
         if (this.entryId < 1)
             addError("entryId", "The entry id was invalid.");
@@ -92,11 +88,11 @@ public class EditEntry extends Protected {
         if (this.currentLoginId() < 1)
             addError("login", "The login timed out or is invalid.");
 
-        if (this.hasErrors() == false) {
-            this.entry = edao.viewSingle(this.entryId, this.currentLoginId());
-            this.security = sdao.view();
-            this.moods = mdao.view();
-            this.location = ldao.view();
+        if (!this.hasErrors()) {
+            this.entry = EntryDAO.viewSingle(this.entryId, this.currentLoginId());
+            this.security = SecurityDao.view();
+            this.moods = MoodDao.view();
+            this.location = LocationDao.view();
         }
 
         if (this.hasErrors())

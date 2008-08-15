@@ -46,7 +46,6 @@ import org.apache.log4j.Category;
  * User: laffer1
  * Date: Jan 1, 2004
  * Time: 9:08:33 PM
- * To change this template use Options | File Templates.
  */
 public class EditEntrySubmit extends Protected {
     private static Category log = Category.getInstance(EditEntrySubmit.class.getName());
@@ -207,13 +206,13 @@ public class EditEntrySubmit extends Protected {
                 log.debug("Error loading user input: " + e.getMessage());
         }
 
-        if (this.hasErrors() == false) {
+        if (!this.hasErrors()) {
             boolean result = edao.update(entry);
 
             if (log.isDebugEnabled())
                 log.debug("Was there an error with data tier?  " + !result);
 
-            if (result == false)
+            if (!result)
                 addError("Unknown", "Could not update entry.");
         }
 
