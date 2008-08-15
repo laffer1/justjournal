@@ -60,9 +60,9 @@ public final class UserDao {
         int records = 0;
 
         final String sqlStmt =
-                "Insert INTO user (username,password,name) VALUES('"
+                "Insert INTO user (username,password,name,lastname) VALUES('"
                         + user.getUserName() + "',sha1('" + user.getPassword()
-                        + "'),'" + user.getName() + "');";
+                        + "'),'" + user.getName() + "','" + user.getLastName() + "');";
 
         try {
             records = SQLHelper.executeNonQuery(sqlStmt);
@@ -90,7 +90,7 @@ public final class UserDao {
         boolean noError = true;
 
         final String sqlStmt =
-                "Update user SET name='" + user.getName() + "' WHERE id='" + user.getId() + "' LIMIT 1;";
+                "Update user SET name='" + user.getName() + "' AND lastname='" + user.getLastName() + "' WHERE id='" + user.getId() + "' LIMIT 1;";
 
         try {
             SQLHelper.executeNonQuery(sqlStmt);
@@ -137,7 +137,7 @@ public final class UserDao {
     public static final UserTo view(int userId) {
         UserTo user = new UserTo();
         CachedRowSet rs = null;
-        String sqlStmt = "SELECT username, name, since, lastlogin FROM user WHERE id='" + userId + "' LIMIT 1;";
+        String sqlStmt = "SELECT username, name, since, lastlogin, lastname FROM user WHERE id='" + userId + "' LIMIT 1;";
 
         try {
 
@@ -151,6 +151,8 @@ public final class UserDao {
                 if (rs.getString("lastlogin") != null) {
                     user.setLastLogin(rs.getString("lastlogin"));
                 }
+                if (rs.getString("lastname") != null)
+                    user.setLastName(rs.getString("lastname"));
             }
 
             rs.close();
@@ -179,7 +181,7 @@ public final class UserDao {
     public static final UserTo view(String userName) {
         UserTo user = new UserTo();
         CachedRowSet rs = null;
-        String sqlStmt = "SELECT id, name, since, lastlogin from user WHERE username='" + userName + "' Limit 1;";
+        String sqlStmt = "SELECT id, name, since, lastlogin, lastname from user WHERE username='" + userName + "' Limit 1;";
 
         try {
 
@@ -193,6 +195,8 @@ public final class UserDao {
                 if (rs.getString("lastlogin") != null) {
                     user.setLastLogin(rs.getString("lastlogin"));
                 }
+                if (rs.getString("lastname") != null)
+                    user.setLastName(rs.getString("lastname"));
             }
 
             rs.close();
@@ -216,7 +220,7 @@ public final class UserDao {
      * @return All users of just journal.
      */
     public static final Collection<UserTo> memberList() {
-        ArrayList<UserTo> users = new ArrayList<UserTo>(650);
+        ArrayList<UserTo> users = new ArrayList<UserTo>(256);
         UserTo usr;
         final String sqlStatement = "call memberlist();";
 
@@ -229,6 +233,7 @@ public final class UserDao {
                 usr.setUserName(RS.getString(2));
                 usr.setName(RS.getString(3));
                 usr.setSince(RS.getInt(4));
+                usr.setLastName(RS.getString(5));
                 users.add(usr);
             }
 
@@ -247,7 +252,7 @@ public final class UserDao {
      public static final Collection<UserTo> newUsers() {
         ArrayList<UserTo> users = new ArrayList<UserTo>(5);
         UserTo usr;
-        final String sqlStatement = "SELECT id, username, name, since FROM user ORDER by id DESC Limit 0,5;";
+        final String sqlStatement = "SELECT id, username, name, since, lastname FROM user ORDER by id DESC Limit 0,5;";
 
         try {
             final CachedRowSet RS = SQLHelper.executeResultSet(sqlStatement);
@@ -258,6 +263,7 @@ public final class UserDao {
                 usr.setUserName(RS.getString(2));
                 usr.setName(RS.getString(3));
                 usr.setSince(RS.getInt(4));
+                usr.setLastName(RS.getString(5));
                 users.add(usr);
             }
 

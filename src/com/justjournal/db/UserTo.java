@@ -38,7 +38,7 @@ package com.justjournal.db;
  * Represents a user most basic properties.
  *
  * @author Lucas Holt
- * @version $Id: UserTo.java,v 1.8 2008/08/02 19:38:33 laffer1 Exp $
+ * @version $Id: UserTo.java,v 1.9 2008/08/15 14:38:48 laffer1 Exp $
  *         Date: Jan 21, 2004
  *         Time: 12:20:53 PM
  *         <p/>
@@ -48,11 +48,19 @@ public final class UserTo {
     private int id;          // the user id imposed by mysql
     private String userName;
     private String name;     // first name
+    private String lastName;
     private String password;
     private String passwordSha1;
     private int since;
     private DateTime lastLogin;
 
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
 
     /**
      * Retrieve the user id.
@@ -214,9 +222,11 @@ public final class UserTo {
         sb.append("id: ");
         sb.append(id);
         sb.append(", userName: ");
-        sb.append(name);
+        sb.append(userName);
         sb.append(", name: ");
         sb.append(name);
+        sb.append(", lastname: ");
+        sb.append(lastName);
         sb.append(", since: ");
         sb.append(since);
         sb.append(", lastLogin:");

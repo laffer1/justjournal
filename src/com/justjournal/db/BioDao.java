@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2005, Lucas Holt
+Copyright (c) 2005, 2008 Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -34,9 +34,6 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
-import com.danga.MemCached.MemCachedClient;
-import com.danga.MemCached.SockIOPool;
-
 import javax.sql.rowset.CachedRowSet;
 
 /**
@@ -47,61 +44,7 @@ import javax.sql.rowset.CachedRowSet;
  */
 public final class BioDao {
 
-
-// create a static client as most installs only need
-// a single instance
-protected static MemCachedClient mcc = new MemCachedClient();
-
-// set up connection pool once at class load
-static {
-
-    // server list and weights
-    String[] servers =
-        {
-          "ds9.midnightbsd.org:1624"
-        };
-
-    Integer[] weights = { 3 };
-
-    // grab an instance of our connection pool
-    SockIOPool pool = SockIOPool.getInstance();
-
-    // set the servers and the weights
-    pool.setServers( servers );
-    pool.setWeights( weights );
-
-    // set some basic pool settings
-    // 5 initial, 5 min, and 250 max conns
-    // and set the max idle time for a conn
-    // to 6 hours
-    pool.setInitConn( 5 );
-    pool.setMinConn( 5 );
-    pool.setMaxConn( 250 );
-    pool.setMaxIdle( 1000 * 60 * 60 * 6 );
-
-    // set the sleep for the maint thread
-    // it will wake up every x seconds and
-    // maintain the pool size
-    pool.setMaintSleep( 30 );
-
-    // set some TCP settings
-    // disable nagle
-    // set the read timeout to 3 secs
-    // and don't set a connect timeout
-    pool.setNagle( false );
-    pool.setSocketTO( 3000 );
-    pool.setSocketConnectTO( 0 );
-
-    // initialize the connection pool
-    pool.initialize();
-
-
-    // lets set some compression on for the client
-    // compress anything larger than 64k
-    mcc.setCompressEnable( true );
-    mcc.setCompressThreshold( 64 * 1024 );
-}
-
+    private static Caching cache = new Caching();
 
     public static final boolean add(BioTo bio) {
         boolean noError = true;
@@ -127,6 +70,7 @@ static {
 
         boolean noError = true;
 
+
         final String sqlStmt =
                 "Update user_bio SET content='" + bio.getBio() + "' WHERE id='" + bio.getUserId() + "' LIMIT 1;";
 
@@ -136,7 +80,7 @@ static {
             noError = false;
         }
 
-        mcc.delete("bio: " + bio.getUserId());
+        cache.delete("bio: " + bio.getUserId());
 
         return noError;
     }
@@ -156,7 +100,7 @@ static {
             noError = false;
         }
 
-        mcc.delete("bio: " + userId);
+        cache.delete("bio: " + userId);
 
         return noError;
     }
@@ -167,7 +111,7 @@ static {
         CachedRowSet rs = null;
         String sqlStmt = "Select content from user_bio WHERE id='" + userId + "' Limit 1;";
 
-        if ((bio = (BioTo) mcc.get("bio: " + userId)) != null)
+        if ((bio = (BioTo) cache.get("bio: " + userId)) != null)
                 return bio;
 
         try {
@@ -191,7 +135,7 @@ static {
             }
         }
 
-        mcc.set("bio: " + userId, bio);
+        cache.set("bio: " + userId, bio);
         return bio;
     }
 }

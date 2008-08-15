@@ -8,7 +8,7 @@
 <%@ page import="com.justjournal.search.BaseSearch" %>
 <%@ page import="com.justjournal.utility.StringUtil" %>
 <%@ page import="com.justjournal.utility.Xml" %>
-<%@ page import="sun.jdbc.rowset.CachedRowSet" %>
+<%@ page import="javax.sql.rowset.CachedRowSet" %>
 <%@ page import="java.io.PrintWriter" %>
 <%@ page import="java.sql.*" %>
 <%@ page import="java.text.ParsePosition" %>
@@ -265,6 +265,7 @@
         <tr style="font-size: 10px;">
             <% } %>
             <td><%=o.getName()%>
+                <%=o.getLastName()%>
             </td>
             <td><img src="images/userclass_16.png" alt="user icon"/>
                 <a href="users/<%=o.getUserName()%>"><%=o.getUserName()%>
