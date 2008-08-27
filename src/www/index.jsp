@@ -25,6 +25,9 @@
 <link rel="contents" title="Site Map" href="sitemap.jsp"/>
 <link rel="help" title="Technical Support" href="support/index.jsp"/>
 <link rel="alternate" type="application/rss+xml" href="RecentBlogs" title="Recent JJ Blog Posts"/>
+<link rel="alternate" media="handheld" href="mob/index.jsp" />
+<link rel="icon" href="favicon.ico" type="image/x-icon" />
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 <script src="js/ticker.js" type="text/javascript">/* ie7 sucks*/</script>
 <style type="text/css">
 #quickmenu {
@@ -52,8 +55,10 @@
 }
 
 #ticker {
-    background-color: #F2F2F2;
+    background-color: black;
+    color: white;
     border: thin solid silver;
+    border-radius: 10px;   /* css3 */
     -moz-border-radius: 10px;
     -webkit-border-radius: 10px;
     width: 600px;
@@ -96,12 +101,12 @@
 }
 
 #ticker table a {
-    color: #222;
+    color: white;
     text-decoration: none;
 }
 
 #ticker table a:hover {
-    color: #111;
+    color: silver;
     text-decoration: underline;
 }
 

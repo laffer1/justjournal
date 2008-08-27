@@ -3,6 +3,9 @@ package com.justjournal.db;
 import com.danga.MemCached.MemCachedClient;
 import com.danga.MemCached.SockIOPool;
 
+import java.util.Calendar;
+import java.util.Date;
+
 /**
  * User: laffer1
  * Date: Aug 15, 2008
@@ -66,15 +69,39 @@ static {
     mcc.setCompressThreshold( 64 * 1024 );
 }
 
-    public Object get(String hash) {
-        return mcc.get(hash);
+    public Object get(String key) {
+        return mcc.get(key);
     }
 
-    public void set(String hash, Object data) {
-        mcc.set(hash, data);
+    public void set(String key, Object data) {
+        mcc.set(key, data);
+    }
+
+    public void set(String key, Object data, Date expires) {
+        mcc.set(key, data, expires);
+    }
+
+    public void set60(String key, Object data) {
+        set(key, data, 60);
+    }
+
+    
+    public void set(String key, Object data, int seconds) {
+        Calendar cal = Calendar.getInstance();
+        set(key, data, addTime(cal.getTime(), seconds));  // TODO: Verify accuracy
     }
 
     public void delete(String hash) {
         mcc.delete(hash);
     }
+
+    public static Date addTime( Date startDate, int seconds )
+	{
+		Calendar startCal = Calendar.getInstance( );
+		Date firstDate = startDate;
+		startCal.setTime( firstDate );
+		startCal.add( Calendar.SECOND, seconds );
+
+		return startCal.getTime( );
+	}
 }

@@ -67,6 +67,10 @@ public final class EntryTo {
     private boolean autoFormat = true;
     private boolean allowComments = true;
     private boolean emailComments = true;
+    private boolean draft = true;
+
+    private int attachImage = 0;
+    private int attachFile = 0;
 
     private ArrayList tags = new ArrayList();
 
