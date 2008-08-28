@@ -59,6 +59,7 @@
 
     <head>
         <title>JustJournal.com: Update Journal</title>
+        <link rel="stylesheet" type="text/css" href="mobile.css" />
     </head>
 
     <body>

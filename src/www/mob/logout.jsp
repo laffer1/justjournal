@@ -22,6 +22,7 @@
     %>
       <head>
           <title>JustJournal.com: Log Out</title>
+          <link rel="stylesheet" type="text/css" href="mobile.css" />
       </head>
 
       <body>

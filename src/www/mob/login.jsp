@@ -20,6 +20,7 @@
 
     <head>
         <title>JustJournal.com: Login</title>
+        <link rel="stylesheet" type="text/css" href="mobile.css" />
     </head>
 
     <body>
