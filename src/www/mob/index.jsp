@@ -1,3 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.1//EN"
+    "http://www.openmobilealliance.org/tech/DTD/xhtml-mobile11.dtd">
+<%@ page contentType="application/xhtml+xml; charset=utf-8" language="java" %>
 <%@ page import="com.justjournal.User" %>
 <%@ page import="com.justjournal.WebError" %>
 <%@ page import="com.justjournal.core.Statistics" %>
@@ -12,10 +16,8 @@
 <%@ page import="java.sql.*" %>
 <%@ page import="java.text.ParsePosition" %>
 <%@ page import="java.text.SimpleDateFormat" %>
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.1//EN"
-    "http://www.openmobilealliance.org/tech/DTD/xhtml-mobile11.dtd" >
-<%@ page contentType="application/xhtml+xml; charset=utf-8" language="java" %>
+<%@ page import="java.util.Collection,
+                 java.util.Iterator" %>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
     <head>
         <title>JustJournal.com: Mobile</title>
@@ -32,9 +34,6 @@
     <% } else { %>
     <p><a href="login.jsp">Login</a></p>
     <% } %>
-
-    <%@ page import="java.util.Collection,
-                 java.util.Iterator" %>
 <%!
 
 private static final String PAGEAD =
