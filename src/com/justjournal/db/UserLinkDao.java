@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2005-2006, Lucas Holt
+Copyright (c) 2005, 2006, 2008 Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -34,22 +34,27 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
+import org.apache.log4j.Category;
+
 import javax.sql.rowset.CachedRowSet;
 import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- * User: laffer1
- * Date: Dec 22, 2005
- * Time: 2:58:10 PM
+ * Data access for User Link list
+ * @see UserLinkTo
+ * @version $Id: UserLinkDao.java,v 1.10 2008/08/31 20:55:24 laffer1 Exp $
+ * @author Lucas Holt
  */
 public final class UserLinkDao {
-    private final BaseDao dao = new BaseDao();
+    
+     private static final Category log = Category.getInstance(UserLinkDao.class.getName());
 
     /**
      * Add a link to the user link list.
      *
      * @param link A new hyperlink to add.
+     * @see UserLinkTo
      * @return true if no error occured.
      */
     public boolean add(final UserLinkTo link) {
@@ -58,9 +63,15 @@ public final class UserLinkDao {
                 + link.getId() + "','" + link.getUserId() + "','" + link.getTitle() + "','"
                 + link.getUri() + "');";
 
-        return dao.add(sqlStmt);
+        return BaseDao.add(sqlStmt);
     }
 
+    /**
+     * Delete a link from the userlink list.
+     * @param link user link to delete
+     * @see UserLinkTo
+     * @return true on success
+     */
     public static boolean delete(final UserLinkTo link) {
         boolean noError = true;
         final String sqlStmt = "DELETE FROM user_link WHERE id='" + link.getUserId() +
@@ -70,12 +81,19 @@ public final class UserLinkDao {
         try {
             SQLHelper.executeNonQuery(sqlStmt);
         } catch (Exception e) {
+             log.error("UserLinkDao.delete():" + e.getMessage());
             noError = false;
         }
 
         return noError;
     }
 
+    /**
+     * Get a list of links
+     * @param userId journal owner
+     * @see UserLinkTo
+     * @return  Collection of UserLinkTo's
+     */
     public static Collection<UserLinkTo> view(int userId) {
         ArrayList<UserLinkTo> links = new ArrayList<UserLinkTo>(10);
         String sql = "SELECT * FROM user_link WHERE id='" + userId + "';";
@@ -89,7 +107,7 @@ public final class UserLinkDao {
 
             }
         } catch (Exception e) {
-
+             log.error("UserLinkDao.view():" + e.getMessage());
         }
 
         return links;

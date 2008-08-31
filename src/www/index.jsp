@@ -270,7 +270,9 @@
         <tr style="font-size: 10px;">
             <% } %>
             <td><%=o.getName()%>
+                <% if (o.getLastName() != null) { %>
                 <%=o.getLastName()%>
+               <% } %>
             </td>
             <td><img src="images/userclass_16.png" alt="user icon"/>
                 <a href="users/<%=o.getUserName()%>"><%=o.getUserName()%>

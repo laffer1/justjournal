@@ -185,6 +185,13 @@
         <% } %>
     </p>
 
+<h3>Statistics</h3>
+  <%--
+<p>Blog entries posted: <%=EntryDAO.entryCount(username)%></p>
+
+
+<p>Comments posted on blogs: <%=CommentDao.commentCount(username)%></p>
+--%>
 <%  }
 } else { %>
     <p>Error accessing profile. The user either doesn't exist or there is an unknown error.</p>

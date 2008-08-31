@@ -860,6 +860,31 @@ public final class EntryDAO {
         return count;
     }
 
+    /**
+     * Count the number of blog entries this user has made.
+     * @param userName
+     * @return
+     * @throws Exception
+     */
+    public static int entryCount( final String userName ) throws Exception {
+        String sqlStatement;
+        CachedRowSet RS;
+        int count = 0;
+
+        sqlStatement = "SELECT count(*) " +
+                " FROM user As us, entry As eh " +
+                " WHERE us.username = '" + userName +
+                " AND us.id = eh.uid;";
+
+        RS = SQLHelper.executeResultSet(sqlStatement);
+
+        if (RS.next())
+            count = RS.getInt(1);
+        RS.close();
+
+        return count;
+    }
+
     public static CachedRowSet ViewCalendarYear(final int year,
                                                 final String userName,
                                                 final boolean thisUser)

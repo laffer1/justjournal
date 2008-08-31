@@ -43,7 +43,7 @@ import java.util.ArrayList;
  * Manipulate and fetch comments
  *
  * @author Lucas Holt
- * @version $Id: CommentDao.java,v 1.8 2008/08/01 14:35:45 laffer1 Exp $
+ * @version $Id: CommentDao.java,v 1.9 2008/08/31 20:55:24 laffer1 Exp $
  *          User: laffer1
  *          Date: Dec 25, 2003
  *          Time: 2:19:28 PM
@@ -209,6 +209,31 @@ public final class CommentDao {
 
         return comments;
 
+    }
+
+      /**
+     * Count the number of blog comments this user has made.
+     * @param userName
+     * @return
+     * @throws Exception
+     */
+    public static int commentCount( final String userName ) throws Exception {
+        String sqlStatement;
+        CachedRowSet RS;
+        int count = 0;
+
+        sqlStatement = "SELECT count(*) " +
+                " FROM user As us, comments As com " +
+                " WHERE us.username = '" + userName +
+                " AND us.id = com.uid;";
+
+        RS = SQLHelper.executeResultSet(sqlStatement);
+
+        if (RS.next())
+            count = RS.getInt(1);
+        RS.close();
+
+        return count;
     }
 
 }

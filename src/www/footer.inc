@@ -5,7 +5,7 @@
 	<p><a href="/privacy.jsp" title="Privacy Policy">Privacy</a> |
         <a href="/sitemap.jsp" title="Site Map">Site Map</a></p>
 
-	<p><a href="http://www.midnightbsd.org/"><img src="mbsd_button.gif" alt="Powered by MidnightBSD" /></a></p>
+	<p><a href="http://www.midnightbsd.org/"><img src="/mbsd_button.gif" alt="Powered by MidnightBSD" /></a></p>
 </div>
 
 <div style="text-align: center; margin: auto;">
