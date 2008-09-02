@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2005-2006, Lucas Holt
+Copyright (c) 2005, 2006, 2008 Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -40,7 +40,7 @@ package com.justjournal.db;
  * Time: 2:58:39 PM
  *
  * @author Lucas Holt
- * @version $Id: UserLinkTo.java,v 1.5 2006/12/03 19:35:38 laffer1 Exp $
+ * @version $Id: UserLinkTo.java,v 1.6 2008/09/02 00:52:22 laffer1 Exp $
  */
 public final class UserLinkTo {
     private int id;
@@ -48,36 +48,81 @@ public final class UserLinkTo {
     private String title;
     private String uri;
 
+    /**
+     * Retrieve unique identifier for link
+     * @return int > 0
+     */
     public final int getId() {
         return id;
     }
 
+    /**
+     * Set unique identifier for link
+     *
+     * @param id > 0
+     */
     public final void setId(int id) {
-        this.id = id;
+        if (id > 0)
+            this.id = id;
+        else
+            throw new IllegalArgumentException("id must be greater than zero");
     }
 
+    /**
+     * Retrieve owner of link
+     * @return user id
+     */
     public final int getUserId() {
         return userId;
     }
 
+    /**
+     * Set the owner of the link
+     * @param userId   > 0
+     */
     public final void setUserId(int userId) {
-        this.userId = userId;
+        if (userId > 0)
+            this.userId = userId;
+        else
+            throw new IllegalArgumentException("userId must be greater than zero");
     }
 
+    /**
+     * Retrieve the link title
+     * @return title
+     */
     public final String getTitle() {
         return title;
     }
 
+    /**
+     * Set the link title so that it can be displayed instead of just the hyperlink itself.
+     * @param title ascii text
+     */
     public final void setTitle(String title) {
-        this.title = title;
+        if (title != null)
+            this.title = title;
+        else
+            throw new IllegalArgumentException("title cannot be null");
     }
 
+    /**
+     * Retrieve the address of the link which should be a complete URI
+     * @return uri string
+     */
     public final String getUri() {
         return uri;
     }
 
+    /**
+     * Set the Uniform resource identifier as a string
+     * @param uri a valid uri
+     */
     public final void setUri(String uri) {
-        this.uri = uri;
+        if (uri != null)
+            this.uri = uri;
+        else
+            throw new IllegalArgumentException("uri cannot be null");
     }
 
     public final boolean equals(Object o) {
@@ -103,15 +148,20 @@ public final class UserLinkTo {
         return result;
     }
 
+    /**
+     * Get a string representation of UserLink
+     * @return comma seperated list of important components
+     */
     public final String toString() {
         return id + "," + userId + "," + title + "," + uri;
     }
 
     public UserLinkTo(int id, int userId, String title, String uri) {
-        this.id = id;
-        this.userId = userId;
-        this.title = title;
-        this.uri = uri;
+        /* calls so we execute checks and throw exceptions as needed */
+        setId(id);
+        setUserId(userId);
+        setTitle(title);
+        setUri(uri);
     }
 
     public UserLinkTo() {
