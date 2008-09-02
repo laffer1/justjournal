@@ -43,7 +43,7 @@ import java.util.Collection;
 /**
  * Data access for User Link list
  * @see UserLinkTo
- * @version $Id: UserLinkDao.java,v 1.10 2008/08/31 20:55:24 laffer1 Exp $
+ * @version $Id: UserLinkDao.java,v 1.11 2008/09/02 20:28:08 laffer1 Exp $
  * @author Lucas Holt
  */
 public final class UserLinkDao {
@@ -96,7 +96,7 @@ public final class UserLinkDao {
      */
     public static Collection<UserLinkTo> view(int userId) {
         ArrayList<UserLinkTo> links = new ArrayList<UserLinkTo>(10);
-        String sql = "SELECT * FROM user_link WHERE id='" + userId + "';";
+        final String sql = "SELECT * FROM user_link WHERE id='" + userId + "';";
 
         try {
             CachedRowSet rs = SQLHelper.executeResultSet(sql);
@@ -106,6 +106,8 @@ public final class UserLinkDao {
                         rs.getString("title"), rs.getString("uri")));
 
             }
+            rs.close();
+            
         } catch (Exception e) {
              log.error("UserLinkDao.view():" + e.getMessage());
         }
