@@ -47,7 +47,7 @@ public final class Xml {
      * to their equivalents.
      * <p/>
      * This does not alter elements that may be part of DTDs
-     * such as HTML's &nbsp;.
+     * like &nbsp; (formermly) but &nbsp; is converted to a plain space.
      * <p/>
      * It currently does not handle numerical escapes as
      * defined in XML either. &#xA0; etc
@@ -62,6 +62,13 @@ public final class Xml {
         // the &amp replacement could really screw things
         // up.  Need to somehow verify the document is ok
         // or at least that & is alone?
+
+        /* This really sucks, but if &nbsp; is used, it will really screw things up.  This is the most common
+           character to get added to an XML document we can't control.  This also assumes latin1.
+         */
+        if (input.contains("&nbsp;"))
+           work = work.replaceAll("&nbsp;", " ");
+
         work = StringUtil.replace(work, '&', "&amp;");
         work = StringUtil.replace(work, '"', "&quot;");
         work = StringUtil.replace(work, '<', "&lt;");
