@@ -49,7 +49,7 @@ import java.sql.*;
  * A simple datatbase connectivity solution.  Depends on Sun's beta CachedRowSet.
  *
  * @author Lucas Holt
- * @version $Id: SQLHelper.java,v 1.7 2008/09/02 20:28:09 laffer1 Exp $
+ * @version $Id: SQLHelper.java,v 1.8 2008/09/02 23:01:38 laffer1 Exp $
  * @since 1.0
  */
 public final class SQLHelper {
@@ -223,11 +223,11 @@ public final class SQLHelper {
 
         // Meta Data Properties
         int numberOfColumns = rsmd.getColumnCount();
-        String[] namesOfColumns = new String[numberOfColumns];
+        String[] namesOfColumns = new String[numberOfColumns + 1];
 
         // Get column names
-        for (int i = 1; i < numberOfColumns; i++) {
-            namesOfColumns[i-1] = rsmd.getColumnName(i);
+        for (int i = 1; i <= numberOfColumns; i++) {
+            namesOfColumns[i] = rsmd.getColumnName(i);
         }
 
         // Create XML Document
@@ -236,10 +236,10 @@ public final class SQLHelper {
 
         while ( rs.next() ) {
             sw.write("<record>\n");
-            for (int i = 1; i < numberOfColumns; i++) {
-                sw.write("<" + namesOfColumns[i-1] + ">");
-                sw.write(rs.getString(namesOfColumns[i-1]));
-                sw.write("</" + namesOfColumns[i-1] + ">\n");
+            for (int i = 1; i <= numberOfColumns; i++) {
+                sw.write("<" + namesOfColumns[i] + ">");
+                sw.write(rs.getString(namesOfColumns[i]));
+                sw.write("</" + namesOfColumns[i] + ">\n");
             }
             sw.write("</record>\n\n");
         }
