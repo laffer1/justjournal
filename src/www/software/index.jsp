@@ -1,17 +1,3 @@
-<%@ page import="com.justjournal.User" %>
-<%@ page import="com.justjournal.WebError" %>
-<%@ page import="com.justjournal.core.Statistics" %>
-<%@ page import="com.justjournal.db.*" %>
-<%@ page import="com.justjournal.search.BaseSearch" %>
-<%@ page import="com.justjournal.utility.StringUtil" %>
-<%@ page import="com.justjournal.utility.Xml" %>
-<%@ page import="sun.jdbc.rowset.CachedRowSet" %>
-<%@ page import="java.io.PrintWriter" %>
-<%@ page import="java.sql.*" %>
-<%@ page import="java.text.ParsePosition" %>
-<%@ page import="java.text.SimpleDateFormat" %>
-<%@ page import="java.util.Collection" %>
-<%@ page import="java.util.Iterator" %>
 <?xml version="1.0" encoding="iso-8859-1"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -42,14 +28,19 @@
         to use one of the desktop clients, you must download and install the program on your computer.
     </p>
 
+    <h3>Windows</h3>
+
     <p>There are advantages and disadvantages to both methods. The Windows client sits in the
         taskbar when its running and allows you to quickly post entries throughout the day. It also allows
-        you to auto-detect the music playing on your computer and syncronize posts with Microsoft Outlook.
+        you to auto-detect the music playing on your computer.
         You can even use the Microsoft Word spell checker if Word is installed. The website
         version works from any computer, pda or other device with a web browser that can
         view normal HTML webpages.</p>
 
     <p>Learn more about the <a href="windows.jsp">Windows client</a>.</p>
+
+    <p>Some third party clients work with Just Journal including Microsoft's Windows Live client.  Use
+    http://www.justjournal.com/xml-rpc  for the interface URL with these clients.  (Blogger 1.0 or metaweblog api).</p>
 
     <h3>Mac OS X</h3>
 
@@ -75,6 +66,10 @@
     <p>A command line client for MidnightBSD and other operating systems is
         now available. (Feb 27, 2008) <a href="unix.jsp">Learn more</a></p>
 
+    <p>A Gtk based graphical client is available in the command line source package.  It is included in
+    MidnightBSD mports.  You may also use Drivel which is hosted by the Gnome project.  Set the app to use
+    Blogger 1.0 and use the URL  http://www.justjournal.com/xml-rpc </p>
+
     <h3>Java</h3>
 
     <p>A Java client is under development for use on all computers that can support
@@ -87,7 +82,10 @@
 
     <p>If you are interested in using Just Journal server software
         on your website or in developing Just Journal, please view
-        the <a href="../opensource/index.jsp">open source</a> page.</p>
+        the <a href="../opensource/index.jsp">open source</a> page.
+        Just Journal supports Blogger 1.0 API and part of the Metaweblog API.  Use http://www.justjournal.com/xml-rpc
+        as the &quot;interface&quot; url. 
+    </p>
 
 </div>
 
