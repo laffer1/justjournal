@@ -1,17 +1,3 @@
-<%@ page import="com.justjournal.User" %>
-<%@ page import="com.justjournal.WebError" %>
-<%@ page import="com.justjournal.core.Statistics" %>
-<%@ page import="com.justjournal.db.*" %>
-<%@ page import="com.justjournal.search.BaseSearch" %>
-<%@ page import="com.justjournal.utility.StringUtil" %>
-<%@ page import="com.justjournal.utility.Xml" %>
-<%@ page import="sun.jdbc.rowset.CachedRowSet" %>
-<%@ page import="java.io.PrintWriter" %>
-<%@ page import="java.sql.*" %>
-<%@ page import="java.text.ParsePosition" %>
-<%@ page import="java.text.SimpleDateFormat" %>
-<%@ page import="java.util.Collection" %>
-<%@ page import="java.util.Iterator" %>
 <?xml version="1.0" encoding="iso-8859-1"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <%@ page contentType="text/html; charset=iso-8859-1" language="java" %>
@@ -56,8 +42,17 @@
 
     <h3>Download</h3>
     <ul>
-        <li><a href="unix/jjclient_1.0.tar.gz">Just Journal for *NIX 1.0</a></li>
+        <li><a href="unix/jjclient-1.0.2.tar.gz">Just Journal for *NIX 1.0.2</a></li>
     </ul>
+    <p>You may also download the client from <a href="http://sf.net/projects/justjournal">sourceforge</a></p>
+
+    <h3>Next Release</h3>
+    <p>The next release will be 1.0.3.  It includes several new features.
+        <br />-d allows you to debug connection problems
+        <br />-h host  allows you to use it with other JJ installs.
+        <br />-s subject allows you to write a subject with your blog post.
+    </p>
+    <p>You may try out this version from CVS on sourceforge.</p>
 </div>
 
 <jsp:include page="../footer.inc" flush="false"/>
