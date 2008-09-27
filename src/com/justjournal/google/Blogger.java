@@ -52,7 +52,7 @@ import java.util.regex.Pattern;
  * User: laffer1
  * Date: Dec 3, 2007
  * Time: 4:21:42 PM
- * $Id: Blogger.java,v 1.14 2008/09/26 21:25:53 laffer1 Exp $
+ * $Id: Blogger.java,v 1.15 2008/09/27 13:50:22 laffer1 Exp $
  * <p/>
  * A blogger 1 compatible interface exposed by XML-RPC
  * <p/>
@@ -223,8 +223,10 @@ public class Blogger {
                 String subject;
                 final Pattern p = Pattern.compile("(<title>)(.*?)(</title>)");
                 final Matcher m = p.matcher(content);
-                if (m.find())
+                if (m.find()) {
                     subject = m.group(2);
+                    content = m.replaceAll("");
+                }
                 else
                     subject = "";
                 et.setSubject(StringUtil.replace(subject, '\'', "\\\'"));
@@ -235,9 +237,10 @@ public class Blogger {
                 String music;
                 final Pattern p2 = Pattern.compile("(<music>)(.*?)(</music>)");
                 final Matcher m2 = p2.matcher(content);
-                if (m2.find())
+                if (m2.find()) {
                     music = m2.group(2);
-                else
+                    m.replaceAll("");
+                } else
                     music = "";
                 et.setMusic(StringUtil.replace(music, '\'', "\\\'"));
 
