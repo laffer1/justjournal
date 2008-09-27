@@ -34,6 +34,8 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.google;
 
+import com.justjournal.RestPing.BasePing;
+import com.justjournal.RestPing.IceRocket;
 import com.justjournal.User;
 import com.justjournal.WebLogin;
 import com.justjournal.db.DateTime;
@@ -52,7 +54,7 @@ import java.util.regex.Pattern;
  * User: laffer1
  * Date: Dec 3, 2007
  * Time: 4:21:42 PM
- * $Id: Blogger.java,v 1.15 2008/09/27 13:50:22 laffer1 Exp $
+ * $Id: Blogger.java,v 1.16 2008/09/27 14:29:57 laffer1 Exp $
  * <p/>
  * A blogger 1 compatible interface exposed by XML-RPC
  * <p/>
@@ -65,6 +67,9 @@ import java.util.regex.Pattern;
  * blogger.getUserInfo: Authenticates a user and returns basic user info (name, email, userid, etc.)
  * blogger.getTemplate: Returns the main or archive index template of a given blog.
  * blogger.setTemplate: Edits the main or archive index template of a given blog.
+ *
+ *
+ * TODO: Remove justjournal.com static maping.  Settings class will not work here.
  */
 @SuppressWarnings({"UnusedParameters"})
 public class Blogger {
@@ -256,6 +261,32 @@ public class Blogger {
                 EntryDAO.add(et);
                 et2 = EntryDAO.viewSingle(et);
                 result = Integer.toString(et2.getId());
+
+                if (!user.isPrivateJournal()) {
+                    log.debug("Ping weblogs");
+                    /* WebLogs, Google, blo.gs */
+                    BasePing rp = new BasePing("http://rpc.weblogs.com/pingSiteForm");
+                    rp.setName(user.getJournalName());
+                    rp.setUri("http://www.justjournal.com/" + "users/" + user.getUserName());
+                    rp.setChangesURL("http://www.justjournal.com" + "/users/" + user.getUserName() + "/rss");
+                    rp.ping();
+                    rp.setPingUri("http://blogsearch.google.com/ping");
+                    rp.ping();
+                    rp.setPingUri("http://ping.blo.gs/");
+                    rp.ping();
+
+                    /* Technorati */
+                    com.justjournal.technorati.RestPing rpt = new com.justjournal.technorati.RestPing();
+                    rpt.setName(user.getJournalName());
+                    rpt.setUri("http://www.justjournal.com/" + "users/" + user.getUserName());
+                    rpt.ping();
+
+                    /* IceRocket */
+                    IceRocket ice = new IceRocket();
+                    ice.setName(user.getJournalName());
+                    ice.setUri("http://www.justjournal.com/" + "users/" + user.getUserName());
+                    ice.ping();
+                }
 
             } catch (Exception e) {
                 blnError = true;

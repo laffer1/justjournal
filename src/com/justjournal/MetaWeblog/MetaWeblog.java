@@ -34,6 +34,8 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.MetaWeblog;
 
+import com.justjournal.RestPing.BasePing;
+import com.justjournal.RestPing.IceRocket;
 import com.justjournal.User;
 import com.justjournal.WebLogin;
 import com.justjournal.db.*;
@@ -47,7 +49,7 @@ import java.util.*;
  * The MetaWeblog API interface for blogging.  Similar to Blogger 1.0 API.
  *
  * @author Lucas Holt
- * @version $Id: MetaWeblog.java,v 1.3 2008/04/26 23:21:18 laffer1 Exp $
+ * @version $Id: MetaWeblog.java,v 1.4 2008/09/27 14:29:56 laffer1 Exp $
  *          <p/>
  *          User: laffer1
  *          Date: Apr 26, 2008
@@ -222,6 +224,32 @@ public class MetaWeblog {
                 et2 = EntryDAO.viewSingle(et);
                 result = Integer.toString(et2.getId());
                 log.debug("Result is: " + result);
+
+                if (!user.isPrivateJournal()) {
+                    log.debug("Ping weblogs");
+                    /* WebLogs, Google, blo.gs */
+                    BasePing rp = new BasePing("http://rpc.weblogs.com/pingSiteForm");
+                    rp.setName(user.getJournalName());
+                    rp.setUri("http://www.justjournal.com/" + "users/" + user.getUserName());
+                    rp.setChangesURL("http://www.justjournal.com" + "/users/" + user.getUserName() + "/rss");
+                    rp.ping();
+                    rp.setPingUri("http://blogsearch.google.com/ping");
+                    rp.ping();
+                    rp.setPingUri("http://ping.blo.gs/");
+                    rp.ping();
+
+                    /* Technorati */
+                    com.justjournal.technorati.RestPing rpt = new com.justjournal.technorati.RestPing();
+                    rpt.setName(user.getJournalName());
+                    rpt.setUri("http://www.justjournal.com/" + "users/" + user.getUserName());
+                    rpt.ping();
+
+                    /* IceRocket */
+                    IceRocket ice = new IceRocket();
+                    ice.setName(user.getJournalName());
+                    ice.setUri("http://www.justjournal.com/" + "users/" + user.getUserName());
+                    ice.ping();
+                }
 
             } catch (Exception e) {
                 blnError = true;
