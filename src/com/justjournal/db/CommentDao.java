@@ -43,7 +43,7 @@ import java.util.ArrayList;
  * Manipulate and fetch comments
  *
  * @author Lucas Holt
- * @version $Id: CommentDao.java,v 1.9 2008/08/31 20:55:24 laffer1 Exp $
+ * @version $Id: CommentDao.java,v 1.10 2008/09/27 14:47:54 laffer1 Exp $
  *          User: laffer1
  *          Date: Dec 25, 2003
  *          Time: 2:19:28 PM
@@ -111,7 +111,7 @@ public final class CommentDao {
      * used by the delete entry logic.  Not recommended for
      * direct calls by Users.
      *
-     * @param entryId
+     * @param entryId Unique identifier of entry to delete
      * @return true on success, false on any error.
      */
     public static boolean deleteByEntry(final int entryId) {
@@ -211,13 +211,14 @@ public final class CommentDao {
 
     }
 
-      /**
+    /**
      * Count the number of blog comments this user has made.
-     * @param userName
-     * @return
-     * @throws Exception
+     *
+     * @param userName the blog user
+     * @return number of comments
+     * @throws Exception SQL
      */
-    public static int commentCount( final String userName ) throws Exception {
+    public static int commentCount(final String userName) throws Exception {
         String sqlStatement;
         CachedRowSet RS;
         int count = 0;
@@ -225,7 +226,7 @@ public final class CommentDao {
         sqlStatement = "SELECT count(*) " +
                 " FROM user As us, comments As com " +
                 " WHERE us.username = '" + userName +
-                " AND us.id = com.uid;";
+                "' AND us.id = com.uid;";
 
         RS = SQLHelper.executeResultSet(sqlStatement);
 
