@@ -8,6 +8,8 @@
 <%@ page import="java.io.PrintWriter"%>
 <%@ page import="java.util.Collection"%>
 <%@ page import="java.util.Iterator" %>
+<%@ page import="com.justjournal.db.EntryDAO" %>
+<%@ page import="com.justjournal.db.CommentDao" %>
 <%@ include file="Connections/jjdb.jsp" %>
 <%
     response.setContentType("text/html");
@@ -173,9 +175,7 @@
 
     Iterator fo = friendsof.iterator();
     String fro;
-%>
-
-    <p>
+%>    <p>
         <% if (fo.hasNext()) { %>
         <a href="users/<%= fro = (String) fo.next()%>"><%=fro%></a>
         <% }
@@ -186,12 +186,14 @@
     </p>
 
 <h3>Statistics</h3>
-  <%--
+<% try { %>
 <p>Blog entries posted: <%=EntryDAO.entryCount(username)%></p>
-
-
 <p>Comments posted on blogs: <%=CommentDao.commentCount(username)%></p>
---%>
+<% } catch (Exception e) {
+System.out.println(e.getMessage());
+}
+%>
+
 <%  }
 } else { %>
     <p>Error accessing profile. The user either doesn't exist or there is an unknown error.</p>
