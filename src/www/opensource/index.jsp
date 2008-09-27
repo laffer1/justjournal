@@ -1,3 +1,17 @@
+<%@ page import="com.justjournal.User" %>
+<%@ page import="com.justjournal.WebError" %>
+<%@ page import="com.justjournal.core.Statistics" %>
+<%@ page import="com.justjournal.db.*" %>
+<%@ page import="com.justjournal.search.BaseSearch" %>
+<%@ page import="com.justjournal.utility.StringUtil" %>
+<%@ page import="com.justjournal.utility.Xml" %>
+<%@ page import="javax.sql.rowset.CachedRowSet" %>
+<%@ page import="java.io.PrintWriter" %>
+<%@ page import="java.sql.*" %>
+<%@ page import="java.text.ParsePosition" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.Collection" %>
+<%@ page import="java.util.Iterator" %>
 <?xml version="1.0" encoding="iso-8859-1"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -23,6 +37,13 @@
 
     <jsp:include page="../inc_login.jsp" flush="false"/>
 
+    <p>You can get a newer copy of the source at <a href="http://sf.net">Source Forge</a>. Our project
+        name is <a href="http://sourceforge.net/projects/justjournal/">JustJournal</a>. This includes
+    the server software, windows client (GPL2), unix client (BSD 2-clause), DashBoard widget (for OSX, BSD 2-clause),
+    and GTK app.</p>
+
+    <h3>Old Work</h3>
+
     <p>Windows client <a href="../software/jj_windows_src_1.41.zip">source</a>
         for 1.41 release (under GPL)</p>
 
@@ -32,9 +53,6 @@
         templates and configuration files. More will be added at a later
         time. This is released under the BSD license.
         <a href="src.zip">First snapshot</a></p>
-
-    <p>You can get a newer copy of the source at <a href="http://sf.net">Source Forge</a>. Our project
-        name is <a href="http://sourceforge.net/projects/justjournal/">JustJournal</a>.</p>
 
 </div>
 
