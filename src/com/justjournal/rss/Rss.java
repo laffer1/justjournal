@@ -48,7 +48,7 @@ import java.util.*;
  * Implements RSS 2
  *
  * @author Lucas Holt
- * @version $Id: Rss.java,v 1.8 2008/08/01 14:35:54 laffer1 Exp $
+ * @version $Id: Rss.java,v 1.9 2008/10/16 20:20:07 laffer1 Exp $
  * @since 1.0
  *        User: laffer1
  *        Date: Aug 27, 2003
@@ -147,6 +147,7 @@ public final class Rss {
             for (int x = 0, n = entries.size(); x < n && x < MAX_LENGTH; x++) {
                 o = itr.next();
                 item = new RssItem();
+                item.setTruncateFields(false);
                 item.setTitle(o.getSubject());
                 item.setLink("http://www.justjournal.com/users/" + o.getUserName());
                 item.setDescription(o.getBody());
@@ -177,6 +178,7 @@ public final class Rss {
             while (rs.next()) {
                 imageTitle = rs.getString("title");
                 item = new RssItem();
+                item.setTruncateFields(false);
                 item.setTitle(imageTitle);
                 item.setLink("http://www.justjournal.com/users/" + userName + "/pictures");
                 item.setDescription("");

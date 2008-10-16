@@ -38,7 +38,7 @@ package com.justjournal.rss;
  * An RSS Item is one entry in an RSS feed.
  *
  * @author Lucas Holt
- * @version $Id: RssItem.java,v 1.4 2007/12/26 06:02:34 laffer1 Exp $
+ * @version $Id: RssItem.java,v 1.5 2008/10/16 20:20:07 laffer1 Exp $
  *          User: laffer1
  *          Date: Aug 28, 2003
  *          Time: 12:19:36 AM
@@ -60,6 +60,16 @@ public final class RssItem {
     private String enclosureURL;
     private String enclosureLength;
     private String enclosureType;
+
+    private boolean truncateFields = true;
+
+    public boolean isTruncateFields() {
+        return truncateFields;
+    }
+
+    public void setTruncateFields(boolean truncateFields) {
+        this.truncateFields = truncateFields;
+    }
 
     /**
      * URL pointed to an object to embed in the feed.  MP3,
@@ -146,7 +156,7 @@ public final class RssItem {
      */
     public void setTitle(String title) {
 
-        if (title.length() > 98) {
+        if (title.length() > 98 && truncateFields) {
             this.title = title.substring(0, 99);
         } else {
             this.title = title;
@@ -173,7 +183,7 @@ public final class RssItem {
      */
     public void setDescription(String description) {
 
-        if (description.length() > 495) {
+        if (description.length() > 495 && truncateFields) {
             this.description = description.substring(0, 496);
         } else {
             this.description = description;
