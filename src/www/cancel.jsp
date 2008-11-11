@@ -51,11 +51,10 @@
     <div style="width: 410px; padding: 5px; margin: 0">
         <form method="post" action="DeleteAccount" name="frmCancelJournal">
 
-            <p style="color:red">This feature does not work yet. To cancel an account, please email
-                luke@foolishgames.com.</p>
-
             <fieldset>
                 <legend><strong>User Information</strong><br/></legend>
+
+                <p>You must be logged in before you can cancel your account.</p>
 
                 <div class="row">
                     <span class="label"><label for="username">Username</label></span> <span class="formw"><input
