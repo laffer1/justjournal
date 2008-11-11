@@ -49,7 +49,7 @@ import java.util.ListIterator;
  * one is needed.
  *
  * @author Lucas Holt
- * @version 1.1
+ * @version $Id: EntryDAO.java,v 1.28 2008/11/11 19:27:29 laffer1 Exp $
  * @see EntryTo
  * @since 1.0
  *        User: laffer1
@@ -874,7 +874,7 @@ public final class EntryDAO {
         sqlStatement = "SELECT count(*) " +
                 " FROM user As us, entry As eh " +
                 " WHERE us.username = '" + userName +
-                " AND us.id = eh.uid;";
+                "' AND us.id = eh.uid;";
 
         RS = SQLHelper.executeResultSet(sqlStatement);
 

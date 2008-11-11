@@ -234,6 +234,6 @@ public class AddPicture extends JustJournalBaseServlet {
     }
 
     public String getServletInfo() {
-        return "Add Picture";
+        return "Add Picture to Blog";
     }
 }
