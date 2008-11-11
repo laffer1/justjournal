@@ -97,6 +97,12 @@
         <servlet-class>com.justjournal.NewAccount</servlet-class>
     </servlet>
 
+     <servlet>
+        <display-name>Delete Account</display-name>
+        <servlet-name>DeleteAccount</servlet-name>
+        <servlet-class>com.justjournal.ctl.DeleteAccount</servlet-class>
+    </servlet>
+
     <servlet>
         <display-name>Add Comment</display-name>
         <servlet-name>addComment</servlet-name>
@@ -218,6 +224,11 @@
     <servlet-mapping>
         <servlet-name>newAccount</servlet-name>
         <url-pattern>/newAccount</url-pattern>
+    </servlet-mapping>
+
+     <servlet-mapping>
+        <servlet-name>DeleteAccount</servlet-name>
+        <url-pattern>/DeleteAccount</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>
