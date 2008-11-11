@@ -49,7 +49,7 @@
     <h2>Cancel Journal</h2>
 
     <div style="width: 410px; padding: 5px; margin: 0">
-        <form method="post" action="removeAccount" name="frmCancelJournal">
+        <form method="post" action="DeleteAccount" name="frmCancelJournal">
 
             <p style="color:red">This feature does not work yet. To cancel an account, please email
                 luke@foolishgames.com.</p>
