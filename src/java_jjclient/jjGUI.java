@@ -184,7 +184,7 @@ public class jjGUI implements ActionListener {
         c.gridy = 1;
         c.gridx = 1;
         c.insets = new Insets (5, 5, 5, 5);
-        updatePanel.add(new JScrollPane(body), c);
+        updatePanel.add(new JScrollPane(body, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER), c);
 
         music = new JTextField(15);
         c.gridy = 2;
