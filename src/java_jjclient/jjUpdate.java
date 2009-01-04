@@ -113,6 +113,7 @@ public class jjUpdate {
             conn.setRequestMethod ("POST");
             conn.setRequestProperty ("User-Agent", "JustJournal");
             conn.setRequestProperty( "Content-Type", type );
+            conn.setRequestProperty("Content-Length", new Integer(data.length()).toString());
             conn.setDoOutput(true);
             conn.setDoInput(true);
 
