@@ -43,6 +43,7 @@ public class jj_auth {
         //  servlet
         try {
             // sending the post request
+            String type = "application/x-www-form-urlencoded";
             String data = URLEncoder.encode("username", "US-ASCII") + "=" +
                     URLEncoder.encode(userName, "US-ASCII");
             data += "&" + URLEncoder.encode("password", "US-ASCII") + "=" +
@@ -54,6 +55,7 @@ public class jj_auth {
             
             // set user-agent header in POST request
             conn.setRequestProperty("User-Agent","JustJournal/Java");
+            conn.setRequestProperty( "Content-Type", type );
                         
             conn.setRequestMethod ("POST");
             conn.setDoOutput(true);
@@ -81,6 +83,8 @@ public class jj_auth {
 
             if (code.equals("JJ.LOGIN.OK"))
                 return true;
+
+             System.out.println(code);
         }
         catch (Exception e) {
             System.err.println(e.getMessage());
@@ -132,6 +136,8 @@ public class jj_auth {
 
             if (code.equals("JJ.LOGIN.OK"))
                 return true;
+
+            System.out.println(code);
 
         }
         catch (Exception e) {
