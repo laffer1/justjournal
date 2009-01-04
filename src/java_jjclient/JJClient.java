@@ -18,14 +18,7 @@ public class JJClient {
      * @param args
      */
     public static void main(String args[]) {
-
-        // Mac OS X specific extensions
-        if (System.getProperty("mrj.version") != null) {
-            com.apple.eawt.Application a = com.apple.eawt.Application.getApplication();
-            a.setEnabledAboutMenu(false);
-            a.setEnabledPreferencesMenu(false);
-        }
-        jjGUI gui = new jjGUI();
+       jjGUI gui = new jjGUI();
     }
 
 }
