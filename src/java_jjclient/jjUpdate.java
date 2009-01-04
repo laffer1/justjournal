@@ -93,20 +93,18 @@ public class jjUpdate {
             // construct the POST request data
             String type = "application/x-www-form-urlencoded";
             String data = "";
-            data += "user=" + username;
-            data += "&pass=" + password;
+            data += "user=" + URLEncoder.encode(username,"UTF-8");
+            data += "&pass=" + URLEncoder.encode(password, "UTF-8");
             data += "&security=" + securityInteger;
             data += "&location=" + locationInteger;
             data += "&mood=12";  // Not Specified value
-            data += "&music=" + music;
-            data += "&aformat" + strFormat;
+            data += "&music=" + URLEncoder.encode(music, "UTF-8");
+            data += "&aformat=" + strFormat;
             data += "&allow_comment=" + strAllow;
-            data += "&email_comment" + strEmail;
+            data += "&email_comment=" + strEmail;
             data += "&date=" + strDate;
-            data += "&subject=" + subject;
-            data += "&body=" + body;
-
-            String encodedData = java.net.URLEncoder.encode(data,"UTF-8");
+            data += "&subject=" + URLEncoder.encode(subject, "UTF-8");
+            data += "&body=" + URLEncoder.encode(body, "UTF-8");
 
             // open connection
             URL jj = new URL ("https://www.justjournal.com/updateJournal");
@@ -121,7 +119,7 @@ public class jjUpdate {
             OutputStreamWriter writer =
                     new OutputStreamWriter(conn.getOutputStream());
 
-            writer.write(encodedData);
+            writer.write(data);
             writer.flush();
             writer.close();
             // getting the response
