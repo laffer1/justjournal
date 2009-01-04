@@ -109,7 +109,7 @@ public class jjUpdate {
             String encodedData = java.net.URLEncoder.encode(data,"UTF-8");
 
             // open connection
-            URL jj = new URL ("https://www.justjournal/updateJournal");
+            URL jj = new URL ("https://www.justjournal.com/updateJournal");
             HttpsURLConnection conn = (HttpsURLConnection) jj.openConnection();
             // set requesting agent, and POST
             conn.setRequestMethod ("POST");
