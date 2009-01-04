@@ -137,8 +137,11 @@ public class jjUpdate {
             }
             input.close();
             String code = new String (returnCode);
+            code = code.trim();
+            
+            if (code.compareTo("JJ.JOURNAL.UPDATE.OK") == 0)
+                return true;
             System.out.println("JJUpdate(): " + code);
-            System.out.println("JJUpdate(): " + data);
         }
         catch (Exception e) {
             System.err.println(e.getMessage());
