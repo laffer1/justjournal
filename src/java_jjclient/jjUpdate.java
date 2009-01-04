@@ -102,7 +102,7 @@ public class jjUpdate {
             data += "&aformat=" + strFormat;
             data += "&allow_comment=" + strAllow;
             data += "&email_comment=" + strEmail;
-            data += "&date=" + URLEncoder.encode(strDate, "UTF-8");
+           //data += "&date=" + URLEncoder.encode(strDate, "UTF-8"); This is handled server side for now
             data += "&subject=" + URLEncoder.encode(subject, "UTF-8");
             data += "&body=" + URLEncoder.encode(body, "UTF-8");
 
