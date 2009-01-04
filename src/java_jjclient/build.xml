@@ -1,0 +1,27 @@
+<project name="javajj" default="jar" basedir=".">
+	<property file="build.properties"/>
+	<target name="clean">
+		<echo>Cleaning the ${build.dir} and ${dist.dir}</echo>
+		<delete dir="${build.dir}"/>
+		<delete dir="${dist.dir}"/>
+	</target>
+	<target name="init" depends="clean">
+		<echo>Creating the required directories</echo>
+		<mkdir dir="${dist.dir}"/>
+		<mkdir dir="${build.dir}"/>
+	</target>
+
+	<target name="compile" depends="init">
+		<echo>Compile the source files</echo>
+		<javac srcdir="${src.dir}" destdir="${build.dir}">
+		</javac>
+	</target>	
+	
+	<target name="jar" depends="compile">
+		<echo>Building the jar file</echo>
+		<jar destfile="${dist.dir}\${project.name}.jar">
+			<fileset dir="${build.dir}"/>
+		</jar>
+	</target>
+
+</project>
