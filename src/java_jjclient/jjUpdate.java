@@ -137,7 +137,8 @@ public class jjUpdate {
             }
             input.close();
             String code = new String (returnCode);
-            System.out.println(code);
+            System.out.println("JJUpdate(): " + code);
+            System.out.println("JJUpdate(): " + data);
         }
         catch (Exception e) {
             System.err.println(e.getMessage());
