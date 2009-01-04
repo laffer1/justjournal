@@ -2,10 +2,6 @@
  * jjUpdate.java
  *
  * Created on October 17, 2005, 9:33 AM
- *
- * To change this template, choose Tools | Options and locate the template under
- * the Source Creation and Management node. Right-click the template and choose
- * Open. You can then make changes to the template in the Source Editor.
  */
 
 package java_jjclient;
@@ -16,6 +12,7 @@ import java.util.Date;
 import java.io.OutputStreamWriter;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.URLEncoder;
 
 /**
  *
@@ -94,12 +91,13 @@ public class jjUpdate {
 
         try {
             // construct the POST request data
+            String type = "application/x-www-form-urlencoded";
             String data = "";
             data += "user=" + username;
             data += "&pass=" + password;
             data += "&security=" + securityInteger;
             data += "&location=" + locationInteger;
-            data += "&mood=1";
+            data += "&mood=12";  // Not Specified value
             data += "&music=" + music;
             data += "&aformat" + strFormat;
             data += "&allow_comment=" + strAllow;
@@ -108,19 +106,22 @@ public class jjUpdate {
             data += "&subject=" + subject;
             data += "&body=" + body;
 
+            String encodedData = java.net.URLEncoder.encode(data,"UTF-8");
+
             // open connection
             URL jj = new URL ("https://www.justjournal/updateJournal");
             HttpsURLConnection conn = (HttpsURLConnection) jj.openConnection();
             // set requesting agent, and POST
             conn.setRequestMethod ("POST");
             conn.setRequestProperty ("User-Agent", "JustJournal");
+            conn.setRequestProperty( "Content-Type", type );
             conn.setDoOutput(true);
             conn.setDoInput(true);
 
             OutputStreamWriter writer =
                     new OutputStreamWriter(conn.getOutputStream());
 
-            writer.write(data);
+            writer.write(encodedData);
             writer.flush();
             writer.close();
             // getting the response
