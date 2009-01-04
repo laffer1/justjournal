@@ -308,7 +308,7 @@ public class jjGUI implements ActionListener {
      * @return true if update was successful
      */
     private boolean update () {
-        String strPassword = password.getPassword().toString();
+        String strPassword = password.getText();
         jjUpdate updateJJ = new jjUpdate(username.getText(), strPassword);
         boolean result = updateJJ.update(subject.getText(), body.getText(),
                 (String) mood.getSelectedItem(), (String) location.getSelectedItem(),
