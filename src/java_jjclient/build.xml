@@ -21,6 +21,15 @@
 		<echo>Building the jar file</echo>
 		<jar destfile="${dist.dir}\${project.name}.jar">
 			<fileset dir="${build.dir}"/>
+  <manifest>
+      <!-- Who is building this jar? -->
+      <attribute name="Built-By" value="${user.name}"/>
+      <!-- Information about the program itself -->
+      <attribute name="Implementation-Vendor" value="Caryn Holt"/>
+      <attribute name="Implementation-Title" value="JavaJJ"/>
+      <attribute name="Implementation-Version" value="1.0"/>
+      <attribute name="Main-Class" value="java_jjclient/JJClient"/>
+    </manifest>
 		</jar>
 	</target>
 
