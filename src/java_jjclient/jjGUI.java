@@ -179,10 +179,12 @@ public class jjGUI implements ActionListener {
         updatePanel.add(subject, c);
 
         body = new JTextArea(10, 15);
+        body.setLineWrap(true);
+        body.setWrapStyleWord(false);
         c.gridy = 1;
         c.gridx = 1;
         c.insets = new Insets (5, 5, 5, 5);
-        updatePanel.add(body, c);
+        updatePanel.add(new JScrollPane(body), c);
 
         music = new JTextField(15);
         c.gridy = 2;
