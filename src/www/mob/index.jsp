@@ -30,12 +30,20 @@
     </div>
          <% if (session.getAttribute("auth.user") != null) { %>
         <p><%= session.getAttribute("auth.user") %>, you can: </p>
+         <div class="arrowgreen">
          <ul>
              <li><a href="update.jsp">Update Journal</a></li>
+             <li><a href="recent.jsp">Recent Blogs</a></li>
              <li><a href="logout.jsp">Log out</a></li>
           </ul>
+          </div>
     <% } else { %>
-    <p><a href="login.jsp">Login</a></p>
+    <div class="arrowgreen">
+        <ul>
+        <li><a href="login.jsp">Login</a></li>
+            <li><a href="recent.jsp">Recent Blogs</a></li>
+        </ul>
+    </div>
     <% } %>
 <%!
 
