@@ -1,6 +1,6 @@
 <%@ page import="com.justjournal.core.Statistics" %>
 <%--
-  @version $Id: stats.jsp,v 1.4 2009/02/21 23:05:31 laffer1 Exp $
+  @version $Id: stats.jsp,v 1.5 2009/02/21 23:09:41 laffer1 Exp $
   @author Lucas Holt
 --%>
 <%@ page contentType="text/html; charset=iso-8859-1" language="java" %>
@@ -54,11 +54,13 @@ dojo.addOnLoad(makeCharts);
 
     <h2>Statistics</h2>
 
+    <p>Below is an overview of usage statistics for this website including the number of users and blog entry types: public, friends, private.</p>
+
     <h3>Blog Entry Type</h3>
-    <div id="simplechart" style="width: 400px; height: 300px;"></div>
     <p>Key: <span style="color: #006699">public</span>
     <span style="color: #003399">private</span> <span style="color: #000033">friends</span></p>
-
+    
+    <div id="simplechart" style="width: 500px; height: 400px;"></div>
 
     <h3>Details</h3>
     <table style="border: thin solid #F2F2F2;">
