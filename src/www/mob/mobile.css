@@ -2,6 +2,7 @@ body {
     background: white url( "../images/jj_header_bg.gif" ) repeat-x;
     color: black;
     font-family: Helvetica, Arial, sans-serif;
+    font-size: 12px;
 }
 
 h1 {
