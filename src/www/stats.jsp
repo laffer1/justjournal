@@ -1,6 +1,6 @@
 <%@ page import="com.justjournal.core.Statistics" %>
 <%--
-  @version $Id: stats.jsp,v 1.6 2009/02/21 23:10:31 laffer1 Exp $
+  @version $Id: stats.jsp,v 1.7 2009/02/21 23:11:51 laffer1 Exp $
   @author Lucas Holt
 --%>
 <%@ page contentType="text/html; charset=iso-8859-1" language="java" %>
@@ -63,7 +63,7 @@ dojo.addOnLoad(makeCharts);
     <div id="simplechart" style="width: 500px; height: 400px;"></div>
 
     <h3>Details</h3>
-    <table style="border: thin solid #F2F2F2; width: 300px;">
+    <table style="border: thin solid #F2F2F2; width: 300px;" cellspacing="2" cellpadding="2">
         <tr style="font-size: 14px; background: #F2F2F2;">
             <td>Users</td>
             <td><%=s.users()%>

@@ -55,7 +55,7 @@
 }
 
 #ticker {
-    background-color: black;
+    background-color: #006699;
     color: white;
     border: thin solid silver;
     border-radius: 10px;   /* css3 */
@@ -69,7 +69,6 @@
 }
 
 #ticker table {
-/* background: transparent url( images/ticker744wide_btm.gif ) no-repeat bottom left;  */
     border: 0;
     margin: 0;
     padding: 0;
@@ -80,7 +79,6 @@
 }
 
 #ticker table td#tic-title {
-/*  background: transparent url( images/ticker_top.gif ) no-repeat top left;  */
     font-size: 12px;
     font-weight: bold;
     padding: 4px 0;
@@ -90,7 +88,6 @@
 }
 
 #ticker table td#tic-item {
-/*  background: transparent url( images/ticker_top.gif ) no-repeat top right;   */
     padding: 4px 10px 4px 16px;
     width: 534px;
     text-align: left;
@@ -142,13 +139,109 @@
 #wrapper img {
     border: 5px solid #E6E2CF;
 }
+
+a.ovalbutton{
+background: transparent url('images/oval-blue-left.gif') no-repeat top left;
+display: block;
+float: left;
+font: normal 13px Tahoma; /* Change 13px as desired */
+line-height: 16px; /* This value + 4px + 4px (top and bottom padding of SPAN) must equal height of button background (default is 24px) */
+height: 24px; /* Height of button background height */
+padding-left: 11px; /* Width of left menu image */
+text-decoration: none;
+}
+
+a:link.ovalbutton, a:visited.ovalbutton, a:active.ovalbutton{
+color: #494949; /*button text color*/
+}
+
+a.ovalbutton span{
+background: transparent url('images/oval-blue-right.gif') no-repeat top right;
+display: block;
+padding: 4px 11px 4px 0; /*Set 11px below to match value of 'padding-left' value above*/
+}
+
+a.ovalbutton:hover{ /* Hover state CSS */
+background-position: bottom left;
+}
+
+a.ovalbutton:hover span{ /* Hover state CSS */
+background-position: bottom right;
+color: black;
+}
+
+.buttonwrapper{ /* Container you can use to surround a CSS button to clear float */
+overflow: hidden; /*See: http://www.quirksmode.org/css/clearing.html */
+width: 100%;
+}
 </style>
 <link rel="stylesheet" type="text/css" href="default.css" id="default"/>
 <!-- dummy stylesheet - href to be swapped -->
 <link rel="stylesheet" type="text/css" href="dummy.css" id="dummy_css"/>
 <script type="text/javascript" src="js/applesearch.js">/* ie7 sucks*/</script>
+   <style type="text/css" media="all">
+        <!--
 
-<script type="text/javascript">
+        div.row {
+            clear: both;
+            padding-top: 5px;
+        }
+
+        div.row span.label {
+            float: left;
+            width: 120px;
+            text-align: right;
+        }
+
+        div.row span.formw {
+            float: right;
+            width: 205px;
+            text-align: left;
+        }
+
+        div.spacer {
+            clear: both;
+        }
+
+        -->
+    </style>
+    <script language="JavaScript" type="text/javascript" src="js/sha1.js"></script>
+    <script language="JavaScript" type="text/javascript">
+        function sendForm(formid, checkuser)
+        {
+
+            if (formid == null)
+                formid = 'alogin';
+
+            // 'checkuser' is the element id name of the username textfield.
+            // only use it if you care to verify a username exists before hashing.
+
+            if (! document.getElementById)
+                return true;
+
+            var loginform = document.getElementById(formid);
+            if (! loginform) return true;
+
+            // Avoid accessing the password field if there is no username.
+            // This works around Opera < 7 complaints when commenting.
+            if (checkuser) {
+                var username = null;
+                for (var i = 0; username == null && i < loginform.elements.length; i++) {
+                    if (loginform.elements[i].id == checkuser) username = loginform.elements[i];
+                }
+                if (username != null && username.value == "") return true;
+            }
+
+            if (! loginform.password)
+                return true;
+
+            var pass = loginform.password.value;
+
+            loginform.password_hash.value = hex_sha1(pass);
+            loginform.password.value = "";  // dont send clear-text password!
+            return true;
+        }
+
     addEventToObject(window, 'onload', applesearch.init);
 </script>
 </head>
@@ -161,6 +254,7 @@
 
 <div id="quickmenu">
     <jsp:include page="inc_login.jsp" flush="false"/>
+
     <ul>
         <li><a href="create.jsp">Create Account</a></li>
         <li><a href="cancel.jsp">Cancel Account</a></li>
@@ -189,48 +283,7 @@
 
     <p><a href="software/index.jsp">Download</a> the client software. </p>
 
-    <%
-        Statistics s = new Statistics();
-    %>
-    <table style="border: thin solid #F2F2F2;">
-        <tr style="font-size: 10px; background: #F2F2F2;">
-            <td>Users</td>
-            <td><%=s.users()%>
-            </td>
-        </tr>
-        <tr style="font-size: 10px;">
-            <td>Entries</td>
-            <td><%=s.entries()%>
-            </td>
-        </tr>
-        <tr style="font-size: 10px; background: #F2F2F2;">
-            <td>Public Entries</td>
-            <td><%=String.format("%.2f", s.publicEntries())%>%</td>
-        </tr>
-        <tr style="font-size: 10px;">
-            <td>Friends Entries</td>
-            <td><%=String.format("%.2f", s.friendsEntries())%>%</td>
-        </tr>
-        <tr style="font-size: 10px; background: #F2F2F2;">
-            <td>Private Entries</td>
-            <td><%=String.format("%.2f", s.privateEntries())%>%</td>
-        </tr>
-        <tr style="font-size: 10px;">
-            <td>Comments</td>
-            <td><%=s.comments()%>
-            </td>
-        </tr>
-        <tr style="font-size: 10px; background: #F2F2F2;">
-            <td>Blog Styles</td>
-            <td><%=s.styles()%>
-            </td>
-        </tr>
-        <tr style="font-size: 10px;">
-            <td>Tags</td>
-            <td><%=s.tags()%>
-            </td>
-        </tr>
-    </table>
+    <p>View <a href="stats.jsp">site statistics</a>.</p>
 
     <p><img src="images/feed.gif" alt="Feed"/> <a href="RecentBlogs">Recent Blog Entries</a></p>
 </div>
@@ -245,13 +298,47 @@
         entries for yourself, friends' entries to share with those close to you or public entries you wish to share
         with the Internet.</p>
 
-    <p style="padding-bottom: 10px;"><a href="create.jsp"><img src="images/jj_btn_create_an_account.gif"
-                                                               alt="Create an account"/></a></p>
+    <div style="width: 360px; padding: 5px; margin: 0;">
+        <form method="post" name="alogin" action="./loginAccount" id="blogin">
+            <input type="hidden" name="password_hash" id="ipassword_hash" value=""/>
+
+            <fieldset>
+                <legend><strong>Just Journal Account</strong><br/>
+                </legend>
+
+
+                <div class="row">
+                    <span class="label">Username</span>
+      <span class="formw">
+     <input type="text" name="username" id="iusername" size="18" maxlength="15"
+            style="background: url(images/userclass_16.png) no-repeat; background-color: #fff; background-position: 0px 1px; padding-left: 18px; color: black; font-weight: bold;"/></span>
+                </div>
+
+                <div class="row">
+                    <span class="label">Password</span>
+      <span class="formw"><input type="password" name="password" id="ipassword" size="18"
+                                 style="background: white; color: black; font-weight: bold;"/>
+      </span>
+                </div>
+
+                <!-- Hack to fix spacing problem.. especially with text boxes -->
+                <div class="spacer"> &nbsp; </div>
+            </fieldset>
+
+            <div class="row">
+                <input type="submit" name="submitlogin" value="Login" onclick="return sendForm()"/>
+            </div>
+
+            <!-- Hack to fix spacing problem.. especially with text boxes -->
+            <div class="spacer"> &nbsp; </div>
+        </form>
+       </div>
+    
 
     <table style="border: thin solid #F2F2F2; width: 380px;">
         <caption style="font-size: 12px; font-family: Georgia, Times, serif;">New Members</caption>
         <thead>
-            <tr style="font-size: 9px; color: white; background: black;">
+            <tr style="font-size: 9px; color: white; background: #006699;">
                 <th>Name</th>
                 <th>User</th>
                 <th>Since</th>
