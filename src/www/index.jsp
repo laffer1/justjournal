@@ -333,7 +333,14 @@ width: 100%;
             <div class="spacer"> &nbsp; </div>
         </form>
        </div>
-    
+
+</div>
+
+<p style="clear: both;">&#160;</p>
+
+<div id="ticker"></div>
+
+    <p style="clear: both;">&#160;</p>
 
     <table style="border: thin solid #F2F2F2; width: 380px;">
         <caption style="font-size: 12px; font-family: Georgia, Times, serif;">New Members</caption>
@@ -373,12 +380,6 @@ width: 100%;
             }
         %>
     </table>
-    <p style="clear: both;">&#160;</p>
-</div>
-
-<p style="clear: both;">&#160;</p>
-
-<div id="ticker"></div>
 </div>
 
 <jsp:include page="footer.inc" flush="false"/>
