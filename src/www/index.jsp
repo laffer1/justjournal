@@ -342,7 +342,7 @@ width: 100%;
 
     <p style="clear: both;">&#160;</p>
 
-    <table style="border: thin solid #F2F2F2; width: 380px;">
+    <table style="border: thin solid #F2F2F2; width: 600px;">
         <caption style="font-size: 12px; font-family: Georgia, Times, serif;">New Members</caption>
         <thead>
             <tr style="font-size: 9px; color: white; background: #006699;">
