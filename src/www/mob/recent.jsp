@@ -32,7 +32,7 @@
     for (int x = 0, n = entries.size(); x < n; x++) {
         o = itr.next();
 %>
-        <p><%=o.getUserName()%> - <%=o.getSubject()%>
+        <p><%=o.getUserName()%> - <b><%=o.getSubject()%></b>
         <br />
             <%=o.getBodyWithoutHTML()%>
         </p>
