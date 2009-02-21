@@ -1,6 +1,6 @@
 <%@ page import="com.justjournal.core.Statistics" %>
 <%--
-  @version $Id: stats.jsp,v 1.2 2009/02/21 23:01:09 laffer1 Exp $
+  @version $Id: stats.jsp,v 1.3 2009/02/21 23:03:42 laffer1 Exp $
   @author Lucas Holt
 --%>
 <%@ page contentType="text/html; charset=iso-8859-1" language="java" %>
@@ -26,8 +26,6 @@
     Statistics s = new Statistics();
 %>
     <script type="text/javascript">
-    addEventToObject(window, 'onload', applesearch.init);
-
     dojo.require("dojox.charting.Chart2D");
 
 	makeCharts = function(){
@@ -52,7 +50,11 @@ dojo.addOnLoad(makeCharts);
 
 <div id="content">
 
-    <div id="simplechart" style="width: 200px; height: 150px;"></div>
+    <jsp:include page="inc_login.jsp" flush="false"/>
+
+    <h2>Statistics</h2>
+
+    <div id="simplechart" style="width: 400px; height: 300px;"></div>
     <p><span style="color: #006699">public</span>
     <span style="color: #003399">private</span> <span style="color: #000033">friends</span></p>
 
