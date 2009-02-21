@@ -373,6 +373,7 @@ width: 100%;
             }
         %>
     </table>
+    <p style="clear: both;">&#160;</p>
 </div>
 
 <p style="clear: both;">&#160;</p>
