@@ -1,6 +1,6 @@
 <%@ page import="com.justjournal.core.Statistics" %>
 <%--
-  @version $Id: stats.jsp,v 1.3 2009/02/21 23:03:42 laffer1 Exp $
+  @version $Id: stats.jsp,v 1.4 2009/02/21 23:05:31 laffer1 Exp $
   @author Lucas Holt
 --%>
 <%@ page contentType="text/html; charset=iso-8859-1" language="java" %>
@@ -54,32 +54,35 @@ dojo.addOnLoad(makeCharts);
 
     <h2>Statistics</h2>
 
+    <h3>Blog Entry Type</h3>
     <div id="simplechart" style="width: 400px; height: 300px;"></div>
-    <p><span style="color: #006699">public</span>
+    <p>Key: <span style="color: #006699">public</span>
     <span style="color: #003399">private</span> <span style="color: #000033">friends</span></p>
 
+
+    <h3>Details</h3>
     <table style="border: thin solid #F2F2F2;">
-        <tr style="font-size: 10px; background: #F2F2F2;">
+        <tr style="font-size: 14px; background: #F2F2F2;">
             <td>Users</td>
             <td><%=s.users()%>
             </td>
         </tr>
-        <tr style="font-size: 10px;">
+        <tr style="font-size: 14px;">
             <td>Entries</td>
             <td><%=s.entries()%>
             </td>
         </tr>
-        <tr style="font-size: 10px; background: #F2F2F2;">
+        <tr style="font-size: 14px; background: #F2F2F2;">
             <td>Comments</td>
             <td><%=s.comments()%>
             </td>
         </tr>
-        <tr style="font-size: 10px;">
+        <tr style="font-size: 14px;">
             <td>Blog Styles</td>
             <td><%=s.styles()%>
             </td>
         </tr>
-        <tr style="font-size: 10px; background: #F2F2F2;">
+        <tr style="font-size: 14px; background: #F2F2F2;">
             <td>Tags</td>
             <td><%=s.tags()%>
             </td>
