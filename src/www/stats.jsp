@@ -1,6 +1,6 @@
 <%@ page import="com.justjournal.core.Statistics" %>
 <%--
-  @version $Id: stats.jsp,v 1.1 2009/02/21 23:00:05 laffer1 Exp $
+  @version $Id: stats.jsp,v 1.2 2009/02/21 23:01:09 laffer1 Exp $
   @author Lucas Holt
 --%>
 <%@ page contentType="text/html; charset=iso-8859-1" language="java" %>
@@ -17,6 +17,10 @@
     <link rel="home" title="Home" href="./index.jsp"/>
     <link rel="contents" title="Site Map" href="./sitemap.jsp"/>
     <link rel="help" title="Technical Support" href="./support/index.jsp"/>
+    <style type="text/css">
+        @import "js/dijit/themes/soria/soria.css";
+        @import "js/dojo/resources/dojo.css";
+    </style>
     <script type="text/javascript" src="js/dojo/dojo.js" djConfig="isDebug:false, parseOnLoad:true"></script>
 <%
     Statistics s = new Statistics();
@@ -42,7 +46,7 @@ dojo.addOnLoad(makeCharts);
 </script>
 </head>
 
-<body>
+<body class="soria">
 
 <jsp:include page="header.inc" flush="false"/>
 
