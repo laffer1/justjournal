@@ -109,15 +109,15 @@
 
 .firstone:first-letter {
     color: white;
-    background: #993366;
+    background: #006699;
     margin: 3px;
     padding: 2px;
 }
 
 .firstone {
-    color: #993366;
+    color: #006699;
+    background: #F2F2F2;
     padding: 10px;
-    background-color: white;
     font-family: HelveticaNeuve, "Helvetica Neuve", Helvetica, Arial, sans-serif;
 }
 
@@ -290,8 +290,7 @@ width: 100%;
 
 <div id="blurb">
     <p class="firstone"
-       style="background: white url(images/firstone.png) no-repeat;
-           text-align: justify; line-height: 1.8em; margin-right: 30px; padding-top: 0">
+       style=" text-align: justify; line-height: 1.8em; margin-right: 30px; padding-top: 0">
         Just
         Journal is an online journal service, also
         known as a "blog." You can publish private
