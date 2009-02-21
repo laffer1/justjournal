@@ -25,7 +25,9 @@
     </head>
 
     <body>
+    <div id="header">
         <h1>JustJournal.com</h1>
+    </div>
          <% if (session.getAttribute("auth.user") != null) { %>
         <p><%= session.getAttribute("auth.user") %>, you can: </p>
          <ul>
