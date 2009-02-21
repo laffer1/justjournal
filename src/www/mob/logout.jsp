@@ -26,7 +26,9 @@
       </head>
 
       <body>
-         <h1>JustJournal.com</h1>
+        <div id="header">
+            <h1>JustJournal.com</h1>
+        </div>
          <h2>Log Out</h2>
 
         <p>Your are now logged out. You may

@@ -63,7 +63,9 @@
     </head>
 
     <body>
+        <div id="header">
         <h1>JustJournal.com</h1>
+        </div>
         <h2>Update Journal</h2>
          <% if (session.getAttribute("auth.user") != null) { %>
         <p><%= session.getAttribute("auth.user") %>, you can: </p>

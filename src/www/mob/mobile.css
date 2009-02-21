@@ -1,5 +1,5 @@
 body {
-    background: white url( "../images/jj_header_bg.gif" ) repeat-x;
+    background: white;
     color: black;
     font-family: Helvetica, Arial, sans-serif;
     font-size: 12px;
@@ -13,4 +13,8 @@ h1 {
 h2 {
     color: gray;
     font-size: 1.2em;
+}
+
+#header {
+    background: transparent url( "../images/jj_header_bg.gif" ) repeat-x;
 }

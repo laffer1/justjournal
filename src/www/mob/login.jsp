@@ -24,7 +24,9 @@
     </head>
 
     <body>
-        <h1>JustJournal.com</h1>
+        <div id="header">
+            <h1>JustJournal.com</h1>
+        </div>
         <h2>Login</h2>
 
         <form method="post" action="../loginAccount" id="blogin">
