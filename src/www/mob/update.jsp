@@ -93,14 +93,13 @@
     <div class="row">
         <span class="label"><label for="subject">Subject</label></span>
 	  <span class="formw"><input name="subject" type="text" id="subject" size="25" maxlength="150"
-                                 value="<%=ssubject%>"/>
-	  (optional)</span>
+                                 value="<%=ssubject%>"/></span>
     </div>
 
     <div class="row">
         <span class="label"><label for="body">Body</label></span>
-        <span class="formw"><textarea id="body" name="body" style="width: 100%" cols="50"
-            rows="20"><%=sbody%></textarea></span>
+        <span class="formw"><textarea id="body" name="body" style="width: 100%" cols="40"
+            rows="10"><%=sbody%></textarea></span>
     </div>
 
         <div class="row">
