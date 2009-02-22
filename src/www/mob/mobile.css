@@ -14,13 +14,21 @@ h1 {
 }
 
 h2 {
-    color: gray;
-    font-size: 1.2em;
+    color: #CCCC99;
+    font-size: .8em;
+    margin-top: 0;
+    width: 100%;
+    letter-spacing: .2em;
+    text-align: center;
 }
 
 #header {
     background: #26370A;
     width: 100%;
+}
+
+.label {
+    font-size: .8em;
 }
 
 .arrowgreen{

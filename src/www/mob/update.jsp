@@ -77,7 +77,7 @@
           </ul>
           </div>
 
-       <form method="post" action="../updateJournal" id="frmUpdateJournal">
+       <form method="post" action="../updateJournal" id="frmUpdateJournal" style="margin-top: 10px;">
           <fieldset>
 
                <input type="hidden" name="mood" id="mood" value="12"/>
