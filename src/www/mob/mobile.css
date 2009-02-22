@@ -2,7 +2,6 @@ body {
     background: white;
     color: black;
     font-family: Helvetica, Arial, sans-serif;
-    font-size: 12px;
 }
 
 h1 {
@@ -34,7 +33,7 @@ h2 {
 }
 
 .arrowgreen li a{
-	font: bold 12px Verdana, Arial, Helvetica, sans-serif;
+	font: bold Helvetica, Arial, sans-serif;
 	display: block;
 	background: transparent url(arrowgreen.gif) 100% 0;
     height: 24px; /*Set to height of bg image- padding within link (ie: 32px - 4px - 4px)*/

@@ -17,12 +17,23 @@
         <h1>JustJournal.com</h1>
         </div>
         <h2>Recent Blogs</h2>
-         <% if (session.getAttribute("auth.user") != null) { %>
+            <% if (session.getAttribute("auth.user") != null) { %>
         <p><%= session.getAttribute("auth.user") %>, you can: </p>
+         <div class="arrowgreen">
+         <ul>
+             <li><a href="update.jsp">Update Journal</a></li>
+             <li><a href="recent.jsp">Recent Blogs</a></li>
+             <li><a href="logout.jsp">Log out</a></li>
+          </ul>
+          </div>
+    <% } else { %>
+    <div class="arrowgreen">
         <ul>
-            <li><a href="logout.jsp">Log out</a></li>
+        <li><a href="login.jsp">Login</a></li>
+            <li><a href="recent.jsp">Recent Blogs</a></li>
         </ul>
-        <%}%>
+    </div>
+    <% } %>
 
 <%
     EntryTo o;
@@ -34,7 +45,7 @@
 %>
         <p><%=o.getUserName()%> - <b><%=o.getSubject()%></b>
         <br />
-            <%=o.getBodyWithoutHTML()%>
+            <%=o.getBodyWithoutHTML().replace("&nbsp;", " ")%>
         </p>
 <%
     }
