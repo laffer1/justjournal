@@ -7,7 +7,7 @@ body {
 }
 
 h1 {
-    color: navy;
+    color: #5E7830;
     font-size: 1.5em;
 }
 
@@ -17,7 +17,8 @@ h2 {
 }
 
 #header {
-    background: transparent url( "../images/jj_header_bg.gif" ) repeat-x;
+    background: #26370A;
+    width: 100%;
 }
 
 .arrowgreen{
