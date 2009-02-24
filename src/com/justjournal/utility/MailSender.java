@@ -56,6 +56,12 @@ import java.util.Properties;
  */
 public class MailSender extends Thread {
 
+    // TODO: Consider ServletContextListener
+    public MailSender() {
+        setDaemon( true );
+        start();
+    }
+
     public void run() {
         System.out.println("MailSender: Init");
 
@@ -130,6 +136,8 @@ public class MailSender extends Thread {
                     rs.close();
                     stmt.close();
                     sleep(1000 * 60 * 15); // 15 minutes?
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
                 } catch (Exception e) {
                     System.out.println("MailSender: Exception - " + e.getMessage());
                 }
