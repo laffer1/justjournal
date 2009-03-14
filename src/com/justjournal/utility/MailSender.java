@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2006, Lucas Holt
+Copyright (c) 2006, 2009 Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -34,6 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.utility;
 
+import com.justjournal.db.SQLHelper;
 import com.justjournal.core.Settings;
 
 import javax.mail.*;
