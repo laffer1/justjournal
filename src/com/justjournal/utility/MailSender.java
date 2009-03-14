@@ -34,7 +34,6 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.utility;
 
-import com.justjournal.db.SQLHelper;
 import com.justjournal.core.Settings;
 
 import javax.mail.*;
@@ -58,10 +57,10 @@ import java.util.Properties;
 public class MailSender extends Thread {
 
     // TODO: Consider ServletContextListener
-    public MailSender() {
+ /*   public MailSender() {
         setDaemon( true );
-        start();
-    }
+        //start();
+    } */
 
     public void run() {
         System.out.println("MailSender: Init");
