@@ -50,9 +50,10 @@ import java.util.Date;
 import java.util.Properties;
 
 /**
- * User: laffer1
- * Date: Mar 11, 2006
- * Time: 11:37:53 AM
+ * Send e-mail notifications for just journal from the mail queue.
+ * 
+ * @author Lucas Holt
+ * @version $Id: MailSender.java,v 1.8 2009/03/16 22:10:31 laffer1 Exp $
  */
 public class MailSender extends Thread {
 
@@ -65,8 +66,8 @@ public class MailSender extends Thread {
     public void run() {
         System.out.println("MailSender: Init");
 
-        String DbEnv = "java:comp/env/jdbc/jjDB";
-        String sqlSelect = "SELECT * FROM queue_mail;";
+        final String DbEnv = "java:comp/env/jdbc/jjDB";
+        final String sqlSelect = "SELECT * FROM queue_mail;";
 
         try {
             System.out.println("MailSender: Lookup context");
