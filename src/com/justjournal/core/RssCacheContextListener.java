@@ -52,7 +52,7 @@ import java.net.URL;
  * Update the RSS cache
  *
  * @author Lucas Holt
- * @version $Id: RssCacheContextListener.java,v 1.3 2009/03/16 21:51:38 laffer1 Exp $
+ * @version $Id: RssCacheContextListener.java,v 1.4 2009/03/16 21:57:43 laffer1 Exp $
  */
 public class RssCacheContextListener extends Thread {
 
@@ -124,6 +124,9 @@ public class RssCacheContextListener extends Thread {
             // sun can't make their own rss feeds complaint
             if (rss.getContent().startsWith("<rss"))
                 rss.setContent("<?xml version=\"1.0\"?>\n" + rss.getContent());
+
+            if (rss.getContent().startsWith("<html") || rss.getContent().startsWith("<!DOCTYPE HTML"))
+                rss.setContent(""); // it's an html page.. bad
             RssCacheDao.update(rss);
 
         }

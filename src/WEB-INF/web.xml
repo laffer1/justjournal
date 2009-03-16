@@ -18,6 +18,10 @@
         <listener-class>com.justjournal.core.MailServletContextListener</listener-class>
     </listener>
 
+    <listener>
+        <listener-class>com.justjournal.core.RssCacheContextListener</listener-class>
+    </listener>
+
     <servlet>
         <display-name>Maverick Dispatcher</display-name>
         <servlet-name>dispatcher</servlet-name>
