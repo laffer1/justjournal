@@ -50,58 +50,58 @@ import java.net.URL;
 
 /**
  * Update the RSS cache
- * 
+ *
  * @author Lucas Holt
- * @version $Id: RssCacheContextListener.java,v 1.2 2009/03/16 21:51:08 laffer1 Exp $
+ * @version $Id: RssCacheContextListener.java,v 1.3 2009/03/16 21:51:38 laffer1 Exp $
  */
 public class RssCacheContextListener extends Thread {
 
     public void run() {
-           System.out.println("RssCache: Init");
+        System.out.println("RssCache: Init");
 
-           final String DbEnv = "java:comp/env/jdbc/jjDB";
-           final String sqlSelect = "SELECT uri FROM rss_cache WHERE lastupdated <= DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY);";
+        final String DbEnv = "java:comp/env/jdbc/jjDB";
+        final String sqlSelect = "SELECT uri FROM rss_cache WHERE lastupdated <= DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY);";
 
-           try {
-               System.out.println("RssCache: Lookup context");
-               Context ctx = new InitialContext();
-               DataSource ds = (DataSource) ctx.lookup(DbEnv);
+        try {
+            System.out.println("RssCache: Lookup context");
+            Context ctx = new InitialContext();
+            DataSource ds = (DataSource) ctx.lookup(DbEnv);
 
-               Connection conn = ds.getConnection();
-               System.out.println("MailSender: DB Connection up");
+            Connection conn = ds.getConnection();
+            System.out.println("MailSender: DB Connection up");
 
-               while (true) {
-                   try {
-                       Statement stmt = conn.createStatement();
-                       ResultSet rs = stmt.executeQuery(sqlSelect);
-                       System.out.println("RssCache: Recordset loaded.");
+            while (true) {
+                try {
+                    Statement stmt = conn.createStatement();
+                    ResultSet rs = stmt.executeQuery(sqlSelect);
+                    System.out.println("RssCache: Recordset loaded.");
 
-                       while (rs.next()) {
-                           getRssDocument(rs.getString("uri"));
-                           yield();  // be nice to others... we are in a servlet container...
-                       }
+                    while (rs.next()) {
+                        getRssDocument(rs.getString("uri"));
+                        yield();  // be nice to others... we are in a servlet container...
+                    }
 
-                       rs.close();
-                       stmt.close();
-                       sleep(1000 * 60 * 60); // 60 minutes?
-                   } catch (InterruptedException e) {
-                       throw new RuntimeException(e);
-                   } catch (Exception e) {
-                       System.out.println("MailSender: Exception - " + e.getMessage());
-                   }
-               }
+                    rs.close();
+                    stmt.close();
+                    sleep(1000 * 60 * 60); // 60 minutes?
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                } catch (Exception e) {
+                    System.out.println("MailSender: Exception - " + e.getMessage());
+                }
+            }
 
-           } catch (Exception e) {
-               e.printStackTrace();
-           }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-           System.out.println("RssCache: Quit");
-       }
+        System.out.println("RssCache: Quit");
+    }
 
-     protected void getRssDocument(final String uri)
+    protected void getRssDocument(final String uri)
             throws Exception {
 
-                    URL u;
+        URL u;
         RssCacheTo rss;
         InputStreamReader ir;
         StringBuffer sbx = new StringBuffer();
@@ -111,22 +111,22 @@ public class RssCacheContextListener extends Thread {
 
         if (rss != null && rss.getUri() != null && rss.getUri().length() > 10) {
 
-                u = new URL(uri);
-                ir = new InputStreamReader(u.openStream(), "UTF-8");
-                buff = new BufferedReader(ir);
-                String input;
-                while ((input = buff.readLine()) != null) {
-                    sbx.append(StringUtil.replace(input, '\'', "\\\'"));
-                }
-                buff.close();
+            u = new URL(uri);
+            ir = new InputStreamReader(u.openStream(), "UTF-8");
+            buff = new BufferedReader(ir);
+            String input;
+            while ((input = buff.readLine()) != null) {
+                sbx.append(StringUtil.replace(input, '\'', "\\\'"));
+            }
+            buff.close();
 
-                rss.setContent(sbx.toString().trim());
-                // sun can't make their own rss feeds complaint
-                if (rss.getContent().startsWith("<rss"))
-                    rss.setContent("<?xml version=\"1.0\"?>\n" + rss.getContent());
-                RssCacheDao.update(rss);
+            rss.setContent(sbx.toString().trim());
+            // sun can't make their own rss feeds complaint
+            if (rss.getContent().startsWith("<rss"))
+                rss.setContent("<?xml version=\"1.0\"?>\n" + rss.getContent());
+            RssCacheDao.update(rss);
 
         }
-     }
+    }
 
 }
