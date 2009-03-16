@@ -52,7 +52,7 @@ import java.net.URL;
  * Update the RSS cache
  * 
  * @author Lucas Holt
- * @version $Id: RssCacheContextListener.java,v 1.1 2009/03/16 21:50:39 laffer1 Exp $
+ * @version $Id: RssCacheContextListener.java,v 1.2 2009/03/16 21:51:08 laffer1 Exp $
  */
 public class RssCacheContextListener extends Thread {
 
@@ -83,7 +83,7 @@ public class RssCacheContextListener extends Thread {
 
                        rs.close();
                        stmt.close();
-                       sleep(1000 * 60 * 15); // 15 minutes?
+                       sleep(1000 * 60 * 60); // 60 minutes?
                    } catch (InterruptedException e) {
                        throw new RuntimeException(e);
                    } catch (Exception e) {
