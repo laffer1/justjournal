@@ -41,6 +41,7 @@ import com.justjournal.db.SQLHelper;
 import com.justjournal.utility.FileIO;
 import com.justjournal.utility.StringUtil;
 import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -50,11 +51,11 @@ import javax.servlet.http.HttpSession;
  * Modify the journal title
  *
  * @author Lucas Holt
- * @version $Id: JournalTitle.java,v 1.3 2008/07/31 21:21:09 laffer1 Exp $
+ * @version $Id: JournalTitle.java,v 1.4 2009/05/16 03:13:12 laffer1 Exp $
  */
 public class JournalTitle extends JustJournalBaseServlet {
 
-    private static Category log = Category.getInstance(JournalTitle.class.getName());
+    private static final Logger log = Logger.getLogger(JournalTitle.class.getName());
 
     protected void execute(HttpServletRequest request, HttpServletResponse response, HttpSession session, StringBuffer sb) {
         boolean blnError = false;

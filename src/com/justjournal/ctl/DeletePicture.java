@@ -5,6 +5,7 @@ import com.justjournal.User;
 import com.justjournal.WebError;
 import com.justjournal.utility.FileIO;
 import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -22,7 +23,7 @@ import java.sql.SQLException;
  * Time: 11:34:00 AM
  */
 public class DeletePicture extends JustJournalBaseServlet {
-    private static Category log = Category.getInstance(AddPicture.class.getName());
+    private static final Logger log = Logger.getLogger(AddPicture.class.getName());
 
     protected void execute(HttpServletRequest request, HttpServletResponse response, HttpSession session, StringBuffer sb) {
         boolean blnError = false;

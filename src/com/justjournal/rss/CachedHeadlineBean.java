@@ -39,6 +39,7 @@ import com.justjournal.db.RssCacheDao;
 import com.justjournal.db.RssCacheTo;
 import com.justjournal.utility.StringUtil;
 import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -51,7 +52,7 @@ import java.net.URL;
  * retrieves stored versions, and spits out HTML to render them.
  *
  * @author Lucas Holt
- * @version $Id: CachedHeadlineBean.java,v 1.5 2008/08/02 19:38:35 laffer1 Exp $
+ * @version $Id: CachedHeadlineBean.java,v 1.6 2009/05/16 03:15:27 laffer1 Exp $
  *          <p/>   Previously version was incremented manually.
  *          1.4 Attempt to catch case were RSS record content is empty in database.
  *          1.3 Added sun fix to correct sun.com rss feeds (rss .92 issue?)
@@ -63,7 +64,7 @@ import java.net.URL;
 public final class CachedHeadlineBean
         extends HeadlineBean {
 
-    private static Category log = Category.getInstance(CachedHeadlineBean.class.getName());
+    private static final Logger log = Logger.getLogger(CachedHeadlineBean.class);
 
     protected void getRssDocument(final String uri)
             throws Exception {

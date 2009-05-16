@@ -49,7 +49,7 @@ import java.util.Date;
  * Date: Feb 26, 2006
  * Time: 10:44:18 AM
  *
- * @version $Id: RecentBlogs.java,v 1.13 2009/05/16 02:50:53 laffer1 Exp $
+ * @version $Id: RecentBlogs.java,v 1.14 2009/05/16 03:15:27 laffer1 Exp $
  */
 public class RecentBlogs extends JustJournalBaseServlet {
     private static final Logger log = Logger.getLogger(RecentBlogs.class);
@@ -57,7 +57,7 @@ public class RecentBlogs extends JustJournalBaseServlet {
     protected void execute(HttpServletRequest request, HttpServletResponse response, HttpSession session, StringBuffer sb) {
         response.setContentType("application/rss+xml;charset=ISO-8859-1");
         response.setDateHeader("Expires", System.currentTimeMillis() + 1000 * 60);
-        response.setDateHeader("Last-Modified", System.currentTimeMillis());
+        response.setHeader("Cache-Control", "max-age=60, private, proxy-revalidate");
 
         // Create an RSS object, set the required
         // properites (title, description language, url)

@@ -41,6 +41,7 @@ import com.justjournal.WebLogin;
 import com.justjournal.db.*;
 import com.justjournal.utility.StringUtil;
 import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import java.io.Serializable;
 import java.util.*;
@@ -49,7 +50,7 @@ import java.util.*;
  * The MetaWeblog API interface for blogging.  Similar to Blogger 1.0 API.
  *
  * @author Lucas Holt
- * @version $Id: MetaWeblog.java,v 1.4 2008/09/27 14:29:56 laffer1 Exp $
+ * @version $Id: MetaWeblog.java,v 1.5 2009/05/16 03:15:27 laffer1 Exp $
  *          <p/>
  *          User: laffer1
  *          Date: Apr 26, 2008
@@ -59,7 +60,7 @@ import java.util.*;
  */
 @SuppressWarnings({"UnusedParameters"})
 public class MetaWeblog {
-    private static final Category log = Category.getInstance(MetaWeblog.class.getName());
+    private static final Logger log = Logger.getLogger(MetaWeblog.class);
 
     /**
      * Fetch the users personal information including their username, userid,

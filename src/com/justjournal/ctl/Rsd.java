@@ -3,6 +3,7 @@ package com.justjournal.ctl;
 import com.justjournal.JustJournalBaseServlet;
 import com.justjournal.User;
 import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,7 +18,7 @@ import javax.servlet.http.HttpSession;
  * http://cyber.law.harvard.edu/blogs/gems/tech/rsd.html
  *
  * @author Lucas Holt
- * @version $Id: Rsd.java,v 1.4 2008/04/26 21:37:19 laffer1 Exp $
+ * @version $Id: Rsd.java,v 1.5 2009/05/16 03:13:12 laffer1 Exp $
  *          <p/>
  *          User: laffer1
  *          Date: Apr 26, 2008
@@ -25,7 +26,7 @@ import javax.servlet.http.HttpSession;
  */
 public class Rsd extends JustJournalBaseServlet {
 
-    private static Category log = Category.getInstance(Rsd.class.getName());
+    private static final Logger log = Logger.getLogger(Rsd.class.getName());
     private static final String XML_HEADER =
             "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     private static final String RSD_HEADER =

@@ -4,6 +4,7 @@ import com.justjournal.JustJournalBaseServlet;
 import com.justjournal.WebError;
 import com.justjournal.db.SQLHelper;
 import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,10 +14,10 @@ import javax.servlet.http.HttpSession;
  * Delete/cancel user account
  *
  * @author Lucas Holt
- * @version $Id: DeleteAccount.java,v 1.1 2008/11/11 19:22:12 laffer1 Exp $
+ * @version $Id: DeleteAccount.java,v 1.2 2009/05/16 03:13:12 laffer1 Exp $
  */
 public class DeleteAccount extends JustJournalBaseServlet {
-    private static Category log = Category.getInstance(DeleteAccount.class.getName());
+    private static final Logger log = Logger.getLogger(DeleteAccount.class.getName());
 
 
     public String getServletInfo() {

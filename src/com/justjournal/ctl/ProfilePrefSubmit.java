@@ -39,6 +39,7 @@ import com.justjournal.db.UserContactTo;
 import com.justjournal.db.UserDao;
 import com.justjournal.db.UserTo;
 import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 /**
  * Created by IntelliJ IDEA.
@@ -47,7 +48,7 @@ import org.apache.log4j.Category;
  * Time: 11:42:24 PM
  */
 public class ProfilePrefSubmit extends Protected {
-    private static Category log = Category.getInstance(ProfilePrefSubmit.class.getName());
+    private static final Logger log = Logger.getLogger(ProfilePrefSubmit.class.getName());
 
     protected String name;
     protected String email;

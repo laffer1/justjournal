@@ -37,6 +37,7 @@ package com.justjournal.ctl;
 import com.justjournal.db.UserLinkDao;
 import com.justjournal.db.UserLinkTo;
 import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 /**
  * User: laffer1
@@ -44,7 +45,7 @@ import org.apache.log4j.Category;
  * Time: 2:02:10 PM
  */
 public class AddLink extends Protected {
-    private static Category log = Category.getInstance(AddLink.class.getName());
+    private static final Logger log = Logger.getLogger(AddLink.class);
     protected String title;
     protected String uri;
 

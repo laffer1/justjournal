@@ -36,7 +36,7 @@ package com.justjournal.ctl;
 
 import com.justjournal.db.LJFriendDao;
 import com.justjournal.db.LJFriendTo;
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 /**
  * Created by IntelliJ IDEA.
@@ -48,7 +48,7 @@ import org.apache.log4j.Category;
  * @version 1.0
  */
 public class AddLJFriendSubmit extends Protected {
-    private static Category log = Category.getInstance(AddLJFriendSubmit.class.getName());
+    private static final Logger log = Logger.getLogger(AddLJFriendSubmit.class);
 
     protected String userName; // lj username
     protected String community; // is a community on LJ?

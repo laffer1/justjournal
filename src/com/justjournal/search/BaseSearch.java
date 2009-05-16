@@ -36,6 +36,7 @@ package com.justjournal.search;
 
 import com.justjournal.db.SQLHelper;
 import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import javax.sql.rowset.CachedRowSet;
 import java.util.ArrayList;
@@ -43,10 +44,10 @@ import java.util.Arrays;
 
 /**
  * @author Lucas Holt
- * @version $Id: BaseSearch.java,v 1.5 2008/08/01 14:35:55 laffer1 Exp $
+ * @version $Id: BaseSearch.java,v 1.6 2009/05/16 03:15:27 laffer1 Exp $
  */
 public class BaseSearch {
-    private static Category log = Category.getInstance(BaseSearch.class.getName());
+    private static final Logger log = Logger.getLogger(BaseSearch.class);
 
     protected ArrayList<String> terms = new ArrayList<String>();
     protected ArrayList<String> fieldlist = new ArrayList<String>();

@@ -36,6 +36,7 @@ package com.justjournal.rss;
 
 import com.justjournal.utility.Xml;
 import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -50,7 +51,7 @@ import java.util.regex.Pattern;
  * converts it to HTML.
  *
  * @author Lucas Holt
- * @version $Id: HeadlineBean.java,v 1.5 2008/07/17 02:24:59 laffer1 Exp $
+ * @version $Id: HeadlineBean.java,v 1.6 2009/05/16 03:15:27 laffer1 Exp $
  * @since 1.0
  *        User: laffer1
  *        Date: Jul 22, 2003
@@ -67,7 +68,7 @@ import java.util.regex.Pattern;
 
 public class HeadlineBean {
 
-    private static Category log = Category.getInstance(HeadlineBean.class.getName());
+    private static final Logger log = Logger.getLogger(HeadlineBean.class);
 
     private static final char endl = '\n';
 

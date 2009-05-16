@@ -38,6 +38,7 @@ import org.apache.commons.fileupload.DiskFileUpload;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUpload;
 import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -50,14 +51,14 @@ import java.util.List;
 
 /**
  * @author Lucas Holt
- * @version $Id: UploadAvatarSubmit.java,v 1.7 2007/12/03 19:03:43 laffer1 Exp $
+ * @version $Id: UploadAvatarSubmit.java,v 1.8 2009/05/16 03:13:12 laffer1 Exp $
  * 
  * User: laffer1
  * Date: Dec 15, 2005
  * Time: 11:51:21 PM
  */
 public class UploadAvatarSubmit extends Protected {
-    private static Category log = Category.getInstance(UploadAvatarSubmit.class.getName());
+    private static final Logger log = Logger.getLogger(UploadAvatarSubmit.class.getName());
 
     public String getMyLogin() {
         return currentLoginName();

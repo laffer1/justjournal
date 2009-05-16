@@ -9,6 +9,7 @@ import org.apache.commons.fileupload.DiskFileUpload;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUpload;
 import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -27,7 +28,7 @@ import java.util.List;
  * Time: 4:56:26 PM
  */
 public class AddPicture extends JustJournalBaseServlet {
-    private static Category log = Category.getInstance(AddPicture.class.getName());
+    private static final Logger log = Logger.getLogger(AddPicture.class.getName());
 
     protected void execute(HttpServletRequest request, HttpServletResponse response, HttpSession session, StringBuffer sb) {
         boolean blnError = false;

@@ -40,6 +40,7 @@ import com.justjournal.db.TrackbackTo;
 import com.justjournal.db.TrackbackType;
 import com.justjournal.utility.ServletUtilities;
 import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -50,14 +51,14 @@ import javax.servlet.http.HttpSession;
  * http://wellformedweb.org/story/9
  *
  * @author Lucas Holt
- * @version $Id: TrackbackPing.java,v 1.4 2008/05/05 09:36:16 laffer1 Exp $
+ * @version $Id: TrackbackPing.java,v 1.5 2009/05/16 03:13:12 laffer1 Exp $
  *          User: laffer1
  *          Date: Aug 10, 2006
  *          Time: 8:25:03 PM
  */
 public class TrackbackPing extends JustJournalBaseServlet {
 
-    private static Category log = Category.getInstance(TrackbackPing.class.getName());
+    private static final Logger log = Logger.getLogger(TrackbackPing.class);
 
     private static final String XML_HEADER =
             "<?xml version=\"1.0\" encoding=\"utf-8\"?>";

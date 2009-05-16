@@ -37,6 +37,7 @@ package com.justjournal.ctl;
 import com.justjournal.db.UserLinkDao;
 import com.justjournal.db.UserLinkTo;
 import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -47,7 +48,7 @@ import java.util.Collection;
  * Time: 2:03:54 PM
  */
 public class ViewLink extends Protected {
-    private static Category log = Category.getInstance(ViewLink.class.getName());
+    private static final Logger log = Logger.getLogger(ViewLink.class.getName());
     protected Collection<UserLinkTo> links = new ArrayList<UserLinkTo>(10);
 
     public Collection<UserLinkTo> getLinks() {

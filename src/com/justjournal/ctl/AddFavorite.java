@@ -35,6 +35,7 @@ package com.justjournal.ctl;
 
 import com.justjournal.db.SQLHelper;
 import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 /**
  * Adds a favorite journal entry to the Users list.
@@ -48,7 +49,7 @@ import org.apache.log4j.Category;
  *        Time: 8:44:39 PM
  */
 public class AddFavorite extends Protected {
-    private static Category log = Category.getInstance(AddFavorite.class.getName());
+    private static final Logger log = Logger.getLogger(AddFavorite.class);
     protected int entryId;
 
     /**

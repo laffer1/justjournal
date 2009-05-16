@@ -1,6 +1,7 @@
 package com.justjournal.RestPing;
 
 import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -13,13 +14,13 @@ import java.net.URLEncoder;
 
 /**
  * @author Lucas Holt
- * @version $Id: IceRocket.java,v 1.1 2008/07/27 10:10:02 laffer1 Exp $
+ * @version $Id: IceRocket.java,v 1.2 2009/05/16 03:15:27 laffer1 Exp $
  * Date: July 27 2008
  * Time: 6:00:00 AM
  */
 public class IceRocket {
 
-        private static Category log = Category.getInstance(IceRocket.class.getName());
+        private static final Logger log = Logger.getLogger(IceRocket.class);
 
         private String pingUri = "http://rpc.icerocket.com:10080";
         private String uri;

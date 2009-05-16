@@ -37,6 +37,7 @@ package com.justjournal.ctl;
 import com.justjournal.db.RssSubscriptionsDAO;
 import com.justjournal.db.RssSubscriptionsTO;
 import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 /**
  * Created by IntelliJ IDEA.
@@ -45,8 +46,7 @@ import org.apache.log4j.Category;
  * Time: 5:33:44 PM
  */
 public class DeleteRssSubscriptionSubmit extends Protected {
-    private static Category log =
-            Category.getInstance(AddRssSubscriptionSubmit.class.getName());
+    private static final Logger log = Logger.getLogger(AddRssSubscriptionSubmit.class.getName());
     protected int subId;
 
     public int getSubId() {

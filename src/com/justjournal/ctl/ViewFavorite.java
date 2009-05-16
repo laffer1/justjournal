@@ -37,6 +37,7 @@ import com.justjournal.db.EntryDAO;
 import com.justjournal.db.EntryTo;
 import com.justjournal.db.SQLHelper;
 import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import javax.sql.rowset.CachedRowSet;
 import java.util.ArrayList;
@@ -54,7 +55,7 @@ import java.util.Collection;
  *        Time: 8:44:39 PM
  */
 public class ViewFavorite extends Protected {
-    private static Category log = Category.getInstance(ViewFavorite.class.getName());
+    private static final Logger log = Logger.getLogger(ViewFavorite.class.getName());
     protected Collection<EntryTo> entries = new ArrayList<EntryTo>(20);
 
 

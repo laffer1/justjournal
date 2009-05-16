@@ -38,6 +38,7 @@ import com.justjournal.db.CommentDao;
 import com.justjournal.db.CommentTo;
 import com.justjournal.utility.StringUtil;
 import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 
 /**
@@ -49,7 +50,7 @@ import org.apache.log4j.Category;
  */
 public class EditCommentSubmit extends Protected {
 
-    private static Category log = Category.getInstance(EditCommentSubmit.class.getName());
+    private static final Logger log = Logger.getLogger(EditCommentSubmit.class.getName());
 
     protected int commentId;
     protected String body;

@@ -1,6 +1,7 @@
 package com.justjournal.RestPing;
 
 import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,7 +18,7 @@ import java.net.URLEncoder;
  */
 public class BasePing {
 
-    private static Category log = Category.getInstance(BasePing.class.getName());
+    private static final Logger log = Logger.getLogger(BasePing.class);
 
     private String pingUri;
     private String uri;

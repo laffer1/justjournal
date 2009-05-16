@@ -36,6 +36,7 @@ package com.justjournal.ctl;
 
 import com.justjournal.db.PreferencesDao;
 import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 /**
  * Created by IntelliJ IDEA.
@@ -45,7 +46,7 @@ import org.apache.log4j.Category;
  * To change this template use Options | File Templates.
  */
 public class SecurityPrefSubmit extends Protected {
-    private static Category log = Category.getInstance(SecurityPrefSubmit.class.getName());
+    private static final Logger log = Logger.getLogger(SecurityPrefSubmit.class.getName());
 
     protected String ownerOnly;
 

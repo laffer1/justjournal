@@ -40,6 +40,7 @@ import com.justjournal.db.EntryDAO;
 import com.justjournal.db.EntryTo;
 import com.justjournal.utility.StringUtil;
 import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 /**
  * Created by IntelliJ IDEA.
@@ -48,7 +49,7 @@ import org.apache.log4j.Category;
  * Time: 9:08:33 PM
  */
 public class EditEntrySubmit extends Protected {
-    private static Category log = Category.getInstance(EditEntrySubmit.class.getName());
+    private static final Logger log = Logger.getLogger(EditEntrySubmit.class.getName());
 
     protected int entryId;
     protected String body;

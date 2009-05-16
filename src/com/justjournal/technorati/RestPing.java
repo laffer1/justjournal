@@ -1,6 +1,7 @@
 package com.justjournal.technorati;
 
 import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import java.net.URL;
 import java.net.URLConnection;
@@ -16,7 +17,7 @@ import java.io.*;
  */
 public class RestPing {
 
-        private static Category log = Category.getInstance(RestPing.class.getName());
+        private static final Logger log = Logger.getLogger(RestPing.class);
 
         private String pingUri = "http://rpc.technorati.com/rpc/ping";
         private String uri;

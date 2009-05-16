@@ -41,6 +41,7 @@ import com.justjournal.utility.FileIO;
 import com.justjournal.db.UserLinkDao;
 import com.justjournal.db.UserLinkTo;
 import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -50,10 +51,10 @@ import javax.servlet.http.HttpSession;
  * Delete a user link as displayed on the users journal.
  *
  * @author Lucas Holt
- * @version $Id: DeleteLink.java,v 1.4 2006/12/03 03:10:01 laffer1 Exp $
+ * @version $Id: DeleteLink.java,v 1.5 2009/05/16 03:13:12 laffer1 Exp $
  */
 public class DeleteLink extends JustJournalBaseServlet {
-    private static Category log = Category.getInstance(DeleteLink.class.getName());
+    private static final Logger log = Logger.getLogger(DeleteLink.class.getName());
 
     protected void execute(HttpServletRequest request, HttpServletResponse response, HttpSession session, StringBuffer sb) {
         int linkId;

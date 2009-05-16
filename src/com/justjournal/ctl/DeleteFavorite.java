@@ -36,6 +36,7 @@ package com.justjournal.ctl;
 
 import com.justjournal.db.SQLHelper;
 import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 /**
  * Delete a favorite journal entry reference.
@@ -48,7 +49,7 @@ import org.apache.log4j.Category;
  *        Time: 10:08:31 PM
  */
 public class DeleteFavorite extends Protected {
-    private static Category log = Category.getInstance(DeleteFavorite.class.getName());
+    private static final Logger log = Logger.getLogger(DeleteFavorite.class.getName());
     protected int entryId;
 
     /**

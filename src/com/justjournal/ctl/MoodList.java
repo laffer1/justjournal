@@ -36,6 +36,7 @@ package com.justjournal.ctl;
 
 import com.justjournal.db.MoodDao;
 import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import java.util.Collection;
 
@@ -46,11 +47,11 @@ import java.util.Collection;
  * Time: 3:51:59 PM
  *
  * @author Lucas Holt
- * @version $Id: MoodList.java,v 1.7 2009/05/16 00:06:44 laffer1 Exp $
+ * @version $Id: MoodList.java,v 1.8 2009/05/16 03:13:12 laffer1 Exp $
  * @since 1.0
  */
 public class MoodList extends ControllerErrorable {
-    private static Category log = Category.getInstance(MoodList.class.getName());
+    private static final Logger log = Logger.getLogger(MoodList.class.getName());
     protected Collection moods;
 
     /**

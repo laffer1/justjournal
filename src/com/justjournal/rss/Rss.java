@@ -44,18 +44,21 @@ import javax.sql.rowset.CachedRowSet;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import org.apache.log4j.Logger;
+
 /**
  * Create an RSS feed as a string.  This should be a valid XML document.
  * Implements RSS 2
  *
  * @author Lucas Holt
- * @version $Id: Rss.java,v 1.10 2009/05/16 02:48:03 laffer1 Exp $
+ * @version $Id: Rss.java,v 1.11 2009/05/16 03:15:27 laffer1 Exp $
  * @since 1.0
  *        User: laffer1
  *        Date: Aug 27, 2003
  *        Time: 11:54:38 PM
  */
 public final class Rss {
+    private static final Logger log = Logger.getLogger(Rss.class);
     private final static int MAX_LENGTH = 15; // max size of RSS content
 
     private String title;
@@ -168,7 +171,7 @@ public final class Rss {
             }
 
         } catch (Exception e) {
-
+            log.error(e.getMessage());
         }
     }
 
@@ -204,6 +207,7 @@ public final class Rss {
             rs.close();
 
         } catch (Exception e1) {
+            log.error(e1.getMessage());
             if (rs != null) {
                 try {
                     rs.close();

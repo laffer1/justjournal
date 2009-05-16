@@ -36,6 +36,7 @@ package com.justjournal.ctl;
 
 import com.justjournal.WebLogin;
 import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 /**
  * Change the password for a blog owner
@@ -45,11 +46,11 @@ import org.apache.log4j.Category;
  * Time: 4:37:00 PM
  *
  * @author Lucas Holt
- * @version $Id: ChangePasswordSubmit.java,v 1.6 2008/07/29 11:59:42 laffer1 Exp $
+ * @version $Id: ChangePasswordSubmit.java,v 1.7 2009/05/16 03:13:12 laffer1 Exp $
  */
 public class ChangePasswordSubmit
         extends Protected {
-    private static Category log = Category.getInstance(ChangePasswordSubmit.class.getName());
+    private static final Logger log = Logger.getLogger(ChangePasswordSubmit.class.getName());
 
     protected String passCurrent;
     protected String passNew;
