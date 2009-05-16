@@ -3,7 +3,7 @@ package com.justjournal.utility;
 import com.sun.image.codec.jpeg.JPEGCodec;
 import com.sun.image.codec.jpeg.JPEGEncodeParam;
 import com.sun.image.codec.jpeg.JPEGImageEncoder;
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -16,7 +16,7 @@ import java.io.IOException;
  * Create thumbnails of full images as JPEGs.
  *
  * @author Lucas Holt
- * @version $Id: Thumbnail.java,v 1.1 2008/07/29 11:59:41 laffer1 Exp $
+ * @version $Id: Thumbnail.java,v 1.2 2009/05/16 02:31:02 laffer1 Exp $
  * @since 1.0
  * 
  * User: laffer1
@@ -29,7 +29,7 @@ public class Thumbnail {
     private int thumbWidth;  /* Suggested thumbnail max width */
     private int thumbHeight; /* Suggested thumbnail max height */
 
-    private static final Category log = Category.getInstance(Thumbnail.class.getName());
+    private static final Logger log = Logger.getLogger(Thumbnail.class);
 
     /**
      * Create Thumbnail with default quality 75, width & height 100

@@ -48,7 +48,7 @@ import java.util.Locale;
  * 1999 Marty Hall; may be freely used or adapted.
  *
  * @author Lucas Holt
- * @version $Id: ServletUtilities.java,v 1.4 2008/04/26 17:09:43 laffer1 Exp $
+ * @version $Id: ServletUtilities.java,v 1.5 2009/05/16 02:31:02 laffer1 Exp $
  */
 
 public final class ServletUtilities {
@@ -120,7 +120,6 @@ public final class ServletUtilities {
      * @return expires header
      */
     public static String createExpiresHeader(int minutes) {
-        final SimpleDateFormat sdf = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z", Locale.US);
         final Calendar cal = Calendar.getInstance();
 
         cal.add(Calendar.MINUTE, minutes);
@@ -128,6 +127,19 @@ public final class ServletUtilities {
         final long millis = cal.getTimeInMillis();
         final Date d = new Date(millis);
 
+        return createExpiresHeaderFromDate(d);
+    }
+
+    /**
+     * Create a String in the format EEE, d MMM yyyy HH:mm:ss z"
+     * sutable for use in an HTTP Expires header.
+     * Example: Fri, 4 Aug 2006 09:07:44 CEST
+     *
+     * @param d Date to use
+     * @return expires header
+     */
+    public static String createExpiresHeaderFromDate(Date d) {
+        final SimpleDateFormat sdf = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z", Locale.US);
         return sdf.format(d);
     }
 
