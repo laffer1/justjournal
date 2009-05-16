@@ -35,6 +35,7 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal;
 
 import com.justjournal.core.Settings;
+import com.justjournal.utility.ServletUtilities;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -53,7 +54,7 @@ import java.io.IOException;
  * Time: 9:04:00 PM
  *
  * @author Lucas Holt
- * @version $Id: JustJournalBaseServlet.java,v 1.14 2009/05/16 00:06:44 laffer1 Exp $
+ * @version $Id: JustJournalBaseServlet.java,v 1.15 2009/05/16 02:50:53 laffer1 Exp $
  * @since 1.0
 
  */
