@@ -36,6 +36,7 @@ package com.justjournal.rss;
 
 import com.justjournal.db.EntryTo;
 import com.justjournal.db.SQLHelper;
+import com.justjournal.db.DateTime;
 import com.justjournal.utility.DateConvert;
 import com.justjournal.utility.Xml;
 
@@ -48,7 +49,7 @@ import java.util.*;
  * Implements RSS 2
  *
  * @author Lucas Holt
- * @version $Id: Rss.java,v 1.9 2008/10/16 20:20:07 laffer1 Exp $
+ * @version $Id: Rss.java,v 1.10 2009/05/16 02:48:03 laffer1 Exp $
  * @since 1.0
  *        User: laffer1
  *        Date: Aug 27, 2003
@@ -65,6 +66,8 @@ public final class Rss {
     private String webMaster;
     private String managingEditor;
     private String selfLink;
+
+    private Date newestEntryDate;
 
     private ArrayList<RssItem> items = new ArrayList<RssItem>(MAX_LENGTH);
 
@@ -132,6 +135,10 @@ public final class Rss {
         this.selfLink = selfLink;
     }
 
+    public Date getNewestEntryDate() {
+        return newestEntryDate;
+    }
+
     // Methods
 
     public void populate(Collection<EntryTo> entries) {
@@ -153,6 +160,10 @@ public final class Rss {
                 item.setDescription(o.getBody());
                 item.setGuid("http://www.justjournal.com/users/" + o.getUserName() + "/entry/" + o.getId());
                 item.setPubDate(o.getDate().toPubDate());
+                DateTime d = o.getDate();
+                Date date = d.toDate();
+                if (newestEntryDate == null || date.compareTo(newestEntryDate) > 0)
+                    newestEntryDate = date;
                 Add(item);
             }
 
