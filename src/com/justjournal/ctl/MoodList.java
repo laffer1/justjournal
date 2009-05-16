@@ -46,7 +46,7 @@ import java.util.Collection;
  * Time: 3:51:59 PM
  *
  * @author Lucas Holt
- * @version $Id: MoodList.java,v 1.6 2008/07/29 11:59:43 laffer1 Exp $
+ * @version $Id: MoodList.java,v 1.7 2009/05/16 00:06:44 laffer1 Exp $
  * @since 1.0
  */
 public class MoodList extends ControllerErrorable {

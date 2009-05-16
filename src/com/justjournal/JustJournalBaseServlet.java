@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2005-2006, Lucas Holt
+Copyright (c) 2005-2009 Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -44,6 +44,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 
 /**
  * Base servlet to do some of the repetative servlet initialization stuff.
@@ -52,7 +53,7 @@ import javax.servlet.http.HttpSession;
  * Time: 9:04:00 PM
  *
  * @author Lucas Holt
- * @version $Id: JustJournalBaseServlet.java,v 1.13 2008/07/29 11:59:38 laffer1 Exp $
+ * @version $Id: JustJournalBaseServlet.java,v 1.14 2009/05/16 00:06:44 laffer1 Exp $
  * @since 1.0
 
  */
@@ -77,7 +78,7 @@ public class JustJournalBaseServlet extends HttpServlet {
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws java.io.IOException {
-        processRequest(request, response);
+        processRequest(request, response, false);
     }
 
     /**
@@ -88,10 +89,14 @@ public class JustJournalBaseServlet extends HttpServlet {
      */
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws java.io.IOException {
-        processRequest(request, response);
+        processRequest(request, response, false);
     }
 
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+    protected void doHead(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ServletException, IOException {
+        processRequest(httpServletRequest, httpServletResponse, true);
+    }
+
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response, boolean head)
             throws java.io.IOException {
         String contentType = "text/html; charset=utf-8";
         final StringBuffer sb = new StringBuffer(512);
@@ -106,11 +111,20 @@ public class JustJournalBaseServlet extends HttpServlet {
 
         execute(request, response, session, sb);
 
+        /* create etag */
+        ETag etag = new ETag(response);
+        etag.writeFromString(sb.toString());
+        
         response.setContentLength(sb.length());
-        final ServletOutputStream outstream = response.getOutputStream();
-        outstream.print(sb.toString());
-        outstream.flush();
-        outstream.close();
+
+        if (head) {
+            response.flushBuffer();
+        } else {
+            final ServletOutputStream outstream = response.getOutputStream();
+            outstream.print(sb.toString());
+            outstream.flush();
+            outstream.close();
+        }
     }
 
     public long getLastModified(HttpServletRequest request) {
