@@ -54,7 +54,9 @@
             <fieldset>
                 <legend><strong>User Information</strong><br/></legend>
 
-                <p>You must be logged in before you can cancel your account.</p>
+                <p>You must be logged in before you can cancel your account. Then, you must type your username
+                and password below to verify you want to cancel.  The process will wipe all contents of your blog
+                without any way to get it back.</p>
 
                 <div class="row">
                     <span class="label"><label for="username">Username</label></span> <span class="formw"><input
