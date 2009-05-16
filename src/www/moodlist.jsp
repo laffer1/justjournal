@@ -26,10 +26,12 @@
 
     <p>This page is primarily useful for developers.</p>
 
-    <p>This is the complete list of moods that you can choose from when
-        posting a journal entry. Parent moods are used to display an emoticon
-        for a mood if the mood does not have its own emoticon. (smiley, etc)
-        Picking a mood is optional when posting a journal entry.</p>
+   <p>
+    This is the complete list of moods that you can choose from when posting a journal entry, whether it's about the time you won
+       on <a href="http://www.foxybingo.com/">bingo</a> (which should be "Jubilant" mood) or the time you were really down cast
+       ("Depressed" mood perhaps?). Parent moods are used to display an emoticon for a mood if the mood does not have its own emoticon.
+       (smiley, etc) Picking a mood is optional when posting a journal entry.
+    </p>
 
     <table border="0" cellpadding="1" cellspacing="1">
         <thead>
