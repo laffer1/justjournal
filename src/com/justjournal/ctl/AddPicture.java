@@ -8,7 +8,6 @@ import com.justjournal.utility.StringUtil;
 import org.apache.commons.fileupload.DiskFileUpload;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUpload;
-import org.apache.log4j.Category;
 import org.apache.log4j.Logger;
 
 import javax.naming.Context;
@@ -123,7 +122,7 @@ public class AddPicture extends JustJournalBaseServlet {
                                     conn = ds.getConnection();
 
                                     // do the insert of the image
-                                    stmt = conn.prepareStatement("INSERT INTO user_images (owner,title,mimetype,image) VALUES(?,?,?,?)");
+                                    stmt = conn.prepareStatement("INSERT INTO user_images (owner,title,modified,mimetype,image) VALUES(?,?,now(),?,?)");
                                     stmt.setInt(1, userID);
                                     stmt.setString(2, title);
                                     stmt.setString(3, contentType);
