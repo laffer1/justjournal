@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2006-2007, Lucas Holt
+Copyright (c) 2006-2009, Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -35,6 +35,7 @@ package com.justjournal;
 
 import com.justjournal.utility.ServletUtilities;
 import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -58,11 +59,11 @@ import java.sql.ResultSet;
  * Date: Nov 22, 2005
  * Time: 9:31:28 PM
  *
- * @version $Id: Image.java,v 1.10 2007/12/03 19:02:11 laffer1 Exp $
+ * @version $Id: Image.java,v 1.11 2009/05/16 00:40:02 laffer1 Exp $
  */
 public final class Image extends HttpServlet {
 
-    private static final Category log = Category.getInstance(Image.class.getName());
+    private static final Logger log = Logger.getLogger(Image.class);
 
     // processes get requests
     protected final void doGet(HttpServletRequest request, HttpServletResponse response)

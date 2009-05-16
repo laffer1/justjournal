@@ -51,11 +51,15 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
+import org.apache.log4j.Logger;
+
 /**
  * @author Caryn Holt
- * @version $Id: RemoveFriend.java,v 1.7 2006/07/28 14:01:06 laffer1 Exp $
+ * @version $Id: RemoveFriend.java,v 1.8 2009/05/16 00:40:02 laffer1 Exp $
  */
 public final class RemoveFriend extends JustJournalBaseServlet {
+
+    private static final Logger log = Logger.getLogger(RemoveFriend.class);
 
     protected void execute(HttpServletRequest request, HttpServletResponse response, HttpSession session, StringBuffer sb) {
 
@@ -119,6 +123,7 @@ public final class RemoveFriend extends JustJournalBaseServlet {
                 WebError.Display("Error", "Could not remove friend.", sb);
         } catch (Exception e) {
             // record was not deleted
+            log.error(e.getMessage());
             WebError.Display("Error", e.getMessage(), sb);
         }
     }

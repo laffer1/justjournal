@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2006-2007, Lucas Holt
+Copyright (c) 2006-2009, Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -36,7 +36,7 @@ package com.justjournal;
 
 import com.justjournal.db.SQLHelper;
 import com.justjournal.utility.ServletUtilities;
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -52,15 +52,15 @@ import java.io.ByteArrayOutputStream;
  * Diplay individual images in the user's photo album.
  *
  * @author Lucas Holt
- * @version $Id: AlbumImage.java,v 1.6 2008/08/01 14:35:54 laffer1 Exp $
+ * @version $Id: AlbumImage.java,v 1.7 2009/05/16 00:40:02 laffer1 Exp $
  */
 public class AlbumImage extends HttpServlet {
-    private static Category log = Category.getInstance(AlbumImage.class.getName());
+    private static final Logger log = Logger.getLogger(AlbumImage.class);
 
     /**
      * Initializes the servlet.
      *
-     * @param config
+     * @param config the servlet configuration.
      * @throws javax.servlet.ServletException
      */
     public void init(final ServletConfig config) throws ServletException {

@@ -35,7 +35,7 @@ package com.justjournal;
 
 import com.justjournal.db.EntryDAO;
 import com.justjournal.rss.Rss;
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -48,10 +48,10 @@ import java.util.Calendar;
  * Date: Feb 26, 2006
  * Time: 10:44:18 AM
  *
- * @version $Id: RecentBlogs.java,v 1.11 2008/08/01 14:35:50 laffer1 Exp $
+ * @version $Id: RecentBlogs.java,v 1.12 2009/05/16 00:40:02 laffer1 Exp $
  */
 public class RecentBlogs extends JustJournalBaseServlet {
-    private static Category log = Category.getInstance(RecentBlogs.class.getName());
+    private static final Logger log = Logger.getLogger(RecentBlogs.class);
 
     protected void execute(HttpServletRequest request, HttpServletResponse response, HttpSession session, StringBuffer sb) {
         response.setContentType("application/rss+xml;charset=ISO-8859-1");

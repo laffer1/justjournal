@@ -1,7 +1,7 @@
 package com.justjournal;
 
 import com.justjournal.db.SQLHelper;
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import javax.sql.rowset.CachedRowSet;
 
@@ -11,14 +11,10 @@ import javax.sql.rowset.CachedRowSet;
  * TODO: Lock the insert/update code at the database level.  stored proc?
  *
  * @author Lucas Holt
- * @version $Id: HitCounter.java,v 1.3 2008/08/01 14:35:51 laffer1 Exp $
- *          User: laffer1
- *          Date: Jul 27, 2008
- *          Time: 6:33:49 AM
+ * @version $Id: HitCounter.java,v 1.4 2009/05/16 00:40:02 laffer1 Exp $
  */
 public class HitCounter {
-
-    private static final Category log = Category.getInstance(HitCounter.class.getName());
+    private static final Logger log = Logger.getLogger(HitCounter.class);
 
     /**
      * Create a resource record

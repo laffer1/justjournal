@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2005, Lucas Holt
+Copyright (c) 2003-2009 Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -42,15 +42,16 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.PrintWriter;
 
+import org.apache.log4j.Logger;
+
 /**
  * @author Lucas Holt
- *         User: laffer1
- *         Date: Aug 25, 2003
- *         Time: 9:22:21 PM
- * @version $Id: UpdateStyleSheetOverride.java,v 1.6 2006/07/28 14:01:06 laffer1 Exp $
+ * @version $Id: UpdateStyleSheetOverride.java,v 1.7 2009/05/16 00:40:02 laffer1 Exp $
  */
 public final class UpdateStyleSheetOverride
         extends HttpServlet {
+
+    private static final Logger log = Logger.getLogger(UpdateStyleSheetOverride.class);
 
     protected void processRequest(final HttpServletRequest request,
                                   final HttpServletResponse response)
@@ -91,7 +92,7 @@ public final class UpdateStyleSheetOverride
             } catch (Exception e) {
                 // record was not updated
                 error = true;
-                out.println(e.getMessage());
+                log.error(e.getMessage());
             }
         }
 

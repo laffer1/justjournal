@@ -41,17 +41,21 @@ import com.justjournal.db.UserTo;
 
 import javax.sql.rowset.CachedRowSet;
 
+import org.apache.log4j.Logger;
+
 /**
  * Represents a user's basic credentals including userId and
  * userName.
  *
  * @author Lucas Holt
- * @version $Id: User.java,v 1.16 2008/08/01 14:35:51 laffer1 Exp $
+ * @version $Id: User.java,v 1.17 2009/05/16 00:40:02 laffer1 Exp $
  *          Date: Jan 4, 2004
  *          Time: 9:59:35 PM
  * @since 1.0
  */
 public final class User {
+    private static final Logger log = Logger.getLogger(User.class);
+    
     private String userName = "*";
     private int userId = 0;
     private int type = 0;
@@ -133,6 +137,7 @@ public final class User {
 
             RS.close();
         } catch (Exception ePrefs) {
+            log.debug(ePrefs.getMessage());
             throw new Exception("Error loading user information", ePrefs);
         }
     }
@@ -198,6 +203,7 @@ public final class User {
 
             RS.close();
         } catch (Exception ePrefs) {
+            log.debug(ePrefs.getMessage());
             throw new Exception("Error loading user information", ePrefs);
         }
     }

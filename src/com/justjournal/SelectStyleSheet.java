@@ -42,14 +42,18 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.PrintWriter;
 
+import org.apache.log4j.Logger;
+
 /**
  * @author Lucas Holt
  *         User: laffer1
  *         Date: Aug 25, 2003
  *         Time: 9:22:21 PM
- * @version $Id: SelectStyleSheet.java,v 1.6 2006/07/28 14:01:06 laffer1 Exp $
+ * @version $Id: SelectStyleSheet.java,v 1.7 2009/05/16 00:40:02 laffer1 Exp $
  */
 public final class SelectStyleSheet extends HttpServlet {
+
+    private static final Logger log = Logger.getLogger(SelectStyleSheet.class);
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws java.io.IOException {
@@ -98,7 +102,7 @@ public final class SelectStyleSheet extends HttpServlet {
                 } catch (Exception e) {
                     // record was not updated
                     error = true;
-                    out.println(e.getMessage());
+                    log.error(e.getMessage());
                 }
             }
 

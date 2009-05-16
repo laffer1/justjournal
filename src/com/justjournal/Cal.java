@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2005-2006, Lucas Holt
+Copyright (c) 2005-2009, Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -34,7 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import javax.sql.rowset.CachedRowSet;
 import java.text.ParsePosition;
@@ -46,11 +46,11 @@ import java.util.Iterator;
  * Storage for calendar months.
  *
  * @author Lucas Holt
- * @version $Id: Cal.java,v 1.10 2008/08/01 14:35:52 laffer1 Exp $
+ * @version $Id: Cal.java,v 1.11 2009/05/16 00:40:02 laffer1 Exp $
  * @see CalMonth
  */
 public final class Cal {
-    private static final Category log = Category.getInstance(Cal.class.getName());
+    private static final Logger log = Logger.getLogger(Cal.class);
 
     private CachedRowSet RS;
     private final ArrayList<CalMonth> Months = new ArrayList<CalMonth>(12);

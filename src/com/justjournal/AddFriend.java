@@ -1,5 +1,6 @@
 /*
-Copyright (c) 2005, Lucas Holt
+Copyright (c) 2003 Caryn Holt
+Copyright (c) 2005-2009 Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -53,14 +54,17 @@ import javax.servlet.http.HttpSession;
 import javax.sql.rowset.CachedRowSet;
 import java.io.IOException;
 
+import org.apache.log4j.Logger;
+
 /**
  * Adds a friend to the Users list for their friends page
  *
  * @author Caryn Holt, Lucas Holt
- * @version $Id: AddFriend.java,v 1.8 2008/08/01 14:35:52 laffer1 Exp $
+ * @version $Id: AddFriend.java,v 1.9 2009/05/16 00:40:02 laffer1 Exp $
  * @since 1.0
  */
 public final class AddFriend extends JustJournalBaseServlet {
+    private static final Logger log = Logger.getLogger(AddFriend.class);
 
     protected void execute(HttpServletRequest request, HttpServletResponse response, HttpSession session, StringBuffer sb) {
         // initial error condition is false
@@ -135,6 +139,7 @@ public final class AddFriend extends JustJournalBaseServlet {
                 }
                 // generate error if user id is not valid and set error condition to true
                 catch (Exception e) {
+                    log.error(e.getMessage());
                     WebError.Display("Error", e.getMessage(), sb);
                     error = true;
                 }
@@ -152,6 +157,7 @@ public final class AddFriend extends JustJournalBaseServlet {
                     }
                     // if exception, set error condition to true, display message
                     catch (Exception e1) {
+                        log.error(e1.getMessage());
                         WebError.Display("Error", e1.getMessage(), sb);
                         error = true;
                     }
@@ -188,6 +194,7 @@ public final class AddFriend extends JustJournalBaseServlet {
                 template = template.replaceAll("\\$CONTENT\\$", content.toString());
                 sb.append(template);
             } catch (IOException e) {
+                log.error(e.getMessage());
                 WebError.Display("Internal Error", "Error dislaying page.", sb);
             }
         }

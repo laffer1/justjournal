@@ -38,6 +38,8 @@ import com.justjournal.db.PreferencesDao;
 
 import javax.sql.rowset.CachedRowSet;
 
+import org.apache.log4j.Logger;
+
 /**
  * Loads and stores preferences for a just journal user
  * given their username.
@@ -49,7 +51,7 @@ import javax.sql.rowset.CachedRowSet;
  * journal, the user must login.  Public access is denied.
  *
  * @author Lucas Holt
- * @version $Id: Preferences.java,v 1.8 2008/08/01 14:35:52 laffer1 Exp $
+ * @version $Id: Preferences.java,v 1.9 2009/05/16 00:40:02 laffer1 Exp $
  * @since 1.0
  *        User: laffer1
  *        Date: Jul 11, 2003
@@ -59,6 +61,7 @@ import javax.sql.rowset.CachedRowSet;
  */
 
 public final class Preferences {
+    private static final Logger log = Logger.getLogger(Preferences.class);
 
     /* Users real name */
     private String name = "";   // real name!
@@ -112,6 +115,7 @@ public final class Preferences {
 
             RS.close();
         } catch (Exception ePrefs) {
+            log.debug(ePrefs.getMessage());
             throw new Exception("Error loading preferences", ePrefs);
         }
     }

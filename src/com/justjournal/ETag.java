@@ -35,7 +35,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletResponse;
 import java.security.MessageDigest;
@@ -49,10 +49,10 @@ import java.math.BigInteger;
  * http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html
  * 
  * @author Lucas Holt
- * @version $Id: ETag.java,v 1.1 2009/05/16 00:06:44 laffer1 Exp $
+ * @version $Id: ETag.java,v 1.2 2009/05/16 00:40:02 laffer1 Exp $
  */
 public class ETag {
-    private static Category log = Category.getInstance(ETag.class.getName());    
+    private static final Logger log = Logger.getLogger(ETag.class);    
     protected HttpServletResponse response;
 
     public ETag(HttpServletResponse response) {
