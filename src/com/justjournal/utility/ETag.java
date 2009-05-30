@@ -33,7 +33,7 @@ POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-package com.justjournal;
+package com.justjournal.utility;
 
 import org.apache.log4j.Logger;
 
@@ -49,7 +49,7 @@ import java.math.BigInteger;
  * http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html
  * 
  * @author Lucas Holt
- * @version $Id: ETag.java,v 1.2 2009/05/16 00:40:02 laffer1 Exp $
+ * @version $Id: ETag.java,v 1.1 2009/05/30 18:22:21 laffer1 Exp $
  */
 public class ETag {
     private static final Logger log = Logger.getLogger(ETag.class);    
