@@ -14,6 +14,16 @@
         <res-sharing-scope>Shareable</res-sharing-scope>
     </resource-ref>
 
+    <filter>
+        <filter-name>CayenneFilter</filter-name>
+        <!--suppress WebProperties -->
+        <filter-class>org.apache.cayenne.conf.WebApplicationContextFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>CayenneFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
     <listener>
         <listener-class>com.justjournal.core.MailServletContextListener</listener-class>
     </listener>
@@ -22,33 +32,33 @@
         <listener-class>com.justjournal.core.RssCacheContextListener</listener-class>
     </listener>
 
-       <servlet>
-           <display-name>Maverick Dispatcher</display-name>
-           <servlet-name>dispatcher</servlet-name>
-           <servlet-class>org.infohazard.maverick.Dispatcher</servlet-class>
+    <servlet>
+        <display-name>Maverick Dispatcher</display-name>
+        <servlet-name>dispatcher</servlet-name>
+        <servlet-class>org.infohazard.maverick.Dispatcher</servlet-class>
 
-           <init-param>
-               <param-name>defaultRequestCharset</param-name>
-               <param-value>UTF-8</param-value>
-           </init-param>
+        <init-param>
+            <param-name>defaultRequestCharset</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
 
-           <init-param>
-               <param-name>reloadCommand</param-name>
-               <param-value>reload</param-value>
-           </init-param>
+        <init-param>
+            <param-name>reloadCommand</param-name>
+            <param-value>reload</param-value>
+        </init-param>
 
-           <!--
-               This allows an extra query parameter to be added
-               to any request which halts the transformation process
-               after that number of steps, e.g. blah.m?maxTransforms=0
-           -->
-           <init-param>
-               <param-name>limitTransformsParam</param-name>
-               <param-value>maxTransforms</param-value>
-           </init-param>
+        <!--
+            This allows an extra query parameter to be added
+            to any request which halts the transformation process
+            after that number of steps, e.g. blah.m?maxTransforms=0
+        -->
+        <init-param>
+            <param-name>limitTransformsParam</param-name>
+            <param-value>maxTransforms</param-value>
+        </init-param>
 
-           <load-on-startup>2</load-on-startup>
-       </servlet>
+        <load-on-startup>2</load-on-startup>
+    </servlet>
 
     <servlet>
         <display-name>Users Viewer</display-name>
@@ -101,7 +111,7 @@
         <servlet-class>com.justjournal.NewAccount</servlet-class>
     </servlet>
 
-     <servlet>
+    <servlet>
         <display-name>Delete Account</display-name>
         <servlet-name>DeleteAccount</servlet-name>
         <servlet-class>com.justjournal.ctl.DeleteAccount</servlet-class>
@@ -230,7 +240,7 @@
         <url-pattern>/newAccount</url-pattern>
     </servlet-mapping>
 
-     <servlet-mapping>
+    <servlet-mapping>
         <servlet-name>DeleteAccount</servlet-name>
         <url-pattern>/DeleteAccount</url-pattern>
     </servlet-mapping>
