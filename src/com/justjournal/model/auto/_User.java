@@ -19,8 +19,16 @@ public class _User extends org.apache.cayenne.CayenneDataObject {
     public static final String USERNAME_PROPERTY = "username";
     public static final String USER_TO_COMMENT_PROPERTY = "userToComment";
     public static final String USER_TO_ENTRY_PROPERTY = "userToEntry";
+    public static final String USER_TO_FAVORITES_PROPERTY = "userToFavorites";
     public static final String USER_TO_USER_BIO_PROPERTY = "userToUserBio";
     public static final String USER_TO_USER_CONTACT_PROPERTY = "userToUserContact";
+    public static final String USER_TO_USER_FILES_PROPERTY = "userToUserFiles";
+    public static final String USER_TO_USER_IMAGES_PROPERTY = "userToUserImages";
+    public static final String USER_TO_USER_LINK_PROPERTY = "userToUserLink";
+    public static final String USER_TO_USER_LOCATION_PROPERTY = "userToUserLocation";
+    public static final String USER_TO_USER_PIC_PROPERTY = "userToUserPic";
+    public static final String USER_TO_USER_PREF_PROPERTY = "userToUserPref";
+    public static final String USER_TO_USER_STYLE_PROPERTY = "userToUserStyle";
 
     public static final String ID_PK_COLUMN = "id";
 
@@ -110,6 +118,17 @@ public class _User extends org.apache.cayenne.CayenneDataObject {
     }
     
     
+    public void addToUserToFavorites(com.justjournal.model.Favorites obj) {
+        addToManyTarget("userToFavorites", obj, true);
+    }
+    public void removeFromUserToFavorites(com.justjournal.model.Favorites obj) {
+        removeToManyTarget("userToFavorites", obj, true);
+    }
+    public List getUserToFavorites() {
+        return (List)readProperty("userToFavorites");
+    }
+    
+    
     public void setUserToUserBio(com.justjournal.model.UserBio userToUserBio) {
         setToOneTarget("userToUserBio", userToUserBio, true);
     }
@@ -125,6 +144,73 @@ public class _User extends org.apache.cayenne.CayenneDataObject {
 
     public com.justjournal.model.UserContact getUserToUserContact() {
         return (com.justjournal.model.UserContact)readProperty("userToUserContact");
+    } 
+    
+    
+    public void addToUserToUserFiles(com.justjournal.model.UserFiles obj) {
+        addToManyTarget("userToUserFiles", obj, true);
+    }
+    public void removeFromUserToUserFiles(com.justjournal.model.UserFiles obj) {
+        removeToManyTarget("userToUserFiles", obj, true);
+    }
+    public List getUserToUserFiles() {
+        return (List)readProperty("userToUserFiles");
+    }
+    
+    
+    public void addToUserToUserImages(com.justjournal.model.UserImages obj) {
+        addToManyTarget("userToUserImages", obj, true);
+    }
+    public void removeFromUserToUserImages(com.justjournal.model.UserImages obj) {
+        removeToManyTarget("userToUserImages", obj, true);
+    }
+    public List getUserToUserImages() {
+        return (List)readProperty("userToUserImages");
+    }
+    
+    
+    public void setUserToUserLink(com.justjournal.model.UserLink userToUserLink) {
+        setToOneTarget("userToUserLink", userToUserLink, true);
+    }
+
+    public com.justjournal.model.UserLink getUserToUserLink() {
+        return (com.justjournal.model.UserLink)readProperty("userToUserLink");
+    } 
+    
+    
+    public void setUserToUserLocation(com.justjournal.model.UserLocation userToUserLocation) {
+        setToOneTarget("userToUserLocation", userToUserLocation, true);
+    }
+
+    public com.justjournal.model.UserLocation getUserToUserLocation() {
+        return (com.justjournal.model.UserLocation)readProperty("userToUserLocation");
+    } 
+    
+    
+    public void setUserToUserPic(com.justjournal.model.UserPic userToUserPic) {
+        setToOneTarget("userToUserPic", userToUserPic, true);
+    }
+
+    public com.justjournal.model.UserPic getUserToUserPic() {
+        return (com.justjournal.model.UserPic)readProperty("userToUserPic");
+    } 
+    
+    
+    public void setUserToUserPref(com.justjournal.model.UserPref userToUserPref) {
+        setToOneTarget("userToUserPref", userToUserPref, true);
+    }
+
+    public com.justjournal.model.UserPref getUserToUserPref() {
+        return (com.justjournal.model.UserPref)readProperty("userToUserPref");
+    } 
+    
+    
+    public void setUserToUserStyle(com.justjournal.model.UserStyle userToUserStyle) {
+        setToOneTarget("userToUserStyle", userToUserStyle, true);
+    }
+
+    public com.justjournal.model.UserStyle getUserToUserStyle() {
+        return (com.justjournal.model.UserStyle)readProperty("userToUserStyle");
     } 
     
     

@@ -10,8 +10,8 @@ public class _UserFiles extends org.apache.cayenne.CayenneDataObject {
     public static final String DATA_PROPERTY = "data";
     public static final String DATE_MODIFIED_PROPERTY = "dateModified";
     public static final String MIMETYPE_PROPERTY = "mimetype";
-    public static final String OWNERID_PROPERTY = "ownerid";
     public static final String TITLE_PROPERTY = "title";
+    public static final String USER_FILES_TO_USER_PROPERTY = "userFilesToUser";
 
     public static final String ID_PK_COLUMN = "id";
 
@@ -39,20 +39,21 @@ public class _UserFiles extends org.apache.cayenne.CayenneDataObject {
     }
     
     
-    public void setOwnerid(Long ownerid) {
-        writeProperty("ownerid", ownerid);
-    }
-    public Long getOwnerid() {
-        return (Long)readProperty("ownerid");
-    }
-    
-    
     public void setTitle(String title) {
         writeProperty("title", title);
     }
     public String getTitle() {
         return (String)readProperty("title");
     }
+    
+    
+    public void setUserFilesToUser(com.justjournal.model.User userFilesToUser) {
+        setToOneTarget("userFilesToUser", userFilesToUser, true);
+    }
+
+    public com.justjournal.model.User getUserFilesToUser() {
+        return (com.justjournal.model.User)readProperty("userFilesToUser");
+    } 
     
     
 }
