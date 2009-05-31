@@ -21,8 +21,6 @@ public class _Entry extends org.apache.cayenne.CayenneDataObject {
     public static final String MUSIC_PROPERTY = "music";
     public static final String SECURITY_PROPERTY = "security";
     public static final String SUBJECT_PROPERTY = "subject";
-    public static final String ENTRY_TO_USER_PROPERTY = "entryToUser";
-    public static final String ENTRY_TO_USER_PROPERTY = "EntryToUser";
 
     public static final String ID_PK_COLUMN = "id";
 
@@ -136,24 +134,6 @@ public class _Entry extends org.apache.cayenne.CayenneDataObject {
     public String getSubject() {
         return (String)readProperty("subject");
     }
-    
-    
-    public void setEntryToUser(com.justjournal.model.User entryToUser) {
-        setToOneTarget("entryToUser", entryToUser, true);
-    }
-
-    public com.justjournal.model.User getEntryToUser() {
-        return (com.justjournal.model.User)readProperty("entryToUser");
-    } 
-    
-    
-    public void setEntryToUser(com.justjournal.model.User EntryToUser) {
-        setToOneTarget("EntryToUser", EntryToUser, true);
-    }
-
-    public com.justjournal.model.User getEntryToUser() {
-        return (com.justjournal.model.User)readProperty("EntryToUser");
-    } 
     
     
 }

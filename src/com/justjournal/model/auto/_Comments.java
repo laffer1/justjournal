@@ -12,8 +12,6 @@ public class _Comments extends org.apache.cayenne.CayenneDataObject {
     public static final String EID_PROPERTY = "eid";
     public static final String MODIFIED_PROPERTY = "modified";
     public static final String SUBJECT_PROPERTY = "subject";
-    public static final String COMMENT_TO_USER_PROPERTY = "commentToUser";
-    public static final String COMMENTS_TO_USER_PROPERTY = "CommentsToUser";
 
     public static final String ID_PK_COLUMN = "id";
 
@@ -55,24 +53,6 @@ public class _Comments extends org.apache.cayenne.CayenneDataObject {
     public String getSubject() {
         return (String)readProperty("subject");
     }
-    
-    
-    public void setCommentToUser(com.justjournal.model.User commentToUser) {
-        setToOneTarget("commentToUser", commentToUser, true);
-    }
-
-    public com.justjournal.model.User getCommentToUser() {
-        return (com.justjournal.model.User)readProperty("commentToUser");
-    } 
-    
-    
-    public void setCommentsToUser(com.justjournal.model.User CommentsToUser) {
-        setToOneTarget("CommentsToUser", CommentsToUser, true);
-    }
-
-    public com.justjournal.model.User getCommentsToUser() {
-        return (com.justjournal.model.User)readProperty("CommentsToUser");
-    } 
     
     
 }

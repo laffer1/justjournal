@@ -162,7 +162,7 @@
 		<db-attribute name="id" type="BIGINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="10"/>
 		<db-attribute name="lastlogin" type="TIMESTAMP"/>
 		<db-attribute name="lastname" type="VARCHAR" length="20"/>
-		<db-attribute name="modified" type="TIMESTAMP" isMandatory="true"/>
+		<db-attribute name="modified" type="TIMESTAMP"/>
 		<db-attribute name="name" type="VARCHAR" isMandatory="true" length="20"/>
 		<db-attribute name="password" type="CHAR" isMandatory="true" length="40"/>
 		<db-attribute name="since" type="SMALLINT" isMandatory="true" length="5"/>
@@ -539,8 +539,16 @@
 	</db-relationship>
 	<obj-relationship name="userToComment" source="User" target="Comments" db-relationship-path="UserToComment"/>
 	<obj-relationship name="userToEntry" source="User" target="Entry" db-relationship-path="UserToEntry"/>
+	<obj-relationship name="userToFavorites" source="User" target="Favorites" db-relationship-path="UserToFavorites"/>
 	<obj-relationship name="userToUserBio" source="User" target="UserBio" db-relationship-path="UserToUserBio"/>
 	<obj-relationship name="userToUserContact" source="User" target="UserContact" db-relationship-path="UserToUserContact"/>
+	<obj-relationship name="userToUserFiles" source="User" target="UserFiles" db-relationship-path="UserToUserFiles"/>
+	<obj-relationship name="userToUserImages" source="User" target="UserImages" db-relationship-path="UserToUserImages"/>
+	<obj-relationship name="userToUserLink" source="User" target="UserLink" db-relationship-path="UserToUserLink"/>
+	<obj-relationship name="userToUserLocation" source="User" target="UserLocation" db-relationship-path="UserToUserLocation"/>
+	<obj-relationship name="userToUserPic" source="User" target="UserPic" db-relationship-path="UserToUserPic"/>
+	<obj-relationship name="userToUserPref" source="User" target="UserPref" db-relationship-path="UserToUserPref"/>
+	<obj-relationship name="userToUserStyle" source="User" target="UserStyle" db-relationship-path="UserToUserStyle"/>
 	<obj-relationship name="userImagesAlbumMapArray" source="UserImages" target="UserImagesAlbumMap" db-relationship-path="userImagesAlbumMapArray"/>
 	<obj-relationship name="toUserImages" source="UserImagesAlbumMap" target="UserImages" db-relationship-path="toUserImages"/>
 </data-map>
