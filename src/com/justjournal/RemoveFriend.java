@@ -55,7 +55,7 @@ import org.apache.log4j.Logger;
 
 /**
  * @author Caryn Holt
- * @version $Id: RemoveFriend.java,v 1.8 2009/05/16 00:40:02 laffer1 Exp $
+ * @version $Id: RemoveFriend.java,v 1.9 2009/06/01 22:57:42 laffer1 Exp $
  */
 public final class RemoveFriend extends JustJournalBaseServlet {
 
@@ -63,14 +63,17 @@ public final class RemoveFriend extends JustJournalBaseServlet {
 
     protected void execute(HttpServletRequest request, HttpServletResponse response, HttpSession session, StringBuffer sb) {
 
-        // Retreive username
+        // Retreive username and user id
         String userName;
-        userName = (String) session.getAttribute("auth.user");
-
-        // Retreive user id
-        Integer userIDasi = (Integer) session.getAttribute("auth.uid");
-        // convert Integer to int type
+        Integer userIDasi;
         int userID = 0;
+
+        synchronized(session) {
+            userName = (String) session.getAttribute("auth.user");
+            // Retreive user id
+             userIDasi = (Integer) session.getAttribute("auth.uid");
+        }
+        // convert Integer to int type
         if (userIDasi != null) {
             userID = userIDasi.intValue();
         }

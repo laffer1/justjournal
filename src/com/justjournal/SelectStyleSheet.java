@@ -49,7 +49,7 @@ import org.apache.log4j.Logger;
  *         User: laffer1
  *         Date: Aug 25, 2003
  *         Time: 9:22:21 PM
- * @version $Id: SelectStyleSheet.java,v 1.7 2009/05/16 00:40:02 laffer1 Exp $
+ * @version $Id: SelectStyleSheet.java,v 1.8 2009/06/01 22:57:42 laffer1 Exp $
  */
 public final class SelectStyleSheet extends HttpServlet {
 
@@ -66,9 +66,11 @@ public final class SelectStyleSheet extends HttpServlet {
         // Retreive username
         //String username = "";
         //username = (String) session.getAttribute( "auth.user" );
-
+        Integer userIDasi;
+        synchronized(session) {
         // Retreive user id
-        Integer userIDasi = (Integer) session.getAttribute("auth.uid");
+            userIDasi = (Integer) session.getAttribute("auth.uid");
+        }
         // convert Integer to int type
         int userID = 0;
         if (userIDasi != null) {

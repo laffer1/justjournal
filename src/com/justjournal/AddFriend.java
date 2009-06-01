@@ -60,7 +60,7 @@ import org.apache.log4j.Logger;
  * Adds a friend to the Users list for their friends page
  *
  * @author Caryn Holt, Lucas Holt
- * @version $Id: AddFriend.java,v 1.9 2009/05/16 00:40:02 laffer1 Exp $
+ * @version $Id: AddFriend.java,v 1.10 2009/06/01 22:57:42 laffer1 Exp $
  * @since 1.0
  */
 public final class AddFriend extends JustJournalBaseServlet {
@@ -72,10 +72,13 @@ public final class AddFriend extends JustJournalBaseServlet {
 
         // Retreive username
         String userName;
-        userName = (String) session.getAttribute("auth.user");
+        Integer userIDasi;
 
-        // Retreive user id
-        Integer userIDasi = (Integer) session.getAttribute("auth.uid");
+        synchronized(session) {
+            userName = (String) session.getAttribute("auth.user");
+            // Retreive user id
+            userIDasi = (Integer) session.getAttribute("auth.uid");
+        }
         // convert Integer to int type
         int userID = 0;
         if (userIDasi != null) {

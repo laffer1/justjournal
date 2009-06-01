@@ -46,7 +46,7 @@ import org.apache.log4j.Logger;
 
 /**
  * @author Lucas Holt
- * @version $Id: UpdateStyleSheetOverride.java,v 1.7 2009/05/16 00:40:02 laffer1 Exp $
+ * @version $Id: UpdateStyleSheetOverride.java,v 1.8 2009/06/01 22:57:42 laffer1 Exp $
  */
 public final class UpdateStyleSheetOverride
         extends HttpServlet {
@@ -65,9 +65,11 @@ public final class UpdateStyleSheetOverride
         // Retreive username
         // String username;
         //username = (String) session.getAttribute( "auth.user" );
-
+        Integer userIDasi;
         // Retreive user id
-        final Integer userIDasi = (Integer) session.getAttribute("auth.uid");
+        synchronized (session) {
+            userIDasi = (Integer) session.getAttribute("auth.uid");
+        }
         // convert Integer to int type
         int userID = 0;
         if (userIDasi != null) {
