@@ -408,7 +408,6 @@
 		<obj-attribute name="data" type="byte[]" db-attribute-path="data"/>
 		<obj-attribute name="dateModified" type="java.util.Date" db-attribute-path="date_modified"/>
 		<obj-attribute name="mimetype" type="java.lang.String" db-attribute-path="mimetype"/>
-		<obj-attribute name="ownerid" type="java.lang.Long" db-attribute-path="ownerid"/>
 		<obj-attribute name="title" type="java.lang.String" db-attribute-path="title"/>
 	</obj-entity>
 	<obj-entity name="UserImages" className="com.justjournal.model.UserImages" dbEntityName="user_images">
@@ -430,7 +429,6 @@
 		<obj-attribute name="owner" type="java.lang.Long" db-attribute-path="owner"/>
 	</obj-entity>
 	<obj-entity name="UserLink" className="com.justjournal.model.UserLink" dbEntityName="user_link">
-		<obj-attribute name="id" type="java.lang.Long" db-attribute-path="id"/>
 		<obj-attribute name="title" type="java.lang.String" db-attribute-path="title"/>
 		<obj-attribute name="uri" type="java.lang.String" db-attribute-path="uri"/>
 	</obj-entity>
@@ -549,6 +547,14 @@
 	<obj-relationship name="userToUserPic" source="User" target="UserPic" db-relationship-path="UserToUserPic"/>
 	<obj-relationship name="userToUserPref" source="User" target="UserPref" db-relationship-path="UserToUserPref"/>
 	<obj-relationship name="userToUserStyle" source="User" target="UserStyle" db-relationship-path="UserToUserStyle"/>
+	<obj-relationship name="userBioToUser" source="UserBio" target="User" db-relationship-path="UserBioToUser"/>
+	<obj-relationship name="userContactToUser" source="UserContact" target="User" db-relationship-path="UserContactToUser"/>
+	<obj-relationship name="userFilesToUser" source="UserFiles" target="User" db-relationship-path="UserFilesToUser"/>
 	<obj-relationship name="userImagesAlbumMapArray" source="UserImages" target="UserImagesAlbumMap" db-relationship-path="userImagesAlbumMapArray"/>
 	<obj-relationship name="toUserImages" source="UserImagesAlbumMap" target="UserImages" db-relationship-path="toUserImages"/>
+	<obj-relationship name="userLinkToUser" source="UserLink" target="User" db-relationship-path="UserLinkToUser"/>
+	<obj-relationship name="userLocationToUser" source="UserLocation" target="User" db-relationship-path="UserLocationToUser"/>
+	<obj-relationship name="userPicToUser" source="UserPic" target="User" db-relationship-path="UserPicToUser"/>
+	<obj-relationship name="userPrefToUser" source="UserPref" target="User" db-relationship-path="UserPrefToUser"/>
+	<obj-relationship name="userStyleTOUser" source="UserStyle" target="User" db-relationship-path="UserStyleTOUser"/>
 </data-map>
