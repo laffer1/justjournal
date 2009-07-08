@@ -16,6 +16,7 @@
 <%@ page import="java.util.Collection" %>
 <%@ page import="java.util.Iterator" %>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+
 <head>
 <title>Just Journal: Free Online Journals</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>

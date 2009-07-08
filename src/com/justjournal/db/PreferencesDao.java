@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2005, 2008 Lucas Holt
+Copyright (c) 2004, 2005, 2008, 2009 Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -35,24 +35,21 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.db;
 
 import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import javax.sql.rowset.CachedRowSet;
 
 /**
- * User: laffer1
- * Date: Jan 16, 2004
- * Time: 12:07:17 PM
- *
+ * Manage user preferences
  * @author Lucas Holt
- * @version $Id: PreferencesDao.java,v 1.11 2008/08/01 14:35:47 laffer1 Exp $
+ * @version $Id: PreferencesDao.java,v 1.12 2009/07/08 01:13:59 laffer1 Exp $
  * @since 1.0
  *        <p/>
  *        1.3 Added show_avatar field select.
  *        1.2 Altered journal preferences query to include email address field.
  */
 public final class PreferencesDao {
-
-    private static Category log = Category.getInstance(PreferencesDao.class.getName());
+    private static final Logger log = Logger.getLogger(PreferencesDao.class);
     
     /**
      * Update the owner view only security feature.

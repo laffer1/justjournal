@@ -24,7 +24,7 @@
                         <xsl:attribute name="title">
                             <xsl:value-of select="$currentLogin"/>
                         </xsl:attribute>
-                        <img src="/images/user_class16.png" alt="user"/>
+                        <img src="/images/userclass_16.png" alt="user"/>
                     </a>
 
                     <a>

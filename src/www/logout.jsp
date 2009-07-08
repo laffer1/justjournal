@@ -12,7 +12,7 @@
     <title>JustJournal.com: Log Out</title>
     <link rel="stylesheet" type="text/css" href="layout.css" media="all"/>
     <link rel="stylesheet" type="text/css" href="font-normal.css" media="all"/>
-    <link rel="home" title="Home" href="/index.jsp"/>
+    <link rel="home" title="Home" href="index.jsp"/>
     <link rel="contents" title="Site Map" href="sitemap.jsp"/>
     <link rel="help" title="Technical Support" href="support/index.jsp"/>
 </head>
@@ -24,8 +24,7 @@
 <div id="content">
     <h2>Log Out</h2>
 
-    <p>Your are now logged out. You may
-        <a href="login.jsp">login</a> again.</p>
+    <p>Your are now logged out. You may <a href="login.jsp">login</a> again.</p>
 
 </div>
 
