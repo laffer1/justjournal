@@ -54,13 +54,14 @@ import java.io.IOException;
  * Time: 9:04:00 PM
  *
  * @author Lucas Holt
- * @version $Id: JustJournalBaseServlet.java,v 1.16 2009/05/30 18:22:21 laffer1 Exp $
+ * @version $Id: JustJournalBaseServlet.java,v 1.17 2009/07/11 02:03:43 laffer1 Exp $
  * @since 1.0
 
  */
 public class JustJournalBaseServlet extends HttpServlet {
     protected static final char endl = '\n';  /* end of line character for output */
     protected Settings set;  /* Global Just Journal web app settings */
+
 
     /**
      * Initializes the servlet.
@@ -99,7 +100,7 @@ public class JustJournalBaseServlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response, boolean head)
             throws java.io.IOException {
-        String contentType = "text/html; charset=utf-8";
+        final String contentType = "text/html; charset=utf-8";
         final StringBuffer sb = new StringBuffer(512);
         final HttpSession session = request.getSession(true);
 

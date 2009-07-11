@@ -35,7 +35,7 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.db;
 
 import com.sun.rowset.CachedRowSetImpl;
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -49,17 +49,16 @@ import java.sql.*;
  * A simple datatbase connectivity solution.  Depends on Sun's beta CachedRowSet.
  *
  * @author Lucas Holt
- * @version $Id: SQLHelper.java,v 1.8 2008/09/02 23:01:38 laffer1 Exp $
+ * @version $Id: SQLHelper.java,v 1.9 2009/07/11 02:03:43 laffer1 Exp $
  * @since 1.0
  */
 public final class SQLHelper {
-    private static final Category log = Category.getInstance(SQLHelper.class.getName());
-
+    private static final Logger log = Logger.getLogger(SQLHelper.class);
     private static Context ctx = null;
     private static DataSource ds = null;
     private static final String DbEnv = "java:comp/env/jdbc/jjDB";
 
-    SQLHelper() {
+    static {
         try {
             ctx = new InitialContext();
             ds = (DataSource) ctx.lookup(DbEnv);
@@ -210,9 +209,9 @@ public final class SQLHelper {
 
 
     public static String executeXMLResult(final String commandText)
-            throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+            throws SQLException {
         StringWriter sw = new StringWriter();
-        Connection conn = null;
+        Connection conn;
 
         conn = getConn();
         conn.setReadOnly( true );

@@ -35,7 +35,7 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.core;
 
 import com.justjournal.db.SQLHelper;
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import javax.sql.rowset.CachedRowSet;
 
@@ -44,11 +44,10 @@ import javax.sql.rowset.CachedRowSet;
  * other information.
  *
  * @author Lucas Holt
- * @version $Id: Statistics.java,v 1.6 2008/08/01 14:35:54 laffer1 Exp $
+ * @version $Id: Statistics.java,v 1.7 2009/07/11 02:03:43 laffer1 Exp $
  */
 public class Statistics {
-
-    private static Category log = Category.getInstance(Statistics.class.getName());
+    private static Logger log = Logger.getLogger(Statistics.class.getName());
 
     /**
      * Determine the number of users registered.
@@ -170,7 +169,7 @@ public class Statistics {
      * Perform a sql query returning a scalar int value
      * typically form a count(*)
      *
-     * @param sql
+     * @param sql  query to perform
      * @return int scalar from sql query
      */
     private int sqlCount(String sql) {
