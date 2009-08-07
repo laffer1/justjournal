@@ -1,6 +1,6 @@
 package com.justjournal.core;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,8 +15,8 @@ import java.net.URLEncoder;
  * Date: May 5, 2008
  * Time: 5:04:47 AM
  */
-public class TrackbackOut {
-     private static Category log = Category.getInstance(TrackbackOut.class.getName());
+public final class TrackbackOut {
+    private static Logger log = Logger.getLogger(TrackbackOut.class.getName());
 
     private String entryUrl;
     private String targetUrl;
@@ -80,48 +80,46 @@ public class TrackbackOut {
     }
 
     public boolean ping() {
-           URL u;
-           URLConnection uc;
-           String address;
+        URL u;
+        URLConnection uc;
+        String address;
 
         // TODO: switch to POST request!
-        
-           try {
-               // build uri
-               address = targetUrl + "?title=" + URLEncoder.encode(title, "UTF-8") +
-                       "&url=" + URLEncoder.encode(entryUrl, "UTF-8") +
-                       "&blog_name=" + URLEncoder.encode(blogName, "UTF-8") +
-                       "&excerpt=" + URLEncoder.encode(excerpt, "UTF-8");
+        try {
+            // build uri
+            address = targetUrl + "?title=" + URLEncoder.encode(title, "UTF-8") +
+                    "&url=" + URLEncoder.encode(entryUrl, "UTF-8") +
+                    "&blog_name=" + URLEncoder.encode(blogName, "UTF-8") +
+                    "&excerpt=" + URLEncoder.encode(excerpt, "UTF-8");
 
-               URI tmpuri = new URI(address);
-               u = tmpuri.toURL();
-           } catch (Exception me) {
-               log.error("Couldn't create URL. " + me.getMessage());
-               return false;
-           }
+            URI tmpuri = new URI(address);
+            u = tmpuri.toURL();
+        } catch (Exception me) {
+            log.error("Couldn't create URL. " + me.getMessage());
+            return false;
+        }
 
-           log.debug(u.toExternalForm());
+        log.debug(u.toExternalForm());
 
-           try {
-               uc = u.openConnection();
-               BufferedReader in = new BufferedReader(new InputStreamReader(
-                       uc.getInputStream()));
+        try {
+            uc = u.openConnection();
+            BufferedReader in = new BufferedReader(new InputStreamReader(
+                    uc.getInputStream()));
 
-               String inputLine;
-               String input = "";
-               while ((inputLine = in.readLine()) != null)
-                   input += inputLine;
+            String inputLine;
+            String input = "";
+            while ((inputLine = in.readLine()) != null)
+                input += inputLine;
 
-               in.close();
+            in.close();
 
-               log.debug(entryUrl + "\n" + input);
+            log.debug(entryUrl + "\n" + input);
 
-               return true; // todo: parse result and adjust this as necessary.
-
-           } catch (IOException e) {
-               log.debug("IO Error: " + e.getMessage());
-               return false;
-           }
-       }
+            return true; // todo: parse result and adjust this as necessary.
+        } catch (IOException e) {
+            log.debug("IO Error: " + e.getMessage());
+            return false;
+        }
+    }
 
 }

@@ -43,7 +43,6 @@ import com.justjournal.db.DateTimeBean;
 import com.justjournal.db.EntryDAO;
 import com.justjournal.db.EntryTo;
 import com.justjournal.utility.StringUtil;
-import org.apache.log4j.Category;
 import org.apache.log4j.Logger;
 
 import java.io.Serializable;
@@ -55,7 +54,7 @@ import java.util.regex.Pattern;
  * User: laffer1
  * Date: Dec 3, 2007
  * Time: 4:21:42 PM
- * $Id: Blogger.java,v 1.17 2009/05/16 03:15:27 laffer1 Exp $
+ * $Id: Blogger.java,v 1.18 2009/08/07 02:31:43 laffer1 Exp $
  * <p/>
  * A blogger 1 compatible interface exposed by XML-RPC
  * <p/>

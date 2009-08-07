@@ -35,7 +35,7 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.db;
 
 import com.justjournal.utility.DateConvert;
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -49,11 +49,11 @@ import java.util.TimeZone;
  * TODO: implement time zones completely.  Add items to interface.
  *
  * @author Lucas Holt
- * @version $Id: DateTimeBean.java,v 1.9 2008/02/18 03:57:06 laffer1 Exp $
+ * @version $Id: DateTimeBean.java,v 1.10 2009/08/07 02:31:43 laffer1 Exp $
  * @since 1.0
  */
 public final class DateTimeBean implements DateTime {
-    private static Category log = Category.getInstance(DateTimeBean.class.getName());
+    private static Logger log = Logger.getLogger(DateTimeBean.class.getName());
 
     // default is epoch -1 sec
     private int day = 31;
@@ -209,6 +209,7 @@ public final class DateTimeBean implements DateTime {
      *
      * @return raw date
      */
+    @Override
     public String toString() {
         final StringBuffer sb = new StringBuffer();
 

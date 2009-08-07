@@ -34,7 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import javax.sql.rowset.CachedRowSet;
 
@@ -45,7 +45,7 @@ import javax.sql.rowset.CachedRowSet;
  */
 public final class ResourcesDAO {
 
-    private static final Category log = Category.getInstance(ResourcesDAO.class.getName());
+    private static final Logger log = Logger.getLogger(ResourcesDAO.class.getName());
 
     public static final boolean add(ResourceTo res) {
 

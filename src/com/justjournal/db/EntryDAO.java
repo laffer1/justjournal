@@ -36,7 +36,7 @@ package com.justjournal.db;
 
 import com.justjournal.User;
 import com.justjournal.utility.StringUtil;
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import javax.sql.rowset.CachedRowSet;
 import java.util.ArrayList;
@@ -49,7 +49,7 @@ import java.util.ListIterator;
  * one is needed.
  *
  * @author Lucas Holt
- * @version $Id: EntryDAO.java,v 1.28 2008/11/11 19:27:29 laffer1 Exp $
+ * @version $Id: EntryDAO.java,v 1.29 2009/08/07 02:31:43 laffer1 Exp $
  * @see EntryTo
  * @since 1.0
  *        User: laffer1
@@ -63,7 +63,7 @@ public final class EntryDAO {
     private final static int MAX_ENTRIES = 20;
     private final static int MAX_FRIENDS = 15;
 
-    private static final Category log = Category.getInstance(EntryDAO.class.getName());
+    private static final Logger log = Logger.getLogger(EntryDAO.class.getName());
 
     /**
      * Adds a journal entry to the data store.
@@ -862,9 +862,9 @@ public final class EntryDAO {
 
     /**
      * Count the number of blog entries this user has made.
-     * @param userName
-     * @return
-     * @throws Exception
+     * @param userName user to get blog entries for
+     * @return number of entries
+     * @throws Exception data access
      */
     public static int entryCount( final String userName ) throws Exception {
         String sqlStatement;
@@ -982,14 +982,12 @@ public final class EntryDAO {
         }
 
         try {
-            if (log.isDebugEnabled())
-                log.debug("viewCalendarDay: execute sql statement");
+            log.debug("viewCalendarDay: execute sql statement");
 
             rs = SQLHelper.executeResultSet(sqlStatement);
 
             while (rs.next()) {
-                if (log.isDebugEnabled())
-                    log.debug("viewCalendarDay: create EntryTo object and populate it.");
+                log.debug("viewCalendarDay: create EntryTo object and populate it.");
 
                 et = new EntryTo();
 
@@ -1023,8 +1021,7 @@ public final class EntryDAO {
 
                 et.setTags(getTags(rs.getInt("entryid")));
 
-                if (log.isDebugEnabled())
-                    log.debug("viewCalendarDay: ET contains " + et.toString());
+                log.debug("viewCalendarDay: ET contains " + et.toString());
 
                 entries.add(et);
             }

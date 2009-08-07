@@ -38,8 +38,6 @@ import com.justjournal.User;
 import com.justjournal.db.CommentDao;
 import com.justjournal.db.EntryDAO;
 import com.justjournal.db.EntryTo;
-import org.apache.log4j.Category;
-
 import java.util.Collection;
 
 /**
@@ -49,7 +47,6 @@ import java.util.Collection;
  * Time: 3:25:21 PM
  */
 public class ViewComment extends ControllerAuth {
-    private static Category log = Category.getInstance(ViewComment.class.getName());
 
     protected EntryTo entry;
     protected Collection comments;
@@ -79,11 +76,8 @@ public class ViewComment extends ControllerAuth {
 
 
     public String perform() throws Exception {
-        CommentDao cdao = new CommentDao();
-        EntryDAO edao = new EntryDAO();
-
-        this.comments = cdao.view(entryId);
-        this.entry = edao.viewSingle(entryId, false);
+        this.comments = CommentDao.view(entryId);
+        this.entry = EntryDAO.viewSingle(entryId, false);
 
         User user = new User(entry.getUserName());
 

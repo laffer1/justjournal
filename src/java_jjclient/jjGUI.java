@@ -261,6 +261,7 @@ public class jjGUI implements ActionListener {
      */
     private boolean login() {
         String uname = username.getText();
+        //noinspection deprecation
         String pword = password.getText();
 
         jj_auth jjLogin = new jj_auth(uname, pword);
@@ -279,7 +280,7 @@ public class jjGUI implements ActionListener {
 
     /**
      * Overrides event handling
-     * @param e
+     * @param e the action event performed
      */
     public void actionPerformed(ActionEvent e) {
         boolean result = false;
@@ -310,6 +311,7 @@ public class jjGUI implements ActionListener {
      * @return true if update was successful
      */
     private boolean update () {
+        //noinspection deprecation
         String strPassword = password.getText();
         jjUpdate updateJJ = new jjUpdate(username.getText(), strPassword);
         boolean result = updateJJ.update(subject.getText(), body.getText(),

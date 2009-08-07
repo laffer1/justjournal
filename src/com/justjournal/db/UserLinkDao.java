@@ -34,7 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import javax.sql.rowset.CachedRowSet;
 import java.util.ArrayList;
@@ -43,12 +43,12 @@ import java.util.Collection;
 /**
  * Data access for User Link list
  * @see UserLinkTo
- * @version $Id: UserLinkDao.java,v 1.11 2008/09/02 20:28:08 laffer1 Exp $
+ * @version $Id: UserLinkDao.java,v 1.12 2009/08/07 02:31:43 laffer1 Exp $
  * @author Lucas Holt
  */
 public final class UserLinkDao {
     
-     private static final Category log = Category.getInstance(UserLinkDao.class.getName());
+     private static final Logger log = Logger.getLogger(UserLinkDao.class.getName());
 
     /**
      * Add a link to the user link list.
