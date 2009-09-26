@@ -48,7 +48,7 @@ import org.apache.log4j.Logger;
  * userName.
  *
  * @author Lucas Holt
- * @version $Id: User.java,v 1.17 2009/05/16 00:40:02 laffer1 Exp $
+ * @version $Id: User.java,v 1.18 2009/09/26 22:11:28 laffer1 Exp $
  *          Date: Jan 4, 2004
  *          Time: 9:59:35 PM
  * @since 1.0
@@ -71,6 +71,7 @@ public final class User {
 
     private String emailAddress = "";
     private boolean showAvatar = false;
+    private boolean pingServices = false;  // technorati et al
 
     private String journalName = "";
     private DateTime lastLogin;
@@ -79,14 +80,14 @@ public final class User {
     public User(final String userName) throws Exception {
         setUserName(userName);
 
-        UserTo ut = UserDao.view(userName);
+        final UserTo ut = UserDao.view(userName);
 
         setUserId(ut.getId());
         setFirstName(ut.getName());
         lastLogin = ut.getLastLogin();
 
         try {
-            CachedRowSet RS = PreferencesDao.ViewJournalPreferences(userName);
+            final CachedRowSet RS = PreferencesDao.ViewJournalPreferences(userName);
 
             if (RS.next()) {
                 this.styleId = RS.getInt("style");
@@ -133,6 +134,12 @@ public final class User {
                 } else {
                     this.showAvatar = false;
                 }
+
+                if (RS.getString("ping_services").equals("Y"))
+                    this.pingServices = true;
+                else
+                    this.pingServices = false;
+
             }
 
             RS.close();
@@ -142,17 +149,17 @@ public final class User {
         }
     }
 
-    public User(int userId) throws Exception {
+    public User(final int userId) throws Exception {
         setUserId(userId);
 
-        UserTo ut = UserDao.view(userId);
+        final UserTo ut = UserDao.view(userId);
 
         setUserName(ut.getUserName());
         setFirstName(ut.getName());
         lastLogin = ut.getLastLogin();
 
         try {
-            CachedRowSet RS = PreferencesDao.ViewJournalPreferences(userName);
+            final CachedRowSet RS = PreferencesDao.ViewJournalPreferences(userName);
 
             if (RS.next()) {
                 this.styleId = RS.getInt("style");
@@ -199,6 +206,11 @@ public final class User {
                 } else {
                     this.showAvatar = false;
                 }
+
+                if (RS.getString("ping_services").equals("Y"))
+                    this.pingServices = true;
+                else
+                    this.pingServices = false;
             }
 
             RS.close();
@@ -208,7 +220,7 @@ public final class User {
         }
     }
 
-    public User(Integer userId) {
+    public User(final Integer userId) {
         setUserId(userId);
     }
 
@@ -366,7 +378,7 @@ public final class User {
         return this.allowSpider;
     }
 
-    public boolean isSpiderAllowed(boolean allowSpider) {
+    public boolean isSpiderAllowed(final boolean allowSpider) {
         this.allowSpider = allowSpider;
         return allowSpider;
     }
@@ -375,7 +387,7 @@ public final class User {
         return this.privateJournal;
     }
 
-    public boolean isPrivateJournal(boolean privateJournal) {
+    public boolean isPrivateJournal(final boolean privateJournal) {
         this.privateJournal = privateJournal;
         return privateJournal;
     }
@@ -384,7 +396,7 @@ public final class User {
         return emoticon;
     }
 
-    public void setEmoticon(int value) {
+    public void setEmoticon(final int value) {
         this.emoticon = value;
     }
 
@@ -392,7 +404,7 @@ public final class User {
         return this.styleId;
     }
 
-    public void setStyleId(int styleId) {
+    public void setStyleId(final int styleId) {
         this.styleId = styleId;
     }
 
@@ -400,7 +412,7 @@ public final class User {
         return this.styleDoc;
     }
 
-    public void setStyleDoc(String doc) {
+    public void setStyleDoc(final String doc) {
         this.styleDoc = doc;
     }
 
@@ -408,7 +420,7 @@ public final class User {
         return this.styleUrl;
     }
 
-    public void setStyleUrl(String url) {
+    public void setStyleUrl(final String url) {
         this.styleUrl = url;
     }
 
@@ -416,7 +428,7 @@ public final class User {
         return this.emailAddress;
     }
 
-    public void setEmailAddress(String emailAddress) {
+    public void setEmailAddress(final String emailAddress) {
         this.emailAddress = emailAddress;
     }
 
@@ -424,13 +436,21 @@ public final class User {
         return showAvatar;
     }
 
-    public void showAvatar(boolean showAvatar) {
+    public void showAvatar(final boolean showAvatar) {
         this.showAvatar = showAvatar;
+    }
+
+    public boolean pingServices() {
+        return pingServices;
+    }
+
+    public void pingServices(final boolean pingServices) {
+        this.pingServices = pingServices;
     }
 
     public String toString() {
         return Integer.toString(userId) + "," + userName + "," + type +
-                "," + firstName + "," + startYear + "," + journalName;
+                "," + firstName + "," + startYear + "," + journalName + "," + pingServices;
     }
 
     /**
@@ -449,7 +469,7 @@ public final class User {
         return biography;
     }
 
-    public void setBiography(String biography) {
+    public void setBiography(final String biography) {
         this.biography = biography;
     }
 
@@ -465,5 +485,6 @@ public final class User {
         emailAddress = "";
         journalName = "";
         biography = "";
+        pingServices = false;
     }
 }

@@ -42,7 +42,7 @@ import javax.sql.rowset.CachedRowSet;
 /**
  * Manage user preferences
  * @author Lucas Holt
- * @version $Id: PreferencesDao.java,v 1.12 2009/07/08 01:13:59 laffer1 Exp $
+ * @version $Id: PreferencesDao.java,v 1.13 2009/09/26 22:11:28 laffer1 Exp $
  * @since 1.0
  *        <p/>
  *        1.3 Added show_avatar field select.
@@ -104,7 +104,7 @@ public final class PreferencesDao {
         String sqlStatement =
                 "SELECT user.name As name, user.id As id, user.since as since, up.style As style, up.allow_spider, " +
                         "up.owner_view_only, st.url as cssurl, st.doc as cssdoc, uc.email as email, " +
-                        "up.show_avatar as show_avatar, up.journal_name as journal_name, ubio.content as bio FROM user, user_bio as ubio, user_pref As up, user_style as st, user_contact As uc " +
+                        "up.show_avatar as show_avatar, up.journal_name as journal_name, ubio.content as bio, up.ping_services FROM user, user_bio as ubio, user_pref As up, user_style as st, user_contact As uc " +
                         "WHERE user.username='" + userName + "' AND user.id = up.id AND user.id=st.id AND user.id=uc.id AND user.id = ubio.id LIMIT 1;";
 
         try {
