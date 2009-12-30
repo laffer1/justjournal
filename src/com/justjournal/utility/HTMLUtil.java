@@ -1,7 +1,7 @@
 package com.justjournal.utility;
 
 /*---------------------------------------------------------------------------*\
-  $Id: HTMLUtil.java,v 1.7 2007/03/21 01:44:11 laffer1 Exp $
+  $Id: HTMLUtil.java,v 1.8 2009/12/30 18:06:42 laffer1 Exp $
   ---------------------------------------------------------------------------
   This software is released under a Berkeley-style license:
 
@@ -31,12 +31,17 @@ import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+import java.io.ByteArrayOutputStream;
+import java.io.ByteArrayInputStream;
+
+import org.apache.log4j.Logger;
+import org.w3c.tidy.Tidy;
 
 /**
  * Static class containing miscellaneous HTML-related utility methods.
  *
  * @author Copyright &copy; 2004 Brian M. Clapper
- * @version <tt>$Revision: 1.7 $</tt>
+ * @version <tt>$Revision: 1.8 $</tt>
  */
 public final class HTMLUtil {
     /*----------------------------------------------------------------------*\
@@ -47,6 +52,8 @@ public final class HTMLUtil {
      * Resource bundle containing the character entity code mappings.
      */
     private static final String BUNDLE_NAME = "com.justjournal.utility.HTMLUtil";
+    private static final Logger log = Logger.getLogger( HTMLUtil.class );
+    
 
     /*----------------------------------------------------------------------*\
                             Private Data Items
@@ -339,5 +346,60 @@ public final class HTMLUtil {
             return mimeType;
         }
     }
+
+    /**
+         * Clean HTML and convert it to XHTML strict using JTidy.  A null or empty string will return an empty string instead
+         * of an empty HTML document.
+         *
+         * @param input input string
+         * @return XHTML strict output
+         */
+        public static String clean( final String input )
+        {
+            if (input == null || input.length() < 1)
+                return "";
+
+            final ByteArrayInputStream bais = new ByteArrayInputStream( input.getBytes() );
+            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            final Tidy tidy = new Tidy();
+            String output;
+
+            try
+            {
+                tidy.setXHTML( true );
+                tidy.setDocType( "strict" );
+                tidy.setMakeClean( true );
+                tidy.setQuiet( true );
+                tidy.setIndentContent( true );
+                tidy.setSmartIndent( true );
+                tidy.setIndentAttributes( true );
+                tidy.setWord2000( true );
+                tidy.parse( bais, baos );
+                output = baos.toString();
+            }
+            catch (Exception e)
+            {
+                log.error( e );
+                output = input;  // if an error occurs, use the orignal input
+            }
+
+            try
+            {
+                bais.close();
+            }
+            catch (Exception e)
+            {
+                log.error( "Error closing input stream for HTMLUtil.clean():" + e.getMessage() );
+            }
+            try {
+                baos.close();
+            }
+            catch (Exception e)
+            {
+                log.error( "Error closing output stream for HTMLUtil.clean():" + e.getMessage() );
+            }
+            return output;
+        }
+
 }
 
