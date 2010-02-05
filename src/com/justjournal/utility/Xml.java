@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2003-2006, Lucas Holt
+Copyright (c) 2003-2006, 2010 Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -35,7 +35,9 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.utility;
 
 /**
+ * XML Utilities
  * @author Lucas Holt
+ * @version $Id: Xml.java,v 1.9 2010/02/05 03:11:24 laffer1 Exp $
  *         User: laffer1
  *         Date: Sep 24, 2003
  *         Time: 11:39:50 AM
@@ -52,7 +54,7 @@ public final class Xml {
      * It currently does not handle numerical escapes as
      * defined in XML either. &#xA0; etc
      *
-     * @param input
+     * @param input dirty xml unescaped document
      * @return A string with xml friendly escaped sequences.
      */
     public static String cleanString(final String input) {
@@ -73,7 +75,8 @@ public final class Xml {
         work = StringUtil.replace(work, '"', "&quot;");
         work = StringUtil.replace(work, '<', "&lt;");
         work = StringUtil.replace(work, '>', "&gt;");
-        work = StringUtil.replace(work, '\'', "&apos;");
+        // bastards.. this is valid in XML but not in HTML work = StringUtil.replace(work, '\'', "&apos;");
+        work = StringUtil.replace(work, '\'', "&#39;");
 
         return work;
     }
