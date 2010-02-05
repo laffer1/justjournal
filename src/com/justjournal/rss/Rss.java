@@ -39,6 +39,7 @@ import com.justjournal.db.SQLHelper;
 import com.justjournal.db.DateTime;
 import com.justjournal.utility.DateConvert;
 import com.justjournal.utility.Xml;
+import com.justjournal.utility.HTMLUtil;
 
 import javax.sql.rowset.CachedRowSet;
 import java.text.SimpleDateFormat;
@@ -51,7 +52,7 @@ import org.apache.log4j.Logger;
  * Implements RSS 2
  *
  * @author Lucas Holt
- * @version $Id: Rss.java,v 1.11 2009/05/16 03:15:27 laffer1 Exp $
+ * @version $Id: Rss.java,v 1.12 2010/02/05 01:50:06 laffer1 Exp $
  * @since 1.0
  *        User: laffer1
  *        Date: Aug 27, 2003
@@ -160,7 +161,8 @@ public final class Rss {
                 item.setTruncateFields(false);
                 item.setTitle(o.getSubject());
                 item.setLink("http://www.justjournal.com/users/" + o.getUserName());
-                item.setDescription(o.getBody());
+                // RSS feeds don't like &apos; and friends.  try to go unicode
+                item.setDescription(HTMLUtil.convertCharacterEntities(o.getBody()));
                 item.setGuid("http://www.justjournal.com/users/" + o.getUserName() + "/entry/" + o.getId());
                 item.setPubDate(o.getDate().toPubDate());
                 DateTime d = o.getDate();
