@@ -1,7 +1,7 @@
 package com.justjournal.utility;
 
 /*---------------------------------------------------------------------------*\
-  $Id: HTMLUtil.java,v 1.8 2009/12/30 18:06:42 laffer1 Exp $
+  $Id: HTMLUtil.java,v 1.9 2010/02/05 01:46:08 laffer1 Exp $
   ---------------------------------------------------------------------------
   This software is released under a Berkeley-style license:
 
@@ -26,22 +26,22 @@ package com.justjournal.utility;
   a pointer to or a copy of the original.
 \*---------------------------------------------------------------------------*/
 
+import org.apache.log4j.Logger;
+import org.w3c.tidy.Tidy;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
-import java.io.ByteArrayOutputStream;
-import java.io.ByteArrayInputStream;
-
-import org.apache.log4j.Logger;
-import org.w3c.tidy.Tidy;
 
 /**
  * Static class containing miscellaneous HTML-related utility methods.
  *
  * @author Copyright &copy; 2004 Brian M. Clapper
- * @version <tt>$Revision: 1.8 $</tt>
+ * @version <tt>$Revision: 1.9 $</tt>
  */
 public final class HTMLUtil {
     /*----------------------------------------------------------------------*\
@@ -52,8 +52,7 @@ public final class HTMLUtil {
      * Resource bundle containing the character entity code mappings.
      */
     private static final String BUNDLE_NAME = "com.justjournal.utility.HTMLUtil";
-    private static final Logger log = Logger.getLogger( HTMLUtil.class );
-    
+    private static final Logger log = Logger.getLogger(HTMLUtil.class);
 
     /*----------------------------------------------------------------------*\
                             Private Data Items
@@ -62,8 +61,7 @@ public final class HTMLUtil {
     private static ResourceBundle resourceBundle = null;
 
     /**
-     * For regular expression substitution. Instantiated first time it's
-     * needed.
+     * For regular expression substitution. Instantiated first time it's needed.
      */
     private static Pattern entityPattern = null;
 
@@ -79,18 +77,16 @@ public final class HTMLUtil {
     \*----------------------------------------------------------------------*/
 
     /**
-     * Removes all HTML element tags from a string, leaving just the character
-     * data. This method does <b>not</b> touch any inline HTML character
-     * entity codes. Use
-     * {@link #convertCharacterEntities convertCharacterEntities()}
-     * to convert HTML character entity codes.
+     * Removes all HTML element tags from a string, leaving just the character data. This method does <b>not</b> touch
+     * any inline HTML character entity codes. Use {@link #convertCharacterEntities convertCharacterEntities()} to
+     * convert HTML character entity codes.
      *
      * @param s the string to adjust
      * @return the resulting, possibly modified, string
      * @see #convertCharacterEntities
      */
     public static String stripHTMLTags(String s) {
-        char[]         ch = s.toCharArray();
+        char[] ch = s.toCharArray();
         boolean inElement = false;
         StringBuffer buf = new StringBuffer();
 
@@ -108,7 +104,7 @@ public final class HTMLUtil {
                     break;
 
                 default:
-                    if (! inElement)
+                    if (!inElement)
                         buf.append(ch[i]);
                     break;
             }
@@ -118,8 +114,7 @@ public final class HTMLUtil {
     }
 
     /**
-     * Converts all inline HTML character entities (c.f.,
-     * <a href="http://www.w3.org/TR/REC-html40/sgml/entities.html">http://www.w3.org/TR/REC-html40/sgml/entities.html</a>)
+     * Converts all inline HTML character entities (c.f., <a href="http://www.w3.org/TR/REC-html40/sgml/entities.html">http://www.w3.org/TR/REC-html40/sgml/entities.html</a>)
      * to their Unicode character counterparts, if possible.
      *
      * @param s the string to convert
@@ -158,7 +153,7 @@ public final class HTMLUtil {
             String preMatch;
             String postMatch;
 
-            if (! matcher.find())
+            if (!matcher.find())
                 break;
 
             match = matcher.group(1);
@@ -222,12 +217,9 @@ public final class HTMLUtil {
     /**
      * Convenience method to convert embedded HTML to text. This method:
      * <p/>
-     * <ul>
-     * <li> Strips embedded HTML tags via a call to
-     * {@link #stripHTMLTags #stripHTMLTags()}
-     * <li> Uses {@link #convertCharacterEntities convertCharacterEntities()}
-     * to convert HTML entity codes to appropriate Unicode characters.
-     * </ul>
+     * <ul> <li> Strips embedded HTML tags via a call to {@link #stripHTMLTags #stripHTMLTags()} <li> Uses {@link
+     * #convertCharacterEntities convertCharacterEntities()} to convert HTML entity codes to appropriate Unicode
+     * characters. </ul>
      *
      * @param s the string to parse
      * @return the resulting, possibly modified, string
@@ -255,8 +247,7 @@ public final class HTMLUtil {
     }
 
     /**
-     * Looks through a string for Uniform Resource Indicators (URI)
-     * and converts them to HTML a tags.  (hyperlinks)
+     * Looks through a string for Uniform Resource Indicators (URI) and converts them to HTML a tags.  (hyperlinks)
      *
      * @param input Text containing URIs
      * @return Text with HTML a tags added.
@@ -311,8 +302,7 @@ public final class HTMLUtil {
     }
 
     /**
-     * Determine the correct mime type to send for content type in an
-     * HTTP response for XHTML documents.
+     * Determine the correct mime type to send for content type in an HTTP response for XHTML documents.
      * <p/>
      * Does not handle q values currently.
      * <p/>
@@ -348,58 +338,67 @@ public final class HTMLUtil {
     }
 
     /**
-         * Clean HTML and convert it to XHTML strict using JTidy.  A null or empty string will return an empty string instead
-         * of an empty HTML document.
-         *
-         * @param input input string
-         * @return XHTML strict output
-         */
-        public static String clean( final String input )
-        {
-            if (input == null || input.length() < 1)
-                return "";
+     * Clean HTML and convert it to XHTML strict using JTidy.  A null or empty string will return an empty string
+     * instead of an empty HTML document.
+     *
+     * @param input input string
+     * @return XHTML strict output
+     */
+    public static String clean(final String input) {
+        return clean(input, true);
+    }
 
-            final ByteArrayInputStream bais = new ByteArrayInputStream( input.getBytes() );
-            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            final Tidy tidy = new Tidy();
-            String output;
 
-            try
-            {
-                tidy.setXHTML( true );
-                tidy.setDocType( "strict" );
-                tidy.setMakeClean( true );
-                tidy.setQuiet( true );
-                tidy.setIndentContent( true );
-                tidy.setSmartIndent( true );
-                tidy.setIndentAttributes( true );
-                tidy.setWord2000( true );
-                tidy.parse( bais, baos );
-                output = baos.toString();
-            }
-            catch (Exception e)
-            {
-                log.error( e );
-                output = input;  // if an error occurs, use the orignal input
-            }
+    /**
+     * Clean HTML and convert it to XHTML strict using JTidy.  A null or empty string will return an empty string
+     * instead of an empty HTML document.
+     *
+     * @param input        input string
+     * @param fullDocument full document or just body tag contents
+     * @return XHTML strict output
+     */
+    public static String clean(final String input, final boolean fullDocument) {
+        if (input == null || input.length() < 1)
+            return "";
 
-            try
-            {
-                bais.close();
-            }
-            catch (Exception e)
-            {
-                log.error( "Error closing input stream for HTMLUtil.clean():" + e.getMessage() );
-            }
-            try {
-                baos.close();
-            }
-            catch (Exception e)
-            {
-                log.error( "Error closing output stream for HTMLUtil.clean():" + e.getMessage() );
-            }
-            return output;
+        final ByteArrayInputStream bais = new ByteArrayInputStream(input.getBytes());
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final Tidy tidy = new Tidy();
+        String output;
+
+        try {
+            tidy.setPrintBodyOnly(!fullDocument);
+            tidy.setXHTML(true);
+            tidy.setDocType("strict");
+            tidy.setMakeClean(true);
+            tidy.setQuiet(true);
+            tidy.setShowWarnings(false);
+            tidy.setIndentContent(true);
+            tidy.setSmartIndent(true);
+            tidy.setIndentAttributes(true);
+            tidy.setWord2000(true);
+            tidy.parse(bais, baos);
+            output = baos.toString();
         }
+        catch (Exception e) {
+            log.error(e);
+            output = input;  // if an error occurs, use the orignal input
+        }
+
+        try {
+            bais.close();
+        }
+        catch (Exception e) {
+            log.error("Error closing input stream for HTMLUtil.clean():" + e.getMessage());
+        }
+        try {
+            baos.close();
+        }
+        catch (Exception e) {
+            log.error("Error closing output stream for HTMLUtil.clean():" + e.getMessage());
+        }
+        return output;
+    }
 
 }
 
