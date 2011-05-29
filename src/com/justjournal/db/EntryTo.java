@@ -72,7 +72,7 @@ public final class EntryTo {
     private int attachImage = 0;
     private int attachFile = 0;
 
-    private ArrayList tags = new ArrayList();
+    private ArrayList<String> tags = new ArrayList<String>();
 
 
     /**
@@ -166,7 +166,7 @@ public final class EntryTo {
      * more thoroughly.  DateTimeBean will throw
      * an exception if the format is wrong though!
      *
-     * @param date
+     * @param date date in format YYYY-MM-DD hh:mm
      * @throws IllegalArgumentException null or len < 6
      * @see DateTimeBean
      */
@@ -192,7 +192,7 @@ public final class EntryTo {
     /**
      * Set the date using a <code>DateTimeBean</code>
      *
-     * @param date
+     * @param date DateTimeBean
      * @see DateTimeBean
      */
     public void setDate(DateTime date) {
@@ -358,16 +358,16 @@ public final class EntryTo {
         this.autoFormat = autoFormat;
     }
 
-    public Collection getTags() {
+    public Collection<String> getTags() {
         return tags;
     }
 
-    public void setTags(ArrayList tag) {
+    public void setTags(ArrayList<String> tag) {
         this.tags = tag;
     }
 
     public String toString() {
-        StringBuffer output = new StringBuffer();
+        StringBuilder output = new StringBuilder();
 
         output.append("entry id: ");
         output.append(id);
