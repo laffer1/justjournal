@@ -52,7 +52,7 @@ import org.apache.log4j.Logger;
  * Implements RSS 2
  *
  * @author Lucas Holt
- * @version $Id: Rss.java,v 1.12 2010/02/05 01:50:06 laffer1 Exp $
+ * @version $Id: Rss.java,v 1.13 2011/05/29 22:32:59 laffer1 Exp $
  * @since 1.0
  *        User: laffer1
  *        Date: Aug 27, 2003
@@ -201,7 +201,7 @@ public final class Rss {
                 item.setGuid("http://www.justjournal.com/AlbumImage?id=" + rs.getString("id"));
                 item.setEnclosureURL("http://www.justjournal.com/AlbumImage?id=" + rs.getString("id"));
                 item.setEnclosureType(rs.getString("mimetype").trim());
-                item.setEnclosureLength(new Integer(rs.getInt("imglen") / 8).toString());
+                item.setEnclosureLength(Integer.toString(rs.getInt("imglen") / 8));
                 //item.setPubDate();
                 Add(item);
             }
@@ -226,7 +226,7 @@ public final class Rss {
 
     public String toXml() {
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         sb.append("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n");
 

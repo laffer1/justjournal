@@ -10,7 +10,7 @@ import java.util.*;
  * Create an atom feed.
  *
  * @author Lucas Holt
- * @version $Id: AtomFeed.java,v 1.4 2008/01/05 16:54:12 laffer1 Exp $
+ * @version $Id: AtomFeed.java,v 1.5 2011/05/29 22:32:59 laffer1 Exp $
  */
 public final class AtomFeed {
 
@@ -72,7 +72,7 @@ public final class AtomFeed {
                 item.setUpdated(o.getDate().toRFC3339());
                 Add(item);
             }
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
     }
 
@@ -90,7 +90,7 @@ public final class AtomFeed {
 
     public String toXml() {
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 

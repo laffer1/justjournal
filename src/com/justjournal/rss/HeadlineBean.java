@@ -35,7 +35,6 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.rss;
 
 import com.justjournal.utility.Xml;
-import org.apache.log4j.Category;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 
@@ -51,7 +50,7 @@ import java.util.regex.Pattern;
  * converts it to HTML.
  *
  * @author Lucas Holt
- * @version $Id: HeadlineBean.java,v 1.6 2009/05/16 03:15:27 laffer1 Exp $
+ * @version $Id: HeadlineBean.java,v 1.7 2011/05/29 22:32:59 laffer1 Exp $
  * @since 1.0
  *        User: laffer1
  *        Date: Jul 22, 2003
@@ -105,7 +104,7 @@ public class HeadlineBean {
             getRssDocument(url);
 
             // output variable
-            final StringBuffer sb = new StringBuffer();
+            final StringBuilder sb = new StringBuilder();
 
             String contentTitle = "";
             String contentLink = "";

@@ -1,7 +1,7 @@
 package com.justjournal.utility;
 
 /*---------------------------------------------------------------------------*\
-  $Id: HTMLUtil.java,v 1.9 2010/02/05 01:46:08 laffer1 Exp $
+  $Id: HTMLUtil.java,v 1.10 2011/05/29 22:32:59 laffer1 Exp $
   ---------------------------------------------------------------------------
   This software is released under a Berkeley-style license:
 
@@ -41,7 +41,7 @@ import java.util.regex.PatternSyntaxException;
  * Static class containing miscellaneous HTML-related utility methods.
  *
  * @author Copyright &copy; 2004 Brian M. Clapper
- * @version <tt>$Revision: 1.9 $</tt>
+ * @version <tt>$Revision: 1.10 $</tt>
  */
 public final class HTMLUtil {
     /*----------------------------------------------------------------------*\
@@ -88,10 +88,10 @@ public final class HTMLUtil {
     public static String stripHTMLTags(String s) {
         char[] ch = s.toCharArray();
         boolean inElement = false;
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
 
-        for (int i = 0; i < ch.length; i++) {
-            switch (ch[i]) {
+        for (final char aCh : ch) {
+            switch (aCh) {
                 case '<':
                     inElement = true;
                     break;
@@ -100,12 +100,12 @@ public final class HTMLUtil {
                     if (inElement)
                         inElement = false;
                     else
-                        buf.append(ch[i]);
+                        buf.append(aCh);
                     break;
 
                 default:
                     if (!inElement)
-                        buf.append(ch[i]);
+                        buf.append(aCh);
                     break;
             }
         }
@@ -141,7 +141,7 @@ public final class HTMLUtil {
         }
 
         ResourceBundle bundle = getResourceBundle();
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         Matcher matcher;
 
         synchronized (HTMLUtil.class) {
@@ -236,6 +236,7 @@ public final class HTMLUtil {
 
     /**
      * Load the resource bundle, if it hasn't already been loaded.
+     * @return resource bundle
      */
     private static ResourceBundle getResourceBundle() {
         synchronized (HTMLUtil.class) {
@@ -323,12 +324,12 @@ public final class HTMLUtil {
         if (userAgent == null)
             userAgent = "";
 
-        if (httpAccept.indexOf("application/xhtml+xml") > -1) {
+        if (httpAccept.contains("application/xhtml+xml")) {
             // warning the q value is not checked.  This value
             // determines how much the browser likes the match.
             // 0 bad 1 good (range 0.0-1.0)
             return "application/xhtml+xml";
-        } else if (userAgent.indexOf("W3C_Validator") > -1) {
+        } else if (userAgent.contains("W3C_Validator")) {
             // The W3C Validator does not advertise its support for
             // the correct mime type.
             return "application/xhtml+xml";

@@ -14,7 +14,7 @@ import java.net.URLEncoder;
 
 /**
  * @author Lucas Holt
- * @version $Id: IceRocket.java,v 1.2 2009/05/16 03:15:27 laffer1 Exp $
+ * @version $Id: IceRocket.java,v 1.3 2011/05/29 22:32:59 laffer1 Exp $
  * Date: July 27 2008
  * Time: 6:00:00 AM
  */
@@ -22,7 +22,7 @@ public class IceRocket {
 
         private static final Logger log = Logger.getLogger(IceRocket.class);
 
-        private String pingUri = "http://rpc.icerocket.com:10080";
+        private final String pingUri = "http://rpc.icerocket.com:10080";
         private String uri;
         private String name;
 

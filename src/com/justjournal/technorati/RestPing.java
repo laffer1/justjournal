@@ -19,7 +19,7 @@ public class RestPing {
 
         private static final Logger log = Logger.getLogger(RestPing.class);
 
-        private String pingUri = "http://rpc.technorati.com/rpc/ping";
+        private final String pingUri = "http://rpc.technorati.com/rpc/ping";
         private String uri;
         private String name;
 

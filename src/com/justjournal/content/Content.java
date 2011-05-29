@@ -92,9 +92,9 @@ public interface Content {
 
     /**
      * Set the format of the content property.  Required
-     * value varies by implemenation.
+     * value varies by implementation.
      *
-     * @param format
+     * @param format content format
      */
     public void setFormat(String format);
 
@@ -122,7 +122,7 @@ public interface Content {
 
     /**
      * Sets the date the item was created.  Format varies
-     * by implemenatation.
+     * by implementation.
      *
      * @param dateCreated date as DateTime item was created.
      */
@@ -131,14 +131,14 @@ public interface Content {
     /**
      * Retrieves the last modified date for the item.
      *
-     * @return string version of date modfied.  Varies by
-     *         implemenation in date format.
+     * @return string version of date modified.  Varies by
+     *         implementation in date format.
      */
     public DateTime getDateModified();
 
     /**
      * Sets the date the item was last modified.  Varies
-     * by implemnation in format.
+     * by implementation in format.
      *
      * @param dateModified date as string of last modification.
      */
@@ -153,7 +153,7 @@ public interface Content {
     public Collection getMetaData();
 
     /**
-     * Sets a colletion of properties in the <code>MetaData</code> interface.
+     * Sets a collection of properties in the <code>MetaData</code> interface.
      *
      * @param metaData MetaData collection of name/value pairs.
      */

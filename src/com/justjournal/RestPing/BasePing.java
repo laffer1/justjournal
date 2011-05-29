@@ -1,6 +1,5 @@
 package com.justjournal.RestPing;
 
-import org.apache.log4j.Category;
 import org.apache.log4j.Logger;
 
 import java.io.BufferedReader;
@@ -24,11 +23,6 @@ public class BasePing {
     private String uri;
     private String name;
     private String changesURL;
-
-    public BasePing()
-    {
-
-    }
 
     public BasePing(String pinguri) {
         pingUri = pinguri;

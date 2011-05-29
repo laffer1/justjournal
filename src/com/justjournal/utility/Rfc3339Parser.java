@@ -29,7 +29,7 @@ import java.util.Date;
 public class Rfc3339Parser {
 
     public static java.util.Date parseRFC3339Date(String datestring) throws java.text.ParseException, IndexOutOfBoundsException {
-        Date d = new Date();
+        Date d;
 
         //if there is no time zone, we don't need to do any special parsing.
         if (datestring.endsWith("Z")) {

@@ -91,7 +91,7 @@ import java.util.List;
 public final class Spelling
         implements SpellCheckListener {
 
-    private static String dictFile = "/usr/local/dict/english.0";
+    private static final String dictFile = "/usr/local/dict/english.0";
     private SpellChecker spellCheck;
     private StringBuilder sb; // output variable
 
