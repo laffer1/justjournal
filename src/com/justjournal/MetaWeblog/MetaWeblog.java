@@ -36,11 +36,11 @@ package com.justjournal.MetaWeblog;
 
 import com.justjournal.RestPing.BasePing;
 import com.justjournal.RestPing.IceRocket;
+import com.justjournal.RestPing.TechnoratiPing;
 import com.justjournal.User;
 import com.justjournal.WebLogin;
 import com.justjournal.db.*;
 import com.justjournal.utility.StringUtil;
-import org.apache.log4j.Category;
 import org.apache.log4j.Logger;
 
 import java.io.Serializable;
@@ -50,7 +50,7 @@ import java.util.*;
  * The MetaWeblog API interface for blogging.  Similar to Blogger 1.0 API.
  *
  * @author Lucas Holt
- * @version $Id: MetaWeblog.java,v 1.5 2009/05/16 03:15:27 laffer1 Exp $
+ * @version $Id: MetaWeblog.java,v 1.6 2011/06/12 06:24:38 laffer1 Exp $
  *          <p/>
  *          User: laffer1
  *          Date: Apr 26, 2008
@@ -240,7 +240,7 @@ public class MetaWeblog {
                     rp.ping();
 
                     /* Technorati */
-                    com.justjournal.technorati.RestPing rpt = new com.justjournal.technorati.RestPing();
+                    TechnoratiPing rpt = new TechnoratiPing();
                     rpt.setName(user.getJournalName());
                     rpt.setUri("http://www.justjournal.com/" + "users/" + user.getUserName());
                     rpt.ping();

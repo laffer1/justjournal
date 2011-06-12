@@ -11,45 +11,39 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 
 /**
- * User: laffer1
- * Date: Jul 27, 2008
- * Time: 5:50:49 AM
+ * User: laffer1 Date: Jul 27, 2008 Time: 5:50:49 AM
  */
 public class BasePing {
 
     private static final Logger log = Logger.getLogger(BasePing.class);
 
-    private String pingUri;
-    private String uri;
-    private String name;
-    private String changesURL;
+    protected String pingUri;
+    protected String uri;
+    protected String name;
+    protected String changesURL;
 
-    public BasePing(String pinguri) {
+    public BasePing(final String pinguri) {
         pingUri = pinguri;
     }
 
+    protected URL createUrl(final String uri) throws Exception {
+        URI tmpuri = new URI(uri);
+        return tmpuri.toURL();
+    }
+
     public boolean ping() {
-        URL u;
         URLConnection uc;
-        String address;
 
         try {
-            // build uri
-            address = pingUri + "?name=" + URLEncoder.encode(name, "UTF-8") +
-                    "&url=" + URLEncoder.encode(uri, "UTF-8") +
-                    "&changesUrl=" + URLEncoder.encode(changesURL, "UTF-8");
-
-            URI tmpuri = new URI(address);
-            u = tmpuri.toURL();
+            uc = createUrl(getUri() + "?name=" + URLEncoder.encode(getName(), "UTF-8") +
+                    "&url=" + URLEncoder.encode(getUri(), "UTF-8") +
+                    "&changesUrl=" + URLEncoder.encode(getChangesURL(), "UTF-8")).openConnection();
         } catch (Exception me) {
             log.debug("Couldn't create URL. " + me.getMessage());
             return false;
         }
 
-        log.debug(u.toExternalForm());
-
         try {
-            uc = u.openConnection();
             BufferedReader in = new BufferedReader(new InputStreamReader(
                     uc.getInputStream()));
 
@@ -74,7 +68,7 @@ public class BasePing {
         return uri;
     }
 
-    public void setUri(String uri) {
+    public void setUri(final String uri) {
         this.uri = uri;
     }
 
@@ -82,7 +76,7 @@ public class BasePing {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -90,7 +84,7 @@ public class BasePing {
         return changesURL;
     }
 
-    public void setChangesURL(String changesURL) {
+    public void setChangesURL(final String changesURL) {
         this.changesURL = changesURL;
     }
 
@@ -98,7 +92,7 @@ public class BasePing {
         return pingUri;
     }
 
-    public void setPingUri(String pingUri) {
+    public void setPingUri(final String pingUri) {
         this.pingUri = pingUri;
     }
 }

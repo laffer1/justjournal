@@ -1,24 +1,19 @@
 package com.justjournal.RestPing;
 
 import org.apache.log4j.Logger;
-
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URLConnection;
-import java.net.URLEncoder;
+import java.io.*;
 
 /**
  * @author Lucas Holt
- * @version $Id: IceRocket.java,v 1.4 2011/06/12 06:24:38 laffer1 Exp $
+ * @version 1.0 Date: Jun 4, 2007 Time: 1:59:02 AM http://rpc.technorati.com/rpc/ping
  */
-public class IceRocket extends BasePing {
+public class TechnoratiPing extends BasePing {
 
-    private static final Logger log = Logger.getLogger(IceRocket.class);
+    private static final Logger log = Logger.getLogger(TechnoratiPing.class);
 
-    public IceRocket() {
-        super("http://rpc.icerocket.com:10080");
+    public TechnoratiPing() {
+        super("http://rpc.technorati.com/rpc/ping");
     }
 
     public boolean ping() {
@@ -35,15 +30,15 @@ public class IceRocket extends BasePing {
 
             DataOutputStream printout = new DataOutputStream(uc.getOutputStream());
 
-            String output = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
+            String output = "<?xml version=\"1.0\"?>\n" +
                     "<methodCall>\n" +
-                    "  <methodName>ping</methodName>\n" +
+                    "  <methodName>weblogUpdates.ping</methodName>\n" +
                     "    <params>\n" +
                     "      <param>\n" +
-                    "        <value>" + URLEncoder.encode(name, "UTF-8") + "</value>\n" +
+                    "        <value>" + name + "</value>\n" +
                     "      </param>\n" +
                     "      <param>\n" +
-                    "        <value>" + URLEncoder.encode(uri, "UTF-8") + "</value>\n" +
+                    "        <value>" + uri + "</value>\n" +
                     "      </param>\n" +
                     "    </params>\n" +
                     "</methodCall>\n";
@@ -64,10 +59,10 @@ public class IceRocket extends BasePing {
             log.debug(uri + "\n" + input);
 
             return true; // todo: parse result and adjust this as necessary.
-
         } catch (Exception e) {
             log.debug("IO Error: " + e.getMessage());
             return false;
         }
     }
 }
+

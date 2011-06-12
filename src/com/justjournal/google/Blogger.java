@@ -36,6 +36,7 @@ package com.justjournal.google;
 
 import com.justjournal.RestPing.BasePing;
 import com.justjournal.RestPing.IceRocket;
+import com.justjournal.RestPing.TechnoratiPing;
 import com.justjournal.User;
 import com.justjournal.WebLogin;
 import com.justjournal.db.DateTime;
@@ -54,7 +55,7 @@ import java.util.regex.Pattern;
  * User: laffer1
  * Date: Dec 3, 2007
  * Time: 4:21:42 PM
- * $Id: Blogger.java,v 1.18 2009/08/07 02:31:43 laffer1 Exp $
+ * $Id: Blogger.java,v 1.19 2011/06/12 06:24:38 laffer1 Exp $
  * <p/>
  * A blogger 1 compatible interface exposed by XML-RPC
  * <p/>
@@ -276,7 +277,7 @@ public class Blogger {
                     rp.ping();
 
                     /* Technorati */
-                    com.justjournal.technorati.RestPing rpt = new com.justjournal.technorati.RestPing();
+                    TechnoratiPing rpt = new TechnoratiPing();
                     rpt.setName(user.getJournalName());
                     rpt.setUri("http://www.justjournal.com/" + "users/" + user.getUserName());
                     rpt.ping();
