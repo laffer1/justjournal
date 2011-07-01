@@ -1,36 +1,28 @@
-/*
-Copyright (c) 2005-2008, Lucas Holt
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification, are
-permitted provided that the following conditions are met:
-
-  Redistributions of source code must retain the above copyright notice, this list of
-  conditions and the following disclaimer.
-
-  Redistributions in binary form must reproduce the above copyright notice, this
-  list of conditions and the following disclaimer in the documentation and/or other
-  materials provided with the distribution.
-
-  Neither the name of the Just Journal nor the names of its contributors
-  may be used to endorse or promote products derived from this software without
-  specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
-CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
-INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
-MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
-CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
-GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
-BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
-OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
-TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
-OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-POSSIBILITY OF SUCH DAMAGE.
-*/
+/*-
+ * Copyright (c) 2005-2011 Lucas Holt
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ */
 package com.justjournal;
 
 import com.justjournal.db.EntryDAO;
@@ -45,34 +37,32 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * User: laffer1
- * Date: Feb 26, 2006
- * Time: 10:44:18 AM
- *
- * @version $Id: RecentBlogs.java,v 1.14 2009/05/16 03:15:27 laffer1 Exp $
+ * Display recent blog entries in RSS format.
+ * @author Lucas Holt
+ * @version $Id: RecentBlogs.java,v 1.15 2011/07/01 11:54:31 laffer1 Exp $
  */
 public class RecentBlogs extends JustJournalBaseServlet {
     private static final Logger log = Logger.getLogger(RecentBlogs.class);
 
     protected void execute(HttpServletRequest request, HttpServletResponse response, HttpSession session, StringBuffer sb) {
-        response.setContentType("application/rss+xml;charset=ISO-8859-1");
+        response.setContentType("application/rss+xml;charset=UTF-8");
         response.setDateHeader("Expires", System.currentTimeMillis() + 1000 * 60);
         response.setHeader("Cache-Control", "max-age=60, private, proxy-revalidate");
 
         // Create an RSS object, set the required
-        // properites (title, description language, url)
+        // properties (title, description language, url)
         // and write it to the sb output.
         try {
             Rss rss = new Rss();
 
-            final java.util.GregorianCalendar calendarg = new java.util.GregorianCalendar(java.util.TimeZone.getTimeZone("UTC"));
-            calendarg.setTime(new java.util.Date());
+            final java.util.GregorianCalendar gregorianCalendar = new java.util.GregorianCalendar(java.util.TimeZone.getTimeZone("UTC"));
+            gregorianCalendar.setTime(new java.util.Date());
 
             rss.setTitle("JJ New Posts");
             rss.setLink(set.getBaseUri());
             rss.setDescription("New blog posts on Just Journal");
             rss.setLanguage("en-us");
-            rss.setCopyright("Copyright " + calendarg.get(Calendar.YEAR) + " JustJournal.com and its blog account owners.");
+            rss.setCopyright("Copyright " + gregorianCalendar.get(Calendar.YEAR) + " JustJournal.com and its blog account owners.");
             rss.setWebMaster(set.getSiteAdminEmail() + " (" + set.getSiteAdmin() + ")");
             rss.setManagingEditor(set.getSiteAdminEmail() + " (" + set.getSiteAdmin() + ")");
             rss.setSelfLink(set.getBaseUri() + "RecentBlogs");
