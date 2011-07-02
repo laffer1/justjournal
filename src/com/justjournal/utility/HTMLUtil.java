@@ -1,7 +1,7 @@
 package com.justjournal.utility;
 
 /*---------------------------------------------------------------------------*\
-  $Id: HTMLUtil.java,v 1.10 2011/05/29 22:32:59 laffer1 Exp $
+  $Id: HTMLUtil.java,v 1.11 2011/07/02 01:41:33 laffer1 Exp $
   ---------------------------------------------------------------------------
   This software is released under a Berkeley-style license:
 
@@ -41,7 +41,7 @@ import java.util.regex.PatternSyntaxException;
  * Static class containing miscellaneous HTML-related utility methods.
  *
  * @author Copyright &copy; 2004 Brian M. Clapper
- * @version <tt>$Revision: 1.10 $</tt>
+ * @version <tt>$Revision: 1.11 $</tt>
  */
 public final class HTMLUtil {
     /*----------------------------------------------------------------------*\
@@ -114,7 +114,8 @@ public final class HTMLUtil {
     }
 
     /**
-     * Converts all inline HTML character entities (c.f., <a href="http://www.w3.org/TR/REC-html40/sgml/entities.html">http://www.w3.org/TR/REC-html40/sgml/entities.html</a>)
+     * Converts all inline HTML character entities
+     * (c.f., <a href="http://www.w3.org/TR/REC-html40/sgml/entities.html">http://www.w3.org/TR/REC-html40/sgml/entities.html</a>)
      * to their Unicode character counterparts, if possible.
      *
      * @param s the string to convert
@@ -254,40 +255,6 @@ public final class HTMLUtil {
      * @return Text with HTML a tags added.
      */
     public static String uriToLink(String input) {
-        String SubDomain = "(?i:[a-z0-9]|[a-z0-9][-a-z0-9]*[a-z0-9])";
-        String TopDomains = "(?x-i:com\\b        \n" +
-                "     |edu\\b        \n" +
-                "     |biz\\b        \n" +
-                "     |in(?:t|fo)\\b \n" +
-                "     |mil\\b        \n" +
-                "     |net\\b        \n" +
-                "     |org\\b        \n" +
-                "     |[a-z][a-z]\\b \n" + // country codes
-                ")                   \n";
-        String Hostname = "(?:" + SubDomain + "\\.)+" + TopDomains;
-
-        String NOT_IN = ";\"'<>()\\[\\]\\{\\}\\s\\x7F-\\xFF";
-        String NOT_END = "!.,?";
-        String ANYWHERE = "[^" + NOT_IN + NOT_END + "]";
-        String EMBEDDED = "[" + NOT_END + "]";
-        String UrlPath = "/" + ANYWHERE + "*(" + EMBEDDED + "+" + ANYWHERE + "+)*";
-
-        String Url =
-                "(?x:                                                \n" +
-                        "  \\b                                               \n" +
-                        "  ## match the hostname part                        \n" +
-                        "  (                                                 \n" +
-                        "    (?: ftp | http s? ): // [-\\w]+(\\.\\w[-\\w]*)+ \n" +
-                        "   |                                                \n" +
-                        "    " + Hostname + "                                \n" +
-                        "  )                                                 \n" +
-                        "  # allow optional port                             \n" +
-                        "  (?: \\d+ )?                                       \n" +
-                        "                                                    \n" +
-                        "  # rest of url is optional, and begins with /      \n" +
-                        " (?: " + UrlPath + ")?                              \n" +
-                        ")";
-
         String url2 = "((ftp|https?://(.*?))\\s)";
         // Now convert string we've built up into a real regex object
         Pattern UrlRegex = Pattern.compile(url2);
