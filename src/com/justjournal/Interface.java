@@ -51,7 +51,7 @@ import java.util.Iterator;
  * Date: Jan 18, 2004
  * Time: 10:11:10 PM
  *
- * @version $Id: Interface.java,v 1.8 2006/07/28 14:01:06 laffer1 Exp $
+ * @version $Id: Interface.java,v 1.9 2011/07/02 01:34:51 laffer1 Exp $
  */
 public class Interface extends HttpServlet {
     final static String endl = "\r\n";
@@ -264,8 +264,7 @@ public class Interface extends HttpServlet {
                     sb.append(endl);
                 }
 
-                FriendsDao fdao = new FriendsDao();
-                Collection friends = fdao.view(userID);
+                Collection friends = FriendsDao.view(userID);
 
                 /* Iterator */
                 FriendTo o;
@@ -299,9 +298,9 @@ public class Interface extends HttpServlet {
                 EntryTo et = new EntryTo();
 
                 // Get the user input
-                int security = Integer.valueOf(request.getParameter("security")).intValue();
-                int location = Integer.valueOf(request.getParameter("location")).intValue();
-                int mood = Integer.valueOf(request.getParameter("mood")).intValue();
+                int security = Integer.valueOf(request.getParameter("security"));
+                int location = Integer.valueOf(request.getParameter("location"));
+                int mood = Integer.valueOf(request.getParameter("mood"));
                 String music = request.getParameter("music");
                 String aformat = request.getParameter("aformat");
                 String discomments = request.getParameter("discomments");
@@ -344,17 +343,17 @@ public class Interface extends HttpServlet {
                     blnError = true;
                 }
 
-                // insert header fields
-                if (blnError == false) {
+                // create header fields
+                if (!blnError) {
                     EntryDAO edao = new EntryDAO();
                     boolean result = edao.add(et);
 
-                    if (result == false)
+                    if (!result)
                         WebError.Display("Error", "Error adding the journal entry", sb);
                 }
 
                 // display message to user.
-                if (blnError == false) {
+                if (!blnError) {
 
                     /* Initialize Preferences Object */
                     User pf;
@@ -373,27 +372,27 @@ public class Interface extends HttpServlet {
 
                     sb.append("<head>");
                     sb.append(endl);
-                    if (pf.isSpiderAllowed() == false) {
+                    if (!pf.isSpiderAllowed()) {
                         sb.append("\t<meta name=\"robots\" content=\"noindex, nofollow, noarchive\" />");
                         sb.append(endl);
                         sb.append("\t<meta name=\"googlebot\" content=\"nosnippet\" />");
                         sb.append(endl);
                     }
-                    sb.append("\t<title>" + pf.getFirstName() + "'s Journal</title>");
+                    sb.append("\t<title>").append(pf.getFirstName()).append("'s Journal</title>");
                     sb.append(endl);
 
                     /* User's custom style URL.. i.e. uri to css doc outside domain */
-                    if (pf.getStyleUrl() != "" && pf.getStyleUrl() != null) {
-                        sb.append("\t<link rel=\"stylesheet\" type=\"text/css\" media=\"screen\" href=\"" + pf.getStyleUrl() + "\" />");
+                    if (!pf.getStyleUrl().equals("") && pf.getStyleUrl() != null) {
+                        sb.append("\t<link rel=\"stylesheet\" type=\"text/css\" media=\"screen\" href=\"").append(pf.getStyleUrl()).append("\" />");
                         sb.append(endl);
                     } else {
                         /* use our template system instead */
-                        sb.append("\t<link rel=\"stylesheet\" type=\"text/css\" media=\"screen\" href=\"/styles/" + pf.getStyleId() + ".css\" />");
+                        sb.append("\t<link rel=\"stylesheet\" type=\"text/css\" media=\"screen\" href=\"/styles/").append(pf.getStyleId()).append(".css\" />");
                         sb.append(endl);
                     }
 
                     /* Optional style sheet overrides! */
-                    if (pf.getStyleDoc() != "" && pf.getStyleDoc() != null) {
+                    if (!pf.getStyleDoc().equals("") && pf.getStyleDoc() != null) {
                         sb.append("<style type=\"text/css\" media=\"screen\">");
                         sb.append(endl);
                         sb.append("<!--");
@@ -414,7 +413,7 @@ public class Interface extends HttpServlet {
                     sb.append(endl);
                     sb.append("\t\t<div id=\"header\">");
                     sb.append(endl);
-                    sb.append("\t\t<h1>" + pf.getFirstName() + "'s Journal</h1>");
+                    sb.append("\t\t<h1>").append(pf.getFirstName()).append("'s Journal</h1>");
                     sb.append(endl);
                     sb.append("\t</div>");
                     sb.append(endl);
@@ -428,15 +427,15 @@ public class Interface extends HttpServlet {
 
                     sb.append("\t<p id=\"muser\">");
                     sb.append(endl);
-                    sb.append("\t\t<a href=\"/users/" + userName + "\">recent entries</a><br />");
+                    sb.append("\t\t<a href=\"/users/").append(userName).append("\">recent entries</a><br />");
                     sb.append(endl);
-                    sb.append("\t\t<a href=\"/users/" + userName + "/calendar\">Calendar</a><br />");
+                    sb.append("\t\t<a href=\"/users/").append(userName).append("/calendar\">Calendar</a><br />");
                     sb.append(endl);
-                    sb.append("\t\t<a href=\"/users/" + userName + "/friends\">Friends</a><br />");
+                    sb.append("\t\t<a href=\"/users/").append(userName).append("/friends\">Friends</a><br />");
                     sb.append(endl);
-                    sb.append("\t\t<a href=\"/users/" + userName + "/ljfriends\">LJ Friends</a><br />");
+                    sb.append("\t\t<a href=\"/users/").append(userName).append("/ljfriends\">LJ Friends</a><br />");
                     sb.append(endl);
-                    sb.append("\t\t<a href=\"/profile.jsp?user=" + userName + "\">Profile</a><br />");
+                    sb.append("\t\t<a href=\"/profile.jsp?user=").append(userName).append("\">Profile</a><br />");
                     sb.append(endl);
                     sb.append("\t</p>");
                     sb.append(endl);
@@ -444,7 +443,7 @@ public class Interface extends HttpServlet {
                     // General stuff...
                     sb.append("\t<p id=\"mgen\">");
                     sb.append(endl);
-                    sb.append("\t\t<a href=\"/update.jsp\">Update Journal</a><br />");
+                    sb.append("\t\t<a href=\"/edit.jsp\">Update Journal</a><br />");
                     sb.append(endl);
 
                     // Authentication menu choice
@@ -463,7 +462,7 @@ public class Interface extends HttpServlet {
                     sb.append(endl);
 
                     sb.append("\t<p>RSS Syndication<br /><br />");
-                    sb.append("<a href=\"/users/" + userName + "/rss\"><img src=\"/img/v4_xml.gif\" alt=\"RSS content feed\" /> Recent</a>");
+                    sb.append("<a href=\"/users/").append(userName).append("/rss\"><img src=\"/img/v4_xml.gif\" alt=\"RSS content feed\" /> Recent</a>");
                     sb.append("\t</p>");
                     sb.append(endl);
 
@@ -479,7 +478,7 @@ public class Interface extends HttpServlet {
                     sb.append(endl);
 
                     if (userID > 0) {
-                        sb.append("\t<p>You are logged in as <a href=\"/users/" + userName + "\"><img src=\"/images/userclass_16.png\" alt=\"user\" />" + userName + "</a>.</p>");
+                        sb.append("\t<p>You are logged in as <a href=\"/users/").append(userName).append("\"><img src=\"/images/userclass_16.png\" alt=\"user\" />").append(userName).append("</a>.</p>");
                         sb.append(endl);
                     }
 
@@ -488,9 +487,9 @@ public class Interface extends HttpServlet {
 
                     sb.append("\t\t<p><strong>entry added</strong></p>");
                     sb.append(endl);
-                    sb.append("\t\t<p><a href=\"/update.jsp\">Add another entry</a></p>");
+                    sb.append("\t\t<p><a href=\"/edit.jsp\">Add another entry</a></p>");
                     sb.append(endl);
-                    sb.append("\t\t<p><a href=\"/users/" + userName + "\">View journal</a></p>");
+                    sb.append("\t\t<p><a href=\"/users/").append(userName).append("\">View journal</a></p>");
                     sb.append(endl);
 
                     sb.append("\t</div>");

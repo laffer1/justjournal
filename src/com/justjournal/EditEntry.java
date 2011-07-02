@@ -1,36 +1,28 @@
 /*
-Copyright (c) 2005, 2009 Lucas Holt
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification, are
-permitted provided that the following conditions are met:
-
-  Redistributions of source code must retain the above copyright notice, this list of
-  conditions and the following disclaimer.
-
-  Redistributions in binary form must reproduce the above copyright notice, this
-  list of conditions and the following disclaimer in the documentation and/or other
-  materials provided with the distribution.
-
-  Neither the name of the Just Journal nor the names of its contributors
-  may be used to endorse or promote products derived from this software without
-  specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
-CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
-INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
-MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
-CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
-GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
-BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
-OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
-TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
-OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (c) 2005, 2009, 2011 Lucas Holt
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ */
 
 package com.justjournal;
 
@@ -61,9 +53,8 @@ import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 /**
- * User: laffer1
- * Date: Jul 3, 2009
- * Time: 10:24:10 PM
+ * @author Lucas Holt
+ * @version $Id: EditEntry.java,v 1.2 2011/07/02 01:28:30 laffer1 Exp $
  */
 public class EditEntry extends HttpServlet {
     private static final char endl = '\n';
@@ -82,8 +73,8 @@ public class EditEntry extends HttpServlet {
         set = Settings.getSettings(ctx);
     }
 
-      /**
-     * Print out the webpage for HTML friendly clients.
+    /**
+     * Print out the web page for HTML friendly clients.
      *
      * @param sb       output buffer
      * @param userName the blog owner
@@ -125,7 +116,7 @@ public class EditEntry extends HttpServlet {
         sb.append(endl);
 
         /* User's custom style URL.. i.e. uri to css doc outside domain */
-        if (pf.getStyleUrl() != "" && pf.getStyleUrl() != null) {
+        if (!pf.getStyleUrl().equals("") && pf.getStyleUrl() != null) {
             sb.append("\t<link rel=\"stylesheet\" type=\"text/css\" media=\"screen\" href=\"");
             sb.append(pf.getStyleUrl());
             sb.append("\" />");
@@ -137,7 +128,7 @@ public class EditEntry extends HttpServlet {
         }
 
         /* Optional style sheet overrides! */
-        if (pf.getStyleDoc() != "" && pf.getStyleDoc() != null) {
+        if (!pf.getStyleDoc().equals("") && pf.getStyleDoc() != null) {
             sb.append("<style type=\"text/css\" media=\"screen\">");
             sb.append(endl);
             sb.append("<!--");
@@ -192,7 +183,7 @@ public class EditEntry extends HttpServlet {
         // General stuff...
         sb.append("\t<p id=\"mgen\">");
         sb.append(endl);
-        sb.append("\t\t<a href=\"/update.jsp\">Update Journal</a><br />");
+        sb.append("\t\t<a href=\"/edit.jsp\">Update Journal</a><br />");
         sb.append(endl);
 
         // Authentication menu choice
@@ -242,7 +233,7 @@ public class EditEntry extends HttpServlet {
 
         sb.append("\t\t<p><strong>Your blog entry has been changed.</strong></p>");
         sb.append(endl);
-        sb.append("\t\t<p><a href=\"/update.jsp\">Add an entry</a></p>");
+        sb.append("\t\t<p><a href=\"/edit.jsp\">Add an entry</a></p>");
         sb.append(endl);
         sb.append("\t\t<p><a href=\"/users/");
         sb.append(userName);
@@ -296,26 +287,24 @@ public class EditEntry extends HttpServlet {
         String userName;
         Integer userIDasi;
 
-        synchronized(session) {
-            userName = (String) session.getAttribute("auth.user");
-            userIDasi = (Integer) session.getAttribute("auth.uid");
-        }
+        userName = (String) session.getAttribute("auth.user");
+        userIDasi = (Integer) session.getAttribute("auth.uid");
 
         if (userIDasi != null) {
-            userID = userIDasi.intValue();
+            userID = userIDasi;
         }
 
         /* Detect user agent */
         String userAgent = request.getHeader("User-Agent");
 
-            // Send HTML type in http stream
-            String mimeType = HTMLUtil.determineMimeType(request.getHeader("Accept"), userAgent);
-            response.setContentType(mimeType + "; charset=utf-8");
-            response.setBufferSize(8192);
-            response.setDateHeader("Expires", System.currentTimeMillis());
-            response.setDateHeader("Last-Modified", System.currentTimeMillis());
-            response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
-            response.setHeader("Pragma", "no-cache");
+        // Send HTML type in http stream
+        String mimeType = HTMLUtil.determineMimeType(request.getHeader("Accept"), userAgent);
+        response.setContentType(mimeType + "; charset=utf-8");
+        response.setBufferSize(8192);
+        response.setDateHeader("Expires", System.currentTimeMillis());
+        response.setDateHeader("Last-Modified", System.currentTimeMillis());
+        response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
+        response.setHeader("Pragma", "no-cache");
 
         // Validate the login
         if (userID < 1) {
@@ -330,17 +319,15 @@ public class EditEntry extends HttpServlet {
                 if (keepLogin == null)
                     keepLogin = "";
                 if (keepLogin.compareTo("checked") == 0) {
-                    synchronized(session) {
-                        session.setAttribute("auth.uid", new Integer(userID));
-                        session.setAttribute("auth.user", userName);
-                    }
+                    session.setAttribute("auth.uid", userID);
+                    session.setAttribute("auth.user", userName);
                     WebLogin.setLastLogin(userID);
                 }
             } catch (Exception e3) {
 
-                    WebError.Display("Authentication Error",
-                            "Unable to login.  Please check your username and password.",
-                            sb);
+                WebError.Display("Authentication Error",
+                        "Unable to login.  Please check your username and password.",
+                        sb);
             }
         }
 
@@ -350,10 +337,10 @@ public class EditEntry extends HttpServlet {
             final EntryTo et = new EntryTo();
 
             // Get the user input
-            int entryId = Integer.valueOf(request.getParameter("entryid")).intValue();
-            int security = Integer.valueOf(request.getParameter("security")).intValue();
-            int location = Integer.valueOf(request.getParameter("location")).intValue();
-            int mood = Integer.valueOf(request.getParameter("mood")).intValue();
+            int entryId = Integer.valueOf(request.getParameter("entryid"));
+            int security = Integer.valueOf(request.getParameter("security"));
+            int location = Integer.valueOf(request.getParameter("location"));
+            int mood = Integer.valueOf(request.getParameter("mood"));
             String music = request.getParameter("music");
             String aformat = request.getParameter("aformat");
             String allowcomment = request.getParameter("allow_comment");
@@ -395,7 +382,7 @@ public class EditEntry extends HttpServlet {
             trackback = trackback.trim();
             date = date.trim();
             time = time.trim();
-            time = StringUtil.replace(time,'T',"");
+            time = StringUtil.replace(time, 'T', "");
             log.debug("date: " + date);
             log.debug("time: " + time);
             String subject = request.getParameter("subject");
@@ -447,31 +434,29 @@ public class EditEntry extends HttpServlet {
 
 
             } catch (IllegalArgumentException e1) {
-                    WebError.Display("Input Error", e1.getMessage(), sb);
+                WebError.Display("Input Error", e1.getMessage(), sb);
                 blnError = true;
             }
 
             final String isSpellCheck = request.getParameter("spellcheck");
             if (isSpellCheck != null &&
-                isSpellCheck.compareTo("checked") == 0) {
+                    isSpellCheck.compareTo("checked") == 0) {
                 Spelling sp = new Spelling();
 
                 // store everything
-                synchronized (session) {
                 session.setAttribute("spell.check", "true");
                 session.setAttribute("spell.body", et.getBody());
                 session.setAttribute("spell.music", et.getMusic());
-                session.setAttribute("spell.location", new Integer(et.getLocationId()));
+                session.setAttribute("spell.location", et.getLocationId());
                 session.setAttribute("spell.subject", et.getSubject());
                 session.setAttribute("spell.date", et.getDate());
-                session.setAttribute("spell.security", new Integer(et.getSecurityLevel()));
-                session.setAttribute("spell.mood", new Integer(et.getMoodId()));
+                session.setAttribute("spell.security", et.getSecurityLevel());
+                session.setAttribute("spell.mood", et.getMoodId());
                 session.setAttribute("spell.tags", tags);
                 session.setAttribute("spell.trackback", trackback);
 
                 //check the spelling now
                 session.setAttribute("spell.suggest", sp.checkSpelling(HTMLUtil.textFromHTML(et.getBody())));
-                }
 
                 // redirect the user agent to the promised land.
                 response.sendRedirect("/editentry.jsp");
@@ -479,27 +464,25 @@ public class EditEntry extends HttpServlet {
             } else {
                 // clear out spell check variables to be safe
                 // note this might be wrong still
-                synchronized (session) {
                 session.setAttribute("spell.check", ""); //false
                 session.setAttribute("spell.body", "");
                 session.setAttribute("spell.music", "");
-                session.setAttribute("spell.location", new Integer(0));
+                session.setAttribute("spell.location", 0);
                 session.setAttribute("spell.subject", "");
                 session.setAttribute("spell.date", "");
                 session.setAttribute("spell.time", "");
-                session.setAttribute("spell.security", new Integer(0));
-                session.setAttribute("spell.mood", new Integer(-1));
+                session.setAttribute("spell.security", 0);
+                session.setAttribute("spell.mood", -1);
                 session.setAttribute("spell.tags", "");
                 session.setAttribute("spell.trackback", "");
-                }
 
-                // insert entry
+                // create entry
                 if (!blnError) {
                     boolean result = EntryDAO.update(et);
 
                     if (!result) {
 
-                            WebError.Display("Error", "Error editing the journal entry", sb);
+                        WebError.Display("Error", "Error editing the journal entry", sb);
 
                         blnError = true;
                     }
@@ -534,9 +517,9 @@ public class EditEntry extends HttpServlet {
                 // display message to user.
                 if (!blnError) {
 
-                        htmlOutput(sb, userName, userID);
+                    htmlOutput(sb, userName, userID);
 
-                  
+
                 }
 
                 // output the result of our processing
@@ -547,11 +530,11 @@ public class EditEntry extends HttpServlet {
 
         } else {
 
-                // We couldn't authenticate.  Tell the user.
-                WebError.Display("Authentication Error",
-                        "Unable to login.  Please check your username and password.",
-                        sb);
-       
+            // We couldn't authenticate.  Tell the user.
+            WebError.Display("Authentication Error",
+                    "Unable to login.  Please check your username and password.",
+                    sb);
+
             // output the result of our processing
             final ServletOutputStream outstream = response.getOutputStream();
             outstream.println(sb.toString());

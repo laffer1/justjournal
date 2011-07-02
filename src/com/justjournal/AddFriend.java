@@ -1,6 +1,6 @@
 /*
 Copyright (c) 2003 Caryn Holt
-Copyright (c) 2005-2009 Lucas Holt
+Copyright (c) 2005-2011 Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -60,7 +60,7 @@ import org.apache.log4j.Logger;
  * Adds a friend to the Users list for their friends page
  *
  * @author Caryn Holt, Lucas Holt
- * @version $Id: AddFriend.java,v 1.10 2009/06/01 22:57:42 laffer1 Exp $
+ * @version $Id: AddFriend.java,v 1.11 2011/07/02 01:29:08 laffer1 Exp $
  * @since 1.0
  */
 public final class AddFriend extends JustJournalBaseServlet {
@@ -70,19 +70,18 @@ public final class AddFriend extends JustJournalBaseServlet {
         // initial error condition is false
         boolean error = false;
 
-        // Retreive username
+        // Retrieve username
         String userName;
         Integer userIDasi;
 
-        synchronized(session) {
-            userName = (String) session.getAttribute("auth.user");
-            // Retreive user id
-            userIDasi = (Integer) session.getAttribute("auth.uid");
-        }
+        userName = (String) session.getAttribute("auth.user");
+        // Retrieve user id
+        userIDasi = (Integer) session.getAttribute("auth.uid");
+
         // convert Integer to int type
         int userID = 0;
         if (userIDasi != null) {
-            userID = userIDasi.intValue();
+            userID = userIDasi;
         }
 
         String friend1 = fixInput(request, "fr1");
@@ -112,7 +111,7 @@ public final class AddFriend extends JustJournalBaseServlet {
         // place the usernames in an array
         String[] friends = new String[counter];
         int index = 0;
-        friends[index] = new String(friend1);
+        friends[index] = friend1;
 
         // checking each optional parameter again, hope code passes monkey test
         if (friend2.length() > 0)
@@ -151,7 +150,7 @@ public final class AddFriend extends JustJournalBaseServlet {
                 sqlStatement = "Insert INTO friends (id, friendid) values('" + userID + "','" + friendID + "');";
                 //check error condition again, since an error could have been generated at this point
                 if (!error) {
-                    // insert, placing method in try catch block
+                    // create, placing method in try catch block
                     try {
                         int rowsAffected = SQLHelper.executeNonQuery(sqlStatement);
 
@@ -198,7 +197,7 @@ public final class AddFriend extends JustJournalBaseServlet {
                 sb.append(template);
             } catch (IOException e) {
                 log.error(e.getMessage());
-                WebError.Display("Internal Error", "Error dislaying page.", sb);
+                WebError.Display("Internal Error", "Error displaying page.", sb);
             }
         }
     }
