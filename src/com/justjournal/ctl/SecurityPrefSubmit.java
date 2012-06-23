@@ -82,7 +82,7 @@ public class SecurityPrefSubmit extends Protected {
                 log.debug("Was there an error with data tier?  " + !result);
 
             if (result == false)
-                addError("Unknown", "Could not update setting.");
+                addError("Unknown", "Could not edit setting.");
         }
 
         if (this.hasErrors())

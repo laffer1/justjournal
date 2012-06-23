@@ -43,19 +43,18 @@ import javax.sql.rowset.CachedRowSet;
 
 import org.apache.log4j.Logger;
 
+import java.sql.ResultSet;
+
 /**
- * Represents a user's basic credentals including userId and
- * userName.
+ * Represents a user's basic credentals including userId and userName.
  *
  * @author Lucas Holt
- * @version $Id: User.java,v 1.18 2009/09/26 22:11:28 laffer1 Exp $
- *          Date: Jan 4, 2004
- *          Time: 9:59:35 PM
+ * @version $Id: User.java,v 1.19 2012/06/23 18:15:31 laffer1 Exp $ Date: Jan 4, 2004 Time: 9:59:35 PM
  * @since 1.0
  */
 public final class User {
     private static final Logger log = Logger.getLogger(User.class);
-    
+
     private String userName = "*";
     private int userId = 0;
     private int type = 0;
@@ -71,7 +70,7 @@ public final class User {
 
     private String emailAddress = "";
     private boolean showAvatar = false;
-    private boolean pingServices = false;  // technorati et al
+    private boolean pingServices = false;  // Technorati et al
 
     private String journalName = "";
     private DateTime lastLogin;
@@ -87,20 +86,22 @@ public final class User {
         lastLogin = ut.getLastLogin();
 
         try {
-            final CachedRowSet RS = PreferencesDao.ViewJournalPreferences(userName);
+            final ResultSet RS = PreferencesDao.ViewJournalPreferences(userName);
 
             if (RS.next()) {
                 this.styleId = RS.getInt("style");
 
-                if (RS.getString("cssdoc") == null)
+                // css doc
+                if (RS.getString("doc") == null)
                     this.styleDoc = "";
                 else
-                    this.styleDoc = RS.getString("cssdoc");
+                    this.styleDoc = RS.getString("doc");
 
-                if (RS.getString("cssurl") == null)
+                // css url
+                if (RS.getString("url") == null)
                     this.styleUrl = "";
                 else
-                    this.styleUrl = RS.getString("cssurl");
+                    this.styleUrl = RS.getString("url");
 
                 this.emailAddress = RS.getString("email");
 
@@ -108,11 +109,12 @@ public final class User {
                     this.journalName = "";
                 else
                     this.journalName = RS.getString("journal_name");
-               
-                if (RS.getString("bio") == null)
+
+                // bio
+                if (RS.getString("content") == null)
                     this.biography = "";
                 else
-                    this.biography = RS.getString("bio");
+                    this.biography = RS.getString("content");
 
                 if (RS.getInt("since") > 2003)
                     startYear = RS.getInt("since");
@@ -144,7 +146,7 @@ public final class User {
 
             RS.close();
         } catch (Exception ePrefs) {
-            log.debug(ePrefs.getMessage());
+            log.error(ePrefs.getMessage());
             throw new Exception("Error loading user information", ePrefs);
         }
     }
@@ -159,20 +161,20 @@ public final class User {
         lastLogin = ut.getLastLogin();
 
         try {
-            final CachedRowSet RS = PreferencesDao.ViewJournalPreferences(userName);
+            final ResultSet RS = PreferencesDao.ViewJournalPreferences(userName);
 
             if (RS.next()) {
                 this.styleId = RS.getInt("style");
 
-                if (RS.getString("cssdoc") == null)
+                if (RS.getString("doc") == null)
                     this.styleDoc = "";
                 else
-                    this.styleDoc = RS.getString("cssdoc");
+                    this.styleDoc = RS.getString("doc");
 
-                if (RS.getString("cssurl") == null)
+                if (RS.getString("url") == null)
                     this.styleUrl = "";
                 else
-                    this.styleUrl = RS.getString("cssurl");
+                    this.styleUrl = RS.getString("url");
 
                 this.emailAddress = RS.getString("email");
 
@@ -181,10 +183,10 @@ public final class User {
                 else
                     this.journalName = RS.getString("journal_name");
 
-                if (RS.getString("bio") == null)
+                if (RS.getString("content") == null)
                     this.biography = "";
                 else
-                    this.biography = RS.getString("bio");              
+                    this.biography = RS.getString("content");
 
                 if (RS.getInt("since") > 2003)
                     startYear = RS.getInt("since");
@@ -215,7 +217,7 @@ public final class User {
 
             RS.close();
         } catch (Exception ePrefs) {
-            log.debug(ePrefs.getMessage());
+            log.error(ePrefs.getMessage());
             throw new Exception("Error loading user information", ePrefs);
         }
     }
@@ -238,8 +240,7 @@ public final class User {
     }
 
     /**
-     * Set the username associated with this user. Maximum size
-     * is 15 characters.
+     * Set the username associated with this user. Maximum size is 15 characters.
      *
      * @param userName The username associated with this account.
      */
@@ -257,8 +258,7 @@ public final class User {
     }
 
     /**
-     * Get the user id associated with this account.  The user id
-     * is the unique identifier. It is an int where n >= 0.
+     * Get the user id associated with this account.  The user id is the unique identifier. It is an int where n >= 0.
      *
      * @return unique userid used with this account.
      */
@@ -267,8 +267,7 @@ public final class User {
     }
 
     /**
-     * Set the unique user id associated with this user account.
-     * This unique identifier is an int where n >= 0.
+     * Set the unique user id associated with this user account. This unique identifier is an int where n >= 0.
      *
      * @param userId A unique user id to set for the account.
      */
@@ -280,8 +279,7 @@ public final class User {
     }
 
     /**
-     * Sets the unique user id associated with this user account.
-     * This version takes an integer version of the user id.
+     * Sets the unique user id associated with this user account. This version takes an integer version of the user id.
      *
      * @param userId Integer user id where n >= 0
      */
@@ -293,8 +291,7 @@ public final class User {
     }
 
     /**
-     * Retrieve the type of user account.  Default account type
-     * is 0.  type will always be >= 0
+     * Retrieve the type of user account.  Default account type is 0.  type will always be >= 0
      *
      * @return User account type.
      */
@@ -303,8 +300,7 @@ public final class User {
     }
 
     /**
-     * Set the type of user account as an int representation
-     * greater than or equal to zero.
+     * Set the type of user account as an int representation greater than or equal to zero.
      *
      * @param type Account type >= 0
      */
@@ -315,9 +311,7 @@ public final class User {
     }
 
     /**
-     * Get the Users first name as specified during
-     * the signup process. Name can not be longer than
-     * 20 characters.
+     * Get the Users first name as specified during the signup process. Name can not be longer than 20 characters.
      *
      * @return user's first name
      */
@@ -326,8 +320,7 @@ public final class User {
     }
 
     /**
-     * Set the first name of the user.  Name length is limited
-     * to 20 characters.
+     * Set the first name of the user.  Name length is limited to 20 characters.
      *
      * @param firstName user's first name.
      */
@@ -349,8 +342,7 @@ public final class User {
     }
 
     /**
-     * Retrieve the year when this user account was
-     * created.
+     * Retrieve the year when this user account was created.
      * <p/>
      * n >= 2003
      *

@@ -37,13 +37,14 @@ package com.justjournal.db;
 import com.justjournal.utility.StringUtil;
 
 import javax.sql.rowset.CachedRowSet;
-import java.util.ArrayList;
+import java.util.ArrayList;  import java.sql.ResultSet;
+
 
 /**
  * Manipulate trackback storage
  *
  * @author Lucas Holt
- * @version $Id: TrackbackDao.java,v 1.4 2008/08/01 14:35:47 laffer1 Exp $
+ * @version $Id: TrackbackDao.java,v 1.5 2012/06/23 18:15:31 laffer1 Exp $
  *          User: laffer1
  *          Date: May 5, 2008
  *          Time: 3:06:12 AM
@@ -162,7 +163,7 @@ public final class TrackbackDao {
      * @return A trackback
      */
     public static TrackbackTo viewSingle(final int trackbackId) {
-        CachedRowSet rs = null;
+        ResultSet rs = null;
         final TrackbackTo tb = new TrackbackTo();
         final String sqlStmt =
                 "Select date, subject, body, id, author_email, author_name, blogname, url, type, eid FROM trackback WHERE trackback.id='"
@@ -216,7 +217,7 @@ public final class TrackbackDao {
      */
     public static ArrayList<TrackbackTo> view(final int entryId) {
         final ArrayList<TrackbackTo> tbs = new ArrayList<TrackbackTo>(5);  // 5 is average comments on entry?
-        CachedRowSet rs = null;
+        ResultSet rs = null;
         TrackbackTo tb;
         final String sqlStmt =
                 "Select date, subject, body, id, author_email, author_name, blogname, url, type, eid FROM trackback WHERE trackback.eid='"

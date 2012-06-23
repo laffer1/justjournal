@@ -34,13 +34,24 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
-import javax.sql.rowset.CachedRowSet;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.sql.ResultSet;
+import java.util.Collections;
+import java.util.List;
+
+import com.justjournal.model.User;
+import org.apache.cayenne.DataObjectUtils;
+import org.apache.cayenne.ObjectContext;
+import org.apache.cayenne.access.DataContext;
+import org.apache.log4j.Logger;
+
+import org.apache.cayenne.exp.Expression;
+import org.apache.cayenne.query.SelectQuery;
+
 
 /**
- * Access account information for a specific user or all users
- * of Just Journal.
+ * Access account information for a specific user or all users of Just Journal.
  *
  * @author Lucas Holt
  * @version 1.0
@@ -48,14 +59,15 @@ import java.util.Collection;
  */
 public final class UserDao {
 
+    private static final Logger log = Logger.getLogger(UserDao.class);
+
     /**
-     * Add a user to justjournal including their name, username and
-     * password.
+     * Add a user to justjournal including their name, username and password.
      *
      * @param user User Instance
      * @return True if successful, false otherwise.
      */
-    public static final boolean add(UserTo user) {
+    public static boolean add(UserTo user) {
         boolean noError = true;
         int records = 0;
 
@@ -77,16 +89,14 @@ public final class UserDao {
     }
 
     /**
-     * update the user record with a new first name.
-     * usernames can not be changed.
-     * passwords can be changed via the
+     * edit the user record with a new first name. usernames can not be changed. passwords can be changed via the
      * <code>com.justjournal.ctl.ChangePasswordSubmit</code> class.
      *
-     * @param user  User Instance
-     * @return  true on success
+     * @param user User Instance
+     * @return true on success
      * @see com.justjournal.ctl.ChangePasswordSubmit
      */
-    public static final boolean update(UserTo user) {
+    public static boolean update(UserTo user) {
         boolean noError = true;
 
         final String sqlStmt =
@@ -102,21 +112,20 @@ public final class UserDao {
     }
 
     /**
-     * Deletes a user from the database.  This
-     * should not be called by cancel account.  Accounts
-     * should be deactivated.
+     * Deletes a user from the database.  This should not be called by cancel account.  Accounts should be deactivated.
      *
-     * @param userId  Unique User ID
+     * @param userId Unique User ID
      * @return true if successful, false otherwise
      */
-    public static final boolean delete(int userId) {
+    public static boolean delete(int userId) {
         boolean noError = true;
-
-        final String sqlStmt = "DELETE FROM user WHERE id='" + userId + "' LIMIT 1;";
 
         if (userId > 0) {
             try {
-                SQLHelper.executeNonQuery(sqlStmt);
+                ObjectContext dataContext = DataContext.getThreadObjectContext();
+                 User u = DataObjectUtils.objectForPK(dataContext, User.class, userId);
+                dataContext.deleteObject(u);
+                dataContext.commitChanges();
             } catch (Exception e) {
                 noError = false;
             }
@@ -128,104 +137,82 @@ public final class UserDao {
     }
 
     /**
-     * Retrieve a user given the user id.
-     * Does NOT retrieve password or sha1 password.
+     * Retrieve a user given the user id. Does NOT retrieve password or sha1 password.
      *
-     * @param userId  Unique User ID
+     * @param userId Unique User ID
      * @return user's info
      */
-    public static final UserTo view(int userId) {
+    public static UserTo view(final int userId) {
         UserTo user = new UserTo();
-        CachedRowSet rs = null;
-        String sqlStmt = "SELECT username, name, since, lastlogin, lastname FROM user WHERE id='" + userId + "' LIMIT 1;";
 
         try {
+            ObjectContext dataContext = DataContext.getThreadObjectContext();
+            User u = DataObjectUtils.objectForPK(dataContext, User.class, userId);
 
-            rs = SQLHelper.executeResultSet(sqlStmt);
-
-            if (rs.next()) {
+            if (u != null) {
                 user.setId(userId);
-                user.setUserName(rs.getString("username")); // username
-                user.setName(rs.getString("name")); // first name
-                user.setSince(rs.getInt("since"));
-                if (rs.getString("lastlogin") != null) {
-                    user.setLastLogin(rs.getString("lastlogin"));
+                user.setUserName(u.getUsername()); // username
+                user.setName(u.getName()); // first name
+                user.setSince(u.getSince());
+                if (u.getLastlogin() != null) {
+                    user.setLastLogin(u.getLastlogin());
                 }
-                if (rs.getString("lastname") != null)
-                    user.setLastName(rs.getString("lastname"));
+                if (u.getLastname() != null)
+                    user.setLastName(u.getLastname());
             }
-
-            rs.close();
-
         } catch (Exception e1) {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (Exception e) {
-                    // NOTHING TO DO
-                }
-            }
+            log.error(e1);
         }
         return user;
 
     }
 
     /**
-     * Retrieve a user give the user name.
-     * Does not retrieve the password or
-     * sha1 password.
+     * Retrieve a user give the user name. Does not retrieve the password or sha1 password.
      *
-     * @param userName  User's username
+     * @param userName User's username
      * @return user's info
      */
-    public static final UserTo view(String userName) {
+    public static UserTo view(final String userName) {
         UserTo user = new UserTo();
-        CachedRowSet rs = null;
-        String sqlStmt = "SELECT id, name, since, lastlogin, lastname from user WHERE username='" + userName + "' Limit 1;";
 
         try {
+            ObjectContext dataContext = DataContext.getThreadObjectContext();
+            Expression exp = Expression.fromString("username = $user");
+            final SelectQuery query = new SelectQuery(User.class, exp).queryWithParameters(Collections.singletonMap("user", userName));
+            List<User> userlist = dataContext.performQuery(query);
 
-            rs = SQLHelper.executeResultSet(sqlStmt);
+            if (!userlist.isEmpty()) {
+                User u = userlist.get(0);
 
-            if (rs.next()) {
-                user.setId(rs.getInt("id"));
+                user.setId(DataObjectUtils.intPKForObject(u));
                 user.setUserName(userName);
-                user.setName(rs.getString("name")); // first name
-                user.setSince(rs.getInt("since"));
-                if (rs.getString("lastlogin") != null) {
-                    user.setLastLogin(rs.getString("lastlogin"));
+                user.setName(u.getName()); // first name
+                user.setSince(u.getSince());
+                if (u.getLastlogin() != null) {
+                    user.setLastLogin(u.getLastlogin());
                 }
-                if (rs.getString("lastname") != null)
-                    user.setLastName(rs.getString("lastname"));
+                if (u.getLastname() != null)
+                    user.setLastName(u.getLastname());
             }
-
-            rs.close();
-
         } catch (Exception e1) {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (Exception e) {
-                    // NOTHING TO DO
-                }
-            }
+            log.error(e1);
         }
         return user;
     }
 
     /**
-     * Retrieve the list of all users including their name,
-     * username, sign up year (since), and unique id.
+     * Retrieve the list of all users including their name, username, sign up year (since), and unique id.
      *
      * @return All users of just journal.
      */
     public static final Collection<UserTo> memberList() {
-        ArrayList<UserTo> users = new ArrayList<UserTo>(256);
+        ArrayList<UserTo> users = new ArrayList<UserTo>(1024);
         UserTo usr;
         final String sqlStatement = "call memberlist();";
 
         try {
-            final CachedRowSet RS = SQLHelper.executeResultSet(sqlStatement);
+            final ResultSet RS = SQLHelper.executeResultSet(sqlStatement);
 
             while (RS.next()) {
                 usr = new UserTo();
@@ -239,7 +226,7 @@ public final class UserDao {
 
             RS.close();
         } catch (Exception e1) {
-
+            log.error(e1);
         }
 
         return users;
@@ -247,15 +234,16 @@ public final class UserDao {
 
     /**
      * Retrieve the last five users to sign up.
-     * @return collection of UserTo's. 
+     *
+     * @return collection of UserTo's.
      */
-     public static final Collection<UserTo> newUsers() {
+    public static final Collection<UserTo> newUsers() {
         ArrayList<UserTo> users = new ArrayList<UserTo>(5);
         UserTo usr;
         final String sqlStatement = "SELECT id, username, name, since, lastname FROM user ORDER by id DESC Limit 0,5;";
 
         try {
-            final CachedRowSet RS = SQLHelper.executeResultSet(sqlStatement);
+            final ResultSet RS = SQLHelper.executeResultSet(sqlStatement);
 
             while (RS.next()) {
                 usr = new UserTo();
@@ -269,7 +257,7 @@ public final class UserDao {
 
             RS.close();
         } catch (Exception e1) {
-
+            log.error(e1);
         }
 
         return users;
@@ -277,10 +265,10 @@ public final class UserDao {
 
     public static final Collection<String> friends(String username) {
         ArrayList<String> friends = new ArrayList<String>();
-        final String sql =  "SELECT friends.friendid as fif, (SELECT user.username from user WHERE user.id=fif) FROM friends, user WHERE user.username=\"" + username + "\" AND user.id=friends.id;";
+        final String sql = "SELECT friends.friendid as fif, (SELECT user.username from user WHERE user.id=fif) FROM friends, user WHERE user.username=\"" + username + "\" AND user.id=friends.id;";
 
         try {
-            final CachedRowSet RS = SQLHelper.executeResultSet(sql);
+            final ResultSet RS = SQLHelper.executeResultSet(sql);
 
             while (RS.next()) {
                 friends.add(RS.getString(2));
@@ -288,18 +276,18 @@ public final class UserDao {
 
             RS.close();
         } catch (Exception e1) {
-
+            log.error(e1);
         }
 
         return friends;
     }
 
-     public static final Collection<String> friendsof(String username) {
+    public static final Collection<String> friendsof(String username) {
         ArrayList<String> friends = new ArrayList<String>();
-        final String sql =  "SELECT friends.id as fif, (SELECT user.username from user WHERE user.id=fif) FROM friends, user WHERE user.username=\"" + username + "\" AND user.id=friends.friendid;";
-   
+        final String sql = "SELECT friends.id as fif, (SELECT user.username from user WHERE user.id=fif) FROM friends, user WHERE user.username=\"" + username + "\" AND user.id=friends.friendid;";
+
         try {
-            final CachedRowSet RS = SQLHelper.executeResultSet(sql);
+            final ResultSet RS = SQLHelper.executeResultSet(sql);
 
             while (RS.next()) {
                 friends.add(RS.getString(2));
@@ -307,7 +295,7 @@ public final class UserDao {
 
             RS.close();
         } catch (Exception e1) {
-
+            log.error(e1);
         }
 
         return friends;

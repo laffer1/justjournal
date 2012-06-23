@@ -214,7 +214,7 @@ public class EditEntrySubmit extends Protected {
                 log.debug("Was there an error with data tier?  " + !result);
 
             if (!result)
-                addError("Unknown", "Could not update entry.");
+                addError("Unknown", "Could not edit entry.");
         }
 
         if (this.hasErrors())

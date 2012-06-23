@@ -1,59 +1,53 @@
 /*
-Copyright (c) 2006, Lucas Holt
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification, are
-permitted provided that the following conditions are met:
-
-  Redistributions of source code must retain the above copyright notice, this list of
-  conditions and the following disclaimer.
-
-  Redistributions in binary form must reproduce the above copyright notice, this
-  list of conditions and the following disclaimer in the documentation and/or other
-  materials provided with the distribution.
-
-  Neither the name of the Just Journal nor the names of its contributors
-  may be used to endorse or promote products derived from this software without
-  specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
-CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
-INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
-MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
-CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
-GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
-BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
-OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
-TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
-OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (c) 2006, 2011 Lucas Holt
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ */
 
 package com.justjournal.core;
 
-import com.justjournal.db.SQLHelper;
+import org.apache.cayenne.CayenneRuntimeException;
+import org.apache.cayenne.ObjectContext;
+import org.apache.cayenne.access.DataContext;
+import org.apache.cayenne.configuration.server.ServerRuntime;
+import org.apache.cayenne.query.SelectQuery;
+import org.apache.log4j.Logger;
 
 import javax.servlet.ServletContext;
-import javax.sql.rowset.CachedRowSet;
+import java.util.List;
 
 /**
- * Global settings for the site.  Any changes here will
- * effect the entire site.  User preferences are seperate and
- * any negative setting here will supersede per user settings
- * like commentMailEnable = false would disable email comments
+ * Global settings for the site.  Any changes here will effect the entire site.  User preferences are separate and any
+ * negative setting here will supersede per user settings like commentMailEnable = false would disable email comments
  * even if Users have them turned on.
- * <p/>
- * Date: Mar 5, 2006
- * Time: 11:03:13 PM
  *
  * @author Lucas Holt
- * @version $Id: Settings.java,v 1.9 2008/08/01 14:35:54 laffer1 Exp $
+ * @version $Id: Settings.java,v 1.10 2012/06/23 18:15:31 laffer1 Exp $
  * @since 1.0
  */
 public class Settings {
+    private static Logger log = Logger.getLogger(Settings.class.getName());
+
     /* paths */
     private String baseUri = "http://localhost:8080/";
     private String fsPath = ""; // file storage path.
@@ -96,11 +90,19 @@ public class Settings {
         try {
             String name;
             String value;
-            String sql = "SELECT * FROM settings;";
-            CachedRowSet rs = SQLHelper.executeResultSet(sql);
-            while (rs.next()) {
-                name = rs.getString("name");
-                value = rs.getString("value");
+
+            for (com.justjournal.model.Settings set : list()) {
+                value = set.getValue();
+                name = set.getKeyName();
+
+                if (name == null) {
+                    log.warn("setting.name is null");
+                    continue;
+                }
+                if (value == null) {
+                    log.warn("setting.value is null");
+                    continue;
+                }
 
                 if (name.equalsIgnoreCase("baseuri"))
                     baseUri = value;
@@ -108,14 +110,10 @@ public class Settings {
                     fsPath = value;
                 else if (name.equalsIgnoreCase("contextPath"))
                     contextPath = value;
-                else if (name.equalsIgnoreCase("siteEnable")) {
-                    if (value.equalsIgnoreCase("true"))
-                        siteEnable = true;
-                    else
-                        siteEnable = false;
-                } else if (name.equalsIgnoreCase("siteName"))
+                else if (name.equalsIgnoreCase("siteEnable"))
+                    siteEnable = value.equalsIgnoreCase("true");
+                else if (name.equalsIgnoreCase("siteName"))
                     siteName = value;
-
                 else if (name.equalsIgnoreCase("siteAdmin"))
                     siteAdmin = value;
                 else if (name.equalsIgnoreCase("siteAdminEmail"))
@@ -123,25 +121,13 @@ public class Settings {
                 else if (name.equalsIgnoreCase("siteBlog"))
                     siteBlog = value;
                 else if (name.equalsIgnoreCase("siteSearch")) {
-                    if (value.equalsIgnoreCase("true"))
-                        siteSearch = true;
-                    else
-                        siteSearch = false;
+                    siteSearch = value.equalsIgnoreCase("true");
                 } else if (name.equalsIgnoreCase("siteDirectory")) {
-                    if (value.equalsIgnoreCase("true"))
-                        siteDirectory = true;
-                    else
-                        siteDirectory = false;
+                    siteDirectory = value.equalsIgnoreCase("true");
                 } else if (name.equalsIgnoreCase("siteRss")) {
-                    if (value.equalsIgnoreCase("true"))
-                        siteRss = true;
-                    else
-                        siteRss = false;
+                    siteRss = value.equalsIgnoreCase("true");
                 } else if (name.equalsIgnoreCase("mailEnable")) {
-                    if (value.equalsIgnoreCase("true"))
-                        mailEnable = true;
-                    else
-                        mailEnable = false;
+                    mailEnable = value.equalsIgnoreCase("true");
                 } else if (name.equalsIgnoreCase("mailHost"))
                     mailHost = value;
                 else if (name.equalsIgnoreCase("mailPort"))
@@ -155,45 +141,42 @@ public class Settings {
                 else if (name.equalsIgnoreCase("mailSubject"))
                     mailSubject = value;
                 else if (name.equalsIgnoreCase("commentEnable")) {
-                    if (value.equalsIgnoreCase("true"))
-                        commentEnable = true;
-                    else
-                        commentEnable = false;
+                    commentEnable = value.equalsIgnoreCase("true");
                 } else if (name.equalsIgnoreCase("commentMailEnable")) {
-                    if (value.equalsIgnoreCase("true"))
-                        commentMailEnable = true;
-                    else
-                        commentMailEnable = false;
+                    commentMailEnable = value.equalsIgnoreCase("true");
                 } else if (name.equalsIgnoreCase("commentEnableAnonymous")) {
-                    if (value.equalsIgnoreCase("true"))
-                        mailEnable = true;
-                    else
-                        mailEnable = false;
+                    mailEnable = value.equalsIgnoreCase("true");
                 } else if (name.equalsIgnoreCase("tzOffset"))
                     tzOffset = Integer.parseInt(value);
                 else if (name.equalsIgnoreCase("tzName"))
                     tzName = value;
                 else if (name.equalsIgnoreCase("tzLocalize")) {
-                    if (value.equalsIgnoreCase("true"))
-                        tzLocalize = true;
-                    else
-                        tzLocalize = false;
+                    tzLocalize = value.equalsIgnoreCase("true");
                 } else if (name.equalsIgnoreCase("tzUseGMT")) {
-                    if (value.equalsIgnoreCase("true"))
-                        tzUseGMT = true;
-                    else
-                        tzUseGMT = false;
+                    tzUseGMT = value.equalsIgnoreCase("true");
                 } else if (name.equalsIgnoreCase("userAllowNew")) {
-                    if (value.equalsIgnoreCase("true"))
-                        userAllowNew = true;
-                    else
-                        userAllowNew = false;
+                    userAllowNew = value.equalsIgnoreCase("true");
                 }
             }
-            rs.close();
         } catch (Exception e) {
-            System.out.println("Settings: " + e.getMessage());
+            e.printStackTrace();
+            log.error(e);
         }
+    }
+
+    public List<com.justjournal.model.Settings> list() throws CayenneRuntimeException {
+        ObjectContext dataContext;
+        try {
+            dataContext = DataContext.getThreadObjectContext();
+        } catch (Exception e) {
+            ServerRuntime cayenneRuntime = new ServerRuntime("cayenne-JustJournalDomain.xml");
+            dataContext = cayenneRuntime.getContext();
+
+            DataContext.bindThreadObjectContext(dataContext);
+            log.debug(e);
+        }
+        final SelectQuery query = new SelectQuery(com.justjournal.model.Settings.class);
+        return dataContext.performQuery(query);
     }
 
     public String getBaseUri() {

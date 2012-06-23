@@ -51,7 +51,7 @@ import javax.servlet.http.HttpSession;
  * Modify the journal title
  *
  * @author Lucas Holt
- * @version $Id: JournalTitle.java,v 1.4 2009/05/16 03:13:12 laffer1 Exp $
+ * @version $Id: JournalTitle.java,v 1.5 2012/06/23 18:15:31 laffer1 Exp $
  */
 public class JournalTitle extends JustJournalBaseServlet {
 
@@ -83,7 +83,7 @@ public class JournalTitle extends JustJournalBaseServlet {
         if (!blnError) {
             try {
                 if (log.isDebugEnabled())
-                    log.debug("Attempting user prefs update  ");
+                    log.debug("Attempting user prefs edit  ");
 
                 if (userID > 0) {
                     String strSQL = "UPDATE user_pref SET journal_name='" +
@@ -92,7 +92,7 @@ public class JournalTitle extends JustJournalBaseServlet {
                         htmlOutput(sb, userName);
                     else
                         WebError.Display("Databaase error",
-                                "Unable to update the journal title.", sb);
+                                "Unable to edit the journal title.", sb);
 
 
                 } else {

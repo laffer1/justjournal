@@ -34,7 +34,8 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
-import javax.sql.rowset.CachedRowSet;
+ import java.sql.ResultSet;
+
 
 /**
  * @author Lucas Holt
@@ -50,8 +51,8 @@ public final class EmoticonDao {
         String sqlStatement;
 
         EmoticonTo et = new EmoticonTo();
-        CachedRowSet rs = null;
-        CachedRowSet rs2;
+        ResultSet rs = null;
+        ResultSet rs2;
         boolean icon = false;
         String sqlStatement2 = "Select parentmood from mood WHERE id=\"";
 

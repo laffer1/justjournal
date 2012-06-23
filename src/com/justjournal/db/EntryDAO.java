@@ -35,29 +35,35 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.db;
 
 import com.justjournal.User;
+import com.justjournal.model.Entry;
 import com.justjournal.utility.StringUtil;
+import org.apache.cayenne.CayenneRuntimeException;
+import org.apache.cayenne.DataObjectUtils;
+import org.apache.cayenne.ObjectContext;
+import org.apache.cayenne.access.DataContext;
+import org.apache.cayenne.exp.Expression;
+import org.apache.cayenne.query.Ordering;
+import org.apache.cayenne.query.SelectQuery;
+import org.apache.cayenne.query.SortOrder;
 import org.apache.log4j.Logger;
 
 import javax.sql.rowset.CachedRowSet;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.ListIterator;
+import java.util.*;
+import java.sql.ResultSet;
+
+import static java.util.Collections.singletonMap;
+
 
 /**
- * Provides access to journal entries in the data tier.  Several parts of this
- * class could be optimized.  We are using several database connects when only
- * one is needed.
+ * Provides access to journal entries in the data tier.  Several parts of this class could be optimized.  We are using
+ * several database connects when only one is needed.
  *
  * @author Lucas Holt
- * @version $Id: EntryDAO.java,v 1.29 2009/08/07 02:31:43 laffer1 Exp $
+ * @version $Id: EntryDAO.java,v 1.30 2012/06/23 18:15:31 laffer1 Exp $
  * @see EntryTo
- * @since 1.0
- *        User: laffer1
- *        Date: Sep 20, 2003
- *        Time: 8:48:24 PM
+ * @since 1.0 User: laffer1 Date: Sep 20, 2003 Time: 8:48:24 PM
  *        <p/>
- *        1.1 Fixed a bug selecting older entries.
- *        1.0 initial release
+ *        1.1 Fixed a bug selecting older entries. 1.0 initial release
  */
 public final class EntryDAO {
     private final static int MAX_ENTRIES = 20;
@@ -103,8 +109,8 @@ public final class EntryDAO {
     }
 
     /**
-     * Update a journal entry with different information.  User can alter
-     * date, subject, body, security, mood, music, and location.
+     * Update a journal entry with different information.  User can alter date, subject, body, security, mood, music,
+     * and location.
      *
      * @param et journal entry that needs to be altered.
      * @return true if no error occured.
@@ -166,184 +172,122 @@ public final class EntryDAO {
         return noError;
     }
 
+    /**
+     * Get single entry using userId as the only security check
+     *
+     * @param entryId unique entry id
+     * @param userId  unique user id
+     * @return Entry Transfer Object
+     */
     public static EntryTo viewSingle(final int entryId, final int userId) {
-        final EntryTo et = new EntryTo();
-        CachedRowSet rs = null;
-        CachedRowSet rsComment = null;
-        String sqlStmt2;
-        String sqlStatement;
+        EntryTo et = viewSingle(entryId);
 
-        sqlStatement = new StringBuffer().append("SELECT us.id As id, us.username, ").append("eh.date As date, eh.subject As subject, eh.music, eh.body, ").append("mood.title As moodt, location.title As location, eh.id As entryid, ").append("eh.security as security, eh.autoformat, eh.allow_comments, eh.email_comments, location.id as locationid, mood.id as moodid ").append("FROM user As us, entry As eh, ").append("mood, location ").append("WHERE eh.id='").append(entryId).append("' AND eh.uid='").append(userId).append("' AND us.id=eh.uid AND mood.id=eh.mood AND location.id=eh.location ORDER BY eh.date DESC, eh.id DESC LIMIT 1;").toString();
-
-        try {
-            rs = SQLHelper.executeResultSet(sqlStatement);
-
-            if (rs.next()) {
-
-                et.setUserName(rs.getString("username"));
-
-                et.setId(rs.getInt("entryid"));
-                et.setUserId(rs.getInt("id"));
-                et.setDate(rs.getString("date"));
-                et.setSubject(rs.getString("subject"));
-                et.setBody(rs.getString("body"));
-                et.setLocationId(rs.getInt("locationid"));
-                et.setMoodId(rs.getInt("moodid"));
-                et.setMusic(rs.getString("music"));
-                et.setSecurityLevel(rs.getInt("security"));
-                et.setMoodName(rs.getString("moodt"));
-                et.setLocationName(rs.getString("location"));
-
-                if (rs.getString("email_comments").compareTo("Y") == 0)
-                    et.setEmailComments(true);
-                else
-                    et.setEmailComments(false);
-
-                if (rs.getString("allow_comments").compareTo("Y") == 0)
-                    et.setAllowComments(true);
-                else
-                    et.setAllowComments(false);
-
-                if (rs.getString("autoformat").compareTo("Y") == 0)
-                    et.setAutoFormat(true);
-                else
-                    et.setAutoFormat(false);
-
-                et.setTags(getTags(entryId));
-
-                try {
-                    sqlStmt2 = "SELECT count(comments.id) As comid FROM comments WHERE eid='" + rs.getString("entryid") + "';";
-                    rsComment = SQLHelper.executeResultSet(sqlStmt2);
-                    if (rsComment.next()) {
-                        if (rsComment.getInt("comid") > 0)
-                            et.setCommentCount(rsComment.getInt("comid"));
-                    }
-
-                    rsComment.close();
-                    rsComment = null;
-                } catch (Exception ex) {
-                    if (rsComment != null) {
-                        try {
-                            rsComment.close();
-                        } catch (Exception e) {
-                            // NOTHING TO DO
-                        }
-                    }
-                }
-
-            }
-
-            rs.close();
-
-        } catch (Exception e1) {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (Exception e) {
-                    // NOTHING TO DO
-                }
-            }
-        }
-
-
-        return et;
-
+        if (et.getUserId() == userId)
+            return et;
+        else
+            return new EntryTo();
     }
 
+    /**
+     * Create an EntryTo object from the contents of a database entry
+     *
+     * @param entry Cayenne Data Object for an entry
+     * @return EntryTo
+     */
+    private static EntryTo populateEntryTo(com.justjournal.model.Entry entry) {
+        EntryTo et = new EntryTo();
+
+        if (entry != null) {
+            com.justjournal.model.User user = entry.getEntryToUser();
+            com.justjournal.model.Mood mood = entry.getEntryToMood();
+            com.justjournal.model.EntrySecurity security = entry.getEntryToSecurity();
+            com.justjournal.model.Location location = entry.getEntryToLocation();
+            int entryId = DataObjectUtils.intPKForObject(entry);
+
+            et.setUserName(user.getUsername());
+
+            et.setId(entryId);
+            et.setUserId(DataObjectUtils.intPKForObject(user));
+            et.setDate(new DateTimeBean(entry.getDate()));
+            et.setSubject(entry.getSubject());
+            et.setBody(entry.getBody());
+            et.setLocationId(DataObjectUtils.intPKForObject(location));
+            et.setMoodId(DataObjectUtils.intPKForObject(mood));
+            et.setMusic(entry.getMusic());
+            et.setSecurityLevel(DataObjectUtils.intPKForObject(security));
+            et.setMoodName(mood.getTitle());
+            et.setLocationName(location.getTitle());
+
+            if (entry.getEmailComments().compareTo("Y") == 0)
+                et.setEmailComments(true);
+            else
+                et.setEmailComments(false);
+
+            if (entry.getAllowComments().compareTo("Y") == 0)
+                et.setAllowComments(true);
+            else
+                et.setAllowComments(false);
+
+            if (entry.getAutoformat().compareTo("Y") == 0)
+                et.setAutoFormat(true);
+            else
+                et.setAutoFormat(false);
+
+            et.setTags(getTags(entryId));
+            et.setCommentCount(entry.getEntryToComments().size());
+
+        }
+        return et;
+    }
+
+    /**
+     * Get single entry with no security in place
+     *
+     * @param entryId unique id for an entry
+     * @return Entry Transfer Object
+     */
+    public static EntryTo viewSingle(final int entryId) {
+        EntryTo et;
+
+        try {
+            ObjectContext dataContext = DataContext.getThreadObjectContext();
+
+            com.justjournal.model.Entry entry = DataObjectUtils.objectForPK(dataContext, com.justjournal.model.Entry.class, entryId);
+            et = populateEntryTo(entry);
+
+        } catch (Exception e1) {
+            et = new EntryTo();
+            log.error(e1);
+        }
+
+        return et;
+    }
+
+
+    // not fond of the security model here
+    @Deprecated
     public static EntryTo viewSingle(final int entryId, final boolean thisUser) {
-        final EntryTo et = new EntryTo();
-        CachedRowSet rs = null;
-        CachedRowSet rsComment = null;
-        String sqlStmt2;
-        String sqlStatement;
+        final EntryTo et;
 
         if (thisUser)  // no security
         {
-            sqlStatement = new StringBuffer().append("SELECT us.id As id, us.username, ").append("eh.date As date, eh.subject As subject, eh.music, eh.body, ").append("mood.title As moodt, location.title As location, eh.id As entryid, ").append("eh.security as security, eh.autoformat, eh.allow_comments, eh.email_comments, location.id as locationid, mood.id as moodid ").append("FROM user As us, entry As eh, ").append("mood, location ").append("WHERE eh.id='").append(entryId).append("' AND us.id=eh.uid AND mood.id=eh.mood AND location.id=eh.location ORDER BY eh.date DESC, eh.id DESC LIMIT 1;").toString();
+            return viewSingle(entryId);
         } else {
-            sqlStatement = new StringBuffer().append("SELECT us.id As id, us.username, ").append("eh.date As date, eh.subject As subject, eh.music, eh.body, ").append("mood.title As moodt, location.title As location, eh.id As entryid, ").append("eh.security as security, eh.autoformat, eh.allow_comments, eh.email_comments, location.id as locationid, mood.id as moodid ").append("FROM user As us, entry As eh, ").append("mood, location ").append("WHERE eh.id='").append(entryId).append("' AND us.id=eh.uid AND mood.id=eh.mood AND location.id=eh.location AND eh.security=2 ORDER BY eh.date DESC, eh.id DESC LIMIT 1;").toString();
+            et = viewSingle(entryId);
+
+            if (et.getSecurityLevel() == 2)
+                return et;
+            else
+                return new EntryTo();
         }
-
-        try {
-            rs = SQLHelper.executeResultSet(sqlStatement);
-
-            if (rs.next()) {
-
-                et.setUserName(rs.getString("username"));
-
-                et.setId(rs.getInt("entryid"));
-                et.setUserId(rs.getInt("id"));
-                et.setDate(rs.getString("date"));
-                et.setSubject(rs.getString("subject"));
-                et.setBody(rs.getString("body"));
-                et.setLocationId(rs.getInt("locationid"));
-                et.setMoodId(rs.getInt("moodid"));
-                et.setMusic(rs.getString("music"));
-                et.setSecurityLevel(rs.getInt("security"));
-                et.setMoodName(rs.getString("moodt"));
-                et.setLocationName(rs.getString("location"));
-
-                if (rs.getString("email_comments").compareTo("Y") == 0)
-                    et.setEmailComments(true);
-                else
-                    et.setEmailComments(false);
-
-                if (rs.getString("allow_comments").compareTo("Y") == 0)
-                    et.setAllowComments(true);
-                else
-                    et.setAllowComments(false);
-
-                if (rs.getString("autoformat").compareTo("Y") == 0)
-                    et.setAutoFormat(true);
-                else
-                    et.setAutoFormat(false);
-
-                et.setTags(getTags(entryId));
-
-                try {
-                    sqlStmt2 = "SELECT count(comments.id) As comid FROM comments WHERE eid='" + rs.getString("entryid") + "';";
-                    rsComment = SQLHelper.executeResultSet(sqlStmt2);
-                    if (rsComment.next()) {
-                        if (rsComment.getInt("comid") > 0)
-                            et.setCommentCount(rsComment.getInt("comid"));
-                    }
-
-                    rsComment.close();
-                    rsComment = null;
-                } catch (Exception ex) {
-                    if (rsComment != null) {
-                        try {
-                            rsComment.close();
-                        } catch (Exception e) {
-                            // NOTHING TO DO
-                        }
-                    }
-                }
-
-            }
-
-            rs.close();
-
-        } catch (Exception e1) {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (Exception e) {
-                    // NOTHING TO DO
-                }
-            }
-        }
-
-
-        return et;
     }
 
     public static EntryTo viewSingle(final EntryTo ets) {
         log.debug("viewSingle() starting with EntryTo input");
 
         final EntryTo et = new EntryTo();
-        CachedRowSet rs = null;
-        CachedRowSet rsComment = null;
+        ResultSet rs = null;
+        ResultSet rsComment = null;
         String sqlStmt2;
         final StringBuilder sqlStatement = new StringBuilder();
 
@@ -444,131 +388,42 @@ public final class EntryDAO {
      * @return A <code>Collection</code> of entries.
      */
     public static Collection<EntryTo> view(final String userName, final boolean thisUser, final int skip) {
-
-        if (log.isDebugEnabled())
-            log.debug("view: starting view of entries.");
-
         final ArrayList<EntryTo> entries = new ArrayList<EntryTo>(MAX_ENTRIES);
 
-        String sqlStatement;
-        String sqlStmt2; // for comment count
-        CachedRowSet rs = null;
-        CachedRowSet rsComment = null;
+        ObjectContext dataContext = DataContext.getThreadObjectContext();
+
         EntryTo et;
         final int PAGE_SIZE = 20;
 
+        Expression exp;
         if (thisUser) {
-            if (log.isDebugEnabled())
-                log.debug("view: this user is logged in.");
-
-            // NO SECURITY RESTRICTION
-            sqlStatement = "SELECT us.id As id, " +
-                    "eh.date As date, eh.subject As subject, eh.music, eh.body, " +
-                    "mood.title As moodt, location.title As location, eh.id As entryid, " +
-                    "eh.security as security, eh.autoformat, eh.allow_comments, eh.email_comments, location.id as locationid, mood.id as moodid " +
-                    "FROM user As us, entry As eh, " +
-                    "mood, location " +
-                    "WHERE us.userName='" + userName +
-                    "' AND us.id=eh.uid AND mood.id=eh.mood AND location.id=eh.location ORDER BY eh.date DESC, eh.id DESC LIMIT "
-                    + Integer.toString(skip) + "," + Integer.toString(PAGE_SIZE) + ";";
+            exp = Expression.fromString("entryToUser.username = $user");
         } else {
-            if (log.isDebugEnabled())
-                log.debug("view: this user is not logged in.");
-
-            // PUBLIC ONLY
-            sqlStatement = "SELECT us.id As id, " +
-                    "eh.date As date, eh.subject As subject, eh.music, eh.body, " +
-                    "mood.title As moodt, location.title As location, eh.id As entryid, " +
-                    "eh.security as security, eh.autoformat, eh.allow_comments, eh.email_comments, location.id as locationid, mood.id as moodid " +
-                    "FROM user As us, entry As eh, " +
-                    "mood, location " +
-                    "WHERE us.userName='" + userName +
-                    "' AND us.id=eh.uid AND mood.id=eh.mood AND location.id=eh.location AND eh.security=2 ORDER BY eh.date DESC, eh.id DESC LIMIT "
-                    + Integer.toString(skip) + "," + Integer.toString(PAGE_SIZE) + ";";
+            exp = Expression.fromString("entryToUser.username = $user and entryToSecurity=2");
         }
 
         try {
-            if (log.isDebugEnabled())
-                log.debug("view: execute sql statement");
+            HashMap<String, Object> map = new HashMap<String, Object>();
+            map.put("user", userName);
+            exp = exp.expWithParameters(map);
+            SelectQuery query = new SelectQuery(com.justjournal.model.Entry.class, exp);
+            query.setPageSize(PAGE_SIZE);
+            List<Ordering> orderings = new ArrayList<Ordering>();
+            orderings.add(new Ordering("date", SortOrder.DESCENDING));
+            orderings.add(new Ordering("db:" + Entry.ID_PK_COLUMN, SortOrder.DESCENDING));
+            query.addOrderings(orderings);
+            List<Entry> entryList = dataContext.performQuery(query);
 
-            rs = SQLHelper.executeResultSet(sqlStatement);
-
-            while (rs.next()) {
-                if (log.isDebugEnabled())
-                    log.debug("view: create EntryTo object and populate it.");
-
-                et = new EntryTo();
-
-                et.setUserName(userName);
-
-                et.setId(rs.getInt("entryid"));
-                et.setUserId(rs.getInt("id"));
-                et.setDate(rs.getString("date"));
-                et.setSubject(rs.getString("subject"));
-                et.setBody(rs.getString("body"));
-                et.setLocationId(rs.getInt("locationid"));
-                et.setMoodId(rs.getInt("moodid"));
-                et.setMusic(rs.getString("music"));
-                et.setSecurityLevel(rs.getInt("security"));
-                et.setMoodName(rs.getString("moodt"));
-                et.setLocationName(rs.getString("location"));
-
-                if (rs.getString("email_comments").compareTo("Y") == 0)
-                    et.setEmailComments(true);
-                else
-                    et.setEmailComments(false);
-
-                if (rs.getString("allow_comments").compareTo("Y") == 0)
-                    et.setAllowComments(true);
-                else
-                    et.setAllowComments(false);
-
-                if (rs.getString("autoformat").compareTo("Y") == 0)
-                    et.setAutoFormat(true);
-                else
-                    et.setAutoFormat(false);
-
-                et.setTags(getTags(rs.getInt("entryid")));
-
-                try {
-                    sqlStmt2 = "SELECT count(comments.id) As comid FROM comments WHERE eid='" + rs.getString("entryid") + "';";
-                    rsComment = SQLHelper.executeResultSet(sqlStmt2);
-                    if (rsComment.next()) {
-                        if (rsComment.getInt("comid") > 0)
-                            et.setCommentCount(rsComment.getInt("comid"));
-                    }
-
-                    rsComment.close();
-                    rsComment = null; // dont close twice
-                } catch (Exception ex) {
-                    if (rsComment != null) {
-                        try {
-                            rsComment.close();
-                        } catch (Exception e) {
-                            // NOTHING TO DO
-                        }
-                    }
-                }
-
-                if (log.isDebugEnabled())
-                    log.debug("view: ET contains " + et.toString());
-
+            int x = 0;
+            for (int i = skip; i < entryList.size(); i++) {
+                et = populateEntryTo(entryList.get(i));
                 entries.add(et);
+                x++;
+                if (x == PAGE_SIZE) break;
             }
-
-            rs.close();
-
         } catch (Exception e1) {
-            if (log.isDebugEnabled())
-                log.debug("view: exception is: " + e1.getMessage() + "\n" + e1.toString());
-
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (Exception e) {
-                    // NOTHING TO DO
-                }
-            }
+            log.error(e1);
+            e1.printStackTrace();
         }
 
         return entries;
@@ -582,128 +437,33 @@ public final class EntryDAO {
      * @return A <code>Collection</code> of entries.
      */
     public static Collection<EntryTo> viewAll(final String userName, final boolean thisUser) {
-
-        if (log.isDebugEnabled())
-            log.debug("viewAll: starting view of entries.");
-
         final ArrayList<EntryTo> entries = new ArrayList<EntryTo>(MAX_ENTRIES);
 
-        String sqlStatement;
-        String sqlStmt2; // for comment count
-        CachedRowSet rs = null;
-        CachedRowSet rsComment = null;
+        ObjectContext dataContext = DataContext.getThreadObjectContext();
+
         EntryTo et;
-
+        Expression exp;
         if (thisUser) {
-            if (log.isDebugEnabled())
-                log.debug("view: this user is logged in.");
-
-            // NO SECURITY RESTRICTION
-            sqlStatement = "SELECT us.id As id, " +
-                    "eh.date As date, eh.subject As subject, eh.music, eh.body, " +
-                    "mood.title As moodt, location.title As location, eh.id As entryid, " +
-                    "eh.security as security, eh.autoformat, eh.allow_comments, eh.email_comments, location.id as locationid, mood.id as moodid " +
-                    "FROM user As us, entry As eh, " +
-                    "mood, location " +
-                    "WHERE us.userName='" + userName +
-                    "' AND us.id=eh.uid AND mood.id=eh.mood AND location.id=eh.location ORDER BY eh.date DESC, eh.id DESC; ";
+            exp = Expression.fromString("entryToUser.username = $user");
         } else {
-            if (log.isDebugEnabled())
-                log.debug("view: this user is not logged in.");
-
-            // PUBLIC ONLY
-            sqlStatement = "SELECT us.id As id, " +
-                    "eh.date As date, eh.subject As subject, eh.music, eh.body, " +
-                    "mood.title As moodt, location.title As location, eh.id As entryid, " +
-                    "eh.security as security, eh.autoformat, eh.allow_comments, eh.email_comments, location.id as locationid, mood.id as moodid " +
-                    "FROM user As us, entry As eh, " +
-                    "mood, location " +
-                    "WHERE us.userName='" + userName +
-                    "' AND us.id=eh.uid AND mood.id=eh.mood AND location.id=eh.location AND eh.security=2 ORDER BY eh.date DESC, eh.id DESC;";
+            exp = Expression.fromString("entryToUser.username = $user and entryToSecurity=2");
         }
 
         try {
-            if (log.isDebugEnabled())
-                log.debug("viewAll: execute sql statement");
+            exp = exp.expWithParameters(singletonMap("user", userName));
+            SelectQuery query = new SelectQuery(com.justjournal.model.Entry.class, exp);
+            List<Ordering> orderings = new ArrayList<Ordering>();
+            orderings.add(new Ordering("date", SortOrder.DESCENDING));
+            orderings.add(new Ordering("db:" + Entry.ID_PK_COLUMN, SortOrder.DESCENDING));
+            query.addOrderings(orderings);
+            List<com.justjournal.model.Entry> entryList = dataContext.performQuery(query);
 
-            rs = SQLHelper.executeResultSet(sqlStatement);
-
-            while (rs.next()) {
-                if (log.isDebugEnabled())
-                    log.debug("viewAll: create EntryTo object and populate it.");
-
-                et = new EntryTo();
-
-                et.setUserName(userName);
-
-                et.setId(rs.getInt("entryid"));
-                et.setUserId(rs.getInt("id"));
-                et.setDate(rs.getString("date"));
-                et.setSubject(rs.getString("subject"));
-                et.setBody(rs.getString("body"));
-                et.setLocationId(rs.getInt("locationid"));
-                et.setMoodId(rs.getInt("moodid"));
-                et.setMusic(rs.getString("music"));
-                et.setSecurityLevel(rs.getInt("security"));
-                et.setMoodName(rs.getString("moodt"));
-                et.setLocationName(rs.getString("location"));
-
-                if (rs.getString("email_comments").compareTo("Y") == 0)
-                    et.setEmailComments(true);
-                else
-                    et.setEmailComments(false);
-
-                if (rs.getString("allow_comments").compareTo("Y") == 0)
-                    et.setAllowComments(true);
-                else
-                    et.setAllowComments(false);
-
-                if (rs.getString("autoformat").compareTo("Y") == 0)
-                    et.setAutoFormat(true);
-                else
-                    et.setAutoFormat(false);
-
-                et.setTags(getTags(rs.getInt("entryid")));
-
-                try {
-                    sqlStmt2 = "SELECT count(comments.id) As comid FROM comments WHERE eid='" + rs.getString("entryid") + "';";
-                    rsComment = SQLHelper.executeResultSet(sqlStmt2);
-                    if (rsComment.next()) {
-                        if (rsComment.getInt("comid") > 0)
-                            et.setCommentCount(rsComment.getInt("comid"));
-                    }
-
-                    rsComment.close();
-                    rsComment = null; // dont close twice
-                } catch (Exception ex) {
-                    if (rsComment != null) {
-                        try {
-                            rsComment.close();
-                        } catch (Exception e) {
-                            // NOTHING TO DO
-                        }
-                    }
-                }
-
-                if (log.isDebugEnabled())
-                    log.debug("viewAll: ET contains " + et.toString());
-
+            for (com.justjournal.model.Entry e : entryList) {
+                et = populateEntryTo(e);
                 entries.add(et);
             }
-
-            rs.close();
-
         } catch (Exception e1) {
-            if (log.isDebugEnabled())
-                log.debug("viewAll: exception is: " + e1.getMessage() + "\n" + e1.toString());
-
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (Exception e) {
-                    // NOTHING TO DO
-                }
-            }
+            log.error(e1);
         }
 
         return entries;
@@ -719,8 +479,8 @@ public final class EntryDAO {
 
         String sqlStatement;
         String sqlStmt2; // for comment count
-        CachedRowSet rs = null;
-        CachedRowSet rsComment = null;
+        ResultSet rs = null;
+        ResultSet rsComment = null;
 
         if (userID < 1)
             throw new IllegalArgumentException("userID must be greater than zero");
@@ -746,14 +506,10 @@ public final class EntryDAO {
         try {
             rs = SQLHelper.executeResultSet(sqlStatement);
 
-            if (log.isDebugEnabled())
-                log.debug("viewFriends: Records returned " + rs.size());
-
             while (rs.next()) {
                 et = new EntryTo();
 
                 et.setUserName(rs.getString("username"));
-
                 et.setId(rs.getInt("entryid"));
                 et.setUserId(rs.getInt("id"));
                 et.setDate(rs.getString("date"));
@@ -843,7 +599,7 @@ public final class EntryDAO {
             throws Exception {
 
         String sqlStatement;
-        CachedRowSet RS;
+        ResultSet RS;
         int count = 0;
 
         sqlStatement = "SELECT count(*) " +
@@ -862,13 +618,14 @@ public final class EntryDAO {
 
     /**
      * Count the number of blog entries this user has made.
+     *
      * @param userName user to get blog entries for
      * @return number of entries
      * @throws Exception data access
      */
-    public static int entryCount( final String userName ) throws Exception {
+    public static int entryCount(final String userName) throws Exception {
         String sqlStatement;
-        CachedRowSet RS;
+        ResultSet RS;
         int count = 0;
 
         sqlStatement = "SELECT count(*) " +
@@ -885,12 +642,12 @@ public final class EntryDAO {
         return count;
     }
 
-    public static CachedRowSet ViewCalendarYear(final int year,
-                                                final String userName,
-                                                final boolean thisUser)
+    public static ResultSet ViewCalendarYear(final int year,
+                                             final String userName,
+                                             final boolean thisUser)
             throws Exception {
         String sqlStatement;
-        CachedRowSet RS;
+        ResultSet RS;
 
         if (thisUser) {
             // NO SECURITY RESTRICTION
@@ -914,14 +671,14 @@ public final class EntryDAO {
         return RS;
     }
 
-    public static CachedRowSet ViewCalendarMonth(final int year,
-                                                 final int month,
-                                                 final String userName,
-                                                 final boolean thisUser)
+    public static ResultSet ViewCalendarMonth(final int year,
+                                              final int month,
+                                              final String userName,
+                                              final boolean thisUser)
             throws Exception {
 
         String sqlStatement;
-        CachedRowSet RS;
+        ResultSet RS;
 
         if (thisUser) {
             // NO SECURITY RESTRICTION
@@ -949,199 +706,99 @@ public final class EntryDAO {
     }
 
     public static Collection ViewCalendarDay(final int year,
-                                               final int month,
-                                               final int day,
-                                               final String userName,
-                                               final boolean thisUser) {
+                                             final int month,
+                                             final int day,
+                                             final String userName,
+                                             final boolean thisUser) {
 
         final int SIZE = 15;
         final ArrayList<EntryTo> entries = new ArrayList<EntryTo>(SIZE);
 
-        String sqlStatement;
-        CachedRowSet rs = null;
-        EntryTo et;
+        ObjectContext dataContext = DataContext.getThreadObjectContext();
 
+        DateTimeBean dtb = new DateTimeBean();
+        dtb.setYear(year);
+        dtb.setMonth(month);
+        dtb.setDay(day);
+        dtb.setHour(0);
+        dtb.setMinutes(1);
+        Date startDate = dtb.toDate();
+        dtb.setHour(23);
+        dtb.setMinutes(59);
+        Date endDate = dtb.toDate();
+
+        EntryTo et;
+        Expression exp;
         if (thisUser) {
-            // NO SECURITY RESTRICTION
-            sqlStatement = "SELECT us.id As id, us.name As name, " +
-                    "eh.date As date, eh.subject As subject, eh.music, eh.body, eh.autoformat, eh.allow_comments, eh.email_comments, " +
-                    "mood.title As moodt, location.title As location, mood.id as moodid, location.id as locid, eh.id As entryid, eh.security " +
-                    "FROM user As us, entry As eh, mood, location " +
-                    "WHERE us.userName='" + userName + "' AND YEAR(eh.date)=" + year + " AND MONTH(eh.date)=" + month +
-                    " AND DAYOFMONTH(eh.date)=" + day +
-                    " AND us.id=eh.uid AND mood.id=eh.mood AND location.id=eh.location ORDER BY eh.date DESC, eh.id DESC;";
+            exp = Expression.fromString("entryToUser.username = $user and date < $ed and date > $sd");
         } else {
-            // PUBLIC ONLY
-            sqlStatement = "SELECT us.id As id, us.name As name, " +
-                    "eh.date As date, eh.subject As subject, eh.music, eh.body, eh.autoformat, eh.allow_comments, eh.email_comments, " +
-                    "mood.title As moodt, location.title As location, mood.id as moodid, location.id as locid, eh.id As entryid, eh.security " +
-                    "FROM user As us, entry As eh, mood, location " +
-                    "WHERE us.userName='" + userName + "' AND YEAR(eh.date)=" + year + " AND MONTH(eh.date)=" + month +
-                    " AND DAYOFMONTH(eh.date)=" + day +
-                    " AND us.id=eh.uid AND mood.id=eh.mood AND location.id=eh.location AND eh.security=2 ORDER BY eh.date DESC, eh.id DESC;";
+            // public security
+            exp = Expression.fromString("entryToUser.username = $user and entryToSecurity=2 and date < $ed and date > $sd");
         }
 
         try {
-            log.debug("viewCalendarDay: execute sql statement");
+            HashMap<String, Object> map = new HashMap<String, Object>();
+            map.put("sd", startDate);
+            map.put("ed", endDate);
+            map.put("user", userName);
+            exp = exp.expWithParameters(map);
+            SelectQuery query = new SelectQuery(com.justjournal.model.Entry.class, exp);
+            List<Ordering> orderings = new ArrayList<Ordering>();
+            orderings.add(new Ordering("date", SortOrder.DESCENDING));
+            orderings.add(new Ordering("db:" + Entry.ID_PK_COLUMN, SortOrder.DESCENDING));
+            query.addOrderings(orderings);
+            List<com.justjournal.model.Entry> entryList = dataContext.performQuery(query);
 
-            rs = SQLHelper.executeResultSet(sqlStatement);
-
-            while (rs.next()) {
-                log.debug("viewCalendarDay: create EntryTo object and populate it.");
-
-                et = new EntryTo();
-
-                et.setUserName(userName);
-                et.setId(rs.getInt("entryid"));
-                et.setUserId(rs.getInt("id"));
-                et.setDate(rs.getString("date"));
-                et.setSubject(rs.getString("subject"));
-                et.setBody(rs.getString("body"));
-                et.setLocationId(rs.getInt("locid"));
-                et.setMoodId(rs.getInt("moodid"));
-                et.setMusic(rs.getString("music"));
-                et.setSecurityLevel(rs.getInt("security"));
-                et.setMoodName(rs.getString("moodt"));
-                et.setLocationName(rs.getString("location"));
-
-                if (rs.getString("email_comments").compareTo("Y") == 0)
-                    et.setEmailComments(true);
-                else
-                    et.setEmailComments(false);
-
-                if (rs.getString("allow_comments").compareTo("Y") == 0)
-                    et.setAllowComments(true);
-                else
-                    et.setAllowComments(false);
-
-                if (rs.getString("autoformat").compareTo("Y") == 0)
-                    et.setAutoFormat(true);
-                else
-                    et.setAutoFormat(false);
-
-                et.setTags(getTags(rs.getInt("entryid")));
-
-                log.debug("viewCalendarDay: ET contains " + et.toString());
-
+            for (com.justjournal.model.Entry e : entryList) {
+                et = populateEntryTo(e);
                 entries.add(et);
             }
-
-            rs.close();
-
         } catch (Exception e1) {
-                log.error("viewCalendarDay: exception is: " + e1.getMessage() + "\n" + e1.toString());
-
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (Exception e) {
-                    // NOTHING TO DO
-                }
-            }
+            log.error(e1);
         }
 
         return entries;
     }
 
     /**
-     * Retrieves top 15 posts from all user's public journal entries
-     * for submission on front page. (RSS feed, etc)
+     * Retrieves top 15 posts from all user's public journal entries for submission on front page. (RSS feed, etc)
      *
      * @return Top 15 recent public entries
      */
     public static Collection<EntryTo> viewRecentAllUsers() {
-
-        if (log.isDebugEnabled())
-            log.debug("view: starting viewRecentAllUsers().");
-
         final int SIZE = 15;
         final ArrayList<EntryTo> entries = new ArrayList<EntryTo>(SIZE);
 
-        String sqlStatement;
-        CachedRowSet rs = null;
-        EntryTo et;
+        ObjectContext dataContext = DataContext.getThreadObjectContext();
 
-        // PUBLIC ONLY
-        sqlStatement = "SELECT us.id As id, us.userName, " +
-                "eh.date As date, eh.subject As subject, eh.music, eh.body, " +
-                "mood.title As moodt, location.title As location, eh.id As entryid, " +
-                "eh.security as security, eh.autoformat, eh.allow_comments, eh.email_comments, location.id as locationid, mood.id as moodid " +
-                "FROM user As us, entry As eh, " +
-                "mood, location " +
-                "WHERE " +
-                " us.id=eh.uid AND mood.id=eh.mood AND location.id=eh.location AND eh.security=2 ORDER BY eh.date DESC, eh.id DESC LIMIT "
-                + "0," + Integer.toString(SIZE) + ";";
+        EntryTo et;
+        Expression exp;
+        exp = Expression.fromString("entryToSecurity=2");
 
         try {
-            if (log.isDebugEnabled())
-                log.debug("viewRecentAllUsers: execute sql statement");
+            SelectQuery query = new SelectQuery(com.justjournal.model.Entry.class, exp);
+            List<Ordering> orderings = new ArrayList<Ordering>();
+            orderings.add(new Ordering("date", SortOrder.DESCENDING));
+            orderings.add(new Ordering("db:" + Entry.ID_PK_COLUMN, SortOrder.DESCENDING));
+            query.addOrderings(orderings);
+            query.setPageSize(SIZE);
+            List<com.justjournal.model.Entry> entryList = dataContext.performQuery(query);
 
-            rs = SQLHelper.executeResultSet(sqlStatement);
-
-            while (rs.next()) {
-                if (log.isDebugEnabled())
-                    log.debug("viewRecentAllUsers: create EntryTo object and populate it.");
-
-                et = new EntryTo();
-
-                et.setUserName(rs.getString("userName"));
-                et.setId(rs.getInt("entryid"));
-                et.setUserId(rs.getInt("id"));
-                et.setDate(rs.getString("date"));
-                et.setSubject(rs.getString("subject"));
-                et.setBody(rs.getString("body"));
-                et.setLocationId(rs.getInt("locationid"));
-                et.setMoodId(rs.getInt("moodid"));
-                et.setMusic(rs.getString("music"));
-                et.setSecurityLevel(rs.getInt("security"));
-                et.setMoodName(rs.getString("moodt"));
-                et.setLocationName(rs.getString("location"));
-
-                if (rs.getString("email_comments").compareTo("Y") == 0)
-                    et.setEmailComments(true);
-                else
-                    et.setEmailComments(false);
-
-                if (rs.getString("allow_comments").compareTo("Y") == 0)
-                    et.setAllowComments(true);
-                else
-                    et.setAllowComments(false);
-
-                if (rs.getString("autoformat").compareTo("Y") == 0)
-                    et.setAutoFormat(true);
-                else
-                    et.setAutoFormat(false);
-
-                et.setTags(getTags(rs.getInt("entryid")));
-
-                if (log.isDebugEnabled())
-                    log.debug("viewRecentAllUsers: ET contains " + et.toString());
-
+            int sz = entryList.size() > SIZE ? SIZE : entryList.size();
+            for (int i = 0; i < sz; i++) {
+                et = populateEntryTo(entryList.get(i));
                 entries.add(et);
             }
-
-            rs.close();
-
         } catch (Exception e1) {
-            if (log.isDebugEnabled())
-                log.debug("viewRecentAllUsers: exception is: " + e1.getMessage() + "\n" + e1.toString());
-
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (Exception e) {
-                    // NOTHING TO DO
-                }
-            }
+            log.error(e1);
         }
 
         return entries;
     }
 
     /**
-     * Retrieve the 15 most recent journal entries from unique users.  So
-     * if I post 10 entries, it will only select the most recent entry
-     * and the entries of 14 other users.  (another words 1 per user)
+     * Retrieve the 15 most recent journal entries from unique users.  So if I post 10 entries, it will only select the
+     * most recent entry and the entries of 14 other users.  (another words 1 per user)
      *
      * @return Entries from 15 different users (most recent)
      */
@@ -1154,7 +811,7 @@ public final class EntryDAO {
         final ArrayList<EntryTo> entries = new ArrayList<EntryTo>(SIZE);
 
         String sqlStatement;
-        CachedRowSet rs = null;
+        ResultSet rs = null;
         EntryTo et;
 
         // PUBLIC ONLY
@@ -1239,10 +896,10 @@ public final class EntryDAO {
         final ArrayList<String> tags = new ArrayList<String>();
 
         String sqlStatement;
-        CachedRowSet rs = null;
+        ResultSet rs = null;
 
         // PUBLIC ONLY
-        sqlStatement = " SELECT tags.name As name FROM tags, entry_tags WHERE entry_tags.entryid='" + entryId
+        sqlStatement = " SELECT tags.name as name FROM tags, entry_tags WHERE entry_tags.entryid='" + entryId
                 + "' AND tags.id = entry_tags.tagid;";
 
         try {
@@ -1270,8 +927,7 @@ public final class EntryDAO {
 
 
     /**
-     * Add and delete tags for blog entries.
-     * TODO: Finish implementation
+     * Add and delete tags for blog entries. TODO: Finish implementation
      *
      * @param entryId The entry the tags should associate with
      * @param tags    An arralist of tags
@@ -1288,11 +944,11 @@ public final class EntryDAO {
         ArrayList<String> deadTags = new ArrayList<String>();
 
         // delete test
-        for (ListIterator cur = current.listIterator(); cur.hasNext();) {
+        for (ListIterator cur = current.listIterator(); cur.hasNext(); ) {
             String curtag = (String) cur.next(); // get the tag
             boolean inlist = false;
             // Compare the current list with the "new" list of tags.
-            for (ListIterator t = tags.listIterator(); t.hasNext();) {
+            for (ListIterator t = tags.listIterator(); t.hasNext(); ) {
                 String newtag = (String) t.next();
                 if (curtag.equalsIgnoreCase(newtag)) {
                     inlist = true;
@@ -1306,11 +962,11 @@ public final class EntryDAO {
         }
 
         // add test
-        for (ListIterator t = tags.listIterator(); t.hasNext();) {
+        for (ListIterator t = tags.listIterator(); t.hasNext(); ) {
             String newtag = (String) t.next(); // get the tag
             boolean inlist = false;
             // Compare the current list with the "new" list of tags.
-            for (ListIterator cur = current.listIterator(); cur.hasNext();) {
+            for (ListIterator cur = current.listIterator(); cur.hasNext(); ) {
                 String curtag = (String) cur.next();
                 if (newtag.equalsIgnoreCase(curtag)) {
                     inlist = true;
@@ -1325,7 +981,7 @@ public final class EntryDAO {
 
         try {
             // add new tags
-            for (ListIterator t = newTags.listIterator(); t.hasNext();) {
+            for (ListIterator t = newTags.listIterator(); t.hasNext(); ) {
                 String newt = (String) t.next();
                 int tagid = getTagId(newt);
                 if (tagid < 1) {
@@ -1338,7 +994,7 @@ public final class EntryDAO {
             }
 
             // delete old tags
-            for (ListIterator t = deadTags.listIterator(); t.hasNext();) {
+            for (ListIterator t = deadTags.listIterator(); t.hasNext(); ) {
                 String dele = (String) t.next();
                 int tagid = getTagId(dele);
                 String sql2 = "DELETE FROM entry_tags where entryid='" + entryId + "' and tagid='" + tagid + "' LIMIT 1;";
@@ -1362,7 +1018,7 @@ public final class EntryDAO {
     public static int getTagId(String tagname) {
         int tagid = 0;
         String sqlStatement;
-        CachedRowSet rs = null;
+        ResultSet rs = null;
 
         if (tagname == null || tagname.equalsIgnoreCase(""))
             throw new IllegalArgumentException("Name must be set");
@@ -1406,8 +1062,8 @@ public final class EntryDAO {
      */
     public static ArrayList<Tag> getUserTags(int userId) {
         String sqlStatement;
-        CachedRowSet rs = null;
-        CachedRowSet rs2;
+        ResultSet rs = null;
+        ResultSet rs2;
         ArrayList<Tag> tags = new ArrayList<Tag>();
 
         // PUBLIC ONLY

@@ -34,9 +34,10 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
-import javax.sql.rowset.CachedRowSet;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collection;
+
 
 /**
  * Retrieve and acquire mood's for use with journal entries.
@@ -60,7 +61,7 @@ public final class MoodDao {
         final String sqlStatement = "CALL listmoodsbytitle()";
 
         try {
-            final CachedRowSet RS = SQLHelper.executeResultSet(sqlStatement);
+            final ResultSet RS = SQLHelper.executeResultSet(sqlStatement);
 
             while (RS.next()) {
                 mood = new MoodTo();
@@ -82,7 +83,7 @@ public final class MoodDao {
         final String sqlStatement = "CALL listmoods()";
 
         try {
-            final CachedRowSet RS = SQLHelper.executeResultSet(sqlStatement);
+            final ResultSet RS = SQLHelper.executeResultSet(sqlStatement);
 
             while (RS.next()) {
                 mood = new MoodTo();

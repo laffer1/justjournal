@@ -36,14 +36,14 @@ package com.justjournal.db;
 
 import com.justjournal.utility.StringUtil;
 
-import javax.sql.rowset.CachedRowSet;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 
 /**
  * Manipulate and fetch comments
  *
  * @author Lucas Holt
- * @version $Id: CommentDao.java,v 1.10 2008/09/27 14:47:54 laffer1 Exp $
+ * @version $Id: CommentDao.java,v 1.11 2012/06/23 18:15:31 laffer1 Exp $
  *          User: laffer1
  *          Date: Dec 25, 2003
  *          Time: 2:19:28 PM
@@ -132,7 +132,7 @@ public final class CommentDao {
     }
 
     public static CommentTo viewSingle(final int commentId) {
-        CachedRowSet rs = null;
+        ResultSet rs = null;
         final CommentTo comment = new CommentTo();
         final String sqlStmt =
                 "Select user.username, comments.date,comments.subject,comments.body, comments.uid, comments.id As cid, comments.eid FROM comments,user WHERE comments.id='"
@@ -169,7 +169,7 @@ public final class CommentDao {
 
     public static ArrayList<CommentTo> view(final int entryId) {
         final ArrayList<CommentTo> comments = new ArrayList<CommentTo>(5);  // 5 is average comments on entry?
-        CachedRowSet rs = null;
+        ResultSet  rs = null;
         CommentTo comment;
         final String sqlStmt =
                 "Select user.username, comments.date,comments.subject,comments.body, comments.uid, comments.id As cid FROM comments,user WHERE comments.eid='"
@@ -220,7 +220,7 @@ public final class CommentDao {
      */
     public static int commentCount(final String userName) throws Exception {
         String sqlStatement;
-        CachedRowSet RS;
+        ResultSet  RS;
         int count = 0;
 
         sqlStatement = "SELECT count(*) " +

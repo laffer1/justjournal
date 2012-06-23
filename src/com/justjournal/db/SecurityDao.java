@@ -36,7 +36,8 @@ package com.justjournal.db;
 
 import javax.sql.rowset.CachedRowSet;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collection;     import java.sql.ResultSet;
+
 
 /**
  * Entry Security!
@@ -50,7 +51,7 @@ import java.util.Collection;
 public final class SecurityDao {
     public static final Collection<SecurityTo> view() {
         ArrayList<SecurityTo> security = new ArrayList<SecurityTo>(4);
-        CachedRowSet RS;
+        ResultSet RS;
         SecurityTo sec;
         final String sqlStatement = "SELECT * FROM entry_security ORDER BY id ASC;";
 

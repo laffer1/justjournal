@@ -36,12 +36,12 @@ package com.justjournal.ctl;
 import com.justjournal.db.EntryDAO;
 import com.justjournal.db.EntryTo;
 import com.justjournal.db.SQLHelper;
-import org.apache.log4j.Category;
 import org.apache.log4j.Logger;
 
-import javax.sql.rowset.CachedRowSet;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.sql.ResultSet;
+
 
 /**
  * View the favorite entries list.
@@ -50,9 +50,7 @@ import java.util.Collection;
  * @version 1.0
  * @since 1.0
  *        <p/>
- *        Created:
- *        Date: Dec 10, 2005
- *        Time: 8:44:39 PM
+ *        Created: Date: Dec 10, 2005 Time: 8:44:39 PM
  */
 public class ViewFavorite extends Protected {
     private static final Logger log = Logger.getLogger(ViewFavorite.class.getName());
@@ -95,15 +93,14 @@ public class ViewFavorite extends Protected {
         if (!this.hasErrors()) {
             try {
                 String sql = "call viewfavorite(" + this.currentLoginId() + ");";
-                CachedRowSet rs = SQLHelper.executeResultSet(sql);
+                ResultSet rs = SQLHelper.executeResultSet(sql);
 
                 while (rs.next()) {
                     int eid = rs.getInt("entryid");
                     EntryTo et = edao.viewSingle(eid, false);
                     entries.add(et);
                 }
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 addError("View Favorites", "Could not retrieve favorites.");
                 if (log.isDebugEnabled())
                     log.debug("insidePerform(): " + e.getMessage());

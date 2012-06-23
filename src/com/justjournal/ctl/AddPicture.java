@@ -106,7 +106,7 @@ public class AddPicture extends JustJournalBaseServlet {
                             Context ctx;
                             DataSource ds = null;
                             Connection conn = null;
-                            PreparedStatement stmt = null; // insert statement
+                            PreparedStatement stmt = null; // create statement
 
                             try {
                                 ctx = new InitialContext();
@@ -121,7 +121,7 @@ public class AddPicture extends JustJournalBaseServlet {
                                 try {
                                     conn = ds.getConnection();
 
-                                    // do the insert of the image
+                                    // do the create of the image
                                     stmt = conn.prepareStatement("INSERT INTO user_images (owner,title,modified,mimetype,image) VALUES(?,?,now(),?,?)");
                                     stmt.setInt(1, userID);
                                     stmt.setString(2, title);

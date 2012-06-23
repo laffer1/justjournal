@@ -38,7 +38,7 @@ package com.justjournal.db;
  * Represents a user most basic properties.
  *
  * @author Lucas Holt
- * @version $Id: UserTo.java,v 1.9 2008/08/15 14:38:48 laffer1 Exp $
+ * @version $Id: UserTo.java,v 1.10 2012/06/23 18:15:31 laffer1 Exp $
  *         Date: Jan 21, 2004
  *         Time: 12:20:53 PM
  *         <p/>
@@ -88,6 +88,12 @@ public final class UserTo {
      */
     public DateTime getLastLogin() {
          return lastLogin;
+    }
+
+    public void setLastLogin(java.util.Date dt) {
+        DateTime newDate = new DateTimeBean();
+        newDate.set(dt);
+        this.lastLogin = newDate;
     }
 
     /**

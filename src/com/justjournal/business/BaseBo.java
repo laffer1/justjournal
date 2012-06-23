@@ -24,35 +24,58 @@
  * SUCH DAMAGE.
  */
 
-package com.justjournal.content;
+package com.justjournal.business;
 
-import com.justjournal.business.HitCounter;
+import java.util.List;
+
+import org.apache.cayenne.BaseContext;
+import org.apache.cayenne.ObjectContext;
+import org.apache.cayenne.access.DataContext;
+import org.apache.cayenne.configuration.server.ServerRuntime;
+import org.apache.log4j.Logger;
+
 
 /**
- * User: laffer1
- * Date: Jul 27, 2008
- * Time: 7:21:29 AM
+ * @author Lucas Holt
  */
-public class HitCountControl {
+public abstract class BaseBo {
+    protected Logger logger = Logger.getLogger(BaseBo.class);
+    /**
+     * Cayenne Data context
+     */
+    protected ObjectContext dataContext;
 
-    private String resource;
+    public BaseBo() {
+        try {
+            dataContext = (DataContext) BaseContext.getThreadObjectContext();
+        } catch (Exception e) {
+            getLogger().debug("Creating new cayenne context instance");
+            ServerRuntime cayenneRuntime = new ServerRuntime("cayenne-JustJournalDomain.xml");
+            dataContext = cayenneRuntime.getContext();
 
-    public String getResource() {
-        return resource;
+            BaseContext.bindThreadObjectContext(dataContext);
+        }
     }
 
-    public void setResource(String resource) {
-        this.resource = resource;
+    /**
+     * Get a log4j logger for this class instance.
+     *
+     * @return logger
+     */
+    public Logger getLogger() {
+        if (logger == null) {
+            logger = Logger.getLogger(getClass());
+        }
+        return logger;
     }
 
-    public String render() {
-        StringBuilder sb = new StringBuilder();
-        HitCounter hit = new HitCounter();
+    /**
+     * List all the items that the model primarily represents.
+     *
+     * @return list of model items
+     * @throws
+     */
+    abstract public List list() throws BoException;
 
-        sb.append("<div class=\"hitcountcontrol\">");
-        sb.append(hit.increment(getResource()));
-        sb.append("</div>");
 
-        return sb.toString();
-    }
 }

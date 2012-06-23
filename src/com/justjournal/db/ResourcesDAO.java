@@ -36,7 +36,8 @@ package com.justjournal.db;
 
 import org.apache.log4j.Logger;
 
-import javax.sql.rowset.CachedRowSet;
+import javax.sql.rowset.CachedRowSet;  import java.sql.ResultSet;
+
 
 /**
  * User: laffer1
@@ -76,7 +77,7 @@ public final class ResourcesDAO {
     public static final boolean update(ResourceTo res) {
 
         if (log.isDebugEnabled())
-            log.debug("Starting update()");
+            log.debug("Starting edit()");
 
         boolean noError = true;
         int records = 0;
@@ -130,7 +131,7 @@ public final class ResourcesDAO {
         if (log.isDebugEnabled())
             log.debug("Starting view()");
 
-        CachedRowSet RS = null;
+        ResultSet RS = null;
         ResourceTo res = null;
         final String sqlStatement = "SELECT id, active, security FROM resources WHERE name='"
                 + uri + "';";

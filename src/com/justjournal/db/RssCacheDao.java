@@ -36,7 +36,8 @@ package com.justjournal.db;
 
 import org.apache.log4j.Logger;
 
-import javax.sql.rowset.CachedRowSet;
+import javax.sql.rowset.CachedRowSet;    import java.sql.ResultSet;
+
 
 /**
  * Created by IntelliJ IDEA.
@@ -84,7 +85,7 @@ public final class RssCacheDao {
     public static final boolean update(RssCacheTo rss) {
 
         if (log.isDebugEnabled())
-            log.debug("Starting update()");
+            log.debug("Starting edit()");
 
         boolean noError = true;
         int records = 0;
@@ -140,7 +141,7 @@ public final class RssCacheDao {
         if (log.isDebugEnabled())
             log.debug("Starting view()");
 
-        CachedRowSet RS = null;
+        ResultSet RS = null;
         DateTime dt = new DateTimeBean();
         RssCacheTo rss = null;
         final String sqlStatement = "SELECT id, `interval`, lastupdated, uri, content FROM rss_cache WHERE uri='"

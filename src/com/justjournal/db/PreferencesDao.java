@@ -38,11 +38,12 @@ import org.apache.log4j.Category;
 import org.apache.log4j.Logger;
 
 import javax.sql.rowset.CachedRowSet;
+import java.sql.ResultSet;
 
 /**
  * Manage user preferences
  * @author Lucas Holt
- * @version $Id: PreferencesDao.java,v 1.13 2009/09/26 22:11:28 laffer1 Exp $
+ * @version $Id: PreferencesDao.java,v 1.14 2012/06/23 18:15:31 laffer1 Exp $
  * @since 1.0
  *        <p/>
  *        1.3 Added show_avatar field select.
@@ -91,9 +92,9 @@ public final class PreferencesDao {
      * @return Preferences in cached rowset.
      * @throws Exception SQL exception
      */
-    public static CachedRowSet ViewJournalPreferences(final String userName)
+    public static ResultSet ViewJournalPreferences(final String userName)
             throws Exception {
-        CachedRowSet RS;
+        ResultSet RS;
 
         if (userName == null)
             throw new IllegalArgumentException("Missing username.");
@@ -102,9 +103,9 @@ public final class PreferencesDao {
             throw new IllegalArgumentException("Username must be at least 3 characters");
 
         String sqlStatement =
-                "SELECT user.name As name, user.id As id, user.since as since, up.style As style, up.allow_spider, " +
-                        "up.owner_view_only, st.url as cssurl, st.doc as cssdoc, uc.email as email, " +
-                        "up.show_avatar as show_avatar, up.journal_name as journal_name, ubio.content as bio, up.ping_services FROM user, user_bio as ubio, user_pref As up, user_style as st, user_contact As uc " +
+                "SELECT user.name, user.id, user.since, up.style, up.allow_spider, " +
+                        "up.owner_view_only, st.url, st.doc, uc.email, " +
+                        "up.show_avatar, up.journal_name, ubio.content, up.ping_services FROM user, user_bio as ubio, user_pref As up, user_style as st, user_contact As uc " +
                         "WHERE user.username='" + userName + "' AND user.id = up.id AND user.id=st.id AND user.id=uc.id AND user.id = ubio.id LIMIT 1;";
 
         try {

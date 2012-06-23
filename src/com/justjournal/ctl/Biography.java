@@ -52,7 +52,7 @@ import javax.servlet.http.HttpSession;
  * Modify the biography
  *
  * @author Lucas Holt
- * @version $Id: Biography.java,v 1.2 2009/05/16 03:13:12 laffer1 Exp $
+ * @version $Id: Biography.java,v 1.3 2012/06/23 18:15:31 laffer1 Exp $
  */
 public class Biography extends JustJournalBaseServlet {
 
@@ -84,7 +84,7 @@ public class Biography extends JustJournalBaseServlet {
         if (!blnError) {
             try {
                 if (log.isDebugEnabled())
-                    log.debug("Attempting user prefs update  ");
+                    log.debug("Attempting user prefs edit  ");
 
                 if (userID > 0) {
                     String strSQL = "UPDATE user_bio SET content='" +
@@ -93,7 +93,7 @@ public class Biography extends JustJournalBaseServlet {
                         htmlOutput(sb, userName);
                     else
                         WebError.Display("Databaase error",
-                                "Unable to update the bio.", sb);
+                                "Unable to edit the bio.", sb);
 
 
                 } else {

@@ -36,7 +36,9 @@ package com.justjournal.db;
 
 import javax.sql.rowset.CachedRowSet;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collection;    import java.sql.ResultSet;  import java.sql.ResultSet;
+
+
 
 /**
  * Created by IntelliJ IDEA.
@@ -47,7 +49,7 @@ import java.util.Collection;
 public final class LocationDao {
     public static Collection<LocationTo> view() {
         ArrayList<LocationTo> location = new ArrayList<LocationTo>(4);
-        CachedRowSet RS;
+        ResultSet RS;
         LocationTo loc;
         final String sqlStatement = "SELECT * FROM location ORDER BY title ASC;";
 

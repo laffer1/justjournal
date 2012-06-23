@@ -36,7 +36,8 @@ package com.justjournal.db;
 
 import javax.sql.rowset.CachedRowSet;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collection;    import java.sql.ResultSet;
+
 
 /**
  * Created by IntelliJ IDEA.
@@ -89,7 +90,7 @@ public final class RssSubscriptionsDAO {
 
     public static Collection<RssSubscriptionsTO> view(final int userId) {
         ArrayList<RssSubscriptionsTO> rssfeeds = new ArrayList<RssSubscriptionsTO>(10);
-        CachedRowSet RS = null;
+        ResultSet RS = null;
         RssSubscriptionsTO rss;
         final String sqlStatement = "SELECT uri, subid FROM rss_subscriptions WHERE id='"
                 + userId + "';";

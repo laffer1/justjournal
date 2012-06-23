@@ -1,50 +1,47 @@
 /*
-Copyright (c) 2006, 2008 Lucas Holt
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification, are
-permitted provided that the following conditions are met:
-
-  Redistributions of source code must retain the above copyright notice, this list of
-  conditions and the following disclaimer.
-
-  Redistributions in binary form must reproduce the above copyright notice, this
-  list of conditions and the following disclaimer in the documentation and/or other
-  materials provided with the distribution.
-
-  Neither the name of the Just Journal nor the names of its contributors
-  may be used to endorse or promote products derived from this software without
-  specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
-CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
-INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
-MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
-CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
-GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
-BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
-OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
-TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
-OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (c) 2006, 2008, 2011 Lucas Holt
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ */
 
 package com.justjournal.core;
 
 import com.justjournal.db.SQLHelper;
+import com.sun.tools.internal.xjc.reader.xmlschema.bindinfo.BIConversion;
+import org.apache.cayenne.CayenneRuntimeException;
+import org.apache.cayenne.ObjectContext;
+import org.apache.cayenne.access.DataContext;
+import org.apache.cayenne.query.SelectQuery;
 import org.apache.log4j.Logger;
 
-import javax.sql.rowset.CachedRowSet;
+import java.sql.ResultSet;
+import java.util.List;
 
 /**
- * Track the number of users, entry and comment statistics, and
- * other information.
+ * Track the number of users, entry and comment statistics, and other information.
  *
  * @author Lucas Holt
- * @version $Id: Statistics.java,v 1.7 2009/07/11 02:03:43 laffer1 Exp $
+ * @version $Id: Statistics.java,v 1.8 2012/06/23 18:15:31 laffer1 Exp $
  */
 public class Statistics {
     private static Logger log = Logger.getLogger(Statistics.class.getName());
@@ -56,16 +53,12 @@ public class Statistics {
      */
     public int users() {
         int count = -1;
-        String sql = "SELECT count(*) FROM user;";
-
         try {
-            CachedRowSet rs = SQLHelper.executeResultSet(sql);
+            ObjectContext dataContext = DataContext.getThreadObjectContext();
 
-            if (rs.next()) {
-                count = rs.getInt(1);
-            }
-
-            rs.close();
+            SelectQuery query = new SelectQuery(com.justjournal.model.User.class);
+            List list = dataContext.performQuery(query);
+            count = list.size();
         } catch (Exception e) {
             log.error("users(): " + e.getMessage());
         }
@@ -79,9 +72,15 @@ public class Statistics {
      * @return The number of entries or -1 on error.
      */
     public int entries() {
-        String sql = "SELECT count(*) FROM entry;";
-
-        return sqlCount(sql);
+        try {
+            ObjectContext dataContext = DataContext.getThreadObjectContext();
+            SelectQuery query = new SelectQuery(com.justjournal.model.Entry.class);
+            List list = dataContext.performQuery(query);
+            return list.size();
+        } catch (CayenneRuntimeException ce) {
+            log.error(ce);
+        }
+        return -1;
     }
 
     /**
@@ -139,9 +138,15 @@ public class Statistics {
      * @return The number of comments or -1 on error.
      */
     public int comments() {
-        String sql = "SELECT count(*) FROM comments;";
-
-        return sqlCount(sql);
+        try {
+            ObjectContext dataContext = DataContext.getThreadObjectContext();
+            SelectQuery query = new SelectQuery(com.justjournal.model.Comments.class);
+            List list = dataContext.performQuery(query);
+            return list.size();
+        } catch (CayenneRuntimeException ce) {
+            log.error(ce);
+        }
+        return -1;
     }
 
     /**
@@ -150,9 +155,15 @@ public class Statistics {
      * @return The number of styles or -1 on error.
      */
     public int styles() {
-        String sql = "SELECT count(*) FROM style;";
-
-        return sqlCount(sql);
+        try {
+            ObjectContext dataContext = DataContext.getThreadObjectContext();
+            SelectQuery query = new SelectQuery(com.justjournal.model.Style.class);
+            List list = dataContext.performQuery(query);
+            return list.size();
+        } catch (CayenneRuntimeException ce) {
+            log.error(ce);
+        }
+        return -1;
     }
 
     /**
@@ -161,15 +172,21 @@ public class Statistics {
      * @return tag count or -1 on error.
      */
     public int tags() {
-        String sql = "SELECT count(*) FROM tags;";
-        return sqlCount(sql);
+        try {
+            ObjectContext dataContext = DataContext.getThreadObjectContext();
+            SelectQuery query = new SelectQuery(com.justjournal.model.Tags.class);
+            List list = dataContext.performQuery(query);
+            return list.size();
+        } catch (CayenneRuntimeException ce) {
+            log.error(ce);
+        }
+        return -1;
     }
 
     /**
-     * Perform a sql query returning a scalar int value
-     * typically form a count(*)
+     * Perform a sql query returning a scalar int value typically form a count(*)
      *
-     * @param sql  query to perform
+     * @param sql query to perform
      * @return int scalar from sql query
      */
     private int sqlCount(String sql) {
@@ -179,7 +196,7 @@ public class Statistics {
             log.debug("sqlCount(): sql is " + sql);
 
         try {
-            CachedRowSet rs = SQLHelper.executeResultSet(sql);
+            ResultSet rs = SQLHelper.executeResultSet(sql);
 
             if (rs.next()) {
                 count = rs.getInt(1);

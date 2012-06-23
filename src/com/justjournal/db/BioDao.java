@@ -34,19 +34,14 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
-import javax.sql.rowset.CachedRowSet;
+import java.sql.ResultSet;
 
-/**
- * Created by IntelliJ IDEA.
- * User: laffer1
- * Date: Jan 3, 2004
- * Time: 11:21:11 PM
- */
+
 public final class BioDao {
 
     private static Caching cache = new Caching();
 
-    public static final boolean add(BioTo bio) {
+    public static boolean add(BioTo bio) {
         boolean noError = true;
         int records = 0;
 
@@ -66,7 +61,7 @@ public final class BioDao {
         return noError;
     }
 
-    public static final boolean update(BioTo bio) {
+    public static boolean update(BioTo bio) {
 
         boolean noError = true;
 
@@ -85,7 +80,7 @@ public final class BioDao {
         return noError;
     }
 
-    public static final boolean delete(int userId) {
+    public static boolean delete(int userId) {
         boolean noError = true;
 
         final String sqlStmt = "DELETE FROM user_bio WHERE id='" + userId + "' LIMIT 1;";
@@ -106,9 +101,9 @@ public final class BioDao {
     }
 
 
-    public static final BioTo view(int userId) {
+    public static BioTo view(int userId) {
         BioTo bio;
-        CachedRowSet rs = null;
+        ResultSet rs = null;
         String sqlStmt = "Select content from user_bio WHERE id='" + userId + "' Limit 1;";
 
         if ((bio = (BioTo) cache.get("bio: " + userId)) != null)

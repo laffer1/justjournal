@@ -24,35 +24,30 @@
  * SUCH DAMAGE.
  */
 
-package com.justjournal.content;
-
-import com.justjournal.business.HitCounter;
+package com.justjournal.business;
 
 /**
- * User: laffer1
- * Date: Jul 27, 2008
- * Time: 7:21:29 AM
+ * @author Lucas Holt
  */
-public class HitCountControl {
+public class BoException  extends java.lang.Exception {
 
-    private String resource;
+    private static final long serialVersionUID = 120L;
 
-    public String getResource() {
-        return resource;
+    /**
+     *
+     */
+    public BoException()
+    {
+        super( "Invalid business operation" );
     }
 
-    public void setResource(String resource) {
-        this.resource = resource;
+    /**
+     *
+     * @param message business object exception message
+     */
+    public BoException( final String message )
+    {
+        super( message );
     }
 
-    public String render() {
-        StringBuilder sb = new StringBuilder();
-        HitCounter hit = new HitCounter();
-
-        sb.append("<div class=\"hitcountcontrol\">");
-        sb.append(hit.increment(getResource()));
-        sb.append("</div>");
-
-        return sb.toString();
-    }
 }

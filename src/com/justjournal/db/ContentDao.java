@@ -34,13 +34,11 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
-import javax.sql.rowset.CachedRowSet;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 
 /**
- * User: laffer1
- * Date: Aug 15, 2005
- * Time: 12:00:16 AM
+ * User: laffer1 Date: Aug 15, 2005 Time: 12:00:16 AM
  */
 public final class ContentDao {
 
@@ -79,8 +77,7 @@ public final class ContentDao {
     /**
      * change a comment on a journal entry.
      * <p/>
-     * This does not allow changes to userId or
-     * verification at this time.
+     * This does not allow changes to userId or verification at this time.
      *
      * @param content A user comment to change
      * @return true if no error occured.
@@ -91,7 +88,7 @@ public final class ContentDao {
         final String sqlStmt = "Update comments SET mimeType='" +
                 content.getMimeType()
                 + "', preferred='" +
-                + (content.getPreferred() ? 1 : 0)
+                +(content.getPreferred() ? 1 : 0)
                 + "', datasize='"
                 + content.getDataSize()
                 + "', data='"
@@ -126,8 +123,8 @@ public final class ContentDao {
         return noError;
     }
 
-    public static final ContentTo viewSingle(final int id) {
-        CachedRowSet rs = null;
+    public static ContentTo viewSingle(final int id) {
+        ResultSet rs = null;
         final ContentTo content = new ContentTo();
         final String sqlStmt =
                 "SELECT * FROM content WHERE id='" + id + " LIMIT 1;";
@@ -162,9 +159,9 @@ public final class ContentDao {
         return content;
     }
 
-    public static final ArrayList view(final int uriId) {
+    public static ArrayList view(final int uriId) {
         final ArrayList contents = new ArrayList(5);  // 5 is average comments on entry?
-        CachedRowSet rs = null;
+        ResultSet rs = null;
         ContentTo content;
         final String sqlStmt =
                 "SELECT * from content WHERE uri_id='" + uriId + "' ORDER BY preferred;";

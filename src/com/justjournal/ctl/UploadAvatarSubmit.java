@@ -51,7 +51,7 @@ import java.util.List;
 
 /**
  * @author Lucas Holt
- * @version $Id: UploadAvatarSubmit.java,v 1.8 2009/05/16 03:13:12 laffer1 Exp $
+ * @version $Id: UploadAvatarSubmit.java,v 1.9 2012/06/23 18:15:31 laffer1 Exp $
  * 
  * User: laffer1
  * Date: Dec 15, 2005
@@ -102,7 +102,7 @@ public class UploadAvatarSubmit extends Protected {
                         Context ctx;
                         DataSource ds = null;
                         Connection conn = null;
-                        PreparedStatement stmt = null; // insert statement
+                        PreparedStatement stmt = null; // create statement
                         PreparedStatement stmtOn = null; // turn on avatar preference.
                         PreparedStatement stmtRemove = null; // delete old ones
 
@@ -121,7 +121,7 @@ public class UploadAvatarSubmit extends Protected {
                             stmtRemove.setInt(1, this.currentLoginId());
                             stmtRemove.execute();
 
-                            // do the insert of the image
+                            // do the create of the image
                             stmt = conn.prepareStatement("INSERT INTO user_pic (id, date_modified, mimetype, image) VALUES(?,Now(),?,?)");
                             stmt.setInt(1, this.currentLoginId());
                             stmt.setString(2, contentType);

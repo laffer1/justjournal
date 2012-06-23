@@ -114,13 +114,13 @@ public class ProfilePrefSubmit extends Protected {
         user.setName(this.name);
 
         if (this.hasErrors() == false) {
-            boolean result = false; //ucd.update(contact);
+            boolean result = false; //ucd.edit(contact);
 
             if (log.isDebugEnabled())
                 log.debug("Was there an error with data tier?  " + !result);
 
             //if ( result == false )
-            addError("Unknown", "Could not update setting.");
+            addError("Unknown", "Could not edit setting.");
         }
 
 

@@ -62,7 +62,7 @@ public class DeletePicture extends JustJournalBaseServlet {
         Context ctx;
         DataSource ds = null;
         Connection conn = null;
-        PreparedStatement stmt = null; // insert statement
+        PreparedStatement stmt = null; // create statement
 
         try {
             ctx = new InitialContext();
@@ -77,7 +77,7 @@ public class DeletePicture extends JustJournalBaseServlet {
             try {
                 conn = ds.getConnection();
 
-                // do the insert of the image
+                // do the create of the image
                 stmt = conn.prepareStatement("DELETE from user_images where id=? and owner=?;");
                 stmt.setInt(1, picID.intValue());
                 stmt.setInt(2, userID);

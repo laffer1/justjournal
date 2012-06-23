@@ -49,7 +49,7 @@ import java.util.TimeZone;
  * TODO: implement time zones completely.  Add items to interface.
  *
  * @author Lucas Holt
- * @version $Id: DateTimeBean.java,v 1.10 2009/08/07 02:31:43 laffer1 Exp $
+ * @version $Id: DateTimeBean.java,v 1.11 2012/06/23 18:15:31 laffer1 Exp $
  * @since 1.0
  */
 public final class DateTimeBean implements DateTime {
@@ -62,6 +62,14 @@ public final class DateTimeBean implements DateTime {
     private int hour = 23;
     private int minutes = 59;
     private TimeZone tz = TimeZone.getTimeZone("UTC");
+
+    public DateTimeBean() {
+    }
+
+    // extra case we have a java date already
+    public DateTimeBean(java.util.Date date) {
+        this.set(date);
+    }
 
     public int getDay() {
         return this.day;

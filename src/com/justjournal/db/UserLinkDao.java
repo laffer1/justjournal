@@ -36,14 +36,16 @@ package com.justjournal.db;
 
 import org.apache.log4j.Logger;
 
-import javax.sql.rowset.CachedRowSet;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.sql.ResultSet;
+
+
 
 /**
  * Data access for User Link list
  * @see UserLinkTo
- * @version $Id: UserLinkDao.java,v 1.12 2009/08/07 02:31:43 laffer1 Exp $
+ * @version $Id: UserLinkDao.java,v 1.13 2012/06/23 18:15:31 laffer1 Exp $
  * @author Lucas Holt
  */
 public final class UserLinkDao {
@@ -99,7 +101,7 @@ public final class UserLinkDao {
         final String sql = "SELECT * FROM user_link WHERE id='" + userId + "';";
 
         try {
-            CachedRowSet rs = SQLHelper.executeResultSet(sql);
+            ResultSet rs = SQLHelper.executeResultSet(sql);
 
             while (rs.next()) {
                 links.add(new UserLinkTo(rs.getInt("linkid"), rs.getInt("id"),

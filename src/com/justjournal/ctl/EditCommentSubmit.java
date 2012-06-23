@@ -122,7 +122,7 @@ public class EditCommentSubmit extends Protected {
                 log.debug("Was there an error with data tier?  " + !result);
 
             if (result == false)
-                addError("Unknown", "Could not update comment.");
+                addError("Unknown", "Could not edit comment.");
         }
 
         if (this.hasErrors())

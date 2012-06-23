@@ -36,7 +36,8 @@ package com.justjournal.db;
 
 import javax.sql.rowset.CachedRowSet;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collection;  import java.sql.ResultSet;
+
 
 /**
  * Created by IntelliJ IDEA.
@@ -90,7 +91,7 @@ public final class LJFriendDao {
 
     public static Collection<LJFriendTo> view(final int userId) {
         ArrayList<LJFriendTo> friends = new ArrayList<LJFriendTo>(10);
-        CachedRowSet RS = null;
+        ResultSet RS = null;
         LJFriendTo lj;
         final String sqlStatement = "SELECT username, community FROM friends_lj WHERE id='" + userId
                 + "' ORDER by community, username;";

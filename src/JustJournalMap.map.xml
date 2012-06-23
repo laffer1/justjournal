@@ -1,0 +1,615 @@
+<?xml version="1.0" encoding="utf-8"?>
+<data-map xmlns="http://cayenne.apache.org/schema/3.0/modelMap"
+	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	 xsi:schemaLocation="http://cayenne.apache.org/schema/3.0/modelMap http://cayenne.apache.org/schema/3.0/modelMap.xsd"
+	 project-version="6">
+	<property name="defaultLockType" value="optimistic"/>
+	<property name="defaultPackage" value="com.justjournal.model"/>
+	<property name="quoteSqlIdentifiers" value="true"/>
+	<db-entity name="comments" catalog="jj">
+		<db-attribute name="body" type="LONGVARCHAR" isMandatory="true" length="65535"/>
+		<db-attribute name="date" type="TIMESTAMP" isMandatory="true"/>
+		<db-attribute name="eid" type="BIGINT" isMandatory="true" length="10"/>
+		<db-attribute name="id" type="SMALLINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="5"/>
+		<db-attribute name="modified" type="TIMESTAMP" isMandatory="true"/>
+		<db-attribute name="subject" type="VARCHAR" length="150"/>
+		<db-attribute name="uid" type="BIGINT" isMandatory="true" length="10"/>
+	</db-entity>
+	<db-entity name="content" catalog="jj">
+		<db-attribute name="data" type="LONGVARBINARY" isMandatory="true" length="16777215"/>
+		<db-attribute name="datasize" type="INTEGER" isMandatory="true" length="10"/>
+		<db-attribute name="id" type="BIGINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="10"/>
+		<db-attribute name="metadata" type="LONGVARCHAR" isMandatory="true" length="65535"/>
+		<db-attribute name="mime_type" type="VARCHAR" isMandatory="true" length="75"/>
+		<db-attribute name="preferred" type="CHAR" isMandatory="true" length="2"/>
+		<db-attribute name="uri_id" type="BIGINT" isMandatory="true" length="10"/>
+		<db-attribute name="userid" type="BIGINT" isMandatory="true" length="10"/>
+	</db-entity>
+	<db-entity name="country" catalog="jj">
+		<db-attribute name="id" type="SMALLINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="5"/>
+		<db-attribute name="iso" type="CHAR" isMandatory="true" length="2"/>
+		<db-attribute name="iso3" type="CHAR" length="3"/>
+		<db-attribute name="iso_title" type="VARCHAR" isMandatory="true" length="50"/>
+		<db-attribute name="numcode" type="SMALLINT" length="5"/>
+		<db-attribute name="title" type="VARCHAR" isMandatory="true" length="80"/>
+	</db-entity>
+	<db-entity name="entry" catalog="jj">
+		<db-attribute name="allow_comments" type="CHAR" isMandatory="true" length="2"/>
+		<db-attribute name="attach_file" type="BIGINT" isMandatory="true" length="10"/>
+		<db-attribute name="attach_image" type="BIGINT" isMandatory="true" length="10"/>
+		<db-attribute name="autoformat" type="CHAR" isMandatory="true" length="2"/>
+		<db-attribute name="body" type="LONGVARCHAR" isMandatory="true" length="65535"/>
+		<db-attribute name="date" type="TIMESTAMP" isMandatory="true"/>
+		<db-attribute name="draft" type="CHAR" isMandatory="true" length="2"/>
+		<db-attribute name="email_comments" type="CHAR" isMandatory="true" length="2"/>
+		<db-attribute name="id" type="BIGINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="10"/>
+		<db-attribute name="location" type="TINYINT" isMandatory="true" length="3"/>
+		<db-attribute name="modified" type="TIMESTAMP" isMandatory="true"/>
+		<db-attribute name="mood" type="TINYINT" isMandatory="true" length="3"/>
+		<db-attribute name="music" type="VARCHAR" isMandatory="true" length="125"/>
+		<db-attribute name="security" type="TINYINT" isMandatory="true" length="3"/>
+		<db-attribute name="subject" type="VARCHAR" length="255"/>
+		<db-attribute name="uid" type="BIGINT" isMandatory="true" length="10"/>
+	</db-entity>
+	<db-entity name="entry_security" catalog="jj">
+		<db-attribute name="id" type="TINYINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="3"/>
+		<db-attribute name="title" type="CHAR" isMandatory="true" length="7"/>
+	</db-entity>
+	<db-entity name="entry_tags" catalog="jj">
+		<db-attribute name="entryid" type="BIGINT" isPrimaryKey="true" isMandatory="true" length="10"/>
+		<db-attribute name="tagid" type="SMALLINT" isPrimaryKey="true" isMandatory="true" length="5"/>
+	</db-entity>
+	<db-entity name="favorites" catalog="jj">
+		<db-attribute name="entryid" type="BIGINT" isMandatory="true" length="10"/>
+		<db-attribute name="id" type="BIGINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="10"/>
+		<db-attribute name="owner" type="BIGINT" isMandatory="true" length="10"/>
+	</db-entity>
+	<db-entity name="friends" catalog="jj">
+		<db-attribute name="friendid" type="BIGINT" isMandatory="true" length="10"/>
+		<db-attribute name="id" type="BIGINT" isMandatory="true" length="10"/>
+	</db-entity>
+	<db-entity name="friends_lj" catalog="jj">
+		<db-attribute name="community" type="CHAR" isMandatory="true" length="2"/>
+		<db-attribute name="id" type="BIGINT" isPrimaryKey="true" isMandatory="true" length="10"/>
+		<db-attribute name="username" type="CHAR" isPrimaryKey="true" isMandatory="true" length="15"/>
+	</db-entity>
+	<db-entity name="friends_lj_cache" catalog="jj">
+		<db-attribute name="community" type="CHAR" isMandatory="true" length="2"/>
+		<db-attribute name="content" type="LONGVARCHAR" length="65535"/>
+		<db-attribute name="lastupdated" type="TIMESTAMP" isMandatory="true"/>
+		<db-attribute name="ljusername" type="VARCHAR" isPrimaryKey="true" isMandatory="true" length="15"/>
+	</db-entity>
+	<db-entity name="hitcount" catalog="jj">
+		<db-attribute name="count" type="INTEGER" isMandatory="true" length="7"/>
+		<db-attribute name="id" type="BIGINT" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
+		<db-attribute name="resource" type="VARCHAR" isMandatory="true" length="200"/>
+	</db-entity>
+	<db-entity name="location" catalog="jj">
+		<db-attribute name="id" type="TINYINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="3"/>
+		<db-attribute name="title" type="VARCHAR" isMandatory="true" length="15"/>
+	</db-entity>
+	<db-entity name="mood" catalog="jj">
+		<db-attribute name="id" type="TINYINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="3"/>
+		<db-attribute name="parentmood" type="TINYINT" isMandatory="true" length="3"/>
+		<db-attribute name="title" type="VARCHAR" isMandatory="true" length="30"/>
+	</db-entity>
+	<db-entity name="mood_theme_data" catalog="jj">
+		<db-attribute name="height" type="TINYINT" isMandatory="true" length="3"/>
+		<db-attribute name="moodid" type="BIGINT" isMandatory="true" length="10"/>
+		<db-attribute name="moodthemeid" type="BIGINT" isMandatory="true" length="10"/>
+		<db-attribute name="picurl" type="VARCHAR" length="100"/>
+		<db-attribute name="width" type="TINYINT" isMandatory="true" length="3"/>
+	</db-entity>
+	<db-entity name="mood_themes" catalog="jj">
+		<db-attribute name="des" type="VARCHAR" length="100"/>
+		<db-attribute name="id" type="BIGINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="10"/>
+		<db-attribute name="is_public" type="CHAR" isMandatory="true" length="2"/>
+		<db-attribute name="name" type="VARCHAR" length="50"/>
+		<db-attribute name="owner" type="BIGINT" isMandatory="true" length="10"/>
+	</db-entity>
+	<db-entity name="queue_mail" catalog="jj">
+		<db-attribute name="body" type="LONGVARCHAR" isMandatory="true" length="65535"/>
+		<db-attribute name="from" type="VARCHAR" isMandatory="true" length="100"/>
+		<db-attribute name="id" type="BIGINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="10"/>
+		<db-attribute name="purpose" type="VARCHAR" isMandatory="true" length="150"/>
+		<db-attribute name="subject" type="VARCHAR" isMandatory="true" length="100"/>
+		<db-attribute name="to" type="VARCHAR" isMandatory="true" length="100"/>
+	</db-entity>
+	<db-entity name="resources" catalog="jj">
+		<db-attribute name="active" type="CHAR" isMandatory="true" length="2"/>
+		<db-attribute name="id" type="BIGINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="10"/>
+		<db-attribute name="name" type="VARCHAR" isMandatory="true" length="200"/>
+		<db-attribute name="security" type="TINYINT" isMandatory="true" length="3"/>
+	</db-entity>
+	<db-entity name="rss_cache" catalog="jj">
+		<db-attribute name="content" type="LONGVARCHAR" length="65535"/>
+		<db-attribute name="id" type="BIGINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="10"/>
+		<db-attribute name="interval" type="TINYINT" isMandatory="true" length="3"/>
+		<db-attribute name="lastupdated" type="TIMESTAMP" isMandatory="true"/>
+		<db-attribute name="uri" type="VARCHAR" isMandatory="true" length="255"/>
+	</db-entity>
+	<db-entity name="rss_subscriptions" catalog="jj">
+		<db-attribute name="id" type="BIGINT" isMandatory="true" length="10"/>
+		<db-attribute name="subid" type="BIGINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="10"/>
+		<db-attribute name="uri" type="VARCHAR" isMandatory="true" length="255"/>
+	</db-entity>
+	<db-entity name="settings" catalog="jj">
+		<db-attribute name="id" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
+		<db-attribute name="name" type="VARCHAR" isMandatory="true" length="25"/>
+		<db-attribute name="value" type="VARCHAR" isMandatory="true" length="100"/>
+	</db-entity>
+	<db-entity name="style" catalog="jj">
+		<db-attribute name="desc" type="VARCHAR" isMandatory="true" length="255"/>
+		<db-attribute name="id" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="3"/>
+		<db-attribute name="modified" type="TIMESTAMP" isMandatory="true"/>
+		<db-attribute name="title" type="VARCHAR" isMandatory="true" length="30"/>
+	</db-entity>
+	<db-entity name="tags" catalog="jj">
+		<db-attribute name="id" type="SMALLINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="5"/>
+		<db-attribute name="name" type="VARCHAR" isMandatory="true" length="30"/>
+	</db-entity>
+	<db-entity name="timezones" catalog="jj">
+		<db-attribute name="id" type="BIGINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="10"/>
+		<db-attribute name="name" type="VARCHAR" isMandatory="true" length="32"/>
+	</db-entity>
+	<db-entity name="trackback" catalog="jj">
+		<db-attribute name="author_email" type="VARCHAR" isMandatory="true" length="150"/>
+		<db-attribute name="author_name" type="VARCHAR" isMandatory="true" length="50"/>
+		<db-attribute name="blogname" type="VARCHAR" isMandatory="true" length="150"/>
+		<db-attribute name="body" type="LONGVARCHAR" isMandatory="true" length="65535"/>
+		<db-attribute name="date" type="TIMESTAMP" isMandatory="true"/>
+		<db-attribute name="eid" type="BIGINT" isMandatory="true" length="10"/>
+		<db-attribute name="id" type="BIGINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="10"/>
+		<db-attribute name="modified" type="TIMESTAMP" isMandatory="true"/>
+		<db-attribute name="subject" type="VARCHAR" isMandatory="true" length="150"/>
+		<db-attribute name="type" type="CHAR" isMandatory="true" length="10"/>
+		<db-attribute name="url" type="VARCHAR" isMandatory="true" length="150"/>
+	</db-entity>
+	<db-entity name="user" catalog="jj">
+		<db-attribute name="id" type="BIGINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="10"/>
+		<db-attribute name="lastlogin" type="TIMESTAMP"/>
+		<db-attribute name="lastname" type="VARCHAR" length="20"/>
+		<db-attribute name="modified" type="TIMESTAMP"/>
+		<db-attribute name="name" type="VARCHAR" isMandatory="true" length="20"/>
+		<db-attribute name="password" type="CHAR" isMandatory="true" length="40"/>
+		<db-attribute name="since" type="SMALLINT" isMandatory="true" length="5"/>
+		<db-attribute name="type" type="TINYINT" isMandatory="true" length="3"/>
+		<db-attribute name="username" type="VARCHAR" isMandatory="true" length="15"/>
+	</db-entity>
+	<db-entity name="user_bio" catalog="jj">
+		<db-attribute name="content" type="LONGVARCHAR" isMandatory="true" length="65535"/>
+		<db-attribute name="id" type="BIGINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="10"/>
+		<db-attribute name="modified" type="TIMESTAMP" isMandatory="true"/>
+	</db-entity>
+	<db-entity name="user_contact" catalog="jj">
+		<db-attribute name="aim" type="VARCHAR" length="30"/>
+		<db-attribute name="email" type="VARCHAR" isMandatory="true" length="100"/>
+		<db-attribute name="hp_title" type="VARCHAR" length="50"/>
+		<db-attribute name="hp_uri" type="VARCHAR" length="250"/>
+		<db-attribute name="icq" type="VARCHAR" length="20"/>
+		<db-attribute name="id" type="BIGINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="10"/>
+		<db-attribute name="msn" type="VARCHAR" length="150"/>
+		<db-attribute name="phone" type="VARCHAR" length="14"/>
+		<db-attribute name="yahoo" type="VARCHAR" length="30"/>
+	</db-entity>
+	<db-entity name="user_files" catalog="jj">
+		<db-attribute name="data" type="LONGVARBINARY" isMandatory="true" length="2147483647"/>
+		<db-attribute name="date_modified" type="TIMESTAMP" isMandatory="true"/>
+		<db-attribute name="id" type="BIGINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="10"/>
+		<db-attribute name="mimetype" type="VARCHAR" isMandatory="true" length="40"/>
+		<db-attribute name="ownerid" type="BIGINT" isMandatory="true" length="10"/>
+		<db-attribute name="title" type="VARCHAR" isMandatory="true" length="150"/>
+	</db-entity>
+	<db-entity name="user_images" catalog="jj">
+		<db-attribute name="id" type="BIGINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="10"/>
+		<db-attribute name="image" type="LONGVARBINARY" isMandatory="true" length="16777215"/>
+		<db-attribute name="mimetype" type="VARCHAR" isMandatory="true" length="45"/>
+		<db-attribute name="modified" type="TIMESTAMP" isMandatory="true"/>
+		<db-attribute name="owner" type="BIGINT" isMandatory="true" length="10"/>
+		<db-attribute name="title" type="VARCHAR" length="150"/>
+	</db-entity>
+	<db-entity name="user_images_album" catalog="jj">
+		<db-attribute name="description" type="LONGVARCHAR" length="65535"/>
+		<db-attribute name="id" type="BIGINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="10"/>
+		<db-attribute name="modified" type="TIMESTAMP" isMandatory="true"/>
+		<db-attribute name="owner" type="BIGINT" isMandatory="true" length="10"/>
+		<db-attribute name="title" type="VARCHAR" isMandatory="true" length="100"/>
+	</db-entity>
+	<db-entity name="user_images_album_map" catalog="jj">
+		<db-attribute name="album_id" type="BIGINT" isMandatory="true" length="10"/>
+		<db-attribute name="image_id" type="BIGINT" isMandatory="true" length="10"/>
+		<db-attribute name="modified" type="TIMESTAMP" isMandatory="true"/>
+		<db-attribute name="owner" type="BIGINT" isMandatory="true" length="10"/>
+	</db-entity>
+	<db-entity name="user_link" catalog="jj">
+		<db-attribute name="id" type="BIGINT" isMandatory="true" length="10"/>
+		<db-attribute name="linkid" type="BIGINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="7"/>
+		<db-attribute name="title" type="VARCHAR" isMandatory="true" length="50"/>
+		<db-attribute name="uri" type="VARCHAR" isMandatory="true" length="255"/>
+	</db-entity>
+	<db-entity name="user_location" catalog="jj">
+		<db-attribute name="city" type="VARCHAR" isMandatory="true" length="35"/>
+		<db-attribute name="country" type="SMALLINT" isMandatory="true" length="5"/>
+		<db-attribute name="id" type="BIGINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="10"/>
+		<db-attribute name="modified" type="TIMESTAMP" isMandatory="true"/>
+		<db-attribute name="state" type="SMALLINT" isMandatory="true" length="5"/>
+		<db-attribute name="zip" type="VARCHAR" length="10"/>
+	</db-entity>
+	<db-entity name="user_pic" catalog="jj">
+		<db-attribute name="date_modified" type="TIMESTAMP"/>
+		<db-attribute name="id" type="BIGINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="10"/>
+		<db-attribute name="image" type="LONGVARBINARY" isMandatory="true" length="65535"/>
+		<db-attribute name="mimetype" type="VARCHAR" isMandatory="true" length="75"/>
+	</db-entity>
+	<db-entity name="user_pref" catalog="jj">
+		<db-attribute name="allow_spider" type="CHAR" isMandatory="true" length="2"/>
+		<db-attribute name="id" type="BIGINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="10"/>
+		<db-attribute name="journal_name" type="VARCHAR" length="150"/>
+		<db-attribute name="modified" type="TIMESTAMP" isMandatory="true"/>
+		<db-attribute name="owner_view_only" type="CHAR" isMandatory="true" length="2"/>
+		<db-attribute name="show_avatar" type="CHAR" isMandatory="true" length="2"/>
+		<db-attribute name="style" type="TINYINT" isMandatory="true" length="3"/>
+	</db-entity>
+	<db-entity name="user_style" catalog="jj">
+		<db-attribute name="doc" type="LONGVARCHAR" length="65535"/>
+		<db-attribute name="id" type="BIGINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="10"/>
+		<db-attribute name="modified" type="TIMESTAMP" isMandatory="true"/>
+		<db-attribute name="url" type="LONGVARCHAR" length="65535"/>
+	</db-entity>
+	<obj-entity name="Comments" className="com.justjournal.model.Comments" dbEntityName="comments">
+		<obj-attribute name="body" type="java.lang.String" db-attribute-path="body"/>
+		<obj-attribute name="date" type="java.util.Date" db-attribute-path="date"/>
+		<obj-attribute name="modified" type="java.util.Date" db-attribute-path="modified"/>
+		<obj-attribute name="subject" type="java.lang.String" db-attribute-path="subject"/>
+	</obj-entity>
+	<obj-entity name="Content" className="com.justjournal.model.Content" dbEntityName="content">
+		<obj-attribute name="data" type="byte[]" db-attribute-path="data"/>
+		<obj-attribute name="datasize" type="java.lang.Integer" db-attribute-path="datasize"/>
+		<obj-attribute name="metadata" type="java.lang.String" db-attribute-path="metadata"/>
+		<obj-attribute name="mimeType" type="java.lang.String" db-attribute-path="mime_type"/>
+		<obj-attribute name="preferred" type="java.lang.String" db-attribute-path="preferred"/>
+		<obj-attribute name="uriId" type="java.lang.Long" db-attribute-path="uri_id"/>
+		<obj-attribute name="userid" type="java.lang.Long" db-attribute-path="userid"/>
+	</obj-entity>
+	<obj-entity name="Country" className="com.justjournal.model.Country" dbEntityName="country">
+		<obj-attribute name="iso" type="java.lang.String" db-attribute-path="iso"/>
+		<obj-attribute name="iso3" type="java.lang.String" db-attribute-path="iso3"/>
+		<obj-attribute name="isoTitle" type="java.lang.String" db-attribute-path="iso_title"/>
+		<obj-attribute name="numcode" type="java.lang.Short" db-attribute-path="numcode"/>
+		<obj-attribute name="title" type="java.lang.String" db-attribute-path="title"/>
+	</obj-entity>
+	<obj-entity name="Entry" className="com.justjournal.model.Entry" dbEntityName="entry">
+		<obj-attribute name="allowComments" type="java.lang.String" db-attribute-path="allow_comments"/>
+		<obj-attribute name="attachFile" type="java.lang.Long" db-attribute-path="attach_file"/>
+		<obj-attribute name="attachImage" type="java.lang.Long" db-attribute-path="attach_image"/>
+		<obj-attribute name="autoformat" type="java.lang.String" db-attribute-path="autoformat"/>
+		<obj-attribute name="body" type="java.lang.String" db-attribute-path="body"/>
+		<obj-attribute name="date" type="java.util.Date" db-attribute-path="date"/>
+		<obj-attribute name="draft" type="java.lang.String" db-attribute-path="draft"/>
+		<obj-attribute name="emailComments" type="java.lang.String" db-attribute-path="email_comments"/>
+		<obj-attribute name="modified" type="java.util.Date" db-attribute-path="modified"/>
+		<obj-attribute name="music" type="java.lang.String" db-attribute-path="music"/>
+		<obj-attribute name="subject" type="java.lang.String" db-attribute-path="subject"/>
+	</obj-entity>
+	<obj-entity name="EntrySecurity" className="com.justjournal.model.EntrySecurity" dbEntityName="entry_security">
+		<obj-attribute name="title" type="java.lang.String" db-attribute-path="title"/>
+	</obj-entity>
+	<obj-entity name="EntryTags" className="com.justjournal.model.EntryTags" dbEntityName="entry_tags">
+	</obj-entity>
+	<obj-entity name="Favorites" className="com.justjournal.model.Favorites" dbEntityName="favorites">
+		<obj-attribute name="entryid" type="java.lang.Long" db-attribute-path="entryid"/>
+		<obj-attribute name="owner" type="java.lang.Long" db-attribute-path="owner"/>
+	</obj-entity>
+	<obj-entity name="Friends" className="com.justjournal.model.Friends" dbEntityName="friends">
+		<obj-attribute name="friendid" type="java.lang.Long" db-attribute-path="friendid"/>
+		<obj-attribute name="id" type="java.lang.Long" db-attribute-path="id"/>
+	</obj-entity>
+	<obj-entity name="FriendsLj" className="com.justjournal.model.FriendsLj" dbEntityName="friends_lj">
+		<obj-attribute name="community" type="java.lang.String" db-attribute-path="community"/>
+	</obj-entity>
+	<obj-entity name="FriendsLjCache" className="com.justjournal.model.FriendsLjCache" dbEntityName="friends_lj_cache">
+		<obj-attribute name="community" type="java.lang.String" db-attribute-path="community"/>
+		<obj-attribute name="content" type="java.lang.String" db-attribute-path="content"/>
+		<obj-attribute name="lastupdated" type="java.util.Date" db-attribute-path="lastupdated"/>
+	</obj-entity>
+	<obj-entity name="Hitcount" className="com.justjournal.model.Hitcount" dbEntityName="hitcount">
+		<obj-attribute name="count" type="java.lang.Integer" db-attribute-path="count"/>
+		<obj-attribute name="resource" type="java.lang.String" db-attribute-path="resource"/>
+	</obj-entity>
+	<obj-entity name="Location" className="com.justjournal.model.Location" dbEntityName="location">
+		<obj-attribute name="title" type="java.lang.String" db-attribute-path="title"/>
+	</obj-entity>
+	<obj-entity name="Mood" className="com.justjournal.model.Mood" dbEntityName="mood">
+		<obj-attribute name="parentmood" type="java.lang.Byte" db-attribute-path="parentmood"/>
+		<obj-attribute name="title" type="java.lang.String" db-attribute-path="title"/>
+	</obj-entity>
+	<obj-entity name="MoodThemeData" className="com.justjournal.model.MoodThemeData" dbEntityName="mood_theme_data">
+		<obj-attribute name="height" type="java.lang.Byte" db-attribute-path="height"/>
+		<obj-attribute name="moodid" type="java.lang.Long" db-attribute-path="moodid"/>
+		<obj-attribute name="moodthemeid" type="java.lang.Long" db-attribute-path="moodthemeid"/>
+		<obj-attribute name="picurl" type="java.lang.String" db-attribute-path="picurl"/>
+		<obj-attribute name="width" type="java.lang.Byte" db-attribute-path="width"/>
+	</obj-entity>
+	<obj-entity name="MoodThemes" className="com.justjournal.model.MoodThemes" dbEntityName="mood_themes">
+		<obj-attribute name="des" type="java.lang.String" db-attribute-path="des"/>
+		<obj-attribute name="isPublic" type="java.lang.String" db-attribute-path="is_public"/>
+		<obj-attribute name="name" type="java.lang.String" db-attribute-path="name"/>
+		<obj-attribute name="owner" type="java.lang.Long" db-attribute-path="owner"/>
+	</obj-entity>
+	<obj-entity name="QueueMail" className="com.justjournal.model.QueueMail" dbEntityName="queue_mail">
+		<obj-attribute name="body" type="java.lang.String" db-attribute-path="body"/>
+		<obj-attribute name="from" type="java.lang.String" db-attribute-path="from"/>
+		<obj-attribute name="purpose" type="java.lang.String" db-attribute-path="purpose"/>
+		<obj-attribute name="subject" type="java.lang.String" db-attribute-path="subject"/>
+		<obj-attribute name="to" type="java.lang.String" db-attribute-path="to"/>
+	</obj-entity>
+	<obj-entity name="Resources" className="com.justjournal.model.Resources" dbEntityName="resources">
+		<obj-attribute name="active" type="java.lang.String" db-attribute-path="active"/>
+		<obj-attribute name="name" type="java.lang.String" db-attribute-path="name"/>
+		<obj-attribute name="security" type="java.lang.Byte" db-attribute-path="security"/>
+	</obj-entity>
+	<obj-entity name="RssCache" className="com.justjournal.model.RssCache" dbEntityName="rss_cache">
+		<obj-attribute name="content" type="java.lang.String" db-attribute-path="content"/>
+		<obj-attribute name="interval" type="java.lang.Byte" db-attribute-path="interval"/>
+		<obj-attribute name="lastupdated" type="java.util.Date" db-attribute-path="lastupdated"/>
+		<obj-attribute name="uri" type="java.lang.String" db-attribute-path="uri"/>
+	</obj-entity>
+	<obj-entity name="RssSubscriptions" className="com.justjournal.model.RssSubscriptions" dbEntityName="rss_subscriptions">
+		<obj-attribute name="id" type="java.lang.Long" db-attribute-path="id"/>
+		<obj-attribute name="uri" type="java.lang.String" db-attribute-path="uri"/>
+	</obj-entity>
+	<obj-entity name="Settings" className="com.justjournal.model.Settings" lock-type="optimistic" dbEntityName="settings">
+		<obj-attribute name="keyName" type="java.lang.String" lock="true" db-attribute-path="name"/>
+		<obj-attribute name="value" type="java.lang.String" db-attribute-path="value"/>
+	</obj-entity>
+	<obj-entity name="Style" className="com.justjournal.model.Style" dbEntityName="style">
+		<obj-attribute name="desc" type="java.lang.String" db-attribute-path="desc"/>
+		<obj-attribute name="modified" type="java.util.Date" db-attribute-path="modified"/>
+		<obj-attribute name="title" type="java.lang.String" db-attribute-path="title"/>
+	</obj-entity>
+	<obj-entity name="Tags" className="com.justjournal.model.Tags" dbEntityName="tags">
+		<obj-attribute name="name" type="java.lang.String" db-attribute-path="name"/>
+	</obj-entity>
+	<obj-entity name="Timezones" className="com.justjournal.model.Timezones" dbEntityName="timezones">
+		<obj-attribute name="name" type="java.lang.String" db-attribute-path="name"/>
+	</obj-entity>
+	<obj-entity name="Trackback" className="com.justjournal.model.Trackback" dbEntityName="trackback">
+		<obj-attribute name="authorEmail" type="java.lang.String" db-attribute-path="author_email"/>
+		<obj-attribute name="authorName" type="java.lang.String" db-attribute-path="author_name"/>
+		<obj-attribute name="blogname" type="java.lang.String" db-attribute-path="blogname"/>
+		<obj-attribute name="body" type="java.lang.String" db-attribute-path="body"/>
+		<obj-attribute name="date" type="java.util.Date" db-attribute-path="date"/>
+		<obj-attribute name="eid" type="java.lang.Long" db-attribute-path="eid"/>
+		<obj-attribute name="modified" type="java.util.Date" db-attribute-path="modified"/>
+		<obj-attribute name="subject" type="java.lang.String" db-attribute-path="subject"/>
+		<obj-attribute name="type" type="java.lang.String" db-attribute-path="type"/>
+		<obj-attribute name="url" type="java.lang.String" db-attribute-path="url"/>
+	</obj-entity>
+	<obj-entity name="User" className="com.justjournal.model.User" dbEntityName="user">
+		<obj-attribute name="lastlogin" type="java.util.Date" db-attribute-path="lastlogin"/>
+		<obj-attribute name="lastname" type="java.lang.String" db-attribute-path="lastname"/>
+		<obj-attribute name="modified" type="java.util.Date" db-attribute-path="modified"/>
+		<obj-attribute name="name" type="java.lang.String" db-attribute-path="name"/>
+		<obj-attribute name="password" type="java.lang.String" db-attribute-path="password"/>
+		<obj-attribute name="since" type="java.lang.Short" db-attribute-path="since"/>
+		<obj-attribute name="type" type="java.lang.Byte" db-attribute-path="type"/>
+		<obj-attribute name="username" type="java.lang.String" db-attribute-path="username"/>
+	</obj-entity>
+	<obj-entity name="UserBio" className="com.justjournal.model.UserBio" dbEntityName="user_bio">
+		<obj-attribute name="content" type="java.lang.String" db-attribute-path="content"/>
+		<obj-attribute name="modified" type="java.util.Date" db-attribute-path="modified"/>
+	</obj-entity>
+	<obj-entity name="UserContact" className="com.justjournal.model.UserContact" dbEntityName="user_contact">
+		<obj-attribute name="aim" type="java.lang.String" db-attribute-path="aim"/>
+		<obj-attribute name="email" type="java.lang.String" db-attribute-path="email"/>
+		<obj-attribute name="hpTitle" type="java.lang.String" db-attribute-path="hp_title"/>
+		<obj-attribute name="hpUri" type="java.lang.String" db-attribute-path="hp_uri"/>
+		<obj-attribute name="icq" type="java.lang.String" db-attribute-path="icq"/>
+		<obj-attribute name="msn" type="java.lang.String" db-attribute-path="msn"/>
+		<obj-attribute name="phone" type="java.lang.String" db-attribute-path="phone"/>
+		<obj-attribute name="yahoo" type="java.lang.String" db-attribute-path="yahoo"/>
+	</obj-entity>
+	<obj-entity name="UserFiles" className="com.justjournal.model.UserFiles" dbEntityName="user_files">
+		<obj-attribute name="data" type="byte[]" db-attribute-path="data"/>
+		<obj-attribute name="dateModified" type="java.util.Date" db-attribute-path="date_modified"/>
+		<obj-attribute name="mimetype" type="java.lang.String" db-attribute-path="mimetype"/>
+		<obj-attribute name="title" type="java.lang.String" db-attribute-path="title"/>
+	</obj-entity>
+	<obj-entity name="UserImages" className="com.justjournal.model.UserImages" dbEntityName="user_images">
+		<obj-attribute name="image" type="byte[]" db-attribute-path="image"/>
+		<obj-attribute name="mimetype" type="java.lang.String" db-attribute-path="mimetype"/>
+		<obj-attribute name="modified" type="java.util.Date" db-attribute-path="modified"/>
+		<obj-attribute name="owner" type="java.lang.Long" db-attribute-path="owner"/>
+		<obj-attribute name="title" type="java.lang.String" db-attribute-path="title"/>
+	</obj-entity>
+	<obj-entity name="UserImagesAlbum" className="com.justjournal.model.UserImagesAlbum" dbEntityName="user_images_album">
+		<obj-attribute name="description" type="java.lang.String" db-attribute-path="description"/>
+		<obj-attribute name="modified" type="java.util.Date" db-attribute-path="modified"/>
+		<obj-attribute name="owner" type="java.lang.Long" db-attribute-path="owner"/>
+		<obj-attribute name="title" type="java.lang.String" db-attribute-path="title"/>
+	</obj-entity>
+	<obj-entity name="UserImagesAlbumMap" className="com.justjournal.model.UserImagesAlbumMap" dbEntityName="user_images_album_map">
+		<obj-attribute name="albumId" type="java.lang.Long" db-attribute-path="album_id"/>
+		<obj-attribute name="modified" type="java.util.Date" db-attribute-path="modified"/>
+		<obj-attribute name="owner" type="java.lang.Long" db-attribute-path="owner"/>
+	</obj-entity>
+	<obj-entity name="UserLink" className="com.justjournal.model.UserLink" dbEntityName="user_link">
+		<obj-attribute name="title" type="java.lang.String" db-attribute-path="title"/>
+		<obj-attribute name="uri" type="java.lang.String" db-attribute-path="uri"/>
+	</obj-entity>
+	<obj-entity name="UserLocation" className="com.justjournal.model.UserLocation" dbEntityName="user_location">
+		<obj-attribute name="city" type="java.lang.String" db-attribute-path="city"/>
+		<obj-attribute name="country" type="java.lang.Short" db-attribute-path="country"/>
+		<obj-attribute name="modified" type="java.util.Date" db-attribute-path="modified"/>
+		<obj-attribute name="state" type="java.lang.Short" db-attribute-path="state"/>
+		<obj-attribute name="zip" type="java.lang.String" db-attribute-path="zip"/>
+	</obj-entity>
+	<obj-entity name="UserPic" className="com.justjournal.model.UserPic" dbEntityName="user_pic">
+		<obj-attribute name="dateModified" type="java.util.Date" db-attribute-path="date_modified"/>
+		<obj-attribute name="image" type="byte[]" db-attribute-path="image"/>
+		<obj-attribute name="mimetype" type="java.lang.String" db-attribute-path="mimetype"/>
+	</obj-entity>
+	<obj-entity name="UserPref" className="com.justjournal.model.UserPref" dbEntityName="user_pref">
+		<obj-attribute name="allowSpider" type="java.lang.String" db-attribute-path="allow_spider"/>
+		<obj-attribute name="journalName" type="java.lang.String" db-attribute-path="journal_name"/>
+		<obj-attribute name="modified" type="java.util.Date" db-attribute-path="modified"/>
+		<obj-attribute name="ownerViewOnly" type="java.lang.String" db-attribute-path="owner_view_only"/>
+		<obj-attribute name="showAvatar" type="java.lang.String" db-attribute-path="show_avatar"/>
+		<obj-attribute name="style" type="java.lang.Byte" db-attribute-path="style"/>
+	</obj-entity>
+	<obj-entity name="UserStyle" className="com.justjournal.model.UserStyle" dbEntityName="user_style">
+		<obj-attribute name="doc" type="java.lang.String" db-attribute-path="doc"/>
+		<obj-attribute name="modified" type="java.util.Date" db-attribute-path="modified"/>
+		<obj-attribute name="url" type="java.lang.String" db-attribute-path="url"/>
+	</obj-entity>
+	<db-relationship name="CommentToEntry" source="comments" target="entry" toMany="false">
+		<db-attribute-pair source="eid" target="id"/>
+	</db-relationship>
+	<db-relationship name="CommentToUser" source="comments" target="user" toMany="false">
+		<db-attribute-pair source="uid" target="id"/>
+	</db-relationship>
+	<db-relationship name="EntryToComments" source="entry" target="comments" toMany="true">
+		<db-attribute-pair source="id" target="eid"/>
+	</db-relationship>
+	<db-relationship name="EntryToLocation" source="entry" target="location" toMany="false">
+		<db-attribute-pair source="location" target="id"/>
+	</db-relationship>
+	<db-relationship name="EntryToMood" source="entry" target="mood" toMany="false">
+		<db-attribute-pair source="mood" target="id"/>
+	</db-relationship>
+	<db-relationship name="EntryToSecurity" source="entry" target="entry_security" toMany="false">
+		<db-attribute-pair source="security" target="id"/>
+	</db-relationship>
+	<db-relationship name="EntryToTags" source="entry" target="entry_tags" toMany="true">
+		<db-attribute-pair source="id" target="entryid"/>
+	</db-relationship>
+	<db-relationship name="EntryToUser" source="entry" target="user" toMany="false">
+		<db-attribute-pair source="uid" target="id"/>
+	</db-relationship>
+	<db-relationship name="SecurityToEntry" source="entry_security" target="entry" toMany="true">
+		<db-attribute-pair source="id" target="security"/>
+	</db-relationship>
+	<db-relationship name="EntryListToTagList" source="entry_tags" target="tags" toDependentPK="true" toMany="false">
+		<db-attribute-pair source="tagid" target="id"/>
+	</db-relationship>
+	<db-relationship name="TagsToEntry" source="entry_tags" target="entry" toDependentPK="true" toMany="true">
+		<db-attribute-pair source="entryid" target="id"/>
+	</db-relationship>
+	<db-relationship name="favoritesToUser" source="favorites" target="user" toMany="false">
+		<db-attribute-pair source="owner" target="id"/>
+	</db-relationship>
+	<db-relationship name="LocationToEntry" source="location" target="entry" toMany="true">
+		<db-attribute-pair source="id" target="location"/>
+	</db-relationship>
+	<db-relationship name="MoodToEntry" source="mood" target="entry" toMany="true">
+		<db-attribute-pair source="id" target="mood"/>
+	</db-relationship>
+	<db-relationship name="TagsToEntryList" source="tags" target="entry_tags" toMany="true">
+		<db-attribute-pair source="id" target="tagid"/>
+	</db-relationship>
+	<db-relationship name="UserToComment" source="user" target="comments" toMany="true">
+		<db-attribute-pair source="id" target="uid"/>
+	</db-relationship>
+	<db-relationship name="UserToEntry" source="user" target="entry" toMany="true">
+		<db-attribute-pair source="id" target="uid"/>
+	</db-relationship>
+	<db-relationship name="UserToFavorites" source="user" target="favorites" toMany="true">
+		<db-attribute-pair source="id" target="owner"/>
+	</db-relationship>
+	<db-relationship name="UserToUserBio" source="user" target="user_bio" toMany="false">
+		<db-attribute-pair source="id" target="id"/>
+	</db-relationship>
+	<db-relationship name="UserToUserContact" source="user" target="user_contact" toMany="false">
+		<db-attribute-pair source="id" target="id"/>
+	</db-relationship>
+	<db-relationship name="UserToUserFiles" source="user" target="user_files" toMany="true">
+		<db-attribute-pair source="id" target="ownerid"/>
+	</db-relationship>
+	<db-relationship name="UserToUserImages" source="user" target="user_images" toMany="true">
+		<db-attribute-pair source="id" target="owner"/>
+	</db-relationship>
+	<db-relationship name="UserToUserLink" source="user" target="user_link" toMany="false">
+		<db-attribute-pair source="id" target="id"/>
+	</db-relationship>
+	<db-relationship name="UserToUserLocation" source="user" target="user_location" toMany="false">
+		<db-attribute-pair source="id" target="id"/>
+	</db-relationship>
+	<db-relationship name="UserToUserPic" source="user" target="user_pic" toMany="false">
+		<db-attribute-pair source="id" target="id"/>
+	</db-relationship>
+	<db-relationship name="UserToUserPref" source="user" target="user_pref" toMany="false">
+		<db-attribute-pair source="id" target="id"/>
+	</db-relationship>
+	<db-relationship name="UserToUserStyle" source="user" target="user_style" toMany="false">
+		<db-attribute-pair source="id" target="id"/>
+	</db-relationship>
+	<db-relationship name="UserBioToUser" source="user_bio" target="user" toDependentPK="true" toMany="true">
+		<db-attribute-pair source="id" target="id"/>
+	</db-relationship>
+	<db-relationship name="UserContactToUser" source="user_contact" target="user" toDependentPK="true" toMany="true">
+		<db-attribute-pair source="id" target="id"/>
+	</db-relationship>
+	<db-relationship name="UserFilesToUser" source="user_files" target="user" toMany="false">
+		<db-attribute-pair source="ownerid" target="id"/>
+	</db-relationship>
+	<db-relationship name="UserImagesToUser" source="user_images" target="user" toMany="false">
+		<db-attribute-pair source="owner" target="id"/>
+	</db-relationship>
+	<db-relationship name="userImagesAlbumMapArray" source="user_images" target="user_images_album_map" toMany="true">
+		<db-attribute-pair source="id" target="image_id"/>
+	</db-relationship>
+	<db-relationship name="toUserImages" source="user_images_album_map" target="user_images" toMany="false">
+		<db-attribute-pair source="image_id" target="id"/>
+	</db-relationship>
+	<db-relationship name="UserLinkToUser" source="user_link" target="user" toMany="true">
+		<db-attribute-pair source="id" target="id"/>
+	</db-relationship>
+	<db-relationship name="UserLocationToUser" source="user_location" target="user" toDependentPK="true" toMany="true">
+		<db-attribute-pair source="id" target="id"/>
+	</db-relationship>
+	<db-relationship name="UserPicToUser" source="user_pic" target="user" toDependentPK="true" toMany="true">
+		<db-attribute-pair source="id" target="id"/>
+	</db-relationship>
+	<db-relationship name="UserPrefToUser" source="user_pref" target="user" toDependentPK="true" toMany="true">
+		<db-attribute-pair source="id" target="id"/>
+	</db-relationship>
+	<db-relationship name="UserStyleTOUser" source="user_style" target="user" toDependentPK="true" toMany="true">
+		<db-attribute-pair source="id" target="id"/>
+	</db-relationship>
+	<obj-relationship name="commentToEntry" source="Comments" target="Entry" deleteRule="Nullify" db-relationship-path="CommentToEntry"/>
+	<obj-relationship name="commentToUser" source="Comments" target="User" deleteRule="Nullify" db-relationship-path="CommentToUser"/>
+	<obj-relationship name="entryToComments" source="Entry" target="Comments" deleteRule="Deny" db-relationship-path="EntryToComments"/>
+	<obj-relationship name="entryToLocation" source="Entry" target="Location" deleteRule="Nullify" db-relationship-path="EntryToLocation"/>
+	<obj-relationship name="entryToMood" source="Entry" target="Mood" deleteRule="Nullify" db-relationship-path="EntryToMood"/>
+	<obj-relationship name="entryToSecurity" source="Entry" target="EntrySecurity" deleteRule="Nullify" db-relationship-path="EntryToSecurity"/>
+	<obj-relationship name="entryToTags" source="Entry" target="EntryTags" deleteRule="Deny" db-relationship-path="EntryToTags"/>
+	<obj-relationship name="entryToUser" source="Entry" target="User" deleteRule="Nullify" db-relationship-path="EntryToUser"/>
+	<obj-relationship name="securityToEntry" source="EntrySecurity" target="Entry" deleteRule="Deny" db-relationship-path="SecurityToEntry"/>
+	<obj-relationship name="entryListToTagList" source="EntryTags" target="Tags" deleteRule="Nullify" db-relationship-path="EntryListToTagList"/>
+	<obj-relationship name="tagsToEntry" source="EntryTags" target="Entry" deleteRule="Deny" db-relationship-path="TagsToEntry"/>
+	<obj-relationship name="locationToEntry" source="Location" target="Entry" deleteRule="Deny" db-relationship-path="LocationToEntry"/>
+	<obj-relationship name="moodToEntry" source="Mood" target="Entry" deleteRule="Deny" db-relationship-path="MoodToEntry"/>
+	<obj-relationship name="tagsToEntryList" source="Tags" target="EntryTags" deleteRule="Deny" db-relationship-path="TagsToEntryList"/>
+	<obj-relationship name="userToComment" source="User" target="Comments" db-relationship-path="UserToComment"/>
+	<obj-relationship name="userToEntry" source="User" target="Entry" db-relationship-path="UserToEntry"/>
+	<obj-relationship name="userToFavorites" source="User" target="Favorites" db-relationship-path="UserToFavorites"/>
+	<obj-relationship name="userToUserBio" source="User" target="UserBio" db-relationship-path="UserToUserBio"/>
+	<obj-relationship name="userToUserContact" source="User" target="UserContact" db-relationship-path="UserToUserContact"/>
+	<obj-relationship name="userToUserFiles" source="User" target="UserFiles" db-relationship-path="UserToUserFiles"/>
+	<obj-relationship name="userToUserImages" source="User" target="UserImages" db-relationship-path="UserToUserImages"/>
+	<obj-relationship name="userToUserLink" source="User" target="UserLink" db-relationship-path="UserToUserLink"/>
+	<obj-relationship name="userToUserLocation" source="User" target="UserLocation" db-relationship-path="UserToUserLocation"/>
+	<obj-relationship name="userToUserPic" source="User" target="UserPic" db-relationship-path="UserToUserPic"/>
+	<obj-relationship name="userToUserPref" source="User" target="UserPref" db-relationship-path="UserToUserPref"/>
+	<obj-relationship name="userToUserStyle" source="User" target="UserStyle" db-relationship-path="UserToUserStyle"/>
+	<obj-relationship name="userBioToUser" source="UserBio" target="User" db-relationship-path="UserBioToUser"/>
+	<obj-relationship name="userContactToUser" source="UserContact" target="User" db-relationship-path="UserContactToUser"/>
+	<obj-relationship name="userFilesToUser" source="UserFiles" target="User" db-relationship-path="UserFilesToUser"/>
+	<obj-relationship name="userImagesAlbumMapArray" source="UserImages" target="UserImagesAlbumMap" db-relationship-path="userImagesAlbumMapArray"/>
+	<obj-relationship name="toUserImages" source="UserImagesAlbumMap" target="UserImages" db-relationship-path="toUserImages"/>
+	<obj-relationship name="userLinkToUser" source="UserLink" target="User" db-relationship-path="UserLinkToUser"/>
+	<obj-relationship name="userLocationToUser" source="UserLocation" target="User" db-relationship-path="UserLocationToUser"/>
+	<obj-relationship name="userPicToUser" source="UserPic" target="User" db-relationship-path="UserPicToUser"/>
+	<obj-relationship name="userPrefToUser" source="UserPref" target="User" db-relationship-path="UserPrefToUser"/>
+	<obj-relationship name="userStyleTOUser" source="UserStyle" target="User" db-relationship-path="UserStyleTOUser"/>
+</data-map>
