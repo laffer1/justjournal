@@ -34,11 +34,11 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
-import com.justjournal.User;
 import com.justjournal.model.Entry;
+import com.justjournal.model.Friends;
 import com.justjournal.utility.StringUtil;
+import org.apache.cayenne.Cayenne;
 import org.apache.cayenne.CayenneRuntimeException;
-import org.apache.cayenne.DataObjectUtils;
 import org.apache.cayenne.ObjectContext;
 import org.apache.cayenne.access.DataContext;
 import org.apache.cayenne.exp.Expression;
@@ -47,7 +47,6 @@ import org.apache.cayenne.query.SelectQuery;
 import org.apache.cayenne.query.SortOrder;
 import org.apache.log4j.Logger;
 
-import javax.sql.rowset.CachedRowSet;
 import java.util.*;
 import java.sql.ResultSet;
 
@@ -59,7 +58,7 @@ import static java.util.Collections.singletonMap;
  * several database connects when only one is needed.
  *
  * @author Lucas Holt
- * @version $Id: EntryDAO.java,v 1.30 2012/06/23 18:15:31 laffer1 Exp $
+ * @version $Id: EntryDAO.java,v 1.31 2012/06/24 17:34:13 laffer1 Exp $
  * @see EntryTo
  * @since 1.0 User: laffer1 Date: Sep 20, 2003 Time: 8:48:24 PM
  *        <p/>
@@ -202,19 +201,19 @@ public final class EntryDAO {
             com.justjournal.model.Mood mood = entry.getEntryToMood();
             com.justjournal.model.EntrySecurity security = entry.getEntryToSecurity();
             com.justjournal.model.Location location = entry.getEntryToLocation();
-            int entryId = DataObjectUtils.intPKForObject(entry);
+            int entryId = Cayenne.intPKForObject(entry);
 
             et.setUserName(user.getUsername());
 
             et.setId(entryId);
-            et.setUserId(DataObjectUtils.intPKForObject(user));
+            et.setUserId(Cayenne.intPKForObject(user));
             et.setDate(new DateTimeBean(entry.getDate()));
             et.setSubject(entry.getSubject());
             et.setBody(entry.getBody());
-            et.setLocationId(DataObjectUtils.intPKForObject(location));
-            et.setMoodId(DataObjectUtils.intPKForObject(mood));
+            et.setLocationId(Cayenne.intPKForObject(location));
+            et.setMoodId(Cayenne.intPKForObject(mood));
             et.setMusic(entry.getMusic());
-            et.setSecurityLevel(DataObjectUtils.intPKForObject(security));
+            et.setSecurityLevel(Cayenne.intPKForObject(security));
             et.setMoodName(mood.getTitle());
             et.setLocationName(location.getTitle());
 
@@ -252,7 +251,8 @@ public final class EntryDAO {
         try {
             ObjectContext dataContext = DataContext.getThreadObjectContext();
 
-            com.justjournal.model.Entry entry = DataObjectUtils.objectForPK(dataContext, com.justjournal.model.Entry.class, entryId);
+            com.justjournal.model.Entry entry =
+                    Cayenne.objectForPK(dataContext, com.justjournal.model.Entry.class, entryId);
             et = populateEntryTo(entry);
 
         } catch (Exception e1) {
@@ -387,6 +387,7 @@ public final class EntryDAO {
      * @param skip     number of records to skip (in the past)
      * @return A <code>Collection</code> of entries.
      */
+    @SuppressWarnings("unchecked")
     public static Collection<EntryTo> view(final String userName, final boolean thisUser, final int skip) {
         final ArrayList<EntryTo> entries = new ArrayList<EntryTo>(MAX_ENTRIES);
 
@@ -436,6 +437,7 @@ public final class EntryDAO {
      * @param thisUser is the owner the one accessing the data
      * @return A <code>Collection</code> of entries.
      */
+    @SuppressWarnings("unchecked")
     public static Collection<EntryTo> viewAll(final String userName, final boolean thisUser) {
         final ArrayList<EntryTo> entries = new ArrayList<EntryTo>(MAX_ENTRIES);
 
@@ -469,122 +471,101 @@ public final class EntryDAO {
         return entries;
     }
 
+    /**
+     * Generate friends list entries
+     * @param userID  blog owner user id
+     * @param aUserId authenticated user id
+     * @return blog entries for friends of the specified user
+     * @throws IllegalArgumentException bad input
+     */
+    @SuppressWarnings("unchecked")
     public static Collection<EntryTo> viewFriends(final int userID, final int aUserId)
             throws IllegalArgumentException {
-        if (log.isDebugEnabled())
-            log.debug("viewFriends: Initializing");
-
-        final ArrayList<EntryTo> entries = new ArrayList<EntryTo>(MAX_FRIENDS);
-        EntryTo et;
-
-        String sqlStatement;
-        String sqlStmt2; // for comment count
-        ResultSet rs = null;
-        ResultSet rsComment = null;
 
         if (userID < 1)
             throw new IllegalArgumentException("userID must be greater than zero");
+
+        final ArrayList<EntryTo> entries = new ArrayList<EntryTo>(MAX_FRIENDS);
+
+        ObjectContext dataContext = DataContext.getThreadObjectContext();
+
+        EntryTo et;
+        final int PAGE_SIZE = 15;
+        HashMap<String, Object> map = new HashMap<String, Object>();
+
+        Expression exp;
+        if (aUserId > 0 && (userID == aUserId)) {
+            List<com.justjournal.model.User> myFriends = new ArrayList<com.justjournal.model.User>();
+            try {
+                // Get the list of friends for this user id
+                Expression e = Expression.fromString("FriendsToUser = $uid");
+                e.expWithParameters(Collections.singletonMap("uid", userID));
+                SelectQuery fq = new SelectQuery(com.justjournal.model.Friends.class, e);
+                List<com.justjournal.model.Friends> friends = dataContext.performQuery(fq);
+
+                for (com.justjournal.model.Friends f : friends) {
+                    // check if the friend has a reverse relationship friends.id = friends.friendid
+                    com.justjournal.model.User user_friendid = f.getFriendsToFriendUser();
+                    List <Friends> f2list = user_friendid.getUserToFriends(); // Friend's list of friends
+                    for (Friends f2 : f2list) {
+                        if (f2.getFriendsToFriendUser().getUsername().equals(
+                                Cayenne.objectForPK(dataContext, com.justjournal.model.User.class, userID ).getUsername())) {
+                                 myFriends.add(f.getFriendsToFriendUser());
+                        }
+                    }
+                }
+            } catch (CayenneRuntimeException ce) {
+                log.error(ce);
+            }
+            exp = Expression.fromString("entryToUser.userToFriends = $id and (entryToSecurity=2 or (entryToSecurity=1 and entryToUser.FriendUserToFriends = $friends))");
+            map.put("friends", myFriends);
+        } else if (aUserId >= 0)
+             // no user logged in or another user's friends page.. just spit out public entries.
+            exp = Expression.fromString("entryToUser.userToFriends = $id and entryToSecurity=2");
+        else
+            throw new IllegalArgumentException("aUserId must be greater than -1");
+
+        try {
+            map.put("id", userID);
+            exp = exp.expWithParameters(map);
+            SelectQuery query = new SelectQuery(com.justjournal.model.Entry.class, exp);
+            query.setPageSize(PAGE_SIZE);
+            List<Ordering> orderings = new ArrayList<Ordering>();
+            orderings.add(new Ordering("date", SortOrder.DESCENDING));
+            orderings.add(new Ordering("db:" + Entry.ID_PK_COLUMN, SortOrder.DESCENDING));
+            query.addOrderings(orderings);
+            List<Entry> entryList = dataContext.performQuery(query);
+
+            int x = 0;
+            for (Entry anEntryList : entryList) {
+                et = populateEntryTo(anEntryList);
+                entries.add(et);
+                x++;
+                if (x == PAGE_SIZE) break;
+            }
+        } catch (Exception e1) {
+            log.error(e1);
+            e1.printStackTrace();
+        }
+
+        return entries;
 
         /* First get a list of friends
         TODO: FIX INFORMATION DISCLOSURE
         instead do 1:1 on user:auth user
         */
-
+               /*
         if (aUserId > 0 && (userID == aUserId))
             sqlStatement =
-                    new StringBuilder().append("SELECT friends.friendid As id, us.username, eh.date as date, eh.subject as subject, eh.music, eh.body, eh.security, eh.autoformat, eh.allow_comments, eh.email_comments, mood.title as mood, mood.id as moodid, location.id as locid, location.title as location, eh.id As entryid FROM user as us, entry as eh, mood, location, friends WHERE friends.id='").append(userID).append("' AND friends.friendid = eh.uid AND mood.id=eh.mood AND location.id=eh.location AND friends.friendid=us.id AND (eh.security=2 OR (eh.security=1 AND friends.friendid IN (SELECT f1.friendid FROM friends as f1 INNER JOIN friends as f2 ON f1.id=f2.friendid AND f1.friendid=f2.id WHERE f1.id='").append(userID).append("'))) ORDER by eh.date DESC LIMIT 0,15;").toString();
-        else if (aUserId >= 0)
-            // no user logged in or another user's friends page.. just spit out public entries.
-            sqlStatement =
-                    new StringBuilder().append("SELECT friends.friendid As id, us.username, eh.date as date, eh.subject as subject, eh.music, eh.body, eh.security, eh.autoformat, eh.allow_comments, eh.email_comments, mood.title as mood, mood.id as moodid, location.id as locid, location.title as location, eh.id As entryid FROM user as us, entry as eh, mood, location, friends WHERE friends.id='").append(userID).append("' AND friends.friendid = eh.uid AND mood.id=eh.mood AND location.id=eh.location AND friends.friendid=us.id AND eh.security=2 ORDER by eh.date DESC LIMIT 0,15;").toString();
-        else
-            throw new IllegalArgumentException("aUserId must be greater than -1");
-
-        if (log.isDebugEnabled())
-            log.debug("viewFriends: SQL is " + sqlStatement);
-
-        try {
-            rs = SQLHelper.executeResultSet(sqlStatement);
-
-            while (rs.next()) {
-                et = new EntryTo();
-
-                et.setUserName(rs.getString("username"));
-                et.setId(rs.getInt("entryid"));
-                et.setUserId(rs.getInt("id"));
-                et.setDate(rs.getString("date"));
-                et.setSubject(rs.getString("subject"));
-                et.setBody(rs.getString("body"));
-                et.setLocationId(rs.getInt("locid"));
-                et.setMoodId(rs.getInt("moodid"));
-                et.setMusic(rs.getString("music"));
-                et.setSecurityLevel(rs.getInt("security"));
-                et.setMoodName(rs.getString("mood"));
-                et.setLocationName(rs.getString("location"));
-
-                if (rs.getString("email_comments").compareTo("Y") == 0)
-                    et.setEmailComments(true);
-                else
-                    et.setEmailComments(false);
-
-                if (rs.getString("allow_comments").compareTo("Y") == 0)
-                    et.setAllowComments(true);
-                else
-                    et.setAllowComments(false);
-
-                if (rs.getString("autoformat").compareTo("Y") == 0)
-                    et.setAutoFormat(true);
-                else
-                    et.setAutoFormat(false);
-
-                et.setTags(getTags(rs.getInt("entryid")));
-
-                try {
-                    sqlStmt2 = "SELECT count(comments.id) As comid FROM comments WHERE eid='" + rs.getString("entryid") + "';";
-                    rsComment = SQLHelper.executeResultSet(sqlStmt2);
-
-                    if (rsComment.next()) {
-                        if (rsComment.getInt("comid") > 0)
-                            et.setCommentCount(rsComment.getInt("comid"));
-                    }
-
-                    rsComment.close();
-                    rsComment = null;
-                } catch (Exception ex) {
-                    if (rsComment != null) {
-                        if (log.isDebugEnabled())
-                            log.debug("viewFriends: Exception is " + ex.getMessage() + "\n" + ex.toString());
-
-                        try {
-                            rsComment.close();
-                        } catch (Exception e) {
-                            // NOTHING TO DO
-                        }
-                    }
-                }
-
-                if (log.isDebugEnabled())
-                    log.debug("viewFriends: entry is " + et.toString());
-
-                entries.add(et);
-            }
-
-            rs.close();
-            rs = null;
-        } catch (Exception e1) {
-            if (log.isDebugEnabled())
-                log.debug("viewFriends: Exception is " + e1.getMessage() + "\n" + e1.toString());
-
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (Exception e) {
-                    // NOTHING TO DO
-                }
-            }
-        }
-
-        return entries;
+                    new StringBuilder().append("SELECT friends.friendid As id, us.username, eh.date as date, eh.subject as subject, eh.music, " +
+                            "eh.body, eh.security, eh.autoformat, eh.allow_comments, eh.email_comments, mood.title as mood, " +
+                            "mood.id as moodid, location.id as locid, location.title as location, eh.id As entryid" +
+                            " FROM user as us, entry as eh, mood, location, friends WHERE friends.id='").append(userID).
+                            append("' AND friends.friendid = eh.uid AND mood.id=eh.mood AND location.id=eh.location " +
+                                    "AND friends.friendid=us.id AND " +
+                                    "(eh.security=2 OR (eh.security=1 AND friends.friendid IN (SELECT f1.friendid FROM friends as f1 INNER JOIN " +
+                                    "friends as f2 ON f1.id=f2.friendid AND f1.friendid=f2.id WHERE f1.id='").append(userID).append("'))) ORDER by eh.date DESC LIMIT 0,15;").toString();
+           */
     }
 
     /**
@@ -705,6 +686,16 @@ public final class EntryDAO {
         return RS;
     }
 
+    /**
+     * Get the list of all entries for a single day and user.
+     * @param year year of the entry
+     * @param month month of the year
+     * @param day day of the week
+     * @param userName the blog user
+     * @param thisUser include private and friends entries
+     * @return returns entries or an empty list
+     */
+    @SuppressWarnings("unchecked")
     public static Collection ViewCalendarDay(final int year,
                                              final int month,
                                              final int day,
@@ -765,6 +756,8 @@ public final class EntryDAO {
      *
      * @return Top 15 recent public entries
      */
+    @Deprecated
+    @SuppressWarnings("unchecked")
     public static Collection<EntryTo> viewRecentAllUsers() {
         final int SIZE = 15;
         final ArrayList<EntryTo> entries = new ArrayList<EntryTo>(SIZE);
@@ -802,84 +795,47 @@ public final class EntryDAO {
      *
      * @return Entries from 15 different users (most recent)
      */
+    @SuppressWarnings("unchecked")
     public static Collection<EntryTo> viewRecentUniqueUsers() {
-
-        if (log.isDebugEnabled())
-            log.debug("view: starting viewRecentUniqueUsers().");
 
         final int SIZE = 15;
         final ArrayList<EntryTo> entries = new ArrayList<EntryTo>(SIZE);
 
-        String sqlStatement;
-        ResultSet rs = null;
+        ObjectContext dataContext = DataContext.getThreadObjectContext();
+
         EntryTo et;
+        Expression exp;
+        exp = Expression.fromString("entryToSecurity=2");
+        HashMap<String, Boolean> seenUser = new HashMap<String, Boolean>(20);
 
-        // PUBLIC ONLY
-        sqlStatement = "call entry_view_latest_rss();";
+         try {
+            SelectQuery query = new SelectQuery(com.justjournal.model.Entry.class, exp);
+            List<Ordering> orderings = new ArrayList<Ordering>();
+            orderings.add(new Ordering("date", SortOrder.DESCENDING));
+            orderings.add(new Ordering("db:" + Entry.ID_PK_COLUMN, SortOrder.DESCENDING));
+            query.addOrderings(orderings);
+            query.setPageSize(SIZE * 3);
+            List<com.justjournal.model.Entry> entryList = dataContext.performQuery(query);
 
-        try {
-            if (log.isDebugEnabled())
-                log.debug("viewRecentUniqueUsers: execute sql statement");
+            int done = 0;
+            for (Entry e : entryList) {
 
-            rs = SQLHelper.executeResultSet(sqlStatement);
-
-            while (rs.next()) {
-                if (log.isDebugEnabled())
-                    log.debug("viewRecentUniqueUsers: create EntryTo object and populate it.");
-
-                et = new EntryTo();
-
-                if (!new User(rs.getString("userName")).isPrivateJournal()) {
-                    et.setUserName(rs.getString("userName"));
-                    et.setId(rs.getInt("entryid"));
-                    et.setUserId(rs.getInt("id"));
-                    et.setDate(rs.getString("date"));
-                    et.setSubject(rs.getString("subject"));
-                    et.setBody(rs.getString("body"));
-                    et.setLocationId(rs.getInt("locationid"));
-                    et.setMoodId(rs.getInt("moodid"));
-                    et.setMusic(rs.getString("music"));
-                    et.setSecurityLevel(rs.getInt("security"));
-                    et.setMoodName(rs.getString("moodt"));
-                    et.setLocationName(rs.getString("location"));
-
-                    if (rs.getString("email_comments").compareTo("Y") == 0)
-                        et.setEmailComments(true);
-                    else
-                        et.setEmailComments(false);
-
-                    if (rs.getString("allow_comments").compareTo("Y") == 0)
-                        et.setAllowComments(true);
-                    else
-                        et.setAllowComments(false);
-
-                    if (rs.getString("autoformat").compareTo("Y") == 0)
-                        et.setAutoFormat(true);
-                    else
-                        et.setAutoFormat(false);
-
-                    et.setTags(getTags(rs.getInt("entryid")));
-
-                    if (log.isDebugEnabled())
-                        log.debug("viewRecentUniqueUsers: ET contains " + et.toString());
-
-                    entries.add(et);
+                String userName = e.getEntryToUser().getUsername();
+                if (seenUser.containsKey(userName)) {
+                    log.error("seen username " + userName);
+                    continue;
                 }
+                seenUser.put(userName, true);
+                et = populateEntryTo(e);
+                entries.add(et);
+                done++;
+                log.error("Done: " + done);
+                if (done > SIZE)
+                    break;
             }
-
-            rs.close();
-
         } catch (Exception e1) {
-            if (log.isDebugEnabled())
-                log.debug("viewRecentUniqueUsers: exception is: " + e1.getMessage() + "\n" + e1.toString());
-
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (Exception e) {
-                    // NOTHING TO DO
-                }
-            }
+             e1.printStackTrace();
+            log.error(e1);
         }
 
         return entries;
@@ -944,12 +900,11 @@ public final class EntryDAO {
         ArrayList<String> deadTags = new ArrayList<String>();
 
         // delete test
-        for (ListIterator cur = current.listIterator(); cur.hasNext(); ) {
-            String curtag = (String) cur.next(); // get the tag
+        for (String curtag : current) {
             boolean inlist = false;
             // Compare the current list with the "new" list of tags.
-            for (ListIterator t = tags.listIterator(); t.hasNext(); ) {
-                String newtag = (String) t.next();
+            for (final Object tag : tags) {
+                String newtag = (String) tag;
                 if (curtag.equalsIgnoreCase(newtag)) {
                     inlist = true;
                     break; // in both lists so we can skip it.
@@ -962,12 +917,11 @@ public final class EntryDAO {
         }
 
         // add test
-        for (ListIterator t = tags.listIterator(); t.hasNext(); ) {
-            String newtag = (String) t.next(); // get the tag
+        for (final Object tag : tags) {
+            String newtag = (String) tag; // get the tag
             boolean inlist = false;
             // Compare the current list with the "new" list of tags.
-            for (ListIterator cur = current.listIterator(); cur.hasNext(); ) {
-                String curtag = (String) cur.next();
+            for (String curtag : current) {
                 if (newtag.equalsIgnoreCase(curtag)) {
                     inlist = true;
                     break; // in both lists so we can skip it.
@@ -981,8 +935,7 @@ public final class EntryDAO {
 
         try {
             // add new tags
-            for (ListIterator t = newTags.listIterator(); t.hasNext(); ) {
-                String newt = (String) t.next();
+            for (String newt : newTags) {
                 int tagid = getTagId(newt);
                 if (tagid < 1) {
                     String sql = "INSERT INTO tags (name) VALUES('" + newt + "');";
@@ -994,8 +947,7 @@ public final class EntryDAO {
             }
 
             // delete old tags
-            for (ListIterator t = deadTags.listIterator(); t.hasNext(); ) {
-                String dele = (String) t.next();
+            for (String dele : deadTags) {
                 int tagid = getTagId(dele);
                 String sql2 = "DELETE FROM entry_tags where entryid='" + entryId + "' and tagid='" + tagid + "' LIMIT 1;";
                 SQLHelper.executeNonQuery(sql2);
