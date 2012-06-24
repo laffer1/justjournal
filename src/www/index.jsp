@@ -16,7 +16,6 @@
 <%@ page import="java.util.Collection" %>
 <%@ page import="java.util.Iterator" %>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
-
 <head>
 <title>Just Journal: Free Online Journals</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
@@ -29,16 +28,24 @@
 <link rel="alternate" media="handheld" href="mob/index.jsp" />
 <link rel="icon" href="favicon.ico" type="image/x-icon" />
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
-<script src="js/ticker.js" type="text/javascript">/* ie7 sucks*/</script>
 <style type="text/css">
+#rightmenu {
+	float: right;
+	width: 380px;
+	padding-top: 10px;
+}
+
 #quickmenu {
     float: left;
-    width: 200px;
+    width: 190px;
+-webkit-box-shadow: 2px 2px 2px 2px #ccc;
+box-shadow: 2px 2px 2px 2px #ccc;
+background: white;
 }
 
 #quickmenu ul {
     margin-left: 0;
-    padding-left: 0;
+    padding-left: 20px;
 }
 
 #quickmenu ul li {
@@ -50,9 +57,8 @@
 }
 
 #blurb {
-    float: right;
-    width: 380px;
-    height: 300px;
+	text-shadow: 2px 2px 2px #b3b3b3;
+	filter: dropshadow(color=#b3b3b3, offx=2, offy=2);
 }
 
 #ticker {
@@ -196,7 +202,7 @@ width: 100%;
 
         div.row span.formw {
             float: right;
-            width: 205px;
+            width: 380px;
             text-align: left;
         }
 
@@ -253,9 +259,53 @@ width: 100%;
 
 <div id="content">
 
-<div id="quickmenu">
-    <jsp:include page="inc_login.jsp" flush="false"/>
+<div id="blurb">
+    <p class="firstone"
+       style=" text-align: justify; line-height: 1.8em; margin-right: 30px; padding-top: 0">
+        Just
+        Journal is an online journal service, also
+        known as a blog. You can publish private
+        entries for yourself, friends' entries to share with those close to you or public entries you wish to share
+        with the Internet.</p>
 
+    <div style="width: 550px; padding: 5px; margin: 0;">
+        <form method="post" name="alogin" action="./loginAccount" id="blogin">
+            <input type="hidden" name="password_hash" id="ipassword_hash" value=""/>
+
+            <fieldset>
+                <legend><strong>Just Journal Account</strong><br/>
+                </legend>
+
+                <div class="row">
+                        <span class="label">Username</span>
+                        <span class="formw">
+                                <input type="text" name="username" id="iusername" size="18" maxlength="15"
+                                style="width: 250px; background: url(images/userclass_16.png) no-repeat; background-color: #fff; background-position: 0px 1px; padding-left: 18px; color: black; font-weight: bold;"/></span>
+                </div>
+
+                <div class="row">
+                    <span class="label">Password</span>
+      <span class="formw"><input type="password" name="password" id="ipassword" size="18"
+                                 style="width: 268px; background: white; color: black; font-weight: bold;"/>
+      </span>
+                </div>
+
+                <!-- Hack to fix spacing problem.. especially with text boxes -->
+                <div class="spacer"> &nbsp; </div>
+            </fieldset>
+
+            <div class="row">
+                <input type="submit" style="width: 550px" name="submitlogin" value="Login" onclick="return sendForm()"/>
+            </div>
+
+            <!-- Hack to fix spacing problem.. especially with text boxes -->
+            <div class="spacer"> &nbsp; </div>
+        </form>
+       </div>
+
+</div>
+
+<div id="quickmenu">
     <ul>
         <li><a href="create.jsp">Create Account</a></li>
         <li><a href="cancel.jsp">Cancel Account</a></li>
@@ -267,7 +317,9 @@ width: 100%;
         <li><a href="tags.jsp">Tag Cloud</a></li>
         <li><a href="update.jsp">Update Journal</a></li>
     </ul>
+</div>
 
+  <div id="rightmenu">
     <div id="wrapper">
         <form action="search/index.jsp" method="get" id="bsearch">
             <div id="applesearch">
@@ -287,99 +339,10 @@ width: 100%;
     <p>View <a href="stats.jsp">site statistics</a>.</p>
 
     <p><img src="images/feed.gif" alt="Feed"/> <a href="RecentBlogs">Recent Blog Entries</a></p>
-</div>
-
-<div id="blurb">
-    <p class="firstone"
-       style=" text-align: justify; line-height: 1.8em; margin-right: 30px; padding-top: 0">
-        Just
-        Journal is an online journal service, also
-        known as a "blog." You can publish private
-        entries for yourself, friends' entries to share with those close to you or public entries you wish to share
-        with the Internet.</p>
-
-    <div style="width: 360px; padding: 5px; margin: 0;">
-        <form method="post" name="alogin" action="./loginAccount" id="blogin">
-            <input type="hidden" name="password_hash" id="ipassword_hash" value=""/>
-
-            <fieldset>
-                <legend><strong>Just Journal Account</strong><br/>
-                </legend>
-
-
-                <div class="row">
-                    <span class="label">Username</span>
-      <span class="formw">
-     <input type="text" name="username" id="iusername" size="18" maxlength="15"
-            style="background: url(images/userclass_16.png) no-repeat; background-color: #fff; background-position: 0px 1px; padding-left: 18px; color: black; font-weight: bold;"/></span>
-                </div>
-
-                <div class="row">
-                    <span class="label">Password</span>
-      <span class="formw"><input type="password" name="password" id="ipassword" size="18"
-                                 style="background: white; color: black; font-weight: bold;"/>
-      </span>
-                </div>
-
-                <!-- Hack to fix spacing problem.. especially with text boxes -->
-                <div class="spacer"> &nbsp; </div>
-            </fieldset>
-
-            <div class="row">
-                <input type="submit" name="submitlogin" value="Login" onclick="return sendForm()"/>
-            </div>
-
-            <!-- Hack to fix spacing problem.. especially with text boxes -->
-            <div class="spacer"> &nbsp; </div>
-        </form>
-       </div>
-
-</div>
-
-<p style="clear: both;">&#160;</p>
-
-<div id="ticker"></div>
+  </div>
 
     <p style="clear: both;">&#160;</p>
 
-    <table style="border: thin solid #F2F2F2; width: 600px;">
-        <caption style="font-size: 12px; font-family: Georgia, Times, serif;">New Members</caption>
-        <thead>
-            <tr style="font-size: 9px; color: white; background: #006699;">
-                <th>Name</th>
-                <th>User</th>
-                <th>Since</th>
-                <th>Profile</th>
-            </tr>
-        </thead>
-        <%
-            Collection users = UserDao.newUsers();
-            int i = 0;
-            for (java.util.Iterator iterator = users.iterator(); iterator.hasNext();) {
-                UserTo o = (UserTo) iterator.next();
-
-                if (i % 2 == 0) { %>
-        <tr style="font-size: 10px; background: #F2F2F2;">
-            <%      } else { %>
-        <tr style="font-size: 10px;">
-            <% } %>
-            <td><%=o.getName()%>
-                <% if (o.getLastName() != null) { %>
-                <%=o.getLastName()%>
-               <% } %>
-            </td>
-            <td><img src="images/userclass_16.png" alt="user icon"/>
-                <a href="users/<%=o.getUserName()%>"><%=o.getUserName()%>
-                </a></td>
-            <td><%=o.getSince()%>
-            </td>
-            <td><a href="profile.jsp?user=<%=o.getUserName()%>">My Profile</a></td>
-        </tr>
-        <%
-                i++;
-            }
-        %>
-    </table>
 </div>
 
 <jsp:include page="footer.inc" flush="false"/>
