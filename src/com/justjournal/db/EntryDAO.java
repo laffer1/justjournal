@@ -58,7 +58,7 @@ import static java.util.Collections.singletonMap;
  * several database connects when only one is needed.
  *
  * @author Lucas Holt
- * @version $Id: EntryDAO.java,v 1.31 2012/06/24 17:34:13 laffer1 Exp $
+ * @version $Id: EntryDAO.java,v 1.32 2012/06/24 17:34:57 laffer1 Exp $
  * @see EntryTo
  * @since 1.0 User: laffer1 Date: Sep 20, 2003 Time: 8:48:24 PM
  *        <p/>
@@ -751,43 +751,6 @@ public final class EntryDAO {
         return entries;
     }
 
-    /**
-     * Retrieves top 15 posts from all user's public journal entries for submission on front page. (RSS feed, etc)
-     *
-     * @return Top 15 recent public entries
-     */
-    @Deprecated
-    @SuppressWarnings("unchecked")
-    public static Collection<EntryTo> viewRecentAllUsers() {
-        final int SIZE = 15;
-        final ArrayList<EntryTo> entries = new ArrayList<EntryTo>(SIZE);
-
-        ObjectContext dataContext = DataContext.getThreadObjectContext();
-
-        EntryTo et;
-        Expression exp;
-        exp = Expression.fromString("entryToSecurity=2");
-
-        try {
-            SelectQuery query = new SelectQuery(com.justjournal.model.Entry.class, exp);
-            List<Ordering> orderings = new ArrayList<Ordering>();
-            orderings.add(new Ordering("date", SortOrder.DESCENDING));
-            orderings.add(new Ordering("db:" + Entry.ID_PK_COLUMN, SortOrder.DESCENDING));
-            query.addOrderings(orderings);
-            query.setPageSize(SIZE);
-            List<com.justjournal.model.Entry> entryList = dataContext.performQuery(query);
-
-            int sz = entryList.size() > SIZE ? SIZE : entryList.size();
-            for (int i = 0; i < sz; i++) {
-                et = populateEntryTo(entryList.get(i));
-                entries.add(et);
-            }
-        } catch (Exception e1) {
-            log.error(e1);
-        }
-
-        return entries;
-    }
 
     /**
      * Retrieve the 15 most recent journal entries from unique users.  So if I post 10 entries, it will only select the
