@@ -67,6 +67,7 @@
 	<db-entity name="friends" catalog="jj">
 		<db-attribute name="friendid" type="BIGINT" isMandatory="true" length="10"/>
 		<db-attribute name="id" type="BIGINT" isMandatory="true" length="10"/>
+		<db-attribute name="pk" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
 	</db-entity>
 	<db-entity name="friends_lj" catalog="jj">
 		<db-attribute name="community" type="CHAR" isMandatory="true" length="2"/>
@@ -498,6 +499,12 @@
 	<db-relationship name="favoritesToUser" source="favorites" target="user" toMany="false">
 		<db-attribute-pair source="owner" target="id"/>
 	</db-relationship>
+	<db-relationship name="FriendsToFriendUser" source="friends" target="user" toMany="false">
+		<db-attribute-pair source="friendid" target="id"/>
+	</db-relationship>
+	<db-relationship name="FriendsToUser" source="friends" target="user" toMany="false">
+		<db-attribute-pair source="id" target="id"/>
+	</db-relationship>
 	<db-relationship name="LocationToEntry" source="location" target="entry" toMany="true">
 		<db-attribute-pair source="id" target="location"/>
 	</db-relationship>
@@ -507,6 +514,9 @@
 	<db-relationship name="TagsToEntryList" source="tags" target="entry_tags" toMany="true">
 		<db-attribute-pair source="id" target="tagid"/>
 	</db-relationship>
+	<db-relationship name="FriendUserToFriends" source="user" target="friends" toMany="true">
+		<db-attribute-pair source="id" target="friendid"/>
+	</db-relationship>
 	<db-relationship name="UserToComment" source="user" target="comments" toMany="true">
 		<db-attribute-pair source="id" target="uid"/>
 	</db-relationship>
@@ -515,6 +525,9 @@
 	</db-relationship>
 	<db-relationship name="UserToFavorites" source="user" target="favorites" toMany="true">
 		<db-attribute-pair source="id" target="owner"/>
+	</db-relationship>
+	<db-relationship name="UserToFriends" source="user" target="friends" toMany="true">
+		<db-attribute-pair source="id" target="id"/>
 	</db-relationship>
 	<db-relationship name="UserToUserBio" source="user" target="user_bio" toMany="false">
 		<db-attribute-pair source="id" target="id"/>

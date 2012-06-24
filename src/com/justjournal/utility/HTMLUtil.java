@@ -1,7 +1,7 @@
 package com.justjournal.utility;
 
 /*---------------------------------------------------------------------------*\
-  $Id: HTMLUtil.java,v 1.11 2011/07/02 01:41:33 laffer1 Exp $
+  $Id: HTMLUtil.java,v 1.12 2012/06/24 16:40:37 laffer1 Exp $
   ---------------------------------------------------------------------------
   This software is released under a Berkeley-style license:
 
@@ -41,7 +41,7 @@ import java.util.regex.PatternSyntaxException;
  * Static class containing miscellaneous HTML-related utility methods.
  *
  * @author Copyright &copy; 2004 Brian M. Clapper
- * @version <tt>$Revision: 1.11 $</tt>
+ * @version <tt>$Revision: 1.12 $</tt>
  */
 public final class HTMLUtil {
     /*----------------------------------------------------------------------*\
@@ -350,7 +350,7 @@ public final class HTMLUtil {
         }
         catch (Exception e) {
             log.error(e);
-            output = input;  // if an error occurs, use the orignal input
+            output = input;  // if an error occurs, use the original input
         }
 
         try {
