@@ -69,17 +69,6 @@
 		<db-attribute name="id" type="BIGINT" isMandatory="true" length="10"/>
 		<db-attribute name="pk" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
 	</db-entity>
-	<db-entity name="friends_lj" catalog="jj">
-		<db-attribute name="community" type="CHAR" isMandatory="true" length="2"/>
-		<db-attribute name="id" type="BIGINT" isPrimaryKey="true" isMandatory="true" length="10"/>
-		<db-attribute name="username" type="CHAR" isPrimaryKey="true" isMandatory="true" length="15"/>
-	</db-entity>
-	<db-entity name="friends_lj_cache" catalog="jj">
-		<db-attribute name="community" type="CHAR" isMandatory="true" length="2"/>
-		<db-attribute name="content" type="LONGVARCHAR" length="65535"/>
-		<db-attribute name="lastupdated" type="TIMESTAMP" isMandatory="true"/>
-		<db-attribute name="ljusername" type="VARCHAR" isPrimaryKey="true" isMandatory="true" length="15"/>
-	</db-entity>
 	<db-entity name="hitcount" catalog="jj">
 		<db-attribute name="count" type="INTEGER" isMandatory="true" length="7"/>
 		<db-attribute name="id" type="BIGINT" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
@@ -96,6 +85,7 @@
 	</db-entity>
 	<db-entity name="mood_theme_data" catalog="jj">
 		<db-attribute name="height" type="TINYINT" isMandatory="true" length="3"/>
+		<db-attribute name="id" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
 		<db-attribute name="moodid" type="BIGINT" isMandatory="true" length="10"/>
 		<db-attribute name="moodthemeid" type="BIGINT" isMandatory="true" length="10"/>
 		<db-attribute name="picurl" type="VARCHAR" length="100"/>
@@ -218,6 +208,7 @@
 	</db-entity>
 	<db-entity name="user_images_album_map" catalog="jj">
 		<db-attribute name="album_id" type="BIGINT" isMandatory="true" length="10"/>
+		<db-attribute name="id" type="LONGVARBINARY" isPrimaryKey="true" isMandatory="true"/>
 		<db-attribute name="image_id" type="BIGINT" isMandatory="true" length="10"/>
 		<db-attribute name="modified" type="TIMESTAMP" isMandatory="true"/>
 		<db-attribute name="owner" type="BIGINT" isMandatory="true" length="10"/>
@@ -302,16 +293,6 @@
 		<obj-attribute name="owner" type="java.lang.Long" db-attribute-path="owner"/>
 	</obj-entity>
 	<obj-entity name="Friends" className="com.justjournal.model.Friends" dbEntityName="friends">
-		<obj-attribute name="friendid" type="java.lang.Long" db-attribute-path="friendid"/>
-		<obj-attribute name="id" type="java.lang.Long" db-attribute-path="id"/>
-	</obj-entity>
-	<obj-entity name="FriendsLj" className="com.justjournal.model.FriendsLj" dbEntityName="friends_lj">
-		<obj-attribute name="community" type="java.lang.String" db-attribute-path="community"/>
-	</obj-entity>
-	<obj-entity name="FriendsLjCache" className="com.justjournal.model.FriendsLjCache" dbEntityName="friends_lj_cache">
-		<obj-attribute name="community" type="java.lang.String" db-attribute-path="community"/>
-		<obj-attribute name="content" type="java.lang.String" db-attribute-path="content"/>
-		<obj-attribute name="lastupdated" type="java.util.Date" db-attribute-path="lastupdated"/>
 	</obj-entity>
 	<obj-entity name="Hitcount" className="com.justjournal.model.Hitcount" dbEntityName="hitcount">
 		<obj-attribute name="count" type="java.lang.Integer" db-attribute-path="count"/>
@@ -600,12 +581,16 @@
 	<obj-relationship name="securityToEntry" source="EntrySecurity" target="Entry" deleteRule="Deny" db-relationship-path="SecurityToEntry"/>
 	<obj-relationship name="entryListToTagList" source="EntryTags" target="Tags" deleteRule="Nullify" db-relationship-path="EntryListToTagList"/>
 	<obj-relationship name="tagsToEntry" source="EntryTags" target="Entry" deleteRule="Deny" db-relationship-path="TagsToEntry"/>
+	<obj-relationship name="friendsToFriendUser" source="Friends" target="User" deleteRule="Nullify" db-relationship-path="FriendsToFriendUser"/>
+	<obj-relationship name="friendsToUser" source="Friends" target="User" deleteRule="Nullify" db-relationship-path="FriendsToUser"/>
 	<obj-relationship name="locationToEntry" source="Location" target="Entry" deleteRule="Deny" db-relationship-path="LocationToEntry"/>
 	<obj-relationship name="moodToEntry" source="Mood" target="Entry" deleteRule="Deny" db-relationship-path="MoodToEntry"/>
 	<obj-relationship name="tagsToEntryList" source="Tags" target="EntryTags" deleteRule="Deny" db-relationship-path="TagsToEntryList"/>
+	<obj-relationship name="friendUserToFriends" source="User" target="Friends" deleteRule="Deny" db-relationship-path="FriendUserToFriends"/>
 	<obj-relationship name="userToComment" source="User" target="Comments" db-relationship-path="UserToComment"/>
 	<obj-relationship name="userToEntry" source="User" target="Entry" db-relationship-path="UserToEntry"/>
 	<obj-relationship name="userToFavorites" source="User" target="Favorites" db-relationship-path="UserToFavorites"/>
+	<obj-relationship name="userToFriends" source="User" target="Friends" deleteRule="Deny" db-relationship-path="UserToFriends"/>
 	<obj-relationship name="userToUserBio" source="User" target="UserBio" db-relationship-path="UserToUserBio"/>
 	<obj-relationship name="userToUserContact" source="User" target="UserContact" db-relationship-path="UserToUserContact"/>
 	<obj-relationship name="userToUserFiles" source="User" target="UserFiles" db-relationship-path="UserToUserFiles"/>
