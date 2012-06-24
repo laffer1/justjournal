@@ -15,12 +15,12 @@
     </resource-ref>
 
     <filter>
-        <filter-name>CayenneFilter</filter-name>
+        <filter-name>cayenne-JustJournalDomain</filter-name>
         <!--suppress WebProperties -->
-        <filter-class>org.apache.cayenne.conf.WebApplicationContextFilter</filter-class>
+        <filter-class>org.apache.cayenne.configuration.web.CayenneFilter</filter-class>
     </filter>
     <filter-mapping>
-        <filter-name>CayenneFilter</filter-name>
+        <filter-name>cayenne-JustJournalDomain</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
