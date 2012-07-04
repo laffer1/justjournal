@@ -41,6 +41,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.justjournal.model.User;
+import org.apache.cayenne.Cayenne;
 import org.apache.cayenne.DataObjectUtils;
 import org.apache.cayenne.ObjectContext;
 import org.apache.cayenne.access.DataContext;
@@ -123,7 +124,7 @@ public final class UserDao {
         if (userId > 0) {
             try {
                 ObjectContext dataContext = DataContext.getThreadObjectContext();
-                 User u = DataObjectUtils.objectForPK(dataContext, User.class, userId);
+                User u = Cayenne.objectForPK(dataContext, User.class, userId);
                 dataContext.deleteObject(u);
                 dataContext.commitChanges();
             } catch (Exception e) {
@@ -147,7 +148,7 @@ public final class UserDao {
 
         try {
             ObjectContext dataContext = DataContext.getThreadObjectContext();
-            User u = DataObjectUtils.objectForPK(dataContext, User.class, userId);
+            User u = Cayenne.objectForPK(dataContext, User.class, userId);
 
             if (u != null) {
                 user.setId(userId);
@@ -173,6 +174,7 @@ public final class UserDao {
      * @param userName User's username
      * @return user's info
      */
+    @SuppressWarnings("unchecked")
     public static UserTo view(final String userName) {
         UserTo user = new UserTo();
 
@@ -185,7 +187,7 @@ public final class UserDao {
             if (!userlist.isEmpty()) {
                 User u = userlist.get(0);
 
-                user.setId(DataObjectUtils.intPKForObject(u));
+                user.setId(Cayenne.intPKForObject(u));
                 user.setUserName(userName);
                 user.setName(u.getName()); // first name
                 user.setSince(u.getSince());
