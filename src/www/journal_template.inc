@@ -25,7 +25,6 @@
 		<a href="/users/$USER$/calendar">Calendar</a><br />
 		<a href="/users/$USER$/friends">Friends</a><br />
 		<a href="/favorite/view.h">Favorites</a><br />
-		<a href="/users/$USER$/ljfriends">LJ Friends</a><br />
 		<a href="/users/$USER$/pictures">Pictures</a><br />
 		<a href="/profile.jsp?user=$USER$">Profile</a><br />
 	</p>
@@ -37,22 +36,6 @@
     <p id="mrss">
     	<a href="/users/$USER$/subscriptions">RSS Reader</a><br />
     	<a href="/users/$USER$/rss"><img src="/images/rss2.gif" alt="Journal RSS feed" /></a><br />
-    </p>
-
-    <p id="mrssmsn">
-    	<a href="http://my.msn.com/addtomymsn.armx?id=rss&amp;ut=http://www.justjournal.com/users/$USER$/rss"><img src="/images/rss_mymsn.gif" alt="Add to My MSN" /></a><br />
-    </p>
-
-    <p id="mrsswindowslive">
-    	<a href="http://www.live.com/?add=http://www.justjournal.com/users/$USER$/rss"><img src="/images/rss_windowslive.gif" alt="Add to Windows Live" /></a><br />
-    </p>
-
-    <p id="mrssyahoo">
-    	<a href="http://add.my.yahoo.com/rss?url=http://www.justjournal.com/users/$USER$/rss"><img src="/images/rss_myyahoo.gif" alt="Add to My Yahoo§" /></a><br />
-    </p>
-
-    <p id="mrssbloglines">
-    	<a href="http://www.bloglines.com/sub/http://www.justjournal.com/users/$USER$/rss"><img src="/images/rss_bloglines.gif" alt="Add to Bloglines" /></a><br />
     </p>
 
     <p id="mtechnosearch">
