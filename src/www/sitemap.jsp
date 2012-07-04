@@ -68,7 +68,6 @@
         <li><a href="mob/index.jsp" title="Just Journal Mobile (for Cell Phones)">Just Journal Mobile</a></li>
         <li><a href="update.jsp" title="Create Journal Entries">Update</a></li>
         <li><a href="tags.jsp" title="View Tags used on JustJournal blogs">Tag Cloud</a></li>
-        <li><a href="mostpopular.jsp">Most Popular Pages</a></li>
     </ul>
 </div>
 
