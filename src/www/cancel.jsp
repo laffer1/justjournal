@@ -14,8 +14,6 @@
     <link rel="help" title="Technical Support" href="support/index.jsp"/>
 
     <style type="text/css" media="all">
-        <!--
-
         div.row {
             clear: both;
             padding-top: 5px;
@@ -36,8 +34,6 @@
         div.spacer {
             clear: both;
         }
-
-        -->
     </style>
 </head>
 
