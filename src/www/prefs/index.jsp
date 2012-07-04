@@ -54,10 +54,6 @@
         <dd>Define who your friends are. This will effect who will appear on your friends page along with
             the security of your journal entries.</dd>
 
-        <dt><a href="ljfriends.jsp"><strong>LJ Friends</strong></a></dt>
-        <dd>Define who your lj friends are. This will allow you to view live journal users
-            public entries on the lj friends page.</dd>
-
         <dt><a href="security.jsp"><strong>Security</strong></a></dt>
         <dd>Allows you to define defaults for your account. In addition,
             you can make your journal private only. (not viewable by anyone
