@@ -39,8 +39,6 @@ import java.sql.ResultSet;
 
 public final class BioDao {
 
-    private static Caching cache = new Caching();
-
     public static boolean add(BioTo bio) {
         boolean noError = true;
         int records = 0;
@@ -75,8 +73,6 @@ public final class BioDao {
             noError = false;
         }
 
-        cache.delete("bio: " + bio.getUserId());
-
         return noError;
     }
 
@@ -95,22 +91,16 @@ public final class BioDao {
             noError = false;
         }
 
-        cache.delete("bio: " + userId);
-
         return noError;
     }
 
 
     public static BioTo view(int userId) {
-        BioTo bio;
+        BioTo bio = new BioTo();
         ResultSet rs = null;
         String sqlStmt = "Select content from user_bio WHERE id='" + userId + "' Limit 1;";
 
-        if ((bio = (BioTo) cache.get("bio: " + userId)) != null)
-                return bio;
-
         try {
-            bio = new BioTo();
             rs = SQLHelper.executeResultSet(sqlStmt);
 
             if (rs.next()) {
@@ -130,7 +120,6 @@ public final class BioDao {
             }
         }
 
-        cache.set("bio: " + userId, bio);
         return bio;
     }
 }
