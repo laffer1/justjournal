@@ -15,11 +15,7 @@
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.Collection" %>
 <%@ page import="java.util.Iterator" %>
-<%--
-  User: laffer1
-  Date: Jul 23, 2008
-  Time: 12:03:56 AM
---%>
+
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>JustJournal.com: Tag Cloud</title>
@@ -54,7 +50,7 @@
     <p>
 <%
     try {
-        CachedRowSet rs = SQLHelper.executeResultSet("select tags.name as name, count(*) as count from entry_tags, tags where tags.id=entry_tags.tagid GROUP by tags.name;");
+        ResultSet rs = SQLHelper.executeResultSet("select tags.name as name, count(*) as count from entry_tags, tags where tags.id=entry_tags.tagid GROUP by tags.name;");
 
         int largest = 0;
         int smallest = 10;

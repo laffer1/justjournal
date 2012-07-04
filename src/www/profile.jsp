@@ -31,7 +31,7 @@
         return;
     }
 
-    CachedRowSet Recordset1;
+    ResultSet Recordset1;
 
     try {
         String commandText = "SELECT user.id, user.type, user.name, user_bio.content As bio, user_contact.email, user_contact.icq, user_contact.aim, user_contact.yahoo, user_contact.msn, user_contact.hp_uri, user_contact.hp_title, user_contact.phone, user_location.city, user_location.state, user_location.country, user_location.zip FROM user, user_bio, user_contact, user_location WHERE user.username=\"" + username + "\" AND user_bio.id = user.id AND user_contact.id = user.id AND user_location.id = user.id LIMIT 1;";
