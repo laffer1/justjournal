@@ -54,7 +54,7 @@ import java.util.StringTokenizer;
 
 /**
  * @author Lucas Holt
- * @version $Id: EditEntry.java,v 1.2 2011/07/02 01:28:30 laffer1 Exp $
+ * @version $Id: EditEntry.java,v 1.3 2012/07/04 18:49:20 laffer1 Exp $
  */
 public class EditEntry extends HttpServlet {
     private static final char endl = '\n';
@@ -173,8 +173,6 @@ public class EditEntry extends HttpServlet {
         sb.append(endl);
         sb.append("\t\t<a href=\"/users/").append(userName).append("/friends\">Friends</a><br />");
         sb.append(endl);
-        sb.append("\t\t<a href=\"/users/").append(userName).append("/ljfriends\">LJ Friends</a><br />");
-        sb.append(endl);
         sb.append("\t\t<a href=\"/profile.jsp?user=").append(userName).append("\">Profile</a><br />");
         sb.append(endl);
         sb.append("\t</p>");
@@ -183,7 +181,7 @@ public class EditEntry extends HttpServlet {
         // General stuff...
         sb.append("\t<p id=\"mgen\">");
         sb.append(endl);
-        sb.append("\t\t<a href=\"/edit.jsp\">Update Journal</a><br />");
+        sb.append("\t\t<a href=\"/update.jsp\">Update Journal</a><br />");
         sb.append(endl);
 
         // Authentication menu choice
@@ -233,7 +231,7 @@ public class EditEntry extends HttpServlet {
 
         sb.append("\t\t<p><strong>Your blog entry has been changed.</strong></p>");
         sb.append(endl);
-        sb.append("\t\t<p><a href=\"/edit.jsp\">Add an entry</a></p>");
+        sb.append("\t\t<p><a href=\"/update.jsp\">Add an entry</a></p>");
         sb.append(endl);
         sb.append("\t\t<p><a href=\"/users/");
         sb.append(userName);

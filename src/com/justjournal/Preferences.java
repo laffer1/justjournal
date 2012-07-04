@@ -32,6 +32,8 @@ import javax.sql.rowset.CachedRowSet;
 
 import org.apache.log4j.Logger;
 
+import java.sql.ResultSet;
+
 /**
  * Loads and stores preferences for a just journal user
  * given their username.
@@ -43,7 +45,7 @@ import org.apache.log4j.Logger;
  * journal, the user must login.  Public access is denied.
  *
  * @author Lucas Holt
- * @version $Id: Preferences.java,v 1.10 2011/07/01 11:49:35 laffer1 Exp $
+ * @version $Id: Preferences.java,v 1.11 2012/07/04 18:49:20 laffer1 Exp $
  * @since 1.0
  */
 
@@ -68,7 +70,7 @@ public final class Preferences {
             throws Exception {
         try {
 
-            CachedRowSet RS = PreferencesDao.ViewJournalPreferences(userName);
+            ResultSet RS = PreferencesDao.ViewJournalPreferences(userName);
 
             if (RS.next()) {
                 this.name = RS.getString("name");

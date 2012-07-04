@@ -36,15 +36,15 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.sql.rowset.CachedRowSet;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
+import java.sql.ResultSet;
 
 /**
  * Diplay individual images in the user's photo album.
  *
  * @author Lucas Holt
- * @version $Id: AlbumImage.java,v 1.8 2011/07/02 01:19:09 laffer1 Exp $
+ * @version $Id: AlbumImage.java,v 1.9 2012/07/04 18:48:28 laffer1 Exp $
  */
 public class AlbumImage extends HttpServlet {
     private static final Logger log = Logger.getLogger(AlbumImage.class);
@@ -82,7 +82,7 @@ public class AlbumImage extends HttpServlet {
             response.reset();
             response.setHeader("Expires", ServletUtilities.createExpiresHeader(180));
 
-            CachedRowSet rs = SQLHelper.executeResultSet("call getalbumimage(" + id + ");");
+            ResultSet rs = SQLHelper.executeResultSet("call getalbumimage(" + id + ");");
             if (rs.next()) {
                 response.setContentType(rs.getString("mimetype").trim());
                 BufferedInputStream img = new BufferedInputStream(rs.getBinaryStream("image"));

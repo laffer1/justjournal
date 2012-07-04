@@ -51,8 +51,8 @@ import com.justjournal.utility.StringUtil;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.sql.rowset.CachedRowSet;
 import java.io.IOException;
+import java.sql.ResultSet;
 
 import org.apache.log4j.Logger;
 
@@ -60,7 +60,7 @@ import org.apache.log4j.Logger;
  * Adds a friend to the Users list for their friends page
  *
  * @author Caryn Holt, Lucas Holt
- * @version $Id: AddFriend.java,v 1.11 2011/07/02 01:29:08 laffer1 Exp $
+ * @version $Id: AddFriend.java,v 1.12 2012/07/04 18:47:44 laffer1 Exp $
  * @since 1.0
  */
 public final class AddFriend extends JustJournalBaseServlet {
@@ -130,8 +130,7 @@ public final class AddFriend extends JustJournalBaseServlet {
                 String sqlStatement = "SELECT id FROM user where username='" + friends[i] + "' LIMIT 1;";
                 int friendID = 0;
                 try {
-                    CachedRowSet record;
-                    record = SQLHelper.executeResultSet(sqlStatement);
+                    ResultSet record = SQLHelper.executeResultSet(sqlStatement);
                     // get id
                     // 0 is not a valid id
                     if (record.next())

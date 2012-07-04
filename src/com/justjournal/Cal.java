@@ -36,7 +36,7 @@ package com.justjournal;
 
 import org.apache.log4j.Logger;
 
-import javax.sql.rowset.CachedRowSet;
+import java.sql.ResultSet;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -46,16 +46,16 @@ import java.util.Iterator;
  * Storage for calendar months.
  *
  * @author Lucas Holt
- * @version $Id: Cal.java,v 1.11 2009/05/16 00:40:02 laffer1 Exp $
+ * @version $Id: Cal.java,v 1.12 2012/07/04 18:48:53 laffer1 Exp $
  * @see CalMonth
  */
 public final class Cal {
     private static final Logger log = Logger.getLogger(Cal.class);
 
-    private CachedRowSet RS;
+    private ResultSet RS;
     private final ArrayList<CalMonth> Months = new ArrayList<CalMonth>(12);
     private final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-    private final SimpleDateFormat shortdate = new SimpleDateFormat("yyyy-MM-dd");
+    private final SimpleDateFormat shortDate = new SimpleDateFormat("yyyy-MM-dd");
 
     private final String[] days = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
     private final String[] daysSmall = {"S", "M", "T", "W", "R", "F", "S"};
@@ -66,7 +66,7 @@ public final class Cal {
 
     private String baseUrl;
 
-    public Cal(final CachedRowSet RS) {
+    public Cal(final ResultSet RS) {
 
         if (log.isDebugEnabled())
             log.debug("Storing Recordsest");
@@ -105,7 +105,7 @@ public final class Cal {
                         // get first day of month (falls on)
                         final ParsePosition pos2 = new ParsePosition(0);
                         // "yyyy-MM-dd"
-                        final java.util.Date baseDate = shortdate.parse(year + "-" + (month + 1) + "-01", pos2);
+                        final java.util.Date baseDate = shortDate.parse(year + "-" + (month + 1) + "-01", pos2);
 
                         Months.add(new CalMonth(month, monthPostCt, baseDate));
                     }
@@ -121,7 +121,7 @@ public final class Cal {
 
             final ParsePosition pos2 = new ParsePosition(0);
             // "yyyy-MM-dd"
-            final java.util.Date baseDate = shortdate.parse(year + "-" + (month + 1) + "-01", pos2);
+            final java.util.Date baseDate = shortDate.parse(year + "-" + (month + 1) + "-01", pos2);
             final int[] n = monthPostCt;
             Months.add(new CalMonth(month, n, baseDate));
             RS.close();

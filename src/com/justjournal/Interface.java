@@ -51,7 +51,7 @@ import java.util.Iterator;
  * Date: Jan 18, 2004
  * Time: 10:11:10 PM
  *
- * @version $Id: Interface.java,v 1.9 2011/07/02 01:34:51 laffer1 Exp $
+ * @version $Id: Interface.java,v 1.10 2012/07/04 18:49:20 laffer1 Exp $
  */
 public class Interface extends HttpServlet {
     final static String endl = "\r\n";
@@ -433,8 +433,6 @@ public class Interface extends HttpServlet {
                     sb.append(endl);
                     sb.append("\t\t<a href=\"/users/").append(userName).append("/friends\">Friends</a><br />");
                     sb.append(endl);
-                    sb.append("\t\t<a href=\"/users/").append(userName).append("/ljfriends\">LJ Friends</a><br />");
-                    sb.append(endl);
                     sb.append("\t\t<a href=\"/profile.jsp?user=").append(userName).append("\">Profile</a><br />");
                     sb.append(endl);
                     sb.append("\t</p>");
@@ -443,7 +441,7 @@ public class Interface extends HttpServlet {
                     // General stuff...
                     sb.append("\t<p id=\"mgen\">");
                     sb.append(endl);
-                    sb.append("\t\t<a href=\"/edit.jsp\">Update Journal</a><br />");
+                    sb.append("\t\t<a href=\"/update.jsp\">Update Journal</a><br />");
                     sb.append(endl);
 
                     // Authentication menu choice
@@ -487,7 +485,7 @@ public class Interface extends HttpServlet {
 
                     sb.append("\t\t<p><strong>entry added</strong></p>");
                     sb.append(endl);
-                    sb.append("\t\t<p><a href=\"/edit.jsp\">Add another entry</a></p>");
+                    sb.append("\t\t<p><a href=\"/update.jsp\">Add another entry</a></p>");
                     sb.append(endl);
                     sb.append("\t\t<p><a href=\"/users/").append(userName).append("\">View journal</a></p>");
                     sb.append(endl);

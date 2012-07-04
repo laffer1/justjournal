@@ -58,7 +58,7 @@ import static java.util.Collections.singletonMap;
  * several database connects when only one is needed.
  *
  * @author Lucas Holt
- * @version $Id: EntryDAO.java,v 1.32 2012/06/24 17:34:57 laffer1 Exp $
+ * @version $Id: EntryDAO.java,v 1.33 2012/07/04 18:49:40 laffer1 Exp $
  * @see EntryTo
  * @since 1.0 User: laffer1 Date: Sep 20, 2003 Time: 8:48:24 PM
  *        <p/>
@@ -521,7 +521,7 @@ public final class EntryDAO {
             map.put("friends", myFriends);
         } else if (aUserId >= 0)
              // no user logged in or another user's friends page.. just spit out public entries.
-            exp = Expression.fromString("entryToUser.userToFriends = $id and entryToSecurity=2");
+            exp = Expression.fromString("entryToUser=$id and entryToUser.userToFriends.id = $id and entryToSecurity=2");
         else
             throw new IllegalArgumentException("aUserId must be greater than -1");
 
@@ -779,10 +779,9 @@ public final class EntryDAO {
             query.addOrderings(orderings);
             query.setPageSize(SIZE * 3);
             List<com.justjournal.model.Entry> entryList = dataContext.performQuery(query);
-
+                    log.error("viewRecentUniqueUsers " + entryList.size());
             int done = 0;
             for (Entry e : entryList) {
-
                 String userName = e.getEntryToUser().getUsername();
                 if (seenUser.containsKey(userName)) {
                     log.error("seen username " + userName);
