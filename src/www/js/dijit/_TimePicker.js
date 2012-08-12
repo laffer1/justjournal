@@ -1,249 +1,219 @@
-if(!dojo._hasResource["dijit._TimePicker"]){ //_hasResource checks added by build. Do not use _hasResource directly in your code.
-dojo._hasResource["dijit._TimePicker"] = true;
-dojo.provide("dijit._TimePicker");
-
-dojo.require("dijit.form._FormWidget");
-dojo.require("dojo.date.locale");
-
-/*=====
-dojo.declare(
-	"dijit._TimePicker.__Constraints",
-	[dojo.date.locale.__FormatOptions],
-	{
-		// clickableIncrement: String
-		//		see dijit._TimePicker.clickableIncrement
-		clickableIncrement: "T00:15:00",
-
-		// visibleIncrement: String
-		//		see dijit._TimePicker.visibleIncrement
-		visibleIncrement: "T01:00:00",
-
-		// visibleRange: String
-		//		see dijit._TimePicker.visibleRange
-		visibleRange: "T05:00:00"
-	}
-);
-=====*/
-
-dojo.declare("dijit._TimePicker",
-	[dijit._Widget, dijit._Templated],
-	{
-		//	summary:
-		//		A graphical time picker.
-		//		This widget is used internally by other widgets and is not accessible
-		//		as a standalone widget.
-
-		templateString:"<div id=\"widget_${id}\" class=\"dijitMenu\"\n    ><div dojoAttachPoint=\"upArrow\" class=\"dijitButtonNode\"><span class=\"dijitTimePickerA11yText\">&#9650;</span></div\n    ><div dojoAttachPoint=\"timeMenu,focusNode\" dojoAttachEvent=\"onclick:_onOptionSelected,onmouseover,onmouseout\"></div\n    ><div dojoAttachPoint=\"downArrow\" class=\"dijitButtonNode\"><span class=\"dijitTimePickerA11yText\">&#9660;</span></div\n></div>\n",
-		baseClass: "dijitTimePicker",
-
-		// clickableIncrement: String
-		//		ISO-8601 string representing the amount by which
-		//		every clickable element in the time picker increases.
-		//		Set in local time, without a time zone.
-		//		Example: `T00:15:00` creates 15 minute increments
-		//		Must divide dijit._TimePicker.visibleIncrement evenly
-		clickableIncrement: "T00:15:00",
-
-		// visibleIncrement: String
-		//		ISO-8601 string representing the amount by which
-		//		every element with a visible time in the time picker increases.
-		//		Set in local time, without a time zone.
-		//		Example: `T01:00:00` creates text in every 1 hour increment
-		visibleIncrement: "T01:00:00",
-
-		// visibleRange: String
-		//		ISO-8601 string representing the range of this TimePicker.
-		//		The TimePicker will only display times in this range.
-		//		Example: `T05:00:00` displays 5 hours of options
-		visibleRange: "T05:00:00",
-
-		// value: String
-		//		Date to display.
-		//		Defaults to current time and date.
-		//		Can be a Date object or an ISO-8601 string.
-		//		If you specify the GMT time zone (`-01:00`),
-		//		the time will be converted to the local time in the local time zone.
-		//		Otherwise, the time is considered to be in the local time zone.
-		//		If you specify the date and isDate is true, the date is used.
-		//		Example: if your local time zone is `GMT -05:00`,
-		//		`T10:00:00` becomes `T10:00:00-05:00` (considered to be local time),
-		//		`T10:00:00-01:00` becomes `T06:00:00-05:00` (4 hour difference),
-		//		`T10:00:00Z` becomes `T05:00:00-05:00` (5 hour difference between Zulu and local time)
-		//		`yyyy-mm-ddThh:mm:ss` is the format to set the date and time
-		//		Example: `2007-06-01T09:00:00`
-		value: new Date(),
-
-		_visibleIncrement:2,
-		_clickableIncrement:1,
-		_totalIncrements:10,
-
-		// constraints: dijit._TimePicker.__Constraints 
-		constraints:{},
-
-		serialize: dojo.date.stamp.toISOString,
-
-//TODOC: what is priority?
-		setValue:function(/*Date*/ date, /*Boolean*/ priority){
-			// summary:
-			//	Set the value of the TimePicker
-			//	Redraws the TimePicker around the new date
-
-			//dijit._TimePicker.superclass.setValue.apply(this, arguments);
-			this.value=date;
-			this._showText();
-		},
-
-		isDisabledDate: function(/*Date*/dateObject, /*String?*/locale){
-			// summary:
-			//	May be overridden to disable certain dates in the TimePicker e.g. `isDisabledDate=dojo.date.locale.isWeekend`
-			return false; // Boolean
-		},
-
-		_showText:function(){
-			this.timeMenu.innerHTML = "";
-			var fromIso = dojo.date.stamp.fromISOString;
-			this._clickableIncrementDate=fromIso(this.clickableIncrement);
-			this._visibleIncrementDate=fromIso(this.visibleIncrement);
-			this._visibleRangeDate=fromIso(this.visibleRange);
-			// get the value of the increments and the range in seconds (since 00:00:00) to find out how many divs to create
-			var sinceMidnight = function(/*Date*/ date){
-				return date.getHours() * 60 * 60 + date.getMinutes() * 60 + date.getSeconds();
-			};
-
-			var clickableIncrementSeconds = sinceMidnight(this._clickableIncrementDate);
-			var visibleIncrementSeconds = sinceMidnight(this._visibleIncrementDate);
-			var visibleRangeSeconds = sinceMidnight(this._visibleRangeDate);
-
-			// round reference date to previous visible increment
-			var time = this.value.getTime();
-			this._refDate = new Date(time - time % (visibleIncrementSeconds*1000));
-			this._refDate.setFullYear(1970,0,1); // match parse defaults
-
-			// assume clickable increment is the smallest unit
-			this._clickableIncrement = 1;
-			// divide the visible range by the clickable increment to get the number of divs to create
-			// example: 10:00:00/00:15:00 -> display 40 divs
-			this._totalIncrements = visibleRangeSeconds / clickableIncrementSeconds;
-			// divide the visible increments by the clickable increments to get how often to display the time inline
-			// example: 01:00:00/00:15:00 -> display the time every 4 divs
-			this._visibleIncrement = visibleIncrementSeconds / clickableIncrementSeconds;
-			for(var i = -(this._totalIncrements >> 1); i < (this._totalIncrements >> 1); i += this._clickableIncrement){
-				this.timeMenu.appendChild(this._createOption(i));
-			}
-			
-			// TODO:
-			// I commented this out because it
-			// causes problems for a TimeTextBox in a Dialog, or as the editor of an InlineEditBox,
-			// because the timeMenu node isn't visible yet. -- Bill (Bug #????)
-			// dijit.focus(this.timeMenu);
-		},
-
-		postCreate:function(){
-			// instantiate constraints
-			if(this.constraints===dijit._TimePicker.prototype.constraints){
-				this.constraints={};
-			}
-
-			// brings in visibleRange, increments, etc.
-			dojo.mixin(this, this.constraints);
-
-			// dojo.date.locale needs the lang in the constraints as locale
-			if(!this.constraints.locale){
-				this.constraints.locale=this.lang;
-			}
-
-			// assign typematic mouse listeners to the arrow buttons
-			this.connect(this.timeMenu, dojo.isIE ? "onmousewheel" : 'DOMMouseScroll', "_mouseWheeled");
-			var typematic = dijit.typematic.addMouseListener;
-			typematic(this.upArrow,this,this._onArrowUp, 0.8, 500);
-			typematic(this.downArrow,this,this._onArrowDown, 0.8, 500);
-			//dijit.typematic.addListener(this.upArrow,this.timeMenu, {keyCode:dojo.keys.UP_ARROW,ctrlKey:false,altKey:false,shiftKey:false}, this, "_onArrowUp", 0.8, 500);
-			//dijit.typematic.addListener(this.downArrow, this.timeMenu, {keyCode:dojo.keys.DOWN_ARROW,ctrlKey:false,altKey:false,shiftKey:false}, this, "_onArrowDown", 0.8,500);
-
-			this.inherited(arguments);
-			this.setValue(this.value);
-		},
-
-		_createOption:function(/*Number*/ index){
-			// summary: creates a clickable time option
-			var div = dojo.doc.createElement("div");
-			var date = (div.date = new Date(this._refDate));
-			div.index = index;
-			var incrementDate = this._clickableIncrementDate;
-			date.setHours(date.getHours() + incrementDate.getHours() * index,
-				date.getMinutes() + incrementDate.getMinutes() * index,
-				date.getSeconds() + incrementDate.getSeconds() * index);
-
-			var innerDiv = dojo.doc.createElement('div');
-			dojo.addClass(div,this.baseClass+"Item");
-			dojo.addClass(innerDiv,this.baseClass+"ItemInner");
-			innerDiv.innerHTML = dojo.date.locale.format(date, this.constraints);				
-			div.appendChild(innerDiv);
-
-			if(index%this._visibleIncrement<1 && index%this._visibleIncrement>-1){
-				dojo.addClass(div, this.baseClass+"Marker");
-			}else if(!(index%this._clickableIncrement)){
-				dojo.addClass(div, this.baseClass+"Tick");
-			}
-						
-			if(this.isDisabledDate(date)){
-				// set disabled
-				dojo.addClass(div, this.baseClass+"ItemDisabled");
-			}
-			if(!dojo.date.compare(this.value, date, this.constraints.selector)){
-				div.selected = true;
-				dojo.addClass(div, this.baseClass+"ItemSelected");
-			}
-			return div;
-		},
-
-		_onOptionSelected:function(/*Object*/ tgt){
-			var tdate = tgt.target.date || tgt.target.parentNode.date;			
-			if(!tdate || this.isDisabledDate(tdate)){ return; }
-			this.setValue(tdate);
-			this.onValueSelected(tdate);
-		},
-
-		onValueSelected:function(value){
-		},
-
-		onmouseover:function(/*Event*/ e){
-			var tgr = (e.target.parentNode === this.timeMenu) ? e.target : e.target.parentNode;			
-			this._highlighted_option=tgr;
-			dojo.addClass(tgr, this.baseClass+"ItemHover");
-		},
-
-		onmouseout:function(/*Event*/ e){
-			var tgr = (e.target.parentNode === this.timeMenu) ? e.target : e.target.parentNode;
-			if(this._highlighted_option===tgr){			
-				dojo.removeClass(tgr, this.baseClass+"ItemHover");
-			}
-		},
-
-		_mouseWheeled:function(/*Event*/e){
-			// summary: handle the mouse wheel listener
-			dojo.stopEvent(e);
-			// we're not _measuring_ the scroll amount, just direction
-			var scrollAmount = (dojo.isIE ? e.wheelDelta : -e.detail);
-			this[(scrollAmount>0 ? "_onArrowUp" : "_onArrowDown")](); // yes, we're making a new dom node every time you mousewheel, or click
-		},
-
-		_onArrowUp:function(){
-			// summary: remove the bottom time and add one to the top
-			var index = this.timeMenu.childNodes[0].index - 1;
-			var div = this._createOption(index);
-			this.timeMenu.removeChild(this.timeMenu.childNodes[this.timeMenu.childNodes.length - 1]);
-			this.timeMenu.insertBefore(div, this.timeMenu.childNodes[0]);
-		},
-
-		_onArrowDown:function(){
-			// summary: remove the top time and add one to the bottom
-			var index = this.timeMenu.childNodes[this.timeMenu.childNodes.length - 1].index + 1;
-			var div = this._createOption(index);
-			this.timeMenu.removeChild(this.timeMenu.childNodes[0]);
-			this.timeMenu.appendChild(div);
-		}
-	}
-);
-
+//>>built
+require({cache:{"url:dijit/templates/TimePicker.html":"<div id=\"widget_${id}\" class=\"dijitMenu\"\n    ><div data-dojo-attach-point=\"upArrow\" class=\"dijitButtonNode dijitUpArrowButton\" data-dojo-attach-event=\"onmouseenter:_buttonMouse,onmouseleave:_buttonMouse\"\n\t\t><div class=\"dijitReset dijitInline dijitArrowButtonInner\" role=\"presentation\">&#160;</div\n\t\t><div class=\"dijitArrowButtonChar\">&#9650;</div></div\n    ><div data-dojo-attach-point=\"timeMenu,focusNode\" data-dojo-attach-event=\"onclick:_onOptionSelected,onmouseover,onmouseout\"></div\n    ><div data-dojo-attach-point=\"downArrow\" class=\"dijitButtonNode dijitDownArrowButton\" data-dojo-attach-event=\"onmouseenter:_buttonMouse,onmouseleave:_buttonMouse\"\n\t\t><div class=\"dijitReset dijitInline dijitArrowButtonInner\" role=\"presentation\">&#160;</div\n\t\t><div class=\"dijitArrowButtonChar\">&#9660;</div></div\n></div>\n"}});
+define("dijit/_TimePicker",["dojo/_base/array","dojo/date","dojo/date/locale","dojo/date/stamp","dojo/_base/declare","dojo/dom-class","dojo/dom-construct","dojo/_base/event","dojo/_base/kernel","dojo/keys","dojo/_base/lang","dojo/_base/sniff","dojo/query","dijit/typematic","./_Widget","./_TemplatedMixin","./form/_FormValueWidget","dojo/text!./templates/TimePicker.html"],function(_1,_2,_3,_4,_5,_6,_7,_8,_9,_a,_b,_c,_d,_e,_f,_10,_11,_12){
+return _5("dijit._TimePicker",[_f,_10],{templateString:_12,baseClass:"dijitTimePicker",clickableIncrement:"T00:15:00",visibleIncrement:"T01:00:00",visibleRange:"T05:00:00",value:new Date(),_visibleIncrement:2,_clickableIncrement:1,_totalIncrements:10,constraints:{},serialize:_4.toISOString,setValue:function(_13){
+_9.deprecated("dijit._TimePicker:setValue() is deprecated.  Use set('value', ...) instead.","","2.0");
+this.set("value",_13);
+},_setValueAttr:function(_14){
+this._set("value",_14);
+this._showText();
+},_setFilterStringAttr:function(val){
+this._set("filterString",val);
+this._showText();
+},isDisabledDate:function(){
+return false;
+},_getFilteredNodes:function(_15,_16,_17,_18){
+var _19=[],_1a=_18?_18.date:this._refDate,n,i=_15,max=this._maxIncrement+Math.abs(i),chk=_17?-1:1,dec=_17?1:0,inc=1-dec;
+do{
+i-=dec;
+n=this._createOption(i);
+if(n){
+if((_17&&n.date>_1a)||(!_17&&n.date<_1a)){
+break;
 }
+_19[_17?"unshift":"push"](n);
+_1a=n.date;
+}
+i+=inc;
+}while(_19.length<_16&&(i*chk)<max);
+return _19;
+},_showText:function(){
+var _1b=_4.fromISOString;
+this.timeMenu.innerHTML="";
+this._clickableIncrementDate=_1b(this.clickableIncrement);
+this._visibleIncrementDate=_1b(this.visibleIncrement);
+this._visibleRangeDate=_1b(this.visibleRange);
+var _1c=function(_1d){
+return _1d.getHours()*60*60+_1d.getMinutes()*60+_1d.getSeconds();
+},_1e=_1c(this._clickableIncrementDate),_1f=_1c(this._visibleIncrementDate),_20=_1c(this._visibleRangeDate),_21=(this.value||this.currentFocus).getTime();
+this._refDate=new Date(_21-_21%(_1e*1000));
+this._refDate.setFullYear(1970,0,1);
+this._clickableIncrement=1;
+this._totalIncrements=_20/_1e;
+this._visibleIncrement=_1f/_1e;
+this._maxIncrement=(60*60*24)/_1e;
+var _22=Math.min(this._totalIncrements,10),_23=this._getFilteredNodes(0,(_22>>1)+1,false),_24=[],_25=_22-_23.length,_26=this._getFilteredNodes(0,_25,true,_23[0]);
+if(_26.length<_25&&_23.length>0){
+_24=this._getFilteredNodes(_23.length,_25-_26.length,false,_23[_23.length-1]);
+}
+_1.forEach(_26.concat(_23,_24),function(n){
+this.timeMenu.appendChild(n);
+},this);
+},constructor:function(){
+this.constraints={};
+},postMixInProperties:function(){
+this.inherited(arguments);
+this._setConstraintsAttr(this.constraints);
+},_setConstraintsAttr:function(_27){
+_b.mixin(this,_27);
+if(!_27.locale){
+_27.locale=this.lang;
+}
+},postCreate:function(){
+this.connect(this.timeMenu,_c("ie")?"onmousewheel":"DOMMouseScroll","_mouseWheeled");
+this._connects.push(_e.addMouseListener(this.upArrow,this,"_onArrowUp",33,250));
+this._connects.push(_e.addMouseListener(this.downArrow,this,"_onArrowDown",33,250));
+this.inherited(arguments);
+},_buttonMouse:function(e){
+_6.toggle(e.currentTarget,e.currentTarget==this.upArrow?"dijitUpArrowHover":"dijitDownArrowHover",e.type=="mouseenter"||e.type=="mouseover");
+},_createOption:function(_28){
+var _29=new Date(this._refDate);
+var _2a=this._clickableIncrementDate;
+_29.setHours(_29.getHours()+_2a.getHours()*_28,_29.getMinutes()+_2a.getMinutes()*_28,_29.getSeconds()+_2a.getSeconds()*_28);
+if(this.constraints.selector=="time"){
+_29.setFullYear(1970,0,1);
+}
+var _2b=_3.format(_29,this.constraints);
+if(this.filterString&&_2b.toLowerCase().indexOf(this.filterString)!==0){
+return null;
+}
+var div=_7.create("div",{"class":this.baseClass+"Item"});
+div.date=_29;
+div.index=_28;
+_7.create("div",{"class":this.baseClass+"ItemInner",innerHTML:_2b},div);
+if(_28%this._visibleIncrement<1&&_28%this._visibleIncrement>-1){
+_6.add(div,this.baseClass+"Marker");
+}else{
+if(!(_28%this._clickableIncrement)){
+_6.add(div,this.baseClass+"Tick");
+}
+}
+if(this.isDisabledDate(_29)){
+_6.add(div,this.baseClass+"ItemDisabled");
+}
+if(this.value&&!_2.compare(this.value,_29,this.constraints.selector)){
+div.selected=true;
+_6.add(div,this.baseClass+"ItemSelected");
+if(_6.contains(div,this.baseClass+"Marker")){
+_6.add(div,this.baseClass+"MarkerSelected");
+}else{
+_6.add(div,this.baseClass+"TickSelected");
+}
+this._highlightOption(div,true);
+}
+return div;
+},_onOptionSelected:function(tgt){
+var _2c=tgt.target.date||tgt.target.parentNode.date;
+if(!_2c||this.isDisabledDate(_2c)){
+return;
+}
+this._highlighted_option=null;
+this.set("value",_2c);
+this.onChange(_2c);
+},onChange:function(){
+},_highlightOption:function(_2d,_2e){
+if(!_2d){
+return;
+}
+if(_2e){
+if(this._highlighted_option){
+this._highlightOption(this._highlighted_option,false);
+}
+this._highlighted_option=_2d;
+}else{
+if(this._highlighted_option!==_2d){
+return;
+}else{
+this._highlighted_option=null;
+}
+}
+_6.toggle(_2d,this.baseClass+"ItemHover",_2e);
+if(_6.contains(_2d,this.baseClass+"Marker")){
+_6.toggle(_2d,this.baseClass+"MarkerHover",_2e);
+}else{
+_6.toggle(_2d,this.baseClass+"TickHover",_2e);
+}
+},onmouseover:function(e){
+this._keyboardSelected=null;
+var tgr=(e.target.parentNode===this.timeMenu)?e.target:e.target.parentNode;
+if(!_6.contains(tgr,this.baseClass+"Item")){
+return;
+}
+this._highlightOption(tgr,true);
+},onmouseout:function(e){
+this._keyboardSelected=null;
+var tgr=(e.target.parentNode===this.timeMenu)?e.target:e.target.parentNode;
+this._highlightOption(tgr,false);
+},_mouseWheeled:function(e){
+this._keyboardSelected=null;
+_8.stop(e);
+var _2f=(_c("ie")?e.wheelDelta:-e.detail);
+this[(_2f>0?"_onArrowUp":"_onArrowDown")]();
+},_onArrowUp:function(_30){
+if(typeof _30=="number"&&_30==-1){
+return;
+}
+if(!this.timeMenu.childNodes.length){
+return;
+}
+var _31=this.timeMenu.childNodes[0].index;
+var _32=this._getFilteredNodes(_31,1,true,this.timeMenu.childNodes[0]);
+if(_32.length){
+this.timeMenu.removeChild(this.timeMenu.childNodes[this.timeMenu.childNodes.length-1]);
+this.timeMenu.insertBefore(_32[0],this.timeMenu.childNodes[0]);
+}
+},_onArrowDown:function(_33){
+if(typeof _33=="number"&&_33==-1){
+return;
+}
+if(!this.timeMenu.childNodes.length){
+return;
+}
+var _34=this.timeMenu.childNodes[this.timeMenu.childNodes.length-1].index+1;
+var _35=this._getFilteredNodes(_34,1,false,this.timeMenu.childNodes[this.timeMenu.childNodes.length-1]);
+if(_35.length){
+this.timeMenu.removeChild(this.timeMenu.childNodes[0]);
+this.timeMenu.appendChild(_35[0]);
+}
+},handleKey:function(e){
+if(e.charOrCode==_a.DOWN_ARROW||e.charOrCode==_a.UP_ARROW){
+_8.stop(e);
+if(this._highlighted_option&&!this._highlighted_option.parentNode){
+this._highlighted_option=null;
+}
+var _36=this.timeMenu,tgt=this._highlighted_option||_d("."+this.baseClass+"ItemSelected",_36)[0];
+if(!tgt){
+tgt=_36.childNodes[0];
+}else{
+if(_36.childNodes.length){
+if(e.charOrCode==_a.DOWN_ARROW&&!tgt.nextSibling){
+this._onArrowDown();
+}else{
+if(e.charOrCode==_a.UP_ARROW&&!tgt.previousSibling){
+this._onArrowUp();
+}
+}
+if(e.charOrCode==_a.DOWN_ARROW){
+tgt=tgt.nextSibling;
+}else{
+tgt=tgt.previousSibling;
+}
+}
+}
+this._highlightOption(tgt,true);
+this._keyboardSelected=tgt;
+return false;
+}else{
+if(e.charOrCode==_a.ENTER||e.charOrCode===_a.TAB){
+if(!this._keyboardSelected&&e.charOrCode===_a.TAB){
+return true;
+}
+if(this._highlighted_option){
+this._onOptionSelected({target:this._highlighted_option});
+}
+return e.charOrCode===_a.TAB;
+}
+}
+return undefined;
+}});
+});

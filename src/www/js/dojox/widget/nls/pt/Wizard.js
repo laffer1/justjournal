@@ -1,1 +1,2 @@
-({"next":"Avançar","done":"Concluído","previous":"Voltar"})
+//>>built
+define("dojox/widget/nls/pt/Wizard",({next:"Próximo",previous:"Anterior",done:"Concluído"}));

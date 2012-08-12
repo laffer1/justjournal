@@ -1,95 +1,55 @@
-if(!dojo._hasResource["dijit.ProgressBar"]){ //_hasResource checks added by build. Do not use _hasResource directly in your code.
-dojo._hasResource["dijit.ProgressBar"] = true;
-dojo.provide("dijit.ProgressBar");
-
-dojo.require("dojo.fx");
-dojo.require("dojo.number");
-
-dojo.require("dijit._Widget");
-dojo.require("dijit._Templated");
-
-dojo.declare("dijit.ProgressBar", [dijit._Widget, dijit._Templated], {
-	// summary: A progress indication widget
-	//
-	// example:
-	// |	<div dojoType="ProgressBar"
-	// |		 places="0"
-	// |		 progress="..." maximum="...">
-	// |	</div>
-	//
-	// progress: String (Percentage or Number)
-	// 	initial progress value.
-	// 	with "%": percentage value, 0% <= progress <= 100%
-	// 	or without "%": absolute value, 0 <= progress <= maximum
-	progress: "0",
-
-	// maximum: Float
-	// 	max sample number
-	maximum: 100,
-
-	// places: Number
-	// 	number of places to show in values; 0 by default
-	places: 0,
-
-	// indeterminate: Boolean
-	// 	If false: show progress.
-	// 	If true: show that a process is underway but that the progress is unknown
-	indeterminate: false,
-
-	templateString:"<div class=\"dijitProgressBar dijitProgressBarEmpty\"\n\t><div waiRole=\"progressbar\" tabindex=\"0\" dojoAttachPoint=\"internalProgress\" class=\"dijitProgressBarFull\"\n\t\t><div class=\"dijitProgressBarTile\"></div\n\t\t><span style=\"visibility:hidden\">&nbsp;</span\n\t></div\n\t><div dojoAttachPoint=\"label\" class=\"dijitProgressBarLabel\" id=\"${id}_label\">&nbsp;</div\n\t><img dojoAttachPoint=\"inteterminateHighContrastImage\" class=\"dijitProgressBarIndeterminateHighContrastImage\"\n\t></img\n></div>\n",
-
-	_indeterminateHighContrastImagePath:
-		dojo.moduleUrl("dijit", "themes/a11y/indeterminate_progress.gif"),
-
-	// public functions
-	postCreate: function(){
-		this.inherited("postCreate",arguments);
-		this.inteterminateHighContrastImage.setAttribute("src",
-			this._indeterminateHighContrastImagePath);
-		this.update();
-	},
-
-	update: function(/*Object?*/attributes){
-		// summary: update progress information
-		//
-		// attributes: may provide progress and/or maximum properties on this parameter,
-		//	see attribute specs for details.
-		dojo.mixin(this, attributes||{});
-		var percent = 1, classFunc;
-		if(this.indeterminate){
-			classFunc = "addClass";
-			dijit.removeWaiState(this.internalProgress, "valuenow");
-			dijit.removeWaiState(this.internalProgress, "valuemin");
-			dijit.removeWaiState(this.internalProgress, "valuemax");
-		}else{
-			classFunc = "removeClass";
-			if(String(this.progress).indexOf("%") != -1){
-				percent = Math.min(parseFloat(this.progress)/100, 1);
-				this.progress = percent * this.maximum;
-			}else{
-				this.progress = Math.min(this.progress, this.maximum);
-				percent = this.progress / this.maximum;
-			}
-			var text = this.report(percent);
-			this.label.firstChild.nodeValue = text;
-			dijit.setWaiState(this.internalProgress, "describedby", this.label.id);
-			dijit.setWaiState(this.internalProgress, "valuenow", this.progress);
-			dijit.setWaiState(this.internalProgress, "valuemin", 0);
-			dijit.setWaiState(this.internalProgress, "valuemax", this.maximum);
-		}
-		dojo[classFunc](this.domNode, "dijitProgressBarIndeterminate");
-		this.internalProgress.style.width = (percent * 100) + "%";
-		this.onChange();
-	},
-
-	report: function(/*float*/percent){
-		// Generates message to show; may be overridden by user
-		return dojo.number.format(percent, {type: "percent", places: this.places, locale: this.lang});
-	},
-
-	onChange: function(){
-		// summary: User definable function fired when progress updates.
-	}
-});
-
+//>>built
+require({cache:{"url:dijit/templates/ProgressBar.html":"<div class=\"dijitProgressBar dijitProgressBarEmpty\" role=\"progressbar\"\n\t><div  data-dojo-attach-point=\"internalProgress\" class=\"dijitProgressBarFull\"\n\t\t><div class=\"dijitProgressBarTile\" role=\"presentation\"></div\n\t\t><span style=\"visibility:hidden\">&#160;</span\n\t></div\n\t><div data-dojo-attach-point=\"labelNode\" class=\"dijitProgressBarLabel\" id=\"${id}_label\"></div\n\t><img data-dojo-attach-point=\"indeterminateHighContrastImage\" class=\"dijitProgressBarIndeterminateHighContrastImage\" alt=\"\"\n/></div>\n"}});
+define("dijit/ProgressBar",["require","dojo/_base/declare","dojo/dom-class","dojo/_base/lang","dojo/number","./_Widget","./_TemplatedMixin","dojo/text!./templates/ProgressBar.html"],function(_1,_2,_3,_4,_5,_6,_7,_8){
+return _2("dijit.ProgressBar",[_6,_7],{progress:"0",value:"",maximum:100,places:0,indeterminate:false,label:"",name:"",templateString:_8,_indeterminateHighContrastImagePath:_1.toUrl("./themes/a11y/indeterminate_progress.gif"),postMixInProperties:function(){
+this.inherited(arguments);
+if(!("value" in this.params)){
+this.value=this.indeterminate?Infinity:this.progress;
 }
+},buildRendering:function(){
+this.inherited(arguments);
+this.indeterminateHighContrastImage.setAttribute("src",this._indeterminateHighContrastImagePath.toString());
+this.update();
+},update:function(_9){
+_4.mixin(this,_9||{});
+var _a=this.internalProgress,ap=this.domNode;
+var _b=1;
+if(this.indeterminate){
+ap.removeAttribute("aria-valuenow");
+ap.removeAttribute("aria-valuemin");
+ap.removeAttribute("aria-valuemax");
+}else{
+if(String(this.progress).indexOf("%")!=-1){
+_b=Math.min(parseFloat(this.progress)/100,1);
+this.progress=_b*this.maximum;
+}else{
+this.progress=Math.min(this.progress,this.maximum);
+_b=this.maximum?this.progress/this.maximum:0;
+}
+ap.setAttribute("aria-describedby",this.labelNode.id);
+ap.setAttribute("aria-valuenow",this.progress);
+ap.setAttribute("aria-valuemin",0);
+ap.setAttribute("aria-valuemax",this.maximum);
+}
+this.labelNode.innerHTML=this.report(_b);
+_3.toggle(this.domNode,"dijitProgressBarIndeterminate",this.indeterminate);
+_a.style.width=(_b*100)+"%";
+this.onChange();
+},_setValueAttr:function(v){
+this._set("value",v);
+if(v==Infinity){
+this.update({indeterminate:true});
+}else{
+this.update({indeterminate:false,progress:v});
+}
+},_setLabelAttr:function(_c){
+this._set("label",_c);
+this.update();
+},_setIndeterminateAttr:function(_d){
+this.indeterminate=_d;
+this.update();
+},report:function(_e){
+return this.label?this.label:(this.indeterminate?"&#160;":_5.format(_e,{type:"percent",places:this.places,locale:this.lang}));
+},onChange:function(){
+}});
+});

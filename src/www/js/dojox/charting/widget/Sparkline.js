@@ -1,33 +1,20 @@
-/*
-	Copyright (c) 2004-2008, The Dojo Foundation All Rights Reserved.
-	Available via Academic Free License >= 2.1 OR the modified BSD license.
-	see: http://dojotoolkit.org/license for details
-*/
-
-
-if(!dojo._hasResource["dojox.charting.widget.Sparkline"]){
-dojo._hasResource["dojox.charting.widget.Sparkline"]=true;
-dojo.provide("dojox.charting.widget.Sparkline");
-dojo.require("dojox.charting.widget.Chart2D");
-dojo.require("dojox.charting.themes.ET.greys");
-(function(){
-var d=dojo;
-dojo.declare("dojox.charting.widget.Sparkline",dojox.charting.widget.Chart2D,{theme:dojox.charting.themes.ET.greys,margins:{l:0,r:0,t:0,b:0},type:"Lines",valueFn:"Number(x)",store:"",field:"",query:"",queryOptions:"",start:"0",count:"Infinity",sort:"",data:"",name:"default",buildRendering:function(){
+//>>built
+define("dojox/charting/widget/Sparkline",["dojo/_base/lang","dojo/_base/array","dojo/_base/declare","dojo/_base/html","dojo/query","./Chart","../themes/GreySkies","../plot2d/Lines","dojo/dom-prop"],function(_1,_2,_3,_4,_5,_6,_7,_8,_9){
+_3("dojox.charting.widget.Sparkline",_6,{theme:_7,margins:{l:0,r:0,t:0,b:0},type:"Lines",valueFn:"Number(x)",store:"",field:"",query:"",queryOptions:"",start:"0",count:"Infinity",sort:"",data:"",name:"default",buildRendering:function(){
 var n=this.srcNodeRef;
-if(!n.childNodes.length||!d.query("> .axis, > .plot, > .action, > .series",n).length){
-var _3=document.createElement("div");
-d.attr(_3,{"class":"plot","name":"default","type":this.type});
-n.appendChild(_3);
-var _4=document.createElement("div");
-d.attr(_4,{"class":"series",plot:"default",name:this.name,start:this.start,count:this.count,valueFn:this.valueFn});
-d.forEach(["store","field","query","queryOptions","sort","data"],function(i){
+if(!n.childNodes.length||!_5("> .axis, > .plot, > .action, > .series",n).length){
+var _a=document.createElement("div");
+_9.set(_a,{"class":"plot","name":"default","type":this.type});
+n.appendChild(_a);
+var _b=document.createElement("div");
+_9.set(_b,{"class":"series",plot:"default",name:this.name,start:this.start,count:this.count,valueFn:this.valueFn});
+_2.forEach(["store","field","query","queryOptions","sort","data"],function(i){
 if(this[i].length){
-d.attr(_4,i,this[i]);
+_9.set(_b,i,this[i]);
 }
 },this);
-n.appendChild(_4);
+n.appendChild(_b);
 }
 this.inherited(arguments);
 }});
-})();
-}
+});

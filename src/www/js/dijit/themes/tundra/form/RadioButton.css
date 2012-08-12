@@ -1,41 +1,44 @@
-.tundra .dijitToggleButton .dijitRadio,
-.tundra .dijitToggleButton .dijitRadioIcon {
-	background-image: url('../images/checkmarkNoBorder.gif');
-}
-.tundra .dijitRadio,
+
+.tundra .dijitRadio,			
 .tundra .dijitRadioIcon	{		
-	background-image: url('../images/checkmark.gif'); 
+	background-image: url('../images/checkmark.png'); 
 	background-repeat: no-repeat;
 	width: 16px;
 	height: 16px;
 	margin: 0;
 	padding: 0;
 }
-.tundra .dijitRadio,
+.dj_ie6 .tundra .dijitRadio,
+.dj_ie6 .tundra .dijitRadioIcon	{
+	background-image: url('../images/checkmark.gif'); 
+}
 .tundra .dijitToggleButton .dijitRadioIcon {
 	
-	background-position: -112px;
+	background-image: url('../images/checkmarkNoBorder.png');
 }
-.tundra .dijitRadioChecked,
-.tundra .dijitToggleButtonChecked .dijitRadioIcon {
+.dj_ie6 .tundra .dijitToggleButton .dijitRadioIcon {
+	background-image: url('../images/checkmarkNoBorder.gif');
+}
+.tundra .dijitRadio,
+.tundra .dijitRadioIcon {
 	
-	background-position: -96px;
+	background-position: -112px;
 }
 .tundra .dijitRadioDisabled {
 	
 	background-position: -144px;
 }
-.tundra .dijitRadioCheckedDisabled {
-	
-	background-position: -128px;
-}
-.tundra .dijitRadioHover,
-.tundra .dijitRadioFocused {
+.tundra .dijitRadioHover {
 	
 	background-position: -176px;
 }
+.tundra .dijitRadioChecked,
 .tundra .dijitRadioCheckedHover,
-.tundra .dijitRadioCheckedFocused {
+.tundra .dijitToggleButtonChecked .dijitRadioIcon {
 	
-	background-position: -160px;
+	background-position: -96px;
+}
+.tundra .dijitRadioCheckedDisabled {
+	
+	background-position: -128px;
 }

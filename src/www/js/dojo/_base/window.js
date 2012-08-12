@@ -1,145 +1,55 @@
-if(!dojo._hasResource["dojo._base.window"]){ //_hasResource checks added by build. Do not use _hasResource directly in your code.
-dojo._hasResource["dojo._base.window"] = true;
-dojo.provide("dojo._base.window");
+/*
+	Copyright (c) 2004-2011, The Dojo Foundation All Rights Reserved.
+	Available via Academic Free License >= 2.1 OR the modified BSD license.
+	see: http://dojotoolkit.org/license for details
+*/
 
-dojo._gearsObject = function(){
-	// summary: 
-	//		factory method to get a Google Gears plugin instance to
-	//		expose in the browser runtime environment, if present
-	var factory;
-	var results;
-	
-	var gearsObj = dojo.getObject("google.gears");
-	if(gearsObj){ return gearsObj; } // already defined elsewhere
-	
-	if(typeof GearsFactory != "undefined"){ // Firefox
-		factory = new GearsFactory();
-	}else{
-		if(dojo.isIE){
-			// IE
-			try{
-				factory = new ActiveXObject("Gears.Factory");
-			}catch(e){
-				// ok to squelch; there's no gears factory.  move on.
-			}
-		}else if(navigator.mimeTypes["application/x-googlegears"]){
-			// Safari?
-			factory = document.createElement("object");
-			factory.setAttribute("type", "application/x-googlegears");
-			factory.setAttribute("width", 0);
-			factory.setAttribute("height", 0);
-			factory.style.display = "none";
-			document.documentElement.appendChild(factory);
-		}
-	}
-
-	// still nothing?
-	if(!factory){ return null; }
-	
-	// define the global objects now; don't overwrite them though if they
-	// were somehow set internally by the Gears plugin, which is on their
-	// dev roadmap for the future
-	dojo.setObject("google.gears.factory", factory);
-	return dojo.getObject("google.gears");
+//>>built
+define("dojo/_base/window",["./kernel","../has","./sniff"],function(_1,_2){
+_1.doc=this["document"]||null;
+_1.body=function(){
+return _1.doc.body||_1.doc.getElementsByTagName("body")[0];
 };
-
-/*=====
-dojo.isGears = {
-	// summary: True if client is using Google Gears
+_1.setContext=function(_3,_4){
+_1.global=_5.global=_3;
+_1.doc=_5.doc=_4;
 };
-=====*/
-// see if we have Google Gears installed, and if
-// so, make it available in the runtime environment
-// and in the Google standard 'google.gears' global object
-dojo.isGears = (!!dojo._gearsObject())||0;
-
-/*=====
-dojo.doc = {
-	// summary:
-	//		Alias for the current document. 'dojo.doc' can be modified
-	//		for temporary context shifting. Also see dojo.withDoc().
-	// description:
-	//    Refer to dojo.doc rather
-	//    than referring to 'window.document' to ensure your code runs
-	//    correctly in managed contexts.
-	// example:
-	// 	|	n.appendChild(dojo.doc.createElement('div'));
+_1.withGlobal=function(_6,_7,_8,_9){
+var _a=_1.global;
+try{
+_1.global=_5.global=_6;
+return _1.withDoc.call(null,_6.document,_7,_8,_9);
 }
-=====*/
-dojo.doc = window["document"] || null;
-
-dojo.body = function(){
-	// summary:
-	//		Return the body element of the document
-	//		return the body object associated with dojo.doc
-	// example:
-	// 	|	dojo.body().appendChild(dojo.doc.createElement('div'));
-
-	// Note: document.body is not defined for a strict xhtml document
-	// Would like to memoize this, but dojo.doc can change vi dojo.withDoc().
-	return dojo.doc.body || dojo.doc.getElementsByTagName("body")[0]; // Node
+finally{
+_1.global=_5.global=_a;
 }
-
-dojo.setContext = function(/*Object*/globalObject, /*DocumentElement*/globalDocument){
-	// summary:
-	//		changes the behavior of many core Dojo functions that deal with
-	//		namespace and DOM lookup, changing them to work in a new global
-	//		context (e.g., an iframe). The varibles dojo.global and dojo.doc
-	//		are modified as a result of calling this function and the result of
-	//		`dojo.body()` likewise differs.
-	dojo.global = globalObject;
-	dojo.doc = globalDocument;
 };
-
-dojo._fireCallback = function(callback, context, cbArguments){
-	if(context && dojo.isString(callback)){
-		callback = context[callback];
-	}
-	return callback.apply(context, cbArguments || [ ]);
+_1.withDoc=function(_b,_c,_d,_e){
+var _f=_1.doc,_10=_1.isQuirks,_11=_1.isIE,_12,_13,_14;
+try{
+_1.doc=_5.doc=_b;
+_1.isQuirks=_2.add("quirks",_1.doc.compatMode=="BackCompat",true,true);
+if(_2("ie")){
+if((_14=_b.parentWindow)&&_14.navigator){
+_12=parseFloat(_14.navigator.appVersion.split("MSIE ")[1])||undefined;
+_13=_b.documentMode;
+if(_13&&_13!=5&&Math.floor(_12)!=_13){
+_12=_13;
 }
-
-dojo.withGlobal = function(	/*Object*/globalObject, 
-							/*Function*/callback, 
-							/*Object?*/thisObject, 
-							/*Array?*/cbArguments){
-	// summary:
-	//		Call callback with globalObject as dojo.global and
-	//		globalObject.document as dojo.doc. If provided, globalObject
-	//		will be executed in the context of object thisObject
-	// description:
-	//		When callback() returns or throws an error, the dojo.global
-	//		and dojo.doc will be restored to its previous state.
-	var rval;
-	var oldGlob = dojo.global;
-	var oldDoc = dojo.doc;
-	try{
-		dojo.setContext(globalObject, globalObject.document);
-		rval = dojo._fireCallback(callback, thisObject, cbArguments);
-	}finally{
-		dojo.setContext(oldGlob, oldDoc);
-	}
-	return rval;
+_1.isIE=_2.add("ie",_12,true,true);
 }
-
-dojo.withDoc = function(	/*Object*/documentObject, 
-							/*Function*/callback, 
-							/*Object?*/thisObject, 
-							/*Array?*/cbArguments){
-	// summary:
-	//		Call callback with documentObject as dojo.doc. If provided,
-	//		callback will be executed in the context of object thisObject
-	// description:
-	//		When callback() returns or throws an error, the dojo.doc will
-	//		be restored to its previous state.
-	var rval;
-	var oldDoc = dojo.doc;
-	try{
-		dojo.doc = documentObject;
-		rval = dojo._fireCallback(callback, thisObject, cbArguments);
-	}finally{
-		dojo.doc = oldDoc;
-	}
-	return rval;
+}
+if(_d&&typeof _c=="string"){
+_c=_d[_c];
+}
+return _c.apply(_d,_e||[]);
+}
+finally{
+_1.doc=_5.doc=_f;
+_1.isQuirks=_2.add("quirks",_10,true,true);
+_1.isIE=_2.add("ie",_11,true,true);
+}
 };
-
-}
+var _5={global:_1.global,doc:_1.doc,body:_1.body,setContext:_1.setContext,withGlobal:_1.withGlobal,withDoc:_1.withDoc};
+return _5;
+});

@@ -1,49 +1,67 @@
-/*
-	Copyright (c) 2004-2008, The Dojo Foundation All Rights Reserved.
-	Available via Academic Free License >= 2.1 OR the modified BSD license.
-	see: http://dojotoolkit.org/license for details
-*/
-
-
-if(!dojo._hasResource["dojox.charting.scaler.common"]){
-dojo._hasResource["dojox.charting.scaler.common"]=true;
-dojo.provide("dojox.charting.scaler.common");
-(function(){
+//>>built
+define("dojox/charting/scaler/common",["dojo/_base/lang"],function(_1){
 var eq=function(a,b){
 return Math.abs(a-b)<=0.000001*(Math.abs(a)+Math.abs(b));
 };
-dojo.mixin(dojox.charting.scaler.common,{findString:function(_4,_5){
-_4=_4.toLowerCase();
-for(var i=0;i<_5.length;++i){
-if(_4==_5[i]){
+var _2=_1.getObject("dojox.charting.scaler.common",true);
+var _3={};
+return _1.mixin(_2,{doIfLoaded:function(_4,_5,_6){
+if(_3[_4]==undefined){
+try{
+_3[_4]=require(_4);
+}
+catch(e){
+_3[_4]=null;
+}
+}
+if(_3[_4]){
+return _5(_3[_4]);
+}else{
+return _6();
+}
+},findString:function(_7,_8){
+_7=_7.toLowerCase();
+for(var i=0;i<_8.length;++i){
+if(_7==_8[i]){
 return true;
 }
 }
 return false;
-},getNumericLabel:function(_7,_8,_9){
-if(_9.labels){
-var l=_9.labels,lo=0,hi=l.length;
+},getNumericLabel:function(_9,_a,_b){
+var _c="";
+_2.doIfLoaded("dojo/number",function(_d){
+_c=(_b.fixed?_d.format(_9,{places:_a<0?-_a:0}):_d.format(_9))||"";
+},function(){
+_c=_b.fixed?_9.toFixed(_a<0?-_a:0):_9.toString();
+});
+if(_b.labelFunc){
+var r=_b.labelFunc(_c,_9,_a);
+if(r){
+return r;
+}
+}
+if(_b.labels){
+var l=_b.labels,lo=0,hi=l.length;
 while(lo<hi){
-var _d=Math.floor((lo+hi)/2),_e=l[_d].value;
-if(_e<_7){
-lo=_d+1;
+var _e=Math.floor((lo+hi)/2),_f=l[_e].value;
+if(_f<_9){
+lo=_e+1;
 }else{
-hi=_d;
+hi=_e;
 }
 }
-if(lo<l.length&&eq(l[lo].value,_7)){
+if(lo<l.length&&eq(l[lo].value,_9)){
 return l[lo].text;
 }
 --lo;
-if(lo>=0&&lo<l.length&&eq(l[lo].value,_7)){
+if(lo>=0&&lo<l.length&&eq(l[lo].value,_9)){
 return l[lo].text;
 }
 lo+=2;
-if(lo<l.length&&eq(l[lo].value,_7)){
+if(lo<l.length&&eq(l[lo].value,_9)){
 return l[lo].text;
 }
 }
-return _9.fixed?_7.toFixed(_8<0?-_8:0):_7.toString();
+return _c;
 }});
-})();
-}
+});

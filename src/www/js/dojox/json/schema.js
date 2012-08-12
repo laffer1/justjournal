@@ -1,167 +1,180 @@
-/*
-	Copyright (c) 2004-2008, The Dojo Foundation All Rights Reserved.
-	Available via Academic Free License >= 2.1 OR the modified BSD license.
-	see: http://dojotoolkit.org/license for details
-*/
-
-
-if(!dojo._hasResource["dojox.json.schema"]){
-dojo._hasResource["dojox.json.schema"]=true;
-dojo.provide("dojox.json.schema");
-dojox.json.schema.validate=function(_1,_2){
-return this._validate(_1,_2,false);
+//>>built
+define("dojox/json/schema",["dojo/_base/kernel","dojox","dojo/_base/array"],function(_1,_2){
+_1.getObject("json.schema",true,_2);
+_2.json.schema.validate=function(_3,_4){
+return this._validate(_3,_4,false);
 };
-dojox.json.schema.checkPropertyChange=function(_3,_4){
-return this._validate(_3,_4,true);
+_2.json.schema.checkPropertyChange=function(_5,_6,_7){
+return this._validate(_5,_6,_7||"property");
 };
-dojox.json.schema._validate=function(_5,_6,_7){
-var _8=[];
-function checkProp(_9,_a,_b,i){
-if(typeof _a!="object"){
+_2.json.schema.mustBeValid=function(_8){
+if(!_8.valid){
+throw new TypeError(_1.map(_8.errors,function(_9){
+return "for property "+_9.property+": "+_9.message;
+}).join(", "));
+}
+};
+_2.json.schema._validate=function(_a,_b,_c){
+var _d=[];
+function _e(_f,_10,_11,i){
+var l;
+_11+=_11?typeof i=="number"?"["+i+"]":typeof i=="undefined"?"":"."+i:i;
+function _12(_13){
+_d.push({property:_11,message:_13});
+};
+if((typeof _10!="object"||_10 instanceof Array)&&(_11||typeof _10!="function")){
+if(typeof _10=="function"){
+if(!(Object(_f) instanceof _10)){
+_12("is not an instance of the class/constructor "+_10.name);
+}
+}else{
+if(_10){
+_12("Invalid schema/property definition "+_10);
+}
+}
 return null;
 }
-_b+=_b?typeof i=="number"?"["+i+"]":typeof i=="undefined"?"":"."+i:i;
-function addError(_d){
-_8.push({property:_b,message:_d});
-};
-if(_7&&_a.readonly){
-addError("is a readonly field, it can not be changed");
+if(_c&&_10.readonly){
+_12("is a readonly field, it can not be changed");
 }
-if(_a instanceof Array){
-if(!(_9 instanceof Array)){
-return [{property:_b,message:"An array tuple is required"}];
+if(_10["extends"]){
+_e(_f,_10["extends"],_11,i);
 }
-for(i=0;i<_a.length;i++){
-_8.concat(checkProp(_9[i],_a[i],_b,i));
+function _14(_15,_16){
+if(_15){
+if(typeof _15=="string"&&_15!="any"&&(_15=="null"?_16!==null:typeof _16!=_15)&&!(_16 instanceof Array&&_15=="array")&&!(_15=="integer"&&_16%1===0)){
+return [{property:_11,message:(typeof _16)+" value found, but a "+_15+" is required"}];
 }
-return _8;
-}
-if(_a["extends"]){
-checkProp(_9,_a["extends"],_b,i);
-}
-function checkType(_e,_f){
-if(_e){
-if(typeof _e=="string"&&_e!="any"&&(_e=="null"?_f!==null:typeof _f!=_e)&&!(_f instanceof Array&&_e=="array")&&!(_e=="integer"&&!(_f%1))){
-return [{property:_b,message:(typeof _f)+" value found, but a "+_e+" is required"}];
-}
-if(_e instanceof Array){
-var _10=[];
-for(var j=0;j<_e.length;j++){
-if(!(_10=checkType(_e[j],_f)).length){
+if(_15 instanceof Array){
+var _17=[];
+for(var j=0;j<_15.length;j++){
+if(!(_17=_14(_15[j],_16)).length){
 break;
 }
 }
-if(_10.length){
-return _10;
+if(_17.length){
+return _17;
 }
 }else{
-if(typeof _e=="object"){
-checkProp(_f,_e,_b);
+if(typeof _15=="object"){
+var _18=_d;
+_d=[];
+_e(_16,_15,_11);
+var _19=_d;
+_d=_18;
+return _19;
 }
 }
 }
 return [];
 };
-if(_9!==null){
-if(_9===undefined){
-if(!_a.optional){
-addError("is missing and it is not optional");
+if(_f===undefined){
+if(!_10.optional){
+_12("is missing and it is not optional");
 }
 }else{
-_8=_8.concat(checkType(_a.type,_9));
-if(_a.disallow&&!checkType(_a.disallow,_9).length){
-addError(" disallowed value was matched");
+_d=_d.concat(_14(_10.type,_f));
+if(_10.disallow&&!_14(_10.disallow,_f).length){
+_12(" disallowed value was matched");
 }
-if(_9 instanceof Array){
-if(_a.items){
-for(i=0,l=_9.length;i<l;i++){
-_8.concat(checkProp(_9[i],_a.items,_b,i));
-}
-}
-if(_a.minItems&&_9.length<_a.minItems){
-addError("There must be a minimum of "+_a.minItems+" in the array");
-}
-if(_a.maxItems&&_9.length>_a.maxItems){
-addError("There must be a maximum of "+_a.maxItems+" in the array");
+if(_f!==null){
+if(_f instanceof Array){
+if(_10.items){
+if(_10.items instanceof Array){
+for(i=0,l=_f.length;i<l;i++){
+_d.concat(_e(_f[i],_10.items[i],_11,i));
 }
 }else{
-if(_a.properties&&typeof _9=="object"){
-_8.concat(checkObj(_9,_a.properties,_b,_a.additionalProperties));
+for(i=0,l=_f.length;i<l;i++){
+_d.concat(_e(_f[i],_10.items,_11,i));
 }
 }
-if(_a.pattern&&typeof _9=="string"&&!_9.match(_a.pattern)){
-addError("does not match the regex pattern "+_a.pattern);
 }
-if(_a.maxLength&&typeof _9=="string"&&_9.length>_a.maxLength){
-addError("may only be "+_a.maxLength+" characters long");
+if(_10.minItems&&_f.length<_10.minItems){
+_12("There must be a minimum of "+_10.minItems+" in the array");
 }
-if(_a.minLength&&typeof _9=="string"&&_9.length<_a.minLength){
-addError("must be at least "+_a.minLength+" characters long");
+if(_10.maxItems&&_f.length>_10.maxItems){
+_12("There must be a maximum of "+_10.maxItems+" in the array");
 }
-if(typeof _a.minimum!==undefined&&typeof _9==typeof _a.minimum&&_a.minimum>_9){
-addError("must have a minimum value of "+_a.minimum);
+}else{
+if(_10.properties){
+_d.concat(_1a(_f,_10.properties,_11,_10.additionalProperties));
 }
-if(typeof _a.maximum!==undefined&&typeof _9==typeof _a.maximum&&_a.maximum<_9){
-addError("must have a maximum value of "+_a.maximum);
 }
-if(_a["enum"]){
-var _12=_a["enum"];
-l=_12.length;
-var _13;
+if(_10.pattern&&typeof _f=="string"&&!_f.match(_10.pattern)){
+_12("does not match the regex pattern "+_10.pattern);
+}
+if(_10.maxLength&&typeof _f=="string"&&_f.length>_10.maxLength){
+_12("may only be "+_10.maxLength+" characters long");
+}
+if(_10.minLength&&typeof _f=="string"&&_f.length<_10.minLength){
+_12("must be at least "+_10.minLength+" characters long");
+}
+if(typeof _10.minimum!==undefined&&typeof _f==typeof _10.minimum&&_10.minimum>_f){
+_12("must have a minimum value of "+_10.minimum);
+}
+if(typeof _10.maximum!==undefined&&typeof _f==typeof _10.maximum&&_10.maximum<_f){
+_12("must have a maximum value of "+_10.maximum);
+}
+if(_10["enum"]){
+var _1b=_10["enum"];
+l=_1b.length;
+var _1c;
 for(var j=0;j<l;j++){
-if(_12[j]===_9){
-_13=1;
+if(_1b[j]===_f){
+_1c=1;
 break;
 }
 }
-if(!_13){
-addError("does not have a value in the enumeration "+_12.join(", "));
+if(!_1c){
+_12("does not have a value in the enumeration "+_1b.join(", "));
 }
 }
-if(typeof _a.maxDecimal=="number"&&(_9*10^_a.maxDecimal)%1){
-addError("may only have "+_a.maxDecimal+" digits of decimal places");
+if(typeof _10.maxDecimal=="number"&&(_f.toString().match(new RegExp("\\.[0-9]{"+(_10.maxDecimal+1)+",}")))){
+_12("may only have "+_10.maxDecimal+" digits of decimal places");
 }
 }
 }
 return null;
 };
-function checkObj(_15,_16,_17,_18){
-if(typeof _16=="object"){
-if(typeof _15!="object"||_15 instanceof Array){
-_8.push({property:_17,message:"an object is required"});
+function _1a(_1d,_1e,_1f,_20){
+if(typeof _1e=="object"){
+if(typeof _1d!="object"||_1d instanceof Array){
+_d.push({property:_1f,message:"an object is required"});
 }
-for(var i in _16){
-if(_16.hasOwnProperty(i)){
-var _1a=_15[i];
-var _1b=_16[i];
-checkProp(_1a,_1b,_17,i);
-}
-}
-}
-for(i in _15){
-if(_15.hasOwnProperty(i)&&_16&&!_16[i]&&_18===false){
-_8.push({property:_17,message:(typeof _1a)+"The property "+i+" is not defined in the objTypeDef and the objTypeDef does not allow additional properties"});
-}
-var _1c=_16&&_16[i]&&_16[i].requires;
-if(_1c&&!(_1c in _15)){
-_8.push({property:_17,message:"the presence of the property "+i+" requires that "+_1c+" also be present"});
-}
-_1a=_15[i];
-if(_16&&typeof _16=="object"&&!(i in _16)){
-checkProp(_1a,_18,_17,i);
-}
-if(!_7&&_1a&&_1a.$schema){
-_8=_8.concat(checkProp(_1a,_1a.$schema,_17,i));
+for(var i in _1e){
+if(_1e.hasOwnProperty(i)&&!(i.charAt(0)=="_"&&i.charAt(1)=="_")){
+var _21=_1d[i];
+var _22=_1e[i];
+_e(_21,_22,_1f,i);
 }
 }
-return _8;
+}
+for(i in _1d){
+if(_1d.hasOwnProperty(i)&&!(i.charAt(0)=="_"&&i.charAt(1)=="_")&&_1e&&!_1e[i]&&_20===false){
+_d.push({property:_1f,message:(typeof _21)+"The property "+i+" is not defined in the schema and the schema does not allow additional properties"});
+}
+var _23=_1e&&_1e[i]&&_1e[i].requires;
+if(_23&&!(_23 in _1d)){
+_d.push({property:_1f,message:"the presence of the property "+i+" requires that "+_23+" also be present"});
+}
+_21=_1d[i];
+if(_1e&&typeof _1e=="object"&&!(i in _1e)){
+_e(_21,_20,_1f,i);
+}
+if(!_c&&_21&&_21.$schema){
+_d=_d.concat(_e(_21,_21.$schema,_1f,i));
+}
+}
+return _d;
 };
-if(_6){
-checkProp(_5,_6,"","");
+if(_b){
+_e(_a,_b,"",_c||"");
 }
-if(!_7&&_5.$schema){
-checkProp(_5,_5.$schema,"","");
+if(!_c&&_a&&_a.$schema){
+_e(_a,_a.$schema,"","");
 }
-return {valid:!_8.length,errors:_8};
+return {valid:!_d.length,errors:_d};
 };
-}
+return _2.json.schema;
+});

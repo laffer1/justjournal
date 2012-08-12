@@ -1,18 +1,9 @@
-/*
-	Copyright (c) 2004-2008, The Dojo Foundation All Rights Reserved.
-	Available via Academic Free License >= 2.1 OR the modified BSD license.
-	see: http://dojotoolkit.org/license for details
-*/
-
-
-if(!dojo._hasResource["dojox.charting.scaler.linear"]){
-dojo._hasResource["dojox.charting.scaler.linear"]=true;
-dojo.provide("dojox.charting.scaler.linear");
-dojo.require("dojox.charting.scaler.common");
-(function(){
-var _1=3,dc=dojox.charting,_3=dc.scaler,_4=_3.common,_5=_4.findString,_6=_4.getNumericLabel;
+//>>built
+define("dojox/charting/scaler/linear",["dojo/_base/lang","./common"],function(_1,_2){
+var _3=_1.getObject("dojox.charting.scaler.linear",true);
+var _4=3,_5=_2.findString,_6=_2.getNumericLabel;
 var _7=function(_8,_9,_a,_b,_c,_d,_e){
-_a=dojo.clone(_a);
+_a=_1.delegate(_a);
 if(!_b){
 if(_a.fixUpper=="major"){
 _a.fixUpper="minor";
@@ -48,28 +39,28 @@ var _11=(!_b||_a.useMin&&_5(_a.fixLower,["major"]))?_8:Math.ceil(_8/_b)*_b,_12=(
 if(!isFinite(_1b)){
 _1b=1;
 }
-return {bounds:{lower:_f,upper:_10,from:_8,to:_9,scale:_1b,span:_e},major:{tick:_b,start:_11,count:_14,prec:_19},minor:{tick:_c,start:_12,count:_15,prec:_1a},micro:{tick:_d,start:_13,count:_16,prec:0},minorPerMajor:_17,microPerMinor:_18,scaler:_3.linear};
+return {bounds:{lower:_f,upper:_10,from:_8,to:_9,scale:_1b,span:_e},major:{tick:_b,start:_11,count:_14,prec:_19},minor:{tick:_c,start:_12,count:_15,prec:_1a},micro:{tick:_d,start:_13,count:_16,prec:0},minorPerMajor:_17,microPerMinor:_18,scaler:_3};
 };
-dojo.mixin(dojox.charting.scaler.linear,{buildScaler:function(min,max,_1e,_1f){
+return _1.mixin(_3,{buildScaler:function(min,max,_1c,_1d){
 var h={fixUpper:"none",fixLower:"none",natural:false};
-if(_1f){
-if("fixUpper" in _1f){
-h.fixUpper=String(_1f.fixUpper);
+if(_1d){
+if("fixUpper" in _1d){
+h.fixUpper=String(_1d.fixUpper);
 }
-if("fixLower" in _1f){
-h.fixLower=String(_1f.fixLower);
+if("fixLower" in _1d){
+h.fixLower=String(_1d.fixLower);
 }
-if("natural" in _1f){
-h.natural=Boolean(_1f.natural);
+if("natural" in _1d){
+h.natural=Boolean(_1d.natural);
 }
 }
-if("min" in _1f){
-min=_1f.min;
+if("min" in _1d){
+min=_1d.min;
 }
-if("max" in _1f){
-max=_1f.max;
+if("max" in _1d){
+max=_1d.max;
 }
-if(_1f.includeZero){
+if(_1d.includeZero){
 if(min>0){
 min=0;
 }
@@ -81,137 +72,136 @@ h.min=min;
 h.useMin=true;
 h.max=max;
 h.useMax=true;
-if("from" in _1f){
-min=_1f.from;
+if("from" in _1d){
+min=_1d.from;
 h.useMin=false;
 }
-if("to" in _1f){
-max=_1f.to;
+if("to" in _1d){
+max=_1d.to;
 h.useMax=false;
 }
 if(max<=min){
-return _7(min,max,h,0,0,0,_1e);
+return _7(min,max,h,0,0,0,_1c);
 }
-var mag=Math.floor(Math.log(max-min)/Math.LN10),_22=_1f&&("majorTickStep" in _1f)?_1f.majorTickStep:Math.pow(10,mag),_23=0,_24=0,_25;
-if(_1f&&("minorTickStep" in _1f)){
-_23=_1f.minorTickStep;
+var mag=Math.floor(Math.log(max-min)/Math.LN10),_1e=_1d&&("majorTickStep" in _1d)?_1d.majorTickStep:Math.pow(10,mag),_1f=0,_20=0,_21;
+if(_1d&&("minorTickStep" in _1d)){
+_1f=_1d.minorTickStep;
 }else{
 do{
-_23=_22/10;
-if(!h.natural||_23>0.9){
-_25=_7(min,max,h,_22,_23,0,_1e);
-if(_25.bounds.scale*_25.minor.tick>_1){
+_1f=_1e/10;
+if(!h.natural||_1f>0.9){
+_21=_7(min,max,h,_1e,_1f,0,_1c);
+if(_21.bounds.scale*_21.minor.tick>_4){
 break;
 }
 }
-_23=_22/5;
-if(!h.natural||_23>0.9){
-_25=_7(min,max,h,_22,_23,0,_1e);
-if(_25.bounds.scale*_25.minor.tick>_1){
+_1f=_1e/5;
+if(!h.natural||_1f>0.9){
+_21=_7(min,max,h,_1e,_1f,0,_1c);
+if(_21.bounds.scale*_21.minor.tick>_4){
 break;
 }
 }
-_23=_22/2;
-if(!h.natural||_23>0.9){
-_25=_7(min,max,h,_22,_23,0,_1e);
-if(_25.bounds.scale*_25.minor.tick>_1){
+_1f=_1e/2;
+if(!h.natural||_1f>0.9){
+_21=_7(min,max,h,_1e,_1f,0,_1c);
+if(_21.bounds.scale*_21.minor.tick>_4){
 break;
 }
 }
-return _7(min,max,h,_22,0,0,_1e);
+return _7(min,max,h,_1e,0,0,_1c);
 }while(false);
 }
-if(_1f&&("microTickStep" in _1f)){
-_24=_1f.microTickStep;
-_25=_7(min,max,h,_22,_23,_24,_1e);
+if(_1d&&("microTickStep" in _1d)){
+_20=_1d.microTickStep;
+_21=_7(min,max,h,_1e,_1f,_20,_1c);
 }else{
 do{
-_24=_23/10;
-if(!h.natural||_24>0.9){
-_25=_7(min,max,h,_22,_23,_24,_1e);
-if(_25.bounds.scale*_25.micro.tick>_1){
+_20=_1f/10;
+if(!h.natural||_20>0.9){
+_21=_7(min,max,h,_1e,_1f,_20,_1c);
+if(_21.bounds.scale*_21.micro.tick>_4){
 break;
 }
 }
-_24=_23/5;
-if(!h.natural||_24>0.9){
-_25=_7(min,max,h,_22,_23,_24,_1e);
-if(_25.bounds.scale*_25.micro.tick>_1){
+_20=_1f/5;
+if(!h.natural||_20>0.9){
+_21=_7(min,max,h,_1e,_1f,_20,_1c);
+if(_21.bounds.scale*_21.micro.tick>_4){
 break;
 }
 }
-_24=_23/2;
-if(!h.natural||_24>0.9){
-_25=_7(min,max,h,_22,_23,_24,_1e);
-if(_25.bounds.scale*_25.micro.tick>_1){
+_20=_1f/2;
+if(!h.natural||_20>0.9){
+_21=_7(min,max,h,_1e,_1f,_20,_1c);
+if(_21.bounds.scale*_21.micro.tick>_4){
 break;
 }
 }
-_24=0;
+_20=0;
 }while(false);
 }
-return _24?_25:_7(min,max,h,_22,_23,0,_1e);
-},buildTicks:function(_26,_27){
-var _28,_29,_2a,_2b=_26.major.start,_2c=_26.minor.start,_2d=_26.micro.start;
-if(_27.microTicks&&_26.micro.tick){
-_28=_26.micro.tick,_29=_2d;
+return _20?_21:_7(min,max,h,_1e,_1f,0,_1c);
+},buildTicks:function(_22,_23){
+var _24,_25,_26,_27=_22.major.start,_28=_22.minor.start,_29=_22.micro.start;
+if(_23.microTicks&&_22.micro.tick){
+_24=_22.micro.tick,_25=_29;
 }else{
-if(_27.minorTicks&&_26.minor.tick){
-_28=_26.minor.tick,_29=_2c;
+if(_23.minorTicks&&_22.minor.tick){
+_24=_22.minor.tick,_25=_28;
 }else{
-if(_26.major.tick){
-_28=_26.major.tick,_29=_2b;
+if(_22.major.tick){
+_24=_22.major.tick,_25=_27;
 }else{
 return null;
 }
 }
 }
-var _2e=1/_26.bounds.scale;
-if(_26.bounds.to<=_26.bounds.from||isNaN(_2e)||!isFinite(_2e)||_28<=0||isNaN(_28)||!isFinite(_28)){
+var _2a=1/_22.bounds.scale;
+if(_22.bounds.to<=_22.bounds.from||isNaN(_2a)||!isFinite(_2a)||_24<=0||isNaN(_24)||!isFinite(_24)){
 return null;
 }
-var _2f=[],_30=[],_31=[];
-while(_29<=_26.bounds.to+_2e){
-if(Math.abs(_2b-_29)<_28/2){
-_2a={value:_2b};
-if(_27.majorLabels){
-_2a.label=_6(_2b,_26.major.prec,_27);
+var _2b=[],_2c=[],_2d=[];
+while(_25<=_22.bounds.to+_2a){
+if(Math.abs(_27-_25)<_24/2){
+_26={value:_27};
+if(_23.majorLabels){
+_26.label=_6(_27,_22.major.prec,_23);
 }
-_2f.push(_2a);
-_2b+=_26.major.tick;
-_2c+=_26.minor.tick;
-_2d+=_26.micro.tick;
+_2b.push(_26);
+_27+=_22.major.tick;
+_28+=_22.minor.tick;
+_29+=_22.micro.tick;
 }else{
-if(Math.abs(_2c-_29)<_28/2){
-if(_27.minorTicks){
-_2a={value:_2c};
-if(_27.minorLabels&&(_26.minMinorStep<=_26.minor.tick*_26.bounds.scale)){
-_2a.label=_6(_2c,_26.minor.prec,_27);
+if(Math.abs(_28-_25)<_24/2){
+if(_23.minorTicks){
+_26={value:_28};
+if(_23.minorLabels&&(_22.minMinorStep<=_22.minor.tick*_22.bounds.scale)){
+_26.label=_6(_28,_22.minor.prec,_23);
 }
-_30.push(_2a);
+_2c.push(_26);
 }
-_2c+=_26.minor.tick;
-_2d+=_26.micro.tick;
+_28+=_22.minor.tick;
+_29+=_22.micro.tick;
 }else{
-if(_27.microTicks){
-_31.push({value:_2d});
+if(_23.microTicks){
+_2d.push({value:_29});
 }
-_2d+=_26.micro.tick;
+_29+=_22.micro.tick;
 }
 }
-_29+=_28;
+_25+=_24;
 }
-return {major:_2f,minor:_30,micro:_31};
-},getTransformerFromModel:function(_32){
-var _33=_32.bounds.from,_34=_32.bounds.scale;
+return {major:_2b,minor:_2c,micro:_2d};
+},getTransformerFromModel:function(_2e){
+var _2f=_2e.bounds.from,_30=_2e.bounds.scale;
 return function(x){
-return (x-_33)*_34;
+return (x-_2f)*_30;
 };
-},getTransformerFromPlot:function(_36){
-var _37=_36.bounds.from,_38=_36.bounds.scale;
+},getTransformerFromPlot:function(_31){
+var _32=_31.bounds.from,_33=_31.bounds.scale;
 return function(x){
-return x/_38+_37;
+return x/_33+_32;
 };
 }});
-})();
-}
+});

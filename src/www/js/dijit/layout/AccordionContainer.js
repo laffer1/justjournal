@@ -1,229 +1,217 @@
-if(!dojo._hasResource["dijit.layout.AccordionContainer"]){ //_hasResource checks added by build. Do not use _hasResource directly in your code.
-dojo._hasResource["dijit.layout.AccordionContainer"] = true;
-dojo.provide("dijit.layout.AccordionContainer");
-
-dojo.require("dojo.fx");
-
-dojo.require("dijit._Container");
-dojo.require("dijit._Templated");
-dojo.require("dijit.layout.StackContainer");
-dojo.require("dijit.layout.ContentPane");
-
-dojo.declare(
-	"dijit.layout.AccordionContainer",
-	dijit.layout.StackContainer,
-	{
-		// summary:
-		//		Holds a set of panes where every pane's title is visible, but only one pane's content is visible at a time,
-		//		and switching between panes is visualized by sliding the other panes up/down.
-		// example:
-		// | 	<div dojoType="dijit.layout.AccordionContainer">
-		// |		<div dojoType="dijit.layout.AccordionPane" title="pane 1">
-		// |			<div dojoType="dijit.layout.ContentPane">...</div>
-		// | 	</div>
-		// |		<div dojoType="dijit.layout.AccordionPane" title="pane 2">
-		// |			<p>This is some text</p>
-		// ||		...
-		// |	</div>
-		//
-		// duration: Integer
-		//		Amount of time (in ms) it takes to slide panes
-		duration: 250,
-
-		_verticalSpace: 0,
-
-		postCreate: function(){
-			this.domNode.style.overflow="hidden";
-			this.inherited("postCreate",arguments); 
-			dijit.setWaiRole(this.domNode, "tablist");
-			dojo.addClass(this.domNode,"dijitAccordionContainer");
-		},
-
-		startup: function(){
-			if(this._started){ return; }
-			this.inherited("startup",arguments);	
-			if(this.selectedChildWidget){
-				var style = this.selectedChildWidget.containerNode.style;
-				style.display = "";
-				style.overflow = "auto";
-				this.selectedChildWidget._setSelectedState(true);
-			}
-		},
-
-		layout: function(){
-			// summary: 
-			//		Set the height of the open pane based on what room remains
-
-			// get cumulative height of all the title bars, and figure out which pane is open
-			var totalCollapsedHeight = 0;
-			var openPane = this.selectedChildWidget;
-			dojo.forEach(this.getChildren(), function(child){
-				totalCollapsedHeight += child.getTitleHeight();
-			});
-			var mySize = this._contentBox;
-			this._verticalSpace = (mySize.h - totalCollapsedHeight);
-			if(openPane){
-				openPane.containerNode.style.height = this._verticalSpace + "px";
-/***
-TODO: this is wrong.  probably you wanted to call resize on the SplitContainer
-inside the AccordionPane??
-				if(openPane.resize){
-					openPane.resize({h: this._verticalSpace});
-				}
-***/
-			}
-		},
-
-		_setupChild: function(/*Widget*/ page){
-			// Summary: prepare the given child
-			return page;
-		},
-
-		_transition: function(/*Widget?*/newWidget, /*Widget?*/oldWidget){
-//TODO: should be able to replace this with calls to slideIn/slideOut
-			if(this._inTransition){ return; }
-			this._inTransition = true;
-			var animations = [];
-			var paneHeight = this._verticalSpace;
-			if(newWidget){
-				newWidget.setSelected(true);
-				var newContents = newWidget.containerNode;
-				newContents.style.display = "";
-
-				animations.push(dojo.animateProperty({
-					node: newContents,
-					duration: this.duration,
-					properties: {
-						height: { start: "1", end: paneHeight }
-					},
-					onEnd: function(){
-						newContents.style.overflow = "auto";
-					}
-				}));
-			}
-			if(oldWidget){
-				oldWidget.setSelected(false);
-				var oldContents = oldWidget.containerNode;
-				oldContents.style.overflow = "hidden";
-				animations.push(dojo.animateProperty({
-					node: oldContents,
-					duration: this.duration,
-					properties: {
-						height: { start: paneHeight, end: "1" }
-					},
-					onEnd: function(){
-						oldContents.style.display = "none";
-					}
-				}));
-			}
-
-			this._inTransition = false;
-
-			dojo.fx.combine(animations).play();
-		},
-
-		// note: we are treating the container as controller here
-		_onKeyPress: function(/*Event*/ e){
-			if(this.disabled || e.altKey || !(e._dijitWidget || e.ctrlKey)){ return; }
-			var k = dojo.keys;
-			var fromTitle = e._dijitWidget;
-			switch(e.keyCode){
-				case k.LEFT_ARROW:
-				case k.UP_ARROW:
-					if (fromTitle){
-						this._adjacent(false)._onTitleClick();
-						dojo.stopEvent(e);
-					}
-					break;
-				case k.PAGE_UP:
-					if (e.ctrlKey){
-						this._adjacent(false)._onTitleClick();
-						dojo.stopEvent(e);
-					}
-					break;
-				case k.RIGHT_ARROW:
-				case k.DOWN_ARROW:
-					if (fromTitle){
-						this._adjacent(true)._onTitleClick();
-						dojo.stopEvent(e);
-					}
-					break;
-				case k.PAGE_DOWN:
-					if (e.ctrlKey){
-						this._adjacent(true)._onTitleClick();
-						dojo.stopEvent(e);
-					}
-					break;
-				default:
-					if(e.ctrlKey && e.keyCode == k.TAB){
-						this._adjacent(e._dijitWidget, !e.shiftKey)._onTitleClick();
-						dojo.stopEvent(e);
-					}
-				
-			}
-		}
-	}
-);
-
-dojo.declare("dijit.layout.AccordionPane",
-	[dijit.layout.ContentPane, dijit._Templated, dijit._Contained],
-	{
-	// summary:
-	//		AccordionPane is a ContentPane with a title that may contain another widget.
-	//		Nested layout widgets, such as SplitContainer, are not supported at this time.
-	// example: 
-	// | see dijit.layout.AccordionContainer
-
-	templateString:"<div class='dijitAccordionPane'\n\t><div dojoAttachPoint='titleNode,focusNode' dojoAttachEvent='ondijitclick:_onTitleClick,onkeypress:_onTitleKeyPress,onfocus:_handleFocus,onblur:_handleFocus'\n\t\tclass='dijitAccordionTitle' wairole=\"tab\"\n\t\t><div class='dijitAccordionArrow' waiRole=\"presentation\"></div\n\t\t><div class='arrowTextUp' waiRole=\"presentation\">&#9650;</div\n\t\t><div class='arrowTextDown' waiRole=\"presentation\">&#9660;</div\n\t\t><div waiRole=\"presentation\" dojoAttachPoint='titleTextNode' class='dijitAccordionText'>${title}</div></div\n\t><div><div dojoAttachPoint='containerNode' style='overflow: hidden; height: 1px; display: none'\n\t\tclass='dijitAccordionBody' wairole=\"tabpanel\"\n\t></div></div>\n</div>\n",
-
-	postCreate: function(){
-		this.inherited("postCreate",arguments)
-		dojo.setSelectable(this.titleNode, false);
-		this.setSelected(this.selected);
-	},
-
-	getTitleHeight: function(){
-		// summary: returns the height of the title dom node
-		return dojo.marginBox(this.titleNode).h;	// Integer
-	},
-
-	_onTitleClick: function(){
-		// summary: callback when someone clicks my title
-		var parent = this.getParent();
-		if(!parent._inTransition){
-			parent.selectChild(this);
-			dijit.focus(this.focusNode);
-		}
-	},
-
-	_onTitleKeyPress: function(/*Event*/ evt){
-		evt._dijitWidget = this;
-		return this.getParent()._onKeyPress(evt);
-	},
-
-	_setSelectedState: function(/*Boolean*/ isSelected){
-		this.selected = isSelected;
-		dojo[(isSelected ? "addClass" : "removeClass")](this.titleNode,"dijitAccordionTitle-selected");
-		this.focusNode.setAttribute("tabIndex", isSelected ? "0" : "-1");
-	},
-
-	_handleFocus: function(/*Event*/e){
-		// summary: handle the blur and focus state of this widget
-		dojo[(e.type=="focus" ? "addClass" : "removeClass")](this.focusNode,"dijitAccordionFocused");		
-	},
-
-	setSelected: function(/*Boolean*/ isSelected){
-		// summary: change the selected state on this pane
-		this._setSelectedState(isSelected);
-		if(isSelected){
-			this.onSelected();
-			this._loadCheck(true); // if href specified, trigger load
-		}
-	},
-
-	onSelected: function(){
-		// summary: called when this pane is selected
-	}
-});
-
+//>>built
+require({cache:{"url:dijit/layout/templates/AccordionButton.html":"<div data-dojo-attach-event='onclick:_onTitleClick' class='dijitAccordionTitle' role=\"presentation\">\n\t<div data-dojo-attach-point='titleNode,focusNode' data-dojo-attach-event='onkeypress:_onTitleKeyPress'\n\t\t\tclass='dijitAccordionTitleFocus' role=\"tab\" aria-expanded=\"false\"\n\t\t><span class='dijitInline dijitAccordionArrow' role=\"presentation\"></span\n\t\t><span class='arrowTextUp' role=\"presentation\">+</span\n\t\t><span class='arrowTextDown' role=\"presentation\">-</span\n\t\t><img src=\"${_blankGif}\" alt=\"\" class=\"dijitIcon\" data-dojo-attach-point='iconNode' style=\"vertical-align: middle\" role=\"presentation\"/>\n\t\t<span role=\"presentation\" data-dojo-attach-point='titleTextNode' class='dijitAccordionText'></span>\n\t</div>\n</div>\n"}});
+define("dijit/layout/AccordionContainer",["require","dojo/_base/array","dojo/_base/declare","dojo/_base/event","dojo/_base/fx","dojo/dom","dojo/dom-attr","dojo/dom-class","dojo/dom-construct","dojo/dom-geometry","dojo/_base/kernel","dojo/keys","dojo/_base/lang","dojo/_base/sniff","dojo/topic","../focus","../_base/manager","dojo/ready","../_Widget","../_Container","../_TemplatedMixin","../_CssStateMixin","./StackContainer","./ContentPane","dojo/text!./templates/AccordionButton.html"],function(_1,_2,_3,_4,fx,_5,_6,_7,_8,_9,_a,_b,_c,_d,_e,_f,_10,_11,_12,_13,_14,_15,_16,_17,_18){
+var _19=_3("dijit.layout._AccordionButton",[_12,_14,_15],{templateString:_18,label:"",_setLabelAttr:{node:"titleTextNode",type:"innerHTML"},title:"",_setTitleAttr:{node:"titleTextNode",type:"attribute",attribute:"title"},iconClassAttr:"",_setIconClassAttr:{node:"iconNode",type:"class"},baseClass:"dijitAccordionTitle",getParent:function(){
+return this.parent;
+},buildRendering:function(){
+this.inherited(arguments);
+var _1a=this.id.replace(" ","_");
+_6.set(this.titleTextNode,"id",_1a+"_title");
+this.focusNode.setAttribute("aria-labelledby",_6.get(this.titleTextNode,"id"));
+_5.setSelectable(this.domNode,false);
+},getTitleHeight:function(){
+return _9.getMarginSize(this.domNode).h;
+},_onTitleClick:function(){
+var _1b=this.getParent();
+_1b.selectChild(this.contentWidget,true);
+_f.focus(this.focusNode);
+},_onTitleKeyPress:function(evt){
+return this.getParent()._onKeyPress(evt,this.contentWidget);
+},_setSelectedAttr:function(_1c){
+this._set("selected",_1c);
+this.focusNode.setAttribute("aria-expanded",_1c);
+this.focusNode.setAttribute("aria-selected",_1c);
+this.focusNode.setAttribute("tabIndex",_1c?"0":"-1");
+}});
+var _1d=_3("dijit.layout._AccordionInnerContainer",[_12,_15],{baseClass:"dijitAccordionInnerContainer",isLayoutContainer:true,buildRendering:function(){
+this.domNode=_8.place("<div class='"+this.baseClass+"' role='presentation'>",this.contentWidget.domNode,"after");
+var _1e=this.contentWidget,cls=_c.isString(this.buttonWidget)?_c.getObject(this.buttonWidget):this.buttonWidget;
+this.button=_1e._buttonWidget=(new cls({contentWidget:_1e,label:_1e.title,title:_1e.tooltip,dir:_1e.dir,lang:_1e.lang,textDir:_1e.textDir,iconClass:_1e.iconClass,id:_1e.id+"_button",parent:this.parent})).placeAt(this.domNode);
+this.containerNode=_8.place("<div class='dijitAccordionChildWrapper' style='display:none'>",this.domNode);
+_8.place(this.contentWidget.domNode,this.containerNode);
+},postCreate:function(){
+this.inherited(arguments);
+var _1f=this.button;
+this._contentWidgetWatches=[this.contentWidget.watch("title",_c.hitch(this,function(_20,_21,_22){
+_1f.set("label",_22);
+})),this.contentWidget.watch("tooltip",_c.hitch(this,function(_23,_24,_25){
+_1f.set("title",_25);
+})),this.contentWidget.watch("iconClass",_c.hitch(this,function(_26,_27,_28){
+_1f.set("iconClass",_28);
+}))];
+},_setSelectedAttr:function(_29){
+this._set("selected",_29);
+this.button.set("selected",_29);
+if(_29){
+var cw=this.contentWidget;
+if(cw.onSelected){
+cw.onSelected();
 }
+}
+},startup:function(){
+this.contentWidget.startup();
+},destroy:function(){
+this.button.destroyRecursive();
+_2.forEach(this._contentWidgetWatches||[],function(w){
+w.unwatch();
+});
+delete this.contentWidget._buttonWidget;
+delete this.contentWidget._wrapperWidget;
+this.inherited(arguments);
+},destroyDescendants:function(_2a){
+this.contentWidget.destroyRecursive(_2a);
+}});
+var _2b=_3("dijit.layout.AccordionContainer",_16,{duration:_10.defaultDuration,buttonWidget:_19,baseClass:"dijitAccordionContainer",buildRendering:function(){
+this.inherited(arguments);
+this.domNode.style.overflow="hidden";
+this.domNode.setAttribute("role","tablist");
+},startup:function(){
+if(this._started){
+return;
+}
+this.inherited(arguments);
+if(this.selectedChildWidget){
+var _2c=this.selectedChildWidget.containerNode.style;
+_2c.display="";
+_2c.overflow="auto";
+this.selectedChildWidget._wrapperWidget.set("selected",true);
+}
+},layout:function(){
+var _2d=this.selectedChildWidget;
+if(!_2d){
+return;
+}
+var _2e=_2d._wrapperWidget.domNode,_2f=_9.getMarginExtents(_2e),_30=_9.getPadBorderExtents(_2e),_31=_2d._wrapperWidget.containerNode,_32=_9.getMarginExtents(_31),_33=_9.getPadBorderExtents(_31),_34=this._contentBox;
+var _35=0;
+_2.forEach(this.getChildren(),function(_36){
+if(_36!=_2d){
+_35+=_9.getMarginSize(_36._wrapperWidget.domNode).h;
+}
+});
+this._verticalSpace=_34.h-_35-_2f.h-_30.h-_32.h-_33.h-_2d._buttonWidget.getTitleHeight();
+this._containerContentBox={h:this._verticalSpace,w:this._contentBox.w-_2f.w-_30.w-_32.w-_33.w};
+if(_2d){
+_2d.resize(this._containerContentBox);
+}
+},_setupChild:function(_37){
+_37._wrapperWidget=_1d({contentWidget:_37,buttonWidget:this.buttonWidget,id:_37.id+"_wrapper",dir:_37.dir,lang:_37.lang,textDir:_37.textDir,parent:this});
+this.inherited(arguments);
+},addChild:function(_38,_39){
+if(this._started){
+var _3a=this.containerNode;
+if(_39&&typeof _39=="number"){
+var _3b=_12.prototype.getChildren.call(this);
+if(_3b&&_3b.length>=_39){
+_3a=_3b[_39-1].domNode;
+_39="after";
+}
+}
+_8.place(_38.domNode,_3a,_39);
+if(!_38._started){
+_38.startup();
+}
+this._setupChild(_38);
+_e.publish(this.id+"-addChild",_38,_39);
+this.layout();
+if(!this.selectedChildWidget){
+this.selectChild(_38);
+}
+}else{
+this.inherited(arguments);
+}
+},removeChild:function(_3c){
+if(_3c._wrapperWidget){
+_8.place(_3c.domNode,_3c._wrapperWidget.domNode,"after");
+_3c._wrapperWidget.destroy();
+delete _3c._wrapperWidget;
+}
+_7.remove(_3c.domNode,"dijitHidden");
+this.inherited(arguments);
+},getChildren:function(){
+return _2.map(this.inherited(arguments),function(_3d){
+return _3d.declaredClass=="dijit.layout._AccordionInnerContainer"?_3d.contentWidget:_3d;
+},this);
+},destroy:function(){
+if(this._animation){
+this._animation.stop();
+}
+_2.forEach(this.getChildren(),function(_3e){
+if(_3e._wrapperWidget){
+_3e._wrapperWidget.destroy();
+}else{
+_3e.destroyRecursive();
+}
+});
+this.inherited(arguments);
+},_showChild:function(_3f){
+_3f._wrapperWidget.containerNode.style.display="block";
+return this.inherited(arguments);
+},_hideChild:function(_40){
+_40._wrapperWidget.containerNode.style.display="none";
+this.inherited(arguments);
+},_transition:function(_41,_42,_43){
+if(_d("ie")<8){
+_43=false;
+}
+if(this._animation){
+this._animation.stop(true);
+delete this._animation;
+}
+var _44=this;
+if(_41){
+_41._wrapperWidget.set("selected",true);
+var d=this._showChild(_41);
+if(this.doLayout&&_41.resize){
+_41.resize(this._containerContentBox);
+}
+}
+if(_42){
+_42._wrapperWidget.set("selected",false);
+if(!_43){
+this._hideChild(_42);
+}
+}
+if(_43){
+var _45=_41._wrapperWidget.containerNode,_46=_42._wrapperWidget.containerNode;
+var _47=_41._wrapperWidget.containerNode,_48=_9.getMarginExtents(_47),_49=_9.getPadBorderExtents(_47),_4a=_48.h+_49.h;
+_46.style.height=(_44._verticalSpace-_4a)+"px";
+this._animation=new fx.Animation({node:_45,duration:this.duration,curve:[1,this._verticalSpace-_4a-1],onAnimate:function(_4b){
+_4b=Math.floor(_4b);
+_45.style.height=_4b+"px";
+_46.style.height=(_44._verticalSpace-_4a-_4b)+"px";
+},onEnd:function(){
+delete _44._animation;
+_45.style.height="auto";
+_42._wrapperWidget.containerNode.style.display="none";
+_46.style.height="auto";
+_44._hideChild(_42);
+}});
+this._animation.onStop=this._animation.onEnd;
+this._animation.play();
+}
+return d;
+},_onKeyPress:function(e,_4c){
+if(this.disabled||e.altKey||!(_4c||e.ctrlKey)){
+return;
+}
+var c=e.charOrCode;
+if((_4c&&(c==_b.LEFT_ARROW||c==_b.UP_ARROW))||(e.ctrlKey&&c==_b.PAGE_UP)){
+this._adjacent(false)._buttonWidget._onTitleClick();
+_4.stop(e);
+}else{
+if((_4c&&(c==_b.RIGHT_ARROW||c==_b.DOWN_ARROW))||(e.ctrlKey&&(c==_b.PAGE_DOWN||c==_b.TAB))){
+this._adjacent(true)._buttonWidget._onTitleClick();
+_4.stop(e);
+}
+}
+}});
+if(!_a.isAsync){
+_11(0,function(){
+var _4d=["dijit/layout/AccordionPane"];
+_1(_4d);
+});
+}
+_2b._InnerContainer=_1d;
+_2b._Button=_19;
+return _2b;
+});

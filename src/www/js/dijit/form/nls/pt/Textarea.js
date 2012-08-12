@@ -1,1 +1,2 @@
-({"iframeEditTitle":"área de edição","iframeFocusTitle":"quadro da área de edição"})
+//>>built
+define("dijit/form/nls/pt/Textarea",({iframeEditTitle:"editar área",iframeFocusTitle:"editar quadro da área"}));

@@ -1,30 +1,21 @@
-/*
-	Copyright (c) 2004-2008, The Dojo Foundation All Rights Reserved.
-	Available via Academic Free License >= 2.1 OR the modified BSD license.
-	see: http://dojotoolkit.org/license for details
-*/
-
-
-if(!dojo._hasResource["dojox.rpc.ProxiedPath"]){
-dojo._hasResource["dojox.rpc.ProxiedPath"]=true;
-dojo.provide("dojox.rpc.ProxiedPath");
-dojo.require("dojox.rpc.Service");
-dojox.rpc.envelopeRegistry.register("PROXIED-PATH",function(_1){
-return _1=="PROXIED-PATH";
-},{serialize:function(_2,_3,_4){
+//>>built
+define("dojox/rpc/ProxiedPath",["dojo","dojox","dojox/rpc/Service"],function(_1,_2){
+_2.rpc.envelopeRegistry.register("PROXIED-PATH",function(_3){
+return _3=="PROXIED-PATH";
+},{serialize:function(_4,_5,_6){
 var i;
-var _6=dojox.rpc.getTarget(_2,_3);
-if(dojo.isArray(_4)){
-for(i=0;i<_4.length;i++){
-_6+="/"+(_4[i]==null?"":_4[i]);
+var _7=_2.rpc.getTarget(_4,_5);
+if(_1.isArray(_6)){
+for(i=0;i<_6.length;i++){
+_7+="/"+(_6[i]==null?"":_6[i]);
 }
 }else{
-for(i in _4){
-_6+="/"+i+"/"+_4[i];
+for(i in _6){
+_7+="/"+i+"/"+_6[i];
 }
 }
-return {data:"",target:(_3.proxyUrl||_2.proxyUrl)+"?url="+encodeURIComponent(_6)};
-},deserialize:function(_7){
-return _7;
+return {data:"",target:(_5.proxyUrl||_4.proxyUrl)+"?url="+encodeURIComponent(_7)};
+},deserialize:function(_8){
+return _8;
 }});
-}
+});

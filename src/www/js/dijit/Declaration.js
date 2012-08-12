@@ -1,76 +1,25 @@
-if(!dojo._hasResource["dijit.Declaration"]){ //_hasResource checks added by build. Do not use _hasResource directly in your code.
-dojo._hasResource["dijit.Declaration"] = true;
-dojo.provide("dijit.Declaration");
-dojo.require("dijit._Widget");
-dojo.require("dijit._Templated");
-
-dojo.declare(
-	"dijit.Declaration",
-	dijit._Widget,
-	{
-		// summary:
-		//		The Declaration widget allows a user to declare new widget
-		//		classes directly from a snippet of markup.
-
-		_noScript: true,
-		widgetClass: "",
-		replaceVars: true,
-		defaults: null,
-		mixins: [],
-		buildRendering: function(){
-			var src = this.srcNodeRef.parentNode.removeChild(this.srcNodeRef);
-			var preambles = dojo.query("> script[type='dojo/method'][event='preamble']", src).orphan();
-			var scripts = dojo.query("> script[type^='dojo/']", src).orphan();
-			var srcType = src.nodeName;
-
-			var propList = this.defaults||{};
-
-			// map array of strings like [ "dijit.form.Button" ] to array of mixin objects
-			// (note that dojo.map(this.mixins, dojo.getObject) doesn't work because it passes
-			// a bogus third argument to getObject(), confusing it)
-			this.mixins = this.mixins.length ?
-				dojo.map(this.mixins, function(name){ return dojo.getObject(name); } ) :
-				[ dijit._Widget, dijit._Templated ];
-
-			if(preambles.length){
-				// we only support one preamble. So be it.
-				propList.preamble = dojo.parser._functionFromScript(preambles[0]);
-			}
-
-			var parsedScripts = dojo.map(scripts, function(s){
-				var evt = s.getAttribute("event")||"postscript";
-				return {
-					event: evt,
-					func: dojo.parser._functionFromScript(s)
-				};
-			});
-
-			// do the connects for each <script type="dojo/connect" event="foo"> block and make
-			// all <script type="dojo/method"> tags execute right after construction
-			this.mixins.push(function(){
-				dojo.forEach(parsedScripts, function(s){
-					dojo.connect(this, s.event, this, s.func);
-				}, this);
-			});
-
-			propList.widgetsInTemplate = true;
-			propList._skipNodeCache = true;
-			propList.templateString = "<"+srcType+" class='"+src.className+"' dojoAttachPoint='"+(src.getAttribute("dojoAttachPoint")||'')+"' dojoAttachEvent='"+(src.getAttribute("dojoAttachEvent")||'')+"' >"+src.innerHTML.replace(/\%7B/g,"{").replace(/\%7D/g,"}")+"</"+srcType+">";
-			// console.debug(propList.templateString);
-
-			// strip things so we don't create stuff under us in the initial setup phase
-			dojo.query("[dojoType]", src).forEach(function(node){
-				node.removeAttribute("dojoType");
-			});
-
-			// create the new widget class
-			dojo.declare(
-				this.widgetClass,
-				this.mixins,
-				propList
-			);
-		}
-	}
-);
-
+//>>built
+define("dijit/Declaration",["dojo/_base/array","dojo/_base/connect","dojo/_base/declare","dojo/_base/lang","dojo/parser","dojo/query","./_Widget","./_TemplatedMixin","./_WidgetsInTemplateMixin","dojo/NodeList-dom"],function(_1,_2,_3,_4,_5,_6,_7,_8,_9){
+return _3("dijit.Declaration",_7,{_noScript:true,stopParser:true,widgetClass:"",defaults:null,mixins:[],buildRendering:function(){
+var _a=this.srcNodeRef.parentNode.removeChild(this.srcNodeRef),_b=_6("> script[type^='dojo/method']",_a).orphan(),_c=_6("> script[type^='dojo/connect']",_a).orphan(),_d=_a.nodeName;
+var _e=this.defaults||{};
+_1.forEach(_b,function(s){
+var _f=s.getAttribute("event")||s.getAttribute("data-dojo-event"),_10=_5._functionFromScript(s);
+if(_f){
+_e[_f]=_10;
+}else{
+_c.push(s);
 }
+});
+this.mixins=this.mixins.length?_1.map(this.mixins,function(_11){
+return _4.getObject(_11);
+}):[_7,_8,_9];
+_e._skipNodeCache=true;
+_e.templateString="<"+_d+" class='"+_a.className+"'"+" data-dojo-attach-point='"+(_a.getAttribute("data-dojo-attach-point")||_a.getAttribute("dojoAttachPoint")||"")+"' data-dojo-attach-event='"+(_a.getAttribute("data-dojo-attach-event")||_a.getAttribute("dojoAttachEvent")||"")+"' >"+_a.innerHTML.replace(/\%7B/g,"{").replace(/\%7D/g,"}")+"</"+_d+">";
+var wc=_3(this.widgetClass,this.mixins,_e);
+_1.forEach(_c,function(s){
+var evt=s.getAttribute("event")||s.getAttribute("data-dojo-event")||"postscript",_12=_5._functionFromScript(s);
+_2.connect(wc.prototype,evt,_12);
+});
+}});
+});

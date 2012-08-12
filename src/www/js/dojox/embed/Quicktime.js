@@ -1,37 +1,30 @@
-/*
-	Copyright (c) 2004-2008, The Dojo Foundation All Rights Reserved.
-	Available via Academic Free License >= 2.1 OR the modified BSD license.
-	see: http://dojotoolkit.org/license for details
-*/
-
-
-if(!dojo._hasResource["dojox.embed.Quicktime"]){
-dojo._hasResource["dojox.embed.Quicktime"]=true;
-dojo.provide("dojox.embed.Quicktime");
-(function(){
-var _1,_2,_3,_4={width:320,height:240,redirect:null};
-var _5="dojox-embed-quicktime-",_6=0;
-var _7=dojo.moduleUrl("dojox","embed/resources/version.mov");
-function prep(_8){
-_8=dojo.mixin(dojo.clone(_4),_8||{});
-if(!("path" in _8)){
+//>>built
+define("dojox/embed/Quicktime",["dojo/_base/kernel","dojo/_base/lang","dojo/_base/sniff","dojo/_base/window","dojo/dom","dojo/dom-construct","dojo/domReady"],function(_1,_2,_3,_4,_5,_6){
+var _7,_8={major:0,minor:0,rev:0},_9,_a={width:320,height:240,redirect:null},_b="dojox-embed-quicktime-",_c=0,_d="This content requires the <a href=\"http://www.apple.com/quicktime/download/\" title=\"Download and install QuickTime.\">QuickTime plugin</a>.",_e=_1.getObject("dojox.embed",true);
+function _f(_10){
+_10=_1.mixin(_2.clone(_a),_10||{});
+if(!("path" in _10)&&!_10.testing){
 console.error("dojox.embed.Quicktime(ctor):: no path reference to a QuickTime movie was provided.");
 return null;
 }
-if(!("id" in _8)){
-_8.id=(_5+_6++);
+if(_10.testing){
+_10.path="";
 }
-return _8;
+if(!("id" in _10)){
+_10.id=_b+_c++;
+}
+return _10;
 };
-var _9="This content requires the <a href=\"http://www.apple.com/quicktime/download/\" title=\"Download and install QuickTime.\">QuickTime plugin</a>.";
-if(dojo.isIE){
-_2=0;
-_3=(function(){
+if(_3("ie")){
+_9=(function(){
 try{
 var o=new ActiveXObject("QuickTimeCheckObject.QuickTimeCheck.1");
 if(o!==undefined){
 var v=o.QuickTimeVersion.toString(16);
-_2={major:parseInt(v.substring(0,1),10)||0,minor:parseInt(v.substring(1,2),10)||0,rev:parseInt(v.substring(2,3),10)||0};
+function p(i){
+return (v.substring(i,i+1)-0)||0;
+};
+_8={major:p(0),minor:p(1),rev:p(2)};
 return o.IsQuickTimeAvailable(0);
 }
 }
@@ -39,141 +32,101 @@ catch(e){
 }
 return false;
 })();
-_1=function(_c){
-if(!_3){
-return {id:null,markup:_9};
+_7=function(_11){
+if(!_9){
+return {id:null,markup:_d};
 }
-_c=prep(_c);
-if(!_c){
+_11=_f(_11);
+if(!_11){
 return null;
 }
-var s="<object classid=\"clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B\" "+"codebase=\"http://www.apple.com/qtactivex/qtplugin.cab#version=6,0,2,0\" "+"id=\""+_c.id+"\" "+"width=\""+_c.width+"\" "+"height=\""+_c.height+"\">"+"<param name=\"src\" value=\""+_c.path+"\" />";
-if(_c.params){
-for(var p in _c.params){
-s+="<param name=\""+p+"\" value=\""+_c.params[p]+"\" />";
-}
+var s="<object classid=\"clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B\" "+"codebase=\"http://www.apple.com/qtactivex/qtplugin.cab#version=6,0,2,0\" "+"id=\""+_11.id+"\" "+"width=\""+_11.width+"\" "+"height=\""+_11.height+"\">"+"<param name=\"src\" value=\""+_11.path+"\"/>";
+for(var p in _11.params||{}){
+s+="<param name=\""+p+"\" value=\""+_11.params[p]+"\"/>";
 }
 s+="</object>";
-return {id:_c.id,markup:s};
+return {id:_11.id,markup:s};
 };
 }else{
-_3=(function(){
-for(var i=0,l=navigator.plugins.length;i<l;i++){
-if(navigator.plugins[i].name.indexOf("QuickTime")>-1){
+_9=(function(){
+for(var i=0,p=navigator.plugins,l=p.length;i<l;i++){
+if(p[i].name.indexOf("QuickTime")>-1){
 return true;
 }
 }
 return false;
 })();
-_1=function(_11){
-if(!_3){
-return {id:null,markup:_9};
+_7=function(_12){
+if(!_9){
+return {id:null,markup:_d};
 }
-_11=prep(_11);
-if(!_11){
+_12=_f(_12);
+if(!_12){
 return null;
 }
-var s="<embed type=\"video/quicktime\" src=\""+_11.path+"\" "+"id=\""+_11.id+"\" "+"name=\""+_11.id+"\" "+"pluginspage=\"www.apple.com/quicktime/download\" "+"enablejavascript=\"true\" "+"width=\""+_11.width+"\" "+"height=\""+_11.height+"\"";
-if(_11.params){
-for(var p in _11.params){
-s+=" "+p+"=\""+_11.params[p]+"\"";
-}
+var s="<embed type=\"video/quicktime\" src=\""+_12.path+"\" "+"id=\""+_12.id+"\" "+"name=\""+_12.id+"\" "+"pluginspage=\"www.apple.com/quicktime/download\" "+"enablejavascript=\"true\" "+"width=\""+_12.width+"\" "+"height=\""+_12.height+"\"";
+for(var p in _12.params||{}){
+s+=" "+p+"=\""+_12.params[p]+"\"";
 }
 s+="></embed>";
-return {id:_11.id,markup:s};
+return {id:_12.id,markup:s};
 };
 }
-dojox.embed.Quicktime=function(_14,_15){
-return dojox.embed.Quicktime.place(_14,_15);
+_e.Quicktime=function(_13,_14){
+return _e.Quicktime.place(_13,_14);
 };
-dojo.mixin(dojox.embed.Quicktime,{minSupported:6,available:_3,supported:_3,version:_2,initialized:false,onInitialize:function(){
-dojox.embed.Quicktime.initialized=true;
-},place:function(_16,_17){
-var o=_1(_16);
-_17=dojo.byId(_17);
-if(!_17){
-_17=dojo.doc.createElement("div");
-_17.id=o.id+"-container";
-dojo.body().appendChild(_17);
+_1.mixin(_e.Quicktime,{minSupported:6,available:_9,supported:_9,version:_8,initialized:false,onInitialize:function(){
+_e.Quicktime.initialized=true;
+},place:function(_15,_16){
+var o=_7(_15);
+if(!(_16=_5.byId(_16))){
+_16=_6.create("div",{id:o.id+"-container"},_4.body());
 }
 if(o){
-_17.innerHTML=o.markup;
+_16.innerHTML=o.markup;
 if(o.id){
-return (dojo.isIE)?dojo.byId(o.id):document[o.id];
+return _3("ie")?dom.byId(o.id):document[o.id];
 }
 }
 return null;
 }});
-if(!dojo.isIE){
-_2=dojox.embed.Quicktime.version={major:0,minor:0,rev:0};
-var o=_1({path:_7,width:4,height:4});
-function qtInsert(){
-if(!dojo._initFired){
-var s="<div style=\"top:0;left:0;width:1px;height:1px;;overflow:hidden;position:absolute;\" id=\"-qt-version-test\">"+o.markup+"</div>";
-document.write(s);
-}else{
-var n=document.createElement("div");
-n.id="-qt-version-test";
-n.style.cssText="top:0;left:0;width:1px;height:1px;overflow:hidden;position:absolute;";
-dojo.body().appendChild(n);
-n.innerHTML=o.markup;
-}
-};
-function qtGetInfo(mv){
-var qt,n,v=[0,0,0];
-if(mv){
-qt=mv,n=qt.parentNode;
-}else{
-if(o.id){
-qtInsert();
-if(!dojo.isOpera){
+if(!_3("ie")){
+var id="-qt-version-test",o=_7({testing:true,width:4,height:4}),c=10,top="-1000px",_17="1px";
+function _18(){
 setTimeout(function(){
-qtGetInfo(document[o.id]);
-},50);
-}else{
-var fn=function(){
-setTimeout(function(){
-qtGetInfo(document[o.id]);
-},50);
-};
-if(!dojo._initFired){
-dojo.addOnLoad(fn);
-}else{
-dojo.connect(document[o.id],"onload",fn);
-}
-}
-}
-return;
-}
+var qt=document[o.id],n=_5.byId(id);
 if(qt){
 try{
-v=qt.GetQuickTimeVersion().split(".");
-_2={major:parseInt(v[0]||0),minor:parseInt(v[1]||0),rev:parseInt(v[2]||0)};
+var v=qt.GetQuickTimeVersion().split(".");
+_e.Quicktime.version={major:parseInt(v[0]||0),minor:parseInt(v[1]||0),rev:parseInt(v[2]||0)};
+if((_e.Quicktime.supported=v[0])){
+_e.Quicktime.onInitialize();
+}
+c=0;
 }
 catch(e){
-_2={major:0,minor:0,rev:0};
+if(c--){
+_18();
 }
 }
-dojox.embed.Quicktime.supported=v[0];
-dojox.embed.Quicktime.version=_2;
-if(dojox.embed.Quicktime.supported){
-dojox.embed.Quicktime.onInitialize();
-}else{
-
 }
-try{
-if(!mv){
-dojo.body().removeChild(n);
+if(!c&&n){
+_6.destroy(n);
 }
-}
-catch(e){
-}
+},20);
 };
-qtGetInfo();
+if(_4.doc.readyState==="loaded"||_4.doc.readyState==="complete"){
+_6.create("div",{innerHTML:o.markup,id:id,style:{top:top,left:0,width:_17,height:_17,overflow:"hidden",position:"absolute"}},_4.body());
 }else{
-if(dojo.isIE&&_3){
-dojox.embed.Quicktime.onInitialize();
+document.write("<div style=\"top:"+top+";left:0;width:"+_17+";height:"+_17+";overflow:hidden;position:absolute\" id=\""+id+"\">"+o.markup+"</div>");
+}
+_18();
+}else{
+if(_3("ie")&&_9){
+setTimeout(function(){
+_e.Quicktime.onInitialize();
+},10);
 }
 }
-})();
-}
+return _e.Quicktime;
+});

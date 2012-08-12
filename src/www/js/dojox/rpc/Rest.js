@@ -1,90 +1,83 @@
-if(!dojo._hasResource["dojox.rpc.Rest"]){ //_hasResource checks added by build. Do not use _hasResource directly in your code.
-dojo._hasResource["dojox.rpc.Rest"] = true;
-dojo.provide("dojox.rpc.Rest");
-dojo.require("dojox.rpc.Service");
-// This provides a HTTP REST service with full range REST verbs include PUT,POST, and DELETE.
-// A normal GET query is done by using the service directly:
-// var services = dojo.rpc.Service({services: {myRestService: {transport: "REST",...
-// services.myRestService("parameters");
-// 
-// The modifying methods can be called as sub-methods of the rest service method like:
-//  services.myRestService.put("parameters","data to put in resource");
-//  services.myRestService.post("parameters","data to post to the resource");
-//  services.myRestService['delete']("parameters");
-dojox.rpc._restMethods = { // these are the common rest methods 
-	put : function(r){
-		// execute a PUT
-		r.url = r.target +'?'+  r.data;
-		r.putData = dojox.rpc._restMethods.sendData;
-		return dojo.rawXhrPut(r);
-	},
-	post : function(r){
-		// execute a POST
-		r.url = r.target +'?'+  r.data;
-		r.postData = dojox.rpc._restMethods.sendData;
-		var def = dojo.rawXhrPost(r);
-		var postObj = dojox.rpc._restMethods.sendObj;
-/*	 This is a possible HTTP-compliant way to determine the id of a posted object	 
- 		def.addCallback(function(result) {
-		 	dojox._newId = def.ioArgs.xhr.getResponseHeader('Content-Location');
-			if (dojox._newId) {// we need some way to communicate the id of the newly created object
-				dojox.rpc._index[postObj._id = dojox._newId] = postObj;
-			}
-			return result; 
-		});*/
-		return def;
-	},
-	"delete" : function(r){
-		r.url = r.target +'?'+  r.data;
-		return dojo.xhrDelete(r);
-	}
+//>>built
+define("dojox/rpc/Rest",["dojo","dojox"],function(_1,_2){
+_1.getObject("rpc.Rest",true,_2);
+if(_2.rpc&&_2.rpc.transportRegistry){
+_2.rpc.transportRegistry.register("REST",function(_3){
+return _3=="REST";
+},{getExecutor:function(_4,_5,_6){
+return new _2.rpc.Rest(_5.name,(_5.contentType||_6._smd.contentType||"").match(/json|javascript/),null,function(id,_7){
+var _8=_6._getRequest(_5,[id]);
+_8.url=_8.target+(_8.data?"?"+_8.data:"");
+if(_7&&(_7.start>=0||_7.count>=0)){
+_8.headers=_8.headers||{};
+_8.headers.Range="items="+(_7.start||"0")+"-"+(("count" in _7&&_7.count!=Infinity)?(_7.count+(_7.start||0)-1):"");
 }
-
-dojox.rpc._restMethods.put.sender =
-dojox.rpc._restMethods.post.sender = true;// must declare that they send data
-
-dojox.rpc.transportRegistry.register(
-	"REST",function(str){return str == "REST"},{// same as GET... for now. Hoping to add put, post, delete as methods of the method 
-		fire: function(r){
-			r.url=  r.target + (r.data ? '?'+  r.data : '');
-			var def = dojo.xhrGet(r);
-			var newId = dojox.rpc._restQuery;
-			def.addCallback(function(res) {
-				dojox._newId = newId; // we need some way to communicate the id of the newly created object
-				delete dojox.rpc._restQuery;
-				return res;
-			});
-			return def;
-		},
-		getExecutor : function(func,method,svc){
-			var executor = function(id) {
-				dojox.rpc._restQuery = id;
-				return func.apply(this,arguments);	
-			};
-			var restMethods = dojox.rpc._restMethods;
-			for (var i in restMethods) { // add the rest methods to the executor
-				executor[i] = (function() {
-					var restMethod = restMethods[i];//let
-					return function() {
-						
-						if (restMethod.sender) {
-							var sendData = dojox.rpc._restMethods.sendObj = arguments[--arguments.length];
-							var isJson = ((method.contentType || svc._smd.contentType) + '').match(/application\/json/);
-							dojox.rpc._restMethods.sendData = isJson ? dojox.rpc.toJson(sendData,false,method._schema || method.returns) : sendData;// serialize with the right schema for the context;
-						}
-						for (var j = arguments.length++; j > 0; j--)
-							arguments[j] = arguments[j-1]; // shift them over
-						arguments[0] = dojo.mixin({restMethod: restMethod},method);
-						return svc._executeMethod.apply(svc,arguments);
-					}
-				})();
-				 
-			}
-			executor.contentType = method.contentType || svc._smd.contentType; // this is so a Rest service can be examined to know what type of content type to expect
-			return executor;
-		},
-		restMethods:dojox.rpc._restMethods 		
-	}
-);
-
+return _8;
+});
+}});
 }
+var _9;
+function _a(_b,_c,_d,id){
+_b.addCallback(function(_e){
+if(_b.ioArgs.xhr&&_d){
+_d=_b.ioArgs.xhr.getResponseHeader("Content-Range");
+_b.fullLength=_d&&(_d=_d.match(/\/(.*)/))&&parseInt(_d[1]);
+}
+return _e;
+});
+return _b;
+};
+_9=_2.rpc.Rest=function(_f,_10,_11,_12){
+var _13;
+_13=function(id,_14){
+return _9._get(_13,id,_14);
+};
+_13.isJson=_10;
+_13._schema=_11;
+_13.cache={serialize:_10?((_2.json&&_2.json.ref)||_1).toJson:function(_15){
+return _15;
+}};
+_13._getRequest=_12||function(id,_16){
+if(_1.isObject(id)){
+id=_1.objectToQuery(id);
+id=id?"?"+id:"";
+}
+if(_16&&_16.sort&&!_16.queryStr){
+id+=(id?"&":"?")+"sort(";
+for(var i=0;i<_16.sort.length;i++){
+var _17=_16.sort[i];
+id+=(i>0?",":"")+(_17.descending?"-":"+")+encodeURIComponent(_17.attribute);
+}
+id+=")";
+}
+var _18={url:_f+(id==null?"":id),handleAs:_10?"json":"text",contentType:_10?"application/json":"text/plain",sync:_2.rpc._sync,headers:{Accept:_10?"application/json,application/javascript":"*/*"}};
+if(_16&&(_16.start>=0||_16.count>=0)){
+_18.headers.Range="items="+(_16.start||"0")+"-"+(("count" in _16&&_16.count!=Infinity)?(_16.count+(_16.start||0)-1):"");
+}
+_2.rpc._sync=false;
+return _18;
+};
+function _19(_1a){
+_13[_1a]=function(id,_1b){
+return _9._change(_1a,_13,id,_1b);
+};
+};
+_19("put");
+_19("post");
+_19("delete");
+_13.servicePath=_f;
+return _13;
+};
+_9._index={};
+_9._timeStamps={};
+_9._change=function(_1c,_1d,id,_1e){
+var _1f=_1d._getRequest(id);
+_1f[_1c+"Data"]=_1e;
+return _a(_1.xhr(_1c.toUpperCase(),_1f,true),_1d);
+};
+_9._get=function(_20,id,_21){
+_21=_21||{};
+return _a(_1.xhrGet(_20._getRequest(id,_21)),_20,(_21.start>=0||_21.count>=0),id);
+};
+return _2.rpc.Rest;
+});

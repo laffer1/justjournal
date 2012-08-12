@@ -1,47 +1,40 @@
-/*
-	Copyright (c) 2004-2008, The Dojo Foundation All Rights Reserved.
-	Available via Academic Free License >= 2.1 OR the modified BSD license.
-	see: http://dojotoolkit.org/license for details
-*/
-
-
-if(!dojo._hasResource["dojox.lang.aspect.memoizer"]){
-dojo._hasResource["dojox.lang.aspect.memoizer"]=true;
-dojo.provide("dojox.lang.aspect.memoizer");
+//>>built
+define("dojox/lang/aspect/memoizer",["dijit","dojo","dojox"],function(_1,_2,_3){
+_2.provide("dojox.lang.aspect.memoizer");
 (function(){
-var _1=dojox.lang.aspect;
-var _2={around:function(_3){
-var _4=_1.getContext(),_5=_4.joinPoint,_6=_4.instance,t,u,_9;
-if((t=_6.__memoizerCache)&&(t=t[_5.targetName])&&(_3 in t)){
-return t[_3];
+var _4=_3.lang.aspect;
+var _5={around:function(_6){
+var _7=_4.getContext(),_8=_7.joinPoint,_9=_7.instance,t,u,_a;
+if((t=_9.__memoizerCache)&&(t=t[_8.targetName])&&(_6 in t)){
+return t[_6];
 }
-var _9=_1.proceed.apply(null,arguments);
-if(!(t=_6.__memoizerCache)){
-t=_6.__memoizerCache={};
+var _a=_4.proceed.apply(null,arguments);
+if(!(t=_9.__memoizerCache)){
+t=_9.__memoizerCache={};
 }
-if(!(u=t[_5.targetName])){
-u=t[_5.targetName]={};
+if(!(u=t[_8.targetName])){
+u=t[_8.targetName]={};
 }
-return u[_3]=_9;
+return u[_6]=_a;
 }};
-var _a=function(_b){
+var _b=function(_c){
 return {around:function(){
-var _c=_1.getContext(),_d=_c.joinPoint,_e=_c.instance,t,u,ret,key=_b.apply(_e,arguments);
-if((t=_e.__memoizerCache)&&(t=t[_d.targetName])&&(key in t)){
+var _d=_4.getContext(),_e=_d.joinPoint,_f=_d.instance,t,u,ret,key=_c.apply(_f,arguments);
+if((t=_f.__memoizerCache)&&(t=t[_e.targetName])&&(key in t)){
 return t[key];
 }
-var ret=_1.proceed.apply(null,arguments);
-if(!(t=_e.__memoizerCache)){
-t=_e.__memoizerCache={};
+var ret=_4.proceed.apply(null,arguments);
+if(!(t=_f.__memoizerCache)){
+t=_f.__memoizerCache={};
 }
-if(!(u=t[_d.targetName])){
-u=t[_d.targetName]={};
+if(!(u=t[_e.targetName])){
+u=t[_e.targetName]={};
 }
 return u[key]=ret;
 }};
 };
-_1.memoizer=function(_13){
-return arguments.length==0?_2:_a(_13);
+_4.memoizer=function(_10){
+return arguments.length==0?_5:_b(_10);
 };
 })();
-}
+});

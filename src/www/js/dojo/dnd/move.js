@@ -1,202 +1,66 @@
-if(!dojo._hasResource["dojo.dnd.move"]){ //_hasResource checks added by build. Do not use _hasResource directly in your code.
-dojo._hasResource["dojo.dnd.move"] = true;
-dojo.provide("dojo.dnd.move");
+/*
+	Copyright (c) 2004-2011, The Dojo Foundation All Rights Reserved.
+	Available via Academic Free License >= 2.1 OR the modified BSD license.
+	see: http://dojotoolkit.org/license for details
+*/
 
-dojo.require("dojo.dnd.Mover");
-dojo.require("dojo.dnd.Moveable");
-
-dojo.declare("dojo.dnd.move.constrainedMoveable", dojo.dnd.Moveable, {
-	// object attributes (for markup)
-	constraints: function(){},
-	within: false,
-	
-	// markup methods
-	markupFactory: function(params, node){
-		return new dojo.dnd.move.constrainedMoveable(node, params);
-	},
-
-	constructor: function(node, params){
-		// summary: an object, which makes a node moveable
-		// node: Node: a node (or node's id) to be moved
-		// params: Object: an optional object with additional parameters;
-		//	following parameters are recognized:
-		//		constraints: Function: a function, which calculates a constraint box,
-		//			it is called in a context of the moveable object.
-		//		within: Boolean: restrict move within boundaries.
-		//	the rest is passed to the base class
-		if(!params){ params = {}; }
-		this.constraints = params.constraints;
-		this.within = params.within;
-	},
-	onFirstMove: function(/* dojo.dnd.Mover */ mover){
-		// summary: called during the very first move notification,
-		//	can be used to initialize coordinates, can be overwritten.
-		var c = this.constraintBox = this.constraints.call(this, mover);
-		c.r = c.l + c.w;
-		c.b = c.t + c.h;
-		if(this.within){
-			var mb = dojo.marginBox(mover.node);
-			c.r -= mb.w;
-			c.b -= mb.h;
-		}
-	},
-	onMove: function(/* dojo.dnd.Mover */ mover, /* Object */ leftTop){
-		// summary: called during every move notification,
-		//	should actually move the node, can be overwritten.
-		var c = this.constraintBox, s = mover.node.style;
-		s.left = (leftTop.l < c.l ? c.l : c.r < leftTop.l ? c.r : leftTop.l) + "px";
-		s.top  = (leftTop.t < c.t ? c.t : c.b < leftTop.t ? c.b : leftTop.t) + "px";
-	}
-});
-
-dojo.declare("dojo.dnd.move.boxConstrainedMoveable", dojo.dnd.move.constrainedMoveable, {
-	// object attributes (for markup)
-	box: {},
-	
-	// markup methods
-	markupFactory: function(params, node){
-		return new dojo.dnd.move.boxConstrainedMoveable(node, params);
-	},
-
-	constructor: function(node, params){
-		// summary: an object, which makes a node moveable
-		// node: Node: a node (or node's id) to be moved
-		// params: Object: an optional object with additional parameters;
-		//	following parameters are recognized:
-		//		box: Object: a constraint box
-		//	the rest is passed to the base class
-		var box = params && params.box;
-		this.constraints = function(){ return box; };
-	}
-});
-
-dojo.declare("dojo.dnd.move.parentConstrainedMoveable", dojo.dnd.move.constrainedMoveable, {
-	// object attributes (for markup)
-	area: "content",
-
-	// markup methods
-	markupFactory: function(params, node){
-		return new dojo.dnd.move.parentConstrainedMoveable(node, params);
-	},
-
-	constructor: function(node, params){
-		// summary: an object, which makes a node moveable
-		// node: Node: a node (or node's id) to be moved
-		// params: Object: an optional object with additional parameters;
-		//	following parameters are recognized:
-		//		area: String: a parent's area to restrict the move,
-		//			can be "margin", "border", "padding", or "content".
-		//	the rest is passed to the base class
-		var area = params && params.area;
-		this.constraints = function(){
-			var n = this.node.parentNode, 
-				s = dojo.getComputedStyle(n), 
-				mb = dojo._getMarginBox(n, s);
-			if(area == "margin"){
-				return mb;	// Object
-			}
-			var t = dojo._getMarginExtents(n, s);
-			mb.l += t.l, mb.t += t.t, mb.w -= t.w, mb.h -= t.h;
-			if(area == "border"){
-				return mb;	// Object
-			}
-			t = dojo._getBorderExtents(n, s);
-			mb.l += t.l, mb.t += t.t, mb.w -= t.w, mb.h -= t.h;
-			if(area == "padding"){
-				return mb;	// Object
-			}
-			t = dojo._getPadExtents(n, s);
-			mb.l += t.l, mb.t += t.t, mb.w -= t.w, mb.h -= t.h;
-			return mb;	// Object
-		};
-	}
-});
-
-// WARNING: below are obsolete objects, instead of custom movers use custom moveables (above)
-
-dojo.dnd.move.constrainedMover = function(fun, within){
-	// summary: returns a constrained version of dojo.dnd.Mover
-	// description: this function produces n object, which will put a constraint on 
-	//	the margin box of dragged object in absolute coordinates
-	// fun: Function: called on drag, and returns a constraint box
-	// within: Boolean: if true, constraints the whole dragged object withtin the rectangle, 
-	//	otherwise the constraint is applied to the left-top corner
-	dojo.deprecated("dojo.dnd.move.constrainedMover, use dojo.dnd.move.constrainedMoveable instead");
-	var mover = function(node, e, notifier){
-		dojo.dnd.Mover.call(this, node, e, notifier);
-	};
-	dojo.extend(mover, dojo.dnd.Mover.prototype);
-	dojo.extend(mover, {
-		onMouseMove: function(e){
-			// summary: event processor for onmousemove
-			// e: Event: mouse event
-			dojo.dnd.autoScroll(e);
-			var m = this.marginBox, c = this.constraintBox,
-				l = m.l + e.pageX, t = m.t + e.pageY;
-			l = l < c.l ? c.l : c.r < l ? c.r : l;
-			t = t < c.t ? c.t : c.b < t ? c.b : t;
-			this.host.onMove(this, {l: l, t: t});
-		},
-		onFirstMove: function(){
-			// summary: called once to initialize things; it is meant to be called only once
-			dojo.dnd.Mover.prototype.onFirstMove.call(this);
-			var c = this.constraintBox = fun.call(this);
-			c.r = c.l + c.w;
-			c.b = c.t + c.h;
-			if(within){
-				var mb = dojo.marginBox(this.node);
-				c.r -= mb.w;
-				c.b -= mb.h;
-			}
-		}
-	});
-	return mover;	// Object
-};
-
-dojo.dnd.move.boxConstrainedMover = function(box, within){
-	// summary: a specialization of dojo.dnd.constrainedMover, which constrains to the specified box
-	// box: Object: a constraint box (l, t, w, h)
-	// within: Boolean: if true, constraints the whole dragged object withtin the rectangle, 
-	//	otherwise the constraint is applied to the left-top corner
-	dojo.deprecated("dojo.dnd.move.boxConstrainedMover, use dojo.dnd.move.boxConstrainedMoveable instead");
-	return dojo.dnd.move.constrainedMover(function(){ return box; }, within);	// Object
-};
-
-dojo.dnd.move.parentConstrainedMover = function(area, within){
-	// summary: a specialization of dojo.dnd.constrainedMover, which constrains to the parent node
-	// area: String: "margin" to constrain within the parent's margin box, "border" for the border box,
-	//	"padding" for the padding box, and "content" for the content box; "content" is the default value.
-	// within: Boolean: if true, constraints the whole dragged object withtin the rectangle, 
-	//	otherwise the constraint is applied to the left-top corner
-	dojo.deprecated("dojo.dnd.move.parentConstrainedMover, use dojo.dnd.move.parentConstrainedMoveable instead");
-	var fun = function(){
-		var n = this.node.parentNode, 
-			s = dojo.getComputedStyle(n), 
-			mb = dojo._getMarginBox(n, s);
-		if(area == "margin"){
-			return mb;	// Object
-		}
-		var t = dojo._getMarginExtents(n, s);
-		mb.l += t.l, mb.t += t.t, mb.w -= t.w, mb.h -= t.h;
-		if(area == "border"){
-			return mb;	// Object
-		}
-		t = dojo._getBorderExtents(n, s);
-		mb.l += t.l, mb.t += t.t, mb.w -= t.w, mb.h -= t.h;
-		if(area == "padding"){
-			return mb;	// Object
-		}
-		t = dojo._getPadExtents(n, s);
-		mb.l += t.l, mb.t += t.t, mb.w -= t.w, mb.h -= t.h;
-		return mb;	// Object
-	};
-	return dojo.dnd.move.constrainedMover(fun, within);	// Object
-};
-
-// patching functions one level up for compatibility
-
-dojo.dnd.constrainedMover = dojo.dnd.move.constrainedMover;
-dojo.dnd.boxConstrainedMover = dojo.dnd.move.boxConstrainedMover;
-dojo.dnd.parentConstrainedMover = dojo.dnd.move.parentConstrainedMover;
-
+//>>built
+define("dojo/dnd/move",["../main","./Mover","./Moveable"],function(_1){
+_1.declare("dojo.dnd.move.constrainedMoveable",_1.dnd.Moveable,{constraints:function(){
+},within:false,constructor:function(_2,_3){
+if(!_3){
+_3={};
 }
+this.constraints=_3.constraints;
+this.within=_3.within;
+},onFirstMove:function(_4){
+var c=this.constraintBox=this.constraints.call(this,_4);
+c.r=c.l+c.w;
+c.b=c.t+c.h;
+if(this.within){
+var mb=_1._getMarginSize(_4.node);
+c.r-=mb.w;
+c.b-=mb.h;
+}
+},onMove:function(_5,_6){
+var c=this.constraintBox,s=_5.node.style;
+this.onMoving(_5,_6);
+_6.l=_6.l<c.l?c.l:c.r<_6.l?c.r:_6.l;
+_6.t=_6.t<c.t?c.t:c.b<_6.t?c.b:_6.t;
+s.left=_6.l+"px";
+s.top=_6.t+"px";
+this.onMoved(_5,_6);
+}});
+_1.declare("dojo.dnd.move.boxConstrainedMoveable",_1.dnd.move.constrainedMoveable,{box:{},constructor:function(_7,_8){
+var _9=_8&&_8.box;
+this.constraints=function(){
+return _9;
+};
+}});
+_1.declare("dojo.dnd.move.parentConstrainedMoveable",_1.dnd.move.constrainedMoveable,{area:"content",constructor:function(_a,_b){
+var _c=_b&&_b.area;
+this.constraints=function(){
+var n=this.node.parentNode,s=_1.getComputedStyle(n),mb=_1._getMarginBox(n,s);
+if(_c=="margin"){
+return mb;
+}
+var t=_1._getMarginExtents(n,s);
+mb.l+=t.l,mb.t+=t.t,mb.w-=t.w,mb.h-=t.h;
+if(_c=="border"){
+return mb;
+}
+t=_1._getBorderExtents(n,s);
+mb.l+=t.l,mb.t+=t.t,mb.w-=t.w,mb.h-=t.h;
+if(_c=="padding"){
+return mb;
+}
+t=_1._getPadExtents(n,s);
+mb.l+=t.l,mb.t+=t.t,mb.w-=t.w,mb.h-=t.h;
+return mb;
+};
+}});
+_1.dnd.constrainedMover=_1.dnd.move.constrainedMover;
+_1.dnd.boxConstrainedMover=_1.dnd.move.boxConstrainedMover;
+_1.dnd.parentConstrainedMover=_1.dnd.move.parentConstrainedMover;
+return _1.dnd.move;
+});

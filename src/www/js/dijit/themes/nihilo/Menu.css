@@ -1,15 +1,21 @@
 
-.nihilo .dijitMenu {
+.nihilo .dijitMenu,
+.nihilo .dijitMenuBar {
 	border: 1px solid #d3d3d3;
-	margin: 0px;
-	padding: 0px;
+	margin: 0;
+	padding: 0;
 	background-color: #fff;
 }
+.nihilo .dijitBorderContainer .dijitMenuBar {
+	border: 1px #ccc solid;
+}
 .nihilo .dijitMenuItem {
-	background-color: #fff;
-	font: menu;
-	margin: 0px;
+	font-family: sans-serif;
+	margin: 0;
 	color: #243C5F;
+}
+.nihilo .dijitMenuBar .dijitMenuItem {
+	padding: 4px 5px;
 }
 .nihilo .dijitMenuPreviousButton, .nihilo .dijitMenuNextButton {
 	font-style: italic;
@@ -17,33 +23,26 @@
 .nihilo .dijitMenuItem TD {
 	padding:1px;
 }
-.nihilo .dijitMenuItemHover {
+.nihilo .dijitMenuPassive .dijitMenuItemHover,
+.nihilo .dijitComboBoxMenu .dijitMenuItemHover,
+.nihilo .dijitMenuItemSelected {
 	background-color: #ffe284; 
 	color: #243C5F;
 }
 .nihilo .dijitMenuItemIcon {
 	width: 15px;
 	height: 15px;
-	
 }
 .nihilo .dijitMenuExpand {
-	display:none;
-}
-.nihilo .dijitMenuExpandEnabled {
-	
 	width:15px;
 	height:15px;
-	background:url('images/spriteRoundedIconsSmall.png') no-repeat -30px top;
-	display:block;
+	background-image: url('images/spriteRoundedIconsSmall.png');
+	background-position: -30px top;
 }
-.dj_ie6 .nihilo .dijitMenuExpandEnabled {
+.dj_ie6 .nihilo .dijitMenuExpand {
 	background-image:url('images/spriteRoundedIconsSmall.gif');
 }
-.nihilo .dijitMenuExpandInner {
-	display:none;
-}
 .nihilo .dijitMenuSeparator {
-	background-color: #fff;
 	height: 1px;
 }
 .nihilo .dijitMenuSeparatorTop {
@@ -51,4 +50,14 @@
 }
 .nihilo .dijitMenuSeparatorBottom {
 	border-top: 1px solid #d3d3d3;
+}
+.nihilo .dijitCheckedMenuItemIconChar {
+	display: none;
+}
+.nihilo .dijitCheckedMenuItemIcon {
+	background-image: url('images/spriteCheckbox.gif');
+	background-position: -80px;
+}
+.nihilo .dijitCheckedMenuItemChecked .dijitCheckedMenuItemIcon {
+	background-position: -64px;
 }

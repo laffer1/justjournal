@@ -1,50 +1,43 @@
-/*
-	Copyright (c) 2004-2008, The Dojo Foundation All Rights Reserved.
-	Available via Academic Free License >= 2.1 OR the modified BSD license.
-	see: http://dojotoolkit.org/license for details
-*/
-
-
-if(!dojo._hasResource["dojox.widget.FilePicker"]){
-dojo._hasResource["dojox.widget.FilePicker"]=true;
-dojo.provide("dojox.widget.FilePicker");
-dojo.require("dojox.widget.RollingList");
-dojo.require("dojo.i18n");
-dojo.requireLocalization("dojox.widget","FilePicker",null,"ROOT");
-dojo.declare("dojox.widget._FileInfoPane",[dojox.widget._RollingListPane],{templateString:"",templateString:"<div class=\"dojoxFileInfoPane\">\n\t<table>\n\t\t<tbody>\n\t\t\t<tr>\n\t\t\t\t<td class=\"dojoxFileInfoLabel dojoxFileInfoNameLabel\">${_messages.name}</td>\n\t\t\t\t<td class=\"dojoxFileInfoName\" dojoAttachPoint=\"nameNode\"></td>\n\t\t\t</tr>\n\t\t\t<tr>\n\t\t\t\t<td class=\"dojoxFileInfoLabel dojoxFileInfoPathLabel\">${_messages.path}</td>\n\t\t\t\t<td class=\"dojoxFileInfoPath\" dojoAttachPoint=\"pathNode\"></td>\n\t\t\t</tr>\n\t\t\t<tr>\n\t\t\t\t<td class=\"dojoxFileInfoLabel dojoxFileInfoSizeLabel\">${_messages.size}</td>\n\t\t\t\t<td class=\"dojoxFileInfoSize\" dojoAttachPoint=\"sizeNode\"></td>\n\t\t\t</tr>\n\t\t</tbody>\n\t</table>\n</div>\n",postMixInProperties:function(){
-this._messages=dojo.i18n.getLocalization("dojox.widget","FilePicker",this.lang);
+//>>built
+define("dojox/widget/FilePicker",["dijit","dojo","dojox","dojo/i18n!dojox/widget/nls/FilePicker","dojo/require!dojox/widget/RollingList,dojo/i18n"],function(_1,_2,_3){
+_2.provide("dojox.widget.FilePicker");
+_2.require("dojox.widget.RollingList");
+_2.require("dojo.i18n");
+_2.requireLocalization("dojox.widget","FilePicker");
+_2.declare("dojox.widget._FileInfoPane",[_3.widget._RollingListPane],{templateString:"",templateString:_2.cache("dojox.widget","FilePicker/_FileInfoPane.html","<div class=\"dojoxFileInfoPane\">\n\t<table>\n\t\t<tbody>\n\t\t\t<tr>\n\t\t\t\t<td class=\"dojoxFileInfoLabel dojoxFileInfoNameLabel\">${_messages.name}</td>\n\t\t\t\t<td class=\"dojoxFileInfoName\" dojoAttachPoint=\"nameNode\"></td>\n\t\t\t</tr>\n\t\t\t<tr>\n\t\t\t\t<td class=\"dojoxFileInfoLabel dojoxFileInfoPathLabel\">${_messages.path}</td>\n\t\t\t\t<td class=\"dojoxFileInfoPath\" dojoAttachPoint=\"pathNode\"></td>\n\t\t\t</tr>\n\t\t\t<tr>\n\t\t\t\t<td class=\"dojoxFileInfoLabel dojoxFileInfoSizeLabel\">${_messages.size}</td>\n\t\t\t\t<td class=\"dojoxFileInfoSize\" dojoAttachPoint=\"sizeNode\"></td>\n\t\t\t</tr>\n\t\t</tbody>\n\t</table>\n\t<div dojoAttachPoint=\"containerNode\" style=\"display:none;\"></div>\n</div>"),postMixInProperties:function(){
+this._messages=_2.i18n.getLocalization("dojox.widget","FilePicker",this.lang);
 this.inherited(arguments);
 },onItems:function(){
-var _1=this.store,_2=this.items[0];
-if(!_2){
+var _4=this.store,_5=this.items[0];
+if(!_5){
 this._onError("Load",new Error("No item defined"));
 }else{
-this.nameNode.innerHTML=_1.getLabel(_2);
-this.pathNode.innerHTML=_1.getIdentity(_2);
-this.sizeNode.innerHTML=_1.getValue(_2,"size");
+this.nameNode.innerHTML=_4.getLabel(_5);
+this.pathNode.innerHTML=_4.getIdentity(_5);
+this.sizeNode.innerHTML=_4.getValue(_5,"size");
 this.parentWidget.scrollIntoView(this);
 this.inherited(arguments);
 }
 }});
-dojo.declare("dojox.widget.FilePicker",dojox.widget.RollingList,{className:"dojoxFilePicker",pathSeparator:"",topDir:"",parentAttr:"parentDir",pathAttr:"path",_itemsMatch:function(_3,_4){
-if(!_3&&!_4){
+_2.declare("dojox.widget.FilePicker",_3.widget.RollingList,{className:"dojoxFilePicker",pathSeparator:"",topDir:"",parentAttr:"parentDir",pathAttr:"path",preloadItems:50,selectDirectories:true,selectFiles:true,_itemsMatch:function(_6,_7){
+if(!_6&&!_7){
 return true;
 }else{
-if(!_3||!_4){
+if(!_6||!_7){
 return false;
 }else{
-if(_3==_4){
+if(_6==_7){
 return true;
 }else{
 if(this._isIdentity){
-var _5=[this.store.getIdentity(_3),i2=this.store.getIdentity(_4)];
-dojo.forEach(_5,function(i,_7){
+var _8=[this.store.getIdentity(_6),this.store.getIdentity(_7)];
+_2.forEach(_8,function(i,_9){
 if(i.lastIndexOf(this.pathSeparator)==(i.length-1)){
-_5[_7]=i.substring(0,i.length-1);
+_8[_9]=i.substring(0,i.length-1);
 }else{
 }
 },this);
-return (_5[0]==_5[1]);
+return (_8[0]==_8[1]);
 }
 }
 }
@@ -55,23 +48,23 @@ if(this._started){
 return;
 }
 this.inherited(arguments);
-var _8,_9=this.getChildren()[0];
-var _a=dojo.hitch(this,function(){
-if(_8){
-this.disconnect(_8);
+var _a,_b=this.getChildren()[0];
+var _c=_2.hitch(this,function(){
+if(_a){
+this.disconnect(_a);
 }
-delete _8;
-var _b=_9.items[0];
-if(_b){
-var _c=this.store;
-var _d=_c.getValue(_b,this.parentAttr);
-var _e=_c.getValue(_b,this.pathAttr);
-this.pathSeparator=this.pathSeparator||_c.pathSeparator;
+delete _a;
+var _d=_b.items[0];
+if(_d){
+var _e=this.store;
+var _f=_e.getValue(_d,this.parentAttr);
+var _10=_e.getValue(_d,this.pathAttr);
+this.pathSeparator=this.pathSeparator||_e.pathSeparator;
 if(!this.pathSeparator){
-this.pathSeparator=_e.substring(_d.length,_d.length+1);
+this.pathSeparator=_10.substring(_f.length,_f.length+1);
 }
 if(!this.topDir){
-this.topDir=_d;
+this.topDir=_f;
 if(this.topDir.lastIndexOf(this.pathSeparator)!=(this.topDir.length-1)){
 this.topDir+=this.pathSeparator;
 }
@@ -79,48 +72,59 @@ this.topDir+=this.pathSeparator;
 }
 });
 if(!this.pathSeparator||!this.topDir){
-if(!_9.items){
-_8=this.connect(_9,"onItems",_a);
+if(!_b.items){
+_a=this.connect(_b,"onItems",_c);
 }else{
-_a();
+_c();
 }
 }
-},getChildItems:function(_f){
+},getChildItems:function(_11){
 var ret=this.inherited(arguments);
-if(!ret&&this.store.getValue(_f,"directory")){
+if(!ret&&this.store.getValue(_11,"directory")){
 ret=[];
 }
 return ret;
-},getMenuItemForItem:function(_11,_12,_13){
-var _14="dojoxDirectoryItemIcon";
-if(!this.store.getValue(_11,"directory")){
-_14="dojoxFileItemIcon";
-var l=this.store.getLabel(_11),idx=l.lastIndexOf(".");
+},getMenuItemForItem:function(_12,_13,_14){
+var _15={iconClass:"dojoxDirectoryItemIcon"};
+if(!this.store.getValue(_12,"directory")){
+_15.iconClass="dojoxFileItemIcon";
+var l=this.store.getLabel(_12),idx=l.lastIndexOf(".");
 if(idx>=0){
-_14+=" dojoxFileItemIcon_"+l.substring(idx+1);
+_15.iconClass+=" dojoxFileItemIcon_"+l.substring(idx+1);
+}
+if(!this.selectFiles){
+_15.disabled=true;
 }
 }
-var ret=new dijit.MenuItem({iconClass:_14});
+var ret=new _1.MenuItem(_15);
 return ret;
-},getPaneForItem:function(_18,_19,_1a){
+},getPaneForItem:function(_16,_17,_18){
 var ret=null;
-if(!_18||(this.store.isItem(_18)&&this.store.getValue(_18,"directory"))){
-ret=new dojox.widget._RollingListGroupPane({});
+if(!_16||(this.store.isItem(_16)&&this.store.getValue(_16,"directory"))){
+ret=new _3.widget._RollingListGroupPane({});
 }else{
-if(this.store.isItem(_18)&&!this.store.getValue(_18,"directory")){
-ret=new dojox.widget._FileInfoPane({});
+if(this.store.isItem(_16)&&!this.store.getValue(_16,"directory")){
+ret=new _3.widget._FileInfoPane({});
 }
 }
 return ret;
-},_setPathValueAttr:function(_1c){
-if(!_1c){
-this.attr("value",null);
+},_setPathValueAttr:function(_19,_1a,_1b){
+if(!_19){
+this.set("value",null);
 return;
 }
-if(_1c.lastIndexOf(this.pathSeparator)==(_1c.length-1)){
-_1c=_1c.substring(0,_1c.length-1);
+if(_19.lastIndexOf(this.pathSeparator)==(_19.length-1)){
+_19=_19.substring(0,_19.length-1);
 }
-this.store.fetchItemByIdentity({identity:_1c,onItem:dojo.hitch(this,"attr","value"),scope:this});
+this.store.fetchItemByIdentity({identity:_19,onItem:function(v){
+if(_1a){
+this._lastExecutedValue=v;
+}
+this.set("value",v);
+if(_1b){
+_1b();
+}
+},scope:this});
 },_getPathValueAttr:function(val){
 if(!val){
 val=this.value;
@@ -130,5 +134,20 @@ return this.store.getValue(val,this.pathAttr);
 }else{
 return "";
 }
-}});
+},_setValue:function(_1c){
+delete this._setInProgress;
+var _1d=this.store;
+if(_1c&&_1d.isItem(_1c)){
+var _1e=this.store.getValue(_1c,"directory");
+if((_1e&&!this.selectDirectories)||(!_1e&&!this.selectFiles)){
+return;
 }
+}else{
+_1c=null;
+}
+if(!this._itemsMatch(this.value,_1c)){
+this.value=_1c;
+this._onChange(_1c);
+}
+}});
+});

@@ -1,21 +1,30 @@
-.tundra .dijitMenu {
+.tundra .dijitMenu,
+.tundra .dijitMenuBar {
 	border: 1px solid #7eabcd;
-	margin: 0px;
-	padding: 0px;
+	margin: 0;
+	padding: 0;
+	background-color: #f7f7f7;
+}
+.tundra .dijitBorderContainer .dijitMenuBar {
+	border:1px solid #ccc;
 }
 .tundra .dijitMenuItem {
-	background-color: #f7f7f7;
-	font: menu;
+	font-family: sans-serif;
 	margin: 0;
+}
+.tundra .dijitMenuItem {
+	padding: 4px 5px;
 }
 .tundra .dijitMenuPreviousButton, .tundra .dijitMenuNextButton {
 	font-style: italic;
 }
 .tundra .dijitMenuItem td {
-	padding:2px;
+	padding: 2px;
 }
-.tundra .dijitMenuItemHover {
-	background-color: #60a1ea;
+.tundra .dijitMenuPassive .dijitMenuItemHover,
+.tundra .dijitComboBoxMenu .dijitMenuItemHover,
+.tundra .dijitMenuItemSelected {
+	background-color: #3559ac;
 	color:#fff;
 }
 .tundra .dijitMenuItemIcon {
@@ -23,23 +32,31 @@
 	height: 16px;
 }
 .tundra .dijitMenuExpand {
-	display:none;
+	
+	width: 7px;
+	height: 7px;
+	background-image: url('images/spriteArrows.png');
+	background-position: -14px 0;
 }
-.tundra .dijitMenuExpandEnabled {
-	width:16px;
-	height:16px;
-	background:url('images/arrowRight.gif') no-repeat center center;
-	display:block;
-}
-.tundra .dijitMenuExpandInner {
-	display:none;
-}
-.tundra .dijitMenuSeparator {
-	background-color: #f7f7f7;
+.dj_ie6 .tundra .dijitMenuExpand {
+	background-image: url('images/spriteArrows.gif');
 }
 .tundra .dijitMenuSeparatorTop {
 	border-bottom: 1px solid #9b9b9b;
 }
 .tundra .dijitMenuSeparatorBottom {
 	border-top: 1px solid #e8e8e8;
+}
+.tundra .dijitCheckedMenuItemIconChar {
+	display: none;
+}
+.tundra .dijitCheckedMenuItemIcon {
+	background-image: url('images/checkmark.png');
+	background-position: -80px;
+}
+.dj_ie6 .tundra .dijitCheckedMenuItemIcon {
+	background-image: url('images/checkmark.gif');
+}
+.tundra .dijitCheckedMenuItemChecked .dijitCheckedMenuItemIcon {
+	background-position: -64px;
 }

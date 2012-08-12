@@ -1,14 +1,7 @@
-/*
-	Copyright (c) 2004-2008, The Dojo Foundation All Rights Reserved.
-	Available via Academic Free License >= 2.1 OR the modified BSD license.
-	see: http://dojotoolkit.org/license for details
-*/
-
-
-if(!dojo._hasResource["dojox.cometd.HttpChannels"]){
-dojo._hasResource["dojox.cometd.HttpChannels"]=true;
-dojo.provide("dojox.cometd.HttpChannels");
-dojo.require("dojox.io.httpParse");
-dojo.require("dojox.cometd.RestChannels");
-dojox.cometd.HttpChannels=dojox.cometd.RestChannels;
-}
+//>>built
+define("dojox/cometd/HttpChannels",["dijit","dojo","dojox","dojo/require!dojox/io/httpParse,dojox/cometd/RestChannels"],function(_1,_2,_3){
+_2.provide("dojox.cometd.HttpChannels");
+_2.require("dojox.io.httpParse");
+_2.require("dojox.cometd.RestChannels");
+_3.cometd.HttpChannels=_3.cometd.RestChannels;
+});

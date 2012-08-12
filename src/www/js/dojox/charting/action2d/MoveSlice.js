@@ -1,63 +1,51 @@
-/*
-	Copyright (c) 2004-2008, The Dojo Foundation All Rights Reserved.
-	Available via Academic Free License >= 2.1 OR the modified BSD license.
-	see: http://dojotoolkit.org/license for details
-*/
-
-
-if(!dojo._hasResource["dojox.charting.action2d.MoveSlice"]){
-dojo._hasResource["dojox.charting.action2d.MoveSlice"]=true;
-dojo.provide("dojox.charting.action2d.MoveSlice");
-dojo.require("dojox.charting.action2d.Base");
-dojo.require("dojox.gfx.matrix");
-dojo.require("dojox.lang.functional");
-dojo.require("dojox.lang.functional.scan");
-dojo.require("dojox.lang.functional.fold");
-(function(){
-var _1=1.05,_2=7,m=dojox.gfx.matrix,gf=dojox.gfx.fx,df=dojox.lang.functional;
-dojo.declare("dojox.charting.action2d.MoveSlice",dojox.charting.action2d.Base,{defaultParams:{duration:400,easing:dojo.fx.easing.backOut,scale:_1,shift:_2},optionalParams:{},constructor:function(_6,_7,_8){
-if(!_8){
-_8={};
+//>>built
+define("dojox/charting/action2d/MoveSlice",["dojo/_base/connect","dojo/_base/declare","./PlotAction","dojo/fx/easing","dojox/gfx/matrix","dojox/gfx/fx","dojox/lang/functional","dojox/lang/functional/scan","dojox/lang/functional/fold"],function(_1,_2,_3,_4,m,gf,df,_5,_6){
+var _7=1.05,_8=7;
+return _2("dojox.charting.action2d.MoveSlice",_3,{defaultParams:{duration:400,easing:_4.backOut,scale:_7,shift:_8},optionalParams:{},constructor:function(_9,_a,_b){
+if(!_b){
+_b={};
 }
-this.scale=typeof _8.scale=="number"?_8.scale:_1;
-this.shift=typeof _8.shift=="number"?_8.shift:_2;
+this.scale=typeof _b.scale=="number"?_b.scale:_7;
+this.shift=typeof _b.shift=="number"?_b.shift:_8;
 this.connect();
 },process:function(o){
 if(!o.shape||o.element!="slice"||!(o.type in this.overOutEvents)){
 return;
 }
 if(!this.angles){
+var _c=m._degToRad(o.plot.opt.startAngle);
 if(typeof o.run.data[0]=="number"){
-this.angles=df.map(df.scanl(o.run.data,"+",0),"* 2 * Math.PI / this",df.foldl(o.run.data,"+",0));
+this.angles=df.map(df.scanl(o.run.data,"+",_c),"* 2 * Math.PI / this",df.foldl(o.run.data,"+",0));
 }else{
-this.angles=df.map(df.scanl(o.run.data,"a + b.y",0),"* 2 * Math.PI / this",df.foldl(o.run.data,"a + b.y",0));
+this.angles=df.map(df.scanl(o.run.data,"a + b.y",_c),"* 2 * Math.PI / this",df.foldl(o.run.data,"a + b.y",0));
 }
 }
-var _a=o.index,_b,_c,_d,_e,_f=(this.angles[_a]+this.angles[_a+1])/2,_10=m.rotateAt(-_f,o.cx,o.cy),_11=m.rotateAt(_f,o.cx,o.cy);
-_b=this.anim[_a];
-if(_b){
-_b.action.stop(true);
+var _d=o.index,_e,_f,_10,_11,_12,_13=(this.angles[_d]+this.angles[_d+1])/2,_14=m.rotateAt(-_13,o.cx,o.cy),_15=m.rotateAt(_13,o.cx,o.cy);
+_e=this.anim[_d];
+if(_e){
+_e.action.stop(true);
 }else{
-this.anim[_a]=_b={};
+this.anim[_d]=_e={};
 }
 if(o.type=="onmouseover"){
-_d=0;
-_e=this.shift;
-_c=this.scale;
+_11=0;
+_12=this.shift;
+_f=1;
+_10=this.scale;
 }else{
-_d=this.shift;
-_e=0;
-_c=1/this.scale;
+_11=this.shift;
+_12=0;
+_f=this.scale;
+_10=1;
 }
-_b.action=dojox.gfx.fx.animateTransform({shape:o.shape,duration:this.duration,easing:this.easing,transform:[_11,{name:"translate",start:[_d,0],end:[_e,0]},{name:"scaleAt",start:[1,o.cx,o.cy],end:[_c,o.cx,o.cy]},_10]});
+_e.action=gf.animateTransform({shape:o.shape,duration:this.duration,easing:this.easing,transform:[_15,{name:"translate",start:[_11,0],end:[_12,0]},{name:"scaleAt",start:[_f,o.cx,o.cy],end:[_10,o.cx,o.cy]},_14]});
 if(o.type=="onmouseout"){
-dojo.connect(_b.action,"onEnd",this,function(){
-delete this.anim[_a];
+_1.connect(_e.action,"onEnd",this,function(){
+delete this.anim[_d];
 });
 }
-_b.action.play();
+_e.action.play();
 },reset:function(){
 delete this.angles;
 }});
-})();
-}
+});

@@ -1,34 +1,22 @@
-/*
-	Copyright (c) 2004-2008, The Dojo Foundation All Rights Reserved.
-	Available via Academic Free License >= 2.1 OR the modified BSD license.
-	see: http://dojotoolkit.org/license for details
-*/
-
-
-if(!dojo._hasResource["dojox.layout.dnd.Avatar"]){
-dojo._hasResource["dojox.layout.dnd.Avatar"]=true;
-dojo.provide("dojox.layout.dnd.Avatar");
-dojo.require("dojo.dnd.common");
-dojox.layout.dnd.Avatar=function(_1,_2){
-this.manager=_1;
-this.construct(_2);
-};
-dojo.extend(dojox.layout.dnd.Avatar,{construct:function(_3){
-var _4=this.manager.source;
-var _5=(_4.creator)?_4._normalizedCreator(_4.getItem(this.manager.nodes[0].id).data,"avatar").node:this.manager.nodes[0].cloneNode(true);
-_5.id=dojo.dnd.getUniqueId();
-dojo.addClass(_5,"dojoDndAvatar");
-_5.style.position="absolute";
-_5.style.zIndex=1999;
-_5.style.margin="0px";
-_5.style.width=dojo.marginBox(_4.node).w+"px";
-dojo.style(_5,"opacity",_3);
-this.node=_5;
-},destroy:function(){
-dojo._destroyElement(this.node);
-this.node=false;
+//>>built
+define("dojox/layout/dnd/Avatar",["dijit","dojo","dojox","dojo/require!dojo/dnd/Avatar,dojo/dnd/common"],function(_1,_2,_3){
+_2.provide("dojox.layout.dnd.Avatar");
+_2.require("dojo.dnd.Avatar");
+_2.require("dojo.dnd.common");
+_2.declare("dojox.layout.dnd.Avatar",_2.dnd.Avatar,{constructor:function(_4,_5){
+this.opacity=_5||0.9;
+},construct:function(){
+var _6=this.manager.source,_7=_6.creator?_6._normalizedCreator(_6.getItem(this.manager.nodes[0].id).data,"avatar").node:this.manager.nodes[0].cloneNode(true);
+_2.addClass(_7,"dojoDndAvatar");
+_7.id=_2.dnd.getUniqueId();
+_7.style.position="absolute";
+_7.style.zIndex=1999;
+_7.style.margin="0px";
+_7.style.width=_2.marginBox(_6.node).w+"px";
+_2.style(_7,"opacity",this.opacity);
+this.node=_7;
 },update:function(){
-dojo[(this.manager.canDropFlag?"add":"remove")+"Class"](this.node,"dojoDndAvatarCanDrop");
+_2.toggleClass(this.node,"dojoDndAvatarCanDrop",this.manager.canDropFlag);
 },_generateText:function(){
 }});
-}
+});

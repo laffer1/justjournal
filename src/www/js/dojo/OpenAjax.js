@@ -2,18 +2,18 @@
  * OpenAjax.js
  *
  * Reference implementation of the OpenAjax Hub, as specified by OpenAjax Alliance.
- * Specification is under development at: 
+ * Specification is under development at:
  *
  *   http://www.openajax.org/member/wiki/OpenAjax_Hub_Specification
  *
  * Copyright 2006-2007 OpenAjax Alliance
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not 
- * use this file except in compliance with the License. You may obtain a copy 
- * of the License at http://www.apache.org/licenses/LICENSE-2.0 . Unless 
- * required by applicable law or agreed to in writing, software distributed 
- * under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
- * CONDITIONS OF ANY KIND, either express or implied. See the License for the 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy
+ * of the License at http://www.apache.org/licenses/LICENSE-2.0 . Unless
+ * required by applicable law or agreed to in writing, software distributed
+ * under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+ * CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  *
  ******************************************************************************/
@@ -44,14 +44,14 @@ if(!window["OpenAjax"]){
 				prefix: prefix,
 				namespaceURI: nsURL,
 				version: version,
-				extraData: extra 
+				extraData: extra
 			};
 			this.publish(ooh+"registerLibrary", libs[prefix]);
-		}
+		};
 		h.unregisterLibrary = function(prefix){
 			this.publish(ooh+"unregisterLibrary", libs[prefix]);
 			delete libs[prefix];
-		}
+		};
 
 		h._subscriptions = { c:{}, s:[] };
 		h._cleanup = [];
@@ -67,7 +67,7 @@ if(!window["OpenAjax"]){
 			var path = name.split(".");
 	 		this._subscribe(this._subscriptions, path, 0, sub);
 			return handle;
-		}
+		};
 
 		h.publish = function(name, message){
 			var path = name.split(".");
@@ -75,45 +75,45 @@ if(!window["OpenAjax"]){
 			this._publish(this._subscriptions, path, 0, name, message);
 			this._pubDepth--;
 			if((this._cleanup.length > 0) && (this._pubDepth == 0)){
-				for(var i = 0; i < this._cleanup.length; i++){ 
+				for(var i = 0; i < this._cleanup.length; i++){
 					this.unsubscribe(this._cleanup[i].hdl);
 				}
 				delete(this._cleanup);
 				this._cleanup = [];
 			}
-		}
+		};
 
 		h.unsubscribe = function(sub){
 			var path = sub.split(".");
 			var sid = path.pop();
 			this._unsubscribe(this._subscriptions, path, 0, sid);
-		}
+		};
 		
 		h._subscribe = function(tree, path, index, sub){
 			var token = path[index];
 			if(index == path.length){
 				tree.s.push(sub);
-			}else{ 
+			}else{
 				if(typeof tree.c == "undefined"){
-					 tree.c = {};
+					tree.c = {};
 				}
 				if(typeof tree.c[token] == "undefined"){
-					tree.c[token] = { c: {}, s: [] }; 
+					tree.c[token] = { c: {}, s: [] };
 					this._subscribe(tree.c[token], path, index + 1, sub);
 				}else{
-					this._subscribe( tree.c[token], path, index + 1, sub);
+					this._subscribe(tree.c[token], path, index + 1, sub);
 				}
 			}
-		}
+		};
 
 		h._publish = function(tree, path, index, name, msg){
 			if(typeof tree != "undefined"){
 				var node;
-				if(index == path.length) {
+				if(index == path.length){
 					node = tree;
 				}else{
 					this._publish(tree.c[path[index]], path, index + 1, name, msg);
-					this._publish(tree.c["*"], path, index + 1, name, msg);			
+					this._publish(tree.c["*"], path, index + 1, name, msg);
 					node = tree.c["**"];
 				}
 				if(typeof node != "undefined"){
@@ -133,44 +133,44 @@ if(!window["OpenAjax"]){
 								// get a function object
 								fcb = sc[fcb];
 							}
-							if((!fcb) || 
-							   (fcb.call(sc, name, msg, d))) {
+							if((!fcb) ||
+								(fcb.call(sc, name, msg, d))){
 								cb.call(sc, name, msg, d);
 							}
 						}
 					}
 				}
 			}
-		}
+		};
 			
-		h._unsubscribe = function(tree, path, index, sid) {
-			if(typeof tree != "undefined") {
-				if(index < path.length) {
+		h._unsubscribe = function(tree, path, index, sid){
+			if(typeof tree != "undefined"){
+				if(index < path.length){
 					var childNode = tree.c[path[index]];
 					this._unsubscribe(childNode, path, index + 1, sid);
-					if(childNode.s.length == 0) {
-						for(var x in childNode.c) 
-					 		return;		
-						delete tree.c[path[index]];	
+					if(childNode.s.length == 0){
+						for(var x in childNode.c)
+							return;
+						delete tree.c[path[index]];
 					}
 					return;
 				}
-				else {
+				else{
 					var callbacks = tree.s;
 					var max = callbacks.length;
-					for(var i = 0; i < max; i++) 
-						if(sid == callbacks[i].sid) {
-							if(this._pubDepth > 0) {
-								callbacks[i].cb = null;	
-								this._cleanup.push(callbacks[i]);						
+					for(var i = 0; i < max; i++)
+						if(sid == callbacks[i].sid){
+							if(this._pubDepth > 0){
+								callbacks[i].cb = null;
+								this._cleanup.push(callbacks[i]);
 							}
 							else
 								callbacks.splice(i, 1);
-							return; 	
+							return;
 						}
 				}
 			}
-		}
+		};
 		// The following function is provided for automatic testing purposes.
 		// It is not expected to be deployed in run-time OpenAjax Hub implementations.
 		h.reinit = function()

@@ -6,7 +6,6 @@
 	border:1px solid #333;	
 	padding-bottom:20px;
 	overflow:hidden;
-	text-align: center;
 	-moz-border-radius:3pt;
 	-webkit-border-radius:4pt;
 	-webkit-drop-shadow:#ccc 4pt; 
@@ -93,7 +92,7 @@
 	background-image: url("images/buttons.png");
 	cursor: pointer;
 }
-.dj_ie6 .slideShowCtrl span {
+.dj_ie .slideShowCtrl span {
 	background-image: url("images/buttons.gif");
 }
 .dj_ie6 .slideShowPager li.currentpage,

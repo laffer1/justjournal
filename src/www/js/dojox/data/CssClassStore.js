@@ -1,50 +1,41 @@
-/*
-	Copyright (c) 2004-2008, The Dojo Foundation All Rights Reserved.
-	Available via Academic Free License >= 2.1 OR the modified BSD license.
-	see: http://dojotoolkit.org/license for details
-*/
-
-
-if(!dojo._hasResource["dojox.data.CssClassStore"]){
-dojo._hasResource["dojox.data.CssClassStore"]=true;
-dojo.provide("dojox.data.CssClassStore");
-dojo.require("dojox.data.CssRuleStore");
-dojo.declare("dojox.data.CssClassStore",dojox.data.CssRuleStore,{_labelAttribute:"class",_idAttribute:"class",_cName:"dojox.data.CssClassStore",getFeatures:function(){
+//>>built
+define("dojox/data/CssClassStore",["dojo/_base/declare","dojox/data/CssRuleStore"],function(_1,_2){
+return _1("dojox.data.CssClassStore",_2,{_labelAttribute:"class",_idAttribute:"class",_cName:"dojox.data.CssClassStore",getFeatures:function(){
 return {"dojo.data.api.Read":true,"dojo.data.api.Identity":true};
-},getAttributes:function(_1){
-this._assertIsItem(_1);
+},getAttributes:function(_3){
+this._assertIsItem(_3);
 return ["class","classSans"];
-},getValue:function(_2,_3,_4){
-var _5=this.getValues(_2,_3);
-if(_5&&_5.length>0){
-return _5[0];
+},getValue:function(_4,_5,_6){
+var _7=this.getValues(_4,_5);
+if(_7&&_7.length>0){
+return _7[0];
 }
-return _4;
-},getValues:function(_6,_7){
-this._assertIsItem(_6);
-this._assertIsAttribute(_7);
-var _8=[];
-if(_7==="class"){
-_8=[_6.className];
+return _6;
+},getValues:function(_8,_9){
+this._assertIsItem(_8);
+this._assertIsAttribute(_9);
+var _a=[];
+if(_9==="class"){
+_a=[_8.className];
 }else{
-if(_7==="classSans"){
-_8=[_6.className.replace(/\./g,"")];
+if(_9==="classSans"){
+_a=[_8.className.replace(/\./g,"")];
 }
 }
-return _8;
-},_handleRule:function(_9,_a,_b){
-var _c={};
-var s=_9["selectorText"].split(" ");
-for(j=0;j<s.length;j++){
-var _e=s[j];
-var _f=_e.indexOf(".");
-if(_e&&_e.length>0&&_f!==-1){
-var _10=_e.indexOf(",")||_e.indexOf("[");
-_e=_e.substring(_f,((_10!==-1&&_10>_f)?_10:_e.length));
-_c[_e]=true;
+return _a;
+},_handleRule:function(_b,_c,_d){
+var _e={};
+var s=_b["selectorText"].split(" ");
+for(var j=0;j<s.length;j++){
+var _f=s[j];
+var _10=_f.indexOf(".");
+if(_f&&_f.length>0&&_10!==-1){
+var _11=_f.indexOf(",")||_f.indexOf("[");
+_f=_f.substring(_10,((_11!==-1&&_11>_10)?_11:_f.length));
+_e[_f]=true;
 }
 }
-for(var key in _c){
+for(var key in _e){
 if(!this._allItems[key]){
 var _12={};
 _12.className=key;
@@ -58,47 +49,47 @@ var _14={};
 for(var i in this._allItems){
 _14[i]=this._allItems[i];
 }
-var _16;
+var _15;
 while(this._pending.length){
-_16=this._pending.pop();
-_16.request._items=_14;
-_13.push(_16);
+_15=this._pending.pop();
+_15.request._items=_14;
+_13.push(_15);
 }
 while(_13.length){
-_16=_13.pop();
-if(_16.fetch){
-this._handleFetchReturn(_16.request);
+_15=_13.pop();
+if(_15.fetch){
+this._handleFetchReturn(_15.request);
 }else{
-this._handleFetchByIdentityReturn(_16.request);
+this._handleFetchByIdentityReturn(_15.request);
 }
 }
-},_handleFetchByIdentityReturn:function(_17){
-var _18=_17._items;
-var _19=_18[(dojo.isSafari?_17.identity.toLowerCase():_17.identity)];
-if(!this.isItem(_19)){
-_19=null;
+},_handleFetchByIdentityReturn:function(_16){
+var _17=_16._items;
+var _18=_17[_16.identity];
+if(!this.isItem(_18)){
+_18=null;
 }
-if(_17.onItem){
-var _1a=_17.scope||dojo.global;
-_17.onItem.call(_1a,_19);
+if(_16.onItem){
+var _19=_16.scope||dojo.global;
+_16.onItem.call(_19,_18);
 }
-},getIdentity:function(_1b){
+},getIdentity:function(_1a){
+this._assertIsItem(_1a);
+return this.getValue(_1a,this._idAttribute);
+},getIdentityAttributes:function(_1b){
 this._assertIsItem(_1b);
-return this.getValue(_1b,this._idAttribute);
-},getIdentityAttributes:function(_1c){
-this._assertIsItem(_1c);
 return [this._idAttribute];
-},fetchItemByIdentity:function(_1d){
-_1d=_1d||{};
-if(!_1d.store){
-_1d.store=this;
+},fetchItemByIdentity:function(_1c){
+_1c=_1c||{};
+if(!_1c.store){
+_1c.store=this;
 }
 if(this._pending&&this._pending.length>0){
-this._pending.push({request:_1d});
+this._pending.push({request:_1c});
 }else{
-this._pending=[{request:_1d}];
-this._fetch(_1d);
+this._pending=[{request:_1c}];
+this._fetch(_1c);
 }
-return _1d;
+return _1c;
 }});
-}
+});

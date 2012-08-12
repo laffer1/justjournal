@@ -20,23 +20,21 @@
 .nihilo .dijitRadioChecked,
 .nihilo .dijitToggleButtonChecked .dijitRadioIcon {
 	
-	background-position: 0px;
-}
-.nihilo .dijitRadioCheckedDisabled {
-	
-	background-position: -48px;
+	background-position: 0;
 }
 .nihilo .dijitRadioDisabled {
 	
+	background-position: -48px;
+}
+.nihilo .dijitRadioCheckedDisabled {
+	
 	background-position: -32px;
 }
-.nihilo .dijitRadioHover,
-.nihilo .dijitRadioFocused {
+.nihilo .dijitRadioHover {
 	
 	background-position: -80px;
 }
-.nihilo .dijitRadioCheckedHover,
-.nihilo .dijitRadioCheckedFocused {
+.nihilo .dijitRadioCheckedHover {
 	
 	background-position: -64px;
 }

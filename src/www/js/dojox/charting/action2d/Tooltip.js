@@ -1,55 +1,55 @@
-/*
-	Copyright (c) 2004-2008, The Dojo Foundation All Rights Reserved.
-	Available via Academic Free License >= 2.1 OR the modified BSD license.
-	see: http://dojotoolkit.org/license for details
-*/
-
-
-if(!dojo._hasResource["dojox.charting.action2d.Tooltip"]){
-dojo._hasResource["dojox.charting.action2d.Tooltip"]=true;
-dojo.provide("dojox.charting.action2d.Tooltip");
-dojo.require("dojox.charting.action2d.Base");
-dojo.require("dijit.Tooltip");
-dojo.require("dojox.lang.functional");
-dojo.require("dojox.lang.functional.scan");
-dojo.require("dojox.lang.functional.fold");
-(function(){
-var _1=function(o){
+//>>built
+define("dojox/charting/action2d/Tooltip",["dojo/_base/kernel","dijit/Tooltip","dojo/_base/lang","dojo/_base/html","dojo/_base/declare","./PlotAction","dojox/gfx/matrix","dojox/lang/functional","dojox/lang/functional/scan","dojox/lang/functional/fold"],function(_1,_2,_3,_4,_5,_6,m,df,_7,_8){
+var _9=function(o){
 var t=o.run&&o.run.data&&o.run.data[o.index];
-if(t&&typeof t=="object"&&t.tooltip){
-return t.tooltip;
+if(t&&typeof t!="number"&&(t.tooltip||t.text)){
+return t.tooltip||t.text;
+}
+if(o.element=="candlestick"){
+return "<table cellpadding=\"1\" cellspacing=\"0\" border=\"0\" style=\"font-size:0.9em;\">"+"<tr><td>Open:</td><td align=\"right\"><strong>"+o.data.open+"</strong></td></tr>"+"<tr><td>High:</td><td align=\"right\"><strong>"+o.data.high+"</strong></td></tr>"+"<tr><td>Low:</td><td align=\"right\"><strong>"+o.data.low+"</strong></td></tr>"+"<tr><td>Close:</td><td align=\"right\"><strong>"+o.data.close+"</strong></td></tr>"+(o.data.mid!==undefined?"<tr><td>Mid:</td><td align=\"right\"><strong>"+o.data.mid+"</strong></td></tr>":"")+"</table>";
 }
 return o.element=="bar"?o.x:o.y;
 };
-var df=dojox.lang.functional,_5=Math.PI/4,_6=Math.PI/2;
-dojo.declare("dojox.charting.action2d.Tooltip",dojox.charting.action2d.Base,{defaultParams:{text:_1},optionalParams:{},constructor:function(_7,_8,_9){
-this.text=_9&&_9.text?_9.text:_1;
+var _a=Math.PI/4,_b=Math.PI/2;
+return _5("dojox.charting.action2d.Tooltip",_6,{defaultParams:{text:_9},optionalParams:{},constructor:function(_c,_d,_e){
+this.text=_e&&_e.text?_e.text:_9;
 this.connect();
 },process:function(o){
 if(o.type==="onplotreset"||o.type==="onmouseout"){
-dijit.hideTooltip(this.aroundRect);
+_2.hide(this.aroundRect);
 this.aroundRect=null;
+if(o.type==="onplotreset"){
+delete this.angles;
+}
 return;
 }
 if(!o.shape||o.type!=="onmouseover"){
 return;
 }
-var _b={type:"rect"},_c=["after","before"];
+var _f={type:"rect"},_10=["after","before"];
 switch(o.element){
 case "marker":
-_b.x=o.cx;
-_b.y=o.cy;
-_b.width=_b.height=1;
+_f.x=o.cx;
+_f.y=o.cy;
+_f.w=_f.h=1;
 break;
 case "circle":
-_b.x=o.cx-o.cr;
-_b.y=o.cy-o.cr;
-_b.width=_b.height=2*o.cr;
+_f.x=o.cx-o.cr;
+_f.y=o.cy-o.cr;
+_f.w=_f.h=2*o.cr;
 break;
 case "column":
-_c=["above","below"];
+_10=["above","below"];
 case "bar":
-_b=dojo.clone(o.shape.getShape());
+_f=_3.clone(o.shape.getShape());
+_f.w=_f.width;
+_f.h=_f.height;
+break;
+case "candlestick":
+_f.x=o.x;
+_f.y=o.y;
+_f.w=o.width;
+_f.h=o.height;
 break;
 default:
 if(!this.angles){
@@ -59,35 +59,49 @@ this.angles=df.map(df.scanl(o.run.data,"+",0),"* 2 * Math.PI / this",df.foldl(o.
 this.angles=df.map(df.scanl(o.run.data,"a + b.y",0),"* 2 * Math.PI / this",df.foldl(o.run.data,"a + b.y",0));
 }
 }
-var _d=(this.angles[o.index]+this.angles[o.index+1])/2;
-_b.x=o.cx+o.cr*Math.cos(_d);
-_b.y=o.cy+o.cr*Math.sin(_d);
-_b.width=_b.height=1;
-if(_d<_5){
+var _11=m._degToRad(o.plot.opt.startAngle),_12=(this.angles[o.index]+this.angles[o.index+1])/2+_11;
+_f.x=o.cx+o.cr*Math.cos(_12);
+_f.y=o.cy+o.cr*Math.sin(_12);
+_f.w=_f.h=1;
+if(_12<_a){
 }else{
-if(_d<_6+_5){
-_c=["below","above"];
+if(_12<_b+_a){
+_10=["below","above"];
 }else{
-if(_d<Math.PI+_5){
-_c=["before","after"];
+if(_12<Math.PI+_a){
+_10=["before","after"];
 }else{
-if(_d<2*Math.PI-_5){
-_c=["above","below"];
+if(_12<2*Math.PI-_a){
+_10=["above","below"];
 }
 }
 }
 }
 break;
 }
-var lt=dojo.coords(this.chart.node,true);
-_b.x+=lt.x;
-_b.y+=lt.y;
-_b.x=Math.round(_b.x);
-_b.y=Math.round(_b.y);
-_b.width=Math.ceil(_b.width);
-_b.height=Math.ceil(_b.height);
-this.aroundRect=_b;
-dijit.showTooltip(this.text(o),this.aroundRect,_c);
-}});
-})();
+var lt=this.chart.getCoords();
+_f.x+=lt.x;
+_f.y+=lt.y;
+_f.x=Math.round(_f.x);
+_f.y=Math.round(_f.y);
+_f.w=Math.ceil(_f.w);
+_f.h=Math.ceil(_f.h);
+this.aroundRect=_f;
+var _13=this.text(o);
+if(this.chart.getTextDir){
+var _14=(_4.style(this.chart.node,"direction")=="rtl");
+var _15=(this.chart.getTextDir(_13)=="rtl");
 }
+if(_13){
+if(_15&&!_14){
+_2.show("<span dir = 'rtl'>"+_13+"</span>",this.aroundRect,_10);
+}else{
+if(!_15&&_14){
+_2.show("<span dir = 'ltr'>"+_13+"</span>",this.aroundRect,_10);
+}else{
+_2.show(_13,this.aroundRect,_10);
+}
+}
+}
+}});
+});

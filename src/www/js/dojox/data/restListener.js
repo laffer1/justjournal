@@ -1,36 +1,29 @@
-/*
-	Copyright (c) 2004-2008, The Dojo Foundation All Rights Reserved.
-	Available via Academic Free License >= 2.1 OR the modified BSD license.
-	see: http://dojotoolkit.org/license for details
-*/
-
-
-if(!dojo._hasResource["dojox.data.restListener"]){
-dojo._hasResource["dojox.data.restListener"]=true;
-dojo.provide("dojox.data.restListener");
-dojox.data.restListener=function(_1){
-var _2=_1.channel;
-var jr=dojox.rpc.JsonRest;
-var _4=jr.getServiceAndId(_2).service;
-var _5=dojox.json.ref.resolveJson(_1.result,{defaultId:_1.event=="put"&&_2,index:dojox.rpc.Rest._index,idPrefix:_4.servicePath,idAttribute:jr.getIdAttribute(_4),schemas:jr.schemas,loader:jr._loader,assignAbsoluteIds:true});
-var _6=dojox.rpc.Rest._index&&dojox.rpc.Rest._index[_2];
-var _7="on"+_1.event.toLowerCase();
-var _8=_4&&_4._store;
-if(_6){
-if(_6[_7]){
-_6[_7](_5);
+//>>built
+define("dojox/data/restListener",["dijit","dojo","dojox"],function(_1,_2,_3){
+_2.provide("dojox.data.restListener");
+_3.data.restListener=function(_4){
+var _5=_4.channel;
+var jr=_3.rpc.JsonRest;
+var _6=jr.getServiceAndId(_5).service;
+var _7=_3.json.ref.resolveJson(_4.result,{defaultId:_4.event=="put"&&_5,index:_3.rpc.Rest._index,idPrefix:_6.servicePath.replace(/[^\/]*$/,""),idAttribute:jr.getIdAttribute(_6),schemas:jr.schemas,loader:jr._loader,assignAbsoluteIds:true});
+var _8=_3.rpc.Rest._index&&_3.rpc.Rest._index[_5];
+var _9="on"+_4.event.toLowerCase();
+var _a=_6&&_6._store;
+if(_8){
+if(_8[_9]){
+_8[_9](_7);
 return;
 }
 }
-if(_8){
-switch(_7){
+if(_a){
+switch(_9){
 case "onpost":
-_8.onNew(_5);
+_a.onNew(_7);
 break;
 case "ondelete":
-_8.onDelete(_6);
+_a.onDelete(_8);
 break;
 }
 }
 };
-}
+});

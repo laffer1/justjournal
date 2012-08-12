@@ -20,23 +20,21 @@
 .soria .dijitRadioChecked,
 .soria .dijitToggleButtonChecked .dijitRadioIcon {
 	
-	background-position: 0px;
-}
-.soria .dijitRadioCheckedDisabled {
-	
-	background-position: -48px;
+	background-position: 0;
 }
 .soria .dijitRadioDisabled {
 	
+	background-position: -48px;
+}
+.soria .dijitRadioCheckedDisabled {
+	
 	background-position: -32px;
 }
-.soria .dijitRadioHover,
-.soria .dijitRadioFocused {
+.soria .dijitRadioHover {
 	
 	background-position: -80px;
 }
-.soria .dijitRadioCheckedHover,
-.soria .dijitRadioCheckedFocused {
+.soria .dijitRadioCheckedHover {
 	
 	background-position: -64px;
 }

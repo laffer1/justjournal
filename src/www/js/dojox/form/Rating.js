@@ -1,56 +1,46 @@
-/*
-	Copyright (c) 2004-2008, The Dojo Foundation All Rights Reserved.
-	Available via Academic Free License >= 2.1 OR the modified BSD license.
-	see: http://dojotoolkit.org/license for details
-*/
-
-
-if(!dojo._hasResource["dojox.form.Rating"]){
-dojo._hasResource["dojox.form.Rating"]=true;
-dojo.provide("dojox.form.Rating");
-dojo.require("dijit.form._FormWidget");
-dojo.declare("dojox.form.Rating",dijit.form._FormWidget,{templateString:null,numStars:3,value:0,constructor:function(_1){
-dojo.mixin(this,_1);
-var _2="<div dojoAttachPoint=\"domNode\" class=\"dojoxRating dijitInline\">"+"<input type=\"hidden\" value=\"0\" dojoAttachPoint=\"focusNode\" /><ul>${stars}</ul>"+"</div>";
-var _3="<li class=\"dojoxRatingStar dijitInline\" dojoAttachEvent=\"onclick:onStarClick,onmouseover:_onMouse,onmouseout:_onMouse\" value=\"${value}\"></li>";
-var _4="";
+//>>built
+define("dojox/form/Rating",["dojo/_base/declare","dojo/_base/lang","dojo/dom-attr","dojo/dom-class","dojo/string","dojo/query","dijit/form/_FormWidget"],function(_1,_2,_3,_4,_5,_6,_7){
+return _1("dojox.form.Rating",_7,{templateString:null,numStars:3,value:0,constructor:function(_8){
+_2.mixin(this,_8);
+var _9="<div dojoAttachPoint=\"domNode\" class=\"dojoxRating dijitInline\">"+"<input type=\"hidden\" value=\"0\" dojoAttachPoint=\"focusNode\" /><ul>${stars}</ul>"+"</div>";
+var _a="<li class=\"dojoxRatingStar dijitInline\" dojoAttachEvent=\"onclick:onStarClick,onmouseover:_onMouse,onmouseout:_onMouse\" value=\"${value}\"></li>";
+var _b="";
 for(var i=0;i<this.numStars;i++){
-_4+=dojo.string.substitute(_3,{value:i+1});
+_b+=_5.substitute(_a,{value:i+1});
 }
-this.templateString=dojo.string.substitute(_2,{stars:_4});
+this.templateString=_5.substitute(_9,{stars:_b});
 },postCreate:function(){
 this.inherited(arguments);
 this._renderStars(this.value);
-},_onMouse:function(_6){
-this.inherited(arguments);
-if(this._hovering){
-var _7=+dojo.attr(_6.target,"value");
-this.onMouseOver(_6,_7);
-this._renderStars(_7,true);
+},_onMouse:function(_c){
+if(this.hovering){
+var _d=+_3.get(_c.target,"value");
+this.onMouseOver(_c,_d);
+this._renderStars(_d,true);
 }else{
 this._renderStars(this.value);
 }
-},_renderStars:function(_8,_9){
-dojo.query(".dojoxRatingStar",this.domNode).forEach(function(_a,i){
-if(i+1>_8){
-dojo.removeClass(_a,"dojoxRatingStarHover");
-dojo.removeClass(_a,"dojoxRatingStarChecked");
+},_renderStars:function(_e,_f){
+_6(".dojoxRatingStar",this.domNode).forEach(function(_10,i){
+if(i+1>_e){
+_4.remove(_10,"dojoxRatingStarHover");
+_4.remove(_10,"dojoxRatingStarChecked");
 }else{
-dojo.removeClass(_a,"dojoxRatingStar"+(_9?"Checked":"Hover"));
-dojo.addClass(_a,"dojoxRatingStar"+(_9?"Hover":"Checked"));
+_4.remove(_10,"dojoxRatingStar"+(_f?"Checked":"Hover"));
+_4.add(_10,"dojoxRatingStar"+(_f?"Hover":"Checked"));
 }
 });
-},onStarClick:function(_c){
-var _d=+dojo.attr(_c.target,"value");
-this.setAttribute("value",_d==this.value?0:_d);
+},onStarClick:function(evt){
+var _11=+_3.get(evt.target,"value");
+this.setAttribute("value",_11==this.value?0:_11);
 this._renderStars(this.value);
 this.onChange(this.value);
 },onMouseOver:function(){
-},setAttribute:function(_e,_f){
-this.inherited("setAttribute",arguments);
-if(_e=="value"){
+},setAttribute:function(key,_12){
+this.set(key,_12);
+if(key=="value"){
 this._renderStars(this.value);
 this.onChange(this.value);
 }
 }});
-}
+});

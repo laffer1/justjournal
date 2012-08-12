@@ -1,39 +1,31 @@
-/*
-	Copyright (c) 2004-2008, The Dojo Foundation All Rights Reserved.
-	Available via Academic Free License >= 2.1 OR the modified BSD license.
-	see: http://dojotoolkit.org/license for details
-*/
-
-
-if(!dojo._hasResource["dojox.grid.Selection"]){
-dojo._hasResource["dojox.grid.Selection"]=true;
-dojo.provide("dojox.grid.Selection");
-dojo.declare("dojox.grid.Selection",null,{constructor:function(_1){
-this.grid=_1;
+//>>built
+define("dojox/grid/Selection",["dojo/_base/declare","dojo/_base/array","dojo/_base/lang","dojo/dom-attr"],function(_1,_2,_3,_4){
+return _1("dojox.grid.Selection",null,{constructor:function(_5){
+this.grid=_5;
 this.selected=[];
-this.setMode(_1.selectionMode);
-},mode:"extended",selected:null,updating:0,selectedIndex:-1,setMode:function(_2){
+this.setMode(_5.selectionMode);
+},mode:"extended",selected:null,updating:0,selectedIndex:-1,setMode:function(_6){
 if(this.selected.length){
 this.deselectAll();
 }
-if(_2!="extended"&&_2!="multiple"&&_2!="single"&&_2!="none"){
+if(_6!="extended"&&_6!="multiple"&&_6!="single"&&_6!="none"){
 this.mode="extended";
 }else{
-this.mode=_2;
+this.mode=_6;
 }
-},onCanSelect:function(_3){
-return this.grid.onCanSelect(_3);
-},onCanDeselect:function(_4){
-return this.grid.onCanDeselect(_4);
-},onSelected:function(_5){
-},onDeselected:function(_6){
+},onCanSelect:function(_7){
+return this.grid.onCanSelect(_7);
+},onCanDeselect:function(_8){
+return this.grid.onCanDeselect(_8);
+},onSelected:function(_9){
+},onDeselected:function(_a){
 },onChanging:function(){
 },onChanged:function(){
-},isSelected:function(_7){
+},isSelected:function(_b){
 if(this.mode=="none"){
 return false;
 }
-return this.selected[_7];
+return this.selected[_b];
 },getFirstSelected:function(){
 if(!this.selected.length||this.mode=="none"){
 return -1;
@@ -44,11 +36,11 @@ return i;
 }
 }
 return -1;
-},getNextSelected:function(_a){
+},getNextSelected:function(_c){
 if(this.mode=="none"){
 return -1;
 }
-for(var i=_a+1,l=this.selected.length;i<l;i++){
+for(var i=_c+1,l=this.selected.length;i<l;i++){
 if(this.selected[i]){
 return i;
 }
@@ -71,119 +63,139 @@ c++;
 }
 return c;
 },_beginUpdate:function(){
-if(this.updating==0){
+if(this.updating===0){
 this.onChanging();
 }
 this.updating++;
 },_endUpdate:function(){
 this.updating--;
-if(this.updating==0){
+if(this.updating===0){
 this.onChanged();
 }
-},select:function(_12){
+},select:function(_e){
 if(this.mode=="none"){
 return;
 }
 if(this.mode!="multiple"){
-this.deselectAll(_12);
-this.addToSelection(_12);
+this.deselectAll(_e);
+this.addToSelection(_e);
 }else{
-this.toggleSelect(_12);
+this.toggleSelect(_e);
 }
-},addToSelection:function(_13){
+},addToSelection:function(_f){
 if(this.mode=="none"){
 return;
 }
-_13=Number(_13);
-if(this.selected[_13]){
-this.selectedIndex=_13;
+if(_3.isArray(_f)){
+_2.forEach(_f,this.addToSelection,this);
+return;
+}
+_f=Number(_f);
+if(this.selected[_f]){
+this.selectedIndex=_f;
 }else{
-if(this.onCanSelect(_13)!==false){
-this.selectedIndex=_13;
+if(this.onCanSelect(_f)!==false){
+this.selectedIndex=_f;
+var _10=this.grid.getRowNode(_f);
+if(_10){
+_4.set(_10,"aria-selected","true");
+}
 this._beginUpdate();
-this.selected[_13]=true;
-this.onSelected(_13);
+this.selected[_f]=true;
+this.onSelected(_f);
 this._endUpdate();
 }
 }
-},deselect:function(_14){
+},deselect:function(_11){
 if(this.mode=="none"){
 return;
 }
-_14=Number(_14);
-if(this.selectedIndex==_14){
+if(_3.isArray(_11)){
+_2.forEach(_11,this.deselect,this);
+return;
+}
+_11=Number(_11);
+if(this.selectedIndex==_11){
 this.selectedIndex=-1;
 }
-if(this.selected[_14]){
-if(this.onCanDeselect(_14)===false){
+if(this.selected[_11]){
+if(this.onCanDeselect(_11)===false){
 return;
 }
+var _12=this.grid.getRowNode(_11);
+if(_12){
+_4.set(_12,"aria-selected","false");
+}
 this._beginUpdate();
-delete this.selected[_14];
-this.onDeselected(_14);
+delete this.selected[_11];
+this.onDeselected(_11);
 this._endUpdate();
 }
-},setSelected:function(_15,_16){
-this[(_16?"addToSelection":"deselect")](_15);
-},toggleSelect:function(_17){
-this.setSelected(_17,!this.selected[_17]);
-},_range:function(_18,_19,_1a){
-var s=(_18>=0?_18:_19),e=_19;
+},setSelected:function(_13,_14){
+this[(_14?"addToSelection":"deselect")](_13);
+},toggleSelect:function(_15){
+if(_3.isArray(_15)){
+_2.forEach(_15,this.toggleSelect,this);
+return;
+}
+this.setSelected(_15,!this.selected[_15]);
+},_range:function(_16,_17,_18){
+var s=(_16>=0?_16:_17),e=_17;
 if(s>e){
 e=s;
-s=_19;
+s=_17;
 }
 for(var i=s;i<=e;i++){
-_1a(i);
+_18(i);
 }
-},selectRange:function(_1e,_1f){
-this._range(_1e,_1f,dojo.hitch(this,"addToSelection"));
-},deselectRange:function(_20,_21){
-this._range(_20,_21,dojo.hitch(this,"deselect"));
-},insert:function(_22){
-this.selected.splice(_22,0,false);
-if(this.selectedIndex>=_22){
+},selectRange:function(_19,_1a){
+this._range(_19,_1a,_3.hitch(this,"addToSelection"));
+},deselectRange:function(_1b,_1c){
+this._range(_1b,_1c,_3.hitch(this,"deselect"));
+},insert:function(_1d){
+this.selected.splice(_1d,0,false);
+if(this.selectedIndex>=_1d){
 this.selectedIndex++;
 }
-},remove:function(_23){
-this.selected.splice(_23,1);
-if(this.selectedIndex>=_23){
+},remove:function(_1e){
+this.selected.splice(_1e,1);
+if(this.selectedIndex>=_1e){
 this.selectedIndex--;
 }
-},deselectAll:function(_24){
+},deselectAll:function(_1f){
 for(var i in this.selected){
-if((i!=_24)&&(this.selected[i]===true)){
+if((i!=_1f)&&(this.selected[i]===true)){
 this.deselect(i);
 }
 }
-},clickSelect:function(_26,_27,_28){
+},clickSelect:function(_20,_21,_22){
 if(this.mode=="none"){
 return;
 }
 this._beginUpdate();
 if(this.mode!="extended"){
-this.select(_26);
+this.select(_20);
 }else{
-var _29=this.selectedIndex;
-if(!_27){
-this.deselectAll(_26);
+var _23=this.selectedIndex;
+if(!_21){
+this.deselectAll(_20);
 }
-if(_28){
-this.selectRange(_29,_26);
+if(_22){
+this.selectRange(_23,_20);
 }else{
-if(_27){
-this.toggleSelect(_26);
+if(_21){
+this.toggleSelect(_20);
 }else{
-this.addToSelection(_26);
+this.addToSelection(_20);
 }
 }
 }
 this._endUpdate();
 },clickSelectEvent:function(e){
-this.clickSelect(e.rowIndex,e.ctrlKey,e.shiftKey);
+this.clickSelect(e.rowIndex,dojo.isCopyKey(e),e.shiftKey);
 },clear:function(){
 this._beginUpdate();
 this.deselectAll();
 this._endUpdate();
 }});
-}
+});

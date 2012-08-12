@@ -1,185 +1,103 @@
-if(!dojo._hasResource["dijit.form.TextBox"]){ //_hasResource checks added by build. Do not use _hasResource directly in your code.
-dojo._hasResource["dijit.form.TextBox"] = true;
-dojo.provide("dijit.form.TextBox");
-
-dojo.require("dijit.form._FormWidget");
-
-dojo.declare(
-	"dijit.form.TextBox",
-	dijit.form._FormValueWidget,
-	{
-		//	summary:
-		//		A base class for textbox form inputs
-		//
-		//	trim: Boolean
-		//		Removes leading and trailing whitespace if true.  Default is false.
-		trim: false,
-
-		//	uppercase: Boolean
-		//		Converts all characters to uppercase if true.  Default is false.
-		uppercase: false,
-
-		//	lowercase: Boolean
-		//		Converts all characters to lowercase if true.  Default is false.
-		lowercase: false,
-
-		//	propercase: Boolean
-		//		Converts the first character of each word to uppercase if true.
-		propercase: false,
-
-		//	maxLength: String
-		//		HTML INPUT tag maxLength declaration.
-		maxLength: "",
-
-		templateString:"<input class=\"dijit dijitReset dijitLeft\" dojoAttachPoint='textbox,focusNode' name=\"${name}\"\n\tdojoAttachEvent='onmouseenter:_onMouse,onmouseleave:_onMouse,onfocus:_onMouse,onblur:_onMouse,onkeypress:_onKeyPress,onkeyup'\n\tautocomplete=\"off\" type=\"${type}\"\n\t/>\n",
-		baseClass: "dijitTextBox",
-
-		attributeMap: dojo.mixin(dojo.clone(dijit.form._FormValueWidget.prototype.attributeMap),
-			{maxLength:"focusNode"}),
-
-		getDisplayedValue: function(){
-			//	summary:
-			//		Returns the formatted value that the user sees in the textbox, which may be different
-			//		from the serialized value that's actually sent to the server (see dijit.form.ValidationTextBox.serialize)
-			return this.filter(this.textbox.value);
-		},
-
-		getValue: function(){
-			return this.parse(this.getDisplayedValue(), this.constraints);
-		},
-
-		setValue: function(value, /*Boolean?*/ priorityChange, /*String?*/ formattedValue){
-			//	summary: 
-			//		Sets the value of the widget to "value" which can be of
-			//		any type as determined by the widget.
-			//
-			//	value:
-			//		The visual element value is also set to a corresponding,
-			//		but not necessarily the same, value.
-			//
-			//	formattedValue:
-			//		If specified, used to set the visual element value,
-			//		otherwise a computed visual value is used.
-			//
-			//	priorityChange:
-			//		If true, an onChange event is fired immediately instead of 
-			//		waiting for the next blur event.
-
-			var filteredValue = this.filter(value);
-			if((((typeof filteredValue == typeof value) && (value !== undefined/*#5317*/)) || (value === null/*#5329*/)) && (formattedValue == null || formattedValue == undefined)){
-				formattedValue = this.format(filteredValue, this.constraints);
-			}
-			if(formattedValue != null && formattedValue != undefined){
-				this.textbox.value = formattedValue;
-			}
-			dijit.form.TextBox.superclass.setValue.call(this, filteredValue, priorityChange);
-		},
-
-		setDisplayedValue: function(/*String*/value, /*Boolean?*/ priorityChange){
-			//	summary: 
-			//		Sets the value of the visual element to the string "value".
-			//		The widget value is also set to a corresponding,
-			//		but not necessarily the same, value.
-			//
-			//	priorityChange:
-			//		If true, an onChange event is fired immediately instead of 
-			//		waiting for the next blur event.
-
-			this.textbox.value = value;
-			this.setValue(this.getValue(), priorityChange);
-		},
-
-		format: function(/* String */ value, /* Object */ constraints){
-			//	summary:
-			//		Replacable function to convert a value to a properly formatted string
-			return ((value == null || value == undefined) ? "" : (value.toString ? value.toString() : value));
-		},
-
-		parse: function(/* String */ value, /* Object */ constraints){
-			//	summary:
-			//		Replacable function to convert a formatted string to a value
-			return value;
-		},
-
-		postCreate: function(){
-			// setting the value here is needed since value="" in the template causes "undefined"
-			// and setting in the DOM (instead of the JS object) helps with form reset actions
-			this.textbox.setAttribute("value", this.getDisplayedValue());
-			this.inherited(arguments);
-
-			/*#5297:if(this.srcNodeRef){
-				dojo.style(this.textbox, "cssText", this.style);
-				this.textbox.className += " " + this["class"];
-			}*/
-			this._layoutHack();
-		},
-
-		filter: function(val){
-			//	summary:
-			//		Apply specified filters to textbox value
-			if(val === null || val === undefined){ return ""; }
-			else if(typeof val != "string"){ return val; }
-			if(this.trim){
-				val = dojo.trim(val);
-			}
-			if(this.uppercase){
-				val = val.toUpperCase();
-			}
-			if(this.lowercase){
-				val = val.toLowerCase();
-			}
-			if(this.propercase){
-				val = val.replace(/[^\s]+/g, function(word){
-					return word.substring(0,1).toUpperCase() + word.substring(1);
-				});
-			}
-			return val;
-		},
-
-		_setBlurValue: function(){
-			this.setValue(this.getValue(), (this.isValid ? this.isValid() : true));
-		},
-
-		_onBlur: function(){
-			this._setBlurValue();
-			this.inherited(arguments);
-		},
-
-		onkeyup: function(){
-			//	summary:
-			//		User replaceable keyup event handler
-		}
-	}
-);
-
-dijit.selectInputText = function(/*DomNode*/element, /*Number?*/ start, /*Number?*/ stop){
-	//	summary:
-	//		Select text in the input element argument, from start (default 0), to stop (default end).
-
-	// TODO: use functions in _editor/selection.js?
-	var _window = dojo.global;
-	var _document = dojo.doc;
-	element = dojo.byId(element);
-	if(isNaN(start)){ start = 0; }
-	if(isNaN(stop)){ stop = element.value ? element.value.length : 0; }
-	element.focus();
-	if(_document["selection"] && dojo.body()["createTextRange"]){ // IE
-		if(element.createTextRange){
-			var range = element.createTextRange();
-			with(range){
-				collapse(true);
-				moveStart("character", start);
-				moveEnd("character", stop);
-				select();
-			}
-		}
-	}else if(_window["getSelection"]){
-		var selection = _window.getSelection();
-		// FIXME: does this work on Safari?
-		if(element.setSelectionRange){
-			element.setSelectionRange(start, stop);
-		}
-	}
+//>>built
+require({cache:{"url:dijit/form/templates/TextBox.html":"<div class=\"dijit dijitReset dijitInline dijitLeft\" id=\"widget_${id}\" role=\"presentation\"\n\t><div class=\"dijitReset dijitInputField dijitInputContainer\"\n\t\t><input class=\"dijitReset dijitInputInner\" data-dojo-attach-point='textbox,focusNode' autocomplete=\"off\"\n\t\t\t${!nameAttrSetting} type='${type}'\n\t/></div\n></div>\n"}});
+define("dijit/form/TextBox",["dojo/_base/declare","dojo/dom-construct","dojo/dom-style","dojo/_base/kernel","dojo/_base/lang","dojo/_base/sniff","dojo/_base/window","./_FormValueWidget","./_TextBoxMixin","dojo/text!./templates/TextBox.html",".."],function(_1,_2,_3,_4,_5,_6,_7,_8,_9,_a,_b){
+var _c=_1([_8,_9],{templateString:_a,_singleNodeTemplate:"<input class=\"dijit dijitReset dijitLeft dijitInputField\" data-dojo-attach-point=\"textbox,focusNode\" autocomplete=\"off\" type=\"${type}\" ${!nameAttrSetting} />",_buttonInputDisabled:_6("ie")?"disabled":"",baseClass:"dijitTextBox",postMixInProperties:function(){
+var _d=this.type.toLowerCase();
+if(this.templateString&&this.templateString.toLowerCase()=="input"||((_d=="hidden"||_d=="file")&&this.templateString==this.constructor.prototype.templateString)){
+this.templateString=this._singleNodeTemplate;
 }
-
+this.inherited(arguments);
+},_onInput:function(e){
+this.inherited(arguments);
+if(this.intermediateChanges){
+var _e=this;
+setTimeout(function(){
+_e._handleOnChange(_e.get("value"),false);
+},0);
 }
+},_setPlaceHolderAttr:function(v){
+this._set("placeHolder",v);
+if(!this._phspan){
+this._attachPoints.push("_phspan");
+this._phspan=_2.create("span",{className:"dijitPlaceHolder dijitInputField"},this.textbox,"after");
+}
+this._phspan.innerHTML="";
+this._phspan.appendChild(document.createTextNode(v));
+this._updatePlaceHolder();
+},_updatePlaceHolder:function(){
+if(this._phspan){
+this._phspan.style.display=(this.placeHolder&&!this.focused&&!this.textbox.value)?"":"none";
+}
+},_setValueAttr:function(_f,_10,_11){
+this.inherited(arguments);
+this._updatePlaceHolder();
+},getDisplayedValue:function(){
+_4.deprecated(this.declaredClass+"::getDisplayedValue() is deprecated. Use set('displayedValue') instead.","","2.0");
+return this.get("displayedValue");
+},setDisplayedValue:function(_12){
+_4.deprecated(this.declaredClass+"::setDisplayedValue() is deprecated. Use set('displayedValue', ...) instead.","","2.0");
+this.set("displayedValue",_12);
+},_onBlur:function(e){
+if(this.disabled){
+return;
+}
+this.inherited(arguments);
+this._updatePlaceHolder();
+},_onFocus:function(by){
+if(this.disabled||this.readOnly){
+return;
+}
+this.inherited(arguments);
+this._updatePlaceHolder();
+}});
+if(_6("ie")){
+_c=_1(_c,{declaredClass:"dijit.form.TextBox",_isTextSelected:function(){
+var _13=_7.doc.selection.createRange();
+var _14=_13.parentElement();
+return _14==this.textbox&&_13.text.length==0;
+},postCreate:function(){
+this.inherited(arguments);
+setTimeout(_5.hitch(this,function(){
+try{
+var s=_3.getComputedStyle(this.domNode);
+if(s){
+var ff=s.fontFamily;
+if(ff){
+var _15=this.domNode.getElementsByTagName("INPUT");
+if(_15){
+for(var i=0;i<_15.length;i++){
+_15[i].style.fontFamily=ff;
+}
+}
+}
+}
+}
+catch(e){
+}
+}),0);
+}});
+_b._setSelectionRange=_9._setSelectionRange=function(_16,_17,_18){
+if(_16.createTextRange){
+var r=_16.createTextRange();
+r.collapse(true);
+r.moveStart("character",-99999);
+r.moveStart("character",_17);
+r.moveEnd("character",_18-_17);
+r.select();
+}
+};
+}else{
+if(_6("mozilla")){
+_c=_1(_c,{declaredClass:"dijit.form.TextBox",_onBlur:function(e){
+this.inherited(arguments);
+if(this.selectOnClick){
+this.textbox.selectionStart=this.textbox.selectionEnd=undefined;
+}
+}});
+}else{
+_c.prototype.declaredClass="dijit.form.TextBox";
+}
+}
+_5.setObject("dijit.form.TextBox",_c);
+return _c;
+});

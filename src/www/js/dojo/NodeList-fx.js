@@ -1,137 +1,39 @@
-if(!dojo._hasResource["dojo.NodeList-fx"]){ //_hasResource checks added by build. Do not use _hasResource directly in your code.
-dojo._hasResource["dojo.NodeList-fx"] = true;
-dojo.provide("dojo.NodeList-fx");
-dojo.require("dojo.fx");
+/*
+	Copyright (c) 2004-2011, The Dojo Foundation All Rights Reserved.
+	Available via Academic Free License >= 2.1 OR the modified BSD license.
+	see: http://dojotoolkit.org/license for details
+*/
 
-/*=====
-dojo["NodeList-fx"] = {
-	// summary: Adds dojo.fx animation support to dojo.query()
-};
-=====*/
-
-dojo.extend(dojo.NodeList, {
-	_anim: function(obj, method, args){
-		args = args||{};
-		return dojo.fx.combine(
-			this.map(function(item){
-				var tmpArgs = { node: item };
-				dojo.mixin(tmpArgs, args);
-				return obj[method](tmpArgs);
-			})
-		); // dojo._Animation
-	},
-
-	wipeIn: function(args){
-		//	summary:
-		//		wipe in all elements of this NodeList. Returns an instance of dojo._Animation
-		//	example:
-		//		Fade in all tables with class "blah":
-		//		|	dojo.query("table.blah").wipeIn().play();
-		return this._anim(dojo.fx, "wipeIn", args); // dojo._Animation
-	},
-
-	wipeOut: function(args){
-		//	summary:
-		//		wipe out all elements of this NodeList. Returns an instance of dojo._Animation
-		//	example:
-		//		Wipe out all tables with class "blah":
-		//		|	dojo.query("table.blah").wipeOut().play();
-		return this._anim(dojo.fx, "wipeOut", args); // dojo._Animation
-	},
-
-	slideTo: function(args){
-		//	summary:
-		//		slide all elements of the node list to the specified place.
-		//		Returns an instance of dojo._Animation
-		//	example:
-		//		|	Move all tables with class "blah" to 300/300:
-		//		|	dojo.query("table.blah").slideTo({
-		//		|		left: 40,
-		//		|		top: 50
-		//		|	}).play();
-		return this._anim(dojo.fx, "slideTo", args); // dojo._Animation
-	},
-
-
-	fadeIn: function(args){
-		//	summary:
-		//		fade in all elements of this NodeList. Returns an instance of dojo._Animation
-		//	example:
-		//		Fade in all tables with class "blah":
-		//		|	dojo.query("table.blah").fadeIn().play();
-		return this._anim(dojo, "fadeIn", args); // dojo._Animation
-	},
-
-	fadeOut: function(args){
-		//	summary:
-		//		fade out all elements of this NodeList. Returns an instance of dojo._Animation
-		//	example:
-		//		Fade out all elements with class "zork":
-		//		|	dojo.query(".zork").fadeOut().play();
-		//	example:
-		//		Fade them on a delay and do something at the end:
-		//		|	var fo = dojo.query(".zork").fadeOut();
-		//		|	dojo.connect(fo, "onEnd", function(){ /*...*/ });
-		//		|	fo.play();
-		return this._anim(dojo, "fadeOut", args); // dojo._Animation
-	},
-
-	animateProperty: function(args){
-		//	summary:
-		//		see dojo.animateProperty(). Animate all elements of this
-		//		NodeList across the properties specified.
-		//	example:
-		//	|	dojo.query(".zork").animateProperty({
-		//	|		duration: 500,
-		//	|		properties: { 
-		//	|			color:		{ start: "black", end: "white" },
-		//	|			left:		{ end: 300 } 
-		//	|		} 
-		//	|	}).play();
-		return this._anim(dojo, "animateProperty", args); // dojo._Animation
-	},
-
-	anim: function(	/*Object*/ 			properties, 
-					/*Integer?*/		duration, 
-					/*Function?*/		easing, 
-					/*Function?*/		onEnd,
-					/*Integer?*/		delay){
-		//	summary:
-		//		Animate one or more CSS properties for all nodes in this list.
-		//		The returned animation object will already be playing when it
-		//		is returned. See the docs for `dojo.anim` for full details.
-		//	properties: Object
-		//		the properties to animate
-		//	duration: Integer?
-		//		Optional. The time to run the animations for
-		//	easing: Function?
-		//		Optional. The easing function to use.
-		//	onEnd: Function?
-		//		A function to be called when the animation ends
-		//	delay:
-		//		how long to delay playing the returned animation
-		//	example:
-		//		Another way to fade out:
-		//	|	dojo.query(".thinger").anim({ opacity: 0 });
-		//	example:
-		//		animate all elements with the "thigner" class to a width of 500
-		//		pixels over half a second
-		//	|	dojo.query(".thinger").anim({ width: 500 }, 700);
-		var canim = dojo.fx.combine(
-			this.map(function(item){
-				return dojo.animateProperty({
-					node: item,
-					properties: properties,
-					duration: duration||350,
-					easing: easing
-				});
-			})
-		); 
-		if(onEnd){
-			dojo.connect(canim, "onEnd", onEnd);
-		}
-		return canim.play(delay||0); // dojo._Animation
-	}
-});
-
+//>>built
+define("dojo/NodeList-fx",["dojo/_base/NodeList","./_base/lang","./_base/connect","./_base/fx","./fx"],function(_1,_2,_3,_4,_5){
+_2.extend(_1,{_anim:function(_6,_7,_8){
+_8=_8||{};
+var a=_5.combine(this.map(function(_9){
+var _a={node:_9};
+_2.mixin(_a,_8);
+return _6[_7](_a);
+}));
+return _8.auto?a.play()&&this:a;
+},wipeIn:function(_b){
+return this._anim(_5,"wipeIn",_b);
+},wipeOut:function(_c){
+return this._anim(_5,"wipeOut",_c);
+},slideTo:function(_d){
+return this._anim(_5,"slideTo",_d);
+},fadeIn:function(_e){
+return this._anim(_4,"fadeIn",_e);
+},fadeOut:function(_f){
+return this._anim(_4,"fadeOut",_f);
+},animateProperty:function(_10){
+return this._anim(_4,"animateProperty",_10);
+},anim:function(_11,_12,_13,_14,_15){
+var _16=_5.combine(this.map(function(_17){
+return _4.animateProperty({node:_17,properties:_11,duration:_12||350,easing:_13});
+}));
+if(_14){
+_3.connect(_16,"onEnd",_14);
 }
+return _16.play(_15||0);
+}});
+return _1;
+});

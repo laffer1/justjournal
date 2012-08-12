@@ -1,51 +1,17 @@
-if(!dojo._hasResource["dijit.form.CurrencyTextBox"]){ //_hasResource checks added by build. Do not use _hasResource directly in your code.
-dojo._hasResource["dijit.form.CurrencyTextBox"] = true;
-dojo.provide("dijit.form.CurrencyTextBox");
-
-//FIXME: dojo.experimental throws an unreadable exception?
-//dojo.experimental("dijit.form.CurrencyTextBox");
-
-dojo.require("dojo.currency");
-dojo.require("dijit.form.NumberTextBox");
-
-dojo.declare(
-	"dijit.form.CurrencyTextBox",
-	dijit.form.NumberTextBox,
-	{
-		// summary:
-		//		A validating currency textbox
-		//
-		// constraints: dijit.form._DateTimeTextBox.__Constraints 
-		//
-		// currency: String
-		//		the [ISO4217](http://en.wikipedia.org/wiki/ISO_4217) currency code, a three letter sequence like "USD"
-		currency: "",
-
-		/*=====
-		constraints: {},
-		======*/
-
-		regExpGen: dojo.currency.regexp,
-		_formatter: dojo.currency.format,
-/*=====
-		parse: function(value, constraints){
-			//	summary: parses the value as a Currency, according to constraints
-			//	value: String
-			//
-			//	constraints: dojo.currency.__ParseOptions
-		},
-=====*/
-		parse: dojo.currency.parse,
-
-		postMixInProperties: function(){
-			if(this.constraints === dijit.form.ValidationTextBox.prototype.constraints){
-				// declare a constraints property on 'this' so we don't overwrite the shared default object in 'prototype'
-				this.constraints = {};
-			}
-			this.constraints.currency = this.currency;
-			dijit.form.CurrencyTextBox.superclass.postMixInProperties.apply(this, arguments);
-		}
-	}
-);
-
+//>>built
+define("dijit/form/CurrencyTextBox",["dojo/currency","dojo/_base/declare","dojo/_base/lang","./NumberTextBox"],function(_1,_2,_3,_4){
+return _2("dijit.form.CurrencyTextBox",_4,{currency:"",baseClass:"dijitTextBox dijitCurrencyTextBox",regExpGen:function(_5){
+return "("+(this.focused?this.inherited(arguments,[_3.mixin({},_5,this.editOptions)])+"|":"")+_1.regexp(_5)+")";
+},_formatter:_1.format,_parser:_1.parse,parse:function(_6,_7){
+var v=this.inherited(arguments);
+if(isNaN(v)&&/\d+/.test(_6)){
+v=_3.hitch(_3.mixin({},this,{_parser:_4.prototype._parser}),"inherited")(arguments);
 }
+return v;
+},_setConstraintsAttr:function(_8){
+if(!_8.currency&&this.currency){
+_8.currency=this.currency;
+}
+this.inherited(arguments,[_1._mixInDefaults(_3.mixin(_8,{exponent:false}))]);
+}});
+});

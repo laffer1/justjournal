@@ -1,23 +1,16 @@
-/*
-	Copyright (c) 2004-2008, The Dojo Foundation All Rights Reserved.
-	Available via Academic Free License >= 2.1 OR the modified BSD license.
-	see: http://dojotoolkit.org/license for details
-*/
-
-
-if(!dojo._hasResource["dojox.av.FLVideo"]){
-dojo._hasResource["dojox.av.FLVideo"]=true;
-dojo.provide("dojox.av.FLVideo");
-dojo.experimental("dojox.av.FLVideo");
-dojo.require("dijit._Widget");
-dojo.require("dojox.embed.Flash");
-dojo.require("dojox.av._Media");
-dojo.declare("dojox.av.FLVideo",[dijit._Widget,dojox.av._Media],{_swfPath:dojo.moduleUrl("dojox.av","resources/video.swf"),postCreate:function(){
+//>>built
+define("dojox/av/FLVideo",["dojo","dijit","dijit/_Widget","dojox/embed/Flash","dojox/av/_Media"],function(_1,_2){
+_1.experimental("dojox.av.FLVideo");
+_1.declare("dojox.av.FLVideo",[_2._Widget,dojox.av._Media],{_swfPath:_1.moduleUrl("dojox.av","resources/video.swf"),constructor:function(_3){
+_1.global.swfIsInHTML=function(){
+return true;
+};
+},postCreate:function(){
 this._subs=[];
 this._cons=[];
 this.mediaUrl=this._normalizeUrl(this.mediaUrl);
 this.initialVolume=this._normalizeVolume(this.initialVolume);
-var _1={path:this._swfPath.uri,width:"100%",height:"100%",params:{allowFullScreen:true,wmode:"transparent"},vars:{videoUrl:this.mediaUrl,id:this.id,autoPlay:this.autoPlay,volume:this.initialVolume,isDebug:this.isDebug}};
+var _4={path:this._swfPath,width:"100%",height:"100%",minimumVersion:9,expressInstall:true,params:{allowFullScreen:this.allowFullScreen,wmode:this.wmode,allowScriptAccess:this.allowScriptAccess,allowNetworking:this.allowNetworking},vars:{videoUrl:this.mediaUrl,id:this.id,autoPlay:this.autoPlay,volume:this.initialVolume,isDebug:this.isDebug}};
 this._sub("stageClick","onClick");
 this._sub("stageSized","onSwfSized");
 this._sub("mediaStatus","onPlayerStatus");
@@ -25,37 +18,44 @@ this._sub("mediaMeta","onMetaData");
 this._sub("mediaError","onError");
 this._sub("mediaStart","onStart");
 this._sub("mediaEnd","onEnd");
-this._flashObject=new dojox.embed.Flash(_1,this.domNode);
-this._flashObject.onLoad=dojo.hitch(this,function(_2){
-this.flashMedia=_2;
+this._flashObject=new dojox.embed.Flash(_4,this.domNode);
+this._flashObject.onError=function(_5){
+console.error("Flash Error:",_5);
+};
+this._flashObject.onLoad=_1.hitch(this,function(_6){
+this.flashMedia=_6;
 this.isPlaying=this.autoPlay;
 this.isStopped=!this.autoPlay;
 this.onLoad(this.flashMedia);
 this._initStatus();
 this._update();
 });
-},play:function(_3){
+this.inherited(arguments);
+},play:function(_7){
 this.isPlaying=true;
 this.isStopped=false;
-this.flashMedia.doPlay(this._normalizeUrl(_3));
+this.flashMedia.doPlay(this._normalizeUrl(_7));
 },pause:function(){
 this.isPlaying=false;
 this.isStopped=false;
+if(this.onPaused){
+this.onPaused();
+}
 this.flashMedia.pause();
-},seek:function(_4){
-this.flashMedia.seek(_4);
-},volume:function(_5){
-if(_5){
+},seek:function(_8){
+this.flashMedia.seek(_8);
+},volume:function(_9){
+if(_9){
 if(!this.flashMedia){
-this.initialVolume=_5;
+this.initialVolume=_9;
 }
-this.flashMedia.setVolume(this._normalizeVolume(_5));
+this.flashMedia.setVolume(this._normalizeVolume(_9));
 }
-if(!this.flashMedia){
+if(!this.flashMedia||!this.flashMedia.doGetVolume){
 return this.initialVolume;
 }
 return this.flashMedia.getVolume();
-},_checkBuffer:function(_6,_7){
+},_checkBuffer:function(_a,_b){
 if(this.percentDownloaded==100){
 if(this.isBuffering){
 this.onBuffer(false);
@@ -63,59 +63,35 @@ this.flashMedia.doPlay();
 }
 return;
 }
-if(!this.isBuffering&&_7<0.1){
+if(!this.isBuffering&&_b<0.1){
 this.onBuffer(true);
 this.flashMedia.pause();
 return;
 }
-var _8=this.percentDownloaded*0.01*this.duration;
-if(!this.isBuffering&&_6+this.minBufferTime*0.001>_8){
+var _c=this.percentDownloaded*0.01*this.duration;
+if(!this.isBuffering&&_a+this.minBufferTime*0.001>_c){
 this.onBuffer(true);
 this.flashMedia.pause();
 }else{
-if(this.isBuffering&&_6+this.bufferTime*0.001<=_8){
+if(this.isBuffering&&_a+this.bufferTime*0.001<=_c){
 this.onBuffer(false);
 this.flashMedia.doPlay();
 }
 }
 },_update:function(){
-var _9=Math.min(this.getTime()||0,this.duration);
-var _a=this.flashMedia.getLoaded();
-this.percentDownloaded=Math.ceil(_a.bytesLoaded/_a.bytesTotal*100);
+var _d=Math.min(this.getTime()||0,this.duration);
+var _e=this.flashMedia.getLoaded();
+this.percentDownloaded=Math.ceil(_e.bytesLoaded/_e.bytesTotal*100);
 this.onDownloaded(this.percentDownloaded);
-this.onPosition(_9);
+this.onPosition(_d);
 if(this.duration){
-this._checkBuffer(_9,_a.buffer);
+this._checkBuffer(_d,_e.buffer);
 }
-setTimeout(dojo.hitch(this,"_update"),this.updateTime);
-},_normalizeUrl:function(_b){
-if(_b&&_b.toLowerCase().indexOf("http")<0){
-var _c=window.location.href.split("/");
-_c.pop();
-_c=_c.join("/")+"/";
-_b=_c+_b;
-}
-return _b;
-},_normalizeVolume:function(_d){
-if(_d>1){
-while(_d>1){
-_d*=0.1;
-}
-}
-return _d;
-},_sub:function(_e,_f){
-dojo.subscribe(this.id+"/"+_e,this,_f);
+this._updateHandle=setTimeout(_1.hitch(this,"_update"),this.updateTime);
 },destroy:function(){
-if(!this.flashMedia){
-this._cons.push(dojo.connect(this,"onLoad",this,"destroy"));
-return;
-}
-dojo.forEach(this._subs,function(s){
-dojo.unsubscribe(s);
-});
-dojo.forEach(this._cons,function(c){
-dojo.disconnect(c);
-});
-this._flashObject.destroy();
+clearTimeout(this._updateHandle);
+_1.disconnect(this._positionHandle);
+this.inherited(arguments);
 }});
-}
+return dojox.av.FLVideo;
+});

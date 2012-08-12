@@ -5,10 +5,16 @@ July 2008
 This document is incomplete, but briefly outlines installing
 justjournal.
 
-JustJournal is developed on JDK 1.5 (java 5) on Mac OS X Tiger
-using MySQL 5 and Apache Tomcat 5.5.  It has been successfully
-deployed on MidnightBSD 0.2 with the native 1.5 JDK using Apache
-Tomcat 5.5 and MySQL 5.
+JustJournal is developed on JDK 1.6 (java 6) on Mac OS X Lion
+using MySQL 5.5 and Apache Tomcat 6.  It has been successfully
+deployed on MidnightBSD 0.4 with the native 1.6 JDK using Apache
+Tomcat 7.0 and MySQL 5.5.
+
+Work is underway to migrate to Apache Cayenne.  This ORM will replace
+the hackish data access code using the old Sun CachedRowSet.  There are
+known deployment problems on newer versions of MySQL as they changed the
+way aliases are handled.  (SELECT fieldname as something from tablename; something
+won't show up in the CachedRowSet with MySQL 5.5.25)
 
 Libraries needed for Just Journal:
 

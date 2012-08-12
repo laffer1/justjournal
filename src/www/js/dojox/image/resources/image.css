@@ -1,26 +1,41 @@
 
-.dijitDialogUnderlay {
+.tundra .dijitDialogUnderlay, 
+.nihilo .dijitDialogUnderlay,
+.soria .dijitDialogUnderlay {
 	background-color:#000; 
 }
-.dojoxLightbox {
+.claro .dojoxLightbox .dijitDialogCloseIconHover,
+.nihilo .dojoxLightbox .dijitDialogCloseIconHover,
+.tundra .dojoxLightbox .dijitDialogCloseIconHover, 
+.tundra .dojoxLightbox .dijitDialogCloseIconActive,
+.nihilo .dojoxLightbox .dijitDialogCloseIconActive,
+.claro .dojoxLightbox .dijitDialogCloseIconActive {
+    background:url(images/close.png) no-repeat 0 0;
+}
+.claro .dojoxLightbox,
+.soria .dojoxLightbox,
+.nihilo .dojoxLightbox,
+.tundra .dojoxLightbox {
 	position:absolute;
 	z-index:999;
 	overflow:hidden;
 	width:100px;
 	height:100px; 
-	border:11px solid #fff;
-	background:#fff url('images/loading.gif') no-repeat center center;
-        
+	border:11px solid #fff !important; 
+	background:#fff url(images/loading.gif) no-repeat center center;
+	
 	-webkit-box-shadow: 0px 6px 10px #636363; 
 	-webkit-border-radius: 3px;
 	-moz-border-radius:4px;
+	border-radius: 4px;
 }
 .dojoxLightboxContainer {
 	position:absolute;
-	top:0; left:0; 
+	top:0; left:0;
+	background-color:#fff;
 }
 .dojoxLightboxFooter {
-	height:50px; 
+	padding-bottom:5px;
 	position:relative;
 	bottom:0;
 	left:0;
@@ -41,24 +56,42 @@
 	height:16px;
 	cursor:pointer;
 }
+.claro .LightboxClose,
 .nihilo .LightboxClose,
 .tundra .LightboxClose {
-	background:url('images/close.png') no-repeat center center;
+	background:url(images/close.png) no-repeat center center;
 }
+.di_ie6 .claro .LightboxClose,
+.di_ie6 .nihilo .LightboxClose,
+.dj_ie6 .tundra .LightboxClose {
+	background:url(images/close.gif) no-repeat center center;
+}
+.claro .LightboxNext, 
 .nihilo .LightboxNext,
 .tundra .LightboxNext {
-	background:url('images/right.png') no-repeat center center;
+	background:url(images/right.png) no-repeat center center;
 }
+.dj_ie6 .claro .LightboxNext,
+.dj_ie6 .nihilo .LightboxNext,
+.dj_ie6 .tundra .LightboxNext {
+	background:url(images/right.gif) no-repeat center center;
+}
+.claro .LightboxPrev,
 .nihilo .LightboxPrev,
 .tundra .LightboxPrev {
-	background:url('images/left.png') no-repeat center center;
+	background:url(images/left.png) no-repeat center center;
+}
+.dj_ie6 .claro .LightboxPrev,
+.dj_ie6 .nihilo .LightboxPrev,
+.dj_ie6 .tundra .LightboxPrev {
+	background:url(images/left.gif) no-repeat center center;
 }
 .soria .LightboxClose,
 .soria .LightboxNext,
 .soria .LightboxPrev {
 	width:15px;
 	height:15px;
-	background:url('../../../dijit/themes/soria/images/spriteRoundedIconsSmall.png') no-repeat center center;
+	background:url(../../../dijit/themes/soria/images/spriteRoundedIconsSmall.png) no-repeat center center;
 	background-position:-60px;
 }
 .soria .LightboxNext {
@@ -67,6 +100,9 @@
 .soria .LightboxPrev {
 	background-position:0 0;
 }
+.dojoxLightboxText {
+	margin:0; padding:0; 
+}
 .slideShowWrapper { 
 	position:relative; 
 	background:#fff;
@@ -74,7 +110,6 @@
 	border:1px solid #333;	
 	padding-bottom:20px;
 	overflow:hidden;
-	text-align: center;
 	-moz-border-radius:3pt;
 	-webkit-border-radius:4pt;
 	-webkit-drop-shadow:#ccc 4pt; 
@@ -145,7 +180,7 @@
 	position: absolute;
 }
 .slideShowCtrl span.slideShowCtrlHide {
-	background-image: url("../../../dojo/resources/blank.gif");
+	background-image: url(../../../dojo/resources/blank.gif);
 	cursor: auto;
 }
 .slideShowCtrl {
@@ -158,11 +193,11 @@
 .slideShowCtrl span {
 	width: 50px;
 	height: 100%;
-	background-image: url("images/buttons.png");
+	background-image: url(images/buttons.png);
 	cursor: pointer;
 }
-.dj_ie6 .slideShowCtrl span {
-	background-image: url("images/buttons.gif");
+.dj_ie .slideShowCtrl span {
+	background-image: url(images/buttons.gif);
 }
 .dj_ie6 .slideShowPager li.currentpage,
 .dj_ie6 .pagination li.disablepage{
@@ -189,9 +224,9 @@
 	height: 400px;
 }
 .thumbOuter .enabled {
-	background: transparent url("images/buttons.png") no-repeat center center;
+	background: transparent url(images/buttons.png) no-repeat center center;
 }
-.dj_ie6 .thumbOuter .enabled { background-image: url("images/buttons.gif"); }
+.dj_ie6 .thumbOuter .enabled { background-image: url(images/buttons.gif); }
 .thumbOuter .thumbNav img {
 	width: 48px;
 	height: 75px;
@@ -244,7 +279,6 @@
 .thumbScroller {
 	overflow-x: hidden;
 	overflow-y: hidden;
-	white-space: nowrap;
 	text-align: center;
 }
 .thumbHoriz .thumbScroller {
@@ -280,4 +314,38 @@
 .imageGalleryWrapper {
 	padding-bottom: 20px;
 	text-align: center;
+}
+.dojoxBadge {
+	position:relative;
+}
+.dojoxBadge .dojoxBadgeImage {
+	position:absolute;
+	top:0; left:0;
+	margin:0;
+	padding:0;
+}
+.dojoxBadge {
+	margin:0; padding:0;
+	border:1px solid #eee;
+}
+.dojoxBadge .dojoxBadgeImage {
+	overflow:hidden;
+	margin-left:1px;
+	margin-top:1px;
+	background:#ededed;
+	z-index:90;
+}
+.dojoxBadge .dojoxBadgeSeen {
+	background-color:#dedede;
+}
+.dojoxBadge .dojoxBadgeOver {
+	background-color:green !important;
+}
+.dojoxBadge .dojoxBadgeTop {
+	z-index:99;
+}
+.glassNode {
+	overflow:hidden;
+	position:absolute;
+	visibility:hidden;
 }

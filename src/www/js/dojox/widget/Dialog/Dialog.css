@@ -34,7 +34,6 @@
 .dojoxDialogTitleBar {
 	
 	cursor:move;
-	position:absolute;
 	top:0;
 	left:0;
 	right:0;
@@ -46,7 +45,7 @@
 	-webkik-border-radius-topleft:7pt;
 	-webkit-border-radius-topright:7pt;
 }
-.dj_safari .dojoxDialogTitleBar {
+.dj_webkit .dojoxDialogTitleBar {
 	border:1px solid #ccc;
 }
 .dojoxDialogNoTitle .dojoxDialogTitleBar {
@@ -66,7 +65,7 @@
 div.dojoxDialogNoTitle {
 	padding-top:9px;
 }
-.dojoxDialogCloseIcon {
+.dojoxDialogCloseIcon, .dojoxDialogCloseIconHover {
 	background : url("images/dialogCloseButton.png") no-repeat top right;
 	position: absolute;
 	vertical-align: middle;
@@ -77,8 +76,18 @@ div.dojoxDialogNoTitle {
 	cursor: pointer;
 	z-index: 999;
 }
-.dj_ie .dojoxDialogCloseIcon {
+.dj_ie6 .dojoxDialogCloseIcon {
 	background-image: url("images/dialogCloseButton.gif");
+}
+.dojoxDialog div.dijitDialogCloseIconHover,
+.dojoxDialog div.dijitDialogCloseIconActive {
+    background-position:0 0;
+}
+.dojoxDialog .dijitDialogCloseIconHover {
+    background-image: url("images/dialogCloseButton.png");
+}
+.dj_ie6 .dojoxDialog .dijitDialogCloseIconHover {
+    background-image: url("images/dialogCloseButton.gif");
 }
 .dojoxDialogNoTitle .dojoxDialogCloseIcon {
 	top: -15px;

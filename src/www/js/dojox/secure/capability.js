@@ -1,28 +1,21 @@
-/*
-	Copyright (c) 2004-2008, The Dojo Foundation All Rights Reserved.
-	Available via Academic Free License >= 2.1 OR the modified BSD license.
-	see: http://dojotoolkit.org/license for details
-*/
-
-
-if(!dojo._hasResource["dojox.secure.capability"]){
-dojo._hasResource["dojox.secure.capability"]=true;
-dojo.provide("dojox.secure.capability");
-dojox.secure.badProps=/^__|^(apply|call|callee|caller|constructor|eval|prototype|this|unwatch|valueOf|watch)$|__$/;
-dojox.secure.capability={keywords:["break","case","catch","const","continue","debugger","default","delete","do","else","enum","false","finally","for","function","if","in","instanceof","new","null","yield","return","switch","throw","true","try","typeof","var","void","while"],validate:function(_1,_2,_3){
-var _4=this.keywords;
-for(var i=0;i<_4.length;i++){
-_3[_4[i]]=true;
+//>>built
+define("dojox/secure/capability",["dijit","dojo","dojox"],function(_1,_2,_3){
+_2.provide("dojox.secure.capability");
+_3.secure.badProps=/^__|^(apply|call|callee|caller|constructor|eval|prototype|this|unwatch|valueOf|watch)$|__$/;
+_3.secure.capability={keywords:["break","case","catch","const","continue","debugger","default","delete","do","else","enum","false","finally","for","function","if","in","instanceof","new","null","yield","return","switch","throw","true","try","typeof","var","void","while"],validate:function(_4,_5,_6){
+var _7=this.keywords;
+for(var i=0;i<_7.length;i++){
+_6[_7[i]]=true;
 }
-var _6="|this| keyword in object literal without a Class call";
-var _7=[];
-if(_1.match(/[\u200c-\u200f\u202a-\u202e\u206a-\u206f\uff00-\uffff]/)){
+var _8="|this| keyword in object literal without a Class call";
+var _9=[];
+if(_4.match(/[\u200c-\u200f\u202a-\u202e\u206a-\u206f\uff00-\uffff]/)){
 throw new Error("Illegal unicode characters detected");
 }
-if(_1.match(/\/\*@cc_on/)){
+if(_4.match(/\/\*@cc_on/)){
 throw new Error("Conditional compilation token is not allowed");
 }
-_1=_1.replace(/\\["'\\\/bfnrtu]/g,"@").replace(/\/\/.*|\/\*[\w\W]*?\*\/|\/(\\[\/\\]|[^*\/])(\\.|[^\/\n\\])*\/[gim]*|("[^"]*")|('[^']*')/g,function(t){
+_4=_4.replace(/\\["'\\\/bfnrtu]/g,"@").replace(/\/\/.*|\/\*[\w\W]*?\*\/|("[^"]*")|('[^']*')/g,function(t){
 return t.match(/^\/\/|^\/\*/)?" ":"0";
 }).replace(/\.\s*([a-z\$_A-Z][\w\$_]*)|([;,{])\s*([a-z\$_A-Z][\w\$_]*\s*):/g,function(t,_a,_b,_c){
 _a=_a||_c;
@@ -31,72 +24,72 @@ throw new Error("Illegal property name "+_a);
 }
 return (_b&&(_b+"0:"))||"~";
 });
-_1.replace(/([^\[][\]\}]\s*=)|((\Wreturn|\S)\s*\[\s*\+?)|([^=!][=!]=[^=])/g,function(_d){
+_4.replace(/([^\[][\]\}]\s*=)|((\Wreturn|\S)\s*\[\s*\+?)|([^=!][=!]=[^=])/g,function(_d){
 if(!_d.match(/((\Wreturn|[=\&\|\:\?\,])\s*\[)|\[\s*\+$/)){
 throw new Error("Illegal operator "+_d.substring(1));
 }
 });
-_1=_1.replace(new RegExp("("+_2.join("|")+")[\\s~]*\\(","g"),function(_e){
+_4=_4.replace(new RegExp("("+_5.join("|")+")[\\s~]*\\(","g"),function(_e){
 return "new(";
 });
-function findOuterRefs(_f,_10){
-var _11={};
-_f.replace(/#\d/g,function(b){
-var _13=_7[b.substring(1)];
+function _f(_10,_11){
+var _12={};
+_10.replace(/#\d+/g,function(b){
+var _13=_9[b.substring(1)];
 for(var i in _13){
-if(i==_6){
+if(i==_8){
 throw i;
 }
 if(i=="this"&&_13[":method"]&&_13["this"]==1){
-i=_6;
+i=_8;
 }
 if(i!=":method"){
-_11[i]=2;
+_12[i]=2;
 }
 }
 });
-_f.replace(/(\W|^)([a-z_\$A-Z][\w_\$]*)/g,function(t,a,_17){
-if(_17.charAt(0)=="_"){
+_10.replace(/(\W|^)([a-z_\$A-Z][\w_\$]*)/g,function(t,a,_14){
+if(_14.charAt(0)=="_"){
 throw new Error("Names may not start with _");
 }
-_11[_17]=1;
+_12[_14]=1;
 });
-return _11;
+return _12;
 };
-var _18,_19;
-function parseBlock(t,_1b,a,b,_1e,_1f){
-_1f.replace(/(^|,)0:\s*function#(\d)/g,function(t,a,b){
-var _23=_7[b];
-_23[":method"]=1;
+var _15,_16;
+function _17(t,_18,a,b,_19,_1a){
+_1a.replace(/(^|,)0:\s*function#(\d+)/g,function(t,a,b){
+var _1b=_9[b];
+_1b[":method"]=1;
 });
-_1f=_1f.replace(/(^|[^_\w\$])Class\s*\(\s*([_\w\$]+\s*,\s*)*#(\d)/g,function(t,p,a,b){
-var _28=_7[b];
-delete _28[_6];
+_1a=_1a.replace(/(^|[^_\w\$])Class\s*\(\s*([_\w\$]+\s*,\s*)*#(\d+)/g,function(t,p,a,b){
+var _1c=_9[b];
+delete _1c[_8];
 return (p||"")+(a||"")+"#"+b;
 });
-_19=findOuterRefs(_1f,_1b);
-function parseVars(t,a,b,_2c){
-_2c.replace(/,?([a-z\$A-Z][_\w\$]*)/g,function(t,_2e){
-if(_2e=="Class"){
+_16=_f(_1a,_18);
+function _1d(t,a,b,_1e){
+_1e.replace(/,?([a-z\$A-Z][_\w\$]*)/g,function(t,_1f){
+if(_1f=="Class"){
 throw new Error("Class is reserved");
 }
-delete _19[_2e];
+delete _16[_1f];
 });
 };
-if(_1b){
-parseVars(t,a,a,_1e);
+if(_18){
+_1d(t,a,a,_19);
 }
-_1f.replace(/(\W|^)(var) ([ \t,_\w\$]+)/g,parseVars);
-return (a||"")+(b||"")+"#"+(_7.push(_19)-1);
+_1a.replace(/(\W|^)(var) ([ \t,_\w\$]+)/g,_1d);
+return (a||"")+(b||"")+"#"+(_9.push(_16)-1);
 };
 do{
-_18=_1.replace(/((function|catch)(\s+[_\w\$]+)?\s*\(([^\)]*)\)\s*)?{([^{}]*)}/g,parseBlock);
-}while(_18!=_1&&(_1=_18));
-parseBlock(0,0,0,0,0,_1);
-for(i in _19){
-if(!(i in _3)){
+_15=_4.replace(/((function|catch)(\s+[_\w\$]+)?\s*\(([^\)]*)\)\s*)?{([^{}]*)}/g,_17);
+}while(_15!=_4&&(_4=_15));
+_17(0,0,0,0,0,_4);
+for(i in _16){
+if(!(i in _6)){
 throw new Error("Illegal reference to "+i);
 }
 }
 }};
-}
+});

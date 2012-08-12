@@ -1,140 +1,88 @@
-.dj_gecko .dijitRtl .dijitInputField {
-	direction: ltr; 
+.dijitRtl .dijitPlaceHolder {
+	left: auto;
+	right: 0;
 }
-.dj_gecko .dijitRtl .dijitInputField * {
-	direction: rtl; 
+.dijitMenuItemRtl {
+	text-align: right;
 }
-.dijitRtl .dijitTreeContainer .dijitTreeExpando, .dijitRtl .dijitTreeContainer .dijitTreeExpand {
-	float:right;
+.dj_iequirks .dijitComboButtonRtl button {
+	
+	float:left;
 }
-.dijitRtl .dijitExpandoText { 
-	float: right; 
-	padding-left: 3px;
-	padding-right: 0; 
-} 
-.dijitRtl .dijitComboBox .dijitInputField {
-	border-right-width:1px !important;
-	border-left-width:0 !important;
+.dijitTextBoxRtl .dijitValidationContainer,
+.dijitTextBoxRtl .dijitSpinnerButtonContainer,
+.dijitComboBoxRtl .dijitArrowButtonContainer {
+	
+	border-right-width: 1px !important;
+	border-left-width: 0 !important;
 }
-.dijitRtl .dijitCalendarNextYear {
-	margin:0 0.55em 0 0;
+.dijitSpinnerRtl .dijitSpinnerButtonContainer .dijitArrowButton {
+	right: 0;
+	left: auto;
 }
-.dijitRtl .dijitCalendarPreviousYear {
-	margin:0 0 0 0.55em;
+.dj_ie7 .dijitInputContainer {
+	
+	display: inline-block;
 }
-.dijitRtl .dijitProgressBarFull .dijitProgressBarLabel {
-	right:0; 
-}
-.dijitRtl .dijitComboButton .dijitButtonContents {
-	border-right-width:1px !important;
-}
-.dijitRtl .dijitA11ySideArrow {
-	margin-left:1em;
-	margin-right:0;
-}
-.dijitRtl .dijitAccordionArrow,
-.dijitRtl .dijitAccordionTitle .arrowTextUp,
-.dijitRtl .dijitAccordionTitle .arrowTextDown {
+.dijitTextBoxRtl .dijitSpinnerButtonContainer,
+.dijitTextBoxRtl .dijitValidationContainer,
+.dijitTextBoxRtl .dijitArrowButtonContainer {
 	float: left;
 }
-.dijitRtl .dijitSliderImageHandleV {
+.dijitCalendarRtl .dijitCalendarNextYear {
+	margin:0 0.55em 0 0;
+}
+.dijitCalendarRtl .dijitCalendarPreviousYear {
+	margin:0 0 0 0.55em;
+}
+.dijitSliderRtl .dijitSliderImageHandleV {
 	left:auto;
-	right:-6px;
 }
-.dj_ie .dijitRtl .dijitSliderImageHandleV {
-	right:-10px;
+.dijitSliderRtl .dijitSliderImageHandleH {
+	left:-50%;
 }
-.dijitRtl .dijitSliderMoveableH {
+.dijitSliderRtl .dijitSliderMoveableH {
 	right:auto;
 	left:0;
 }
-.dijitRtl .dijitRuleContainerV {
+.dijitSliderRtl .dijitRuleContainerV {
 	float:right;
 }
-.dj_gecko .dijitRtl .dijitRuleContainerV {
-	float:left;
-}
-.dj_ie .dijitRtl .dijitRuleContainerV {
+.dj_ie .dijitSliderRtl .dijitRuleContainerV {
 	text-align:right;
 }
-.dj_ie .dijitRtl .dijitRuleLabelV {
+.dj_ie .dijitSliderRtl .dijitRuleLabelV {
 	text-align:left;
 }
-.dj_ie .dijitRtl .dijitRuleLabelH {
+.dj_ie .dijitSliderRtl .dijitRuleLabelH {
 	zoom:1;
 }
-.dj_ie .dijitRtl .dijitSliderProgressBarH {
-	right:0;
-	left:auto;
-}
-.dj_gecko .dijitRtl .dijitSliderProgressBarH {
+.dijitSliderRtl .dijitSliderProgressBarH {
+	
 	float:right;
 	right:0;
 	left:auto;
 }
-.dijitRtl .dijitTab {
-	float:right;
+.dijitRtl .dijitContentPaneLoading .dijitIconLoading,
+.dijitRtl .dijitContentPaneError .dijitIconError {
+	margin-right: 0;
+	margin-left: 9px;
 }
-.dj_ie .dijitRtl .dijitTab,
-.dj_ie .dijitRtl .dijitTab .dijitTabInnerDiv,
-.dj_ie .dijitRtl .dijitTab .dijitTabInnerDiv span {
-	position:static;
-	zoom:1;
+.dijitTabControllerRtl .nowrapTabStrip {
+    text-align: right;  
 }
-.dj_ie .dijitRtl .dijitTabContainer .dijitAlignLeft {
-	margin-left:1px !important;
+.dijitTabRtl .dijitTabCloseButton {
+	margin-left: 0;
+	margin-right: 1em;
 }
-.dj_ie .dijitRtl .dijitTabContainer .dijitAlignRight {
-	margin-right:1px !important;
+.dj_ie .dijitTimePickerRtl .dijitTimePickerItem {
+	width:100%;
 }
-.dj_ie6 .dijitRtl .dijitTab {
+.dijitColorPaletteRtl .dijitColorPaletteUnder {
 	
-	width:1px;
+	left: auto;
+	right: 0;
 }
-.dj_ie7 .dijitRtl .dijitTabContainer .dijitAlignLeft {
-	
-	margin-left:1px !important;
-}
-.dj_ie7 .dijitRtl .dijitTabContainer .dijitAlignRight {
-	
-	margin-right:1px !important;
-}
-.dj_ie6 .dijitRtl .dijitTabContainer .dijitAlignLeft {
-	overflow-x:visible;
-	margin-left:2px !important;
-}
-.dj_ie6 .dijitRtl .dijitTabContainer .dijitAlignRight {
-	overflow-x:visible;
-	margin-right:2px !important;
-}
-.dj_ie7 .dijitRtl .dijitTab .dijitTabInnerDiv {
-	float:left;
-}
-.dj_ie7 .dijitRtl .dijitTab .closeImage {
-	padding: 0 0 0 12px;
-}
-.dj_ie .dijitRtl .dijitAlignRight .dijitTab {
-	position:relative;
-}
-.dijitRtl .dijitTitlePane .dijitArrowNode {
-	float: left;
-}
-.dijitRtl .dijitSpinner .dijitInputLayoutContainer .dijitArrowButton {
-	right: auto;
-	left: 0;
-	border-width: 0 1px 0 0 !important;
-}
-.dijitRtl .dijitSpinnerButtonContainer {
-	float: left;
-}
-.dijitRtl .dijit_a11y .dijitSpinnerButtonContainer {
-	margin-left: none;
-	margin-right: 2px;
-}
-.dijitRtl DIV.dijitArrowButton, .dijitRtl .dijitValidationIcon, .dijitRtl .dijitValidationIconText {
-	float: left;
-}
-.dijitRtl .dijitContentPaneLoading, .dijitRtl .dijitContentPaneError {
-	background-position:right;
-	padding-right:25px;
+.dijitSelectRtl .dijitButtonContents {
+	text-align: right;
 }

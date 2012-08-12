@@ -1,31 +1,21 @@
-if(!dojo._hasResource["dojox.charting.axis2d.Base"]){ //_hasResource checks added by build. Do not use _hasResource directly in your code.
-dojo._hasResource["dojox.charting.axis2d.Base"] = true;
-dojo.provide("dojox.charting.axis2d.Base");
-
-dojo.require("dojox.charting.Element");
-
-dojo.declare("dojox.charting.axis2d.Base", dojox.charting.Element, {
-	constructor: function(chart, kwArgs){
-		this.vertical = kwArgs && kwArgs.vertical;
-	},
-	clear: function(){
-		return this;
-	},
-	initialized: function(){
-		return false;
-	},
-	calculate: function(min, max, span){
-		return this;
-	},
-	getScaler: function(){
-		return null;
-	},
-	getOffsets: function(){
-		return {l: 0, r: 0, t: 0, b: 0};
-	},
-	render: function(dim, offsets){
-		return this;
-	}
+//>>built
+define("dojox/charting/axis2d/Base",["dojo/_base/declare","../Element"],function(_1,_2){
+return _1("dojox.charting.axis2d.Base",_2,{constructor:function(_3,_4){
+this.vertical=_4&&_4.vertical;
+},clear:function(){
+return this;
+},initialized:function(){
+return false;
+},calculate:function(_5,_6,_7){
+return this;
+},getScaler:function(){
+return null;
+},getTicks:function(){
+return null;
+},getOffsets:function(){
+return {l:0,r:0,t:0,b:0};
+},render:function(_8,_9){
+this.dirty=false;
+return this;
+}});
 });
-
-}

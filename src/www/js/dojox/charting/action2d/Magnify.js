@@ -1,67 +1,55 @@
-/*
-	Copyright (c) 2004-2008, The Dojo Foundation All Rights Reserved.
-	Available via Academic Free License >= 2.1 OR the modified BSD license.
-	see: http://dojotoolkit.org/license for details
-*/
-
-
-if(!dojo._hasResource["dojox.charting.action2d.Magnify"]){
-dojo._hasResource["dojox.charting.action2d.Magnify"]=true;
-dojo.provide("dojox.charting.action2d.Magnify");
-dojo.require("dojox.charting.action2d.Base");
-dojo.require("dojox.gfx.matrix");
-(function(){
-var _1=2,m=dojox.gfx.matrix,gf=dojox.gfx.fx;
-dojo.declare("dojox.charting.action2d.Magnify",dojox.charting.action2d.Base,{defaultParams:{duration:400,easing:dojo.fx.easing.backOut,scale:_1},optionalParams:{},constructor:function(_4,_5,_6){
-this.scale=_6&&typeof _6.scale=="number"?_6.scale:_1;
+//>>built
+define("dojox/charting/action2d/Magnify",["dojo/_base/connect","dojo/_base/declare","./PlotAction","dojox/gfx/matrix","dojox/gfx/fx","dojo/fx","dojo/fx/easing"],function(_1,_2,_3,m,gf,df,_4){
+var _5=2;
+return _2("dojox.charting.action2d.Magnify",_3,{defaultParams:{duration:400,easing:_4.backOut,scale:_5},optionalParams:{},constructor:function(_6,_7,_8){
+this.scale=_8&&typeof _8.scale=="number"?_8.scale:_5;
 this.connect();
 },process:function(o){
 if(!o.shape||!(o.type in this.overOutEvents)||!("cx" in o)||!("cy" in o)){
 return;
 }
-var _8=o.run.name,_9=o.index,_a=[],_b,_c,_d;
-if(_8 in this.anim){
-_b=this.anim[_8][_9];
+var _9=o.run.name,_a=o.index,_b=[],_c,_d,_e;
+if(_9 in this.anim){
+_c=this.anim[_9][_a];
 }else{
-this.anim[_8]={};
+this.anim[_9]={};
 }
-if(_b){
-_b.action.stop(true);
+if(_c){
+_c.action.stop(true);
 }else{
-this.anim[_8][_9]=_b={};
+this.anim[_9][_a]=_c={};
 }
 if(o.type=="onmouseover"){
-_c=m.identity;
-_d=this.scale;
+_d=m.identity;
+_e=this.scale;
 }else{
-_c=m.scaleAt(this.scale,o.cx,o.cy);
-_d=1/this.scale;
+_d=m.scaleAt(this.scale,o.cx,o.cy);
+_e=1/this.scale;
 }
-var _e={shape:o.shape,duration:this.duration,easing:this.easing,transform:[{name:"scaleAt",start:[1,o.cx,o.cy],end:[_d,o.cx,o.cy]},_c]};
+var _f={shape:o.shape,duration:this.duration,easing:this.easing,transform:[{name:"scaleAt",start:[1,o.cx,o.cy],end:[_e,o.cx,o.cy]},_d]};
 if(o.shape){
-_a.push(gf.animateTransform(_e));
+_b.push(gf.animateTransform(_f));
 }
 if(o.oultine){
-_e.shape=o.outline;
-_a.push(gf.animateTransform(_e));
+_f.shape=o.outline;
+_b.push(gf.animateTransform(_f));
 }
 if(o.shadow){
-_e.shape=o.shadow;
-_a.push(gf.animateTransform(_e));
+_f.shape=o.shadow;
+_b.push(gf.animateTransform(_f));
 }
-if(!_a.length){
-delete this.anim[_8][_9];
+if(!_b.length){
+delete this.anim[_9][_a];
 return;
 }
-_b.action=dojo.fx.combine(_a);
+_c.action=df.combine(_b);
 if(o.type=="onmouseout"){
-dojo.connect(_b.action,"onEnd",this,function(){
-if(this.anim[_8]){
-delete this.anim[_8][_9];
+_1.connect(_c.action,"onEnd",this,function(){
+if(this.anim[_9]){
+delete this.anim[_9][_a];
 }
 });
 }
-_b.action.play();
+_c.action.play();
 }});
-})();
-}
+});

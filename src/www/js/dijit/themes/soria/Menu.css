@@ -1,15 +1,21 @@
 
-.soria .dijitMenu {
+.soria .dijitMenu,
+.soria .dijitMenuBar {
 	border: 1px solid #cbcbcb;
-	margin: 0px;
-	padding: 0px;
+	margin: 0;
+	padding: 0;
 	background-color: #fff;
 }
+.soria .dijitBorderContainer .dijitMenuBar {
+	border:1px solid #B1BADF;
+}
 .soria .dijitMenuItem {
-	background-color: #fff;
-	font: menu;
-	margin: 0px;
+	font-family: sans-serif;
+	margin: 0;
 	color: #243C5F;
+}
+.soria .dijitMenuBar .dijitMenuItem {
+	padding: 4px 5px;
 }
 .soria .dijitMenuPreviousButton, .soria .dijitMenuNextButton {
 	font-style: italic;
@@ -17,33 +23,26 @@
 .soria .dijitMenuItem TD {
 	padding:1px;
 }
-.soria .dijitMenuItemHover {
+.soria .dijitMenuPassive .dijitMenuItemHover,
+.soria .dijitComboBoxMenu .dijitMenuItemHover,
+.soria .dijitMenuItemSelected {
 	background-color: #d9e6f9; 
 	color: #243C5F;
 }
 .soria .dijitMenuItemIcon {
 	width: 15px;
 	height: 15px;
-	
 }
 .soria .dijitMenuExpand {
-	display:none;
-}
-.soria .dijitMenuExpandEnabled {
-	
 	width:15px;
 	height:15px;
-	background:url('images/spriteRoundedIconsSmall.png') no-repeat -30px top;
-	display:block;
+	background-image: url('images/spriteRoundedIconsSmall.png');
+	background-position: -30px top;
 }
-.dj_ie6 .soria .dijitMenuExpandEnabled {
-	background-image:url('images/spriteRoundedIconsSmall.gif');
-}
-.soria .dijitMenuExpandInner {
-	display:none;
+.dj_ie6 .soria .dijitMenuExpand {
+	background-image: url('images/spriteRoundedIconsSmall.gif');
 }
 .soria .dijitMenuSeparator {
-	background-color: #fff;
 	height: 1px;
 }
 .soria .dijitMenuSeparatorTop {
@@ -51,4 +50,14 @@
 }
 .soria .dijitMenuSeparatorBottom {
 	border-top: 1px solid #8ba0bd;
+}
+.soria .dijitCheckedMenuItemIconChar {
+	display: none;
+}
+.soria .dijitCheckedMenuItemIcon {
+	background-image: url('images/spriteCheckbox.gif');
+	background-position: -80px;
+}
+.soria .dijitCheckedMenuItemChecked .dijitCheckedMenuItemIcon {
+	background-position: -64px;
 }

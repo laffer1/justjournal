@@ -1,48 +1,42 @@
-/*
-	Copyright (c) 2004-2008, The Dojo Foundation All Rights Reserved.
-	Available via Academic Free License >= 2.1 OR the modified BSD license.
-	see: http://dojotoolkit.org/license for details
-*/
-
-
-if(!dojo._hasResource["dojox.form.FilePickerTextBox"]){
-dojo._hasResource["dojox.form.FilePickerTextBox"]=true;
-dojo.provide("dojox.form.FilePickerTextBox");
-dojo.require("dojox.widget.FilePicker");
-dojo.require("dijit.form.ValidationTextBox");
-dojo.require("dojox.form._HasDropDown");
-dojo.declare("dojox.form.FilePickerTextBox",[dijit.form.ValidationTextBox,dojox.form._HasDropDown],{baseClass:"dojoxFilePickerTextBox",templateString:"<div class=\"dijit dijitReset dijitInlineTable dijitLeft\"\n\tid=\"widget_${id}\"\n\tdojoAttachEvent=\"onmouseenter:_onMouse,onmouseleave:_onMouse,onmousedown:_onMouse\" waiRole=\"combobox\" tabIndex=\"-1\"\n\t><div style=\"overflow:hidden;\"\n\t\t><div class='dijitReset dijitRight dijitButtonNode dijitArrowButton dijitDownArrowButton'\n\t\t\tdojoAttachPoint=\"downArrowNode,dropDownNode,popupStateNode\" waiRole=\"presentation\"\n\t\t\t><div class=\"dijitArrowButtonInner\">&thinsp;</div\n\t\t\t><div class=\"dijitArrowButtonChar\">&#9660;</div\n\t\t></div\n\t\t><div class=\"dijitReset dijitValidationIcon\"><br></div\n\t\t><div class=\"dijitReset dijitValidationIconText\">&Chi;</div\n\t\t><div class=\"dijitReset dijitInputField\"\n\t\t\t><input type=\"text\" autocomplete=\"off\" name=\"${name}\" class='dijitReset'\n\t\t\t\tdojoAttachEvent='onfocus:_update,onkeyup:_update,onblur:_onMouse,onkeypress:_onKey' \n\t\t\t\tdojoAttachPoint='textbox,focusNode' waiRole=\"textbox\" waiState=\"haspopup-true,autocomplete-list\"\n\t\t/></div\n\t></div\n></div>\n",searchDelay:500,_stopClickEvents:false,valueItem:null,postMixInProperties:function(){
+//>>built
+require({cache:{"url:dojox/form/resources/FilePickerTextBox.html":"<div class=\"dijit dijitReset dijitInlineTable dijitLeft\"\n\tid=\"widget_${id}\"\n\trole=\"combobox\" tabIndex=\"-1\"\n\t><div style=\"overflow:hidden;\"\n\t\t><div class='dijitReset dijitRight dijitButtonNode dijitArrowButton dijitDownArrowButton'\n\t\t\tdojoAttachPoint=\"downArrowNode,_buttonNode,_popupStateNode\" role=\"presentation\"\n\t\t\t><div class=\"dijitArrowButtonInner\">&thinsp;</div\n\t\t\t><div class=\"dijitArrowButtonChar\">&#9660;</div\n\t\t></div\n\t\t><div class=\"dijitReset dijitValidationIcon\"><br></div\n\t\t><div class=\"dijitReset dijitValidationIconText\">&Chi;</div\n\t\t><div class=\"dijitReset dijitInputField\"\n\t\t\t><input type=\"text\" autocomplete=\"off\" ${!nameAttrSetting} class='dijitReset'\n\t\t\t\tdojoAttachEvent='onkeypress:_onKey' \n\t\t\t\tdojoAttachPoint='textbox,focusNode' role=\"textbox\" aria-haspopup=\"true\" aria-autocomplete=\"list\"\n\t\t/></div\n\t></div\n></div>\n"}});
+define("dojox/form/FilePickerTextBox",["dojo/_base/lang","dojo/_base/array","dojo/_base/event","dojo/window","dijit/focus","dijit/registry","dijit/form/_TextBoxMixin","dijit/form/ValidationTextBox","dijit/_HasDropDown","dojox/widget/FilePicker","dojo/text!./resources/FilePickerTextBox.html","dojo/_base/declare","dojo/keys"],function(_1,_2,_3,_4,_5,_6,_7,_8,_9,_a,_b,_c,_d){
+return _c("dojox.form.FilePickerTextBox",[_8,_9],{baseClass:"dojoxFilePickerTextBox",templateString:_b,searchDelay:500,valueItem:null,numPanes:2.25,postMixInProperties:function(){
 this.inherited(arguments);
-this.dropDown=new dojox.widget.FilePicker(this.constraints);
+this.dropDown=new _a(this.constraints);
 },postCreate:function(){
 this.inherited(arguments);
 this.connect(this.dropDown,"onChange",this._onWidgetChange);
 this.connect(this.focusNode,"onblur","_focusBlur");
 this.connect(this.focusNode,"onfocus","_focusFocus");
 this.connect(this.focusNode,"ondblclick",function(){
-dijit.selectInputText(this.focusNode);
+_7.selectInputText(this.focusNode);
 });
-},_setValueAttr:function(_1){
+},_setValueAttr:function(_e,_f,_10){
 if(!this._searchInProgress){
 this.inherited(arguments);
+_e=_e||"";
+var _11=this.dropDown.get("pathValue")||"";
+if(_e!==_11){
 this._skip=true;
-this.dropDown.attr("pathValue",_1);
+var fx=_1.hitch(this,"_setBlurValue");
+this.dropDown._setPathValueAttr(_e,!_10,this._settingBlurValue?fx:null);
 }
-},_onWidgetChange:function(_2){
-if(!_2&&this.focusNode.value){
+}
+},_onWidgetChange:function(_12){
+if(!_12&&this.focusNode.value){
 this._hasValidPath=false;
+this.focusNode.value="";
 }else{
-this.valueItem=_2;
-var _3=this.dropDown._getPathValueAttr(_2);
-if(_3||!this._skipInvalidSet){
-if(_3){
+this.valueItem=_12;
+var _13=this.dropDown._getPathValueAttr(_12);
+if(_13){
 this._hasValidPath=true;
 }
 if(!this._skip){
-this.attr("value",_3);
+this._setValueAttr(_13,undefined,true);
 }
 delete this._skip;
-}
 }
 this.validate();
 },startup:function(){
@@ -52,15 +46,18 @@ this.dropDown.startup();
 this.inherited(arguments);
 },openDropDown:function(){
 this.dropDown.domNode.style.width="0px";
+if(!("minPaneWidth" in (this.constraints||{}))){
+this.dropDown.set("minPaneWidth",(this.domNode.offsetWidth/this.numPanes));
+}
 this.inherited(arguments);
 },toggleDropDown:function(){
 this.inherited(arguments);
 if(this._opened){
-this.dropDown.attr("pathValue",this.attr("value"));
+this.dropDown.set("pathValue",this.get("value"));
 }
 },_focusBlur:function(e){
 if(e.explicitOriginalTarget==this.focusNode&&!this._allowBlur){
-window.setTimeout(dojo.hitch(this,function(){
+window.setTimeout(_1.hitch(this,function(){
 if(!this._allowBlur){
 this.focus();
 }
@@ -76,11 +73,11 @@ if(this._menuFocus){
 this.dropDown._updateClass(this._menuFocus,"Item",{"Hover":false});
 }
 delete this._menuFocus;
-var _6=dijit.getFocus(this);
-if(_6&&_6.node){
-_6=dijit.byNode(_6.node);
-if(_6){
-this._menuFocus=_6.domNode;
+var _14=_5.curNode;
+if(_14){
+_14=_6.byNode(_14);
+if(_14){
+this._menuFocus=_14.domNode;
 }
 }
 if(this._menuFocus){
@@ -92,95 +89,98 @@ this._allowBlur=true;
 delete this.dropDown._savedFocus;
 this.inherited(arguments);
 },_setBlurValue:function(){
-if(this.dropDown){
-this.attr("value",this.focusNode.value);
-}
+if(this.dropDown&&!this._settingBlurValue){
+this._settingBlurValue=true;
+this.set("value",this.focusNode.value);
+}else{
+delete this._settingBlurValue;
 this.inherited(arguments);
-},parse:function(_7,_8){
+}
+},parse:function(_15,_16){
 if(this._hasValidPath||this._hasSelection){
-return _7;
+return _15;
 }
-var dd=this.dropDown,_a=dd.topDir,_b=dd.pathSeparator;
-var _c=dd.attr("pathValue");
-var _d=function(v){
-if(_a.length&&v.indexOf(_a)===0){
-v=v.substring(_a.length);
+var dd=this.dropDown,_17=dd.topDir,sep=dd.pathSeparator;
+var _18=dd.get("pathValue");
+var _19=function(v){
+if(_17.length&&v.indexOf(_17)===0){
+v=v.substring(_17.length);
 }
-if(_b&&v[v.length-1]==_b){
+if(sep&&v[v.length-1]==sep){
 v=v.substring(0,v.length-1);
 }
 return v;
 };
-_c=_d(_c);
-val=_d(_7);
-if(val==_c){
-return _7;
+_18=_19(_18);
+var val=_19(_15);
+if(val==_18){
+return _15;
 }
 return undefined;
 },_startSearchFromInput:function(){
 var dd=this.dropDown,fn=this.focusNode;
-var val=fn.value,_12=val,_13=dd.topDir;
+var val=fn.value,_1a=val,_1b=dd.topDir;
 if(this._hasSelection){
-dijit.selectInputText(fn,_12.length);
+_7.selectInputText(fn,_1a.length);
 }
 this._hasSelection=false;
-if(_13.length&&val.indexOf(_13)===0){
-val=val.substring(_13.length);
+if(_1b.length&&val.indexOf(_1b)===0){
+val=val.substring(_1b.length);
 }
-var _14=val.split(dd.pathSeparator);
-var _15=dojo.hitch(this,function(idx){
-var dir=_14[idx];
-var _18=dd.getChildren()[idx];
-var _19;
+var _1c=val.split(dd.pathSeparator);
+var _1d=_1.hitch(this,function(idx){
+var dir=_1c[idx];
+var _1e=dd.getChildren()[idx];
+var _1f;
 this._searchInProgress=true;
-var _1a=dojo.hitch(this,function(){
+var _20=_1.hitch(this,function(){
 delete this._searchInProgress;
 });
-if((dir||_18)&&!this._opened){
+if((dir||_1e)&&!this._opened){
 this.toggleDropDown();
 }
-if(dir&&_18){
-var fx=dojo.hitch(this,function(){
-if(_19){
-this.disconnect(_19);
+if(dir&&_1e){
+var fx=_1.hitch(this,function(){
+if(_1f){
+this.disconnect(_1f);
 }
-delete _19;
-var _1c=_18._menu.getChildren();
-var _1d=dojo.filter(_1c,function(i){
+delete _1f;
+var _21=_1e._menu.getChildren();
+var _22=_2.filter(_21,function(i){
 return i.label==dir;
 })[0];
-var _1f=dojo.filter(_1c,function(i){
+var _23=_2.filter(_21,function(i){
 return (i.label.indexOf(dir)===0);
 })[0];
-if(_1d&&((_14.length>idx+1&&_1d.children)||(!_1d.children))){
+if(_22&&((_1c.length>idx+1&&_22.children)||(!_22.children))){
 idx++;
-_18._menu.onItemClick(_1d,{type:"internal",stopPropagation:function(){
+_1e._menu.onItemClick(_22,{type:"internal",stopPropagation:function(){
 },preventDefault:function(){
 }});
-if(_14[idx]){
-_15(idx);
+if(_1c[idx]){
+_1d(idx);
 }else{
-_1a();
+_20();
 }
 }else{
-_18._setSelected(null);
-if(_1f&&_14.length===idx+1){
+_1e._setSelected(null);
+if(_23&&_1c.length===idx+1){
 dd._setInProgress=true;
-dd._removeAfter(_18);
+dd._removeAfter(_1e);
 delete dd._setInProgress;
-var _21=_1f.label;
-if(_1f.children){
-_21+=dd.pathSeparator;
+var _24=_23.label;
+if(_23.children){
+_24+=dd.pathSeparator;
 }
-_21=_21.substring(dir.length);
+_24=_24.substring(dir.length);
 window.setTimeout(function(){
-dijit.scrollIntoView(_1f.domNode);
+_4.scrollIntoView(_23.domNode);
 },1);
-fn.value=_12+_21;
-dijit.selectInputText(fn,_12.length);
+fn.value=_1a+_24;
+_7.selectInputText(fn,_1a.length);
 this._hasSelection=true;
 try{
-_1f.focusNode.focus();
+_23.focusNode.focus();
 }
 catch(e){
 }
@@ -190,52 +190,51 @@ this.dropDown._updateClass(this._menuFocus,"Item",{"Hover":false,"Focus":false})
 }
 delete this._menuFocus;
 }
-_1a();
+_20();
 }
 });
-if(!_18.isLoaded){
-_19=this.connect(_18,"onLoad",fx);
+if(!_1e.isLoaded){
+_1f=this.connect(_1e,"onLoad",fx);
 }else{
 fx();
 }
 }else{
-if(_18){
-_18._setSelected(null);
+if(_1e){
+_1e._setSelected(null);
 dd._setInProgress=true;
-dd._removeAfter(_18);
+dd._removeAfter(_1e);
 delete dd._setInProgress;
 }
-_1a();
+_20();
 }
 });
-_15(0);
+_1d(0);
 },_onKey:function(e){
 if(this.disabled||this.readOnly){
 return;
 }
-var dk=dojo.keys;
 var c=e.charOrCode;
-if(c==dk.DOWN_ARROW){
+if(c==_d.DOWN_ARROW){
 this._allowBlur=true;
 }
-if(c==dk.ENTER&&this._opened){
+if(c==_d.ENTER&&this._opened){
 this.dropDown.onExecute();
-dijit.selectInputText(this.focusNode,this.focusNode.value.length);
+_7.selectInputText(this.focusNode,this.focusNode.value.length);
 this._hasSelection=false;
-dojo.stopEvent(e);
+_3.stop(e);
 return;
 }
-if((c==dk.RIGHT_ARROW||c==dk.LEFT_ARROW||c==dk.TAB)&&this._hasSelection){
+if((c==_d.RIGHT_ARROW||c==_d.LEFT_ARROW||c==_d.TAB)&&this._hasSelection){
 this._startSearchFromInput();
-dojo.stopEvent(e);
+_3.stop(e);
 return;
 }
 this.inherited(arguments);
 var _25=false;
-if((c==dk.BACKSPACE||c==dk.DELETE)&&this._hasSelection){
+if((c==_d.BACKSPACE||c==_d.DELETE)&&this._hasSelection){
 this._hasSelection=false;
 }else{
-if(c==dk.BACKSPACE||c==dk.DELETE||c==" "){
+if(c==_d.BACKSPACE||c==_d.DELETE||c==" "){
 _25=true;
 }else{
 _25=e.keyChar!=="";
@@ -248,7 +247,7 @@ delete this._searchTimer;
 if(_25){
 this._hasValidPath=false;
 this._hasSelection=false;
-this._searchTimer=window.setTimeout(dojo.hitch(this,"_startSearchFromInput"),this.searchDelay+1);
+this._searchTimer=window.setTimeout(_1.hitch(this,"_startSearchFromInput"),this.searchDelay+1);
 }
 }});
-}
+});
