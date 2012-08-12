@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2006, 2009 Lucas Holt
+Copyright (c) 2006, 2009, 2012 Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -11,10 +11,6 @@ permitted provided that the following conditions are met:
   Redistributions in binary form must reproduce the above copyright notice, this
   list of conditions and the following disclaimer in the documentation and/or other
   materials provided with the distribution.
-
-  Neither the name of the Just Journal nor the names of its contributors
-  may be used to endorse or promote products derived from this software without
-  specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
 CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
@@ -35,48 +31,35 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.utility;
 
 import com.justjournal.core.Settings;
+import org.apache.cayenne.ObjectContext;
+import org.apache.cayenne.access.DataContext;
+import org.apache.cayenne.configuration.server.ServerRuntime;
+import org.apache.cayenne.query.SelectQuery;
 
 import javax.mail.*;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.Date;
 import java.util.Properties;
 
 /**
  * Send e-mail notifications for just journal from the mail queue.
- * 
+ *
  * @author Lucas Holt
  * @version $Id: MailSender.java,v 1.8 2009/03/16 22:10:31 laffer1 Exp $
  */
 public class MailSender extends Thread {
 
     // TODO: Consider ServletContextListener
- /*   public MailSender() {
-        setDaemon( true );
-        //start();
-    } */
+    /*   public MailSender() {
+       setDaemon( true );
+       //start();
+   } */
 
     public void run() {
         System.out.println("MailSender: Init");
-
-        final String DbEnv = "java:comp/env/jdbc/jjDB";
-        final String sqlSelect = "SELECT * FROM queue_mail;";
-
         try {
-            System.out.println("MailSender: Lookup context");
-            Context ctx = new InitialContext();
-            DataSource ds = (DataSource) ctx.lookup(DbEnv);
-
-            Connection conn = ds.getConnection();
-            System.out.println("MailSender: DB Connection up");
-
             Settings set = new Settings();
             Properties props = new Properties();
             props.put("mail.smtp.host", set.getMailHost());
@@ -91,26 +74,33 @@ public class MailSender extends Thread {
 
             while (true) {
                 try {
-                    Statement stmt = conn.createStatement();
-                    ResultSet rs = stmt.executeQuery(sqlSelect);
+                    ObjectContext dataContext = DataContext.getThreadObjectContext();
+                    if (dataContext == null)      {
+                        ServerRuntime cayenneRuntime = new ServerRuntime("cayenne-JustJournalDomain.xml");
+                       dataContext = cayenneRuntime.getContext();
+                    }
+
+                    SelectQuery query = new SelectQuery(com.justjournal.model.QueueMail.class);
+                    java.util.List<com.justjournal.model.QueueMail> items = dataContext.performQuery(query);
+
                     System.out.println("MailSender: Recordset loaded.");
 
-                    while (rs.next()) {
+                    for (com.justjournal.model.QueueMail item : items) {
                         boolean sentok = true;
 
                         try {
-                            InternetAddress from = new InternetAddress(rs.getString("from"));
-                            InternetAddress to = new InternetAddress(rs.getString("to"));
+                            InternetAddress from = new InternetAddress(item.getFrom());
+                            InternetAddress to = new InternetAddress(item.getTo());
 
                             MimeMessage message = new MimeMessage(s);
                             message.setFrom(from);
                             message.setRecipient(Message.RecipientType.TO, to);
-                            message.setSubject(rs.getString("subject"));
-                            message.setText(rs.getString("body"));
+                            message.setSubject(item.getSubject());
+                            message.setText(item.getBody());
                             message.setSentDate(new Date());
                             message.saveChanges();
 
-                            Address [] a = {to};
+                            Address[] a = {to};
                             Transport t = s.getTransport("smtp");
                             t.connect();
                             t.sendMessage(message, a);
@@ -125,17 +115,12 @@ public class MailSender extends Thread {
                         }
 
                         if (sentok) {
-                            Statement stmt2 = conn.createStatement();
-                            stmt2.execute("DELETE FROM queue_mail WHERE id=" + rs.getString("id") + ";");
-                            stmt2.close();
-                            System.out.println("MailSender: item " + rs.getString("id") + " deleted");
+                            dataContext.deleteObject(item);
+                            dataContext.commitChanges();
                         }
 
                         yield();  // be nice to others... we are in a servlet container...
                     }
-
-                    rs.close();
-                    stmt.close();
                     sleep(1000 * 60 * 15); // 15 minutes?
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
@@ -143,13 +128,6 @@ public class MailSender extends Thread {
                     System.out.println("MailSender: Exception - " + e.getMessage());
                 }
             }
-
-            /*  try {
-              conn.close();
-         } catch (Exception e2) {
-             e2.printStackTrace();
-         }   */
-
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -101,30 +101,6 @@
             </view>
         </command>
 
-        <command name="prefs/addljfriend">
-            <controller class="com.justjournal.ctl.AddLJFriendSubmit"/>
-            <view name="success">
-                <transform path="outside.xsl"/>
-            </view>
-            <view name="error">
-                <transform path="outside.xsl"/>
-            </view>
-            <view name="loginRequired" type="redirect" path="/login.jsp">
-            </view>
-        </command>
-
-        <command name="prefs/deleteljfriend">
-            <controller class="com.justjournal.ctl.DeleteLJFriendSubmit"/>
-            <view name="success">
-                <transform path="outside.xsl"/>
-            </view>
-            <view name="error">
-                <transform path="outside.xsl"/>
-            </view>
-            <view name="loginRequired" type="redirect" path="/login.jsp">
-            </view>
-        </command>
-
         <command name="prefs/addsubscription">
             <controller class="com.justjournal.ctl.AddRssSubscriptionSubmit"/>
             <view name="success">

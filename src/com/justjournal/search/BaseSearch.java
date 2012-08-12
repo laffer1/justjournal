@@ -39,6 +39,7 @@ import org.apache.log4j.Category;
 import org.apache.log4j.Logger;
 
 import javax.sql.rowset.CachedRowSet;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -79,11 +80,11 @@ public class BaseSearch {
             sort = "ORDER BY " + field + " DESC";
     }
 
-    public CachedRowSet search(String query) {
+    public ResultSet search(String query) {
         if (log.isDebugEnabled()) {
             log.debug("search() called with " + query);
         }
-        CachedRowSet result;
+        ResultSet result;
         parseQuery(query);
 
         result = realSearch(terms);
@@ -104,10 +105,10 @@ public class BaseSearch {
         }
     }
 
-    protected CachedRowSet realSearch(ArrayList<String> terms) {
+    protected ResultSet realSearch(ArrayList<String> terms) {
 
         String sqlStmt = baseQuery;
-        CachedRowSet rs = null;
+        ResultSet rs = null;
 
 
         for (int i = 0; i < terms.size(); i++) {

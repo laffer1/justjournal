@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2005, Lucas Holt
+Copyright (c) 2003-2009, Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -32,12 +32,6 @@ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
 
-/*
- * webError.java
- *
- * Created on March 23, 2003, 1:09 PM
- */
-
 package com.justjournal;
 
 import java.io.PrintWriter;
@@ -46,39 +40,53 @@ import java.io.PrintWriter;
  * Prints out an error message in HTML.
  *
  * @author Lucas Holt
- * @version 1.1
+ * @version $Id: WebError.java,v 1.5 2009/05/16 00:40:02 laffer1 Exp $
  * @since 1.0
  */
-public final class webError {
+public final class WebError {
+    private static String severeStyle =
+            "width: 100%; height: 100px; margin-top: 1in; margin-left: 0; margin-right: 0; position relative; text-align: center; background: maroon; color: white;";
+    private static String mildStyle =
+            "width: 100%; height: 100px; margin-top: 1in; margin-left: 0; margin-right: 0; position relative; text-align: center; background: orange; color: white;";
 
-    static void Display(final String ErrTitle, final String ErrMsg, final PrintWriter ResponseWriter) {
+    private static void headStyle( String title, final StringBuffer sb ) {
+        sb.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n");
+        sb.append("<html xmlns=\"http://www.w3.org/1999/xhtml\">\n");
+        sb.append("<head>\n");
+        sb.append("<title>");
+        sb.append(title);
+        sb.append("</title>\n");
+        sb.append("</head>\n");
+        sb.append("<body style=\"margin: 0;\">\n");
+    }
+
+    private static void footStyle( final StringBuffer sb ) {
+        sb.append("</body>\n");
+        sb.append("</html>\n");
+    }
+
+    public static void Display(final String ErrTitle, final String ErrMsg, final PrintWriter ResponseWriter) {
         StringBuffer sb = new StringBuffer();
 
         Display(ErrTitle, ErrMsg, sb);  // call the other version
 
         ResponseWriter.write(sb.toString());
-
     }
 
-    static void Display(final String ErrTitle, final String ErrMsg, final StringBuffer sb) {
+    public static void Display(final String ErrTitle, final String ErrMsg, final StringBuffer sb) {
+        severe(ErrTitle, ErrMsg, sb);
+    }
+
+     public static void severe(final String ErrTitle, final String ErrMsg, final StringBuffer sb) {
         if (sb.length() > 0) {
             // reset the output to display the error.
             sb.delete(0, sb.length() - 1);
         }
 
-        // Head
-        sb.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n");
-        sb.append("<html xmlns=\"http://www.w3.org/1999/xhtml\">\n");
-        sb.append("<head>\n");
-        sb.append("<title>");
-        sb.append(ErrTitle);
-        sb.append("</title>\n");
-        sb.append("</head>\n");
-
-        // Body
-        sb.append("<body style=\"margin: 0;\">\n");
-
-        sb.append("<div style=\"width: 100%; height: 100px; margin-top: 1in; margin-left: 0; margin-right: 0; position relative; text-align: center; background: orange; color: white;\">\n");
+        headStyle(ErrTitle, sb);
+        sb.append("<div style=\"");
+        sb.append(severeStyle);
+        sb.append("\">\n");
         sb.append("<h1 style=\"font: 72pt Arial, Helvetica, sans-serif; letter-spacing: .2in;\">").append(ErrTitle).append("</h1>\n");
         sb.append("</div>\n");
 
@@ -87,9 +95,29 @@ public final class webError {
         sb.append(ErrMsg);
         sb.append("</p>\n");
         sb.append("</div>\n");
+        footStyle(sb);
 
-        sb.append("</body>\n");
-        sb.append("</html>\n");
     }
 
+     public static void mild(final String ErrTitle, final String ErrMsg, final StringBuffer sb) {
+        if (sb.length() > 0) {
+            // reset the output to display the error.
+            sb.delete(0, sb.length() - 1);
+        }
+
+        headStyle(ErrTitle, sb);
+        sb.append("<div style=\"");
+        sb.append(mildStyle);
+        sb.append("\">\n");
+        sb.append("<h1 style=\"font: 72pt Arial, Helvetica, sans-serif; letter-spacing: .2in;\">").append(ErrTitle).append("</h1>\n");
+        sb.append("</div>\n");
+
+        sb.append("<div style=\"margin: 1in; font: 12pt Arial, Helvetica, sans-serif;\">\n");
+        sb.append("<p>");
+        sb.append(ErrMsg);
+        sb.append("</p>\n");
+        sb.append("</div>\n");
+        footStyle(sb);
+
+    }
 }

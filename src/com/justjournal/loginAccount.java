@@ -1,182 +1,139 @@
 /*
-Copyright (c) 2005, Lucas Holt
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification, are
-permitted provided that the following conditions are met:
-
-  Redistributions of source code must retain the above copyright notice, this list of
-  conditions and the following disclaimer.
-
-  Redistributions in binary form must reproduce the above copyright notice, this
-  list of conditions and the following disclaimer in the documentation and/or other
-  materials provided with the distribution.
-
-  Neither the name of the Just Journal nor the names of its contributors
-  may be used to endorse or promote products derived from this software without
-  specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
-CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
-INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
-MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
-CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
-GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
-BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
-OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
-TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
-OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (c) 2003-2008, 2011 Lucas Holt
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ */
 
 package com.justjournal;
 
-import org.apache.log4j.Category;
+import com.justjournal.db.EntryDAO;
+import com.justjournal.db.EntryTo;
+import com.justjournal.utility.FileIO;
+import com.justjournal.utility.StringUtil;
+import com.justjournal.utility.Xml;
+import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * Login account servlet.
  *
  * @author Lucas Holt
- * @version 1.3
- *          Sat Jun 07 2003
+ * @version $Id: LoginAccount.java,v 1.16 2012/07/04 18:49:20 laffer1 Exp $ Sat Jun 07 2003
  *          <p/>
- *          Version 1.1 changes to a stringbuffer for output.
- *          This should improve performance a bit.
+ *          Version 1.1 changes to a stringbuffer for output. This should improve performance a bit.
  *          <p/>
  *          1.2 fixed a bug with NULL pointer exceptions.
  *          <p/>
- *          Mon Sep 19 2005
- *          1.3 added JJ.LOGIN.FAIL and JJ.LOGIN.OK for desktop
- *          clients.
+ *          Mon Sep 19 2005 1.3 added JJ.LOGIN.FAIL and JJ.LOGIN.OK for desktop clients.
  *          <p/>
  * @since JJ 1.0
  */
-public final class loginAccount extends JustJournalBaseServlet {
-    private static Category log = Category.getInstance(loginAccount.class.getName());
+public final class LoginAccount extends JustJournalBaseServlet {
+    private static final Logger log = Logger.getLogger(LoginAccount.class);
     private static final String JJ_LOGIN_OK = "JJ.LOGIN.OK";
     private static final String JJ_LOGIN_FAIL = "JJ.LOGIN.FAIL";
     //private static final String JJ_LOGIN_ERROR = "JJ.LOGIN.ERROR";  // server error
 
     private void htmlOutput(StringBuffer sb, String userName) {
-        // Begin HTML document.
-        sb.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"  \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">");
-        sb.append(endl);
-        sb.append("<html xmlns=\"http://www.w3.org/1999/xhtml\">");
-        sb.append(endl);
-        sb.append("<head>");
-        sb.append(endl);
-        sb.append("<title>JustJournal.com: Login</title>");
-        sb.append(endl);
-        sb.append("<link href=\"/layout1.css\" title=\"default\" media=\"all\" type=\"text/css\" rel=\"stylesheet\" />");
-        sb.append(endl);
-        sb.append("<link href=\"/\" title=\"Home\" rel=\"home\" />");
-        sb.append(endl);
-        sb.append("<link href=\"/sitemap.jsp\" title=\"Site Map\" rel=\"contents\" />");
-        sb.append(endl);
-        sb.append("<link href=\"/support/\" title=\"Technical Support\" rel=\"help\" />");
-        sb.append("</head>");
-        sb.append(endl);
 
-        sb.append("<body>");
-        sb.append(endl);
+        try {
+            String template = FileIO.ReadTextFile("/home/jj/docs/journal_template.inc");
+            String loginMenu;
+            StringBuilder content = new StringBuilder();
+            User user = new User(userName);
 
-        sb.append("<!-- Header: Begin -->");
-        sb.append(endl);
-        sb.append("<div style=\"padding-bottom: 30px;\" id=\"header\">");
-        sb.append(endl);
-        sb.append("<span style=\"float: left; top: -14px; position: relative;\">");
-        sb.append("<img style=\" margin-top: 30px; margin-left: 30px;\" src=\"/images/jj-pencil3.gif\" />");
-        sb.append("</span>");
-        sb.append(endl);
-        sb.append("<img style=\"left: -50px; top: -120px; position: relative;\" alt=\"Blogging for life\" src=\"/images/bloglife.gif\" />");
-        sb.append("<img style=\"margin-top: 54px; margin-left: -120px;\" height=\"100\" width=\"445\" alt=\"Just Journal\" src=\"/images/jjheader2.gif\" />");
-        sb.append("</div>");
-        sb.append(endl);
-        sb.append("<!-- Header: End -->");
-        sb.append(endl);
+            content.append("\t\t<h2>Welcome back to Just Journal</h2>");
+            content.append(endl);
+            content.append("\t<p>You are logged in as <a href=\"/users/").append(userName).append("\"><img src=\"/images/userclass_16.png\" alt=\"user\" />").append(userName).append("</a>.</p>");
+            if (user.getLastLogin() != null) {
+                content.append("\t<p>Your last login was on ");
+                content.append(user.getLastLogin());
+                content.append("</p>");
+            }
+            WebLogin.setLastLogin(user.getUserId());
+            content.append(endl);
+            content.append("\t<p style=\"padding-left: 10px;\"><a href=\"/update.jsp\">Post a journal entry</a></p>");
+            content.append(endl);
+            content.append("\t<p style=\"padding-left: 10px;\"><img src=\"/images/userclass_16.png\" alt=\"user\" /> <a href=\"/users/").append(userName).append("\">View your journal</a>.</p>");
+            content.append(endl);
+            content.append("\t<p style=\"padding-left: 10px;\"><img src=\"/images/userclass_16.png\" alt=\"user\" /> <a href=\"/users/").append(userName).append("/friends\">Read your friends entries</a>.</p>");
+            content.append(endl);
 
-        sb.append("\t<!-- Menu: Begin -->");
-        sb.append(endl);
-        sb.append("\t<div id=\"menu\">");
-        sb.append(endl);
+            final Collection entries;
+            entries = EntryDAO.viewFriends(user.getUserId(), user.getUserId());
 
-        sb.append("\t<ul>");
-        sb.append(endl);
-        sb.append("\t\t<li><a href=\"/users/").append(userName).append("\">recent entries</a></li>");
-        sb.append(endl);
-        sb.append("\t\t<li><a href=\"/users/").append(userName).append("/calendar\">Calendar</a></li>");
-        sb.append(endl);
-        sb.append("\t\t<li><a href=\"/users/").append(userName).append("/friends\">Friends</a></li>");
-        sb.append(endl);
-        sb.append("\t\t<li><a href=\"/profile.jsp?user=").append(userName).append("\">Profile</a></li>");
-        sb.append(endl);
-        sb.append("\t</ul>");
-        sb.append(endl);
+            EntryTo o;
+            final Iterator itr = entries.iterator();
+            if (entries.size() != 0) {
+                content.append("<h3>Recent Friends Entries</h3>");
+                content.append(endl);
+                content.append("<ul>");
+                content.append(endl);
+                for (int i = 0, n = entries.size(); i < n; i++) {
+                    o = (EntryTo) itr.next();
+                    content.append("<li><a href=\"users/");
+                    content.append(o.getUserName());
+                    content.append("\">");
+                    content.append(o.getUserName());
+                    content.append("</a>");
+                    content.append(" - ");
+                    content.append(Xml.cleanString(o.getSubject()));
+                    content.append("</li>");
+                    content.append(endl);
+                }
+                content.append("</ul>");
+                content.append(endl);
+            }
 
-        // General stuff...
-        sb.append("\t<ul>");
-        sb.append(endl);
-        sb.append("\t\t<li><a href=\"/update.jsp\">Update Journal</a></li>");
-        sb.append(endl);
+            // User is logged in.. give them the option to log out.
+            loginMenu = ("\t\t<a href=\"/prefs/index.jsp\">Preferences</a><br />");
 
-        // User is logged in.. give them the option to log out.
-        sb.append("\t\t<li><a href=\"/prefs/index.jsp\">Preferences</a></li>");
-        sb.append(endl);
-        sb.append("\t\t<li><a href=\"/logout.jsp\">Log Out</a></li>");
-        sb.append(endl);
-        sb.append("\t</ul>");
-        sb.append(endl);
+            loginMenu += ("\t\t<a href=\"/logout.jsp\">Log Out</a>");
 
-        sb.append("\t<ul>");
-        sb.append(endl);
-        sb.append("<li><a href=\"/users/");
-        sb.append(userName);
-        sb.append("/rss\"><img src=\"/images/rss2.gif\" alt=\"Journal RSS Feed\" /></a></li>");
-        sb.append("<li><a href=\"/users/");
-        sb.append(userName);
-        sb.append("/subscriptions\">RSS Reader</a></li>");
-        sb.append(endl);
-        sb.append("\t</ul>");
-        sb.append(endl);
-
-        sb.append("\t</div>");
-        sb.append(endl);
-        sb.append("\t<!-- Menu: End -->\n");
-        sb.append(endl);
-
-        // END MENU
-
-        sb.append("<div id=\"content\">");
-        sb.append(endl);
-        sb.append("\t<h2>Login</h2>");
-        sb.append(endl);
-        sb.append("\t<p>You are logged in as <a href=\"/users/").append(userName).append("\"><img src=\"/images/user.gif\" alt=\"user\" />").append(userName).append("</a>.</p>");
-        sb.append(endl);
-        sb.append("\t<p><a href=\"/update.jsp\">Post a journal entry</a></p>");
-        sb.append(endl);
-        sb.append("\t<p><a href=\"/users/").append(userName).append("/friends\">View friends entries.</a></p>");
-        sb.append(endl);
-        sb.append("</div>");
-        sb.append(endl);
-
-        sb.append("<div id=\"footer\">");
-        sb.append(endl);
-        sb.append("<p id=\"copyright\">&copy; 2003-2006 Lucas Holt.  All rights reserved.</p>");
-        sb.append(endl);
-        sb.append("</div>");
-        sb.append(endl);
-
-        sb.append("</body>");
-        sb.append(endl);
-        sb.append("</html>");
-        sb.append(endl);
+            template = template.replaceAll("\\$JOURNAL_TITLE\\$", user.getJournalName());
+            template = template.replaceAll("\\$USER\\$", userName);
+            template = template.replaceAll("\\$USER_STYLESHEET\\$", user.getStyleId() + ".css");
+            template = template.replaceAll("\\$USER_STYLESHEET_ADD\\$", user.getStyleDoc());
+            if (user.showAvatar()) {
+                String av = "\t\t<img alt=\"avatar\" src=\"/image?id="
+                        + user.getUserId() + "\"/>";
+                template = template.replaceAll("\\$USER_AVATAR\\$", av);
+            } else
+                template = template.replaceAll("\\$USER_AVATAR\\$", "");
+            template = template.replaceAll("\\$RECENT_ENTRIES\\$", "");
+            template = template.replaceAll("\\$LOGIN_MENU\\$", loginMenu);
+            template = template.replaceAll("\\$CONTENT\\$", content.toString());
+            sb.append(template);
+        } catch (Exception e) {
+            WebError.Display("Internal Error", "Error dislaying page. ", sb);
+            e.printStackTrace();
+            log.error(e);
+        }
     }
 
     protected void execute(HttpServletRequest request, HttpServletResponse response, HttpSession session, StringBuffer sb) {
@@ -186,6 +143,7 @@ public final class loginAccount extends JustJournalBaseServlet {
         String password = fixInput(request, "password");
         String passwordHash = fixInput(request, "password_hash");
         String userAgent = fixHeaderInput(request, "User-Agent");
+        String mobile = fixInput(request, "mobile");
         boolean webClient = true;  // browser
 
         // adjust the case
@@ -193,29 +151,30 @@ public final class loginAccount extends JustJournalBaseServlet {
         passwordHash = passwordHash.toLowerCase();
 
         // validate user input
-        if (userAgent.toLowerCase().indexOf("justjournal") > -1)
+        if (userAgent.toLowerCase().contains("justjournal"))
             webClient = false; // desktop client.. win/mac/java
 
         if (log.isDebugEnabled()) {
             log.debug("User Agent is: " + userAgent + endl);
             log.debug("Is web client? " + webClient + endl);
+            log.debug("mobile: " + mobile + endl);
         }
 
 
-        if (userName.length() < 3) {
+        if (!StringUtil.lengthCheck(userName, 3, 15)) {
             blnError = true;
             if (webClient)
-                webError.Display("Input Error",
-                        "username must be at least 3 characters.",
+                WebError.Display("Input Error",
+                        "username must be 3-15 characters.",
                         sb);
             else
                 sb.append(JJ_LOGIN_FAIL);
         }
 
-        if (passwordHash.compareTo("") == 0 && password.compareTo("") == 0) {
+        if (passwordHash.compareTo("") == 0 && !StringUtil.lengthCheck(password, 5, 18)) {
             blnError = true;
             if (webClient)
-                webError.Display("Input Error",
+                WebError.Display("Input Error",
                         "Please input a password.",
                         sb);
             else
@@ -231,26 +190,38 @@ public final class loginAccount extends JustJournalBaseServlet {
                     if (log.isDebugEnabled())
                         log.debug("Using SHA1 pass=" + passwordHash);
 
-                    userID = webLogin.validateSHA1(userName, passwordHash);
+                    userID = WebLogin.validateSHA1(userName, passwordHash);
                 } else {
                     if (log.isDebugEnabled())
                         log.debug("Using clear pass=" + password);
 
-                    userID = webLogin.validate(userName, password);
+                    userID = WebLogin.validate(userName, password);
                 }
 
                 if (userID > 0) {
                     if (!webClient) {
                         sb.append(JJ_LOGIN_OK);
-                    } else {
-                        session.setAttribute("auth.uid", new Integer(userID));
+                        WebLogin.setLastLogin(userID);
+                    } else if (mobile.compareTo("yes") == 0) {
+
+                        session.setAttribute("auth.uid", userID);
                         session.setAttribute("auth.user", userName);
 
+                        WebLogin.setLastLogin(userID);
+                        response.setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY);
+                        response.setHeader("Location", set.getBaseUri() + "mob/update.jsp");
+                        sb = new StringBuffer();
+                        return;
+                    } else {
+                        session.setAttribute("auth.uid", userID);
+                        session.setAttribute("auth.user", userName);
+
+                        // lastlogin is set after the html display
                         htmlOutput(sb, userName);
                     }
                 } else {
                     if (webClient)
-                        webError.Display("Authentication Error",
+                        WebError.Display("Authentication Error",
                                 "Unable to login.  Please check your username and password.",
                                 sb);
                     else
@@ -258,11 +229,12 @@ public final class loginAccount extends JustJournalBaseServlet {
                 }
             } catch (Exception e3) {
                 if (webClient)
-                    webError.Display("Authentication Error",
+                    WebError.Display("Authentication Error",
                             "Unable to login.  Please check your username and password.",
                             sb);
                 else
                     sb.append(JJ_LOGIN_FAIL);
+                log.error(e3);
             }
         }
 

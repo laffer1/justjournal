@@ -373,7 +373,7 @@ public class MetaWeblog {
                 EntryTo et2 = EntryDAO.viewSingle(eid, userId);
                 et2.setSubject((String) content.get("title"));
                 et2.setBody(StringUtil.replace((String) content.get("description"), '\'', "\\\'"));
-                /* TODO: add date update support */
+                /* TODO: add date edit support */
                 EntryDAO.update(et2);
                 String tag[] = (String[]) content.get("categories");
                 ArrayList<String> tags = new ArrayList<String>(tag.length);

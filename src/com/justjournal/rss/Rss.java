@@ -1,36 +1,28 @@
-/*
-Copyright (c) 2003-2007, Lucas Holt
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification, are
-permitted provided that the following conditions are met:
-
-  Redistributions of source code must retain the above copyright notice, this list of
-  conditions and the following disclaimer.
-
-  Redistributions in binary form must reproduce the above copyright notice, this
-  list of conditions and the following disclaimer in the documentation and/or other
-  materials provided with the distribution.
-
-  Neither the name of the Just Journal nor the names of its contributors
-  may be used to endorse or promote products derived from this software without
-  specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
-CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
-INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
-MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
-CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
-GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
-BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
-OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
-TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
-OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-POSSIBILITY OF SUCH DAMAGE.
-*/
+/*-
+ * Copyright (c) 2003-2011 Lucas Holt
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ */
 
 package com.justjournal.rss;
 
@@ -42,6 +34,7 @@ import com.justjournal.utility.Xml;
 import com.justjournal.utility.HTMLUtil;
 
 import javax.sql.rowset.CachedRowSet;
+import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -53,10 +46,6 @@ import org.apache.log4j.Logger;
  *
  * @author Lucas Holt
  * @version $Id: Rss.java,v 1.13 2011/05/29 22:32:59 laffer1 Exp $
- * @since 1.0
- *        User: laffer1
- *        Date: Aug 27, 2003
- *        Time: 11:54:38 PM
  */
 public final class Rss {
     private static final Logger log = Logger.getLogger(Rss.class);
@@ -162,7 +151,8 @@ public final class Rss {
                 item.setTitle(o.getSubject());
                 item.setLink("http://www.justjournal.com/users/" + o.getUserName());
                 // RSS feeds don't like &apos; and friends.  try to go unicode
-                item.setDescription(HTMLUtil.convertCharacterEntities(o.getBody()));
+                String description = HTMLUtil.clean(o.getBody(), false);
+                item.setDescription(HTMLUtil.convertCharacterEntities(description));
                 item.setGuid("http://www.justjournal.com/users/" + o.getUserName() + "/entry/" + o.getId());
                 item.setPubDate(o.getDate().toPubDate());
                 DateTime d = o.getDate();
@@ -183,7 +173,7 @@ public final class Rss {
 
         // TODO: this sucks... need to make this reusable
 
-        CachedRowSet rs = null;
+        ResultSet rs = null;
         String imageTitle;
         String sqlStmt = "SELECT id, title, mimetype, BIT_LENGTH(image) As imglen FROM user_images WHERE owner='" + userid + "' ORDER BY id DESC;";
 
