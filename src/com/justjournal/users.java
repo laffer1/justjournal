@@ -332,13 +332,12 @@ public final class Users extends HttpServlet {
             // Service definitions
             sb.append("\t<link rel=\"EditURI\" type=\"application/rsd+xml\" title=\"RSD\" href=\"http://www.justjournal.com/rsd?blogID=").append(userName).append("\" />\n");
 
-            // / JJ JavaScript
-            //   sb.append("\t<script type=\"text/javascript\" src=\"/js/jj.js\">/* ie7 hack */</script>\n");
             // content switch javascript
             sb.append("\t<script type=\"text/javascript\" src=\"/js/switchcontent.js\">/* ie7 hack */</script>\n");
             // lightbox
-            sb.append("\t<script type=\"text/javascript\" src=\"/js/prototype.js\">/* ie7 hack */</script>\n");
-            sb.append("\t<script type=\"text/javascript\" src=\"/js/scriptaculous.js?load=effects\">/* ie7 hack */</script>\n");
+            sb.append("\t<script type=\"text/javascript\" src=\"/js/jquery-1.7.2.min.js\"></script>\n");
+            sb.append("\t<script type=\"text/javascript\" src=\"/js/jquery-ui-1.8.18.custom.min.js\"></script>\n");
+            sb.append("\t<script type=\"text/javascript\" src=\"/js/jquery.smooth-scroll.min.js\"></script>\n");
             sb.append("\t<script type=\"text/javascript\" src=\"/js/lightbox.js\">/* ie7 hack */</script>\n");
             sb.append("\t<link rel=\"stylesheet\" type=\"text/css\" media=\"screen\" href=\"/lightbox.css\" />\n");
             sb.append("</head>\n");
@@ -1500,8 +1499,8 @@ public final class Users extends HttpServlet {
         final ArrayList<Tag> tags = EntryDAO.getUserTags(uc.getBlogUser().getUserId());
         int largest = 0;
         int smallest = 10;
-        int cutsmall;
-        int cutlarge;
+        int cutSmall;
+        int cutLarge;
 
         for (ListIterator t = tags.listIterator(); t.hasNext(); ) {
             tag = (Tag) t.next();
@@ -1512,8 +1511,8 @@ public final class Users extends HttpServlet {
                 smallest = tag.getCount();
         }
 
-        cutsmall = largest / 3;
-        cutlarge = cutsmall * 2;
+        cutSmall = largest / 3;
+        cutLarge = cutSmall * 2;
 
         sb.append("\t<div class=\"menuentity\" id=\"usertags\" style=\"padding-top: 10px;\">\n\t\t<strong style=\"text-transform: uppercase; letter-spacing: 2px; border: 0 none; border-bottom: 1px; border-style: dotted; border-color: #999999; margin-bottom: 5px; width: 100%; font-size: 10px;\">Tags</strong>\n\t\t<p style=\"padding-left: 0; margin-left: 0;\">\n");
         for (ListIterator t = tags.listIterator(); t.hasNext(); ) {
@@ -1523,9 +1522,9 @@ public final class Users extends HttpServlet {
             sb.append("/tag/");
             sb.append(tag.getName());
             sb.append("\" class=\"");
-            if (tag.getCount() > cutlarge)
+            if (tag.getCount() > cutLarge)
                 sb.append("TagCloudLarge");
-            else if (tag.getCount() < cutsmall)
+            else if (tag.getCount() < cutSmall)
                 sb.append("TagCloudSmall");
             else
                 sb.append("TagCloudMedium");
