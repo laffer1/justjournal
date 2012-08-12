@@ -26,10 +26,7 @@
 
 package com.justjournal;
 
-import com.justjournal.db.PreferencesDao;
-
-import javax.sql.rowset.CachedRowSet;
-
+import com.justjournal.db.UserDao;
 import org.apache.log4j.Logger;
 
 import java.sql.ResultSet;
@@ -70,7 +67,7 @@ public final class Preferences {
             throws Exception {
         try {
 
-            ResultSet RS = PreferencesDao.ViewJournalPreferences(userName);
+            ResultSet RS = UserDao.getJournalPreferences(userName);
 
             if (RS.next()) {
                 this.name = RS.getString("name");

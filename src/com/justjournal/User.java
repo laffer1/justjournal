@@ -35,12 +35,8 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal;
 
 import com.justjournal.db.DateTime;
-import com.justjournal.db.PreferencesDao;
 import com.justjournal.db.UserDao;
 import com.justjournal.db.UserTo;
-
-import javax.sql.rowset.CachedRowSet;
-
 import org.apache.log4j.Logger;
 
 import java.sql.ResultSet;
@@ -86,7 +82,7 @@ public final class User {
         lastLogin = ut.getLastLogin();
 
         try {
-            final ResultSet RS = PreferencesDao.ViewJournalPreferences(userName);
+            final ResultSet RS = UserDao.getJournalPreferences(userName);
 
             if (RS.next()) {
                 this.styleId = RS.getInt("style");
@@ -119,11 +115,7 @@ public final class User {
                 if (RS.getInt("since") > 2003)
                     startYear = RS.getInt("since");
 
-                if (RS.getString("allow_spider").equals("Y")) {
-                    this.allowSpider = true;
-                } else {
-                    this.allowSpider = false;
-                }
+                this.allowSpider = RS.getString("allow_spider").equals("Y");
 
                 if (RS.getString("owner_view_only").equals("Y")) {
                     this.privateJournal = true;
@@ -161,7 +153,7 @@ public final class User {
         lastLogin = ut.getLastLogin();
 
         try {
-            final ResultSet RS = PreferencesDao.ViewJournalPreferences(userName);
+            final ResultSet RS = UserDao.getJournalPreferences(userName);
 
             if (RS.next()) {
                 this.styleId = RS.getInt("style");
@@ -191,28 +183,13 @@ public final class User {
                 if (RS.getInt("since") > 2003)
                     startYear = RS.getInt("since");
 
-                if (RS.getString("allow_spider").equals("Y")) {
-                    this.allowSpider = true;
-                } else {
-                    this.allowSpider = false;
-                }
+                this.allowSpider = RS.getString("allow_spider").equals("Y");
 
-                if (RS.getString("owner_view_only").equals("Y")) {
-                    this.privateJournal = true;
-                } else {
-                    this.privateJournal = false;
-                }
+                this.privateJournal = RS.getString("owner_view_only").equals("Y");
 
-                if (RS.getString("show_avatar").equals("Y")) {
-                    this.showAvatar = true;
-                } else {
-                    this.showAvatar = false;
-                }
+                this.showAvatar = RS.getString("show_avatar").equals("Y");
 
-                if (RS.getString("ping_services").equals("Y"))
-                    this.pingServices = true;
-                else
-                    this.pingServices = false;
+                this.pingServices = RS.getString("ping_services").equals("Y");
             }
 
             RS.close();

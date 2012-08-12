@@ -302,4 +302,70 @@ public final class UserDao {
 
         return friends;
     }
+
+      /**
+     * Retrieves the journal preferences for a certain user including
+     * style information, and privacy settings.
+     *
+     * @param userName the user who needs their settings defined.
+     * @return Preferences in cached rowset.
+     * @throws Exception SQL exception
+     */
+    public static ResultSet getJournalPreferences(final String userName)
+            throws Exception {
+        ResultSet RS;
+
+        if (userName == null)
+            throw new IllegalArgumentException("Missing username.");
+
+        if (userName.length() < 3)
+            throw new IllegalArgumentException("Username must be at least 3 characters");
+
+        String sqlStatement =
+                "SELECT user.name, user.id, user.since, up.style, up.allow_spider, " +
+                        "up.owner_view_only, st.url, st.doc, uc.email, " +
+                        "up.show_avatar, up.journal_name, ubio.content, up.ping_services FROM user, user_bio as ubio, user_pref As up, user_style as st, user_contact As uc " +
+                        "WHERE user.username='" + userName + "' AND user.id = up.id AND user.id=st.id AND user.id=uc.id AND user.id = ubio.id LIMIT 1;";
+
+        try {
+            RS = SQLHelper.executeResultSet(sqlStatement);
+        } catch (Exception e1) {
+             log.error(e1.getMessage());
+            throw new Exception("Couldn't get preferences: " + e1.getMessage());
+        }
+
+        return RS;
+    }
+
+       /**
+     * Update the owner view only security feature.
+     *
+     * @param userId  userid of blog owner
+     * @param ownerOnly  if the blog is private
+     * @return true on success, false on any error
+     */
+    public static final boolean updateSecurity(int userId, boolean ownerOnly) {
+        boolean noError = true;
+        int records = 0;
+        String ownerview = "N";
+
+        if (ownerOnly)
+            ownerview = "Y";
+
+        final String sqlStmt = "Update user_pref SET owner_view_only='" + ownerview
+                + "' WHERE id='" + userId + "' LIMIT 1;";
+
+        try {
+            records = SQLHelper.executeNonQuery(sqlStmt);
+        } catch (Exception e) {
+            noError = false;
+            log.error(e.getMessage());
+        }
+
+        if (records != 1)
+            noError = false;
+
+
+        return noError;
+    }
 }

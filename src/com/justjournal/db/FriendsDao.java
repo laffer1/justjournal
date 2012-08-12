@@ -40,11 +40,9 @@ import java.util.Collection;   import java.sql.ResultSet;
 
 
 /**
- * Created by IntelliJ IDEA.
  * User: laffer1
  * Date: Jan 19, 2004
  * Time: 12:00:37 PM
- * To change this template use Options | File Templates.
  */
 public final class FriendsDao {
     public static Collection<FriendTo> view(final int userId) {
