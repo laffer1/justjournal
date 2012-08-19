@@ -1,5 +1,6 @@
 /*
-Copyright (c) 2005, Lucas Holt
+Copyright (c) 2003 Caryn Holt
+Copyright (c) 2005, 2012 Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -68,19 +69,17 @@ public final class RemoveFriend extends JustJournalBaseServlet {
         Integer userIDasi;
         int userID = 0;
 
-        synchronized(session) {
-            userName = (String) session.getAttribute("auth.user");
-            // Retreive user id
-             userIDasi = (Integer) session.getAttribute("auth.uid");
-        }
+        userName = (String) session.getAttribute("auth.user");
+        // Retreive user id
+        userIDasi = (Integer) session.getAttribute("auth.uid");
         // convert Integer to int type
         if (userIDasi != null) {
-            userID = userIDasi.intValue();
+            userID = userIDasi;
         }
 
         // friend id that will be removed
         String temp = fixInput(request, "id");
-        int friendID = Integer.valueOf(temp).intValue();
+        int friendID = Integer.valueOf(temp);
 
         if (friendID < 1)
             WebError.Display("Error", "Must use a valid friend id.", sb);

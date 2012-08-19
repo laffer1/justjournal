@@ -117,22 +117,11 @@ public final class User {
 
                 this.allowSpider = RS.getString("allow_spider").equals("Y");
 
-                if (RS.getString("owner_view_only").equals("Y")) {
-                    this.privateJournal = true;
-                } else {
-                    this.privateJournal = false;
-                }
+                this.privateJournal = RS.getString("owner_view_only").equals("Y");
 
-                if (RS.getString("show_avatar").equals("Y")) {
-                    this.showAvatar = true;
-                } else {
-                    this.showAvatar = false;
-                }
+                this.showAvatar = RS.getString("show_avatar").equals("Y");
 
-                if (RS.getString("ping_services").equals("Y"))
-                    this.pingServices = true;
-                else
-                    this.pingServices = false;
+                this.pingServices = RS.getString("ping_services").equals("Y");
 
             }
 

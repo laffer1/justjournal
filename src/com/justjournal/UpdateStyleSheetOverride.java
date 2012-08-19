@@ -62,18 +62,13 @@ public final class UpdateStyleSheetOverride
         // Will be using session data, must initialize session, will not affect any current session
         final HttpSession session = request.getSession(true);
 
-        // Retreive username
-        // String username;
-        //username = (String) session.getAttribute( "auth.user" );
-        Integer userIDasi;
         // Retreive user id
-        synchronized (session) {
-            userIDasi = (Integer) session.getAttribute("auth.uid");
-        }
+        Integer userIDasi = (Integer) session.getAttribute("auth.uid");
+
         // convert Integer to int type
         int userID = 0;
         if (userIDasi != null) {
-            userID = userIDasi.intValue();
+            userID = userIDasi;
         }
 
         String styleSheet = request.getParameter("css");
@@ -103,8 +98,6 @@ public final class UpdateStyleSheetOverride
         }
 
         out.flush();
-
-        return;
     }
 
     // processes get requests

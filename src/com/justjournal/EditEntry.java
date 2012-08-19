@@ -38,14 +38,11 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 
 import com.justjournal.core.Settings;
-import com.justjournal.core.TrackbackOut;
 import com.justjournal.utility.HTMLUtil;
 import com.justjournal.utility.StringUtil;
 import com.justjournal.utility.Spelling;
 import com.justjournal.db.EntryTo;
 import com.justjournal.db.EntryDAO;
-import com.justjournal.RestPing.BasePing;
-import com.justjournal.RestPing.IceRocket;
 
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
