@@ -37,10 +37,8 @@ package com.justjournal.utility;
 import com.justjournal.db.SQLHelper;
 
 /**
- * Created by IntelliJ IDEA.
- * User: laffer1
- * Date: Jan 16, 2004
- * Time: 12:54:58 PM
+ * Represent an email message in the queue
+ * @author Lucas Holt
  */
 public final class QueueMail {
     // e-mail properties

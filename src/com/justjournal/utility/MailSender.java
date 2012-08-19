@@ -52,10 +52,6 @@ import java.util.Properties;
 public class MailSender extends Thread {
 
     // TODO: Consider ServletContextListener
-    /*   public MailSender() {
-       setDaemon( true );
-       //start();
-   } */
 
     public void run() {
         System.out.println("MailSender: Init");
@@ -138,7 +134,6 @@ public class MailSender extends Thread {
     class ForcedAuthenticator extends Authenticator {
         public PasswordAuthentication getPasswordAuthentication() {
             Settings set = new Settings();
-            //System.out.println("ForcedAuthenticator: " + set.getMailUser() + " " + set.getMailPass());
             return new PasswordAuthentication(set.getMailUser(), set.getMailPass());
         }
     }

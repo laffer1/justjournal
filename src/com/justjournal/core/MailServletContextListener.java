@@ -37,13 +37,9 @@ import com.justjournal.utility.MailSender;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-//import javax.servlet.ServletContext;
 
 /**
- * User: laffer1
- * Date: Mar 11, 2006
- * Time: 11:23:55 AM
- *
+ * Mail Sender Context Listener runs mail sender code continuously on the servlet engine.
  * @author Lucas Holt
  * @version $Id: MailServletContextListener.java,v 1.5 2006/10/14 00:29:03 laffer1 Exp $
  * @since 1.0

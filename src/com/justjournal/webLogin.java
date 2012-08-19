@@ -37,7 +37,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
-import sun.security.provider.SHA;
 
 /**
  * Provides authentication and password management services to web applications using the just journal data tier.
@@ -208,7 +207,7 @@ public final class WebLogin {
             throws NoSuchAlgorithmException, UnsupportedEncodingException {
         MessageDigest md;
         md = MessageDigest.getInstance("SHA-1");
-        byte[] sha1hash = new byte[40];
+        byte[] sha1hash;
         md.update(text.getBytes("iso-8859-1"), 0, text.length());
         sha1hash = md.digest();
         return convertToHex(sha1hash);
