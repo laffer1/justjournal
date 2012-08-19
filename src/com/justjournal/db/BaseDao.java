@@ -35,12 +35,11 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.db;
 
 /**
- * User: laffer1
- * Date: Aug 22, 2005
- * Time: 10:27:07 PM
+ * Base DAO, a starting point for all data access objects.
+ * @author Lucas Holt
  */
 final class BaseDao {
-    public static final boolean add(String sql) {
+    public static boolean add(String sql) {
         boolean noError = true;
         int records = 0;
 
@@ -56,7 +55,7 @@ final class BaseDao {
         return noError;
     }
 
-    public static final boolean edit(String sql) {
+    public static boolean edit(String sql) {
         boolean noError = true;
 
         try {
@@ -69,7 +68,7 @@ final class BaseDao {
 
     }
 
-    public static final boolean delete(String sql) {
+    public static boolean delete(String sql) {
         boolean noError = true;
 
         try {

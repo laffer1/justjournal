@@ -34,17 +34,20 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
-import javax.sql.rowset.CachedRowSet;
+import org.apache.log4j.Logger;
+
 import java.util.ArrayList;
-import java.util.Collection;   import java.sql.ResultSet;
+import java.util.Collection;
+import java.sql.ResultSet;
 
 
 /**
- * User: laffer1
- * Date: Jan 19, 2004
- * Time: 12:00:37 PM
+ * View Friends
+ * @author Lucas Holt
  */
 public final class FriendsDao {
+    private static final Logger log = Logger.getLogger(FriendsDao.class.getName());
+
     public static Collection<FriendTo> view(final int userId) {
         ArrayList<FriendTo> friends = new ArrayList<FriendTo>(10);
         ResultSet RS;
@@ -67,7 +70,7 @@ public final class FriendsDao {
             }
             RS.close();
         } catch (Exception e1) {
-
+            log.error(e1);
         }
 
         return friends;

@@ -34,40 +34,49 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
-import javax.sql.rowset.CachedRowSet;
-import java.util.ArrayList;
-import java.util.Collection;    import java.sql.ResultSet;  import java.sql.ResultSet;
+import org.apache.cayenne.Cayenne;
+import org.apache.cayenne.ObjectContext;
+import org.apache.cayenne.access.DataContext;
+import org.apache.cayenne.query.Ordering;
+import org.apache.cayenne.query.SelectQuery;
+import org.apache.cayenne.query.SortOrder;
+import org.apache.log4j.Logger;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 
 /**
- * Created by IntelliJ IDEA.
- * User: laffer1
- * Date: Jan 9, 2004
- * Time: 1:54:42 PM
+ * View all locations
+ *
+ * @author Lucas Holt User: laffer1 Date: Jan 9, 2004 Time: 1:54:42 PM
  */
 public final class LocationDao {
+    private static final Logger log = Logger.getLogger(LocationDao.class.getName());
+
     public static Collection<LocationTo> view() {
-        ArrayList<LocationTo> location = new ArrayList<LocationTo>(4);
-        ResultSet RS;
+        ObjectContext dataContext = DataContext.getThreadObjectContext();
+        ArrayList<LocationTo> locations = new ArrayList<LocationTo>(4);
         LocationTo loc;
-        final String sqlStatement = "SELECT * FROM location ORDER BY title ASC;";
 
         try {
-            RS = SQLHelper.executeResultSet(sqlStatement);
+            SelectQuery query = new SelectQuery(com.justjournal.model.Location.class);
+            List<Ordering> orderings = new ArrayList<Ordering>();
+            orderings.add(new Ordering("title", SortOrder.ASCENDING));
+            query.addOrderings(orderings);
+            List<com.justjournal.model.Location> locationList = dataContext.performQuery(query);
 
-            while (RS.next()) {
+            for (com.justjournal.model.Location location : locationList) {
                 loc = new LocationTo();
-
-                loc.setId(RS.getInt("id"));
-                loc.setName(RS.getString("title"));
-
-                location.add(loc);
+                loc.setId(Cayenne.intPKForObject(location));
+                loc.setName(location.getTitle());
             }
         } catch (Exception e1) {
-
+            log.error(e1);
         }
 
-        return location;
+        return locations;
     }
+
 }

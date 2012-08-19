@@ -34,92 +34,78 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
-import java.sql.ResultSet;
+import org.apache.cayenne.Cayenne;
+import org.apache.cayenne.CayenneRuntimeException;
+import org.apache.cayenne.ObjectContext;
+import org.apache.cayenne.access.DataContext;
+import org.apache.log4j.Logger;
 
-
+/**
+ * Manage biography for users
+ */
 public final class BioDao {
+    private static final Logger log = Logger.getLogger(BioDao.class.getName());
 
-    public static boolean add(BioTo bio) {
-        boolean noError = true;
-        int records = 0;
+    public static boolean add(BioTo bioTo) {
+          try {
+            ObjectContext dataContext = DataContext.getThreadObjectContext();
+            com.justjournal.model.UserBio bio = dataContext.newObject(com.justjournal.model.UserBio.class);
 
-        final String sqlStmt =
-                "INSERT INTO user_bio (id,content) values(NULL,'"
-                        + bio.getBio() + "');";
+              bio.setContent(bioTo.getBio());
 
-        try {
-            records = SQLHelper.executeNonQuery(sqlStmt);
-        } catch (Exception e) {
-            noError = false;
+            dataContext.commitChanges();
+        } catch (CayenneRuntimeException ce) {
+            log.error(ce);
+            return true;
         }
 
-        if (records != 1)
-            noError = false;
-
-        return noError;
+       return false;
     }
 
-    public static boolean update(BioTo bio) {
+    public static boolean update(BioTo bioTo) {
+          try {
+            ObjectContext dataContext = DataContext.getThreadObjectContext();
 
-        boolean noError = true;
-
-
-        final String sqlStmt =
-                "Update user_bio SET content='" + bio.getBio() + "' WHERE id='" + bio.getUserId() + "' LIMIT 1;";
-
-        try {
-            SQLHelper.executeNonQuery(sqlStmt);
-        } catch (Exception e) {
-            noError = false;
+            com.justjournal.model.UserBio bio =
+                    Cayenne.objectForPK(dataContext, com.justjournal.model.UserBio.class, bioTo.getUserId());
+            bio.setContent(bioTo.getBio());
+            dataContext.commitChanges();
+        } catch (CayenneRuntimeException ce) {
+            log.error(ce);
+            return true;
         }
-
-        return noError;
+        return false;
     }
 
     public static boolean delete(int userId) {
-        boolean noError = true;
+        try {
+            ObjectContext dataContext = DataContext.getThreadObjectContext();
 
-        final String sqlStmt = "DELETE FROM user_bio WHERE id='" + userId + "' LIMIT 1;";
-
-        if (userId > 0) {
-            try {
-                SQLHelper.executeNonQuery(sqlStmt);
-            } catch (Exception e) {
-                noError = false;
-            }
-        } else {
-            noError = false;
+            com.justjournal.model.UserBio bio =
+                    Cayenne.objectForPK(dataContext, com.justjournal.model.UserBio.class, userId);
+            dataContext.deleteObjects(bio);
+            dataContext.commitChanges();
+        } catch (CayenneRuntimeException ce) {
+            log.error(ce);
+            return true;
         }
-
-        return noError;
+        return false;
     }
 
-
     public static BioTo view(int userId) {
-        BioTo bio = new BioTo();
-        ResultSet rs = null;
-        String sqlStmt = "Select content from user_bio WHERE id='" + userId + "' Limit 1;";
+        BioTo bioto = new BioTo();
 
         try {
-            rs = SQLHelper.executeResultSet(sqlStmt);
+            ObjectContext dataContext = DataContext.getThreadObjectContext();
 
-            if (rs.next()) {
-                bio.setUserId(userId);
-                bio.setBio(rs.getString(1));
-            }
-
-            rs.close();
-
+            com.justjournal.model.UserBio bio =
+                    Cayenne.objectForPK(dataContext, com.justjournal.model.UserBio.class, userId);
+            bioto.setUserId(userId);
+            bioto.setBio(bio.getContent());
         } catch (Exception e1) {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (Exception e) {
-                    // NOTHING TO DO
-                }
-            }
+            log.error(e1);
         }
 
-        return bio;
+        return bioto;
     }
 }
