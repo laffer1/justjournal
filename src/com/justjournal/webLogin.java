@@ -92,8 +92,6 @@ public final class WebLogin {
         String SqlStatement = "SELECT id FROM user WHERE username='" + UserName
                 + "' AND password=SHA1('" + Password + "') LIMIT 1;";
 
-
-
         try {
             ResultSet RS = SQLHelper.executeResultSet(SqlStatement);
 

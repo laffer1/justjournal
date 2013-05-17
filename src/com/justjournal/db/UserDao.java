@@ -42,7 +42,6 @@ import java.util.List;
 
 import com.justjournal.model.User;
 import org.apache.cayenne.Cayenne;
-import org.apache.cayenne.DataObjectUtils;
 import org.apache.cayenne.ObjectContext;
 import org.apache.cayenne.access.DataContext;
 import org.apache.log4j.Logger;
@@ -75,7 +74,7 @@ public final class UserDao {
         final String sqlStmt =
                 "Insert INTO user (username,password,name,lastname) VALUES('"
                         + user.getUserName() + "',sha1('" + user.getPassword()
-                        + "'),'" + user.getName() + "','" + user.getLastName() + "');";
+                        + "'),'" + user.getFirstName() + "','" + user.getLastName() + "');";
 
         try {
             records = SQLHelper.executeNonQuery(sqlStmt);
@@ -100,11 +99,12 @@ public final class UserDao {
     public static boolean update(UserTo user) {
         boolean noError = true;
 
-        final String sqlStmt =
-                "Update user SET name='" + user.getName() + "' AND lastname='" + user.getLastName() + "' WHERE id='" + user.getId() + "' LIMIT 1;";
-
         try {
-            SQLHelper.executeNonQuery(sqlStmt);
+            ObjectContext dataContext = DataContext.getThreadObjectContext();
+            User u = Cayenne.objectForPK(dataContext, User.class, user.getId());
+            u.setName(user.getFirstName());
+            u.setLastname(user.getLastName());
+            dataContext.commitChanges();
         } catch (Exception e) {
             noError = false;
         }
@@ -182,10 +182,10 @@ public final class UserDao {
             ObjectContext dataContext = DataContext.getThreadObjectContext();
             Expression exp = Expression.fromString("username = $user");
             final SelectQuery query = new SelectQuery(User.class, exp).queryWithParameters(Collections.singletonMap("user", userName));
-            List<User> userlist = dataContext.performQuery(query);
+            List<User> userList = dataContext.performQuery(query);
 
-            if (!userlist.isEmpty()) {
-                User u = userlist.get(0);
+            if (!userList.isEmpty()) {
+                User u = userList.get(0);
 
                 user.setId(Cayenne.intPKForObject(u));
                 user.setUserName(userName);
@@ -208,7 +208,7 @@ public final class UserDao {
      *
      * @return All users of just journal.
      */
-    public static final Collection<UserTo> memberList() {
+    public static Collection<UserTo> memberList() {
         ArrayList<UserTo> users = new ArrayList<UserTo>(1024);
         UserTo usr;
         final String sqlStatement = "call memberlist();";
@@ -239,7 +239,7 @@ public final class UserDao {
      *
      * @return collection of UserTo's.
      */
-    public static final Collection<UserTo> newUsers() {
+    public static Collection<UserTo> newUsers() {
         ArrayList<UserTo> users = new ArrayList<UserTo>(5);
         UserTo usr;
         final String sqlStatement = "SELECT id, username, name, since, lastname FROM user ORDER by id DESC Limit 0,5;";
@@ -265,7 +265,7 @@ public final class UserDao {
         return users;
     }
 
-    public static final Collection<String> friends(String username) {
+    public static Collection<String> friends(String username) {
         ArrayList<String> friends = new ArrayList<String>();
         final String sql = "SELECT friends.friendid as fif, (SELECT user.username from user WHERE user.id=fif) FROM friends, user WHERE user.username=\"" + username + "\" AND user.id=friends.id;";
 
@@ -284,7 +284,7 @@ public final class UserDao {
         return friends;
     }
 
-    public static final Collection<String> friendsof(String username) {
+    public static Collection<String> friendsof(String username) {
         ArrayList<String> friends = new ArrayList<String>();
         final String sql = "SELECT friends.id as fif, (SELECT user.username from user WHERE user.id=fif) FROM friends, user WHERE user.username=\"" + username + "\" AND user.id=friends.friendid;";
 
@@ -311,6 +311,7 @@ public final class UserDao {
      * @return Preferences in cached rowset.
      * @throws Exception SQL exception
      */
+    @Deprecated
     public static ResultSet getJournalPreferences(final String userName)
             throws Exception {
         ResultSet RS;
@@ -337,14 +338,14 @@ public final class UserDao {
         return RS;
     }
 
-       /**
+    /**
      * Update the owner view only security feature.
      *
-     * @param userId  userid of blog owner
+     * @param userId  user id of blog owner
      * @param ownerOnly  if the blog is private
      * @return true on success, false on any error
      */
-    public static final boolean updateSecurity(int userId, boolean ownerOnly) {
+    public static boolean updateSecurity(int userId, boolean ownerOnly) {
         boolean noError = true;
         int records = 0;
         String ownerview = "N";
@@ -364,7 +365,6 @@ public final class UserDao {
 
         if (records != 1)
             noError = false;
-
 
         return noError;
     }

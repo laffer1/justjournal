@@ -42,10 +42,9 @@ import org.apache.log4j.Logger;
 import java.sql.ResultSet;
 
 /**
- * Represents a user's basic credentals including userId and userName.
+ * Represents a user's basic credentials including userId and userName.
  *
  * @author Lucas Holt
- * @version $Id: User.java,v 1.19 2012/06/23 18:15:31 laffer1 Exp $ Date: Jan 4, 2004 Time: 9:59:35 PM
  * @since 1.0
  */
 public final class User {
@@ -78,7 +77,7 @@ public final class User {
         final UserTo ut = UserDao.view(userName);
 
         setUserId(ut.getId());
-        setFirstName(ut.getName());
+        setFirstName(ut.getFirstName());
         lastLogin = ut.getLastLogin();
 
         try {
@@ -138,7 +137,7 @@ public final class User {
         final UserTo ut = UserDao.view(userId);
 
         setUserName(ut.getUserName());
-        setFirstName(ut.getName());
+        setFirstName(ut.getFirstName());
         lastLogin = ut.getLastLogin();
 
         try {

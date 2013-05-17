@@ -82,7 +82,7 @@
             <tr class="dtm">
                          <% } %>
                 <td><a href="users/<%=o.getUserName() %>"><%=o.getUserName() %></a></td>
-                <td><%=o.getName() %></td>
+                <td><%=o.getFirstName() %></td>
                 <td><%=o.getSince() %></td>
                 <td><a href="profile.jsp?user=<%=o.getUserName() %>">view profile</a></td>
             </tr>

@@ -149,7 +149,7 @@ public final class UserTo {
      *
      * @return First Name of user
      */
-    public final String getName() {
+    public final String getFirstName() {
         return this.name;
     }
 
@@ -223,7 +223,7 @@ public final class UserTo {
      * @return Representation of some fields for debuging.
      */
     public final String toString() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         sb.append("id: ");
         sb.append(id);
@@ -252,9 +252,7 @@ public final class UserTo {
         if (password != null ? !password.equals(userTo.password) : userTo.password != null) return false;
         if (passwordSha1 != null ? !passwordSha1.equals(userTo.passwordSha1) : userTo.passwordSha1 != null)
             return false;
-        if (!userName.equals(userTo.userName)) return false;
-
-        return true;
+        return userName.equals(userTo.userName);
     }
 
     public final int hashCode() {
