@@ -1,11 +1,11 @@
-$Id: INSTALL,v 1.4 2008/07/31 20:18:13 laffer1 Exp $
+Updated: May 2013
 
-July 2008
+Project is migrating to maven 3.  This should simplify getting dependencies.
 
 This document is incomplete, but briefly outlines installing
 justjournal.
 
-JustJournal is developed on JDK 1.6 (java 6) on Mac OS X Lion
+JustJournal is developed on JDK 1.6 (java 6) on Mac OS X Mountain Lion
 using MySQL 5.5 and Apache Tomcat 6.  It has been successfully
 deployed on MidnightBSD 0.4 with the native 1.6 JDK using Apache
 Tomcat 7.0 and MySQL 5.5.
@@ -17,6 +17,9 @@ way aliases are handled.  (SELECT fieldname as something from tablename; somethi
 won't show up in the CachedRowSet with MySQL 5.5.25)
 
 Libraries needed for Just Journal:
+
+This list is mostly historic. rowset.jar and maverick are the only
+non-maven friendly files remaining.
 
 sun:
 Activation.jar  (JAF 1.02)
@@ -107,8 +110,3 @@ with recent domify versions, i'll either need to move to cvs maverick or
 drop it all together.
 
 The database documentation is in /database.
-
-ant:
-I've recently created an ant build script.  We'll be moving to this over time.
-
-In addition to deploying the war file, you'll also need to add/edit some default settings in the just journal database under settings.
