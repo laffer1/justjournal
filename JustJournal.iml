@@ -62,12 +62,12 @@
     <orderEntry type="library" name="commons-logging:commons-logging:1.1.2" level="project" />
     <orderEntry type="library" name="mysql:mysql-connector-java:5.1.25" level="project" />
     <orderEntry type="library" name="net.sf.jtidy:jtidy:r938" level="project" />
-    <orderEntry type="library" name="xmlrpc:xmlrpc:2.0.1" level="project" />
     <orderEntry type="library" name="net.sf.jazzy:jazzy-core:0.5.2" level="project" />
     <orderEntry type="library" name="com.lowagie:itext:2.0.8" level="project" />
     <orderEntry type="library" name="com.google.code.maven-play-plugin.org.playframework:jj-simplecaptcha:1.1" level="project" />
     <orderEntry type="library" name="servletapi:servletapi:2.4" level="project" />
     <orderEntry type="library" name="javax.mail:com.springsource.javax.mail:1.4.5" level="project" />
+    <orderEntry type="library" name="org.kohsuke.redstone:redstone:1.1.1" level="project" />
   </component>
 </module>
 
