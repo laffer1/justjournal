@@ -34,9 +34,9 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal;
 
-import com.justjournal.RestPing.BasePing;
-import com.justjournal.RestPing.IceRocket;
-import com.justjournal.RestPing.TechnoratiPing;
+import com.justjournal.restping.BasePing;
+import com.justjournal.restping.IceRocket;
+import com.justjournal.restping.TechnoratiPing;
 import com.justjournal.core.Settings;
 import com.justjournal.core.TrackbackOut;
 import com.justjournal.db.EntryDAO;

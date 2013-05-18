@@ -32,11 +32,11 @@ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
 
-package com.justjournal.MetaWeblog;
+package com.justjournal.metaweblog;
 
-import com.justjournal.RestPing.BasePing;
-import com.justjournal.RestPing.IceRocket;
-import com.justjournal.RestPing.TechnoratiPing;
+import com.justjournal.restping.BasePing;
+import com.justjournal.restping.IceRocket;
+import com.justjournal.restping.TechnoratiPing;
 import com.justjournal.User;
 import com.justjournal.WebLogin;
 import com.justjournal.db.*;

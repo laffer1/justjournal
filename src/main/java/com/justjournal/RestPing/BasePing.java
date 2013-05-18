@@ -1,4 +1,4 @@
-package com.justjournal.RestPing;
+package com.justjournal.restping;
 
 import org.apache.log4j.Logger;
 
