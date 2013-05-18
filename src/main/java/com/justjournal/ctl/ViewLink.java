@@ -43,9 +43,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- * User: laffer1
- * Date: Dec 28, 2005
- * Time: 2:03:54 PM
+ * @author Lucas Holt
  */
 public class ViewLink extends Protected {
     private static final Logger log = Logger.getLogger(ViewLink.class.getName());

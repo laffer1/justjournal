@@ -34,16 +34,11 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.ctl;
 
-import com.justjournal.db.PreferencesDao;
-import org.apache.log4j.Category;
+import com.justjournal.db.UserDao;
 import org.apache.log4j.Logger;
 
 /**
- * Created by IntelliJ IDEA.
- * User: laffer1
- * Date: Jan 16, 2004
- * Time: 12:03:26 PM
- * To change this template use Options | File Templates.
+ * @author Lucas Holt
  */
 public class SecurityPrefSubmit extends Protected {
     private static final Logger log = Logger.getLogger(SecurityPrefSubmit.class.getName());
@@ -68,20 +63,15 @@ public class SecurityPrefSubmit extends Protected {
         if (log.isDebugEnabled())
             log.debug("Loading DAO Objects  ");
 
-        final PreferencesDao pdao = new PreferencesDao();
+        bownerOnly = this.ownerOnly != null && this.ownerOnly.equals("checked");
 
-        if (this.ownerOnly != null && this.ownerOnly.equals("checked"))
-            bownerOnly = true;
-        else
-            bownerOnly = false;
-
-        if (this.hasErrors() == false) {
-            boolean result = pdao.updateSec(this.currentLoginId(), bownerOnly);
+        if (!this.hasErrors()) {
+            boolean result = UserDao.updateSecurity(this.currentLoginId(), bownerOnly);
 
             if (log.isDebugEnabled())
                 log.debug("Was there an error with data tier?  " + !result);
 
-            if (result == false)
+            if (!result)
                 addError("Unknown", "Could not edit setting.");
         }
 

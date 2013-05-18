@@ -67,17 +67,17 @@ public class DeleteEntry extends Protected {
         if (this.currentLoginId() < 1)
             addError("login", "The login timed out or is invalid.");
 
-        if (this.hasErrors() == false) {
+        if (!this.hasErrors()) {
             // we need to delete the entry and comments associated
             // with the entry
-            result = edao.delete(entryId, this.currentLoginId());
+            result = EntryDAO.delete(entryId, this.currentLoginId());
 
             if (result)
-                result2 = cdao.deleteByEntry(entryId);
+                result2 = CommentDao.deleteByEntry(entryId);
 
-            if (result == false)
+            if (!result)
                 addError("Unknown", "Could not delete entry.");
-            if (result2 == false)
+            if (!result2)
                 addError("Unknown", "Unable to delete comments associated with entry.");
         }
 
