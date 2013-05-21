@@ -1,7 +1,6 @@
 
 
             <!-- Header: Begin -->
-			
             <div id="header">										
 				<img src="/images/jj_header.gif" alt="JustJournal" width="608" height="202" style="border:0;" usemap="#Map" />
 				<map name="Map" id="Map"><area shape="rect" coords="483,163,509,196" href="/update.jsp" alt="Write" />
