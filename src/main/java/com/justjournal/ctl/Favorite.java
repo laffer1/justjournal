@@ -73,7 +73,7 @@ public class Favorite {
     @RequestMapping(method = RequestMethod.GET)
     public
     @ResponseBody
-    Collection<EntryTo> getFavorites(HttpSession session) {
+    Collection<EntryTo> getFavorites(HttpSession session, HttpServletResponse response) {
         Collection<EntryTo> entries = new ArrayList<EntryTo>(20);
 
         try {
@@ -87,14 +87,13 @@ public class Favorite {
                 entries.add(et);
             }
         } catch (Exception e) {
-
-            if (log.isDebugEnabled())
-                log.debug("insidePerform(): " + e.getMessage());
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            log.error(e.getMessage());
         }
         return entries;
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.PUT)
     public
     @ResponseBody
     Map<String, String> create(@RequestBody EntryTo favorite, HttpSession session, HttpServletResponse response) {
@@ -109,8 +108,7 @@ public class Favorite {
             }
             return java.util.Collections.singletonMap("id", ""); // XXX
         } catch (Exception e) {
-            if (log.isDebugEnabled())
-                log.debug("insidePerform(): " + e.getMessage());
+            log.error(e.getMessage());
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return java.util.Collections.singletonMap("error", "Could not add the favorite.");
         }
@@ -120,10 +118,6 @@ public class Favorite {
     public
     @ResponseBody
     Map<String, String> delete(@RequestBody EntryTo favorite, HttpSession session, HttpServletResponse response) throws Exception {
-
-        if (log.isDebugEnabled())
-            log.debug("insidePerform(): Attempting to delete favorite");
-
         if (!WebLogin.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");

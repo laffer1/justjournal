@@ -67,7 +67,7 @@ public class Link {
         return UserLinkDao.view(WebLogin.currentLoginId(session));
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.PUT)
     public
     @ResponseBody
     Map<String, String> create(@RequestBody UserLinkTo link, HttpSession session, HttpServletResponse response) {
