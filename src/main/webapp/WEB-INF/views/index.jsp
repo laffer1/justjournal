@@ -19,15 +19,15 @@
 <head>
 <title>Just Journal: Free Online Journals</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-<link rel="stylesheet" type="text/css" href="layout.css" media="all"/>
-<link rel="stylesheet" type="text/css" href="font-normal.css" media="all"/>
+<link rel="stylesheet" type="text/css" href="../../layout.css" media="all"/>
+<link rel="stylesheet" type="text/css" href="../../font-normal.css" media="all"/>
 <link rel="home" title="Home" href="index.jsp"/>
-<link rel="contents" title="Site Map" href="sitemap.jsp"/>
-<link rel="help" title="Technical Support" href="support/index.jsp"/>
+<link rel="contents" title="Site Map" href="../../sitemap.jsp"/>
+<link rel="help" title="Technical Support" href="../../support/index.jsp"/>
 <link rel="alternate" type="application/rss+xml" href="RecentBlogs" title="Recent JJ Blog Posts"/>
-<link rel="alternate" media="handheld" href="mob/index.jsp" />
-<link rel="icon" href="favicon.ico" type="image/x-icon" />
-<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+<link rel="alternate" media="handheld" href="../../mob/index.jsp" />
+<link rel="icon" href="../../favicon.ico" type="image/x-icon" />
+<link rel="shortcut icon" href="../../favicon.ico" type="image/x-icon" />
 <style type="text/css">
 #rightmenu {
 	float: right;
@@ -59,20 +59,6 @@ background: white;
 #blurb {
 	text-shadow: 2px 2px 2px #b3b3b3;
 	filter: dropshadow(color=#b3b3b3, offx=2, offy=2);
-}
-
-#ticker {
-    background-color: #006699;
-    color: white;
-    border: thin solid silver;
-    border-radius: 10px;   /* css3 */
-    -moz-border-radius: 10px;
-    -webkit-border-radius: 10px;
-    width: 600px;
-    margin-top: 5px;
-    margin-bottom: 5px;
-    margin: 0;
-    padding: 0;
 }
 
 #ticker table {
@@ -182,10 +168,10 @@ overflow: hidden; /*See: http://www.quirksmode.org/css/clearing.html */
 width: 100%;
 }
 </style>
-<link rel="stylesheet" type="text/css" href="default.css" id="default"/>
+<link rel="stylesheet" type="text/css" href="../../default.css" id="default"/>
 <!-- dummy stylesheet - href to be swapped -->
-<link rel="stylesheet" type="text/css" href="dummy.css" id="dummy_css"/>
-<script type="text/javascript" src="js/applesearch.js">/* ie7 sucks*/</script>
+<link rel="stylesheet" type="text/css" href="../../dummy.css" id="dummy_css"/>
+<script type="text/javascript" src="../../js/applesearch.js">/* ie7 sucks*/</script>
    <style type="text/css" media="all">
         <!--
 
@@ -212,7 +198,7 @@ width: 100%;
 
         -->
     </style>
-    <script language="JavaScript" type="text/javascript" src="js/sha1.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../../js/sha1.js"></script>
     <script language="JavaScript" type="text/javascript">
         function sendForm(formid, checkuser)
         {
@@ -255,7 +241,7 @@ width: 100%;
 
 <body>
 
-<jsp:include page="header.inc" flush="false"/>
+<jsp:include page="../../header.inc" flush="false"/>
 
 <div id="content">
 
@@ -280,7 +266,7 @@ width: 100%;
                         <span class="label">Username</span>
                         <span class="formw">
                                 <input type="text" name="username" id="iusername" size="18" maxlength="15"
-                                style="width: 250px; background: url(images/userclass_16.png) no-repeat; background-color: #fff; background-position: 0px 1px; padding-left: 18px; color: black; font-weight: bold;"/></span>
+                                style="width: 250px; background: url(../../images/userclass_16.png) no-repeat; background-color: #fff; background-position: 0px 1px; padding-left: 18px; color: black; font-weight: bold;"/></span>
                 </div>
 
                 <div class="row">
@@ -307,21 +293,21 @@ width: 100%;
 
 <div id="quickmenu">
     <ul>
-        <li><a href="create.jsp">Create Account</a></li>
-        <li><a href="cancel.jsp">Cancel Account</a></li>
+        <li><a href="../../create.jsp">Create Account</a></li>
+        <li><a href="../../cancel.jsp">Cancel Account</a></li>
         <li><a href="http://www.cafepress.com/justjournal">Purchase JJ Merchandise</a></li>
-        <li><a href="memberlist.jsp">Member List</a></li>
-        <li><a href="mob/index.jsp" title="Just Journal Mobile for Cell Phones">Just Journal Mobile</a></li>
-        <li><a href="opensource/index.jsp">Open Source</a></li>
+        <li><a href="../../memberlist.jsp">Member List</a></li>
+        <li><a href="../../mob/index.jsp" title="Just Journal Mobile for Cell Phones">Just Journal Mobile</a></li>
+        <li><a href="../../opensource/index.jsp">Open Source</a></li>
         <li><a href="users/jjsite">Site Journal</a></li>
-        <li><a href="tags.jsp">Tag Cloud</a></li>
-        <li><a href="update.jsp">Update Journal</a></li>
+        <li><a href="../../tags.jsp">Tag Cloud</a></li>
+        <li><a href="../../update.jsp">Update Journal</a></li>
     </ul>
 </div>
 
   <div id="rightmenu">
     <div id="wrapper">
-        <form action="search/index.jsp" method="get" id="bsearch">
+        <form action="../../search/index.jsp" method="get" id="bsearch">
             <div id="applesearch">
                 <span class="sbox_l"></span><span class="sbox"><input name="bquery" type="search"
                                                                       id="srch_fld" placeholder="Search..."
@@ -334,18 +320,18 @@ width: 100%;
         </form>
     </div>
 
-    <p><a href="software/index.jsp">Download</a> the client software. </p>
+    <p><a href="../../software/index.jsp">Download</a> the client software. </p>
 
-    <p>View <a href="stats.jsp">site statistics</a>.</p>
+    <p>View <a href="../../stats.jsp">site statistics</a>.</p>
 
-    <p><img src="images/feed.gif" alt="Feed"/> <a href="RecentBlogs">Recent Blog Entries</a></p>
+    <p><img src="../../images/feed.gif" alt="Feed"/> <a href="RecentBlogs">Recent Blog Entries</a></p>
   </div>
 
     <p style="clear: both;">&#160;</p>
 
 </div>
 
-<jsp:include page="footer.inc" flush="false"/>
+<jsp:include page="../../footer.inc" flush="false"/>
 
 </body>
 </html>
