@@ -42,16 +42,15 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 
 /**
- * User: laffer1
- * Date: Dec 3, 2007
- * Time: 4:13:53 PM
- * $Id: XmlRpc.java,v 1.3 2008/04/26 20:59:54 laffer1 Exp $
+ * XML RPC endpoints for blogger and metaweblog legacy APIs.
+ *
+ * @author Lucas Holt
  */
 public class XmlRpc extends XmlRpcServlet {
     public void init(ServletConfig servletConfig) throws ServletException {
         super.init(servletConfig);
 
-        getXmlRpcServer().addInvocationHandler("blogger", new Blogger());
+        getXmlRpcServer().addInvocationHandler("blogger", new Blogger());   // This is blogger 1.0 api which is no longer used by Google, but still popular with older blogging clients.
         getXmlRpcServer().addInvocationHandler("metaWeblog", new MetaWeblog());
     }
 }
