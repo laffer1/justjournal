@@ -203,6 +203,35 @@ public final class UserDao {
         return user;
     }
 
+    public static UserTo viewWithPassword(final String userName) {
+           UserTo user = new UserTo();
+
+           try {
+               ObjectContext dataContext = DataContext.getThreadObjectContext();
+               Expression exp = Expression.fromString("username = $user");
+               final SelectQuery query = new SelectQuery(User.class, exp).queryWithParameters(Collections.singletonMap("user", userName));
+               List<User> userlist = dataContext.performQuery(query);
+
+               if (!userlist.isEmpty()) {
+                   User u = userlist.get(0);
+
+                   user.setId(Cayenne.intPKForObject(u));
+                   user.setUserName(userName);
+                   user.setName(u.getName()); // first name
+                   user.setSince(u.getSince());
+                   if (u.getLastlogin() != null) {
+                       user.setLastLogin(u.getLastlogin());
+                   }
+                   if (u.getLastname() != null)
+                       user.setLastName(u.getLastname());
+                   user.setPasswordSha1(u.getPassword());
+               }
+           } catch (Exception e1) {
+               log.error(e1);
+           }
+           return user;
+       }
+
     /**
      * Retrieve the list of all users including their name, username, sign up year (since), and unique id.
      *
