@@ -34,47 +34,62 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.ctl;
 
+import com.justjournal.User;
 import com.justjournal.db.CommentDao;
-import com.justjournal.db.CommentTo;
+import com.justjournal.db.EntryDAO;
+import com.justjournal.db.EntryTo;
+import java.util.Collection;
 
 /**
  * Created by IntelliJ IDEA.
  * User: laffer1
- * Date: Jan 1, 2004
- * Time: 1:25:30 AM
+ * Date: Dec 31, 2003
+ * Time: 3:25:21 PM
  */
-public class EditComment extends Protected {
-    protected int commentId;
-    protected CommentTo comment;
+public class Comment extends ControllerAuth {
 
-    public int getCommentId() {
-        return commentId;
+    protected EntryTo entry;
+    protected Collection comments;
+    protected int entryId;
+
+
+    public EntryTo getEntry() {
+        return this.entry;
     }
 
-    public void setCommentId(int commentId) {
-        this.commentId = commentId;
+    public Collection getComments() {
+        return this.comments;
     }
 
-    public CommentTo getComment() {
-        return this.comment;
+
+    public String getMyLogin() {
+        return this.currentLoginName();
     }
 
-    protected String insidePerform() throws Exception {
-        final CommentDao cdao = new CommentDao();
+    public int getEntryId() {
+        return this.entryId;
+    }
 
-        if (commentId < 1)
-            addError("commentId", "The comment id was invalid.");
+    public void setEntryId(int entryId) {
+        this.entryId = entryId;
+    }
 
-        if (this.currentLoginId() < 1)
-            addError("login", "The login timed out or is invalid.");
 
-        if (this.hasErrors() == false) {
-            comment = cdao.viewSingle(commentId);
+    public String perform() throws Exception {
+        this.comments = CommentDao.view(entryId);
+        this.entry = EntryDAO.viewSingle(entryId, false);
+
+        User user = new User(entry.getUserName());
+
+        // user wants it private, has comments disabled for this entry
+        // or the security level is private.
+        if (user.isPrivateJournal() ||
+                !this.entry.getAllowComments() ||
+                this.entry.getSecurityLevel() == 0) {
+            this.entry = new EntryTo();
+            return ERROR;
         }
 
-        if (this.hasErrors())
-            return ERROR;
-        else
-            return SUCCESS;
+        return SUCCESS;
     }
 }
