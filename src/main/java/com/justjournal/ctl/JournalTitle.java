@@ -70,7 +70,7 @@ public class JournalTitle extends JustJournalBaseServlet {
         // convert Integer to int type
         int userID = 0;
         if (userIDasi != null) {
-            userID = userIDasi.intValue();
+            userID = userIDasi;
         }
 
         if (!StringUtil.lengthCheck(jtitle, 5, 150)) {
