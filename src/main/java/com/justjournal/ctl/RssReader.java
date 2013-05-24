@@ -54,7 +54,6 @@ public class RssReader {
     Map<String, String> create(@RequestBody String uri, HttpSession session, HttpServletResponse response) {
 
         try {
-            RssSubscriptionsDAO dao = new RssSubscriptionsDAO();
             RssSubscriptionsTO to = new RssSubscriptionsTO();
             boolean result;
 
@@ -64,7 +63,7 @@ public class RssReader {
             }
             to.setId(WebLogin.currentLoginId(session));
             to.setUri(uri);
-            result = dao.add(to);
+            result = RssSubscriptionsDAO.add(to);
 
             if (!result) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -76,5 +75,30 @@ public class RssReader {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return java.util.Collections.singletonMap("error", "Error adding link.");
         }
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE)
+    public
+    @ResponseBody
+    Map<String, String> delete(@RequestBody int subId, HttpSession session, HttpServletResponse response) throws Exception {
+        if (!WebLogin.isAuthenticated(session)) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
+        }
+
+        if (subId > 0) {
+            RssSubscriptionsTO to = new RssSubscriptionsTO();
+            to.setId(WebLogin.currentLoginId(session));
+            to.setSubscriptionId(subId);
+
+            if (RssSubscriptionsDAO.delete(to)) {
+                return java.util.Collections.singletonMap("id", Integer.toString(subId));
+            }
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return java.util.Collections.singletonMap("error", "Error deleting the subscription.");
+        }
+
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        return java.util.Collections.singletonMap("error", "Error deleting the subscription. Bad id.");
     }
 }
