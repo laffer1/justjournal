@@ -53,6 +53,15 @@ public final class UserTo {
     private String passwordSha1;
     private int since;
     private DateTime lastLogin;
+    private boolean privateJournal = false;
+
+    public boolean getPrivateJournal() {
+        return privateJournal;
+    }
+
+    public void setPrivateJournal(boolean privateJournal) {
+        this.privateJournal = privateJournal;
+    }
 
     public String getLastName() {
         return lastName;
@@ -223,7 +232,7 @@ public final class UserTo {
      * @return Representation of some fields for debuging.
      */
     public final String toString() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         sb.append("id: ");
         sb.append(id);
@@ -252,9 +261,7 @@ public final class UserTo {
         if (password != null ? !password.equals(userTo.password) : userTo.password != null) return false;
         if (passwordSha1 != null ? !passwordSha1.equals(userTo.passwordSha1) : userTo.passwordSha1 != null)
             return false;
-        if (!userName.equals(userTo.userName)) return false;
-
-        return true;
+        return userName.equals(userTo.userName);
     }
 
     public final int hashCode() {

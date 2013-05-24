@@ -109,7 +109,10 @@ public final class UserDao {
             noError = false;
         }
 
-        return noError;
+        // TODO: refactor so we don't do this in two calls.
+        boolean sec = updateSecurity(user.getId(), user.getPrivateJournal());
+
+        return noError && sec;
     }
 
     /**
@@ -268,7 +271,7 @@ public final class UserDao {
      *
      * @return collection of UserTo's.
      */
-    public static final Collection<UserTo> newUsers() {
+    public static Collection<UserTo> newUsers() {
         ArrayList<UserTo> users = new ArrayList<UserTo>(5);
         UserTo usr;
         final String sqlStatement = "SELECT id, username, name, since, lastname FROM user ORDER by id DESC Limit 0,5;";
@@ -294,7 +297,7 @@ public final class UserDao {
         return users;
     }
 
-    public static final Collection<String> friends(String username) {
+    public static Collection<String> friends(String username) {
         ArrayList<String> friends = new ArrayList<String>();
         final String sql = "SELECT friends.friendid as fif, (SELECT user.username from user WHERE user.id=fif) FROM friends, user WHERE user.username=\"" + username + "\" AND user.id=friends.id;";
 
@@ -313,7 +316,7 @@ public final class UserDao {
         return friends;
     }
 
-    public static final Collection<String> friendsof(String username) {
+    public static Collection<String> friendsof(String username) {
         ArrayList<String> friends = new ArrayList<String>();
         final String sql = "SELECT friends.id as fif, (SELECT user.username from user WHERE user.id=fif) FROM friends, user WHERE user.username=\"" + username + "\" AND user.id=friends.friendid;";
 
@@ -373,7 +376,7 @@ public final class UserDao {
      * @param ownerOnly  if the blog is private
      * @return true on success, false on any error
      */
-    public static final boolean updateSecurity(int userId, boolean ownerOnly) {
+    public static boolean updateSecurity(int userId, boolean ownerOnly) {
         boolean noError = true;
         int records = 0;
         String ownerview = "N";
