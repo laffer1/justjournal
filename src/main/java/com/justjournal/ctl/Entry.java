@@ -63,7 +63,7 @@ public class Entry {
             return Collections.singletonMap("error", "The entry id was invalid.");
 
         try {
-            boolean result2 = false;
+            boolean result2;
             boolean result = EntryDAO.delete(entryId, WebLogin.currentLoginId(session));
 
             if (!result) {
