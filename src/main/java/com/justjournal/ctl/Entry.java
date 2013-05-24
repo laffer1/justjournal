@@ -27,8 +27,8 @@
 package com.justjournal.ctl;
 
 import com.justjournal.WebLogin;
-import com.justjournal.db.CommentDao;
-import com.justjournal.db.EntryDAO;
+import com.justjournal.db.*;
+import com.justjournal.utility.StringUtil;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -48,6 +48,25 @@ import java.util.Map;
 @RequestMapping("/json/Entry.json")
 public class Entry {
     private static final Logger log = Logger.getLogger(Entry.class);
+
+    @RequestMapping(method = RequestMethod.POST)
+    public
+    @ResponseBody
+    Map<String, String> save(@RequestBody EntryTo entry, HttpSession session, HttpServletResponse response) {
+
+        if (!WebLogin.isAuthenticated(session)) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
+        }
+        // TODO: validate
+        boolean result = EntryDAO.update(entry);
+
+        if (!result) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return java.util.Collections.singletonMap("error", "Could not edit the comment.");
+        }
+        return java.util.Collections.singletonMap("id", Integer.toString(entry.getId()));
+    }
 
     @RequestMapping(method = RequestMethod.DELETE)
     public

@@ -26,8 +26,17 @@
 
 package com.justjournal.ctl;
 
+import com.justjournal.WebLogin;
+import com.justjournal.db.EntryDAO;
+import com.justjournal.db.UserDao;
+import com.justjournal.db.UserTo;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import java.util.Map;
 
 /**
  * @author Lucas Holt
@@ -36,4 +45,62 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/json/Account.json")
 public class Account {
 
+    @RequestMapping(method = RequestMethod.POST)
+    public
+    @ResponseBody
+    Map<String, String>
+    changePassword(@RequestParam String passCurrent, @RequestParam String passNew, HttpSession session, HttpServletResponse response) {
+
+        if (!WebLogin.isAuthenticated(session)) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
+        }
+
+        if (passCurrent == null ||
+                passCurrent.length() < 5 ||
+                passCurrent.length() > 15) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return java.util.Collections.singletonMap("error", "The current password is invalid.");
+        }
+        if (passNew == null ||
+                passNew.length() < 5 ||
+                passNew.length() > 15) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return java.util.Collections.singletonMap("error", "The new password is invalid.");
+        }
+
+        // TODO: Refactor change pass
+        boolean result = WebLogin.changePass(WebLogin.currentLoginName(session), passCurrent, passNew);
+
+        if (!result) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return java.util.Collections.singletonMap("error", "Error changing password.  Did you type in your old password correctly?");
+        }
+        return java.util.Collections.singletonMap("status", "Password Changed.");
+    }
+
+
+    @RequestMapping(method = RequestMethod.POST)
+    public
+    @ResponseBody
+    Map<String, String> save(@RequestBody UserTo user, HttpSession session, HttpServletResponse response) {
+
+        if (!WebLogin.isAuthenticated(session)) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
+        }
+
+        if (WebLogin.currentLoginId(session) == user.getId() && WebLogin.currentLoginName(session) == user.getUserName()) {
+
+            boolean result = UserDao.update(user);
+
+            if (!result) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                return java.util.Collections.singletonMap("error", "Could not edit the comment.");
+            }
+            return java.util.Collections.singletonMap("id", Integer.toString(user.getId()));
+        }
+        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        return java.util.Collections.singletonMap("error", "Could not edit the comment.");
+    }
 }
