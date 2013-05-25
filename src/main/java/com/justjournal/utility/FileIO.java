@@ -37,10 +37,8 @@ package com.justjournal.utility;
 import java.io.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: laffer1
- * Date: Jul 11, 2003
- * Time: 10:05:02 PM
+ * File IO utility classes
+ * @author Lucas Holt
  */
 public final class FileIO {
 
@@ -62,13 +60,11 @@ public final class FileIO {
         return myInput.toString();
     }
 
-    public static void WriteTextFile(String FilePath, String DataToWrite)
+    public static void writeTextFile(String FilePath, String DataToWrite)
             throws IOException {
         FileWriter myFW = new FileWriter(FilePath, false);
         myFW.write(DataToWrite);
         myFW.close();
-
-        return;
     }
 
     public boolean makeDirectory(String path) {
@@ -78,18 +74,12 @@ public final class FileIO {
 
     public boolean deleteDirectory(String path) {
         File dir = new File(path);
-        if (dir.isDirectory())
-            return dir.delete();
-        else
-            return false;
+        return dir.isDirectory() && dir.delete();
     }
 
     public boolean deleteFile(String path) {
         File f = new File(path);
-        if (f.isFile())
-            return f.delete();
-        else
-            return false;
+        return f.isFile() && f.delete();
     }
 
     public boolean touchFile(String path) {
