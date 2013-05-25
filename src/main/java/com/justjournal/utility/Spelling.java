@@ -106,7 +106,6 @@ public final class Spelling
 
             spellCheck = new SpellChecker(dictionary);
             spellCheck.addSpellCheckListener(this);
-
         } catch (Exception e) {
             e.printStackTrace();
         }
