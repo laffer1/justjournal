@@ -71,9 +71,10 @@ public class MailSender extends Thread {
             while (true) {
                 try {
                     ObjectContext dataContext = DataContext.getThreadObjectContext();
-                    if (dataContext == null)      {
+                    if (dataContext == null) {
                         ServerRuntime cayenneRuntime = new ServerRuntime("cayenne-JustJournalDomain.xml");
-                       dataContext = cayenneRuntime.getContext();
+                        dataContext = cayenneRuntime.getContext();
+                        DataContext.bindThreadObjectContext(dataContext);
                     }
 
                     SelectQuery query = new SelectQuery(com.justjournal.model.QueueMail.class);
@@ -121,7 +122,10 @@ public class MailSender extends Thread {
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 } catch (Exception e) {
-                    System.out.println("MailSender: Exception - " + e.getMessage());
+                    if (e.getMessage() == null)
+                        e.printStackTrace();
+                    else
+                        System.out.println("MailSender: Exception - " + e.getMessage());
                 }
             }
         } catch (Exception e) {
