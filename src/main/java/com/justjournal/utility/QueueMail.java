@@ -38,6 +38,7 @@ import com.justjournal.db.SQLHelper;
 
 /**
  * Represent an email message in the queue
+ *
  * @author Lucas Holt
  */
 public final class QueueMail {
@@ -58,11 +59,6 @@ public final class QueueMail {
         this.toAddress = toAddress;
         this.fromAddress = fromAddress;
         this.purpose = purpose;
-    }
-
-    public static void main(String[] args) {
-        // an instance must be created to use this for now.
-        System.out.println("can not run this from command line");
     }
 
     public void setSubject(String mailSubject) {
@@ -108,8 +104,8 @@ public final class QueueMail {
     public void send()
             throws Exception {
 
-        String sqlstmt = "Insert INTO `queue_mail` ( `to` , `from` , `subject` , `body` , `purpose` ) VALUES( '" + getToAddress() + "' , '" + getFromAddress() + "' , '" + getSubject() + "' , '" + getBody() + "' , '" + getPurpose() + "' );";
-        int result = SQLHelper.executeNonQuery(sqlstmt);
+        String stmt = "Insert INTO `queue_mail` ( `to` , `from` , `subject` , `body` , `purpose` ) VALUES( '" + getToAddress() + "' , '" + getFromAddress() + "' , '" + getSubject() + "' , '" + getBody() + "' , '" + getPurpose() + "' );";
+        int result = SQLHelper.executeNonQuery(stmt);
 
         if (result != 1)
             throw new Exception("Couldn't add mail to queue");
@@ -121,13 +117,7 @@ public final class QueueMail {
 
         final QueueMail queueMail = (QueueMail) o;
 
-        if (!getBody().equals(queueMail.getBody())) return false;
-        if (!getSubject().equals(queueMail.getSubject())) return false;
-        if (!getFromAddress().equals(queueMail.getFromAddress())) return false;
-        if (!getPurpose().equals(queueMail.getPurpose())) return false;
-        if (!getToAddress().equals(queueMail.getToAddress())) return false;
-
-        return true;
+        return getBody().equals(queueMail.getBody()) && getSubject().equals(queueMail.getSubject()) && getFromAddress().equals(queueMail.getFromAddress()) && getPurpose().equals(queueMail.getPurpose()) && getToAddress().equals(queueMail.getToAddress());
     }
 
     public int hashCode() {
