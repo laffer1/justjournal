@@ -179,21 +179,14 @@ public final class StringUtil {
      * minimum and maximum values provided.
      *
      * @param str       string to check
-     * @param minlength the minimum length
-     * @param maxlength the max length
+     * @param minLength the minimum length
+     * @param maxLength the max length
      * @return true if the str is between the constraints,
      *         false if it violates them.
      */
-    public static boolean lengthCheck(final String str, final int minlength, final int maxlength) {
+    public static boolean lengthCheck(final String str, final int minLength, final int maxLength) {
         int len = str.length();
-
-        if (len < minlength)
-            return false;
-
-        if (len > maxlength)
-            return false;
-
-        return true;
+        return len >= minLength && len <= maxLength;
     }
 
 }
