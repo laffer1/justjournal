@@ -91,7 +91,11 @@
             <element id="library" level="project" name="Maven: org.springframework:spring-web:3.2.3.RELEASE" />
             <element id="library" level="project" name="Maven: cglib:cglib-nodep:2.2" />
             <element id="library" level="project" name="Maven: javax.inject:javax.inject:1" />
-            <element id="library" level="project" name="Maven: org.codehaus.jackson:jackson-core-asl:1.9.12" />
+            <element id="library" level="project" name="Maven: org.codehaus.jackson:jackson-core-asl:1.9.11" />
+            <element id="library" level="project" name="Maven: org.codehaus.jackson:jackson-mapper-asl:1.9.11" />
+            <element id="library" level="project" name="Maven: org.codehaus.jackson:jackson-xc:1.9.11" />
+            <element id="library" level="project" name="Maven: org.codehaus.jackson:jackson-jaxrs:1.9.11" />
+            <element id="library" level="project" name="Maven: org.codehaus.jackson:jackson-mrbean:1.9.11" />
           </element>
         </element>
       </root>
@@ -904,15 +908,59 @@
         <root url="jar://$MAVEN_REPOSITORY$/org/apache/velocity/velocity/1.6.3/velocity-1.6.3-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.codehaus.jackson:jackson-core-asl:1.9.12">
+    <library name="Maven: org.codehaus.jackson:jackson-core-asl:1.9.11">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/jackson/jackson-core-asl/1.9.12/jackson-core-asl-1.9.12.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/jackson/jackson-core-asl/1.9.11/jackson-core-asl-1.9.11.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/jackson/jackson-core-asl/1.9.12/jackson-core-asl-1.9.12-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/jackson/jackson-core-asl/1.9.11/jackson-core-asl-1.9.11-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/jackson/jackson-core-asl/1.9.12/jackson-core-asl-1.9.12-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/jackson/jackson-core-asl/1.9.11/jackson-core-asl-1.9.11-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: org.codehaus.jackson:jackson-jaxrs:1.9.11">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/jackson/jackson-jaxrs/1.9.11/jackson-jaxrs-1.9.11.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/jackson/jackson-jaxrs/1.9.11/jackson-jaxrs-1.9.11-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/jackson/jackson-jaxrs/1.9.11/jackson-jaxrs-1.9.11-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: org.codehaus.jackson:jackson-mapper-asl:1.9.11">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/jackson/jackson-mapper-asl/1.9.11/jackson-mapper-asl-1.9.11.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/jackson/jackson-mapper-asl/1.9.11/jackson-mapper-asl-1.9.11-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/jackson/jackson-mapper-asl/1.9.11/jackson-mapper-asl-1.9.11-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: org.codehaus.jackson:jackson-mrbean:1.9.11">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/jackson/jackson-mrbean/1.9.11/jackson-mrbean-1.9.11.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/jackson/jackson-mrbean/1.9.11/jackson-mrbean-1.9.11-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/jackson/jackson-mrbean/1.9.11/jackson-mrbean-1.9.11-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: org.codehaus.jackson:jackson-xc:1.9.11">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/jackson/jackson-xc/1.9.11/jackson-xc-1.9.11.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/jackson/jackson-xc/1.9.11/jackson-xc-1.9.11-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/jackson/jackson-xc/1.9.11/jackson-xc-1.9.11-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.codehaus.plexus:plexus-container-default:1.0-alpha-9-stable-1">
