@@ -32,11 +32,9 @@ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
 
-package com.justjournal.ctl;
+package com.justjournal.ctl.api;
 
 import com.justjournal.WebLogin;
-import com.justjournal.db.EntryTo;
-import com.justjournal.db.SQLHelper;
 import com.justjournal.db.UserLinkDao;
 import com.justjournal.db.UserLinkTo;
 import org.apache.log4j.Logger;
@@ -55,9 +53,9 @@ import java.util.Map;
  * @author Lucas Holt
  */
 @Controller
-@RequestMapping("/json/Link.json")
-public class Link {
-    private static final Logger log = Logger.getLogger(Link.class.getName());
+@RequestMapping("/api/link")
+final public class LinkController {
+    private static final Logger log = Logger.getLogger(LinkController.class.getName());
 
     @RequestMapping(method = RequestMethod.GET)
     public

@@ -31,7 +31,7 @@ TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
-package com.justjournal.ctl;
+package com.justjournal.ctl.api;
 
 import com.justjournal.WebLogin;
 import com.justjournal.db.*;
@@ -60,9 +60,9 @@ import java.util.Map;
  *        Created: Date: Dec 10, 2005 Time: 8:44:39 PM
  */
 @Controller
-@RequestMapping("/json/Favorite.json")
-public class Favorite {
-    private static final Logger log = Logger.getLogger(Favorite.class.getName());
+@RequestMapping("/api/favorite")
+final public class FavoriteController {
+    private static final Logger log = Logger.getLogger(FavoriteController.class.getName());
 
     /**
      * Retrieve the collection of favorite entries
