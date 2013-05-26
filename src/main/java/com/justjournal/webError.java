@@ -44,9 +44,9 @@ import java.io.PrintWriter;
  * @since 1.0
  */
 public final class WebError {
-    private static String severeStyle =
+    private final static String severeStyle =
             "width: 100%; height: 100px; margin-top: 1in; margin-left: 0; margin-right: 0; position relative; text-align: center; background: maroon; color: white;";
-    private static String mildStyle =
+    private final static String mildStyle =
             "width: 100%; height: 100px; margin-top: 1in; margin-left: 0; margin-right: 0; position relative; text-align: center; background: orange; color: white;";
 
     private static void headStyle( String title, final StringBuffer sb ) {
@@ -99,6 +99,12 @@ public final class WebError {
 
     }
 
+    /**
+     * Non fatal error
+     * @param ErrTitle title of error message
+     * @param ErrMsg details of error
+     * @param sb output string buffer
+     */
      public static void mild(final String ErrTitle, final String ErrMsg, final StringBuffer sb) {
         if (sb.length() > 0) {
             // reset the output to display the error.
