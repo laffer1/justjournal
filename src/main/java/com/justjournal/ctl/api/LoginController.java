@@ -44,22 +44,43 @@ final public class LoginController {
     private static final String JJ_LOGIN_OK = "JJ.LOGIN.OK";
     private static final String JJ_LOGIN_FAIL = "JJ.LOGIN.FAIL";
 
+    class Login {
+        private String username;
+        private String password;
+
+        public String getUsername() {
+            return username;
+        }
+
+        public String getPassword() {
+            return password;
+        }
+
+        public void setUsername(String username) {
+            this.username = username;
+        }
+
+        public void setPassword(String password) {
+            this.password = password;
+        }
+    }
+
     @RequestMapping(method = RequestMethod.POST)
     public
     @ResponseBody
-    Model post(@RequestParam String userName, @RequestParam String password, Model model, HttpSession session) {
+    Model post(@RequestBody Login login, Model model, HttpSession session) {
 
         // Current authentication needs to get whacked
         if (WebLogin.isAuthenticated(session)) {
             session.invalidate();
         }
 
-        if (StringUtil.lengthCheck(userName, 3, 15) && StringUtil.lengthCheck(password, 5, 18)) {
-            int userID = WebLogin.validate(userName, password);
+        if (StringUtil.lengthCheck(login.username, 3, 15) && StringUtil.lengthCheck(login.password, 5, 18)) {
+            int userID = WebLogin.validate(login.username, login.password);
             if (userID > 0) {
                 session.setAttribute("auth.uid", userID);
-                session.setAttribute("auth.user", userName);
-                model.addAttribute("username", userName);
+                session.setAttribute("auth.user", login.username);
+                model.addAttribute("username", login.username);
                 model.addAttribute("status", JJ_LOGIN_OK);
             } else
                 error(model);
