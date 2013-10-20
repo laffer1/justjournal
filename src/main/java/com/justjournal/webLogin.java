@@ -28,17 +28,21 @@ package com.justjournal;
 
 import com.justjournal.db.SQLHelper;
 import com.justjournal.utility.StringUtil;
+import org.apache.cayenne.ObjectContext;
+import org.apache.cayenne.access.DataContext;
+import org.apache.cayenne.exp.Expression;
+import org.apache.cayenne.query.SelectQuery;
+import org.apache.log4j.Logger;
 
+import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.ResultSet;
+import java.util.HashMap;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.apache.log4j.Logger;
-
-import javax.servlet.http.HttpSession;
 
 /**
  * Provides authentication and password management services to web applications using the just journal data tier.
@@ -117,21 +121,27 @@ public final class WebLogin {
         if (!isPassword(Password))
             return BAD_USER_ID; // bad password
 
+              ObjectContext dataContext = DataContext.getThreadObjectContext();
 
-        String SqlStatement = "SELECT id FROM user WHERE username='" + UserName
-                + "' AND password=SHA1('" + Password + "') LIMIT 1;";
+              Expression exp;
+                  exp = Expression.fromString("username = $user");
 
+              try {
+                  HashMap<String, Object> map = new HashMap<String, Object>();
+                  map.put("user", UserName);
+                  map.put("pass", SHA1(Password));
+                  exp = exp.expWithParameters(map);
+                  SelectQuery query = new SelectQuery(com.justjournal.model.User.class, exp);
 
-        try {
-            ResultSet RS = SQLHelper.executeResultSet(SqlStatement);
+                  List<User> userList = dataContext.performQuery(query);
 
-            if (RS.next())
-                userID = RS.getInt(1);  // id field
+                  if (userList.isEmpty())
+                      return BAD_USER_ID;
 
-            RS.close();
-        } catch (Exception e) {
-            log.error("validate(): " + e.getMessage());
-        }
+                  userID = userList.get(0).getUserId();
+              } catch (Exception e) {
+                  log.error("validate(): " + e.getMessage());
+              }
 
         return userID;
     }
