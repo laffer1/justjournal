@@ -1,4 +1,4 @@
-angular.module('wwwApp').controller('MainCtrl', ['$scope', '$window', '$http', function ($scope, $window, $http) {
+angular.module('wwwApp').controller('MainCtrl', ['$scope', '$http', function ($scope, $http) {
     'use strict';
 
     $scope.username = '';
