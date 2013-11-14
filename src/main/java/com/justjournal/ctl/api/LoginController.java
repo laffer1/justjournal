@@ -36,10 +36,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import net.tanesha.recaptcha.ReCaptchaImpl;
+import net.tanesha.recaptcha.ReCaptchaResponse;
+
 import javax.servlet.http.HttpSession;
 import java.io.Serializable;
 
 /**
+ * Log user into session
+ *
  * @author Lucas Holt
  */
 @Controller
@@ -51,6 +56,7 @@ final public class LoginController {
 
     private static final Logger log = Logger.getLogger(LoginController.class);
 
+    // Front End returns data in this format
     class Login implements Serializable {
         public String username;
         public String password;
@@ -72,13 +78,37 @@ final public class LoginController {
         }
     }
 
+    // Response format
+    class LoginResponse implements Serializable {
+        private String status;
+        private String username;
+
+        public String getUsername() {
+            return username;
+        }
+
+        public void setUsername(String username) {
+            this.username = username;
+        }
+
+        public String getStatus() {
+            return status;
+        }
+
+        public void setStatus(String status) {
+            this.status = status;
+        }
+    }
+
+
     @RequestMapping(method = RequestMethod.POST, produces = "application/json")
     public
     @ResponseBody
     ResponseEntity<String> post(@RequestBody String loginJSON, HttpSession session) {
+        Gson gson = new GsonBuilder().create();
+        LoginResponse loginResponse = new LoginResponse();
 
         try {
-            Gson gson = new GsonBuilder().create();
             Login login = gson.fromJson(loginJSON, Login.class);
 
             // Current authentication needs to get whacked
@@ -89,22 +119,28 @@ final public class LoginController {
             if (StringUtil.lengthCheck(login.getUsername(), 3, 15) && StringUtil.lengthCheck(login.getPassword(), 5, 18)) {
                 int userID = WebLogin.validate(login.getUsername(), login.getPassword());
                 if (userID > 0) {
+                    log.debug("LoginController.post(): Username is " + login.getUsername());
                     session.setAttribute("auth.uid", userID);
                     session.setAttribute("auth.user", login.getUsername());
                 } else {
                     log.error("Login attempt failed with user: " + login.getUsername());
 
-                    return new ResponseEntity<String>("{ status: \"" + JJ_LOGIN_FAIL + "\" }", HttpStatus.BAD_REQUEST);
+                    loginResponse.setStatus(JJ_LOGIN_FAIL);
+                    return new ResponseEntity<String>(gson.toJson(loginResponse), HttpStatus.BAD_REQUEST);
                 }
 
             } else {
                 log.error("Login failed in validation of user: " + login.getUsername());
-                return new ResponseEntity<String>("{ status: \"" + JJ_LOGIN_FAIL + "\" }", HttpStatus.BAD_REQUEST);
+                loginResponse.setStatus(JJ_LOGIN_FAIL);
+                return new ResponseEntity<String>(gson.toJson(loginResponse), HttpStatus.BAD_REQUEST);
             }
-            return new ResponseEntity<String>("{ username: \"" + login.getUsername() + "\", status: \"" + JJ_LOGIN_OK + "\" }", HttpStatus.OK);
+
+            loginResponse.setUsername(login.getUsername());
+            loginResponse.setStatus(JJ_LOGIN_OK);
+            return new ResponseEntity<String>(gson.toJson(loginResponse), HttpStatus.OK);
         } catch (Exception e) {
             log.error(e);
-            return new ResponseEntity<String>("{ status: \"" + JJ_LOGIN_FAIL + "\" }", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<String>(gson.toJson(loginResponse), HttpStatus.BAD_REQUEST);
         }
     }
 }
