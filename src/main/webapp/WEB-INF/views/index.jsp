@@ -52,8 +52,9 @@
 <div id="footer">
     <p id="copyright">&#169; 2003 - 2013 Lucas Holt. All rights reserved.</p>
 
-    <p><a href="/privacy.jsp" title="Privacy Policy">Privacy</a> |
-        <a href="/search/index.jsp" title="Search">Search</a>
+    <p><a href="/privacy" title="Privacy Policy">Privacy</a> |
+        <a href="/search/index.jsp" title="Search">Search</a> |
+        <a href="/sitemap" title="Sitemap">Sitemap</a></p>
 </div>
 
 <div style="text-align: center; margin: auto;">
@@ -82,7 +83,11 @@
 <!-- build:js scripts/scripts.js -->
 <script src="scripts/app.js"></script>
 <script src="scripts/controllers/main.js"></script>
+<script src="scripts/controllers/cancel.js"></script>
+<script src="scripts/controllers/moodlist.js"></script>
+<script src="scripts/controllers/sitemap.js"></script>
 <script src="scripts/controllers/tags.js"></script>
+<script src="scripts/services/moodervice.js"></script>
 <script src="scripts/services/tagservice.js"></script>
 <!-- endbuild -->
 

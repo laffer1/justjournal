@@ -3,7 +3,7 @@
 }
 
 #ticker table {
-    background: transparent url( ../images/ticker744wide_btm.gif ) no-repeat bottom left;
+    background: transparent url(../images/ticker744wide_btm.gif) no-repeat bottom left;
     border: 0;
     margin: 0;
     padding: 0;
@@ -14,7 +14,7 @@
 }
 
 #ticker table td#tic-title {
-    background: transparent url( ../images/ticker_top.gif ) no-repeat top left;
+    background: transparent url(../images/ticker_top.gif) no-repeat top left;
     font-size: 12px;
     font-weight: bold;
     padding: 4px 0;
@@ -24,7 +24,7 @@
 }
 
 #ticker table td#tic-item {
-    background: transparent url( ../images/ticker_top.gif ) no-repeat top right;
+    background: transparent url(../images/ticker_top.gif) no-repeat top right;
     padding: 4px 10px 4px 16px;
     width: 534px;
     text-align: left;

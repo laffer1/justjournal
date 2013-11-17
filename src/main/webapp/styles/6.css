@@ -9,7 +9,7 @@ h1 {
 }
 
 h3 {
-/*color: rgb(81,118,236);*/
+    /*color: rgb(81,118,236);*/
     color: #99CC66;
 }
 
@@ -42,7 +42,7 @@ a:hover img {
 }
 
 #header {
-/*background-color: rgb(81,118,236);*/
+    /*background-color: rgb(81,118,236);*/
     background-color: #006699;
     color: #FFFFFF;
 }

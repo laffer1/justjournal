@@ -36,7 +36,7 @@ a:hover {
 }
 
 #header {
-    background: transparent url( "../images/jj_header_bg.gif" ) repeat-x;
+    background: transparent url("../images/jj_header_bg.gif") repeat-x;
     padding-bottom: 20px;
 }
 
