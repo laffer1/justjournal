@@ -42,9 +42,9 @@ import java.util.List;
 
 import com.justjournal.model.User;
 import org.apache.cayenne.Cayenne;
-import org.apache.cayenne.DataObjectUtils;
 import org.apache.cayenne.ObjectContext;
 import org.apache.cayenne.access.DataContext;
+import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.log4j.Logger;
 
 import org.apache.cayenne.exp.Expression;
@@ -68,24 +68,58 @@ public final class UserDao {
      * @param user User Instance
      * @return True if successful, false otherwise.
      */
-    public static boolean add(UserTo user) {
+    public static boolean add(UserTo user, String email) {
+        if (user == null)
+            throw new IllegalArgumentException("user is invalid");
+
+        if (email == null || email.length() < 5)
+            throw new IllegalArgumentException("email is invalid");
+
         boolean noError = true;
-        int records = 0;
 
         final String sqlStmt =
                 "Insert INTO user (username,password,name,lastname) VALUES('"
                         + user.getUserName() + "',sha1('" + user.getPassword()
                         + "'),'" + user.getName() + "','" + user.getLastName() + "');";
 
+        String SqlStatement3 = "SELECT id FROM user WHERE username='" + user.getUserName() + "' LIMIT 1;";
+
         try {
-            records = SQLHelper.executeNonQuery(sqlStmt);
+            SQLHelper.executeNonQuery(sqlStmt);
+
+            ResultSet RS = SQLHelper.executeResultSet(SqlStatement3);
+
+            if (RS.next()) {
+                String myID = RS.getString("id");
+
+                // contact
+                String SqlStatement2 = "Insert INTO user_contact (id,email) VALUES('" + myID + "','" + email + "');";
+                SQLHelper.executeNonQuery(SqlStatement2);
+
+                // bio
+                String sqlStatement4 = "Insert INTO user_bio (id,content) VALUES('" + myID + "','');";
+                SQLHelper.executeNonQuery(sqlStatement4);
+
+                // prefs
+                String sqlStatement5 = "Insert INTO user_pref (id) VALUES('" + myID + "');";
+                SQLHelper.executeNonQuery(sqlStatement5);
+
+                // location
+                String sqlStatement6 = "Insert INTO user_location (id,city) VALUES('" + myID + "','');";
+                SQLHelper.executeNonQuery(sqlStatement6);
+
+                // style
+                String sqlStatement7 = "Insert INTO user_style (id) VALUES('" + myID + "');";
+                SQLHelper.executeNonQuery(sqlStatement7);
+
+            } else {
+                noError = false;
+            }
+
         } catch (Exception e) {
+            log.error(e);
             noError = false;
         }
-
-        if (records != 1)
-            noError = false;
-
         return noError;
     }
 
@@ -95,7 +129,6 @@ public final class UserDao {
      *
      * @param user User Instance
      * @return true on success
-     * @see com.justjournal.ctl.ChangePasswordSubmit
      */
     public static boolean update(UserTo user) {
         boolean noError = true;
@@ -150,7 +183,17 @@ public final class UserDao {
         UserTo user = new UserTo();
 
         try {
-            ObjectContext dataContext = DataContext.getThreadObjectContext();
+            ObjectContext dataContext;
+            try {
+                dataContext = DataContext.getThreadObjectContext();
+            } catch (Exception e) {
+                ServerRuntime cayenneRuntime = new ServerRuntime("cayenne-JustJournalDomain.xml");
+                dataContext = cayenneRuntime.getContext();
+
+                DataContext.bindThreadObjectContext(dataContext);
+                log.debug(e);
+            }
+
             User u = Cayenne.objectForPK(dataContext, User.class, userId);
 
             if (u != null) {
@@ -179,68 +222,85 @@ public final class UserDao {
      */
     @SuppressWarnings("unchecked")
     public static UserTo view(final String userName) {
+        if (userName == null || userName.length() < 3)
+            throw new IllegalArgumentException("userName is invalid");
+
         UserTo user = new UserTo();
 
         try {
+            log.debug("UserDao view() with " + userName);
             ObjectContext dataContext = DataContext.getThreadObjectContext();
-            Expression exp = Expression.fromString("username = $user");
-            final SelectQuery query = new SelectQuery(User.class, exp).queryWithParameters(Collections.singletonMap("user", userName));
-            List<User> userlist = dataContext.performQuery(query);
+            Expression exp = Expression.fromString("db:username = $username");
+            final SelectQuery query = new SelectQuery(com.justjournal.model.User.class, exp).queryWithParameters(Collections.singletonMap("username", userName));
+            List<User> userList = dataContext.performQuery(query);
 
-            if (!userlist.isEmpty()) {
-                User u = userlist.get(0);
-
-                user.setId(Cayenne.intPKForObject(u));
-                user.setUserName(userName);
-                user.setName(u.getName()); // first name
-                user.setSince(u.getSince());
-                if (u.getLastlogin() != null) {
-                    user.setLastLogin(u.getLastlogin());
-                }
-                if (u.getLastname() != null)
-                    user.setLastName(u.getLastname());
+            if (userList.isEmpty()) {
+                log.error("User was not found");
+                return null;
             }
+            User u = userList.get(0);
+
+            user.setId(Cayenne.intPKForObject(u));
+            user.setUserName(userName);
+            user.setName(u.getName()); // first name
+            user.setSince(u.getSince());
+            if (u.getLastlogin() != null) {
+                user.setLastLogin(u.getLastlogin());
+            }
+            if (u.getLastname() != null)
+                user.setLastName(u.getLastname());
         } catch (Exception e1) {
             log.error(e1);
+            return null;
         }
         return user;
     }
 
     public static UserTo viewWithPassword(final String userName) {
-           UserTo user = new UserTo();
+        if (userName == null || userName.length() < 3)
+            throw new IllegalArgumentException("userName is invalid");
 
-           try {
-               ObjectContext dataContext = DataContext.getThreadObjectContext();
-               Expression exp = Expression.fromString("username = $user");
-               final SelectQuery query = new SelectQuery(User.class, exp).queryWithParameters(Collections.singletonMap("user", userName));
-               List<User> userlist = dataContext.performQuery(query);
+        UserTo user = new UserTo();
 
-               if (!userlist.isEmpty()) {
-                   User u = userlist.get(0);
+        try {
+            log.debug("UserDao viewWithPassword() with " + userName);
+            ObjectContext dataContext = DataContext.getThreadObjectContext();
+            Expression exp = Expression.fromString("username = $username");
+            final SelectQuery query =
+                    new SelectQuery(com.justjournal.model.User.class, exp).queryWithParameters(Collections.singletonMap("username", userName));
+            List<User> userList = dataContext.performQuery(query);
 
-                   user.setId(Cayenne.intPKForObject(u));
-                   user.setUserName(userName);
-                   user.setName(u.getName()); // first name
-                   user.setSince(u.getSince());
-                   if (u.getLastlogin() != null) {
-                       user.setLastLogin(u.getLastlogin());
-                   }
-                   if (u.getLastname() != null)
-                       user.setLastName(u.getLastname());
-                   user.setPasswordSha1(u.getPassword());
-               }
-           } catch (Exception e1) {
-               log.error(e1);
-           }
-           return user;
-       }
+            if (userList.isEmpty()) {
+                log.error("User not found");
+                return null;
+            }
+
+
+            User u = userList.get(0);
+
+            user.setId(Cayenne.intPKForObject(u));
+            user.setUserName(userName);
+            user.setName(u.getName()); // first name
+            user.setSince(u.getSince());
+            if (u.getLastlogin() != null) {
+                user.setLastLogin(u.getLastlogin());
+            }
+            if (u.getLastname() != null)
+                user.setLastName(u.getLastname());
+            user.setPasswordSha1(u.getPassword());
+        } catch (Exception e1) {
+            log.error(e1);
+            return null;
+        }
+        return user;
+    }
 
     /**
      * Retrieve the list of all users including their name, username, sign up year (since), and unique id.
      *
      * @return All users of just journal.
      */
-    public static final Collection<UserTo> memberList() {
+    public static Collection<UserTo> memberList() {
         ArrayList<UserTo> users = new ArrayList<UserTo>(1024);
         UserTo usr;
         final String sqlStatement = "call memberlist();";
@@ -335,9 +395,8 @@ public final class UserDao {
         return friends;
     }
 
-      /**
-     * Retrieves the journal preferences for a certain user including
-     * style information, and privacy settings.
+    /**
+     * Retrieves the journal preferences for a certain user including style information, and privacy settings.
      *
      * @param userName the user who needs their settings defined.
      * @return Preferences in cached rowset.
@@ -362,18 +421,18 @@ public final class UserDao {
         try {
             RS = SQLHelper.executeResultSet(sqlStatement);
         } catch (Exception e1) {
-             log.error(e1.getMessage());
+            log.error(e1.getMessage());
             throw new Exception("Couldn't get preferences: " + e1.getMessage());
         }
 
         return RS;
     }
 
-       /**
+    /**
      * Update the owner view only security feature.
      *
-     * @param userId  userid of blog owner
-     * @param ownerOnly  if the blog is private
+     * @param userId    userid of blog owner
+     * @param ownerOnly if the blog is private
      * @return true on success, false on any error
      */
     public static boolean updateSecurity(int userId, boolean ownerOnly) {
