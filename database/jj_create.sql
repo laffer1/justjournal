@@ -1,7 +1,9 @@
 -- 
 -- Database: `jj`
 -- justjournal.com  DATABASEJJ 
-CREATE DATABASE `jj` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+CREATE DATABASE `jj`
+  DEFAULT CHARACTER SET latin1
+  COLLATE latin1_swedish_ci;
 USE jj;
 
 -- --------------------------------------------------------
@@ -13,14 +15,17 @@ USE jj;
 -- 
 
 CREATE TABLE IF NOT EXISTS `comments` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `eid` int(10) unsigned NOT NULL default '0',
-  `uid` int(10) unsigned NOT NULL default '0',
-  `subject` varchar(150) default NULL,
-  `date` datetime NOT NULL default '0000-00-00 00:00:00',
-  `body` text NOT NULL,
-  PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=18 ;
+  `id`      INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `eid`     INT(10) UNSIGNED NOT NULL DEFAULT '0',
+  `uid`     INT(10) UNSIGNED NOT NULL DEFAULT '0',
+  `subject` VARCHAR(150) DEFAULT NULL,
+  `date`    DATETIME         NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `body`    TEXT             NOT NULL,
+  PRIMARY KEY (`id`)
+)
+  ENGINE =InnoDB
+  DEFAULT CHARSET =latin1
+  AUTO_INCREMENT =18;
 
 
 -- --------------------------------------------------------
@@ -32,16 +37,18 @@ CREATE TABLE IF NOT EXISTS `comments` (
 -- 
 
 CREATE TABLE IF NOT EXISTS `content` (
-  `id` int(10) unsigned NOT NULL default '0',
-  `uri_id` int(10) unsigned NOT NULL default '0',
-  `userid` int(10) unsigned NOT NULL default '0',
-  `mime_type` varchar(75) NOT NULL default '',
-  `preferred` enum('0','1') NOT NULL default '0',
-  `datasize` int(11) NOT NULL default '0',
-  `data` mediumblob NOT NULL,
-  `metadata` text NOT NULL,
-  PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `id`        INT(10) UNSIGNED NOT NULL DEFAULT '0',
+  `uri_id`    INT(10) UNSIGNED NOT NULL DEFAULT '0',
+  `userid`    INT(10) UNSIGNED NOT NULL DEFAULT '0',
+  `mime_type` VARCHAR(75)      NOT NULL DEFAULT '',
+  `preferred` ENUM('0', '1')   NOT NULL DEFAULT '0',
+  `datasize`  INT(11)          NOT NULL DEFAULT '0',
+  `data`      MEDIUMBLOB       NOT NULL,
+  `metadata`  TEXT             NOT NULL,
+  PRIMARY KEY (`id`)
+)
+  ENGINE =InnoDB
+  DEFAULT CHARSET =latin1;
 
 -- --------------------------------------------------------
 
@@ -52,10 +59,13 @@ CREATE TABLE IF NOT EXISTS `content` (
 -- 
 
 CREATE TABLE IF NOT EXISTS `country` (
-  `id` tinyint(3) unsigned NOT NULL auto_increment,
-  `title` varchar(30) NOT NULL default '',
-  PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=16 ;
+  `id`    TINYINT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `title` VARCHAR(30)         NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`)
+)
+  ENGINE =InnoDB
+  DEFAULT CHARSET =latin1
+  AUTO_INCREMENT =16;
 
 -- 
 -- Dumping data for table `country`
@@ -85,21 +95,24 @@ INSERT DELAYED IGNORE INTO `country` (`id`, `title`) VALUES (1, 'United States')
 -- 
 
 CREATE TABLE IF NOT EXISTS `entry` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `uid` int(10) unsigned NOT NULL default '0',
-  `date` datetime NOT NULL default '0000-00-00 00:00:00',
-  `subject` varchar(150) default NULL,
-  `mood` tinyint(3) unsigned NOT NULL default '0',
-  `music` varchar(125) NOT NULL default '',
-  `location` tinyint(3) unsigned NOT NULL default '0',
-  `body` text NOT NULL,
-  `security` tinyint(4) unsigned NOT NULL default '0',
-  `autoformat` enum('Y','N') NOT NULL default 'Y',
-  `allow_comments` enum('Y','N') NOT NULL default 'Y',
-  `email_comments` enum('Y','N') NOT NULL default 'Y',
-  PRIMARY KEY  (`id`),
+  `id`             INT(10) UNSIGNED    NOT NULL AUTO_INCREMENT,
+  `uid`            INT(10) UNSIGNED    NOT NULL DEFAULT '0',
+  `date`           DATETIME            NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `subject`        VARCHAR(150) DEFAULT NULL,
+  `mood`           TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',
+  `music`          VARCHAR(125)        NOT NULL DEFAULT '',
+  `location`       TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',
+  `body`           TEXT                NOT NULL,
+  `security`       TINYINT(4) UNSIGNED NOT NULL DEFAULT '0',
+  `autoformat`     ENUM('Y', 'N')      NOT NULL DEFAULT 'Y',
+  `allow_comments` ENUM('Y', 'N')      NOT NULL DEFAULT 'Y',
+  `email_comments` ENUM('Y', 'N')      NOT NULL DEFAULT 'Y',
+  PRIMARY KEY (`id`),
   KEY `sec` (`security`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=573 ;
+)
+  ENGINE =InnoDB
+  DEFAULT CHARSET =latin1
+  AUTO_INCREMENT =573;
 
 -- --------------------------------------------------------
 
@@ -110,10 +123,12 @@ CREATE TABLE IF NOT EXISTS `entry` (
 -- 
 
 CREATE TABLE IF NOT EXISTS `entry_security` (
-  `id` tinyint(4) NOT NULL default '0',
-  `title` char(8) NOT NULL default '',
-  PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `id`    TINYINT(4) NOT NULL DEFAULT '0',
+  `title` CHAR(8)    NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`)
+)
+  ENGINE =InnoDB
+  DEFAULT CHARSET =latin1;
 
 -- 
 -- Dumping data for table `entry_security`
@@ -132,9 +147,11 @@ INSERT DELAYED IGNORE INTO `entry_security` (`id`, `title`) VALUES (0, 'private'
 -- 
 
 CREATE TABLE IF NOT EXISTS `friends` (
-  `id` int(10) unsigned NOT NULL default '0',
-  `friendid` int(10) unsigned NOT NULL default '0'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `id`       INT(10) UNSIGNED NOT NULL DEFAULT '0',
+  `friendid` INT(10) UNSIGNED NOT NULL DEFAULT '0'
+)
+  ENGINE =InnoDB
+  DEFAULT CHARSET =latin1;
 
 -- --------------------------------------------------------
 
@@ -145,10 +162,12 @@ CREATE TABLE IF NOT EXISTS `friends` (
 -- 
 
 CREATE TABLE IF NOT EXISTS `friends_lj` (
-  `id` int(10) unsigned NOT NULL default '0',
-  `username` char(15) NOT NULL default '',
-  `community` enum('Y','N') NOT NULL default 'N'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `id`        INT(10) UNSIGNED NOT NULL DEFAULT '0',
+  `username`  CHAR(15)         NOT NULL DEFAULT '',
+  `community` ENUM('Y', 'N')   NOT NULL DEFAULT 'N'
+)
+  ENGINE =InnoDB
+  DEFAULT CHARSET =latin1;
 
 -- --------------------------------------------------------
 
@@ -159,12 +178,14 @@ CREATE TABLE IF NOT EXISTS `friends_lj` (
 -- 
 
 CREATE TABLE IF NOT EXISTS `friends_lj_cache` (
-  `ljusername` varchar(15) NOT NULL default '',
-  `community` enum('Y','N') NOT NULL default 'N',
-  `lastupdated` datetime NOT NULL default '0000-00-00 00:00:00',
-  `content` text,
-  PRIMARY KEY  (`ljusername`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `ljusername`  VARCHAR(15)    NOT NULL DEFAULT '',
+  `community`   ENUM('Y', 'N') NOT NULL DEFAULT 'N',
+  `lastupdated` DATETIME       NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `content`     TEXT,
+  PRIMARY KEY (`ljusername`)
+)
+  ENGINE =InnoDB
+  DEFAULT CHARSET =latin1;
 
 -- 
 -- Dumping data for table `friends_lj_cache`
@@ -180,10 +201,12 @@ CREATE TABLE IF NOT EXISTS `friends_lj_cache` (
 -- 
 
 CREATE TABLE IF NOT EXISTS `location` (
-  `id` tinyint(3) unsigned NOT NULL default '0',
-  `title` varchar(15) NOT NULL default '',
-  PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `id`    TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',
+  `title` VARCHAR(15)         NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`)
+)
+  ENGINE =InnoDB
+  DEFAULT CHARSET =latin1;
 
 -- 
 -- Dumping data for table `location`
@@ -204,12 +227,15 @@ INSERT DELAYED IGNORE INTO `location` (`id`, `title`) VALUES (0, 'Not Specified'
 -- 
 
 CREATE TABLE IF NOT EXISTS `mood` (
-  `id` tinyint(3) unsigned NOT NULL auto_increment,
-  `parentmood` tinyint(3) unsigned NOT NULL default '0',
-  `title` varchar(30) NOT NULL default '',
-  PRIMARY KEY  (`id`),
+  `id`         TINYINT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `parentmood` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',
+  `title`      VARCHAR(30)         NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
   UNIQUE KEY `title` (`title`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=126 ;
+)
+  ENGINE =InnoDB
+  DEFAULT CHARSET =latin1
+  AUTO_INCREMENT =126;
 
 -- 
 -- Dumping data for table `mood`
@@ -350,12 +376,14 @@ INSERT DELAYED IGNORE INTO `mood` (`id`, `parentmood`, `title`) VALUES (1, 0, 'H
 -- 
 
 CREATE TABLE IF NOT EXISTS `mood_theme_data` (
-  `moodthemeid` int(10) unsigned NOT NULL default '0',
-  `moodid` int(10) unsigned NOT NULL default '0',
-  `picurl` varchar(100) default NULL,
-  `width` tinyint(3) unsigned NOT NULL default '0',
-  `height` tinyint(3) unsigned NOT NULL default '0'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `moodthemeid` INT(10) UNSIGNED    NOT NULL DEFAULT '0',
+  `moodid`      INT(10) UNSIGNED    NOT NULL DEFAULT '0',
+  `picurl`      VARCHAR(100) DEFAULT NULL,
+  `width`       TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',
+  `height`      TINYINT(3) UNSIGNED NOT NULL DEFAULT '0'
+)
+  ENGINE =InnoDB
+  DEFAULT CHARSET =latin1;
 
 -- 
 -- Dumping data for table `mood_theme_data`
@@ -378,14 +406,17 @@ INSERT DELAYED IGNORE INTO `mood_theme_data` (`moodthemeid`, `moodid`, `picurl`,
 -- 
 
 CREATE TABLE IF NOT EXISTS `mood_themes` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `owner` int(10) unsigned NOT NULL default '0',
-  `name` varchar(50) default NULL,
-  `des` varchar(100) default NULL,
-  `is_public` enum('Y','N') NOT NULL default 'Y',
-  PRIMARY KEY  (`id`),
-  KEY `owner` (`owner`,`is_public`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+  `id`        INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `owner`     INT(10) UNSIGNED NOT NULL DEFAULT '0',
+  `name`      VARCHAR(50) DEFAULT NULL,
+  `des`       VARCHAR(100) DEFAULT NULL,
+  `is_public` ENUM('Y', 'N')   NOT NULL DEFAULT 'Y',
+  PRIMARY KEY (`id`),
+  KEY `owner` (`owner`, `is_public`)
+)
+  ENGINE =InnoDB
+  DEFAULT CHARSET =latin1
+  AUTO_INCREMENT =2;
 
 -- 
 -- Dumping data for table `mood_themes`
@@ -402,12 +433,15 @@ INSERT DELAYED IGNORE INTO `mood_themes` (`id`, `owner`, `name`, `des`, `is_publ
 -- 
 
 CREATE TABLE IF NOT EXISTS `resources` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `name` varchar(200) NOT NULL default '',
-  `active` enum('0','1') NOT NULL default '1',
-  `security` tinyint(10) unsigned NOT NULL default '0',
-  PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+  `id`       INT(10) UNSIGNED     NOT NULL AUTO_INCREMENT,
+  `name`     VARCHAR(200)         NOT NULL DEFAULT '',
+  `active`   ENUM('0', '1')       NOT NULL DEFAULT '1',
+  `security` TINYINT(10) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+)
+  ENGINE =InnoDB
+  DEFAULT CHARSET =utf8
+  AUTO_INCREMENT =2;
 
 -- --------------------------------------------------------
 
@@ -418,13 +452,16 @@ CREATE TABLE IF NOT EXISTS `resources` (
 -- 
 
 CREATE TABLE IF NOT EXISTS `rss_cache` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `interval` int(10) unsigned NOT NULL default '0',
-  `lastupdated` datetime NOT NULL default '0000-00-00 00:00:00',
-  `uri` tinytext NOT NULL,
-  `content` text,
-  PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=32 ;
+  `id`          INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `interval`    INT(10) UNSIGNED NOT NULL DEFAULT '0',
+  `lastupdated` DATETIME         NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `uri`         TINYTEXT         NOT NULL,
+  `content`     TEXT,
+  PRIMARY KEY (`id`)
+)
+  ENGINE =InnoDB
+  DEFAULT CHARSET =latin1
+  AUTO_INCREMENT =32;
 
 
 -- --------------------------------------------------------
@@ -436,10 +473,12 @@ CREATE TABLE IF NOT EXISTS `rss_cache` (
 -- 
 
 CREATE TABLE IF NOT EXISTS `rss_subscriptions` (
-  `id` int(10) unsigned NOT NULL default '0',
-  `uri` tinytext NOT NULL,
-  UNIQUE KEY `UNIQUE` (`id`,`uri`(300))
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `id`  INT(10) UNSIGNED NOT NULL DEFAULT '0',
+  `uri` TINYTEXT         NOT NULL,
+  UNIQUE KEY `UNIQUE` (`id`, `uri`(300))
+)
+  ENGINE =InnoDB
+  DEFAULT CHARSET =latin1;
 
 
 -- --------------------------------------------------------
@@ -451,11 +490,13 @@ CREATE TABLE IF NOT EXISTS `rss_subscriptions` (
 -- 
 
 CREATE TABLE IF NOT EXISTS `style` (
-  `id` int(10) unsigned NOT NULL default '0',
-  `title` varchar(50) NOT NULL default '''''',
-  `desc` text NOT NULL,
-  PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `id`    INT(10) UNSIGNED NOT NULL DEFAULT '0',
+  `title` VARCHAR(50)      NOT NULL DEFAULT '''''',
+  `desc`  TEXT             NOT NULL,
+  PRIMARY KEY (`id`)
+)
+  ENGINE =InnoDB
+  DEFAULT CHARSET =latin1;
 
 -- --------------------------------------------------------
 
@@ -466,15 +507,18 @@ CREATE TABLE IF NOT EXISTS `style` (
 -- 
 
 CREATE TABLE IF NOT EXISTS `user` (
-  `id` int(10) unsigned NOT NULL auto_increment,
-  `username` varchar(15) NOT NULL default '',
-  `password` varchar(40) NOT NULL default '',
-  `type` tinyint(3) unsigned NOT NULL default '0',
-  `name` varchar(20) NOT NULL default '',
-  `since` smallint(4) unsigned NOT NULL default '2005',
-  PRIMARY KEY  (`id`),
+  `id`       INT(10) UNSIGNED     NOT NULL AUTO_INCREMENT,
+  `username` VARCHAR(15)          NOT NULL DEFAULT '',
+  `password` VARCHAR(40)          NOT NULL DEFAULT '',
+  `type`     TINYINT(3) UNSIGNED  NOT NULL DEFAULT '0',
+  `name`     VARCHAR(20)          NOT NULL DEFAULT '',
+  `since`    SMALLINT(4) UNSIGNED NOT NULL DEFAULT '2005',
+  PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=51 ;
+)
+  ENGINE =InnoDB
+  DEFAULT CHARSET =latin1
+  AUTO_INCREMENT =51;
 
 
 -- --------------------------------------------------------
@@ -486,10 +530,12 @@ CREATE TABLE IF NOT EXISTS `user` (
 -- 
 
 CREATE TABLE IF NOT EXISTS `user_bio` (
-  `id` int(10) unsigned NOT NULL default '0',
-  `content` text NOT NULL,
+  `id`      INT(10) UNSIGNED NOT NULL DEFAULT '0',
+  `content` TEXT             NOT NULL,
   UNIQUE KEY `id` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+)
+  ENGINE =InnoDB
+  DEFAULT CHARSET =latin1;
 
 -- --------------------------------------------------------
 
@@ -500,17 +546,19 @@ CREATE TABLE IF NOT EXISTS `user_bio` (
 -- 
 
 CREATE TABLE IF NOT EXISTS `user_contact` (
-  `id` int(10) unsigned NOT NULL default '0',
-  `email` varchar(100) NOT NULL default '',
-  `icq` varchar(20) default NULL,
-  `aim` varchar(30) default NULL,
-  `yahoo` varchar(30) default NULL,
-  `msn` varchar(150) default NULL,
-  `hp_uri` varchar(250) default NULL,
-  `hp_title` varchar(50) default NULL,
-  `phone` varchar(14) default NULL,
+  `id`       INT(10) UNSIGNED NOT NULL DEFAULT '0',
+  `email`    VARCHAR(100)     NOT NULL DEFAULT '',
+  `icq`      VARCHAR(20) DEFAULT NULL,
+  `aim`      VARCHAR(30) DEFAULT NULL,
+  `yahoo`    VARCHAR(30) DEFAULT NULL,
+  `msn`      VARCHAR(150) DEFAULT NULL,
+  `hp_uri`   VARCHAR(250) DEFAULT NULL,
+  `hp_title` VARCHAR(50) DEFAULT NULL,
+  `phone`    VARCHAR(14) DEFAULT NULL,
   UNIQUE KEY `id` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+)
+  ENGINE =InnoDB
+  DEFAULT CHARSET =latin1;
 
 -- --------------------------------------------------------
 
@@ -521,13 +569,15 @@ CREATE TABLE IF NOT EXISTS `user_contact` (
 -- 
 
 CREATE TABLE IF NOT EXISTS `user_location` (
-  `id` int(10) unsigned NOT NULL default '0',
-  `city` varchar(35) NOT NULL default '',
-  `state` smallint(6) NOT NULL default '0',
-  `country` smallint(6) NOT NULL default '0',
-  `zip` varchar(10) default NULL,
+  `id`      INT(10) UNSIGNED NOT NULL DEFAULT '0',
+  `city`    VARCHAR(35)      NOT NULL DEFAULT '',
+  `state`   SMALLINT(6)      NOT NULL DEFAULT '0',
+  `country` SMALLINT(6)      NOT NULL DEFAULT '0',
+  `zip`     VARCHAR(10) DEFAULT NULL,
   UNIQUE KEY `id` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+)
+  ENGINE =InnoDB
+  DEFAULT CHARSET =latin1;
 
 
 -- --------------------------------------------------------
@@ -539,10 +589,12 @@ CREATE TABLE IF NOT EXISTS `user_location` (
 -- 
 
 CREATE TABLE IF NOT EXISTS `user_pic` (
-  `id` int(10) unsigned NOT NULL default '0',
-  `image` blob NOT NULL,
-  PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `id`    INT(10) UNSIGNED NOT NULL DEFAULT '0',
+  `image` BLOB             NOT NULL,
+  PRIMARY KEY (`id`)
+)
+  ENGINE =InnoDB
+  DEFAULT CHARSET =latin1;
 
 -- --------------------------------------------------------
 
@@ -553,12 +605,14 @@ CREATE TABLE IF NOT EXISTS `user_pic` (
 -- 
 
 CREATE TABLE IF NOT EXISTS `user_pref` (
-  `id` int(10) unsigned NOT NULL default '0',
-  `allow_spider` enum('N','Y') NOT NULL default 'N',
-  `style` tinyint(6) unsigned NOT NULL default '1',
-  `owner_view_only` enum('Y','N') NOT NULL default 'N',
+  `id`              INT(10) UNSIGNED    NOT NULL DEFAULT '0',
+  `allow_spider`    ENUM('N', 'Y')      NOT NULL DEFAULT 'N',
+  `style`           TINYINT(6) UNSIGNED NOT NULL DEFAULT '1',
+  `owner_view_only` ENUM('Y', 'N')      NOT NULL DEFAULT 'N',
   UNIQUE KEY `id` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+)
+  ENGINE =InnoDB
+  DEFAULT CHARSET =latin1;
 
 -- --------------------------------------------------------
 
@@ -569,9 +623,11 @@ CREATE TABLE IF NOT EXISTS `user_pref` (
 -- 
 
 CREATE TABLE IF NOT EXISTS `user_style` (
-  `id` int(10) unsigned NOT NULL default '0',
-  `url` text,
-  `doc` text,
-  PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `id`  INT(10) UNSIGNED NOT NULL DEFAULT '0',
+  `url` TEXT,
+  `doc` TEXT,
+  PRIMARY KEY (`id`)
+)
+  ENGINE =InnoDB
+  DEFAULT CHARSET =latin1;
 
