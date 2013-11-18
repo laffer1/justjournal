@@ -46,7 +46,7 @@ import java.util.Map;
 public class SignUpController {
     private static final Logger log = Logger.getLogger(SignUpController.class);
 
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.POST, produces="application/json")
     public
     @ResponseBody
     Map<String, String> post(@RequestParam String email, @RequestBody UserTo user, HttpServletResponse response) {

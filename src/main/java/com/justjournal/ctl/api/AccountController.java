@@ -26,6 +26,7 @@
 
 package com.justjournal.ctl.api;
 
+import com.justjournal.User;
 import com.justjournal.WebLogin;
 import com.justjournal.db.UserDao;
 import com.justjournal.db.UserTo;
@@ -90,7 +91,7 @@ final public class AccountController {
         return java.util.Collections.singletonMap("error", "Could not edit the comment.");
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.POST, produces = "application/json")
     public
     @ResponseBody
     Map<String, String> post(@RequestParam String type, @RequestParam String passCurrent, @RequestParam String passNew, @RequestBody UserTo user, HttpSession session, HttpServletResponse response) {
@@ -104,6 +105,28 @@ final public class AccountController {
             return changePassword(passCurrent, passNew, session, response);
         } else {
             return updateUser(user, session, response);
+        }
+    }
+
+    @RequestMapping("/api/account/{id}")
+    @ResponseBody
+    public User getById(@PathVariable String id, HttpSession session, HttpServletResponse response) {
+        try {
+            User user = new User(id);
+
+            if (user.isPrivateJournal()) {
+                if (
+                        !WebLogin.isAuthenticated(session) || user.getUserName().equals(WebLogin.currentLoginName(session)))
+                {
+                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                    return null;
+                }
+            }
+
+            return user;
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return null;
         }
     }
 }

@@ -58,7 +58,7 @@ final public class MoodListController {
      *
      * @return mood list
      */
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET, produces="application/json")
     public
     @ResponseBody
     Collection<MoodTo> getMoodList() {
