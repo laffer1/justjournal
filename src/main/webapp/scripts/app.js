@@ -23,6 +23,10 @@ angular.module('wwwApp', [])
                         templateUrl: 'views/privacy.html',
                         controller: 'PrivacyCtrl'
                     })
+                    .when('/profile/:username', {
+                        templateUrl: 'views/profile.html',
+                        controller: 'ProfileCtrl'
+                    })
                     .when('/sitemap', {
                         templateUrl: 'views/sitemap.html',
                         controller: 'SitemapCtrl'
