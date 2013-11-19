@@ -44,19 +44,20 @@
 
     <table style="border: thin solid silver;">
         <tbody>
-            <%
-                while (Recordset1.next()) {
-            %>
+        <%
+            while (Recordset1.next()) {
+        %>
 
-            <tr>
-                <td><%=Recordset1.getString("title")%></td>
-                <td><a href="DeletePicture?id=<%=Recordset1.getString( "id" )%>">[remove]</a></td>
-            </tr>
+        <tr>
+            <td><%=Recordset1.getString("title")%>
+            </td>
+            <td><a href="DeletePicture?id=<%=Recordset1.getString( "id" )%>">[remove]</a></td>
+        </tr>
 
-            <%
-                }
+        <%
+            }
 
-            %>
+        %>
         </tbody>
     </table>
 

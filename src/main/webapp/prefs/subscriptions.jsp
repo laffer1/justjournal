@@ -42,14 +42,15 @@
         The information is then available under "subscriptions."</p>
     <table style="border: thin solid silver;">
         <tbody>
-            <%
-                while (Recordset1.next()) {
-            %>
-            <tr>
-                <td><%=Recordset1.getString("uri")%></td>
-                <td><a href="deletesubscription.h?subId=<%=Recordset1.getInt("subid")%>">[remove]</a></td>
-            </tr>
-            <% } %>
+        <%
+            while (Recordset1.next()) {
+        %>
+        <tr>
+            <td><%=Recordset1.getString("uri")%>
+            </td>
+            <td><a href="deletesubscription.h?subId=<%=Recordset1.getInt("subid")%>">[remove]</a></td>
+        </tr>
+        <% } %>
         </tbody>
     </table>
 

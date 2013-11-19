@@ -55,7 +55,8 @@
                     while (Recordset1.next()) {
                 %>
                 <option value="<%=Recordset1.getString( "id" )%>">
-                    <%=Recordset1.getString("title")%> : <%=Recordset1.getString("desc")%></option>
+                    <%=Recordset1.getString("title")%> : <%=Recordset1.getString("desc")%>
+                </option>
 
                 <%
                     }

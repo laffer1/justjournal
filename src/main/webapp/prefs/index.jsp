@@ -52,12 +52,14 @@
 
         <dt><a href="friends.jsp"><strong>Friends</strong></a></dt>
         <dd>Define who your friends are. This will effect who will appear on your friends page along with
-            the security of your journal entries.</dd>
+            the security of your journal entries.
+        </dd>
 
         <dt><a href="security.jsp"><strong>Security</strong></a></dt>
         <dd>Allows you to define defaults for your account. In addition,
             you can make your journal private only. (not viewable by anyone
-            but you using your login as verification.)</dd>
+            but you using your login as verification.)
+        </dd>
 
         <dt><a href="subscriptions.jsp"><strong>Subscriptions</strong></a></dt>
         <dd>Control the RSS feeds displayed on your journal under subscriptions.</dd>
@@ -71,7 +73,8 @@
     <dl>
         <dt><a href="style_default.jsp"><strong>Base Template</strong></a></dt>
         <dd>Select the style of your journal. Pick from several predefined
-            templates.</dd>
+            templates.
+        </dd>
 
         <dt><a href="style_override.jsp"><strong>Overrides</strong></a></dt>
         <dd>Modify the default template look using Cascading Style Sheets (CSS).</dd>
@@ -95,7 +98,7 @@
     </dl>
 
     <h3><img src="pictures.gif" alt="Pictures"/></h3>
-    <img src="camera.jpg" alt="Camera" style="float: left; padding-right: 10px;" />
+    <img src="camera.jpg" alt="Camera" style="float: left; padding-right: 10px;"/>
 
     <dl>
         <dt><a href="picture_upload.jsp"><strong>Add Picture</strong></a></dt>

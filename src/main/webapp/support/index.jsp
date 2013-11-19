@@ -35,9 +35,11 @@
     <ul>
         <li>Creating Accounts</li>
         <li>Adding Journal Entries (no validation). If you check disable auto format you can input
-            XHTML for journal entries.</li>
+            XHTML for journal entries.
+        </li>
         <li>Viewing Journals. goto http://www.justjournal.com/users/<strong>yourUserName</strong> (the
-            username is not case sensitive)</li>
+            username is not case sensitive)
+        </li>
         <li>Loggging in to post entries and view private/friends/public entries.</li>
         <li><a href="../users/jjsite">Journal </a>to track server upgrades and new features</li>
         <li>Security Levels Public, friends, and Private</li>
@@ -51,7 +53,8 @@
         <li>13 Themes</li>
         <li>Customize Journal colors and layout through CSS.</li>
         <li>LJ Friends page now shows some HTML code, user pictures, hyperlinks
-            to LJ journals (via user image)</li>
+            to LJ journals (via user image)
+        </li>
         <li>Calendar allows you to view old entries, and see when you made entries.</li>
         <li>Spell Check entries when posting</li>
         <li>delete entries and comments</li>
@@ -65,11 +68,11 @@
 
     <h3>What features are you working on?</h3>
     <ul>
-        <li>documentation / manual for jj </li>
+        <li>documentation / manual for jj</li>
         <li>e-mailing comments</li>
-        <li>disable e-mailing comments </li>
+        <li>disable e-mailing comments</li>
         <li>User Preferences</li>
-        <li>View old LJ? </li>
+        <li>View old LJ?</li>
         <li>Profile (waiting on user preferences)</li>
         <li>Pictures</li>
         <li>Cancel Account</li>
@@ -81,7 +84,7 @@
         <li>Considering adding support for RSS 1.0 RDF</li>
         <li>Atom support</li>
         <li>Export Journal as XML</li>
-        <li>Communities. Caryn is working on this. (stalled) </li>
+        <li>Communities. Caryn is working on this. (stalled)</li>
         <li>Photo gallery</li>
         <li>custom links</li>
         <li>many more...</li>
