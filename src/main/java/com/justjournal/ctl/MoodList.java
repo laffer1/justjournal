@@ -35,47 +35,34 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.ctl;
 
 import com.justjournal.db.MoodDao;
-import org.apache.log4j.Category;
-import org.apache.log4j.Logger;
+import com.justjournal.db.MoodTo;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Collection;
 
 /**
  * List moods used for journal entries.
  *
- * Date: Nov 10, 2005
- * Time: 3:51:59 PM
- *
  * @author Lucas Holt
- * @version $Id: MoodList.java,v 1.8 2009/05/16 03:13:12 laffer1 Exp $
  * @since 1.0
  */
-public class MoodList extends ControllerErrorable {
-    private static final Logger log = Logger.getLogger(MoodList.class.getName());
-    protected Collection moods;
+@Controller
+@RequestMapping("/json/MoodList.json")
+public class MoodList {
 
     /**
      * All moods usable by blogs
+     *
      * @return mood list
      */
-    public Collection getMoods() {
-        return this.moods;
-    }
-
-    /**
-     * Render the mood list in XML
-     * @return xml document
-     * @throws Exception
-     */
-    public String perform() throws Exception {
-        if (log.isDebugEnabled())
-            log.debug("Loading DAO Objects  ");
-
-        // we are returning XML here :)
-        this.getCtx().getResponse().setContentType("text/xml");
-
-        this.moods = MoodDao.view();
-        return SUCCESS;
+    @RequestMapping(method = RequestMethod.GET)
+    public
+    @ResponseBody
+    Collection<MoodTo> getMoodList() {
+        return MoodDao.view();
     }
 
 }
