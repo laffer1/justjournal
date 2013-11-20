@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2011 Lucas Holt
+ * Copyright (c) 2003-2011, 2013 Lucas Holt
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,8 +26,8 @@
 
 package com.justjournal;
 
-import com.justjournal.db.SQLHelper;
 import com.justjournal.utility.StringUtil;
+import org.apache.cayenne.Cayenne;
 import org.apache.cayenne.ObjectContext;
 import org.apache.cayenne.access.DataContext;
 import org.apache.cayenne.exp.Expression;
@@ -38,7 +38,6 @@ import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -56,6 +55,7 @@ import java.util.regex.Pattern;
 public final class WebLogin {
     private static final Logger log = Logger.getLogger(WebLogin.class);
     private static final int BAD_USER_ID = 0;
+
     protected static final String LOGIN_ATTRNAME = "auth.user";
     protected static final String LOGIN_ATTRID = "auth.uid";
 
@@ -101,92 +101,100 @@ public final class WebLogin {
     /**
      * Authenticate the user using clear text username and password.
      *
-     * @param UserName Three to Fifteen characters...
-     * @param Password Clear text password
+     * @param userName Three to Fifteen characters...
+     * @param password Clear text password
      * @return userid of the user who logged in or 0 if the login failed.
      */
-    public static int validate(final String UserName, final String Password) {
+    public static int validate(final String userName, final String password) {
         // the password is SHA1 encrypted in the sql server
-        int userID = BAD_USER_ID;
 
-        if (!StringUtil.lengthCheck(UserName, 3, 15))
+        if (!StringUtil.lengthCheck(userName, 3, 15))
             return BAD_USER_ID; // bad username
 
-        if (!StringUtil.lengthCheck(Password, 5, 18))
+        if (!StringUtil.lengthCheck(password, 5, 18))
             return BAD_USER_ID;
 
-        if (!isUserName(UserName))
+        if (!isUserName(userName))
             return BAD_USER_ID; // bad username
 
-        if (!isPassword(Password))
+        if (!isPassword(password))
             return BAD_USER_ID; // bad password
 
-              ObjectContext dataContext = DataContext.getThreadObjectContext();
-
-              Expression exp;
-                  exp = Expression.fromString("username = $user");
-
-              try {
-                  HashMap<String, Object> map = new HashMap<String, Object>();
-                  map.put("user", UserName);
-                  map.put("pass", SHA1(Password));
-                  exp = exp.expWithParameters(map);
-                  SelectQuery query = new SelectQuery(com.justjournal.model.User.class, exp);
-
-                  List<User> userList = dataContext.performQuery(query);
-
-                  if (userList.isEmpty())
-                      return BAD_USER_ID;
-
-                  userID = userList.get(0).getUserId();
-              } catch (Exception e) {
-                  log.error("validate(): " + e.getMessage());
-              }
-
-        return userID;
-    }
-
-
-    public static int validateSHA1(final String UserName, final String Password) {
-        // the password is SHA1 encrypted in the sql server
-        int userID = BAD_USER_ID;
-
-        if (!StringUtil.lengthCheck(UserName, 3, 15))
-            return BAD_USER_ID; // bad username
-
-        if (!isUserName(UserName))
-            return BAD_USER_ID; // bad username
-
-        if (!StringUtil.lengthCheck(Password, 40, 40))
-            return BAD_USER_ID;
-
-        String SqlStatement = "SELECT id FROM user WHERE username='" + UserName
-                + "' AND password='" + Password + "' LIMIT 1;";
-
         try {
-            ResultSet RS = SQLHelper.executeResultSet(SqlStatement);
-
-            if (RS.next())
-                userID = RS.getInt(1);  // id field
-
-            RS.close();
+            return lookupUserId(userName, SHA1(password));
         } catch (Exception e) {
             log.error("validate(): " + e.getMessage());
         }
-
-        return userID;
+        return BAD_USER_ID;
     }
 
+    private static int lookupUserId(final String userName, final String passwordHash) {
+        com.justjournal.model.User user = lookupUser(userName, passwordHash);
+        if (user == null) return BAD_USER_ID;
+        return Cayenne.intPKForObject(user);
+    }
+
+    private static com.justjournal.model.User lookupUser(final String userName, final String passwordHash) {
+        ObjectContext dataContext = DataContext.getThreadObjectContext();
+
+        Expression exp;
+        exp = Expression.fromString("username = $user");
+
+        try {
+            HashMap<String, Object> map = new HashMap<String, Object>();
+            map.put("user", userName);
+            map.put("pass", passwordHash);
+            exp = exp.expWithParameters(map);
+            SelectQuery query = new SelectQuery(com.justjournal.model.User.class, exp);
+
+            List<com.justjournal.model.User> userList = dataContext.performQuery(query);
+
+            if (userList.isEmpty())
+                return null;
+
+            return userList.get(0);
+        } catch (Exception e) {
+            log.error("lookupUser(): " + e.getMessage());
+        }
+
+        return null;
+    }
+
+
+    public static int validateSHA1(final String userName, final String password) {
+        // the password is SHA1 encrypted in the sql server
+
+        if (!StringUtil.lengthCheck(userName, 3, 15))
+            return BAD_USER_ID; // bad username
+
+        if (!isUserName(userName))
+            return BAD_USER_ID; // bad username
+
+        if (!StringUtil.lengthCheck(password, 40, 40))
+            return BAD_USER_ID;
+
+        try {
+            return lookupUserId(userName, password);
+        } catch (Exception e) {
+            log.error("validateSHA1(): " + e.getMessage());
+        }
+        return BAD_USER_ID;
+    }
+
+    // TODO: throw exception on error?
     public static void setLastLogin(final int id) {
         /* verify its a real login */
         if (id < 1)
             return;
 
-        String sqlstmt = "UPDATE user SET lastlogin=NOW() WHERE id=" + id + " LIMIT 1;";
         try {
-            SQLHelper.executeNonQuery(sqlstmt);
+            ObjectContext dataContext = DataContext.getThreadObjectContext();
+
+            com.justjournal.model.User user = Cayenne.objectForPK(dataContext, com.justjournal.model.User.class, id);
+            user.setLastlogin(new java.util.Date());
+            dataContext.commitChanges();
         } catch (Exception e) {
-            log.error("validate(): " + e.getMessage());
+            log.error("setLastLogin(): " + e.getMessage());
         }
     }
 
@@ -202,27 +210,24 @@ public final class WebLogin {
     public static boolean changePass(final String userName,
                                      final String password,
                                      final String newPass) {
-        boolean result = false;
+
         int uid;
-        int x;
-        String sSQL;
 
         try {
             uid = validate(userName, password);
 
             if (uid > BAD_USER_ID && isPassword(newPass)) {
-                sSQL = "UPDATE user SET password=SHA1('" + newPass + "') WHERE id='"
-                        + uid + "' LIMIT 1;";
-                x = SQLHelper.executeNonQuery(sSQL);
+                com.justjournal.model.User user = lookupUser(userName, password);
+                user.setPassword(SHA1(newPass));
+                user.getObjectContext().commitChanges();
 
-                if (x == 1)
-                    result = true;
+                return true;
             }
         } catch (Exception e) {
-            log.error("validate(): " + e.getMessage());
+            log.error("changePass(): " + e.getMessage());
         }
 
-        return result;
+        return false;
     }
 
     private static String convertToHex(byte[] data) {
