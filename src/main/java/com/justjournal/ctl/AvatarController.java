@@ -52,8 +52,8 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("/UploadAvatarSubmit")
-public class Avatar {
-    private static final Logger log = Logger.getLogger(Avatar.class);
+public class AvatarController {
+    private static final Logger log = Logger.getLogger(AvatarController.class);
 
     @RequestMapping(method = RequestMethod.POST)
     public
