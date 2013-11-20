@@ -36,6 +36,9 @@ import org.apache.cayenne.access.DataContext;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.query.SelectQuery;
 
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+
 import javax.mail.*;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
@@ -49,9 +52,13 @@ import java.util.Properties;
  * @author Lucas Holt
  * @version $Id: MailSender.java,v 1.8 2009/03/16 22:10:31 laffer1 Exp $
  */
-public class MailSender extends Thread {
+public class MailSender implements ServletContextListener {
+
+    public MailSenderWorker worker;
 
     // TODO: Consider ServletContextListener
+    public class MailSenderWorker extends Thread {
+        public boolean process = true;
 
     public void run() {
         System.out.println("MailSender: Init");
@@ -68,7 +75,7 @@ public class MailSender extends Thread {
             System.out.println("MailSender: " + set.getMailUser() + "@" +
                     set.getMailHost() + ":" + set.getMailPort());
 
-            while (true) {
+            while (process) {
                 try {
                     ObjectContext dataContext = DataContext.getThreadObjectContext();
                     if (dataContext == null) {
@@ -112,7 +119,7 @@ public class MailSender extends Thread {
                         }
 
                         if (sentok) {
-                            dataContext.deleteObject(item);
+                            dataContext.deleteObjects(item);
                             dataContext.commitChanges();
                         }
 
@@ -122,9 +129,6 @@ public class MailSender extends Thread {
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 } catch (Exception e) {
-                    if (e.getMessage() == null)
-                        e.printStackTrace();
-                    else
                         System.out.println("MailSender: Exception - " + e.getMessage());
                 }
             }
@@ -133,6 +137,27 @@ public class MailSender extends Thread {
         }
 
         System.out.println("MailSender: Quit");
+    }
+
+}
+
+    @Override
+    public void contextInitialized(final ServletContextEvent sce) {
+        //To change body of implemented methods use File | Settings | File Templates.
+        worker = new MailSenderWorker();
+        worker.run();
+
+    }
+
+    @Override
+    public void contextDestroyed(final ServletContextEvent sce) {
+        //To change body of implemented methods use File | Settings | File Templates.
+        worker.process = false;
+        try {
+            worker.join();
+        } catch (Exception e) {
+
+        }
     }
 
     class ForcedAuthenticator extends Authenticator {
