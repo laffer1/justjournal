@@ -47,11 +47,13 @@
     <p>You may also download the client from <a href="http://sf.net/projects/justjournal">sourceforge</a></p>
 
     <h3>Next Release</h3>
-    <p>The next release will be 1.0.3.  It includes several new features.
-        <br />-d allows you to debug connection problems
-        <br />-h host  allows you to use it with other JJ installs.
-        <br />-s subject allows you to write a subject with your blog post.
+
+    <p>The next release will be 1.0.3. It includes several new features.
+        <br/>-d allows you to debug connection problems
+        <br/>-h host allows you to use it with other JJ installs.
+        <br/>-s subject allows you to write a subject with your blog post.
     </p>
+
     <p>You may try out this version from CVS on sourceforge.</p>
 </div>
 

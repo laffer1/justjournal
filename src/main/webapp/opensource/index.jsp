@@ -25,8 +25,9 @@
 
     <p>You can get a newer copy of the source at <a href="http://sf.net">Source Forge</a>. Our project
         name is <a href="http://sourceforge.net/projects/justjournal/">JustJournal</a>. This includes
-    the server software, windows client (GPL2), unix client (BSD 2-clause), DashBoard widget (for OSX, BSD 2-clause),
-    and GTK app.</p>
+        the server software, windows client (GPL2), unix client (BSD 2-clause), DashBoard widget (for OSX, BSD
+        2-clause),
+        and GTK app.</p>
 
     <h3>Old Work</h3>
 

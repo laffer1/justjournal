@@ -39,16 +39,19 @@
         <li>edit entries doesn't work</li>
         <li>Spell check, friends security, comments fixed.</li>
         <li>Profile doesn't work. The profile code should work now. There was a problem with the mysql jdbc driver and
-            prepared statements. Users still can't edit most of the properties on profiles yet.</li>
+            prepared statements. Users still can't edit most of the properties on profiles yet.
+        </li>
         <li>Some mood icons don't display. All moods that have an icon or a parent icon now display properly. Some moods
-            do not have a parent mood or an icon. There is not a single parent icon that defaults. </li>
-        <li>Paging was brought back for recent entries </li>
+            do not have a parent mood or an icon. There is not a single parent icon that defaults.
+        </li>
+        <li>Paging was brought back for recent entries</li>
         <li>Calendar did not display anything or only entires in 2004. You can now view all entries in the calendar from
             the beginning of your account. If you backdate an entry before the year your account was started, you won't
-            see it on the calendar.</li>
-        <li>New date handler broke entry submission, friends viewer </li>
-        <li>Safari 1.1 rendering fixes. </li>
-        <li>Spell check works </li>
+            see it on the calendar.
+        </li>
+        <li>New date handler broke entry submission, friends viewer</li>
+        <li>Safari 1.1 rendering fixes.</li>
+        <li>Spell check works</li>
         <li>Most mood icons do not show up</li>
         <li>LJ Friends images are not clickable</li>
         <li>Posting entries does not work. (problem with new entry class)</li>
@@ -64,22 +67,28 @@
         <li>all journal entries are listed on the same page</li>
         <li>Cancel link does not work</li>
         <li>Sometimes browser does not refresh the journal page. Probably a problem
-            with the expires header sent to the browser. </li>
+            with the expires header sent to the browser.
+        </li>
         <li>Login page works.</li>
         <li>Passwords are case sensitive? I decided this is a feature... since it
-            makes the site more secure.</li>
+            makes the site more secure.
+        </li>
         <li>No validation creating accounts</li>
         <li>Usernames are case sensitive</li>
         <li>two entries submitted with the same date and time may not show up newest
-            first in the viewer </li>
+            first in the viewer
+        </li>
         <li>You can now use single ticks in journal entry bodies and subjects
             (apostrophe or single quote character). You can say &quot;i'm&quot; now.
-            :)</li>
+            :)
+        </li>
         <li>Hitting submit 3 times on the create page does not create your account
             3 times anymore. (fixed at database level, need code in java servlet
-            too)</li>
+            too)
+        </li>
         <li>Journals are displayed in decending order by date (well usually.. see
-            above)</li>
+            above)
+        </li>
         <li>Site works better in Safari, and Netscape 7</li>
         <li>IE 5.22 mac almost works ok now.</li>
         <li>Journal entries are now displayed without xml garbage</li>

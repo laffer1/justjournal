@@ -35,10 +35,10 @@
 
     <h3>Add Picture</h3>
 
-    <p>Pictures can be uploaded in JPEG, GIF or PNG format.  All pictures
-    are publicly accesible regardless of your journal security settings.
-    Pictures must not infringe on copyright nor be considered
-    &quot; indecent &quot; under United States law.</p>
+    <p>Pictures can be uploaded in JPEG, GIF or PNG format. All pictures
+        are publicly accesible regardless of your journal security settings.
+        Pictures must not infringe on copyright nor be considered
+        &quot; indecent &quot; under United States law.</p>
 
     <div style="width: 500px; padding: 5px; margin: 0">
         <form name="frmPictureUpload" method="post" action="AddPicture" enctype="multipart/form-data">
@@ -49,15 +49,15 @@
                 <div class="row">
                     <span class="label"><label for="title">Title</label></span>
 			        <span class="formw">
-                      <input name="title" id="title" value="" type="text" />
+                      <input name="title" id="title" value="" type="text"/>
                     </span>
                 </div>
-                
+
 
                 <div class="row">
                     <span class="label"><label for="pic">Picture</label></span>
 			        <span class="formw">
-                      <input name="pic" id="pic" type="file" />
+                      <input name="pic" id="pic" type="file"/>
 			        </span>
                 </div>
 

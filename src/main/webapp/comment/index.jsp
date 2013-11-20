@@ -96,114 +96,114 @@ $Id: index.jsp,v 1.5 2008/04/26 17:06:30 laffer1 Exp $
 
 <div id="content">
 
-<jsp:include page="../inc_login.jsp" flush="false"/>
+    <jsp:include page="../inc_login.jsp" flush="false"/>
 
-<% if (nopermission) { %>
-<h2>Error</h2>
+    <% if (nopermission) { %>
+    <h2>Error</h2>
 
-<p>The entry is private or does not allow comments.</p>
-<% } else { %>
+    <p>The entry is private or does not allow comments.</p>
+    <% } else { %>
 
-<p>
-    <img src="../images/userclass_16.png" alt="user"/><a href="../users/<%=entry.getUserName()%>"
-                                                         title="<%=entry.getUserName()%>"><%=entry.getUserName()%>
-</a>
+    <p>
+        <img src="../images/userclass_16.png" alt="user"/><a href="../users/<%=entry.getUserName()%>"
+                                                             title="<%=entry.getUserName()%>"><%=entry.getUserName()%>
+    </a>
 
-    <% DateTime dte = entry.getDate(); %>
-    wrote on <%=dte.toPubDate()%>
-</p>
+        <% DateTime dte = entry.getDate(); %>
+        wrote on <%=dte.toPubDate()%>
+    </p>
 
-<h3><%=Xml.cleanString(entry.getSubject())%>
-</h3>
-<%
+    <h3><%=Xml.cleanString(entry.getSubject())%>
+    </h3>
+    <%
 
-    if (entry.getAutoFormat()) {
-        String tmpBody = entry.getBodyWithLinks();
-%>
-<p>
-    <% if (tmpBody.indexOf("\n") > -1) { %>
-    <%=(StringUtil.replace(tmpBody, '\n', "<br />"))%>
-    <% } else if (entry.getBody().indexOf("\r") > -1) { %>
-    <%=(StringUtil.replace(tmpBody, '\r', "<br />"))%>
-    <% } else {
-        // we do not have any "new lines" but it might be
-        // one long line.
+        if (entry.getAutoFormat()) {
+            String tmpBody = entry.getBodyWithLinks();
     %>
-    <%=tmpBody%>
+    <p>
+        <% if (tmpBody.indexOf("\n") > -1) { %>
+        <%=(StringUtil.replace(tmpBody, '\n', "<br />"))%>
+        <% } else if (entry.getBody().indexOf("\r") > -1) { %>
+        <%=(StringUtil.replace(tmpBody, '\r', "<br />"))%>
+        <% } else {
+            // we do not have any "new lines" but it might be
+            // one long line.
+        %>
+        <%=tmpBody%>
+        <% } %>
+    </p>
+    <% } else { %>
+    <%=entry.getBody()%>
     <% } %>
-</p>
-<% } else { %>
-<%=entry.getBody()%>
-<% } %>
 
-<p>
+    <p>
 
-    <% if (entry.getSecurityLevel() == 0) { %>
+        <% if (entry.getSecurityLevel() == 0) { %>
     <span class="security">security:
     <img src="../images/icon_private.gif" alt="private"/> private
     </span><br/>
-    <% } else if (entry.getSecurityLevel() == 1) { %>
+        <% } else if (entry.getSecurityLevel() == 1) { %>
     <span class="security">security:
     <img src="../images/icon_protected.gif" alt="friends"/>
     friends
     </span><br/>
-    <% } %>
+        <% } %>
 
-    <% if (entry.getLocationId() > 0) { %>
+        <% if (entry.getLocationId() > 0) { %>
     <span class="location">location:
     <%=entry.getLocationName()%>
     </span><br/>
-    <% } %>
+        <% } %>
 
-    <% if (entry.getMoodName().length() > 0 && entry.getMoodId() != 12) { %>
-    <% final EmoticonTo emoto = EmoticonDao.view(1, entry.getMoodId()); %>
+        <% if (entry.getMoodName().length() > 0 && entry.getMoodId() != 12) { %>
+        <% final EmoticonTo emoto = EmoticonDao.view(1, entry.getMoodId()); %>
     <span class="mood">mood: <img src="../images/emoticons/1/<%=emoto.getFileName()%>"
                                   width="<%=emoto.getWidth()%>"
                                   height="<%=emoto.getHeight()%>"
                                   alt="<%=entry.getMoodName()%>"/>
     <%=entry.getMoodName()%>
     </span><br/>
-    <% } %>
+        <% } %>
 
-    <% if (entry.getMusic().length() > 0) { %>
+        <% if (entry.getMusic().length() > 0) { %>
     <span class="music">music:
     <%=Xml.cleanString(entry.getMusic())%>
     </span><br/>
-    <% } %>
+        <% } %>
 
-</p>
+    </p>
 
-<div class="commentcount">
-    <%=entry.getCommentCount()%> comments
-</div>
+    <div class="commentcount">
+        <%=entry.getCommentCount()%> comments
+    </div>
 
-<div class="rightflt">
-    <a href="add.jsp?id=<%=eid%>" title="Add Comment">Add Comment</a>
-</div>
+    <div class="rightflt">
+        <a href="add.jsp?id=<%=eid%>" title="Add Comment">Add Comment</a>
+    </div>
 
-<%
-    CommentTo o;
-    final Iterator itr = comments.iterator();
+    <%
+        CommentTo o;
+        final Iterator itr = comments.iterator();
 
-    for (int i = 0, n = comments.size(); i < n; i++) {
-        o = (CommentTo) itr.next();
+        for (int i = 0, n = comments.size(); i < n; i++) {
+            o = (CommentTo) itr.next();
 
-%>
-<div class="comment">
+    %>
+    <div class="comment">
 
-    <div class="chead">
-        <h3><span class="subject"><%=Xml.cleanString(o.getSubject())%></span></h3>
-        <img src="../images/userclass_16.png" alt="user"/>
-        <a href="../users/<%=o.getUserName()%>" title="<%=o.getUserName()%>">
-            <%=o.getUserName()%>
-        </a>
+        <div class="chead">
+            <h3><span class="subject"><%=Xml.cleanString(o.getSubject())%></span></h3>
+            <img src="../images/userclass_16.png" alt="user"/>
+            <a href="../users/<%=o.getUserName()%>" title="<%=o.getUserName()%>">
+                <%=o.getUserName()%>
+            </a>
 
-        <br/><span class="time"><%=o.getDate().toPubDate()%></span>
+            <br/><span class="time"><%=o.getDate().toPubDate()%></span>
 
-        <%
-            if (aUser != null && aUser.equalsIgnoreCase(o.getUserName())) {
-        %>
-        <br/><span class="actions">
+            <%
+                if (aUser != null && aUser.equalsIgnoreCase(o.getUserName())) {
+            %>
+            <br/><span class="actions">
 				    <a href="edit.h?commentId=<%=o.getId()%>" title="Edit Comment">
                         <img src="../images/compose-message.png" alt="Edit Comment" width="24" height="24"/>
                     </a>
@@ -212,16 +212,16 @@ $Id: index.jsp,v 1.5 2008/04/26 17:06:30 laffer1 Exp $
                         <img src="../images/stock_calc-cancel.png" alt="Delete Comment" width="24" height="24"/>
                     </a>
                     </span>
-        <% } %>
-    </div>
+            <% } %>
+        </div>
 
-    <p><%=Xml.cleanString(o.getBody())%>
-    </p>
-</div>
-<%
-        } // end for loop
-    } // end nopermission if
-%>
+        <p><%=Xml.cleanString(o.getBody())%>
+        </p>
+    </div>
+    <%
+            } // end for loop
+        } // end nopermission if
+    %>
 </div>
 
 <jsp:include page="../footer.inc" flush="false"/>

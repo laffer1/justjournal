@@ -31,49 +31,50 @@
 <jsp:include page="../header.inc" flush="false"/>
 
 <div id="content">
-<h2>Preferences</h2>
+    <h2>Preferences</h2>
 
-<%
-    Integer userID = (Integer) session.getAttribute("auth.uid");
-    int ival = 0;
-    if (userID != null) {
-        ival = userID.intValue();
-    }
+    <%
+        Integer userID = (Integer) session.getAttribute("auth.uid");
+        int ival = 0;
+        if (userID != null) {
+            ival = userID.intValue();
+        }
 
-    if (ival > 0) {
-    
-    User user = new User(ival);
-%>
+        if (ival > 0) {
 
-<jsp:include page="inc_login.jsp" flush="false"/>
+            User user = new User(ival);
+    %>
 
-<h3>Biography</h3>
+    <jsp:include page="inc_login.jsp" flush="false"/>
 
-<p>Publish a little information about yourself.  This is viewable on your profile unless you have marked
-your blog private. Plain text only.</p>
+    <h3>Biography</h3>
 
-<div style="width: 600px; padding: 5px; margin: 0">
-    <!-- Servlet mapped to /prefs/Biography -->
-    <form name="frmProfile" method="post" action="Biography">
-        <fieldset>
-            <legend><strong>User Bio</strong><br/></legend>
+    <p>Publish a little information about yourself. This is viewable on your profile unless you have marked
+        your blog private. Plain text only.</p>
 
-            <div class="row">
-                <textarea id="bio" name="bio" style="width: 100%" cols="50" rows="20"><%=user.getBiography()%></textarea>
-            </div>
+    <div style="width: 600px; padding: 5px; margin: 0">
+        <!-- Servlet mapped to /prefs/Biography -->
+        <form name="frmProfile" method="post" action="Biography">
+            <fieldset>
+                <legend><strong>User Bio</strong><br/></legend>
 
-        </fieldset>
+                <div class="row">
+                    <textarea id="bio" name="bio" style="width: 100%" cols="50" rows="20"><%=user.getBiography()%>
+                    </textarea>
+                </div>
 
-        <div class="row"><input type="submit" name="submit" value="submit"/></div>
+            </fieldset>
 
-        <!-- Hack to fix spacing problem.. especially with text boxes -->
-        <div class="spacer">&nbsp;</div>
-    </form>
-</div>
+            <div class="row"><input type="submit" name="submit" value="submit"/></div>
 
-<% } else { %>
-<p>You must <a href="../login.jsp">login</a> before you can edit your preferences.</p>
-<% } %>
+            <!-- Hack to fix spacing problem.. especially with text boxes -->
+            <div class="spacer">&nbsp;</div>
+        </form>
+    </div>
+
+    <% } else { %>
+    <p>You must <a href="../login.jsp">login</a> before you can edit your preferences.</p>
+    <% } %>
 
 </div>
 

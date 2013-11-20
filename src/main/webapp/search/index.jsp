@@ -114,33 +114,33 @@
 <table border="0" cellpadding="1" cellspacing="1" style="padding-bottom: 20px;">
     <caption>Members Search Results</caption>
     <thead>
-        <tr style="background: black; color: white; font: Verdana, Arial 10pt;">
-            <th>Name</th>
-            <th>Username</th>
-            <th>E-mail Address</th>
-        </tr>
+    <tr style="background: black; color: white; font: Verdana, Arial 10pt;">
+        <th>Name</th>
+        <th>Username</th>
+        <th>E-mail Address</th>
+    </tr>
     </thead>
     <tbody style="font: 8pt Verdana, Arial, sans-serif;">
 
-        <%
+    <%
 
-            while (rs.next()) {
-                if (a % 2 == 0) {
-                    out.println("<tr style=\"background: white;\">");
-                } else {
-                    out.println("<tr style=\"background: #F2F2F2;\">");
-                }
-                out.println("<td>" + rs.getString("name") + "</td>");
-                out.println("<td><a href=\"../users/" + rs.getString("username") + "\">" + rs.getString("username") + "</td>");
-                out.println("<td>" + rs.getString("email") + "</td>");
-                out.println("</tr>");
-                a++;
+        while (rs.next()) {
+            if (a % 2 == 0) {
+                out.println("<tr style=\"background: white;\">");
+            } else {
+                out.println("<tr style=\"background: #F2F2F2;\">");
             }
+            out.println("<td>" + rs.getString("name") + "</td>");
+            out.println("<td><a href=\"../users/" + rs.getString("username") + "\">" + rs.getString("username") + "</td>");
+            out.println("<td>" + rs.getString("email") + "</td>");
+            out.println("</tr>");
+            a++;
+        }
 
-            rs.close();
-            conn.close();
+        rs.close();
+        conn.close();
 
-        %>
+    %>
     </tbody>
 </table>
 <%
@@ -263,12 +263,12 @@
 <h3>Google Search of this site</h3>
 
 <form action="http://www.google.com/cse" id="cse-search-box" target="_blank">
-  <div>
-    <input type="hidden" name="cx" value="partner-pub-1321195614665440:ar3t7aj0zxt" />
-    <input type="hidden" name="ie" value="ISO-8859-1" />
-    <input type="text" name="q" size="31" />
-    <input type="submit" name="sa" value="Search" />
-  </div>
+    <div>
+        <input type="hidden" name="cx" value="partner-pub-1321195614665440:ar3t7aj0zxt"/>
+        <input type="hidden" name="ie" value="ISO-8859-1"/>
+        <input type="text" name="q" size="31"/>
+        <input type="submit" name="sa" value="Search"/>
+    </div>
 </form>
 <script type="text/javascript" src="http://www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
 

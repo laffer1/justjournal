@@ -51,38 +51,39 @@
 
     <table border="0" cellpadding="1" cellspacing="1">
         <thead>
-            <tr style="background: black; color: white; font: Verdana, Arial 10px;">
-                <th>Link</th>
-                <th>Actions</th>
-            </tr>
+        <tr style="background: black; color: white; font: Verdana, Arial 10px;">
+            <th>Link</th>
+            <th>Actions</th>
+        </tr>
         </thead>
 
         <tbody style="font: 8pt Verdana, Arial, sans-serif;">
-            <%
-                Collection<UserLinkTo> links;
-                links = UserLinkDao.view(ival);
+        <%
+            Collection<UserLinkTo> links;
+            links = UserLinkDao.view(ival);
 
-                UserLinkTo o;
-                Iterator itr = links.iterator();
+            UserLinkTo o;
+            Iterator itr = links.iterator();
 
-                for (int i = 0, n = links.size(); i < n; i++) {
-                    o = (UserLinkTo) itr.next();
+            for (int i = 0, n = links.size(); i < n; i++) {
+                o = (UserLinkTo) itr.next();
 
-                    if (i % 2 == 0) { %>
-            <tr style="background: white;">
+                if (i % 2 == 0) { %>
+        <tr style="background: white;">
                 <%      } else { %>
-            <tr style="background: #F2F2F2;">
-                <% } %>
-                    <td>
-                        <a href="<%=o.getUri()%>"
-                           title="<%=o.getTitle()%>"><%=o.getTitle()%></a>
-                    </td>
-                    <td>
-                        <a href="DeleteLink?id=<%=o.getId()%>" title="Delete Link">Delete</a>
-
-                    </td>
-                </tr>
+        <tr style="background: #F2F2F2;">
             <% } %>
+            <td>
+                <a href="<%=o.getUri()%>"
+                   title="<%=o.getTitle()%>"><%=o.getTitle()%>
+                </a>
+            </td>
+            <td>
+                <a href="DeleteLink?id=<%=o.getId()%>" title="Delete Link">Delete</a>
+
+            </td>
+        </tr>
+        <% } %>
         </tbody>
     </table>
 </div>

@@ -39,8 +39,9 @@
 
     <p>Learn more about the <a href="windows.jsp">Windows client</a>.</p>
 
-    <p>Some third party clients work with Just Journal including Microsoft's Windows Live client.  Use
-    http://www.justjournal.com/xml-rpc  for the interface URL with these clients.  (Blogger 1.0 or metaweblog api).</p>
+    <p>Some third party clients work with Just Journal including Microsoft's Windows Live client. Use
+        http://www.justjournal.com/xml-rpc for the interface URL with these clients. (Blogger 1.0 or metaweblog
+        api).</p>
 
     <h3>Mac OS X</h3>
 
@@ -53,7 +54,8 @@
         larger text area for entering text, and warns you when you forget to enter
         a username and password.</p>
 
-    <p><a href="http://www.apple.com/macosx">Mac OS X</a> 10.4 Tiger is required. If you're using Safari, click the download link. When
+    <p><a href="http://www.apple.com/macosx">Mac OS X</a> 10.4 Tiger is required. If you're using Safari, click the
+        download link. When
         the widget download is complete, Show Dashboard, click the Plus sign to display
         the Widget Bar and click the widget's icon in the Widget Bar to open it.
         If you're using a browser other than Safari, click the download link. When
@@ -66,10 +68,12 @@
     <p>A command line client for MidnightBSD and other operating systems is
         now available. (Feb 27, 2008) <a href="unix.jsp">Learn more</a></p>
 
-    <p>A Gtk based graphical client is available in the command line source package.  It is included in
-    <a href="http://www.midnightbsd.org/">MidnightBSD</a> <a href="http://www.midnightbsd.org/mports/">mports</a>.
-        You may also use <a href="http://www.dropline.net/drivel/">Drivel</a> which is hosted by the <a href="http://www.gnome.org/">Gnome project</a>.  Set the app to use
-    <a href="http://www.blogger.com/developers/api/1_docs/">Blogger 1.0</a> and use the URL  http://www.justjournal.com/xml-rpc </p>
+    <p>A Gtk based graphical client is available in the command line source package. It is included in
+        <a href="http://www.midnightbsd.org/">MidnightBSD</a> <a href="http://www.midnightbsd.org/mports/">mports</a>.
+        You may also use <a href="http://www.dropline.net/drivel/">Drivel</a> which is hosted by the <a
+                href="http://www.gnome.org/">Gnome project</a>. Set the app to use
+        <a href="http://www.blogger.com/developers/api/1_docs/">Blogger 1.0</a> and use the URL
+        http://www.justjournal.com/xml-rpc </p>
 
     <h3>Java</h3>
 
@@ -85,8 +89,8 @@
         on your website or in developing Just Journal, please view
         the <a href="../opensource/index.jsp">open source</a> page.
         Just Journal supports <a href="http://www.blogger.com/developers/api/1_docs/">Blogger 1.0</a> and
-        part of the Metaweblog API.  Use http://www.justjournal.com/xml-rpc
-        as the &quot;interface&quot; url. 
+        part of the Metaweblog API. Use http://www.justjournal.com/xml-rpc
+        as the &quot;interface&quot; url.
     </p>
 
 </div>

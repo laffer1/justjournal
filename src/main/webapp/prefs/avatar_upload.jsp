@@ -50,36 +50,36 @@
     <h3>Add Avatar</h3>
 
     <p>An avatar is a picture that represents your account. You can upload a gif,
-            png, or jpeg image up to 10KB in size. Each account may have 1 avatar. Often
-            users choose pictures of themselves, athletic icons, etc. There are no limits
-            on dimensions of the image, but 100 x 100 pixels would be large.</p>
+        png, or jpeg image up to 10KB in size. Each account may have 1 avatar. Often
+        users choose pictures of themselves, athletic icons, etc. There are no limits
+        on dimensions of the image, but 100 x 100 pixels would be large.</p>
 
     <div style="width: 500px; padding: 5px; margin: 0;">
-               <form id="upload" name="upload" method="POST" action="../avatar/submit.h"
-                     enctype="multipart/form-data">
+        <form id="upload" name="upload" method="POST" action="../avatar/submit.h"
+              enctype="multipart/form-data">
 
-                   <fieldset>
-                       <legend>
-                           <strong>Avatar</strong>
-                           <br/>
-                       </legend>
+            <fieldset>
+                <legend>
+                    <strong>Avatar</strong>
+                    <br/>
+                </legend>
 
-                       <div class="row">
-                           <span class="label">File to upload</span>
+                <div class="row">
+                    <span class="label">File to upload</span>
 
                            <span class="formw">
                                <input name="avatar" type="file"/>
                            </span>
-                       </div>
+                </div>
 
-                   </fieldset>
+            </fieldset>
 
-                   <div class="row">
-                       <input type="submit" name="submit" value="Upload file"/>
-                   </div>
-               </form>
-           </div>
-   
+            <div class="row">
+                <input type="submit" name="submit" value="Upload file"/>
+            </div>
+        </form>
+    </div>
+
 
     <% } else { %>
     <p>You must <a href="../login.jsp">login</a> before you can edit your preferences.</p>

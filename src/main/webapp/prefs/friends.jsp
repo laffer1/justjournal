@@ -44,19 +44,20 @@
 
     <table style="border: thin solid silver;">
         <tbody>
-            <%
-                while (Recordset1.next()) {
-            %>
+        <%
+            while (Recordset1.next()) {
+        %>
 
-            <tr>
-                <td><%=Recordset1.getString("username")%></td>
-                <td><a href="/RemoveFriend?id=<%=Recordset1.getString( "friendid" )%>">[remove]</a></td>
-            </tr>
+        <tr>
+            <td><%=Recordset1.getString("username")%>
+            </td>
+            <td><a href="/RemoveFriend?id=<%=Recordset1.getString( "friendid" )%>">[remove]</a></td>
+        </tr>
 
-            <%
-                }
+        <%
+            }
 
-            %>
+        %>
         </tbody>
     </table>
 
