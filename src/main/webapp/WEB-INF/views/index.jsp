@@ -1,337 +1,107 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<%@ page contentType="text/html; charset=utf-8" language="java" %>
-<%@ page import="com.justjournal.User" %>
-<%@ page import="com.justjournal.WebError" %>
-<%@ page import="com.justjournal.core.Statistics" %>
-<%@ page import="com.justjournal.db.*" %>
-<%@ page import="com.justjournal.search.BaseSearch" %>
-<%@ page import="com.justjournal.utility.StringUtil" %>
-<%@ page import="com.justjournal.utility.Xml" %>
-<%@ page import="javax.sql.rowset.CachedRowSet" %>
-<%@ page import="java.io.PrintWriter" %>
-<%@ page import="java.sql.*" %>
-<%@ page import="java.text.ParsePosition" %>
-<%@ page import="java.text.SimpleDateFormat" %>
-<%@ page import="java.util.Collection" %>
-<%@ page import="java.util.Iterator" %>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<!doctype html>
+<!--[if lt IE 7]>
+<html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>
+<html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>
+<html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js"> <!--<![endif]-->
 <head>
-<title>Just Journal: Free Online Journals</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-<link rel="stylesheet" type="text/css" href="../../layout.css" media="all"/>
-<link rel="stylesheet" type="text/css" href="../../font-normal.css" media="all"/>
-<link rel="home" title="Home" href="index.jsp"/>
-<link rel="contents" title="Site Map" href="../../sitemap.jsp"/>
-<link rel="help" title="Technical Support" href="../../support/index.jsp"/>
-<link rel="alternate" type="application/rss+xml" href="RecentBlogs" title="Recent JJ Blog Posts"/>
-<link rel="alternate" media="handheld" href="../../mob/index.jsp" />
-<link rel="icon" href="../../favicon.ico" type="image/x-icon" />
-<link rel="shortcut icon" href="../../favicon.ico" type="image/x-icon" />
-<style type="text/css">
-#rightmenu {
-	float: right;
-	width: 380px;
-	padding-top: 10px;
-}
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Just Journal: Free Online Journals</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <!-- build:css styles/main.css -->
+    <link rel="stylesheet" href="styles/bootstrap.css">
+    <link rel="stylesheet" href="components/angular-ui/build/angular-ui.css"/>
+    <link rel="stylesheet" href="styles/main.css">
 
-#quickmenu {
-    float: left;
-    width: 190px;
--webkit-box-shadow: 2px 2px 2px 2px #ccc;
-box-shadow: 2px 2px 2px 2px #ccc;
-background: white;
-}
-
-#quickmenu ul {
-    margin-left: 0;
-    padding-left: 20px;
-}
-
-#quickmenu ul li {
-    list-style-type: none;
-    padding-bottom: .4em;
-    padding-left: 0;
-    margin-left: 0;
-    line-height: 1.2em;
-}
-
-#blurb {
-	text-shadow: 2px 2px 2px #b3b3b3;
-	filter: dropshadow(color=#b3b3b3, offx=2, offy=2);
-}
-
-#ticker table {
-    border: 0;
-    margin: 0;
-    padding: 0;
-}
-
-#ticker table td {
-    font-size: 12px;
-}
-
-#ticker table td#tic-title {
-    font-size: 12px;
-    font-weight: bold;
-    padding: 4px 0;
-    text-align: center;
-    vertical-align: top;
-    width: 184px;
-}
-
-#ticker table td#tic-item {
-    padding: 4px 10px 4px 16px;
-    width: 534px;
-    text-align: left;
-}
-
-#ticker table td#tic-item a {
-    opacity: 0.999;
-}
-
-#ticker table a {
-    color: white;
-    text-decoration: none;
-}
-
-#ticker table a:hover {
-    color: silver;
-    text-decoration: underline;
-}
-
-.firstone:first-letter {
-    color: white;
-    background: #006699;
-    margin: 3px;
-    padding: 2px;
-}
-
-.firstone {
-    color: #006699;
-    background: #F2F2F2;
-    padding: 10px;
-    font-family: HelveticaNeuve, "Helvetica Neuve", Helvetica, Arial, sans-serif;
-}
-
-#wrapper {
-    font-size: 1.2em;
-    margin: 0 auto;
-    text-align: left; /*width: 490px; */
-}
-
-#wrapper div.imgholder {
-    margin-bottom: 15px;
-}
-
-#wrapper div.imgholder div.text {
-    margin-top: 2px;
-    padding: 2px;
-}
-
-#wrapper img {
-    border: 5px solid #E6E2CF;
-}
-
-a.ovalbutton{
-background: transparent url('images/oval-blue-left.gif') no-repeat top left;
-display: block;
-float: left;
-font: normal 13px Tahoma; /* Change 13px as desired */
-line-height: 16px; /* This value + 4px + 4px (top and bottom padding of SPAN) must equal height of button background (default is 24px) */
-height: 24px; /* Height of button background height */
-padding-left: 11px; /* Width of left menu image */
-text-decoration: none;
-}
-
-a:link.ovalbutton, a:visited.ovalbutton, a:active.ovalbutton{
-color: #494949; /*button text color*/
-}
-
-a.ovalbutton span{
-background: transparent url('images/oval-blue-right.gif') no-repeat top right;
-display: block;
-padding: 4px 11px 4px 0; /*Set 11px below to match value of 'padding-left' value above*/
-}
-
-a.ovalbutton:hover{ /* Hover state CSS */
-background-position: bottom left;
-}
-
-a.ovalbutton:hover span{ /* Hover state CSS */
-background-position: bottom right;
-color: black;
-}
-
-.buttonwrapper{ /* Container you can use to surround a CSS button to clear float */
-overflow: hidden; /*See: http://www.quirksmode.org/css/clearing.html */
-width: 100%;
-}
-</style>
-<link rel="stylesheet" type="text/css" href="../../default.css" id="default"/>
-<!-- dummy stylesheet - href to be swapped -->
-<link rel="stylesheet" type="text/css" href="../../dummy.css" id="dummy_css"/>
-<script type="text/javascript" src="../../js/applesearch.js">/* ie7 sucks*/</script>
-   <style type="text/css" media="all">
-        <!--
-
-        div.row {
-            clear: both;
-            padding-top: 5px;
-        }
-
-        div.row span.label {
-            float: left;
-            width: 120px;
-            text-align: right;
-        }
-
-        div.row span.formw {
-            float: right;
-            width: 380px;
-            text-align: left;
-        }
-
-        div.spacer {
-            clear: both;
-        }
-
-        -->
-    </style>
-    <script language="JavaScript" type="text/javascript" src="../../js/sha1.js"></script>
-    <script language="JavaScript" type="text/javascript">
-        function sendForm(formid, checkuser)
-        {
-
-            if (formid == null)
-                formid = 'alogin';
-
-            // 'checkuser' is the element id name of the username textfield.
-            // only use it if you care to verify a username exists before hashing.
-
-            if (! document.getElementById)
-                return true;
-
-            var loginform = document.getElementById(formid);
-            if (! loginform) return true;
-
-            // Avoid accessing the password field if there is no username.
-            // This works around Opera < 7 complaints when commenting.
-            if (checkuser) {
-                var username = null;
-                for (var i = 0; username == null && i < loginform.elements.length; i++) {
-                    if (loginform.elements[i].id == checkuser) username = loginform.elements[i];
-                }
-                if (username != null && username.value == "") return true;
-            }
-
-            if (! loginform.password)
-                return true;
-
-            var pass = loginform.password.value;
-
-            loginform.password_hash.value = hex_sha1(pass);
-            loginform.password.value = "";  // dont send clear-text password!
-            return true;
-        }
-
-    addEventToObject(window, 'onload', applesearch.init);
-</script>
+    <!-- endbuild -->
 </head>
+<body ng-app="wwwApp">
+<!--[if lt IE 7]>
+<p class="chromeframe">You are using an outdated browser. <a href="http://browsehappy.com/">Upgrade your browser
+    today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better
+    experience this site.</p>
+<![endif]-->
 
-<body>
+<!--[if lt IE 9]>
+<script src="components/es5-shim/es5-shim.js"></script>
+<script src="components/json3/lib/json3.min.js"></script>
+<![endif]-->
 
-<jsp:include page="../../header.inc" flush="false"/>
+<!-- Header: Begin -->
+<div id="header">
+    <img src="images/jj_header.gif" alt="JustJournal" width="608" height="202" style="border:0;" usemap="#Map"/>
+    <map name="Map" id="Map">
+        <area shape="rect" coords="483,163,509,196" href="/update.jsp" alt="Write"/>
+        <area shape="rect" coords="514,163,544,198" href="/search/index.jsp" alt="Search"/>
+        <area shape="rect" coords="549,165,575,195" href="/support/index.jsp" alt="Help"/>
+        <area shape="rect" coords="135,93,392,146" href="/index.jsp" alt="JustJournal"/>
+    </map>
+</div>
+<!-- Header: End -->
 
-<div id="content">
+<!-- Add your site or application content here -->
+<div class="container" ng-view></div>
 
-<div id="blurb">
-    <p class="firstone"
-       style=" text-align: justify; line-height: 1.8em; margin-right: 30px; padding-top: 0">
-        Just
-        Journal is an online journal service, also
-        known as a blog. You can publish private
-        entries for yourself, friends' entries to share with those close to you or public entries you wish to share
-        with the Internet.</p>
+<!-- Footer: Begin -->
 
-    <div style="width: 550px; padding: 5px; margin: 0;">
-        <form method="post" name="alogin" action="./loginAccount" id="blogin">
-            <input type="hidden" name="password_hash" id="ipassword_hash" value=""/>
-
-            <fieldset>
-                <legend><strong>Just Journal Account</strong><br/>
-                </legend>
-
-                <div class="row">
-                        <span class="label">Username</span>
-                        <span class="formw">
-                                <input type="text" name="username" id="iusername" size="18" maxlength="15"
-                                style="width: 250px; background: url(../../images/userclass_16.png) no-repeat; background-color: #fff; background-position: 0px 1px; padding-left: 18px; color: black; font-weight: bold;"/></span>
-                </div>
-
-                <div class="row">
-                    <span class="label">Password</span>
-      <span class="formw"><input type="password" name="password" id="ipassword" size="18"
-                                 style="width: 268px; background: white; color: black; font-weight: bold;"/>
-      </span>
-                </div>
-
-                <!-- Hack to fix spacing problem.. especially with text boxes -->
-                <div class="spacer"> &nbsp; </div>
-            </fieldset>
-
-            <div class="row">
-                <input type="submit" style="width: 550px" name="submitlogin" value="Login" onclick="return sendForm()"/>
-            </div>
-
-            <!-- Hack to fix spacing problem.. especially with text boxes -->
-            <div class="spacer"> &nbsp; </div>
-        </form>
-       </div>
-
+<div id="footer">
+	<p id="copyright">&#169; 2003 - 2013 Lucas Holt.  All rights reserved.</p>
+	<p><a href="/privacy.jsp" title="Privacy Policy">Privacy</a> |
+	   <a href="/search/index.jsp" title="Search">Search</a>
 </div>
 
-<div id="quickmenu">
-    <ul>
-        <li><a href="../../create.jsp">Create Account</a></li>
-        <li><a href="../../cancel.jsp">Cancel Account</a></li>
-        <li><a href="http://www.cafepress.com/justjournal">Purchase JJ Merchandise</a></li>
-        <li><a href="../../memberlist.jsp">Member List</a></li>
-        <li><a href="../../mob/index.jsp" title="Just Journal Mobile for Cell Phones">Just Journal Mobile</a></li>
-        <li><a href="../../opensource/index.jsp">Open Source</a></li>
-        <li><a href="users/jjsite">Site Journal</a></li>
-        <li><a href="../../tags.jsp">Tag Cloud</a></li>
-        <li><a href="../../update.jsp">Update Journal</a></li>
-    </ul>
+<div style="text-align: center; margin: auto;">
+      <script type="text/javascript"><!--
+google_ad_client = "pub-1321195614665440";
+/* 468x60, created 8/27/08 */
+google_ad_slot = "8080888486";
+google_ad_width = 468;
+google_ad_height = 60;
+//-->
+</script>
+<script type="text/javascript"
+src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
 </div>
 
-  <div id="rightmenu">
-    <div id="wrapper">
-        <form action="../../search/index.jsp" method="get" id="bsearch">
-            <div id="applesearch">
-                <span class="sbox_l"></span><span class="sbox"><input name="bquery" type="search"
-                                                                      id="srch_fld" placeholder="Search..."
-                                                                      autosave="applestyle_srch" results="5"
-                                                                      onkeyup="applesearch.onChange('srch_fld','srch_clear')"/></span><span
-                    class="sbox_r" id="srch_clear"></span>
-            </div>
+<!-- Footer: End -->
 
-            <div style="clear:both;"></div>
-        </form>
-    </div>
+<script src="components/angular/angular.js"></script>
+<script src="components/angular-resource/angular-resource.js"></script>
+<script src="components/angular-cookies/angular-cookies.js"></script>
+<script src="components/angular-sanitize/angular-sanitize.js"></script>
 
-    <p><a href="../../software/index.jsp">Download</a> the client software. </p>
+<script src="components/angular-ui/build/angular-ui.js"></script>
 
-    <p>View <a href="../../stats.jsp">site statistics</a>.</p>
+<!-- build:js scripts/scripts.js -->
+<script src="scripts/app.js"></script>
+<script src="scripts/controllers/main.js"></script>
+<!-- endbuild -->
 
-    <p><img src="../../images/feed.gif" alt="Feed"/> <a href="RecentBlogs">Recent Blog Entries</a></p>
-  </div>
-
-    <p style="clear: both;">&#160;</p>
-
-</div>
-
-<jsp:include page="../../footer.inc" flush="false"/>
-
+<!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+<script>
+    var _gaq = [
+        ['_setAccount', 'UA-560995-1'],
+        ['_trackPageview']
+    ];
+    (function (d, t) {
+        var g = d.createElement(t), s = d.getElementsByTagName(t)[0];
+        g.src = ('https:' == location.protocol ? '//ssl' : '//www') + '.google-analytics.com/ga.js';
+        s.parentNode.insertBefore(g, s)
+    }(document, 'script'));
+</script>
+<script type="text/javascript">
+      (function() {
+       var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+       po.src = 'https://apis.google.com/js/client:plusone.js';
+       var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+     })();
+    </script>
 </body>
 </html>
