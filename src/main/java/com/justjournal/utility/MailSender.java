@@ -36,9 +36,6 @@ import org.apache.cayenne.access.DataContext;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.query.SelectQuery;
 
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-
 import javax.mail.*;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
@@ -52,14 +49,12 @@ import java.util.Properties;
  * @author Lucas Holt
  * @version $Id: MailSender.java,v 1.8 2009/03/16 22:10:31 laffer1 Exp $
  */
-public class MailSender implements ServletContextListener {
+public class MailSender extends Thread {
 
-    public MailSenderWorker worker;
+    public boolean process = true;
 
-    // TODO: Consider ServletContextListener
-    public class MailSenderWorker extends Thread {
-        public boolean process = true;
-
+    @Override
+    @SuppressWarnings("unchecked")
     public void run() {
         System.out.println("MailSender: Init");
         try {
@@ -129,7 +124,7 @@ public class MailSender implements ServletContextListener {
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 } catch (Exception e) {
-                        System.out.println("MailSender: Exception - " + e.getMessage());
+                    System.out.println("MailSender: Exception - " + e.getMessage());
                 }
             }
         } catch (Exception e) {
@@ -137,27 +132,6 @@ public class MailSender implements ServletContextListener {
         }
 
         System.out.println("MailSender: Quit");
-    }
-
-}
-
-    @Override
-    public void contextInitialized(final ServletContextEvent sce) {
-        //To change body of implemented methods use File | Settings | File Templates.
-        worker = new MailSenderWorker();
-        worker.run();
-
-    }
-
-    @Override
-    public void contextDestroyed(final ServletContextEvent sce) {
-        //To change body of implemented methods use File | Settings | File Templates.
-        worker.process = false;
-        try {
-            worker.join();
-        } catch (Exception e) {
-
-        }
     }
 
     class ForcedAuthenticator extends Authenticator {

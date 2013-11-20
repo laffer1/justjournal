@@ -47,14 +47,13 @@ import javax.servlet.ServletContextListener;
 public class MailServletContextListener
         implements ServletContextListener {
 
-    Thread m;
+    MailSender m;
 
     public MailServletContextListener() {
 
     }
 
     public void contextInitialized(ServletContextEvent sce) {
-        //ServletContext sc = sce.getServletContext();
         m = new MailSender();
         m.start();
         System.out.println("MailServletContextListener:" +
@@ -62,6 +61,7 @@ public class MailServletContextListener
     }
 
     public void contextDestroyed(ServletContextEvent sce) {
+        m.process = false;
         m.interrupt();
         System.out.println("MailServletContextListener:" +
                 "contextDestroyed.");
