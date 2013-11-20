@@ -19,6 +19,7 @@
         <!--suppress WebProperties -->
         <filter-class>org.apache.cayenne.configuration.web.CayenneFilter</filter-class>
     </filter>
+
     <filter-mapping>
         <filter-name>cayenne-JustJournalDomain</filter-name>
         <url-pattern>/*</url-pattern>
@@ -224,25 +225,20 @@
     </servlet>
 
     <servlet>
-        <display-name>Delete Link</display-name>
-        <servlet-name>DeleteLink</servlet-name>
-        <servlet-class>com.justjournal.ctl.DeleteLink</servlet-class>
-        <load-on-startup>3</load-on-startup>
-    </servlet>
-
-    <servlet>
         <display-name>Biography</display-name>
         <servlet-name>Biography</servlet-name>
         <servlet-class>com.justjournal.ctl.Biography</servlet-class>
         <load-on-startup>3</load-on-startup>
     </servlet>
 
+    <!--
     <servlet>
         <display-name>Captcha</display-name>
         <servlet-name>Captcha</servlet-name>
         <servlet-class>nl.captcha.servlet.CaptchaServlet</servlet-class>
         <load-on-startup>3</load-on-startup>
     </servlet>
+    -->
 
     <servlet-mapping>
         <servlet-name>rsd</servlet-name>
@@ -340,20 +336,16 @@
     </servlet-mapping>
 
     <servlet-mapping>
-        <servlet-name>DeleteLink</servlet-name>
-        <url-pattern>/link/DeleteLink</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
         <servlet-name>Biography</servlet-name>
         <url-pattern>/prefs/Biography</url-pattern>
     </servlet-mapping>
 
+    <!--
     <servlet-mapping>
         <servlet-name>Captcha</servlet-name>
         <url-pattern>/Captcha.jpg</url-pattern>
     </servlet-mapping>
-
+    -->
     <!--
     <error-page>
       <exception-type>java.lang.Throwable</exception-type>
