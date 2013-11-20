@@ -43,7 +43,6 @@ import java.util.Iterator;
  * Login account servlet.
  *
  * @author Lucas Holt
- * @version $Id: LoginAccount.java,v 1.16 2012/07/04 18:49:20 laffer1 Exp $ Sat Jun 07 2003
  *          <p/>
  *          Version 1.1 changes to a stringbuffer for output. This should improve performance a bit.
  *          <p/>
@@ -51,7 +50,6 @@ import java.util.Iterator;
  *          <p/>
  *          Mon Sep 19 2005 1.3 added JJ.LOGIN.FAIL and JJ.LOGIN.OK for desktop clients.
  *          <p/>
- * @since JJ 1.0
  */
 public final class LoginAccount extends JustJournalBaseServlet {
     private static final Logger log = Logger.getLogger(LoginAccount.class);

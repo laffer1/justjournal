@@ -51,27 +51,28 @@
 <!-- Footer: Begin -->
 
 <div id="footer">
-	<p id="copyright">&#169; 2003 - 2013 Lucas Holt.  All rights reserved.</p>
-	<p><a href="/privacy.jsp" title="Privacy Policy">Privacy</a> |
-	   <a href="/search/index.jsp" title="Search">Search</a>
+    <p id="copyright">&#169; 2003 - 2013 Lucas Holt. All rights reserved.</p>
+
+    <p><a href="/privacy.jsp" title="Privacy Policy">Privacy</a> |
+        <a href="/search/index.jsp" title="Search">Search</a>
 </div>
 
 <div style="text-align: center; margin: auto;">
-      <script type="text/javascript"><!--
-google_ad_client = "pub-1321195614665440";
-/* 468x60, created 8/27/08 */
-google_ad_slot = "8080888486";
-google_ad_width = 468;
-google_ad_height = 60;
-//-->
-</script>
-<script type="text/javascript"
-src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
-</script>
+    <script type="text/javascript"><!--
+    google_ad_client = "pub-1321195614665440";
+    /* 468x60, created 8/27/08 */
+    google_ad_slot = "8080888486";
+    google_ad_width = 468;
+    google_ad_height = 60;
+    //-->
+    </script>
+    <script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+    </script>
 </div>
 
 <!-- Footer: End -->
 
+<script src="components/jquery/jquery.min.js"></script>
 <script src="components/angular/angular.js"></script>
 <script src="components/angular-resource/angular-resource.js"></script>
 <script src="components/angular-cookies/angular-cookies.js"></script>
@@ -84,7 +85,6 @@ src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
 <script src="scripts/controllers/main.js"></script>
 <!-- endbuild -->
 
-<!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
 <script>
     var _gaq = [
         ['_setAccount', 'UA-560995-1'],
@@ -97,11 +97,14 @@ src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
     }(document, 'script'));
 </script>
 <script type="text/javascript">
-      (function() {
-       var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
-       po.src = 'https://apis.google.com/js/client:plusone.js';
-       var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
-     })();
-    </script>
+    (function () {
+        var po = document.createElement('script');
+        po.type = 'text/javascript';
+        po.async = true;
+        po.src = 'https://apis.google.com/js/client:plusone.js';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(po, s);
+    })();
+</script>
 </body>
 </html>

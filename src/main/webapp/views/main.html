@@ -1,5 +1,8 @@
+<div class="container">
+
 <div class="hero-unit">
     <h1>Blogging for Life.</h1>
+
     <p class="lead">
         Just
         Journal is an online journal service, also
@@ -8,95 +11,98 @@
         with the Internet.</p>
 </div>
 
-    <div class="row">
-        <div class="span5">
-
-            <form method="post" name="alogin" action="./loginAccount" id="blogin">
-
-                <fieldset>
-                    <legend>Login</legend>
-
-                    <div class="row">
-                        <span class="label span1">Username</span>
-                        <span class="span2">
-                          <input type="text" name="username" id="iusername" size="18" maxlength="15" placeholder="Username"></span>
-                    </div>
-
-                    <div class="row">
-                        <span class="label span1">Password</span>
-                        <span class="span2"><input type="password" name="password" id="ipassword" size="18" placeholder="Password"></span>
-                    </div>
-
-                    <div class="row">
-                        <div class="span2 offset1">
-                            <input class="btn btn-primary btn-large" type="submit" name="submitlogin" value="Login" onclick="return sendForm()">
-                        </div>
-                    </div>
-                </fieldset>
-            </form>
-
-            <hr>
-            <!--     Google
-            <span id="signinButton">
-                 <span
-                   class="g-signin"
-                   data-callback="signinCallback"
-                   data-clientid="886358703928.apps.googleusercontent.com"
-                   data-cookiepolicy="single_host_origin"
-                   data-requestvisibleactions="http://schemas.google.com/AddActivity"
-                   data-scope="https://www.googleapis.com/auth/plus.login"
-                   >
-                 </span>
-               </span>
-               -->
-        </div>
-
-        <div class="span5">
-            <form method="post" action="newAccount" name="frmCreateJournal">
-                <fieldset>
-                    <legend>Sign up</legend>
-
-                    <div class="row">
-                        <span class="span2"><label for="fname">First Name</label></span>
-                        <span class="span2 offset1"><input
-                                        type="text" name="fname" id="fname" maxlength="50" size="25"></span>
-                    </div>
-
-                    <div class="row">
-                        <span class="span2"><label for="lname">Last Name</label></span>
-                        <span class="span2 offset1"><input type="text" name="lname" id="lname" maxlength="50" size="25"></span>
-                    </div>
-
-                    <div class="row">
-                        <span class="span2"><label for="email">E-mail Address</label></span>
-                                <span class="span2 offset1"><input
-                                        type="text" name="email" id="email" maxlength="100" size="25"></span>
-                    </div>
-
-                    <div class="row">
-                        <span class="span2"><label for="username">Username</label></span>
-                                <span class="span2 offset1"><input
-                                        type="text" name="username" id="username" maxlength="15" size="15"></span>
-                    </div>
-
-                    <div class="row">
-                        <span class="span2"><label for="password">Password</label></span>
-                                <span class="span2 offset1"><input
-                                        type="text" name="password" id="password" maxlength="18" size="18"></span>
-                    </div>
-                    <div class="row">
-                          <span class="span2"><label for="password2">Password (again)</label></span>
-                          <span class="span2 offset1"><input
-                               type="text" name="password2" id="password2" maxlength="18" size="18"></span>
-                     </div>
-                </fieldset>
+<div class="row">
+    <div class="span5">
+        <form name="frmlogin">
+            <fieldset>
+                <legend>Login</legend>
 
                 <div class="row">
-                    <div class="span2 offset3">
-                        <input class="btn" type="submit" name="submit" value="Sign up"/>
+                    <span class="label span1"><label for="iusername">Username</label></span>
+                        <span class="span2">
+                          <input type="text" name="username" id="iusername" size="18" maxlength="15"
+                                 placeholder="Username" data-ng-model="username"></span>
+                </div>
+
+                <div class="row">
+                    <span class="label span1"><label for="ipassword">Password</label></span>
+                    <span class="span2"><input type="password" name="password" id="ipassword" size="18"
+                                               placeholder="Password" data-ng-model="password"></span>
+                </div>
+
+                <div class="row">
+                    <div class="span2 offset1">
+                        <button class="btn btn-primary btn-large" name="submitlogin"
+                               data-ng-click="AccountLogin()">Login</button>
                     </div>
                 </div>
-            </form>
-        </div>
+            </fieldset>
+        </form>
 
+        <hr>
+        <!--     Google
+        <span id="signinButton">
+             <span
+               class="g-signin"
+               data-callback="signinCallback"
+               data-clientid="886358703928.apps.googleusercontent.com"
+               data-cookiepolicy="single_host_origin"
+               data-requestvisibleactions="http://schemas.google.com/AddActivity"
+               data-scope="https://www.googleapis.com/auth/plus.login"
+               >
+             </span>
+           </span>
+           -->
     </div>
+
+    <div class="span5">
+        <form method="post" action="newAccount" name="frmCreateJournal">
+            <fieldset>
+                <legend>Sign up</legend>
+
+                <div class="row">
+                    <span class="span2"><label for="fname">First Name</label></span>
+                        <span class="span2 offset1"><input
+                                type="text" name="fname" id="fname" maxlength="50" size="25"></span>
+                </div>
+
+                <div class="row">
+                    <span class="span2"><label for="lname">Last Name</label></span>
+                    <span class="span2 offset1"><input type="text" name="lname" id="lname" maxlength="50"
+                                                       size="25"></span>
+                </div>
+
+                <div class="row">
+                    <span class="span2"><label for="email">E-mail Address</label></span>
+                                <span class="span2 offset1"><input
+                                        type="text" name="email" id="email" maxlength="100" size="25"></span>
+                </div>
+
+                <div class="row">
+                    <span class="span2"><label for="username">Username</label></span>
+                                <span class="span2 offset1"><input
+                                        type="text" name="username" id="username" maxlength="15" size="15"></span>
+                </div>
+
+                <div class="row">
+                    <span class="span2"><label for="password">Password</label></span>
+                                <span class="span2 offset1"><input
+                                        type="text" name="password" id="password" maxlength="18" size="18"></span>
+                </div>
+                <div class="row">
+                    <span class="span2"><label for="password2">Password (again)</label></span>
+                          <span class="span2 offset1"><input
+                                  type="text" name="password2" id="password2" maxlength="18" size="18"></span>
+                </div>
+            </fieldset>
+
+            <div class="row">
+                <div class="span2 offset3">
+                    <input class="btn" type="submit" name="submit" value="Sign up"/>
+                </div>
+            </div>
+        </form>
+    </div>
+
+</div>
+</div>
