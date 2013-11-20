@@ -58,7 +58,6 @@ public class DeleteLink extends JustJournalBaseServlet {
 
     protected void execute(HttpServletRequest request, HttpServletResponse response, HttpSession session, StringBuffer sb) {
         int linkId;
-        UserLinkDao dao = new UserLinkDao();
         UserLinkTo link = new UserLinkTo();
 
         // Retreive user id
@@ -66,7 +65,7 @@ public class DeleteLink extends JustJournalBaseServlet {
         // convert Integer to int type
         int userID = 0;
         if (userIDasi != null) {
-            userID = userIDasi.intValue();
+            userID = userIDasi;
         }
 
         // Retreive username
@@ -88,7 +87,7 @@ public class DeleteLink extends JustJournalBaseServlet {
             link.setUserId(userID);
             link.setId(linkId);
 
-            if (dao.delete(link)) {
+            if (UserLinkDao.delete(link)) {
                 htmlOutput(sb, userName);
             } else {
                 WebError.Display("Error", "Failed to delete link.", sb);
