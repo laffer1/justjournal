@@ -389,6 +389,10 @@ public final class User {
         this.emailAddress = emailAddress;
     }
 
+    public boolean getShowAvatar() {
+        return showAvatar;
+    }
+
     public boolean showAvatar() {
         return showAvatar;
     }
