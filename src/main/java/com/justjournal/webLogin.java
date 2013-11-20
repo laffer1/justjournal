@@ -218,24 +218,24 @@ public final class WebLogin {
     private static String convertToHex(byte[] data) {
         StringBuilder buf = new StringBuilder();
         for (final byte aData : data) {
-            int halfbyte = (aData >>> 4) & 0x0F;
-            int two_halfs = 0;
+            int halfByte = (aData >>> 4) & 0x0F;
+            int twoHalves = 0;
             do {
-                if ((0 <= halfbyte) && (halfbyte <= 9))
-                    buf.append((char) ('0' + halfbyte));
+                if ((0 <= halfByte) && (halfByte <= 9))
+                    buf.append((char) ('0' + halfByte));
                 else
-                    buf.append((char) ('a' + (halfbyte - 10)));
-                halfbyte = aData & 0x0F;
-            } while (two_halfs++ < 1);
+                    buf.append((char) ('a' + (halfByte - 10)));
+                halfByte = aData & 0x0F;
+            } while (twoHalves++ < 1);   // TODO: wtf?
         }
         return buf.toString();
     }
 
     public static String SHA1(String text)
             throws NoSuchAlgorithmException, UnsupportedEncodingException {
-        MessageDigest md;
-        md = MessageDigest.getInstance("SHA-1");
+        MessageDigest md = MessageDigest.getInstance("SHA-1");
         byte[] sha1hash;
+
         md.update(text.getBytes("iso-8859-1"), 0, text.length());
         sha1hash = md.digest();
         return convertToHex(sha1hash);
