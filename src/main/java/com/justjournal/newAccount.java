@@ -41,8 +41,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import jj.play.ns.nl.captcha.Captcha;
-
 import org.apache.log4j.Logger;
 
 import java.sql.ResultSet;
@@ -121,13 +119,6 @@ public final class NewAccount extends JustJournalBaseServlet {
             final String email = fixInput(request, "email").toLowerCase();
             final String username = fixInput(request, "username").toLowerCase();
             final String password = fixInput(request, "password");
-            final String captcha = fixInput(request, "captcha");
-
-            if (captcha.compareTo((String) session.getAttribute(Captcha.NAME)) != 0 ||
-                    !StringUtil.lengthCheck(captcha, 2, 50)) {
-                blnError = true;
-                WebError.Display("Input Error", "Try to type the captcha again.", sb);
-            }
 
             if (!StringUtil.lengthCheck(fname, 2, 20)) {
                 blnError = true;
@@ -240,7 +231,7 @@ public final class NewAccount extends JustJournalBaseServlet {
         sb.append(endl);
         sb.append("<div id=\"footer\">");
         sb.append(endl);
-        sb.append("<p id=\"copyright\">&copy; 2003-2007 Lucas Holt.  All rights reserved.</p>");
+        sb.append("<p id=\"copyright\">&copy; 2003-2013 Lucas Holt.  All rights reserved.</p>");
         sb.append(endl);
         sb.append("<p><a href=\"/privacy.jsp\" title=\"Privacy Policy\">Privacy</a> |");
         sb.append(endl);
