@@ -38,6 +38,8 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
+import javax.servlet.http.HttpSession;
+
 /**
  * Provides authentication and password management services to web applications using the just journal data tier.
  * <p/>
@@ -50,6 +52,33 @@ import org.apache.log4j.Logger;
 public final class WebLogin {
     private static final Logger log = Logger.getLogger(WebLogin.class);
     private static final int BAD_USER_ID = 0;
+    protected static final String LOGIN_ATTRNAME = "auth.user";
+    protected static final String LOGIN_ATTRID = "auth.uid";
+
+    public static boolean isAuthenticated(HttpSession session) {
+        String username = (String) session.getAttribute("auth.user");
+        return username != null && !username.isEmpty();
+    }
+
+    public static String currentLoginName(HttpSession session) {
+        return (String) session.getAttribute(LOGIN_ATTRNAME);
+    }
+
+    public static int currentLoginId(HttpSession session) {
+        int aUserID = 0;
+        Integer userIDasi = (Integer) session.getAttribute(LOGIN_ATTRID);
+
+        if (userIDasi != null) {
+            aUserID = userIDasi;
+        }
+
+        return aUserID;
+    }
+
+    protected static void logout(HttpSession session) {
+        session.removeAttribute(LOGIN_ATTRNAME);
+        session.removeAttribute(LOGIN_ATTRID);
+    }
 
     public static boolean isUserName(String input) {
         final Pattern p = Pattern.compile("[A-Za-z0-9_]+");
@@ -91,6 +120,7 @@ public final class WebLogin {
 
         String SqlStatement = "SELECT id FROM user WHERE username='" + UserName
                 + "' AND password=SHA1('" + Password + "') LIMIT 1;";
+
 
         try {
             ResultSet RS = SQLHelper.executeResultSet(SqlStatement);
