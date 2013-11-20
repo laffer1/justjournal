@@ -32,26 +32,24 @@ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
 
-package com.justjournal.ctl;
+package com.justjournal.ctl.api;
 
 import com.justjournal.User;
 import com.justjournal.WebLogin;
 import com.justjournal.db.*;
-import com.justjournal.utility.StringUtil;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 @Controller
-@RequestMapping("/json/Comment.json")
-public class Comment {
-    private static final Logger log = Logger.getLogger(Comment.class);
+@RequestMapping("/api/comment")
+final public class CommentController {
+    private static final Logger log = Logger.getLogger(CommentController.class);
 
     @RequestMapping(method = RequestMethod.GET)
     public

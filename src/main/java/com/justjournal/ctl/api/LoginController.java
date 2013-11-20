@@ -24,47 +24,56 @@
  * SUCH DAMAGE.
  */
 
-package com.justjournal.ctl;
+package com.justjournal.ctl.api;
 
-import com.justjournal.db.SQLHelper;
-import com.justjournal.db.Tag;
-import org.apache.log4j.Logger;
+import com.justjournal.WebLogin;
+import com.justjournal.utility.StringUtil;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
-import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.Collection;
+import javax.servlet.http.HttpSession;
 
 /**
  * @author Lucas Holt
  */
 @Controller
-@RequestMapping("/json/Tags.json")
-public class Tags {
-    private static final Logger log = Logger.getLogger(Tags.class);
+@RequestMapping("/api/login")
+final public class LoginController {
 
-    @RequestMapping(method = RequestMethod.GET)
+    private static final String JJ_LOGIN_OK = "JJ.LOGIN.OK";
+    private static final String JJ_LOGIN_FAIL = "JJ.LOGIN.FAIL";
+
+    @RequestMapping(method = RequestMethod.POST)
     public
     @ResponseBody
-    Collection<Tag> getTags() {
-        Collection<Tag> tags = new ArrayList<Tag>();
-        try {
-            // TODO: Convert to Cayenne
-            ResultSet rs = SQLHelper.executeResultSet("select tags.id, tags.name as name, count(*) as count from entry_tags, tags where tags.id=entry_tags.tagid GROUP by tags.name;");
+    Model post(@RequestParam String userName, @RequestParam String password, Model model, HttpSession session) {
 
-            while (rs.next()) {
-                Tag tag = new Tag(rs.getInt(1), rs.getString(2));
-                tag.setCount(rs.getInt(3));
-                tags.add(tag);
-            }
-            rs.close();
-        } catch (Exception ex) {
-            log.error(ex);
+        // Current authentication needs to get whacked
+        if (WebLogin.isAuthenticated(session)) {
+            session.invalidate();
         }
-        return tags;
+
+        if (StringUtil.lengthCheck(userName, 3, 15) && StringUtil.lengthCheck(password, 5, 18)) {
+            int userID = WebLogin.validate(userName, password);
+            if (userID > 0) {
+                session.setAttribute("auth.uid", userID);
+                session.setAttribute("auth.user", userName);
+                model.addAttribute("username", userName);
+                model.addAttribute("status", JJ_LOGIN_OK);
+            } else
+                error(model);
+
+        } else {
+            error(model);
+        }
+
+        return model;
     }
 
+    private void error(Model model) {
+        model.addAttribute("status", JJ_LOGIN_FAIL);
+        model.addAttribute("error", "Unable to login.  Please check your username and password.");
+
+    }
 }

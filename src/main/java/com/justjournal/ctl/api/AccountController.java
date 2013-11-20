@@ -24,7 +24,7 @@
  * SUCH DAMAGE.
  */
 
-package com.justjournal.ctl;
+package com.justjournal.ctl.api;
 
 import com.justjournal.WebLogin;
 import com.justjournal.db.UserDao;
@@ -41,8 +41,8 @@ import java.util.Map;
  * @author Lucas Holt
  */
 @Controller
-@RequestMapping("/json/Account.json")
-public class Account {
+@RequestMapping("/api/account")
+final public class AccountController {
 
     private Map<String, String>
     changePassword(String passCurrent, String passNew, HttpSession session, HttpServletResponse response) {

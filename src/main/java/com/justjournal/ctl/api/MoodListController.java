@@ -32,7 +32,7 @@ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
 
-package com.justjournal.ctl;
+package com.justjournal.ctl.api;
 
 import com.justjournal.db.MoodDao;
 import com.justjournal.db.MoodTo;
@@ -50,8 +50,8 @@ import java.util.Collection;
  * @since 1.0
  */
 @Controller
-@RequestMapping("/json/MoodList.json")
-public class MoodList {
+@RequestMapping("/api/moodlist")
+final public class MoodListController {
 
     /**
      * All moods usable by blogs

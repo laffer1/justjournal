@@ -24,11 +24,11 @@
  * SUCH DAMAGE.
  */
 
-package com.justjournal.ctl;
+package com.justjournal.ctl.api;
 
 import com.justjournal.WebLogin;
-import com.justjournal.db.*;
-import com.justjournal.utility.StringUtil;
+import com.justjournal.db.RssSubscriptionsDAO;
+import com.justjournal.db.RssSubscriptionsTO;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,69 +38,67 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.Collections;
 import java.util.Map;
 
 /**
  * @author Lucas Holt
  */
 @Controller
-@RequestMapping("/json/Entry.json")
-public class Entry {
-    private static final Logger log = Logger.getLogger(Entry.class);
+@RequestMapping("/api/rssreader")
+final public class RssReaderController {
+    private static final Logger log = Logger.getLogger(RssReaderController.class);
 
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.PUT)
     public
     @ResponseBody
-    Map<String, String> save(@RequestBody EntryTo entry, HttpSession session, HttpServletResponse response) {
+    Map<String, String> create(@RequestBody String uri, HttpSession session, HttpServletResponse response) {
 
-        if (!WebLogin.isAuthenticated(session)) {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
-        }
-        // TODO: validate
-        boolean result = EntryDAO.update(entry);
+        try {
+            RssSubscriptionsTO to = new RssSubscriptionsTO();
+            boolean result;
 
-        if (!result) {
+            if (uri == null || uri.length() < 10 || uri.length() > 1024) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                return java.util.Collections.singletonMap("error", "Error adding link.");
+            }
+            to.setId(WebLogin.currentLoginId(session));
+            to.setUri(uri);
+            result = RssSubscriptionsDAO.add(to);
+
+            if (!result) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                return java.util.Collections.singletonMap("error", "Error adding link.");
+            }
+            return java.util.Collections.singletonMap("id", ""); // XXX
+        } catch (Exception e) {
+            log.error(e);
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return java.util.Collections.singletonMap("error", "Could not edit the comment.");
+            return java.util.Collections.singletonMap("error", "Error adding link.");
         }
-        return java.util.Collections.singletonMap("id", Integer.toString(entry.getId()));
     }
 
     @RequestMapping(method = RequestMethod.DELETE)
     public
     @ResponseBody
-    Map<String, String> delete(@RequestBody int entryId, HttpSession session, HttpServletResponse response) throws Exception {
-
+    Map<String, String> delete(@RequestBody int subId, HttpSession session, HttpServletResponse response) throws Exception {
         if (!WebLogin.isAuthenticated(session)) {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
         }
 
-        if (entryId < 1)
-            return Collections.singletonMap("error", "The entry id was invalid.");
+        if (subId > 0) {
+            RssSubscriptionsTO to = new RssSubscriptionsTO();
+            to.setId(WebLogin.currentLoginId(session));
+            to.setSubscriptionId(subId);
 
-        try {
-            boolean result2;
-            boolean result = EntryDAO.delete(entryId, WebLogin.currentLoginId(session));
-
-            if (!result) {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                return java.util.Collections.singletonMap("error", "Could not delete entry.");
+            if (RssSubscriptionsDAO.delete(to)) {
+                return java.util.Collections.singletonMap("id", Integer.toString(subId));
             }
-
-            result2 = CommentDao.deleteByEntry(entryId);
-            if (!result2) {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                return java.util.Collections.singletonMap("error", "Could not delete comments associated with entry.");
-            }
-
-            return java.util.Collections.singletonMap("id", Integer.toString(entryId));
-        } catch (Exception e) {
-            log.error(e.getMessage());
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return java.util.Collections.singletonMap("error", "Could not delete the comment.");
+            return java.util.Collections.singletonMap("error", "Error deleting the subscription.");
         }
+
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        return java.util.Collections.singletonMap("error", "Error deleting the subscription. Bad id.");
     }
 }

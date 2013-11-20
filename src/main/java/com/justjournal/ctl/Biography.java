@@ -40,7 +40,6 @@ import com.justjournal.WebError;
 import com.justjournal.db.SQLHelper;
 import com.justjournal.utility.FileIO;
 import com.justjournal.utility.StringUtil;
-import org.apache.log4j.Category;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -71,7 +70,7 @@ public class Biography extends JustJournalBaseServlet {
         // convert Integer to int type
         int userID = 0;
         if (userIDasi != null) {
-            userID = userIDasi.intValue();
+            userID = userIDasi;
         }
 
         if (!StringUtil.lengthCheck(bio, 5, 150)) {
