@@ -91,8 +91,10 @@
 <script src="scripts/controllers/tags.js"></script>
 
 <script src="scripts/services/accountservice.js"></script>
+<script src="scripts/services/friendservice.js"></script>
 <script src="scripts/services/memberservice.js"></script>
 <script src="scripts/services/moodervice.js"></script>
+<script src="scripts/services/statisticsservice.js"></script>
 <script src="scripts/services/tagservice.js"></script>
 <!-- endbuild -->
 
