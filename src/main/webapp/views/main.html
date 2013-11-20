@@ -56,38 +56,46 @@
     </div>
 
     <div class="span5">
-        <form method="post" action="newAccount" name="frmCreateJournal">
+        <form action="" name="frmCreateJournal">
             <fieldset>
                 <legend>Sign up</legend>
 
                 <div class="row">
                     <span class="span2"><label for="fname">First Name</label></span>
                         <span class="span2 offset1"><input
-                                type="text" name="fname" id="fname" maxlength="50" size="25"></span>
+                                type="text" name="fname" id="fname" data-ng-model="create.name"
+                                maxlength="50" size="25"></span>
                 </div>
 
                 <div class="row">
                     <span class="span2"><label for="lname">Last Name</label></span>
-                    <span class="span2 offset1"><input type="text" name="lname" id="lname" maxlength="50"
+                    <span class="span2 offset1"><input type="text" name="lname" id="lname"
+                                                       data-ng-model="create.lastName" maxlength="50"
                                                        size="25"></span>
                 </div>
 
                 <div class="row">
                     <span class="span2"><label for="email">E-mail Address</label></span>
                                 <span class="span2 offset1"><input
-                                        type="text" name="email" id="email" maxlength="100" size="25"></span>
+                                        type="text" name="email" id="email"
+                                        data-ng-model="email"
+                                        maxlength="100" size="25"></span>
                 </div>
 
                 <div class="row">
                     <span class="span2"><label for="username">Username</label></span>
                                 <span class="span2 offset1"><input
-                                        type="text" name="username" id="username" maxlength="15" size="15"></span>
+                                        type="text" name="username" id="username"
+                                        data-ng-model="create.userName"
+                                        maxlength="15" size="15"></span>
                 </div>
 
                 <div class="row">
                     <span class="span2"><label for="password">Password</label></span>
                                 <span class="span2 offset1"><input
-                                        type="text" name="password" id="password" maxlength="18" size="18"></span>
+                                        type="text" name="password" id="password"
+                                        data-ng-model="create.password"
+                                        maxlength="18" size="18"></span>
                 </div>
                 <div class="row">
                     <span class="span2"><label for="password2">Password (again)</label></span>
@@ -98,7 +106,8 @@
 
             <div class="row">
                 <div class="span2 offset3">
-                    <input class="btn" type="submit" name="submit" value="Sign up"/>
+                    <button class="btn btn-large" name="submitlogin"
+                       data-ng-click="CreateAccount()">Sign Up</button>
                 </div>
             </div>
         </form>
