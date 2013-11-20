@@ -40,7 +40,8 @@ import com.justjournal.utility.StringUtil;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.sql.rowset.CachedRowSet;
+
+import jj.play.ns.nl.captcha.Captcha;
 
 import org.apache.log4j.Logger;
 
@@ -122,14 +123,11 @@ public final class NewAccount extends JustJournalBaseServlet {
             final String password = fixInput(request, "password");
             final String captcha = fixInput(request, "captcha");
 
-            synchronized (session) {
-                if (captcha.compareTo((String) session.getAttribute(nl.captcha.servlet.Constants.SIMPLE_CAPCHA_SESSION_KEY)) != 0 ||
-                        !StringUtil.lengthCheck(captcha, 2, 50)) {
-                    blnError = true;
-                    WebError.Display("Input Error", "Try to type the captcha again.", sb);
-                }
+            if (captcha.compareTo((String) session.getAttribute(Captcha.NAME)) != 0 ||
+                    !StringUtil.lengthCheck(captcha, 2, 50)) {
+                blnError = true;
+                WebError.Display("Input Error", "Try to type the captcha again.", sb);
             }
-
 
             if (!StringUtil.lengthCheck(fname, 2, 20)) {
                 blnError = true;
