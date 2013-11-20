@@ -24,7 +24,7 @@
     </artifact>
     <artifact type="war" name="JustJournal:war">
       <output-path>$PROJECT_DIR$/target</output-path>
-      <root id="archive" name="baremvc.war">
+      <root id="archive" name="justjournal.war">
         <element id="artifact" artifact-name="JustJournal:war exploded" />
       </root>
     </artifact>
