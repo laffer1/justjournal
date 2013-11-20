@@ -34,6 +34,8 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
+import com.justjournal.utility.StringUtil;
+
 /**
  * Represents a user most basic properties.
  *
@@ -150,7 +152,10 @@ public final class UserTo {
      * @param userName account name
      */
     public final void setUserName(final String userName) {
-        this.userName = userName;
+        if (!StringUtil.lengthCheck(userName, 3, 15)) {
+            throw new IllegalArgumentException("Invalid userName");
+        }
+        this.userName = userName.toLowerCase();
     }
 
     /**
@@ -168,6 +173,9 @@ public final class UserTo {
      * @param name User's first name
      */
     public final void setName(final String name) {
+        if (!StringUtil.lengthCheck(name, 2, 20)) {
+            throw new IllegalArgumentException("Invalid name. Must be 2-20 characters");
+        }
         this.name = name;
     }
 
@@ -192,6 +200,10 @@ public final class UserTo {
      * @param password user's password
      */
     public final void setPassword(final String password) {
+
+        if (!StringUtil.lengthCheck(password, 5, 18)) {
+            throw new IllegalArgumentException("Invalid password");
+        }
         this.password = password;
     }
 

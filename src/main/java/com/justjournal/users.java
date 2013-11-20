@@ -121,7 +121,6 @@ public final class Users extends HttpServlet {
         if (authUserTemp != null) {
             try {
                 aUser = new com.justjournal.User(authUserTemp); // authenticated user
-                aUser.setUserId(authUserIdTemp);
             } catch (Exception ex) {
                 log.error("processRequest(): Unable to load user information; " + ex.getMessage());
             }
@@ -139,7 +138,10 @@ public final class Users extends HttpServlet {
         final int arrUriLength = java.lang.reflect.Array.getLength(arrUri);
 
         if (arrUriLength > 2) {
-            userName = arrUri[2].toLowerCase();
+            if (arrUri[1].equals("justjournal"))
+                userName = arrUri[3].toLowerCase();
+            else
+                userName = arrUri[2].toLowerCase();
         }
 
         /* Initialize Preferences Object */
@@ -729,17 +731,17 @@ public final class Users extends HttpServlet {
             document.add(Chunk.NEWLINE);
 
             if (o.getSecurityLevel() == 0)
-                document.add(new Paragraph(new StringBuilder().append("Security: ").append("Private").toString(), new Font(Font.HELVETICA, 10.0F)));
+                document.add(new Paragraph("Security: " + "Private", new Font(Font.HELVETICA, 10.0F)));
             else if (o.getSecurityLevel() == 1)
-                document.add(new Paragraph(new StringBuilder().append("Security: ").append("Friends").toString(), new Font(Font.HELVETICA, 10.0F)));
+                document.add(new Paragraph("Security: " + "Friends", new Font(Font.HELVETICA, 10.0F)));
             else
-                document.add(new Paragraph(new StringBuilder().append("Security: ").append("Public").toString(), new Font(Font.HELVETICA, 10.0F)));
+                document.add(new Paragraph("Security: " + "Public", new Font(Font.HELVETICA, 10.0F)));
 
-            document.add(new Chunk(new StringBuilder().append("Location: ").append(o.getLocationName()).toString()));
+            document.add(new Chunk("Location: " + o.getLocationName()));
             document.add(Chunk.NEWLINE);
-            document.add(new Chunk(new StringBuilder().append("Mood: ").append(o.getMoodName()).toString()));
+            document.add(new Chunk("Mood: " + o.getMoodName()));
             document.add(Chunk.NEWLINE);
-            document.add(new Chunk(new StringBuilder().append("Music: ").append(o.getMusic()).toString()));
+            document.add(new Chunk("Music: " + o.getMusic()));
             document.add(Chunk.NEWLINE);
             document.add(Chunk.NEWLINE);
         }
