@@ -109,7 +109,10 @@ public final class UserDao {
             noError = false;
         }
 
-        return noError;
+        // TODO: refactor so we don't do this in two calls.
+        boolean sec = updateSecurity(user.getId(), user.getPrivateJournal());
+
+        return noError && sec;
     }
 
     /**

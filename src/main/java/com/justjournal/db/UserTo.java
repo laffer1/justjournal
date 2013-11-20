@@ -53,6 +53,15 @@ public final class UserTo {
     private String passwordSha1;
     private int since;
     private DateTime lastLogin;
+    private boolean privateJournal = false;
+
+    public boolean getPrivateJournal() {
+        return privateJournal;
+    }
+
+    public void setPrivateJournal(boolean privateJournal) {
+        this.privateJournal = privateJournal;
+    }
 
     public String getLastName() {
         return lastName;
