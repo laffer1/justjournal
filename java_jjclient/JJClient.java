@@ -5,10 +5,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 /**
- * Created by IntelliJ IDEA.
- * User: caryn
- * Date: Oct 17, 2005
- * Time: 7:15:24 PM
+ * Created by IntelliJ IDEA. User: caryn Date: Oct 17, 2005 Time: 7:15:24 PM
  */
 public class JJClient {
 
@@ -18,7 +15,7 @@ public class JJClient {
      * @param args
      */
     public static void main(String args[]) {
-       jjGUI gui = new jjGUI();
+        jjGUI gui = new jjGUI();
     }
 
 }

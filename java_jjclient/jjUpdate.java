@@ -15,7 +15,6 @@ import java.io.InputStreamReader;
 import java.net.URLEncoder;
 
 /**
- *
  * @author caryn
  */
 public class jjUpdate {
@@ -26,6 +25,7 @@ public class jjUpdate {
 
     /**
      * Constructor
+     *
      * @param jjUsername
      * @param jjPassword
      */
@@ -36,6 +36,7 @@ public class jjUpdate {
 
     /**
      * Updates journal
+     *
      * @param subject
      * @param body
      * @param mood
@@ -47,9 +48,9 @@ public class jjUpdate {
      * @param allowComment
      * @return true if update succeeded.
      */
-    public boolean update (String subject, String body, String mood,
-                           String location, String security, String music,
-                           boolean format, boolean email, boolean allowComment) {
+    public boolean update(String subject, String body, String mood,
+                          String location, String security, String music,
+                          boolean format, boolean email, boolean allowComment) {
         Date today = new Date();
         String strDate = today.toString();
         // location, mood, security are all int values
@@ -93,7 +94,7 @@ public class jjUpdate {
             // construct the POST request data
             String type = "application/x-www-form-urlencoded";
             String data = "";
-            data += "user=" + URLEncoder.encode(username,"UTF-8");
+            data += "user=" + URLEncoder.encode(username, "UTF-8");
             data += "&pass=" + URLEncoder.encode(password, "UTF-8");
             data += "&security=" + securityInteger;
             data += "&location=" + locationInteger;
@@ -102,17 +103,17 @@ public class jjUpdate {
             data += "&aformat=" + strFormat;
             data += "&allow_comment=" + strAllow;
             data += "&email_comment=" + strEmail;
-           //data += "&date=" + URLEncoder.encode(strDate, "UTF-8"); This is handled server side for now
+            //data += "&date=" + URLEncoder.encode(strDate, "UTF-8"); This is handled server side for now
             data += "&subject=" + URLEncoder.encode(subject, "UTF-8");
             data += "&body=" + URLEncoder.encode(body, "UTF-8");
 
             // open connection
-            URL jj = new URL ("https://www.justjournal.com/updateJournal");
+            URL jj = new URL("https://www.justjournal.com/updateJournal");
             HttpsURLConnection conn = (HttpsURLConnection) jj.openConnection();
             // set requesting agent, and POST
-            conn.setRequestMethod ("POST");
-            conn.setRequestProperty ("User-Agent", "JustJournal");
-            conn.setRequestProperty( "Content-Type", type );
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("User-Agent", "JustJournal");
+            conn.setRequestProperty("Content-Type", type);
             conn.setRequestProperty("Content-Length", new Integer(data.length()).toString());
             conn.setDoOutput(true);
             conn.setDoInput(true);
@@ -124,26 +125,25 @@ public class jjUpdate {
             writer.flush();
             writer.close();
             // getting the response
-            BufferedReader input = new BufferedReader (new InputStreamReader
+            BufferedReader input = new BufferedReader(new InputStreamReader
                     (conn.getInputStream()));
             int response = input.read();
-            char [] returnCode = new char [50];
+            char[] returnCode = new char[50];
             int i = 0;
             // for debugging
             while (response != -1) {
-                returnCode [i] = (char) response;
+                returnCode[i] = (char) response;
                 i++;
                 response = input.read();
             }
             input.close();
-            String code = new String (returnCode);
+            String code = new String(returnCode);
             code = code.trim();
-            
+
             if (code.compareTo("JJ.JOURNAL.UPDATE.OK") == 0)
                 return true;
             System.out.println("JJUpdate(): " + code);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             System.err.println(e.getMessage());
         }
 

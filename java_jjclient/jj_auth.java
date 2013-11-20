@@ -16,16 +16,16 @@ import java.net.*;
 import java.io.*;
 
 /**
- *
  * @author caryn
  */
 public class jj_auth {
-    
+
     private String userName;
     private String passWord;
 
     /**
      * Creates instance of jj_auth
+     *
      * @param username
      * @param password
      */
@@ -36,9 +36,10 @@ public class jj_auth {
 
     /**
      * Checks account over unsecured channel
+     *
      * @return true if login was successful
      */
-    public boolean checkAccount () {
+    public boolean checkAccount() {
         // check the  username and password against
         //  servlet
         try {
@@ -52,23 +53,23 @@ public class jj_auth {
                     URLEncoder.encode("", "US-ASCII");
             URL url = new URL("http://www.justjournal.com/loginAccount");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            
+
             // set user-agent header in POST request
-            conn.setRequestProperty("User-Agent","JustJournal/Java");
-            conn.setRequestProperty( "Content-Type", type );
-                        
-            conn.setRequestMethod ("POST");
+            conn.setRequestProperty("User-Agent", "JustJournal/Java");
+            conn.setRequestProperty("Content-Type", type);
+
+            conn.setRequestMethod("POST");
             conn.setDoOutput(true);
-            OutputStreamWriter writer = 
+            OutputStreamWriter writer =
                     new OutputStreamWriter(conn.getOutputStream());
 
             writer.write(data);
             writer.flush();
             writer.close();
             // getting the response
-            BufferedReader input = new BufferedReader (new InputStreamReader
+            BufferedReader input = new BufferedReader(new InputStreamReader
                     (conn.getInputStream()));
-            char [] returnCode = new char [50];
+            char[] returnCode = new char[50];
             int i = 0;
             int tempChar = input.read();
             while (tempChar != -1) {
@@ -78,15 +79,14 @@ public class jj_auth {
             }
 
             input.close();
-            String code = new String (returnCode);
+            String code = new String(returnCode);
             code = code.trim();
 
             if (code.equals("JJ.LOGIN.OK"))
                 return true;
 
-             System.out.println(code);
-        }
-        catch (Exception e) {
+            System.out.println(code);
+        } catch (Exception e) {
             System.err.println(e.getMessage());
         }
         // if the function gets this far, an error resulted
@@ -96,22 +96,23 @@ public class jj_auth {
 
     /**
      * Checks account over secure channel
+     *
      * @return true if account is valid
      */
-    public boolean SecureCheckAccount () {
+    public boolean SecureCheckAccount() {
         try {
             // sending the post request
             userName = userName.trim();
             String data = "username=" + userName;
             data += "&password=" + passWord;
             data += "&password_hash=";
-            URL jj = new URL ("https://www.justjournal.com/loginAccount");
+            URL jj = new URL("https://www.justjournal.com/loginAccount");
             HttpsURLConnection sslConn = (HttpsURLConnection) jj.openConnection();
-            sslConn.setRequestProperty("User-Agent","JustJournal");
+            sslConn.setRequestProperty("User-Agent", "JustJournal");
 
-            sslConn.setRequestMethod ("POST");
+            sslConn.setRequestMethod("POST");
             sslConn.setDoOutput(true);
-            sslConn.setDoInput (true);
+            sslConn.setDoInput(true);
             OutputStreamWriter writer =
                     new OutputStreamWriter(sslConn.getOutputStream());
 
@@ -119,9 +120,9 @@ public class jj_auth {
             writer.flush();
             writer.close();
             // getting the response
-            BufferedReader input = new BufferedReader (new InputStreamReader
+            BufferedReader input = new BufferedReader(new InputStreamReader
                     (sslConn.getInputStream()));
-            char [] returnCode = new char [50];
+            char[] returnCode = new char[50];
             int i = 0;
             int tempChar = input.read();
             while (tempChar != -1) {
@@ -130,7 +131,7 @@ public class jj_auth {
                 i++;
             }
 
-            String code = new String (returnCode);
+            String code = new String(returnCode);
             code = code.trim();
             input.close();
 
@@ -139,11 +140,10 @@ public class jj_auth {
 
             System.out.println(code);
 
-        }
-        catch (Exception e) {
-            System.err.println (e.getMessage());
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
         }
         return false;
     }
-    
+
 }

@@ -11,7 +11,6 @@
 package java_jjclient;
 
 /**
- *
  * @author caryn
  */
 public class jj_display {
@@ -21,5 +20,5 @@ public class jj_display {
      */
     public jj_display() {
     }
-    
+
 }

@@ -6,11 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.*;
 
 /**
- * @author Caryn Holt
- * Created by IntelliJ IDEA.
- * User: caryn
- * Date: Oct 31, 2005
- * Time: 11:18:49 AM
+ * @author Caryn Holt Created by IntelliJ IDEA. User: caryn Date: Oct 31, 2005 Time: 11:18:49 AM
  */
 public class jjGUI implements ActionListener {
 
@@ -56,7 +52,7 @@ public class jjGUI implements ActionListener {
         updateMenu.setActionCommand("update");
         updateMenu.addActionListener(this);
 
-        JMenuItem displayFriends = new JMenuItem ("Display Friends");
+        JMenuItem displayFriends = new JMenuItem("Display Friends");
 
         JMenuItem quitMenu = new JMenuItem("Quit");
         quitMenu.setActionCommand("quit");
@@ -98,18 +94,18 @@ public class jjGUI implements ActionListener {
         JLabel passwordLabel = new JLabel("Password:");
         c.gridx = 0;
         c.gridy = 1;
-        loginPanel.add(passwordLabel,c);
+        loginPanel.add(passwordLabel, c);
 
         username = new JTextField(15);
         c.gridx = 1;
         c.gridy = 0;
-        c.insets = new Insets (5, 5, 5, 5);
+        c.insets = new Insets(5, 5, 5, 5);
         loginPanel.add(username, c);
 
         password = new JPasswordField(15);
         c.gridx = 1;
         c.gridy = 1;
-        c.insets = new Insets (5, 5, 5, 5);
+        c.insets = new Insets(5, 5, 5, 5);
         loginPanel.add(password, c);
 
         ssl = new JCheckBox("Login via SSL", true);
@@ -175,7 +171,7 @@ public class jjGUI implements ActionListener {
         subject = new JTextField(15);
         c.gridy = 0;
         c.gridx = 1;
-        c.insets = new Insets (5, 5, 5, 5);
+        c.insets = new Insets(5, 5, 5, 5);
         updatePanel.add(subject, c);
 
         body = new JTextArea(10, 15);
@@ -183,40 +179,40 @@ public class jjGUI implements ActionListener {
         body.setWrapStyleWord(false);
         c.gridy = 1;
         c.gridx = 1;
-        c.insets = new Insets (5, 5, 5, 5);
+        c.insets = new Insets(5, 5, 5, 5);
         updatePanel.add(new JScrollPane(body, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER), c);
 
         music = new JTextField(15);
         c.gridy = 2;
         c.gridx = 1;
-        c.insets = new Insets (5, 5, 5, 5);
+        c.insets = new Insets(5, 5, 5, 5);
         updatePanel.add(music, c);
 
-        String [] locationValue = {"Home", "School", "Work", "Other"};
+        String[] locationValue = {"Home", "School", "Work", "Other"};
         location = new JComboBox(locationValue);
         c.gridy = 3;
         c.gridx = 1;
-        c.insets = new Insets (5, 5, 5, 5);
+        c.insets = new Insets(5, 5, 5, 5);
         updatePanel.add(location, c);
 
-        String [] moodValue = moodList();
+        String[] moodValue = moodList();
         mood = new JComboBox(moodValue);
         c.gridy = 4;
         c.gridx = 1;
-        c.insets = new Insets (5, 5, 5, 5);
+        c.insets = new Insets(5, 5, 5, 5);
         updatePanel.add(mood, c);
 
-        JLabel securityLabel = new JLabel ("Security:");
+        JLabel securityLabel = new JLabel("Security:");
         c.gridy = 5;
         c.gridx = 0;
         updatePanel.add(securityLabel, c);
 
-        String [] securityValues = {"Public", "Friends Only", "Private"};
-        security = new JComboBox (securityValues);
+        String[] securityValues = {"Public", "Friends Only", "Private"};
+        security = new JComboBox(securityValues);
         c.gridy = 5;
         c.gridx = 1;
-        c.insets = new Insets (5, 5, 5, 5);
-        updatePanel.add(security,c);
+        c.insets = new Insets(5, 5, 5, 5);
+        updatePanel.add(security, c);
 
         allowComments = new JCheckBox("Allow Comments");
         allowComments.setSelected(true);
@@ -235,16 +231,16 @@ public class jjGUI implements ActionListener {
         c.gridx = 0;
         updatePanel.add(autoFormat, c);
 
-        JButton updateButton = new JButton ("Update");
-        updateButton.setActionCommand ("update");
-        updateButton.addActionListener (this);
+        JButton updateButton = new JButton("Update");
+        updateButton.setActionCommand("update");
+        updateButton.addActionListener(this);
         c.gridy = 9;
         c.gridx = 0;
         updatePanel.add(updateButton, c);
 
-        JButton clearButton = new JButton ("Clear");
+        JButton clearButton = new JButton("Clear");
         clearButton.setActionCommand("clear update");
-        clearButton.addActionListener (this);
+        clearButton.addActionListener(this);
         c.gridy = 9;
         c.gridx = 1;
         updatePanel.add(clearButton, c);
@@ -257,6 +253,7 @@ public class jjGUI implements ActionListener {
 
     /**
      * Calls login method
+     *
      * @return true if login was successful
      */
     private boolean login() {
@@ -280,6 +277,7 @@ public class jjGUI implements ActionListener {
 
     /**
      * Overrides event handling
+     *
      * @param e the action event performed
      */
     public void actionPerformed(ActionEvent e) {
@@ -289,12 +287,10 @@ public class jjGUI implements ActionListener {
             if (result) {
                 initUpdate();
             }
-        }
-        else if ("clear".equals(e.getActionCommand())) {
+        } else if ("clear".equals(e.getActionCommand())) {
             username.setText("");
             password.setText("");
-        }
-        else if ("clear update".equals(e.getActionCommand()))
+        } else if ("clear update".equals(e.getActionCommand()))
             initUpdate();
         else if ("update".equals(e.getActionCommand()))
             result = update();
@@ -302,31 +298,33 @@ public class jjGUI implements ActionListener {
             System.exit(0);
 
         if (!result)
-            System.err.println ("The requested action could not be " +
-                    "completed");       
+            System.err.println("The requested action could not be " +
+                    "completed");
     }
 
     /**
      * Calls update method
+     *
      * @return true if update was successful
      */
-    private boolean update () {
+    private boolean update() {
         //noinspection deprecation
         String strPassword = password.getText();
         jjUpdate updateJJ = new jjUpdate(username.getText(), strPassword);
         boolean result = updateJJ.update(subject.getText(), body.getText(),
                 (String) mood.getSelectedItem(), (String) location.getSelectedItem(),
                 (String) security.getSelectedItem(), music.getText(),
-                autoFormat.isSelected(),emailComments.isSelected(), allowComments.isSelected());
+                autoFormat.isSelected(), emailComments.isSelected(), allowComments.isSelected());
         return result;
     }
 
     /**
      * Generates mood list
+     *
      * @return String array of mood list
      */
-    private String [] moodList () {
-        String [] moods = {"happy", "sad"};
+    private String[] moodList() {
+        String[] moods = {"happy", "sad"};
         return moods;
     }
 
