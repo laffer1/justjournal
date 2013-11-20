@@ -39,7 +39,6 @@ import com.justjournal.db.TrackbackDao;
 import com.justjournal.db.TrackbackTo;
 import com.justjournal.db.TrackbackType;
 import com.justjournal.utility.ServletUtilities;
-import org.apache.log4j.Category;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
