@@ -27,7 +27,6 @@
 package com.justjournal.ctl;
 
 import com.justjournal.WebLogin;
-import com.justjournal.db.EntryDAO;
 import com.justjournal.db.UserDao;
 import com.justjournal.db.UserTo;
 import org.springframework.stereotype.Controller;
@@ -45,11 +44,8 @@ import java.util.Map;
 @RequestMapping("/json/Account.json")
 public class Account {
 
-    @RequestMapping(method = RequestMethod.POST)
-    public
-    @ResponseBody
-    Map<String, String>
-    changePassword(@RequestParam String passCurrent, @RequestParam String passNew, HttpSession session, HttpServletResponse response) {
+    private Map<String, String>
+    changePassword(String passCurrent, String passNew, HttpSession session, HttpServletResponse response) {
 
         if (!WebLogin.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -79,18 +75,8 @@ public class Account {
         return java.util.Collections.singletonMap("status", "Password Changed.");
     }
 
-
-    @RequestMapping(method = RequestMethod.POST)
-    public
-    @ResponseBody
-    Map<String, String> save(@RequestBody UserTo user, HttpSession session, HttpServletResponse response) {
-
-        if (!WebLogin.isAuthenticated(session)) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
-        }
-
-        if (WebLogin.currentLoginId(session) == user.getId() && WebLogin.currentLoginName(session) == user.getUserName()) {
+    private Map<String, String> updateUser(UserTo user, HttpSession session, HttpServletResponse response) {
+        if (WebLogin.currentLoginId(session) == user.getId() && WebLogin.currentLoginName(session).equals(user.getUserName())) {
 
             boolean result = UserDao.update(user);
 
@@ -102,5 +88,22 @@ public class Account {
         }
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         return java.util.Collections.singletonMap("error", "Could not edit the comment.");
+    }
+
+    @RequestMapping(method = RequestMethod.POST)
+    public
+    @ResponseBody
+    Map<String, String> post(@RequestParam String type, @RequestParam String passCurrent, @RequestParam String passNew, @RequestBody UserTo user, HttpSession session, HttpServletResponse response) {
+
+        if (!WebLogin.isAuthenticated(session)) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
+        }
+
+        if (type.equals("password")) {
+            return changePassword(passCurrent, passNew, session, response);
+        } else {
+            return updateUser(user, session, response);
+        }
     }
 }
