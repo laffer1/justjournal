@@ -26,14 +26,17 @@
 
 package com.justjournal.ctl.api;
 
+import com.justjournal.core.Statistics;
 import com.justjournal.db.CommentDao;
 import com.justjournal.db.EntryDAO;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.Collection;
 
 /**
  * @author Lucas Holt
@@ -41,16 +44,24 @@ import javax.servlet.http.HttpServletResponse;
 @Controller
 @RequestMapping("/api/statistics")
 public class StatisticsController {
+
+    @RequestMapping(method = RequestMethod.GET, produces = "application/json")
+    public
+    @ResponseBody
+    Statistics get() {
+        return new Statistics();
+    }
+
     @RequestMapping("/api/statistics/{id}")
-      @ResponseBody
-      public Stats getById(@PathVariable String id, HttpServletResponse response) {
-          try {
-              return new Stats(id);
-          } catch (Exception e) {
-              response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-              return null;
-          }
-      }
+    @ResponseBody
+    public Stats getById(@PathVariable String id, HttpServletResponse response) {
+        try {
+            return new Stats(id);
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return null;
+        }
+    }
 
     class Stats {
         private String username;
@@ -58,6 +69,7 @@ public class StatisticsController {
         public Stats(String username) {
             this.username = username;
         }
+
         public int getEntryCount() throws Exception {
             return EntryDAO.entryCount(username);
         }
