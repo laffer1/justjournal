@@ -51,7 +51,7 @@ import java.util.Map;
 final public class CommentController {
     private static final Logger log = Logger.getLogger(CommentController.class);
 
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET, produces="application/json")
     public
     @ResponseBody
     List<CommentTo> getComments(@RequestParam Integer entryId, HttpServletResponse response) throws Exception {
@@ -97,7 +97,7 @@ final public class CommentController {
         }
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.POST, produces="application/json")
     public
     @ResponseBody
     Map<String, String> update(@RequestBody CommentTo comment, HttpSession session, HttpServletResponse response) {

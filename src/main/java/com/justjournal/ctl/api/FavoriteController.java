@@ -70,7 +70,7 @@ final public class FavoriteController {
      * @return an arraylist containing EntryTo objects
      */
 
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET, produces="application/json")
     public
     @ResponseBody
     Collection<EntryTo> getFavorites(HttpSession session, HttpServletResponse response) {

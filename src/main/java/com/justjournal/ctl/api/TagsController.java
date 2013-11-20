@@ -26,16 +26,14 @@
 
 package com.justjournal.ctl.api;
 
-import com.justjournal.db.SQLHelper;
 import com.justjournal.db.Tag;
-import org.apache.log4j.Logger;
+import com.justjournal.db.TagDao;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -44,27 +42,17 @@ import java.util.Collection;
 @Controller
 @RequestMapping("/api/tags")
 final public class TagsController {
-    private static final Logger log = Logger.getLogger(TagsController.class);
 
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public
     @ResponseBody
     Collection<Tag> getTags() {
-        Collection<Tag> tags = new ArrayList<Tag>();
-        try {
-            // TODO: Convert to Cayenne
-            ResultSet rs = SQLHelper.executeResultSet("select tags.id, tags.name as name, count(*) as count from entry_tags, tags where tags.id=entry_tags.tagid GROUP by tags.name;");
-
-            while (rs.next()) {
-                Tag tag = new Tag(rs.getInt(1), rs.getString(2));
-                tag.setCount(rs.getInt(3));
-                tags.add(tag);
-            }
-            rs.close();
-        } catch (Exception ex) {
-            log.error(ex);
-        }
-        return tags;
+        return TagDao.list();
     }
 
+    @RequestMapping("/api/tags/{id}")
+    @ResponseBody
+    public Tag getById(@PathVariable Integer id) {
+        return TagDao.viewSingle(id);
+    }
 }

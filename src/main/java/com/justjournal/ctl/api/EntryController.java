@@ -48,7 +48,7 @@ import java.util.Map;
 final public class EntryController {
     private static final Logger log = Logger.getLogger(EntryController.class);
 
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.POST, produces="application/json")
     public
     @ResponseBody
     Map<String, String> save(@RequestBody EntryTo entry, HttpSession session, HttpServletResponse response) {

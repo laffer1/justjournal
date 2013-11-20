@@ -84,9 +84,14 @@
 <script src="scripts/app.js"></script>
 <script src="scripts/controllers/main.js"></script>
 <script src="scripts/controllers/cancel.js"></script>
+<script src="scripts/controllers/memberslist.js"></script>
 <script src="scripts/controllers/moodlist.js"></script>
+<script src="scripts/profile.js"></script>
 <script src="scripts/controllers/sitemap.js"></script>
 <script src="scripts/controllers/tags.js"></script>
+
+<script src="scripts/services/accountservice.js"></script>
+<script src="scripts/services/memberservice.js"></script>
 <script src="scripts/services/moodervice.js"></script>
 <script src="scripts/services/tagservice.js"></script>
 <!-- endbuild -->
