@@ -27,9 +27,29 @@ angular.module('wwwApp', [])
                         templateUrl: 'views/profile.html',
                         controller: 'ProfileCtrl'
                     })
+                    .when('/search', {
+                        templateUrl: 'views/search.html',
+                        controller: 'SearchCtrl'
+                    })
                     .when('/sitemap', {
                         templateUrl: 'views/sitemap.html',
                         controller: 'SitemapCtrl'
+                    })
+                    .when('/support', {
+                        templateUrl: 'views/support.html',
+                        controller: 'SupportCtrl'
+                    })
+                    .when('/support/bugs', {
+                        templateUrl: 'views/bugs.html',
+                        controller: 'BugsCtrl'
+                    })
+                    .when('/support/faq', {
+                        templateUrl: 'views/faq.html',
+                        controller: 'FaqCtrl'
+                    })
+                    .when('/support/tech', {
+                        templateUrl: 'views/tech.html',
+                        controller: 'TechCtrl'
                     })
                     .when('/tags', {
                         templateUrl: 'views/tags.html',
