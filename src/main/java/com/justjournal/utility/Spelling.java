@@ -67,7 +67,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.utility;
 
-import com.swabunga.spell.engine.SpellDictionary;
+import com.swabunga.spell.engine.GenericSpellDictionary;
 import com.swabunga.spell.event.SpellCheckEvent;
 import com.swabunga.spell.event.SpellCheckListener;
 import com.swabunga.spell.event.SpellChecker;
@@ -101,7 +101,8 @@ public final class Spelling
      */
     public Spelling() {
         try {
-            SpellDictionary dictionary = new SpellDictionary(new File(dictFile));
+            com.swabunga.spell.engine.GenericSpellDictionary dictionary = new GenericSpellDictionary(new File(dictFile));
+            // old version SpellDictionary dictionary = new SpellDictionary(new File(dictFile));
 
             spellCheck = new SpellChecker(dictionary);
             spellCheck.addSpellCheckListener(this);
