@@ -35,61 +35,94 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.ctl;
 
 import com.justjournal.User;
-import com.justjournal.db.CommentDao;
-import com.justjournal.db.EntryDAO;
-import com.justjournal.db.EntryTo;
+import com.justjournal.WebLogin;
+import com.justjournal.db.*;
+import com.justjournal.utility.StringUtil;
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
-/**
- * Created by IntelliJ IDEA.
- * User: laffer1
- * Date: Dec 31, 2003
- * Time: 3:25:21 PM
- */
-public class Comment extends ControllerAuth {
+@Controller
+@RequestMapping("/json/Comment.json")
+public class Comment {
+    private static final Logger log = Logger.getLogger(Comment.class);
 
-    protected EntryTo entry;
-    protected Collection comments;
-    protected int entryId;
+    @RequestMapping(method = RequestMethod.GET)
+    public
+    @ResponseBody
+    List<CommentTo> getComments(@RequestParam Integer entryId, HttpServletResponse response) throws Exception {
+        EntryTo entry = EntryDAO.viewSingle(entryId, false);
 
-
-    public EntryTo getEntry() {
-        return this.entry;
-    }
-
-    public Collection getComments() {
-        return this.comments;
-    }
-
-
-    public String getMyLogin() {
-        return this.currentLoginName();
-    }
-
-    public int getEntryId() {
-        return this.entryId;
-    }
-
-    public void setEntryId(int entryId) {
-        this.entryId = entryId;
-    }
-
-
-    public String perform() throws Exception {
-        this.comments = CommentDao.view(entryId);
-        this.entry = EntryDAO.viewSingle(entryId, false);
-
-        User user = new User(entry.getUserName());
-
-        // user wants it private, has comments disabled for this entry
-        // or the security level is private.
-        if (user.isPrivateJournal() ||
-                !this.entry.getAllowComments() ||
-                this.entry.getSecurityLevel() == 0) {
-            this.entry = new EntryTo();
-            return ERROR;
+        try {
+            User user = new User(entry.getUserName());
+            if (user.isPrivateJournal() ||
+                    !entry.getAllowComments() ||
+                    entry.getSecurityLevel() == 0) {
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
 
-        return SUCCESS;
+        return CommentDao.view(entryId);
     }
+
+    @RequestMapping(method = RequestMethod.DELETE)
+    public
+    @ResponseBody
+    Map<String, String> delete(@RequestBody CommentTo comment, HttpSession session, HttpServletResponse response) throws Exception {
+
+        if (!WebLogin.isAuthenticated(session)) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
+        }
+
+        try {
+            boolean result = CommentDao.delete(comment.getId(), WebLogin.currentLoginId(session));
+
+            if (!result) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                return java.util.Collections.singletonMap("error", "Error deleting your comment.");
+            }
+            return java.util.Collections.singletonMap("id", Integer.toString(comment.getId()));
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return java.util.Collections.singletonMap("error", "Could not delete the comment.");
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.POST)
+    public
+    @ResponseBody
+    Map<String, String> update(@RequestBody CommentTo comment, HttpSession session, HttpServletResponse response) {
+
+        try {
+            CommentDao commentDao = new CommentDao();
+            comment.setUserId(WebLogin.currentLoginId(session));
+            boolean result = commentDao.update(comment);
+
+            // TODO: old code sanitized single tick in strings.
+
+           // TODO: check owner matches comment.
+
+            if (!result) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                return java.util.Collections.singletonMap("error", "Error editing comment.");
+            }
+            return java.util.Collections.singletonMap("id", Integer.toString(comment.getId()));
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return java.util.Collections.singletonMap("error", "Could not add the favorite.");
+        }
+    }
+
 }
