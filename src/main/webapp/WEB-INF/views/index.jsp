@@ -82,6 +82,8 @@
 <!-- build:js scripts/scripts.js -->
 <script src="scripts/app.js"></script>
 <script src="scripts/controllers/main.js"></script>
+<script src="scripts/controllers/tags.js"></script>
+<script src="scripts/services/tagservice.js"></script>
 <!-- endbuild -->
 
 <script>
