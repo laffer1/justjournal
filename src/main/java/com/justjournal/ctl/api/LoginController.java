@@ -26,13 +26,18 @@
 
 package com.justjournal.ctl.api;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.justjournal.WebLogin;
 import com.justjournal.utility.StringUtil;
+import org.apache.log4j.Logger;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.io.Serializable;
 
 /**
  * @author Lucas Holt
@@ -44,9 +49,11 @@ final public class LoginController {
     private static final String JJ_LOGIN_OK = "JJ.LOGIN.OK";
     private static final String JJ_LOGIN_FAIL = "JJ.LOGIN.FAIL";
 
-    class Login {
-        private String username;
-        private String password;
+    private static final Logger log = Logger.getLogger(LoginController.class);
+
+    class Login implements Serializable {
+        public String username;
+        public String password;
 
         public String getUsername() {
             return username;
@@ -65,36 +72,39 @@ final public class LoginController {
         }
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.POST, produces = "application/json")
     public
     @ResponseBody
-    Model post(@RequestBody Login login, Model model, HttpSession session) {
+    ResponseEntity<String> post(@RequestBody String loginJSON, HttpSession session) {
 
-        // Current authentication needs to get whacked
-        if (WebLogin.isAuthenticated(session)) {
-            session.invalidate();
+        try {
+            Gson gson = new GsonBuilder().create();
+            Login login = gson.fromJson(loginJSON, Login.class);
+
+            // Current authentication needs to get whacked
+            if (WebLogin.isAuthenticated(session)) {
+                session.invalidate();
+            }
+
+            if (StringUtil.lengthCheck(login.getUsername(), 3, 15) && StringUtil.lengthCheck(login.getPassword(), 5, 18)) {
+                int userID = WebLogin.validate(login.getUsername(), login.getPassword());
+                if (userID > 0) {
+                    session.setAttribute("auth.uid", userID);
+                    session.setAttribute("auth.user", login.getUsername());
+                } else {
+                    log.error("Login attempt failed with user: " + login.getUsername());
+
+                    return new ResponseEntity<String>("{ status: \"" + JJ_LOGIN_FAIL + "\" }", HttpStatus.BAD_REQUEST);
+                }
+
+            } else {
+                log.error("Login failed in validation of user: " + login.getUsername());
+                return new ResponseEntity<String>("{ status: \"" + JJ_LOGIN_FAIL + "\" }", HttpStatus.BAD_REQUEST);
+            }
+            return new ResponseEntity<String>("{ username: \"" + login.getUsername() + "\", status: \"" + JJ_LOGIN_OK + "\" }", HttpStatus.OK);
+        } catch (Exception e) {
+            log.error(e);
+            return new ResponseEntity<String>("{ status: \"" + JJ_LOGIN_FAIL + "\" }", HttpStatus.BAD_REQUEST);
         }
-
-        if (StringUtil.lengthCheck(login.username, 3, 15) && StringUtil.lengthCheck(login.password, 5, 18)) {
-            int userID = WebLogin.validate(login.username, login.password);
-            if (userID > 0) {
-                session.setAttribute("auth.uid", userID);
-                session.setAttribute("auth.user", login.username);
-                model.addAttribute("username", login.username);
-                model.addAttribute("status", JJ_LOGIN_OK);
-            } else
-                error(model);
-
-        } else {
-            error(model);
-        }
-
-        return model;
-    }
-
-    private void error(Model model) {
-        model.addAttribute("status", JJ_LOGIN_FAIL);
-        model.addAttribute("error", "Unable to login.  Please check your username and password.");
-
     }
 }

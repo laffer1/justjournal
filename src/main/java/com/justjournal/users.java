@@ -113,14 +113,14 @@ public final class Users extends HttpServlet {
 
         String authUserTemp;
         Integer authUserIdTemp;
-        User aUser = null;
+        com.justjournal.User aUser = null;
         /* Does a username exist in session?  i.e. are we logged in?*/
         authUserTemp = (String) session.getAttribute("auth.user");
         authUserIdTemp = (Integer) session.getAttribute("auth.uid");
 
         if (authUserTemp != null) {
             try {
-                aUser = new User(authUserTemp); // authenticated user
+                aUser = new com.justjournal.User(authUserTemp); // authenticated user
                 aUser.setUserId(authUserIdTemp);
             } catch (Exception ex) {
                 log.error("processRequest(): Unable to load user information; " + ex.getMessage());
