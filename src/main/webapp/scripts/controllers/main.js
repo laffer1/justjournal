@@ -9,10 +9,7 @@ angular.module('wwwApp').controller('MainCtrl', ['$scope', '$window', '$http', f
         $http.post('api/login', data).success(function(data, status) {
               if (status == 200 && data.status == 'JJ.LOGIN.OK') {
                   window.location.href = '/users/' + data.username;
-                  return;
               }
-
-              alert(data.error);
         });
     };
 }]);
