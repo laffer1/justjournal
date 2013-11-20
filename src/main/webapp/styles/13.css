@@ -15,27 +15,27 @@ h3 {
 }
 
 a:link {
-	color: white;
-	background-color: transparent;
-	text-decoration: underline;
+    color: white;
+    background-color: transparent;
+    text-decoration: underline;
 }
 
 a:visited {
     color: white;
     background-color: transparent;
-	text-decoration: underline;
+    text-decoration: underline;
 }
 
 a:active {
-	color: #999999;
-	background-color: transparent;
-	text-decoration: underline;
+    color: #999999;
+    background-color: transparent;
+    text-decoration: underline;
 }
 
 a:hover {
     color: black;
     background-color: white;
-	text-decoration: underline;
+    text-decoration: underline;
 }
 
 a:hover img {
@@ -44,25 +44,25 @@ a:hover img {
 
 #header {
     /*background-color: rgb(81,118,236);*/
-	position: fixed; 
-	top: 0;
-	left: 0;
-	width: 100%;
-	background-color: #c0dB5A;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #c0dB5A;
 
 }
 
-#content { 
-	margin-top: 60px;
+#content {
+    margin-top: 60px;
 }
 
 html, body {
-	background-color: #1A1A1A;
-	color: #F2F2F2;
+    background-color: #1A1A1A;
+    color: #F2F2F2;
 }
 
 table.minicalendar {
-	color: gray;
+    color: gray;
 }
 
 table.minicalendar a {

@@ -5,7 +5,7 @@
 @import "modern.css";
 
 h3 {
-    color: rgb( 81, 118, 236 );
+    color: rgb(81, 118, 236);
 }
 
 a:link {
@@ -46,6 +46,6 @@ a:hover {
 }
 
 #header {
-    background: gray url( ../images/Backgrounds/CB012617_LoRes.jpg ) left top;
+    background: gray url(../images/Backgrounds/CB012617_LoRes.jpg) left top;
     color: #FFFFFF;
 }

@@ -10,31 +10,31 @@ h1 {
 
 h3 {
     /*color: rgb(81,118,236);*/
-    color: rgb(81,118,236);
+    color: rgb(81, 118, 236);
 }
 
 a:link {
-	color: navy;
-	background-color: transparent;
-	text-decoration: none;
+    color: navy;
+    background-color: transparent;
+    text-decoration: none;
 }
 
 a:visited {
     color: navy;
     background-color: transparent;
-	text-decoration: none;
+    text-decoration: none;
 }
 
 a:active {
-	color: #999999;
-	background-color: transparent;
-	text-decoration: underline;
+    color: #999999;
+    background-color: transparent;
+    text-decoration: underline;
 }
 
 a:hover {
-	color: white;
-	background-color: navy;
-	text-decoration: underline;
+    color: white;
+    background-color: navy;
+    text-decoration: underline;
 }
 
 a:hover img {
@@ -49,6 +49,6 @@ a:hover img {
 }
 
 body {
-	background: #fff url("/images/top_blend_bg.gif") repeat-x;
-	color: #333;
+    background: #fff url("/images/top_blend_bg.gif") repeat-x;
+    color: #333;
 }

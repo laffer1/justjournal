@@ -46,7 +46,7 @@ a:hover {
 }
 
 #header {
-/*background-color: rgb(81,118,236); */
-    background: pink url( ../images/Backgrounds/CB010206_LoRes.jpg );
+    /*background-color: rgb(81,118,236); */
+    background: pink url(../images/Backgrounds/CB010206_LoRes.jpg);
     color: white;
 }

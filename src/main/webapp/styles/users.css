@@ -151,9 +151,9 @@
     background-color: white;
     color: black;
     border: thin solid black;
-    filter:alpha(opacity=50);   /* Internet Explorer       */
-    -moz-opacity:0.5;           /* Mozilla 1.6 and below   */
-    opacity: 0.5;               /* newer Mozilla and CSS-3 */
+    filter: alpha(opacity=50); /* Internet Explorer       */
+    -moz-opacity: 0.5; /* Mozilla 1.6 and below   */
+    opacity: 0.5; /* newer Mozilla and CSS-3 */
     padding-left: 4px;
     padding-right: 4px;
     text-align: center;

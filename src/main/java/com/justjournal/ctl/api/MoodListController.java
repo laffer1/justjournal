@@ -62,7 +62,7 @@ final public class MoodListController {
     public
     @ResponseBody
     Collection<MoodTo> getMoodList() {
-        return MoodDao.view();
+        return MoodDao.viewByRelationship();
     }
 
 }

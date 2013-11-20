@@ -1,0 +1,61 @@
+<!--
+  ~ Copyright (c) 2013 Lucas Holt
+  ~ All rights reserved.
+  ~
+  ~ Redistribution and use in source and binary forms, with or without
+  ~ modification, are permitted provided that the following conditions
+  ~ are met:
+  ~ 1. Redistributions of source code must retain the above copyright
+  ~    notice, this list of conditions and the following disclaimer.
+  ~ 2. Redistributions in binary form must reproduce the above copyright
+  ~    notice, this list of conditions and the following disclaimer in the
+  ~    documentation and/or other materials provided with the distribution.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
+  ~ ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  ~ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+  ~ ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
+  ~ FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+  ~ DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+  ~ OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+  ~ HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+  ~ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+  ~ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+  ~ SUCH DAMAGE.
+  -->
+<div class="container">
+
+    <div class="row">
+        <h2>Cancel Journal</h2>
+    </div>
+
+    <div class="row">
+        <form method="post" action="DeleteAccount" name="frmCancelJournal">
+
+            <fieldset>
+                <legend><strong>User Information</strong><br/></legend>
+
+                <p>You must be logged in before you can cancel your account. Then, you must type your username
+                    and password below to verify you want to cancel. The process will wipe all contents of your blog
+                    without any way to get it back.</p>
+
+                <div class="row">
+                    <span class="label span1"><label for="username">Username</label></span>
+
+                    <span class="span4"><input
+                        type="text" name="username" id="username" maxlength="15" size="15"/></span>
+                </div>
+
+                <div class="row">
+                    <span class="label span1"><label for="password">Password</label></span>
+                    <span class="span4"><input
+                        type="text" name="password" id="password" maxlength="18" size="18"/></span>
+                </div>
+
+            </fieldset>
+
+            <div class="row"><input type="submit" name="submit" value="submit"/></div>
+        </form>
+
+    </div>
+</div>
