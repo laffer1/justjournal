@@ -94,7 +94,7 @@ public final class AddComment extends JustJournalBaseServlet {
             }
         }
 
-        if (userID > 0) {
+        if (userID > 0 && userName != null) {
             // We authenticated OK.  Continue...
 
             // Get the user input
@@ -166,7 +166,6 @@ public final class AddComment extends JustJournalBaseServlet {
                     session.setAttribute("spell.csubject", "");
 
                     // create header fields
-                    if (!blnError) {
 
                         try {
                             CommentDao cdao = new CommentDao();
@@ -207,7 +206,7 @@ public final class AddComment extends JustJournalBaseServlet {
                         } catch (Exception e) {
                             log.error("Could not send mail: " + e.getMessage());
                         }
-                    }
+
                 }
                 // display message to user.
                 if (!blnError) {
