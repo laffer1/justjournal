@@ -26,24 +26,34 @@
 
 package com.justjournal.ctl.api;
 
+import com.justjournal.WebLogin;
 import com.justjournal.db.UserDao;
+import com.justjournal.db.UserLinkDao;
+import com.justjournal.db.UserLinkTo;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.Collection;
+import java.util.Map;
 
 /**
+ * Manage Friends
  * @author Lucas Holt
  */
 @Controller
 @RequestMapping("/api/friend")
-public class FriendController {
+final public class FriendController {
 
     // TODO: refactor to return user objects?
+    /**
+     *
+     * @param id username
+     * @param session http session
+     * @param response http response
+     * @return List of usernames as strings
+     */
     @RequestMapping("/api/friend/{id}")
     @ResponseBody
     public Collection<String> getById(@PathVariable String id, HttpSession session, HttpServletResponse response) {

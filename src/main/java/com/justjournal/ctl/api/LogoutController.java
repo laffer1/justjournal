@@ -37,7 +37,7 @@ import javax.servlet.http.HttpSession;
  */
 @Controller
 @RequestMapping("/api/logout")
-public class LogoutController {
+final public class LogoutController {
 
     public
     @ResponseBody
