@@ -152,13 +152,6 @@
     </servlet>
 
     <servlet>
-        <display-name>Add Comment</display-name>
-        <servlet-name>addComment</servlet-name>
-        <servlet-class>com.justjournal.AddComment</servlet-class>
-        <load-on-startup>3</load-on-startup>
-    </servlet>
-
-    <servlet>
         <display-name>Select Style Sheet Base Template</display-name>
         <servlet-name>SelectStyleSheet</servlet-name>
         <servlet-class>com.justjournal.SelectStyleSheet</servlet-class>
@@ -257,11 +250,6 @@
     <servlet-mapping>
         <servlet-name>DeleteAccount</servlet-name>
         <url-pattern>/DeleteAccount</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>addComment</servlet-name>
-        <url-pattern>/addComment</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>
