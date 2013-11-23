@@ -24,8 +24,11 @@
  * SUCH DAMAGE.
  */
 
-package com.justjournal;
+package com.justjournal.ctl;
 
+import com.justjournal.Cal;
+import com.justjournal.User;
+import com.justjournal.WebError;
 import com.justjournal.atom.AtomFeed;
 import com.justjournal.core.Settings;
 import com.justjournal.db.*;
@@ -1314,8 +1317,8 @@ public final class Users extends HttpServlet {
      *
      * @param year The year to print
      * @param uc   The UserContext we are working on including blog owner, authenticated user, and sb to write
-     * @see Cal
-     * @see CalMonth
+     * @see com.justjournal.Cal
+     * @see com.justjournal.CalMonth
      */
     private static void getCalendar(final int year,
                                     final UserContext uc) {

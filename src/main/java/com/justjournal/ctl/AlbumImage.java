@@ -24,7 +24,7 @@
  * SUCH DAMAGE.
  */
 
-package com.justjournal;
+package com.justjournal.ctl;
 
 import com.justjournal.db.SQLHelper;
 import com.justjournal.utility.ServletUtilities;

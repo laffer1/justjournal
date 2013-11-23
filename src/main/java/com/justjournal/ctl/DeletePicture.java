@@ -1,10 +1,8 @@
 package com.justjournal.ctl;
 
-import com.justjournal.JustJournalBaseServlet;
 import com.justjournal.User;
 import com.justjournal.WebError;
 import com.justjournal.utility.FileIO;
-import org.apache.log4j.Category;
 import org.apache.log4j.Logger;
 
 import javax.naming.Context;
