@@ -151,7 +151,7 @@
     </module2copyright>
   </component>
   <component name="CppTools.Loader" reportImplicitCastToBool="false" version="1" />
-  <component name="DataSourceManagerImpl" format="xml" hash="2736275045">
+  <component name="DataSourceManagerImpl" format="xml" hash="2829899056">
     <data-source source="LOCAL" name="Data Source" uuid="aea5be6a-0244-4793-b534-3b1d611e6617">
       <driver-ref>mysql</driver-ref>
       <synchronize>true</synchronize>
