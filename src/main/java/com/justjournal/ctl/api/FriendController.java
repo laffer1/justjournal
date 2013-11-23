@@ -65,9 +65,9 @@ final public class FriendController {
         }
     }
 
-    @RequestMapping(method = RequestMethod.POST, produces = "application/json")
+    @RequestMapping(method = RequestMethod.PUT, produces = "application/json")
     @ResponseBody
-    public Map<String, String> post(@RequestParam String friend, HttpSession session, HttpServletResponse response) {
+    public Map<String, String> put(@RequestParam String friend, HttpSession session, HttpServletResponse response) {
         if (!WebLogin.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");

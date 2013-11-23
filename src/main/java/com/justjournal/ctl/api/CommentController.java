@@ -36,7 +36,11 @@ package com.justjournal.ctl.api;
 
 import com.justjournal.User;
 import com.justjournal.WebLogin;
-import com.justjournal.db.*;
+import com.justjournal.db.CommentDao;
+import com.justjournal.db.CommentTo;
+import com.justjournal.db.EntryDAO;
+import com.justjournal.db.EntryTo;
+import com.justjournal.utility.QueueMail;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -51,7 +55,7 @@ import java.util.Map;
 final public class CommentController {
     private static final Logger log = Logger.getLogger(CommentController.class);
 
-    @RequestMapping(method = RequestMethod.GET, produces="application/json")
+    @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public
     @ResponseBody
     List<CommentTo> getComments(@RequestParam Integer entryId, HttpServletResponse response) throws Exception {
@@ -97,7 +101,7 @@ final public class CommentController {
         }
     }
 
-    @RequestMapping(method = RequestMethod.POST, produces="application/json")
+    @RequestMapping(method = RequestMethod.POST, produces = "application/json")
     public
     @ResponseBody
     Map<String, String> update(@RequestBody CommentTo comment, HttpSession session, HttpServletResponse response) {
@@ -107,10 +111,6 @@ final public class CommentController {
             comment.setUserId(WebLogin.currentLoginId(session));
             boolean result = commentDao.update(comment);
 
-            // TODO: old code sanitized single tick in strings.
-
-           // TODO: check owner matches comment.
-
             if (!result) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 return java.util.Collections.singletonMap("error", "Error editing comment.");
@@ -119,7 +119,69 @@ final public class CommentController {
         } catch (Exception e) {
             log.error(e.getMessage());
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return java.util.Collections.singletonMap("error", "Could not add the favorite.");
+            return java.util.Collections.singletonMap("error", "Error editing comment.");
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.PUT, produces = "application/json")
+    public
+    @ResponseBody
+    Map<String, String> put(@RequestBody CommentTo comment, HttpSession session, HttpServletResponse response) {
+
+        try {
+            CommentDao commentDao = new CommentDao();
+            comment.setUserId(WebLogin.currentLoginId(session));
+            java.text.SimpleDateFormat fmt = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            java.sql.Date now = new java.sql.Date(System.currentTimeMillis());
+            comment.setDate(fmt.format(now));
+
+            EntryTo et = EntryDAO.viewSingle(comment.getEid(), false);
+
+            if (!et.getAllowComments()) {
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                return java.util.Collections.singletonMap("error", "Comments blocked by owner of this blog entry.");
+            }
+
+            boolean result = commentDao.add(comment);
+
+            try {
+                User pf = new User(et.getUserName());
+
+                if (et.getEmailComments()) {
+                    QueueMail mail = new QueueMail();
+                    mail.setFromAddress("donotreply@justjournal.com");
+                    mail.setToAddress(pf.getEmailAddress());
+                    mail.setBody(comment.getUserName() + " said: \n"
+                            + "Subject: " + comment.getSubject() + "\n"
+                            + comment.getBody() + "\n\nIn response to:\n"
+                            + "http://www.justjournal.com/comment/index.jsp?id="
+                            + comment.getEid() + "\n\n"
+                            + "From here, you can:\n\n"
+                            + "View all comments to this entry: "
+                            + "http://www.justjournal.com/comment/index.jsp?id="
+                            + comment.getEid() + "\n\n"
+                            + "Reply at the webpage: http://www.justjournal.com/comment/add.jsp?id="
+                            + comment.getEid()
+                            + "\n\n-- JustJournal.com\n\n"
+                            + "(If you would prefer not to get these updates," +
+                            " edit the entry to disable comment notifications.)\n");
+
+                    mail.setSubject("JustJournal: Comment Notification");
+                    mail.setPurpose("comment_notify");
+                    mail.send();
+                }
+            } catch (Exception e) {
+                log.error("Could not send mail: " + e.getMessage());
+            }
+            if (!result) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                return java.util.Collections.singletonMap("error", "Error adding comment.");
+            }
+            return java.util.Collections.singletonMap("id", Integer.toString(comment.getId()));
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return java.util.Collections.singletonMap("error", "Error adding comment");
         }
     }
 

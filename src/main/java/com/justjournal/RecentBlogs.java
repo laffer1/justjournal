@@ -41,7 +41,7 @@ import java.util.Date;
  * @author Lucas Holt
  * @version $Id: RecentBlogs.java,v 1.15 2011/07/01 11:54:31 laffer1 Exp $
  */
-public class RecentBlogs extends JustJournalBaseServlet {
+final public class RecentBlogs extends JustJournalBaseServlet {
     private static final Logger log = Logger.getLogger(RecentBlogs.class);
 
     protected void execute(HttpServletRequest request, HttpServletResponse response, HttpSession session, StringBuffer sb) {
