@@ -51,13 +51,12 @@ final public class FriendController {
 
     /**
      * @param id       username
-     * @param session  http session
      * @param response http response
      * @return List of usernames as strings
      */
     @RequestMapping("/api/friend/{id}")
     @ResponseBody
-    public Collection<String> getById(@PathVariable String id, HttpSession session, HttpServletResponse response) {
+    public Collection<String> getById(@PathVariable String id, HttpServletResponse response) {
         try {
             return UserDao.friends(id);
         } catch (Exception e) {
