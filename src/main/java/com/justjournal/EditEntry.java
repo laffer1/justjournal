@@ -26,28 +26,26 @@
 
 package com.justjournal;
 
+import com.justjournal.core.Settings;
+import com.justjournal.db.EntryDAO;
+import com.justjournal.db.EntryTo;
+import com.justjournal.utility.HTMLUtil;
+import com.justjournal.utility.Spelling;
+import com.justjournal.utility.StringUtil;
 import org.apache.log4j.Logger;
 
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletOutputStream;
-
-import com.justjournal.core.Settings;
-import com.justjournal.utility.HTMLUtil;
-import com.justjournal.utility.StringUtil;
-import com.justjournal.utility.Spelling;
-import com.justjournal.db.EntryTo;
-import com.justjournal.db.EntryDAO;
-
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Lucas Holt
@@ -410,19 +408,19 @@ public class EditEntry extends HttpServlet {
                 et.setMoodId(mood);
 
                 // the check box says disable auto format
-                if ((aformat != null && aformat.equals("checked")))
+                if ((aformat.equals("checked")))
                     et.setAutoFormat(true);
                 else
                     et.setAutoFormat(false);
 
                 // disable comments
-                if ((allowcomment != null && allowcomment.equals("checked")))
+                if ((allowcomment.equals("checked")))
                     et.setAllowComments(true);
                 else
                     et.setAllowComments(false);
 
                 // disable email notifications
-                if ((emailcomment != null && emailcomment.equals("checked")))
+                if ((emailcomment.equals("checked")))
                     et.setEmailComments(true);
                 else
                     et.setEmailComments(false);
@@ -486,7 +484,7 @@ public class EditEntry extends HttpServlet {
                 // add tags
                 if (!blnError) {
                     log.debug("Add Tags");
-                    if (tags != null && tags.length() > 0) {
+                    if (tags.length() > 0) {
                         ArrayList<String> t = new ArrayList<String>();
                         StringTokenizer st = new StringTokenizer(tags, " :,;");
                         while (st.hasMoreTokens()) {
