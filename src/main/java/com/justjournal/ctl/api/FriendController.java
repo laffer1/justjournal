@@ -27,9 +27,9 @@
 package com.justjournal.ctl.api;
 
 import com.justjournal.WebLogin;
+import com.justjournal.db.FriendTo;
+import com.justjournal.db.FriendsDao;
 import com.justjournal.db.UserDao;
-import com.justjournal.db.UserLinkDao;
-import com.justjournal.db.UserLinkTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -63,5 +63,27 @@ final public class FriendController {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return null;
         }
+    }
+
+
+    @RequestMapping(method = RequestMethod.DELETE)
+    public
+    @ResponseBody
+    Map<String, String> delete(@RequestBody FriendTo friend, HttpSession session, HttpServletResponse response) throws Exception {
+
+
+        if (!WebLogin.isAuthenticated(session)) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
+        }
+
+        friend.setOwnerId(WebLogin.currentLoginId(session));
+
+        if (FriendsDao.delete(friend)) {
+            return java.util.Collections.singletonMap("status", "success");
+        }
+
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        return java.util.Collections.singletonMap("error", "Error deleting friend");
     }
 }
