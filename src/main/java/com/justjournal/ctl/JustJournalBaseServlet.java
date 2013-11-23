@@ -32,7 +32,7 @@ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
 
-package com.justjournal;
+package com.justjournal.ctl;
 
 import com.justjournal.core.Settings;
 import com.justjournal.utility.ETag;

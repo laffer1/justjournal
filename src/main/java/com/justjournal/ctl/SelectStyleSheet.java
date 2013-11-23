@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2003-2009 Lucas Holt
+Copyright (c) 2005, Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -32,8 +32,9 @@ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
 
-package com.justjournal;
+package com.justjournal.ctl;
 
+import com.justjournal.WebError;
 import com.justjournal.db.SQLHelper;
 
 import javax.servlet.http.HttpServlet;
@@ -46,58 +47,79 @@ import org.apache.log4j.Logger;
 
 /**
  * @author Lucas Holt
- * @version $Id: UpdateStyleSheetOverride.java,v 1.8 2009/06/01 22:57:42 laffer1 Exp $
+ *         User: laffer1
+ *         Date: Aug 25, 2003
+ *         Time: 9:22:21 PM
+ * @version $Id: SelectStyleSheet.java,v 1.8 2009/06/01 22:57:42 laffer1 Exp $
  */
-public final class UpdateStyleSheetOverride
-        extends HttpServlet {
+public final class SelectStyleSheet extends HttpServlet {
 
-    private static final Logger log = Logger.getLogger(UpdateStyleSheetOverride.class);
+    private static final Logger log = Logger.getLogger(SelectStyleSheet.class);
 
-    protected void processRequest(final HttpServletRequest request,
-                                  final HttpServletResponse response)
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws java.io.IOException {
         // initial error condition is false
         boolean error = false;
 
         // Will be using session data, must initialize session, will not affect any current session
-        final HttpSession session = request.getSession(true);
+        HttpSession session = request.getSession(true);
 
+        // Retreive username
+        //String username = "";
+        //username = (String) session.getAttribute( "auth.user" );
+        Integer userIDasi;
+        synchronized(session) {
         // Retreive user id
-        Integer userIDasi = (Integer) session.getAttribute("auth.uid");
-
+            userIDasi = (Integer) session.getAttribute("auth.uid");
+        }
         // convert Integer to int type
         int userID = 0;
         if (userIDasi != null) {
-            userID = userIDasi;
+            userID = userIDasi.intValue();
         }
 
         String styleSheet = request.getParameter("css");
 
         // Send HTML type in http stream
         response.setContentType("text/html");
-        final PrintWriter out = response.getWriter();
+        PrintWriter out = response.getWriter();
 
         if (styleSheet != null) {
+            Integer cssId = new Integer(1);
+
             try {
-                String sqlStatement = "Update user_style SET doc='" + styleSheet + "' where id ='" + userID + "' LIMIT 1;";
-                int rowsAffected = SQLHelper.executeNonQuery(sqlStatement);
-                if (rowsAffected < 1) {
-                    error = true;
-                } else {
-                    out.println("Stylesheet doc has been imported.");
-                }
+                cssId = new Integer(styleSheet);
             } catch (Exception e) {
-                // record was not updated
                 error = true;
-                log.error(e.getMessage());
             }
+
+            if (!error) {
+                try {
+                    String sqlStatement = "Update user_pref SET style='" + cssId + "' where id ='" + userID + "';";
+                    int rowsAffected = SQLHelper.executeNonQuery(sqlStatement);
+                    if (rowsAffected < 1) {
+                        error = true;
+                    } else {
+                        out.println("Style has been changed.");
+                    }
+                } catch (Exception e) {
+                    // record was not updated
+                    error = true;
+                    log.error(e.getMessage());
+                }
+            }
+
+        } else {
+            WebError.Display("Error", "Stylesheet must be specified.", out);
         }
 
-        if (error) {
+
+        if (error)
             WebError.Display("Error", "Unknown error has occured.", out);
-        }
 
         out.flush();
+
+        return;
     }
 
     // processes get requests
@@ -114,6 +136,6 @@ public final class UpdateStyleSheetOverride
 
     // required function for servlets
     public String getServletInfo() {
-        return "Update the style sheet override";
+        return new String();
     }
 }

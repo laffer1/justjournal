@@ -32,8 +32,11 @@ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
 
-package com.justjournal;
+package com.justjournal.ctl;
 
+import com.justjournal.User;
+import com.justjournal.WebError;
+import com.justjournal.WebLogin;
 import com.justjournal.db.*;
 import com.justjournal.utility.StringUtil;
 

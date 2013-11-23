@@ -1,6 +1,5 @@
 package com.justjournal.ctl;
 
-import com.justjournal.JustJournalBaseServlet;
 import com.justjournal.User;
 import com.justjournal.WebError;
 import com.justjournal.utility.FileIO;

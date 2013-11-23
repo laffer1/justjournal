@@ -34,13 +34,11 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.ctl;
 
-import com.justjournal.JustJournalBaseServlet;
 import com.justjournal.User;
 import com.justjournal.WebError;
 import com.justjournal.db.SQLHelper;
 import com.justjournal.utility.FileIO;
 import com.justjournal.utility.StringUtil;
-import org.apache.log4j.Category;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;

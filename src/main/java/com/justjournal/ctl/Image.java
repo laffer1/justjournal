@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
-package com.justjournal;
+package com.justjournal.ctl;
 
 import com.justjournal.utility.ServletUtilities;
 import org.apache.log4j.Logger;

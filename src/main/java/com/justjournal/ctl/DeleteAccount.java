@@ -1,9 +1,7 @@
 package com.justjournal.ctl;
 
-import com.justjournal.JustJournalBaseServlet;
 import com.justjournal.WebError;
 import com.justjournal.db.SQLHelper;
-import org.apache.log4j.Category;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;

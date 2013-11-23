@@ -73,14 +73,14 @@
     <servlet>
         <display-name>Users Viewer</display-name>
         <servlet-name>users</servlet-name>
-        <servlet-class>com.justjournal.Users</servlet-class>
+        <servlet-class>com.justjournal.ctl.Users</servlet-class>
         <load-on-startup>3</load-on-startup>
     </servlet>
 
     <servlet>
         <display-name>Image Viewer</display-name>
         <servlet-name>image</servlet-name>
-        <servlet-class>com.justjournal.Image</servlet-class>
+        <servlet-class>com.justjournal.ctl.Image</servlet-class>
         <load-on-startup>3</load-on-startup>
     </servlet>
 
@@ -101,21 +101,21 @@
     <servlet>
         <display-name>Journal Update</display-name>
         <servlet-name>updateJournal</servlet-name>
-        <servlet-class>com.justjournal.UpdateJournal</servlet-class>
+        <servlet-class>com.justjournal.ctl.UpdateJournal</servlet-class>
         <load-on-startup>3</load-on-startup>
     </servlet>
 
     <servlet>
         <display-name>Edit Entry</display-name>
         <servlet-name>EditEntry</servlet-name>
-        <servlet-class>com.justjournal.EditEntry</servlet-class>
+        <servlet-class>com.justjournal.ctl.EditEntry</servlet-class>
         <load-on-startup>3</load-on-startup>
     </servlet>
 
     <servlet>
         <display-name>JJ Login</display-name>
         <servlet-name>loginAccount</servlet-name>
-        <servlet-class>com.justjournal.LoginAccount</servlet-class>
+        <servlet-class>com.justjournal.ctl.LoginAccount</servlet-class>
         <load-on-startup>3</load-on-startup>
     </servlet>
 
@@ -129,21 +129,21 @@
     <servlet>
         <display-name>Select Style Sheet Base Template</display-name>
         <servlet-name>SelectStyleSheet</servlet-name>
-        <servlet-class>com.justjournal.SelectStyleSheet</servlet-class>
+        <servlet-class>com.justjournal.ctl.SelectStyleSheet</servlet-class>
         <load-on-startup>3</load-on-startup>
     </servlet>
 
     <servlet>
         <display-name>Update Style Sheet Override</display-name>
         <servlet-name>UpdateStyleSheetOverride</servlet-name>
-        <servlet-class>com.justjournal.UpdateStyleSheetOverride</servlet-class>
+        <servlet-class>com.justjournal.ctl.UpdateStyleSheetOverride</servlet-class>
         <load-on-startup>3</load-on-startup>
     </servlet>
 
     <servlet>
         <display-name>Photo Album Image</display-name>
         <servlet-name>AlbumImage</servlet-name>
-        <servlet-class>com.justjournal.AlbumImage</servlet-class>
+        <servlet-class>com.justjournal.ctl.AlbumImage</servlet-class>
         <load-on-startup>3</load-on-startup>
     </servlet>
 

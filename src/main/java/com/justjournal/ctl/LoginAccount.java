@@ -24,8 +24,11 @@
  * SUCH DAMAGE.
  */
 
-package com.justjournal;
+package com.justjournal.ctl;
 
+import com.justjournal.User;
+import com.justjournal.WebError;
+import com.justjournal.WebLogin;
 import com.justjournal.db.EntryDAO;
 import com.justjournal.db.EntryTo;
 import com.justjournal.utility.FileIO;
