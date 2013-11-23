@@ -27,9 +27,8 @@
 package com.justjournal.ctl.api;
 
 import com.justjournal.WebLogin;
-import com.justjournal.db.FriendTo;
-import com.justjournal.db.FriendsDao;
-import com.justjournal.db.UserDao;
+import com.justjournal.db.*;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,17 +39,19 @@ import java.util.Map;
 
 /**
  * Manage Friends
+ *
  * @author Lucas Holt
  */
 @Controller
 @RequestMapping("/api/friend")
 final public class FriendController {
+    private static final Logger log = Logger.getLogger(FriendController.class);
 
     // TODO: refactor to return user objects?
+
     /**
-     *
-     * @param id username
-     * @param session http session
+     * @param id       username
+     * @param session  http session
      * @param response http response
      * @return List of usernames as strings
      */
@@ -63,6 +64,33 @@ final public class FriendController {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return null;
         }
+    }
+
+    @RequestMapping(method = RequestMethod.POST, produces = "application/json")
+    @ResponseBody
+    public Map<String, String> post(@RequestParam String friend, HttpSession session, HttpServletResponse response) {
+        if (!WebLogin.isAuthenticated(session)) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
+        }
+
+        try {
+            UserTo friendUser = UserDao.view(friend);
+
+            if (friendUser == null)
+                return java.util.Collections.singletonMap("error", "Could not find friend's username");
+
+            String sqlStatement = "Insert INTO friends (id, friendid) values('" + WebLogin.currentLoginId(session) + "','" + friendUser.getId() + "');";
+            int rowsAffected = SQLHelper.executeNonQuery(sqlStatement);
+            if (rowsAffected == 1)
+                return java.util.Collections.singletonMap("status", "success");
+
+            return java.util.Collections.singletonMap("error", "Unable to add friend");
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return java.util.Collections.singletonMap("error", "Could not find friend's username");
+        }
+
     }
 
 
