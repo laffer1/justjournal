@@ -28,6 +28,7 @@ package com.justjournal.ctl.api;
 
 import com.justjournal.User;
 import com.justjournal.WebLogin;
+import com.justjournal.db.SQLHelper;
 import com.justjournal.db.UserDao;
 import com.justjournal.db.UserTo;
 import org.springframework.stereotype.Controller;
@@ -83,12 +84,47 @@ final public class AccountController {
 
             if (!result) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                return java.util.Collections.singletonMap("error", "Could not edit the comment.");
+                return java.util.Collections.singletonMap("error", "Could not edit account.");
             }
             return java.util.Collections.singletonMap("id", Integer.toString(user.getId()));
         }
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        return java.util.Collections.singletonMap("error", "Could not edit the comment.");
+        return java.util.Collections.singletonMap("error", "Could not edit account.");
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE)
+    public Map<String, String> delete(HttpServletResponse response, HttpSession session) {
+        if (!WebLogin.isAuthenticated(session)) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
+        }
+
+        int userID = WebLogin.currentLoginId(session);
+
+        try {
+            SQLHelper.executeNonQuery("DELETE FROM comments WHERE uid=" + userID + ";");
+            SQLHelper.executeNonQuery("DELETE FROM entry WHERE uid=" + userID + ";");
+            SQLHelper.executeNonQuery("DELETE FROM favorites WHERE owner=" + userID + ";");
+            SQLHelper.executeNonQuery("DELETE FROM friends WHERE id=" + userID + ";");
+            SQLHelper.executeNonQuery("DELETE FROM friends_lj WHERE id=" + userID + ";");
+            SQLHelper.executeNonQuery("DELETE FROM rss_subscriptions WHERE id=" + userID + ";");
+            SQLHelper.executeNonQuery("DELETE FROM user WHERE id=" + userID + ";");
+            SQLHelper.executeNonQuery("DELETE FROM user_bio WHERE id=" + userID + ";");
+            SQLHelper.executeNonQuery("DELETE FROM user_contact WHERE id=" + userID + ";");
+            SQLHelper.executeNonQuery("DELETE FROM user_files WHERE ownerid=" + userID + ";");
+            SQLHelper.executeNonQuery("DELETE FROM user_images WHERE owner=" + userID + ";");
+            SQLHelper.executeNonQuery("DELETE FROM user_images_album WHERE owner=" + userID + ";");
+            SQLHelper.executeNonQuery("DELETE FROM user_images_album_map WHERE owner=" + userID + ";");
+            SQLHelper.executeNonQuery("DELETE FROM user_link WHERE id=" + userID + ";");
+            SQLHelper.executeNonQuery("DELETE FROM user_location WHERE id=" + userID + ";");
+            SQLHelper.executeNonQuery("DELETE FROM user_pic WHERE id=" + userID + ";");
+            SQLHelper.executeNonQuery("DELETE FROM user_pref WHERE id=" + userID + ";");
+            SQLHelper.executeNonQuery("DELETE FROM user_style WHERE id=" + userID + ";");
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            return java.util.Collections.singletonMap("error", "Error deleting account");
+        }
+        return java.util.Collections.singletonMap("status", "Account Deleted");
     }
 
     @RequestMapping(method = RequestMethod.POST, produces = "application/json")
@@ -116,8 +152,7 @@ final public class AccountController {
 
             if (user.isPrivateJournal()) {
                 if (
-                        !WebLogin.isAuthenticated(session) || user.getUserName().equals(WebLogin.currentLoginName(session)))
-                {
+                        !WebLogin.isAuthenticated(session) || user.getUserName().equals(WebLogin.currentLoginName(session))) {
                     response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                     return null;
                 }
