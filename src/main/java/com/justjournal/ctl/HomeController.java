@@ -35,12 +35,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import javax.servlet.http.HttpSession;
 
 /**
+ * Main homepage / index
  * @author Lucas Holt
  */
 @Controller
-public class HomeController {
+@RequestMapping("/")
+final public class HomeController {
 
-    @RequestMapping(value = "/", method= RequestMethod.GET)
+    @RequestMapping(method= RequestMethod.GET)
     public String home(Model model, HttpSession session) {
         model.addAttribute("username", WebLogin.currentLoginName(session));
         return "index";

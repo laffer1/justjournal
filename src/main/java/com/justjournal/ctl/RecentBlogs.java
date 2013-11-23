@@ -23,15 +23,18 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
-package com.justjournal;
+package com.justjournal.ctl;
 
+import com.justjournal.core.Settings;
 import com.justjournal.db.EntryDAO;
 import com.justjournal.rss.Rss;
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
@@ -41,10 +44,16 @@ import java.util.Date;
  * @author Lucas Holt
  * @version $Id: RecentBlogs.java,v 1.15 2011/07/01 11:54:31 laffer1 Exp $
  */
-final public class RecentBlogs extends JustJournalBaseServlet {
+@Controller
+@RequestMapping("/RecentBlogs")
+final public class RecentBlogs {
     private static final Logger log = Logger.getLogger(RecentBlogs.class);
 
-    protected void execute(HttpServletRequest request, HttpServletResponse response, HttpSession session, StringBuffer sb) {
+    @RequestMapping(method= RequestMethod.GET, produces = "application/rss+xml")
+    public @ResponseBody
+    String get(HttpServletResponse response) {
+        Settings set = new Settings();
+
         response.setContentType("application/rss+xml;charset=UTF-8");
         response.setDateHeader("Expires", System.currentTimeMillis() + 1000 * 60);
         response.setHeader("Cache-Control", "max-age=60, private, proxy-revalidate");
@@ -75,19 +84,20 @@ final public class RecentBlogs extends JustJournalBaseServlet {
             else
                 response.setDateHeader("Last-Modified", System.currentTimeMillis());
 
-            sb.append(rss.toXml());
+            return rss.toXml();
         } catch (Exception e) {
             // oops we goofed somewhere.  Its not in the original spec
             // how to handle error conditions with rss.
             // html back isn't good, but what do we do?
             log.debug(e);
             try {
+
                 response.sendError(500);
             } catch (IOException e1) {
                 log.debug(e1);
             }
-            //WebError.Display("RSS ERROR", "Unable to retrieve RSS content.", sb);
         }
 
+        return "";
     }
 }
