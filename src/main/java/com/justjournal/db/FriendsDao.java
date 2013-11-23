@@ -36,9 +36,9 @@ package com.justjournal.db;
 
 import org.apache.log4j.Logger;
 
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.sql.ResultSet;
 
 
 /**
@@ -74,5 +74,26 @@ public final class FriendsDao {
         }
 
         return friends;
+    }
+
+    public static boolean delete(FriendTo friend) {
+        if (friend == null)
+            throw new IllegalArgumentException("friend is invalid");
+        if (friend.getOwnerId() < 1 || friend.getUserName() == null || friend.getUserName().isEmpty())
+            throw new IllegalArgumentException("owner id not found");
+
+        UserTo friendUser = UserDao.view(friend.getUserName());
+        if (friendUser == null)
+            return false;
+
+        try {
+            String sqlStatement = "Delete FROM friends where id ='" + friend.getOwnerId() + "' and friendid='" + friendUser.getId() + "' LIMIT 1;";
+            int rowsAffected = SQLHelper.executeNonQuery(sqlStatement);
+            if (rowsAffected == 1)
+                return true;
+        } catch (Exception e) {
+            log.error(e);
+        }
+        return false;
     }
 }
