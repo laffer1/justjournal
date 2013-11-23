@@ -34,16 +34,18 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.ctl;
 
-import com.justjournal.JustJournalBaseServlet;
 import com.justjournal.db.TrackbackDao;
 import com.justjournal.db.TrackbackTo;
 import com.justjournal.db.TrackbackType;
 import com.justjournal.utility.ServletUtilities;
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 /**
  * Trackback and Post-IT Pings inbound
@@ -55,7 +57,9 @@ import javax.servlet.http.HttpSession;
  *          Date: Aug 10, 2006
  *          Time: 8:25:03 PM
  */
-public class TrackbackPing extends JustJournalBaseServlet {
+@Controller
+@RequestMapping("/trackback")
+final public class TrackbackPing {
 
     private static final Logger log = Logger.getLogger(TrackbackPing.class);
 
@@ -68,9 +72,11 @@ public class TrackbackPing extends JustJournalBaseServlet {
     private static final String MESSAGE = "<message>";
     private static final String END_MESSAGE = "</message>";
 
+    @RequestMapping(method = RequestMethod.GET, produces = "text/xml")
+    public @ResponseBody
+    String get(HttpServletRequest request, HttpServletResponse response) {
+        StringBuilder sb = new StringBuilder();
 
-    protected void execute(HttpServletRequest request, HttpServletResponse response, HttpSession session, StringBuffer sb) {
-        log.debug("Begin TrackbackPing Request");
         try {
             response.setContentType("text/xml; charset=utf-8");
             Boolean istrackback = true;
@@ -147,5 +153,7 @@ public class TrackbackPing extends JustJournalBaseServlet {
 
             response.setStatus(500);
         }
+
+        return sb.toString();
     }
 }

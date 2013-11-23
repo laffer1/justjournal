@@ -325,7 +325,7 @@ public class MetaWeblog {
             s.put("faultString", "User authentication failed: " + username);
 
         } else {
-            return !blnError; /* ie true per spec */
+            return true; /* ie true per spec */
         }
 
         return s;
@@ -395,7 +395,7 @@ public class MetaWeblog {
             s.put("faultString", "User authentication failed: " + username);
 
         } else {
-            return !blnError; /* ie true per spec */
+            return true; /* ie true per spec */
         }
 
         return s;

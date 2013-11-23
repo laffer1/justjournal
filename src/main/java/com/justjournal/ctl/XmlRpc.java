@@ -46,7 +46,7 @@ import javax.servlet.ServletException;
  *
  * @author Lucas Holt
  */
-public class XmlRpc extends XmlRpcServlet {
+final public class XmlRpc extends XmlRpcServlet {
     public void init(ServletConfig servletConfig) throws ServletException {
         super.init(servletConfig);
 

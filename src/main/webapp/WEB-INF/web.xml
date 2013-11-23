@@ -70,23 +70,6 @@
         <url-pattern>*.html</url-pattern>
     </servlet-mapping>
 
-     <!--
-       <context-param>
-           <param-name>contextConfigLocation</param-name>
-           <param-value>
-               /WEB-INF/dispatcher-servlet.xml
-           </param-value>
-       </context-param>
-      -->
-    <!--
-    <context-param>
-        <param-name>contextConfigLocation</param-name>
-        <param-value>
-            /WEB-INF/spring/spring-security.xml
-        </param-value>
-    </context-param>
-    -->
-
     <servlet>
         <display-name>Users Viewer</display-name>
         <servlet-name>users</servlet-name>
@@ -130,14 +113,6 @@
     </servlet>
 
     <servlet>
-        <display-name>RSD</display-name>
-        <servlet-name>rsd</servlet-name>
-        <servlet-class>com.justjournal.ctl.Rsd</servlet-class>
-        <load-on-startup>3</load-on-startup>
-    </servlet>
-
-
-    <servlet>
         <display-name>JJ Login</display-name>
         <servlet-name>loginAccount</servlet-name>
         <servlet-class>com.justjournal.LoginAccount</servlet-class>
@@ -162,13 +137,6 @@
         <display-name>Update Style Sheet Override</display-name>
         <servlet-name>UpdateStyleSheetOverride</servlet-name>
         <servlet-class>com.justjournal.UpdateStyleSheetOverride</servlet-class>
-        <load-on-startup>3</load-on-startup>
-    </servlet>
-
-    <servlet>
-        <display-name>Recent JJ User Blog Posts</display-name>
-        <servlet-name>RecentBlogs</servlet-name>
-        <servlet-class>com.justjournal.RecentBlogs</servlet-class>
         <load-on-startup>3</load-on-startup>
     </servlet>
 
@@ -206,11 +174,6 @@
         <servlet-class>com.justjournal.ctl.Biography</servlet-class>
         <load-on-startup>3</load-on-startup>
     </servlet>
-
-    <servlet-mapping>
-        <servlet-name>rsd</servlet-name>
-        <url-pattern>/rsd</url-pattern>
-    </servlet-mapping>
 
     <servlet-mapping>
         <servlet-name>users</servlet-name>
@@ -255,11 +218,6 @@
     <servlet-mapping>
         <servlet-name>SelectStyleSheet</servlet-name>
         <url-pattern>/SelectStyleSheet</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>RecentBlogs</servlet-name>
-        <url-pattern>/RecentBlogs</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>

@@ -1,30 +1,31 @@
 package com.justjournal.ctl;
 
-import com.justjournal.JustJournalBaseServlet;
 import com.justjournal.User;
-import org.apache.log4j.Category;
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 /**
  * An implementation of Really Simple Discovery (RSD).
  * <p/>
- * A list of points that blogging clients can use to post entries by "autodiscovery".  This is used by blog clients
- * such as Microsoft's Live Writer.
+ * A list of points that blogging clients can use to post entries by "autodiscovery".  This is used by blog clients such
+ * as Microsoft's Live Writer.
  * <p/>
  * http://cyber.law.harvard.edu/blogs/gems/tech/rsd.html
  *
  * @author Lucas Holt
  * @version $Id: Rsd.java,v 1.5 2009/05/16 03:13:12 laffer1 Exp $
  *          <p/>
- *          User: laffer1
- *          Date: Apr 26, 2008
- *          Time: 10:22:20 AM
+ *          User: laffer1 Date: Apr 26, 2008 Time: 10:22:20 AM
  */
-public class Rsd extends JustJournalBaseServlet {
+@Controller
+@RequestMapping("/rsd")
+final public class Rsd {
 
     private static final Logger log = Logger.getLogger(Rsd.class.getName());
     private static final String XML_HEADER =
@@ -34,7 +35,11 @@ public class Rsd extends JustJournalBaseServlet {
     private static final String RSD_FOOTER =
             "</rsd>\n";
 
-    protected void execute(HttpServletRequest request, HttpServletResponse response, HttpSession session, StringBuffer sb) {
+    @RequestMapping(method = RequestMethod.GET, produces = "application/rsd+xml")
+    public
+    @ResponseBody
+    String get(HttpServletRequest request, HttpServletResponse response) {
+        StringBuilder sb = new StringBuilder();
         try {
             response.setContentType("application/rsd+xml; charset=utf-8");
 
@@ -66,12 +71,15 @@ public class Rsd extends JustJournalBaseServlet {
             sb.append(RSD_FOOTER);
 
         } catch (Exception e) {
+            log.error(e);
             sb.delete(0, sb.length() - 1);
             sb.append(XML_HEADER);
             sb.append(RSD_HEADER);
             sb.append(RSD_FOOTER);
             response.setStatus(500);
         }
+
+        return sb.toString();
     }
 
 }
