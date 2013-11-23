@@ -29,6 +29,7 @@ package com.justjournal.ctl.api;
 import com.justjournal.core.Statistics;
 import com.justjournal.db.CommentDao;
 import com.justjournal.db.EntryDAO;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,11 +39,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletResponse;
 
 /**
+ * Generate Global and per user statistics on blogging entries and comments.
  * @author Lucas Holt
  */
 @Controller
 @RequestMapping("/api/statistics")
-public class StatisticsController {
+final public class StatisticsController {
+    private static final Logger log = Logger.getLogger(StatisticsController.class);
 
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public
@@ -57,6 +60,7 @@ public class StatisticsController {
         try {
             return new Stats(id);
         } catch (Exception e) {
+            log.warn("Statistics User not found " + id);
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return null;
         }
