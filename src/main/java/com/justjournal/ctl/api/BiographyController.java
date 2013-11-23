@@ -26,8 +26,68 @@
 
 package com.justjournal.ctl.api;
 
+import com.justjournal.WebLogin;
+import com.justjournal.db.*;
+import com.justjournal.utility.StringUtil;
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.util.Map;
+
 /**
  * @author Lucas Holt
  */
-public class BiographyController {
+@Controller
+@RequestMapping("/api/biography")
+final public class BiographyController {
+    private static final Logger log = Logger.getLogger(BiographyController.class);
+
+    @RequestMapping(method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    BioTo get(@RequestParam String username, HttpServletResponse response) {
+        UserTo user = UserDao.view(username);
+        if (user == null) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return null;
+        }
+        return BioDao.view(user.getId());
+    }
+
+    @RequestMapping(method = RequestMethod.POST, produces = "application/json")
+    public
+    @ResponseBody
+    Map<String, String> post(@RequestBody String bio, HttpServletResponse response, HttpSession session) {
+
+        int userID = WebLogin.currentLoginId(session);
+
+        if (!StringUtil.lengthCheck(bio, 5, 150)) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return java.util.Collections.singletonMap("error", "Biography must be > 5 characters");
+        }
+
+        try {
+
+            if (userID > 0) {
+                String strSQL = "UPDATE user_bio SET content='" +
+                        StringUtil.replace(bio, '\'', "\\\'") + "' WHERE id='" + userID + "' LIMIT 1;";
+                if (SQLHelper.executeNonQuery(strSQL) == 1)
+                    return java.util.Collections.singletonMap("status", "success");
+
+            } else {
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                return java.util.Collections.singletonMap("error", "Authentication Error");
+
+            }
+        } catch (Exception e3) {
+            log.error(e3);
+        }
+
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        return java.util.Collections.singletonMap("error", "Unable to save biography");
+
+    }
+
 }
