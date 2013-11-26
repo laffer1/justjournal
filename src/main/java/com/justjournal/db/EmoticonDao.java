@@ -34,6 +34,8 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
+ import com.sun.istack.internal.NotNull;
+
  import java.sql.ResultSet;
 
 
@@ -45,7 +47,8 @@ package com.justjournal.db;
  */
 public final class EmoticonDao {
 
-    public static EmoticonTo view(int themeId, int moodId) {
+    public @NotNull
+    static EmoticonTo view(int themeId, int moodId) {
         int id = moodId;  // start at mood id but change as necessary
 
         String sqlStatement;

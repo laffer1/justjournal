@@ -37,6 +37,7 @@ package com.justjournal.db;
 import com.justjournal.model.Entry;
 import com.justjournal.model.Friends;
 import com.justjournal.utility.StringUtil;
+import com.sun.istack.internal.NotNull;
 import org.apache.cayenne.Cayenne;
 import org.apache.cayenne.CayenneRuntimeException;
 import org.apache.cayenne.ObjectContext;
@@ -759,7 +760,7 @@ public final class EntryDAO {
      * @return Entries from 15 different users (most recent)
      */
     @SuppressWarnings("unchecked")
-    public static Collection<EntryTo> viewRecentUniqueUsers() {
+    public @NotNull static Collection<EntryTo> viewRecentUniqueUsers() {
 
         final int SIZE = 15;
         final ArrayList<EntryTo> entries = new ArrayList<EntryTo>(SIZE);
@@ -810,7 +811,7 @@ public final class EntryDAO {
      * @param entryId The unique identifier for an entry
      * @return An arraylist of tag names
      */
-    public static ArrayList<String> getTags(int entryId) {
+    public @NotNull static ArrayList<String> getTags(int entryId) {
         final ArrayList<String> tags = new ArrayList<String>();
 
         String sqlStatement;
@@ -974,7 +975,8 @@ public final class EntryDAO {
      * @param userId A userid to lookup
      * @return a list of tags
      */
-    public static ArrayList<Tag> getUserTags(int userId) {
+    public @NotNull
+    static ArrayList<Tag> getUserTags(int userId) {
         String sqlStatement;
         ResultSet rs = null;
         ResultSet rs2;

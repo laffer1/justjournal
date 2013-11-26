@@ -166,10 +166,8 @@ public final class ContentTo {
         if (uriId != contentTo.uriId) return false;
         if (userId != contentTo.userId) return false;
         if (!Arrays.equals(data, contentTo.data)) return false;
-        if (metaData != null ? !metaData.equals(contentTo.metaData) : contentTo.metaData != null) return false;
-        if (mimeType != null ? !mimeType.equals(contentTo.mimeType) : contentTo.mimeType != null) return false;
+        return !(metaData != null ? !metaData.equals(contentTo.metaData) : contentTo.metaData != null) && !(mimeType != null ? !mimeType.equals(contentTo.mimeType) : contentTo.mimeType != null);
 
-        return true;
     }
 
     public final int hashCode() {

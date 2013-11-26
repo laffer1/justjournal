@@ -34,6 +34,8 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.utility;
 
+import com.sun.istack.internal.NotNull;
+
 import java.io.*;
 
 /**
@@ -42,7 +44,8 @@ import java.io.*;
  */
 public final class FileIO {
 
-    public static String ReadTextFile(String FilePath)
+    public @NotNull
+    static String ReadTextFile(String FilePath)
             throws IOException {
         int myC;
         StringWriter myInput = new StringWriter();

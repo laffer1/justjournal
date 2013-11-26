@@ -34,6 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
+import com.sun.istack.internal.NotNull;
 import org.apache.cayenne.Cayenne;
 import org.apache.cayenne.CayenneRuntimeException;
 import org.apache.cayenne.ObjectContext;
@@ -92,7 +93,8 @@ public final class BioDao {
         return false;
     }
 
-    public static BioTo view(int userId) {
+    public @NotNull
+    static BioTo view(int userId) {
         BioTo bioto = new BioTo();
 
         try {

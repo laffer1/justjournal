@@ -35,15 +35,11 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.db;
 
 /**
- * Emoticon resource data transfer object.  Basic properites
- * including the filename, height, width, mood and theme ids.
+ * Emoticon resource data transfer object.  Basic properites including the filename, height, width, mood and theme ids.
  *
  * @author Lucas Holt
  * @version 1.0
- * @since 1.0
- *        User: laffer1
- *        Date: Sep 22, 2003
- *        Time: 11:01:45 PM
+ * @since 1.0 User: laffer1 Date: Sep 22, 2003 Time: 11:01:45 PM
  */
 public final class EmoticonTo {
     private String filename;
@@ -93,7 +89,7 @@ public final class EmoticonTo {
     }
 
     public final String toString() {
-        StringBuffer output = new StringBuffer();
+        StringBuilder output = new StringBuilder();
 
         output.append("mood id: ");
         output.append(moodId);
@@ -124,13 +120,8 @@ public final class EmoticonTo {
 
         final EmoticonTo that = (EmoticonTo) o;
 
-        if (height != that.height) return false;
-        if (moodId != that.moodId) return false;
-        if (moodTheme != that.moodTheme) return false;
-        if (width != that.width) return false;
-        if (!filename.equals(that.filename)) return false;
+        return height == that.height && moodId == that.moodId && moodTheme == that.moodTheme && width == that.width && filename.equals(that.filename);
 
-        return true;
     }
 
     public final int hashCode() {

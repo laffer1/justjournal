@@ -34,6 +34,8 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
+import com.sun.istack.internal.NotNull;
+
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
@@ -46,9 +48,9 @@ public final class ContentDao {
      * Add content to the JJ CMS
      *
      * @param content Content to add
-     * @return true if no error occured.
+     * @return true if no error occurred.
      */
-    public static final boolean add(final ContentTo content) {
+    public static boolean add(final ContentTo content) {
         boolean noError = true;
         int records = 0;
 
@@ -82,7 +84,7 @@ public final class ContentDao {
      * @param content A user comment to change
      * @return true if no error occured.
      */
-    public static final boolean update(final ContentTo content) {
+    public static boolean update(final ContentTo content) {
         boolean noError = true;
 
         final String sqlStmt = "Update comments SET mimeType='" +
@@ -106,7 +108,7 @@ public final class ContentDao {
         return noError;
     }
 
-    public static final boolean delete(final int id) {
+    public static boolean delete(final int id) {
         boolean noError = true;
         final String sqlStmt = "DELETE FROM content WHERE id='" + id + " LIMIT 1;";
 
@@ -123,7 +125,7 @@ public final class ContentDao {
         return noError;
     }
 
-    public static ContentTo viewSingle(final int id) {
+    public @NotNull static ContentTo viewSingle(final int id) {
         ResultSet rs = null;
         final ContentTo content = new ContentTo();
         final String sqlStmt =
@@ -159,8 +161,9 @@ public final class ContentDao {
         return content;
     }
 
-    public static ArrayList view(final int uriId) {
-        final ArrayList contents = new ArrayList(5);  // 5 is average comments on entry?
+    public @NotNull
+    static ArrayList<ContentTo> view(final int uriId) {
+        final ArrayList<ContentTo> contents = new ArrayList<ContentTo>();
         ResultSet rs = null;
         ContentTo content;
         final String sqlStmt =

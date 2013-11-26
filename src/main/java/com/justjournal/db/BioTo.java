@@ -34,6 +34,8 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
+import com.sun.istack.internal.NotNull;
+
 import java.io.Serializable;
 
 /**
@@ -62,7 +64,8 @@ public final class BioTo implements Serializable {
         this.bio = bio;
     }
 
-    public final String toString() {
+    public @NotNull
+    final String toString() {
         StringBuffer output = new StringBuffer();
 
         output.append("user id: ");

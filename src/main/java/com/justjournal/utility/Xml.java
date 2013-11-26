@@ -34,6 +34,8 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.utility;
 
+import com.sun.istack.internal.NotNull;
+
 /**
  * XML Utilities
  * @author Lucas Holt
@@ -57,7 +59,8 @@ public final class Xml {
      * @param input dirty xml unescaped document
      * @return A string with xml friendly escaped sequences.
      */
-    public static String cleanString(final String input) {
+    public @NotNull
+    static String cleanString(final String input) {
         String work = input;
 
         // warning, if this is already correct,

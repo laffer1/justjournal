@@ -309,12 +309,10 @@ public class Settings {
 
     public static Settings getSettings(ServletContext ctx) {
         Settings set;
-        synchronized (ctx) {
-            set = (Settings) ctx.getAttribute("JustJournal_Settings");
-            if (set == null) {
-                set = new Settings();
-                ctx.setAttribute("JustJournal_Settings", set);
-            }
+        set = (Settings) ctx.getAttribute("JustJournal_Settings");
+        if (set == null) {
+            set = new Settings();
+            ctx.setAttribute("JustJournal_Settings", set);
         }
         return set;
     }

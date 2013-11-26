@@ -34,6 +34,8 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.utility;
 
+import com.sun.istack.internal.NotNull;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -56,7 +58,8 @@ public final class StringUtil {
      * @param delChar Character to remove from the string
      * @return Modified string
      */
-    public static String deleteChar(String origin, char delChar) {
+    public @NotNull
+    static String deleteChar(String origin, char delChar) {
         final int len = origin.length();
         char[] val = origin.toCharArray();
         char[] buf = new char[len];
@@ -80,7 +83,7 @@ public final class StringUtil {
      * @param str  Modified string after completion.
      * @return The new string
      */
-    public static String replace(String base, char ch, String str) {
+    public @NotNull static String replace(String base, char ch, String str) {
         return (base.indexOf(ch) < 0) ? base :
                 replace(base, String.valueOf(ch), new String[]{str});
     }
@@ -94,7 +97,7 @@ public final class StringUtil {
      * @param str   the substring
      * @return Modified string after operations.
      */
-    public static String replace(String base, String delim, String[] str) {
+    public @NotNull static String replace(String base, String delim, String[] str) {
         final int len = base.length();
         final StringBuilder result = new StringBuilder();
 
@@ -137,7 +140,7 @@ public final class StringUtil {
      * than this.  (flawed)
      *
      * @param address an email address to check
-     * @return true if the addres is valid.
+     * @return true if the address is valid.
      */
     public static boolean isEmailValid(String address) {
         final Pattern p = Pattern.compile("[A-Za-z0-9\\.\\@_\\-~#]+");

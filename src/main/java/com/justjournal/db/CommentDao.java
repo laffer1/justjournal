@@ -35,6 +35,7 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.db;
 
 import com.justjournal.utility.StringUtil;
+import com.sun.istack.internal.NotNull;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -131,7 +132,8 @@ public final class CommentDao {
         return noError;
     }
 
-    public static CommentTo viewSingle(final int commentId) {
+    public @NotNull
+    static CommentTo viewSingle(final int commentId) {
         ResultSet rs = null;
         final CommentTo comment = new CommentTo();
         final String sqlStmt =
@@ -167,7 +169,7 @@ public final class CommentDao {
         return comment;
     }
 
-    public static ArrayList<CommentTo> view(final int entryId) {
+    public @NotNull static ArrayList<CommentTo> view(final int entryId) {
         final ArrayList<CommentTo> comments = new ArrayList<CommentTo>(5);  // 5 is average comments on entry?
         ResultSet  rs = null;
         CommentTo comment;

@@ -1,5 +1,7 @@
 package com.justjournal.utility;
 
+import com.sun.istack.internal.NotNull;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -17,27 +19,28 @@ public final class DateConvert {
     private static final SimpleDateFormat df822 = new SimpleDateFormat("EEE', 'dd' 'MMM' 'yyyy' 'HH:mm:ss' 'Z", Locale.US);
     private static final SimpleDateFormat df3339 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
-    public static String encode822() {
+    public @NotNull
+    static String encode822() {
         df822.setTimeZone(TimeZone.getTimeZone("GMT"));
         return df822.format(new Date());
     }
 
-    public static String encode822(Date data) {
+    public @NotNull static String encode822(Date data) {
         df822.setTimeZone(TimeZone.getTimeZone("GMT"));
         return df822.format(data);
     }
 
-    public static String encode822(Date data, TimeZone tz) {
+    public @NotNull static String encode822(Date data, TimeZone tz) {
         df822.setTimeZone(tz);
         return df822.format(data);
     }
 
-    public static String encode3339() {
+    public @NotNull static String encode3339() {
         df3339.setTimeZone(TimeZone.getTimeZone("UTC"));
         return df3339.format(new Date());
     }
 
-    public static String encode3339(Date data) {
+    public @NotNull static String encode3339(Date data) {
         df3339.setTimeZone(TimeZone.getTimeZone("UTC"));
         return df3339.format(data);
     }
