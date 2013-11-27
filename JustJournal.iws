@@ -35,27 +35,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5430544b-ec83-4634-8b7c-ee7719fe9e3d" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/justjournal/db/UserDaoTest.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/justjournal/UserTest.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/com/justjournal/webLogin.java" afterPath="$PROJECT_DIR$/src/com/justjournal/WebLogin.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/justjournal/User.java" afterPath="$PROJECT_DIR$/src/com/justjournal/User.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/justjournal/db/UserDao.java" afterPath="$PROJECT_DIR$/src/com/justjournal/db/UserDao.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/justjournal/db/UserTo.java" afterPath="$PROJECT_DIR$/src/com/justjournal/db/UserTo.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/www/memberlist.jsp" afterPath="$PROJECT_DIR$/src/www/memberlist.jsp" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/justjournal/WebLogin.java" afterPath="$PROJECT_DIR$/src/main/java/com/justjournal/WebLogin.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/JustJournal.iws" afterPath="$PROJECT_DIR$/JustJournal.iws" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/justjournal/db/TrackbackType.java" afterPath="$PROJECT_DIR$/src/main/java/com/justjournal/db/TrackbackType.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/justjournal/db/UserDao.java" afterPath="$PROJECT_DIR$/src/main/java/com/justjournal/db/UserDao.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/justjournal/db/UserLinkDao.java" afterPath="$PROJECT_DIR$/src/main/java/com/justjournal/db/UserLinkDao.java" />
     </list>
     <ignored path="JustJournal.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored mask=".DS_Store" />
-    <file path="/Dummy.txt" changelist="5430544b-ec83-4634-8b7c-ee7719fe9e3d" time="1368651170918" ignored="false" />
-    <file path="/UserDao.java" changelist="5430544b-ec83-4634-8b7c-ee7719fe9e3d" time="1368722183391" ignored="false" />
-    <file path="/UserTest.java" changelist="5430544b-ec83-4634-8b7c-ee7719fe9e3d" time="1368651776926" ignored="false" />
-    <file path="/fragment.java" changelist="5430544b-ec83-4634-8b7c-ee7719fe9e3d" time="1361794279497" ignored="false" />
-    <file path="/UserDaoTest.java" changelist="5430544b-ec83-4634-8b7c-ee7719fe9e3d" time="1361794168045" ignored="false" />
-    <file path="$APPLICATION_HOME_DIR$/plugins/jsp/lib/jsp-impl.jar!/standardSchemas/jspxml2.xsd" changelist="5430544b-ec83-4634-8b7c-ee7719fe9e3d" time="1368651865727" ignored="false" />
-    <file path="$APPLICATION_HOME_DIR$/plugins/jsp/lib/jsp-impl.jar!/standardSchemas/jspdirectives.xsd" changelist="5430544b-ec83-4634-8b7c-ee7719fe9e3d" time="1368651865727" ignored="false" />
-    <file path="/UserTo.java" changelist="5430544b-ec83-4634-8b7c-ee7719fe9e3d" time="1368651935840" ignored="false" />
-    <file path="/UserPreferencesDAO.java" changelist="5430544b-ec83-4634-8b7c-ee7719fe9e3d" time="1368722368656" ignored="false" />
-    <file path="/User.java" changelist="5430544b-ec83-4634-8b7c-ee7719fe9e3d" time="1368722415313" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -320,32 +308,107 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="User.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/com/justjournal/User.java">
+      <file leaf-file-name="UserTo.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/db/UserTo.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="52" column="63" selection-start="1935" selection-end="1935" vertical-scroll-proportion="0.2556818">
+            <state line="48" column="19" selection-start="1853" selection-end="1853" vertical-scroll-proportion="0.0" vertical-offset="240" max-vertical-offset="3510">
+              <folding>
+                <element signature="e#0#8143#0" expanded="false" />
+                <element signature="e#2225#2226#0" expanded="false" />
+                <element signature="e#2262#2263#0" expanded="false" />
+                <element signature="e#2323#2324#0" expanded="false" />
+                <element signature="e#2375#2376#0" expanded="false" />
+                <element signature="e#2410#2411#0" expanded="false" />
+                <element signature="e#2441#2442#0" expanded="false" />
+                <element signature="e#2489#2490#0" expanded="false" />
+                <element signature="e#2529#2530#0" expanded="false" />
+                <element signature="e#2651#2652#0" expanded="false" />
+                <element signature="e#2681#2682#0" expanded="false" />
+                <element signature="e#2799#2800#0" expanded="false" />
+                <element signature="e#2827#2828#0" expanded="false" />
+                <element signature="e#3021#3022#0" expanded="false" />
+                <element signature="e#3054#3055#0" expanded="false" />
+                <element signature="e#4259#4260#0" expanded="false" />
+                <element signature="e#4295#4296#0" expanded="false" />
+                <element signature="e#4766#4767#0" expanded="false" />
+                <element signature="e#4798#4799#0" expanded="false" />
+                <element signature="e#5388#5389#0" expanded="false" />
+                <element signature="e#5424#5425#0" expanded="false" />
+                <element signature="e#5986#5987#0" expanded="false" />
+                <element signature="e#6026#6027#0" expanded="false" />
+                <element signature="e#6193#6194#0" expanded="false" />
+                <element signature="e#6241#6242#0" expanded="false" />
+                <element signature="e#6276#6277#0" expanded="false" />
+                <element signature="e#6304#6305#0" expanded="false" />
+                <element signature="e#6355#6356#0" expanded="false" />
+                <element signature="e#6389#6390#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="UserLinkDao.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/db/UserLinkDao.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="100" column="4" selection-start="3268" selection-end="3268" vertical-scroll-proportion="0.0" vertical-offset="455" max-vertical-offset="1365">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
       <file leaf-file-name="UserDao.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/justjournal/db/UserDao.java">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/db/UserDao.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="58" column="61" selection-start="2083" selection-end="2083" vertical-scroll-proportion="0.0">
+            <state line="411" column="39" selection-start="14125" selection-end="14125" vertical-scroll-proportion="0.0" vertical-offset="5118" max-vertical-offset="6360">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="TrackbackDao.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/db/TrackbackDao.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="59" column="35" selection-start="2101" selection-end="2101" vertical-scroll-proportion="0.3956044" vertical-offset="0" max-vertical-offset="3630">
               <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#5754#5784#0" expanded="true" />
+                <element signature="e#0#9285#0" expanded="false" />
+                <element signature="imports" expanded="false" />
+                <element signature="e#7515#7528#0" expanded="false" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="UserTo.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/justjournal/db/UserTo.java">
+      <file leaf-file-name="TrackbackTo.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/db/TrackbackTo.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="229" column="32" selection-start="6107" selection-end="6107" vertical-scroll-proportion="0.0">
-              <folding />
+            <state line="45" column="13" selection-start="1743" selection-end="1743" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2505">
+              <folding>
+                <element signature="e#0#6571#0" expanded="false" />
+                <element signature="e#2330#2331#0" expanded="false" />
+                <element signature="e#2356#2357#0" expanded="false" />
+                <element signature="e#2599#2600#0" expanded="false" />
+                <element signature="e#2624#2625#0" expanded="false" />
+                <element signature="e#2857#2858#0" expanded="false" />
+                <element signature="e#2887#2888#0" expanded="false" />
+                <element signature="e#3153#3154#0" expanded="false" />
+                <element signature="e#3180#3181#0" expanded="false" />
+                <element signature="e#3656#3657#0" expanded="false" />
+                <element signature="e#3688#3689#0" expanded="false" />
+                <element signature="e#3722#3723#0" expanded="false" />
+                <element signature="e#3752#3753#0" expanded="false" />
+                <element signature="e#3998#3999#0" expanded="false" />
+                <element signature="e#4029#4030#0" expanded="false" />
+                <element signature="e#4314#4315#0" expanded="false" />
+                <element signature="e#4341#4342#0" expanded="false" />
+                <element signature="e#4522#4523#0" expanded="false" />
+                <element signature="e#4556#4557#0" expanded="false" />
+                <element signature="e#4778#4779#0" expanded="false" />
+                <element signature="e#4811#4812#0" expanded="false" />
+                <element signature="e#5028#5029#0" expanded="false" />
+                <element signature="e#5055#5056#0" expanded="false" />
+                <element signature="e#5102#5103#0" expanded="false" />
+                <element signature="e#5134#5135#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -389,6 +452,23 @@
         <option value="$PROJECT_DIR$/src/com/justjournal/db/UserDao.java" />
         <option value="$PROJECT_DIR$/src/com/justjournal/db/UserPreferencesDAO.java" />
         <option value="$PROJECT_DIR$/src/com/justjournal/User.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/justjournal/WebLogin.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/justjournal/utility/DateConvert.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/justjournal/utility/FileIO.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/justjournal/utility/StringUtil.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/justjournal/utility/Xml.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/justjournal/core/Settings.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/justjournal/db/BioDao.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/justjournal/db/BioTo.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/justjournal/db/CommentDao.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/justjournal/db/ContentDao.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/justjournal/db/EmoticonDao.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/justjournal/db/EmoticonTo.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/justjournal/db/ContentTo.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/justjournal/db/EntryDAO.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/justjournal/db/UserLinkDao.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/justjournal/db/UserDao.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/justjournal/db/TrackbackType.java" />
       </list>
     </option>
   </component>
@@ -496,8 +576,8 @@
   <component name="ProjectFrameBounds">
     <option name="x" value="4" />
     <option name="y" value="22" />
-    <option name="width" value="1676" />
-    <option name="height" value="1028" />
+    <option name="width" value="1916" />
+    <option name="height" value="1058" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <OptionsSetting value="true" id="Add" />
@@ -730,10 +810,6 @@
               <option name="myItemId" value="JustJournal" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="External Libraries" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
-            </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
@@ -773,7 +849,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="com" />
+              <option name="myItemId" value="main" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -791,18 +867,52 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="com" />
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="justjournal" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="JustJournal" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="justjournal" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="justjournal" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="db" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
       <pane id="PackagesPane" />
+      <pane id="Scope" />
       <pane id="Favorites" />
     </panes>
   </component>
@@ -871,17 +981,21 @@
     <property name="cvs_file_history_flatOrder6" value="6" />
     <property name="GenerateAntBuildDialog.backupFiles" value="false" />
     <property name="options.searchVisible" value="true" />
+    <property name="LayoutCode.rearrangeEntriesJava" value="false" />
   </component>
   <component name="RecentsManager">
-    <key name="CreateTestDialog.Recents.Supers">
-      <recent name="" />
-    </key>
     <key name="CreateTestDialog.RecentsKey">
       <recent name="com.justjournal" />
       <recent name="com.justjournal.db" />
     </key>
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/test/java/com/justjournal" />
     </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
       <recent name="com.justjournal.business" />
@@ -910,6 +1024,9 @@
       <option name="SHMEM_ADDRESS" value="javadebug" />
       <option name="HOST" value="localhost" />
       <option name="PORT" value="5005" />
+      <method />
+    </configuration>
+    <configuration default="true" type="JavascriptDebugType" factoryName="JavaScript Debug" singleton="true">
       <method />
     </configuration>
     <configuration default="true" type="Applet" factoryName="Applet">
@@ -961,27 +1078,7 @@
       <patterns />
       <method />
     </configuration>
-    <configuration default="true" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Remote">
-      <option name="LOCAL" value="false" />
-      <deployment />
-      <server-settings>
-        <data>
-          <option name="transportHostId" />
-        </data>
-      </server-settings>
-      <predefined_log_file id="TOMCAT_LOCALHOST_LOG_ID" enabled="true" />
-      <extension name="coverage" />
-      <RunnerSettings RunnerId="Debug">
-        <option name="DEBUG_PORT" value="63445" />
-        <option name="TRANSPORT" value="0" />
-        <option name="LOCAL" value="false" />
-      </RunnerSettings>
-      <RunnerSettings RunnerId="Run" />
-      <ConfigurationWrapper RunnerId="Debug" />
-      <ConfigurationWrapper RunnerId="Run" />
-      <method />
-    </configuration>
-    <configuration default="true" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" APPLICATION_SERVER_NAME="Tomcat 6">
+    <configuration default="true" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" APPLICATION_SERVER_NAME="Tomcat 6" ALTERNATIVE_JRE_ENABLED="false">
       <option name="OPEN_IN_BROWSER_URL" value="http://localhost:8080/" />
       <option name="UPDATING_POLICY" value="restart-server" />
       <deployment>
@@ -1044,6 +1141,26 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Remote" ALTERNATIVE_JRE_ENABLED="false">
+      <option name="LOCAL" value="false" />
+      <deployment />
+      <server-settings>
+        <data>
+          <option name="transportHostId" />
+        </data>
+      </server-settings>
+      <predefined_log_file id="TOMCAT_LOCALHOST_LOG_ID" enabled="true" />
+      <extension name="coverage" />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="63445" />
+        <option name="TRANSPORT" value="0" />
+        <option name="LOCAL" value="false" />
+      </RunnerSettings>
+      <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Debug" />
+      <ConfigurationWrapper RunnerId="Run" />
+      <method />
+    </configuration>
     <list size="0" />
   </component>
   <component name="ShelveChangesManager" show_recycled="false" />
@@ -1095,8 +1212,17 @@
       <changelist id="5430544b-ec83-4634-8b7c-ee7719fe9e3d" name="Default" comment="" />
       <created>1306693961865</created>
       <updated>1306693961865</updated>
+      <workItem from="1385438061126" duration="1971000" />
     </task>
+    <task id="LOCAL-00001" summary="mark nullability. move some old unit tests around.">
+      <created>1385439296280</created>
+      <updated>1385439296280</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="1971000" />
   </component>
   <component name="TodoView" selected-index="0">
     <todo-panel id="selected-file">
@@ -1119,31 +1245,34 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="4" y="22" width="1676" height="1028" extended-state="0" />
-    <editor active="true" />
+    <frame x="4" y="22" width="1916" height="1058" extended-state="6" />
+    <editor active="false" />
     <layout>
+      <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32857144" sideWeight="0.5" order="18" side_tool="false" content_ui="tabs" />
-      <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32929516" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" x="40" y="315" width="954" height="612" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Java Enterprise" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32929516" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32857144" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="CDI" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="true" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32857144" sideWeight="0.5" order="20" side_tool="false" content_ui="tabs" />
       <window_info id="Web" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32928178" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24477245" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.40020576" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2638037" sideWeight="0.67070484" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.26363635" sideWeight="0.67070484" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33038673" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="19" side_tool="false" content_ui="tabs" />
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32944068" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="CDI" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Regex Tester" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="15" side_tool="false" content_ui="tabs" />
       <window_info id="Build" active="false" anchor="bottom" auto_hide="true" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="14" side_tool="false" content_ui="tabs" />
       <window_info id="Maven projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -1153,11 +1282,12 @@
       <window_info id="FaTPlugin" active="false" anchor="bottom" auto_hide="true" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="SQL" active="false" anchor="bottom" auto_hide="true" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="true" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32857144" sideWeight="0.5" order="20" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32929516" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" x="40" y="315" width="954" height="612" />
       <window_info id="EJB" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Module Dependencies" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="CVS" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32857144" sideWeight="0.5" order="16" side_tool="false" content_ui="tabs" />
+      <window_info id="Module Dependencies" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32973805" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
       <window_info id="Duplicates" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -1172,63 +1302,23 @@
     <option name="CUSTOMIZE_VIEW" value="true" />
     <option name="SHOW_FILE_HISTORY_AS_TREE" value="true" />
   </component>
+  <component name="Vcs.Log.UiProperties">
+    <option name="RECENTLY_FILTERED_USERS">
+      <collection />
+    </option>
+  </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <option name="OFFER_MOVE_TO_ANOTHER_CHANGELIST_ON_PARTIAL_COMMIT" value="true" />
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
     <option name="myTodoPanelSettings">
-      <value>
-        <are-packages-shown value="false" />
-        <are-modules-shown value="false" />
-        <flatten-packages value="false" />
-        <is-autoscroll-to-source value="false" />
-      </value>
+      <TodoPanelSettings />
     </option>
     <option name="PERFORM_UPDATE_IN_BACKGROUND" value="false" />
     <option name="PERFORM_COMMIT_IN_BACKGROUND" value="false" />
-    <option name="PERFORM_EDIT_IN_BACKGROUND" value="true" />
-    <option name="PERFORM_CHECKOUT_IN_BACKGROUND" value="true" />
-    <option name="PERFORM_ADD_REMOVE_IN_BACKGROUND" value="true" />
-    <option name="PERFORM_ROLLBACK_IN_BACKGROUND" value="false" />
-    <option name="CHECK_LOCALLY_CHANGED_CONFLICTS_IN_BACKGROUND" value="false" />
-    <option name="CHANGED_ON_SERVER_INTERVAL" value="60" />
-    <option name="SHOW_ONLY_CHANGED_IN_SELECTION_DIFF" value="true" />
     <option name="CHECK_COMMIT_MESSAGE_SPELLING" value="false" />
-    <option name="DEFAULT_PATCH_EXTENSION" value="patch" />
-    <option name="SHORT_DIFF_HORIZONTALLY" value="true" />
-    <option name="SHORT_DIFF_EXTRA_LINES" value="2" />
-    <option name="SOFT_WRAPS_IN_SHORT_DIFF" value="true" />
-    <option name="INCLUDE_TEXT_INTO_PATCH" value="false" />
-    <option name="INCLUDE_TEXT_INTO_SHELF" value="false" />
-    <option name="SHOW_FILE_HISTORY_DETAILS" value="true" />
-    <option name="SHOW_VCS_ERROR_NOTIFICATIONS" value="true" />
-    <option name="SHOW_DIRTY_RECURSIVELY" value="false" />
-    <option name="LIMIT_HISTORY" value="true" />
-    <option name="MAXIMUM_HISTORY_ROWS" value="1000" />
-    <option name="UPDATE_FILTER_SCOPE_NAME" />
-    <option name="USE_COMMIT_MESSAGE_MARGIN" value="false" />
-    <option name="COMMIT_MESSAGE_MARGIN_SIZE" value="72" />
-    <option name="WRAP_WHEN_TYPING_REACHES_RIGHT_MARGIN" value="false" />
-    <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
-    <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="sync with site" />
-    <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
-    <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
-    <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
-    <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="false" />
-    <option name="REFORMAT_BEFORE_FILE_COMMIT" value="false" />
-    <option name="FILE_HISTORY_DIALOG_COMMENTS_SPLITTER_PROPORTION" value="0.8" />
-    <option name="FILE_HISTORY_DIALOG_SPLITTER_PROPORTION" value="0.5" />
-    <option name="ACTIVE_VCS_NAME" value="CVS" />
-    <option name="UPDATE_GROUP_BY_PACKAGES" value="false" />
-    <option name="UPDATE_GROUP_BY_CHANGELIST" value="false" />
-    <option name="UPDATE_FILTER_BY_SCOPE" value="false" />
-    <option name="SHOW_FILE_HISTORY_AS_TREE" value="false" />
-    <option name="FILE_HISTORY_SPLITTER_PROPORTION" value="0.6" />
-    <MESSAGE value="Change license, switch to UTF-8 as we're getting a lot of errors with conversion." />
     <MESSAGE value="Change license" />
     <MESSAGE value="delete dead code." />
     <MESSAGE value="add missing cayenne file" />
@@ -1253,6 +1343,9 @@
     <MESSAGE value="rowset revert&#10;" />
     <MESSAGE value="remove most popular" />
     <MESSAGE value="sync with site" />
+    <MESSAGE value="mark nullability. move some old unit tests around." />
+    <option name="LAST_COMMIT_MESSAGE" value="mark nullability. move some old unit tests around." />
+    <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
   </component>
   <component name="VssConfiguration">
     <option name="CLIENT_PATH" value="" />
@@ -1308,97 +1401,326 @@
     <option name="multicastPort" value="3274" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/com/justjournal/db/CommentDao.java">
+    <entry file="file://$PROJECT_DIR$/src/test/java/com/justjournal/db/UserDaoTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="58" column="51" selection-start="2083" selection-end="2083" vertical-scroll-proportion="0.3778802" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/justjournal/db/EmoticonDao.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="47" column="17" selection-start="1714" selection-end="1714" vertical-scroll-proportion="-0.19182748" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/justjournal/db/FriendsDao.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="58" column="59" selection-start="2225" selection-end="2225" vertical-scroll-proportion="0.44267878" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/justjournal/db/BioDao.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="51" column="110" selection-start="1948" selection-end="2123" vertical-scroll-proportion="0.323496" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/justjournal/db/LocationDao.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="78" column="65" selection-start="3045" selection-end="3045" vertical-scroll-proportion="0.7832009" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/justjournal/db/EntryDAO.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="70" column="1" selection-start="2688" selection-end="2768" vertical-scroll-proportion="0.38018432" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/justjournal/db/MoodDao.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="50" column="19" selection-start="1807" selection-end="1807" vertical-scroll-proportion="0.2724177" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/justjournal/db/LocationTo.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="43" column="19" selection-start="1690" selection-end="1690" vertical-scroll-proportion="0.18728717" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/justjournal/WebLogin.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="93" column="0" selection-start="3516" selection-end="3516" vertical-scroll-proportion="-1.1306819">
+        <state line="49" column="52" selection-start="1666" selection-end="1666" vertical-scroll-proportion="0.41208792" vertical-offset="0" max-vertical-offset="1065">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/justjournal/db/UserDaoTest.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/WebLogin.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="49" column="52" selection-start="1666" selection-end="1666" vertical-scroll-proportion="0.0">
+        <state line="151" column="70" selection-start="5674" selection-end="5674" vertical-scroll-proportion="0.33296704" vertical-offset="1347" max-vertical-offset="3360">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/justjournal/UserTest.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/WebError.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="79" column="9" selection-start="2425" selection-end="2425" vertical-scroll-proportion="0.7613636">
+        <state line="45" column="19" selection-start="1727" selection-end="1727" vertical-scroll-proportion="0.21428572" vertical-offset="0" max-vertical-offset="1530">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/com/justjournal/UserTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="79" column="9" selection-start="2425" selection-end="2425" vertical-scroll-proportion="0.9065934" vertical-offset="0" max-vertical-offset="1035">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/justjournal/content/Content.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/Cal.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="51" column="17" selection-start="1826" selection-end="1826" vertical-scroll-proportion="-0.97727275">
+        <state line="73" column="16" selection-start="2734" selection-end="2734" vertical-scroll-proportion="0.5769231" vertical-offset="0" max-vertical-offset="4785">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/justjournal/db/UserDao.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/User.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="58" column="61" selection-start="2083" selection-end="2083" vertical-scroll-proportion="0.0">
+        <state line="429" column="19" selection-start="12606" selection-end="12606" vertical-scroll-proportion="0.8021978" vertical-offset="4565" max-vertical-offset="5670">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/Preferences.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="48" column="19" selection-start="1974" selection-end="1974" vertical-scroll-proportion="-1.2252747" vertical-offset="1430" max-vertical-offset="2340">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/utility/DateConvert.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="42" column="20" selection-start="1245" selection-end="1245" vertical-scroll-proportion="0.6098901" vertical-offset="0" max-vertical-offset="910">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/utility/ETag.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="57" column="11" selection-start="2155" selection-end="2155" vertical-scroll-proportion="0.32967034" vertical-offset="0" max-vertical-offset="910">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/utility/FileIO.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="114" column="12" selection-start="3372" selection-end="3372" vertical-scroll-proportion="0.8186813" vertical-offset="485" max-vertical-offset="1395">
           <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#5754#5784#0" expanded="true" />
+            <element signature="imports" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/justjournal/db/UserTo.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/utility/HTMLUtil.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="229" column="32" selection-start="6107" selection-end="6107" vertical-scroll-proportion="0.0">
+        <state line="45" column="19" selection-start="1983" selection-end="1983" vertical-scroll-proportion="0.0" vertical-offset="540" max-vertical-offset="5535">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/justjournal/User.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/utility/StringUtil.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="52" column="63" selection-start="1935" selection-end="1935" vertical-scroll-proportion="0.2556818">
+        <state line="153" column="27" selection-start="4869" selection-end="4869" vertical-scroll-proportion="0.20879121" vertical-offset="1580" max-vertical-offset="2490">
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/utility/Thumbnail.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="25" column="13" selection-start="643" selection-end="643" vertical-scroll-proportion="-0.64285713" vertical-offset="810" max-vertical-offset="1770">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/utility/Xml.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="62" column="4" selection-start="2291" selection-end="2291" vertical-scroll-proportion="0.4945055" vertical-offset="0" max-vertical-offset="910">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/core/TrackbackOut.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="43" column="19" selection-start="1696" selection-end="1696" vertical-scroll-proportion="0.0" vertical-offset="165" max-vertical-offset="1575">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/core/Settings.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="84" column="38" selection-start="3447" selection-end="3447" vertical-scroll-proportion="0.44835165" vertical-offset="372" max-vertical-offset="3600">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/core/RssCacheContextListener.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="64" column="15" selection-start="2535" selection-end="2535" vertical-scroll-proportion="-0.13736264" vertical-offset="545" max-vertical-offset="1455">
+          <folding>
+            <marker date="1384912049000" expanded="true" signature="-1:-1" placeholder="SELECT uri F..rss_cache..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/atom/AtomEntry.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="7" column="19" selection-start="205" selection-end="205" vertical-scroll-proportion="-0.3021978" vertical-offset="380" max-vertical-offset="1290">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/core/Statistics.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="45" column="13" selection-start="1975" selection-end="1975" vertical-scroll-proportion="0.1978022" vertical-offset="0" max-vertical-offset="2835">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/db/BioDao.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="96" column="4" selection-start="3449" selection-end="3449" vertical-scroll-proportion="0.6208791" vertical-offset="320" max-vertical-offset="1230">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/db/BioTo.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="67" column="4" selection-start="2104" selection-end="2104" vertical-scroll-proportion="0.35714287" vertical-offset="80" max-vertical-offset="990">
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/db/CommentDao.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="195" column="55" selection-start="6994" selection-end="6994" vertical-scroll-proportion="0.12637363" vertical-offset="2270" max-vertical-offset="3180">
+          <folding>
+            <element signature="e#5947#5958#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/db/ContentDao.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="60" column="42" selection-start="2258" selection-end="2258" vertical-scroll-proportion="0.35714287" vertical-offset="50" max-vertical-offset="2685">
+          <folding>
+            <element signature="e#5447#5458#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/db/EmoticonTo.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="54" column="38" selection-start="2023" selection-end="2023" vertical-scroll-proportion="0.36263737" vertical-offset="0" max-vertical-offset="1380">
+          <folding>
+            <element signature="e#1951#1952#0" expanded="false" />
+            <element signature="e#1982#1983#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/db/EmoticonDao.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="50" column="4" selection-start="1763" selection-end="1763" vertical-scroll-proportion="-0.15384616" vertical-offset="410" max-vertical-offset="1320">
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/db/ContentTo.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="168" column="9" selection-start="4751" selection-end="4751" vertical-scroll-proportion="0.64659977" vertical-offset="1085" max-vertical-offset="1995">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/db/EntryDAO.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="762" column="20" selection-start="29325" selection-end="29325" vertical-scroll-proportion="0.29765886" vertical-offset="10428" max-vertical-offset="14670">
+          <folding>
+            <element signature="e#14118#14148#0" expanded="false" />
+            <element signature="e#15996#16026#0" expanded="false" />
+            <element signature="e#17587#17617#0" expanded="false" />
+            <element signature="e#26831#26861#0" expanded="false" />
+            <element signature="e#29274#29304#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/db/BaseDao.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="40" column="12" selection-start="1620" selection-end="1620" vertical-scroll-proportion="0.6593407" vertical-offset="0" max-vertical-offset="1320">
+          <folding>
+            <element signature="e#0#2441#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/db/UserTo.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="48" column="19" selection-start="1853" selection-end="1853" vertical-scroll-proportion="0.0" vertical-offset="240" max-vertical-offset="3510">
+          <folding>
+            <element signature="e#0#8143#0" expanded="false" />
+            <element signature="e#2225#2226#0" expanded="false" />
+            <element signature="e#2262#2263#0" expanded="false" />
+            <element signature="e#2323#2324#0" expanded="false" />
+            <element signature="e#2375#2376#0" expanded="false" />
+            <element signature="e#2410#2411#0" expanded="false" />
+            <element signature="e#2441#2442#0" expanded="false" />
+            <element signature="e#2489#2490#0" expanded="false" />
+            <element signature="e#2529#2530#0" expanded="false" />
+            <element signature="e#2651#2652#0" expanded="false" />
+            <element signature="e#2681#2682#0" expanded="false" />
+            <element signature="e#2799#2800#0" expanded="false" />
+            <element signature="e#2827#2828#0" expanded="false" />
+            <element signature="e#3021#3022#0" expanded="false" />
+            <element signature="e#3054#3055#0" expanded="false" />
+            <element signature="e#4259#4260#0" expanded="false" />
+            <element signature="e#4295#4296#0" expanded="false" />
+            <element signature="e#4766#4767#0" expanded="false" />
+            <element signature="e#4798#4799#0" expanded="false" />
+            <element signature="e#5388#5389#0" expanded="false" />
+            <element signature="e#5424#5425#0" expanded="false" />
+            <element signature="e#5986#5987#0" expanded="false" />
+            <element signature="e#6026#6027#0" expanded="false" />
+            <element signature="e#6193#6194#0" expanded="false" />
+            <element signature="e#6241#6242#0" expanded="false" />
+            <element signature="e#6276#6277#0" expanded="false" />
+            <element signature="e#6304#6305#0" expanded="false" />
+            <element signature="e#6355#6356#0" expanded="false" />
+            <element signature="e#6389#6390#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/db/UserLinkDao.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="100" column="4" selection-start="3268" selection-end="3268" vertical-scroll-proportion="0.0" vertical-offset="455" max-vertical-offset="1365">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/db/TrackbackTo.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="45" column="13" selection-start="1743" selection-end="1743" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2505">
+          <folding>
+            <element signature="e#0#6571#0" expanded="false" />
+            <element signature="e#2330#2331#0" expanded="false" />
+            <element signature="e#2356#2357#0" expanded="false" />
+            <element signature="e#2599#2600#0" expanded="false" />
+            <element signature="e#2624#2625#0" expanded="false" />
+            <element signature="e#2857#2858#0" expanded="false" />
+            <element signature="e#2887#2888#0" expanded="false" />
+            <element signature="e#3153#3154#0" expanded="false" />
+            <element signature="e#3180#3181#0" expanded="false" />
+            <element signature="e#3656#3657#0" expanded="false" />
+            <element signature="e#3688#3689#0" expanded="false" />
+            <element signature="e#3722#3723#0" expanded="false" />
+            <element signature="e#3752#3753#0" expanded="false" />
+            <element signature="e#3998#3999#0" expanded="false" />
+            <element signature="e#4029#4030#0" expanded="false" />
+            <element signature="e#4314#4315#0" expanded="false" />
+            <element signature="e#4341#4342#0" expanded="false" />
+            <element signature="e#4522#4523#0" expanded="false" />
+            <element signature="e#4556#4557#0" expanded="false" />
+            <element signature="e#4778#4779#0" expanded="false" />
+            <element signature="e#4811#4812#0" expanded="false" />
+            <element signature="e#5028#5029#0" expanded="false" />
+            <element signature="e#5055#5056#0" expanded="false" />
+            <element signature="e#5102#5103#0" expanded="false" />
+            <element signature="e#5134#5135#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/db/TrackbackType.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="40" column="21" selection-start="1642" selection-end="1642" vertical-scroll-proportion="0.13186814" vertical-offset="0" max-vertical-offset="910">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/db/UserDao.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="411" column="39" selection-start="14125" selection-end="14125" vertical-scroll-proportion="0.0" vertical-offset="5118" max-vertical-offset="6360">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/db/TrackbackDao.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="59" column="35" selection-start="2101" selection-end="2101" vertical-scroll-proportion="0.3956044" vertical-offset="0" max-vertical-offset="3630">
+          <folding>
+            <element signature="e#0#9285#0" expanded="false" />
+            <element signature="imports" expanded="false" />
+            <element signature="e#7515#7528#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>

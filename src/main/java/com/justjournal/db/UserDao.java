@@ -41,6 +41,8 @@ import java.util.Collections;
 import java.util.List;
 
 import com.justjournal.model.User;
+import com.sun.istack.internal.NotNull;
+import com.sun.istack.internal.Nullable;
 import org.apache.cayenne.Cayenne;
 import org.apache.cayenne.ObjectContext;
 import org.apache.cayenne.access.DataContext;
@@ -80,7 +82,7 @@ public final class UserDao {
         final String sqlStmt =
                 "Insert INTO user (username,password,name,lastname) VALUES('"
                         + user.getUserName() + "',sha1('" + user.getPassword()
-                        + "'),'" + user.getName() + "','" + user.getLastName() + "');";
+                        + "'),'" + user.getFirstName() + "','" + user.getLastName() + "');";
 
         String SqlStatement3 = "SELECT id FROM user WHERE username='" + user.getUserName() + "' LIMIT 1;";
 
@@ -134,7 +136,7 @@ public final class UserDao {
         boolean noError = true;
 
         final String sqlStmt =
-                "Update user SET name='" + user.getName() + "' AND lastname='" + user.getLastName() + "' WHERE id='" + user.getId() + "' LIMIT 1;";
+                "Update user SET name='" + user.getFirstName() + "' AND lastname='" + user.getLastName() + "' WHERE id='" + user.getId() + "' LIMIT 1;";
 
         try {
             SQLHelper.executeNonQuery(sqlStmt);
@@ -179,7 +181,8 @@ public final class UserDao {
      * @param userId Unique User ID
      * @return user's info
      */
-    public static UserTo view(final int userId) {
+    public @NotNull
+    static UserTo view(final int userId) {
         UserTo user = new UserTo();
 
         try {
@@ -221,7 +224,8 @@ public final class UserDao {
      * @return user's info
      */
     @SuppressWarnings("unchecked")
-    public static UserTo view(final String userName) {
+    public @Nullable
+    static UserTo view(final String userName) {
         if (userName == null || userName.length() < 3)
             throw new IllegalArgumentException("userName is invalid");
 
@@ -256,7 +260,7 @@ public final class UserDao {
         return user;
     }
 
-    public static UserTo viewWithPassword(final String userName) {
+    public @Nullable static UserTo viewWithPassword(final String userName) {
         if (userName == null || userName.length() < 3)
             throw new IllegalArgumentException("userName is invalid");
 
@@ -300,7 +304,7 @@ public final class UserDao {
      *
      * @return All users of just journal.
      */
-    public static Collection<UserTo> memberList() {
+    public @NotNull static Collection<UserTo> memberList() {
         ArrayList<UserTo> users = new ArrayList<UserTo>(1024);
         UserTo usr;
         final String sqlStatement = "call memberlist();";
@@ -331,7 +335,7 @@ public final class UserDao {
      *
      * @return collection of UserTo's.
      */
-    public static Collection<UserTo> newUsers() {
+    public @NotNull static Collection<UserTo> newUsers() {
         ArrayList<UserTo> users = new ArrayList<UserTo>(5);
         UserTo usr;
         final String sqlStatement = "SELECT id, username, name, since, lastname FROM user ORDER by id DESC Limit 0,5;";
@@ -357,7 +361,7 @@ public final class UserDao {
         return users;
     }
 
-    public static Collection<String> friends(String username) {
+    public @NotNull static Collection<String> friends(String username) {
         ArrayList<String> friends = new ArrayList<String>();
         final String sql = "SELECT friends.friendid as fif, (SELECT user.username from user WHERE user.id=fif) FROM friends, user WHERE user.username=\"" + username + "\" AND user.id=friends.id;";
 
@@ -376,7 +380,7 @@ public final class UserDao {
         return friends;
     }
 
-    public static Collection<String> friendsof(String username) {
+    public @NotNull static Collection<String> friendsof(String username) {
         ArrayList<String> friends = new ArrayList<String>();
         final String sql = "SELECT friends.id as fif, (SELECT user.username from user WHERE user.id=fif) FROM friends, user WHERE user.username=\"" + username + "\" AND user.id=friends.friendid;";
 

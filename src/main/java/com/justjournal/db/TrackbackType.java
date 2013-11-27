@@ -39,11 +39,7 @@ package com.justjournal.db;
  * http://wellformedweb.org/story/9
  *
  * @author Lucas Holt
- * @version $Id: TrackbackType.java,v 1.1 2008/05/05 08:18:05 laffer1 Exp $
- *          User: laffer1
- *          Date: May 5, 2008
- *          Time: 4:15:35 AM
  */
 public enum TrackbackType {
-    trackback, pingback, postit;
+    trackback, pingback, postit
 }

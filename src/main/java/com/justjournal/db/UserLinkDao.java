@@ -34,6 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
+import com.sun.istack.internal.NotNull;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
@@ -96,7 +97,8 @@ public final class UserLinkDao {
      * @see UserLinkTo
      * @return  Collection of UserLinkTo's
      */
-    public static Collection<UserLinkTo> view(int userId) {
+    public @NotNull
+    static Collection<UserLinkTo> view(int userId) {
         ArrayList<UserLinkTo> links = new ArrayList<UserLinkTo>(10);
         final String sql = "SELECT * FROM user_link WHERE id='" + userId + "';";
 

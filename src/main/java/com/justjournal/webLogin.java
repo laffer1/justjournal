@@ -27,6 +27,8 @@
 package com.justjournal;
 
 import com.justjournal.utility.StringUtil;
+import com.sun.istack.internal.NotNull;
+import com.sun.istack.internal.Nullable;
 import org.apache.cayenne.Cayenne;
 import org.apache.cayenne.ObjectContext;
 import org.apache.cayenne.access.DataContext;
@@ -64,11 +66,11 @@ public final class WebLogin {
         return username != null && !username.isEmpty();
     }
 
-    public static String currentLoginName(HttpSession session) {
+    public @Nullable static String currentLoginName(HttpSession session) {
         return (String) session.getAttribute(LOGIN_ATTRNAME);
     }
 
-    public static int currentLoginId(HttpSession session) {
+    public @NotNull static int currentLoginId(HttpSession session) {
         int aUserID = 0;
         Integer userIDasi = (Integer) session.getAttribute(LOGIN_ATTRID);
 
@@ -134,7 +136,7 @@ public final class WebLogin {
         return Cayenne.intPKForObject(user);
     }
 
-    private static com.justjournal.model.User lookupUser(final String userName, final String passwordHash) {
+    private @Nullable static com.justjournal.model.User lookupUser(final String userName, final String passwordHash) {
         ObjectContext dataContext = DataContext.getThreadObjectContext();
 
         Expression exp;
@@ -230,7 +232,7 @@ public final class WebLogin {
         return false;
     }
 
-    private static String convertToHex(byte[] data) {
+    private @NotNull static String convertToHex(byte[] data) {
         StringBuilder buf = new StringBuilder();
         for (final byte aData : data) {
             int halfByte = (aData >>> 4) & 0x0F;
@@ -246,7 +248,7 @@ public final class WebLogin {
         return buf.toString();
     }
 
-    public static String SHA1(String text)
+    public @NotNull static String SHA1(String text)
             throws NoSuchAlgorithmException, UnsupportedEncodingException {
         MessageDigest md = MessageDigest.getInstance("SHA-1");
         byte[] sha1hash;
