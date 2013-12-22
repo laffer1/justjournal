@@ -58,7 +58,7 @@ public final class CalMonth {
      *
      * @param monthid  the month this object represents
      * @param storage  an integer array of # of entries
-     * @param baseDate
+     * @param baseDate initial date
      */
     public CalMonth(final int monthid, final int[] storage, final Date baseDate) {
         this.storage = storage;
@@ -83,10 +83,18 @@ public final class CalMonth {
         this.storage = storage;
     }
 
+    /**
+     * Get the initial base date
+     * @return
+     */
     public Date getBaseDate() {
         return this.baseDate;
     }
 
+    /**
+     * Set the base date
+     * @param baseDate
+     */
     public void setBaseDate(final Date baseDate) {
         this.baseDate = baseDate;
     }

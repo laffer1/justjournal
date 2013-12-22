@@ -119,7 +119,6 @@ public final class Users extends HttpServlet {
         com.justjournal.User aUser = null;
         /* Does a username exist in session?  i.e. are we logged in?*/
         authUserTemp = (String) session.getAttribute("auth.user");
-        authUserIdTemp = (Integer) session.getAttribute("auth.uid");
 
         if (authUserTemp != null) {
             try {
@@ -750,6 +749,7 @@ public final class Users extends HttpServlet {
         }
     }
 
+    @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
     private static void getImageList(final UserContext uc) {
         final StringBuffer sb = uc.getSb();
         sb.append("<h2>Pictures</h2>");
@@ -887,6 +887,7 @@ public final class Users extends HttpServlet {
         }
     }
 
+    @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
     private static void search(final UserContext uc, final int maxresults, final String bquery) {
         final StringBuffer sb = uc.getSb();
         ResultSet brs = null;
@@ -1045,6 +1046,7 @@ public final class Users extends HttpServlet {
 
     }
 
+    @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
     private static void jumpmenu(final int skip, final int offset, final boolean back, final boolean forward, final UserContext uc) {
         final StringBuffer sb = uc.sb;
         sb.append("\t\t<p>");
@@ -1229,9 +1231,9 @@ public final class Users extends HttpServlet {
                 sb.append(endl);
 
                 sb.append("<p>tags:");
-                for (Iterator t = o.getTags().iterator(); t.hasNext(); ) {
+                for (final String s : o.getTags()) {
                     sb.append(" ");
-                    sb.append((String) t.next());
+                    sb.append(s);
                 }
                 sb.append("</p>");
                 sb.append(endl);
@@ -1469,6 +1471,7 @@ public final class Users extends HttpServlet {
      *
      * @param uc User Context
      */
+    @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
     private static void getCalendarMini(UserContext uc) {
         try {
             final StringBuffer sb = uc.getSb();
@@ -1488,7 +1491,7 @@ public final class Users extends HttpServlet {
                 sb.append(mycal.renderMini());
             }
 
-        } catch (Exception e1) {
+        } catch (Exception ignored) {
 
         }
     }
@@ -1498,6 +1501,7 @@ public final class Users extends HttpServlet {
      *
      * @param uc User Context
      */
+    @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
     private static void getTagMini(final UserContext uc) {
         final StringBuffer sb = uc.getSb();
         Tag tag;
@@ -1507,8 +1511,8 @@ public final class Users extends HttpServlet {
         int cutSmall;
         int cutLarge;
 
-        for (ListIterator t = tags.listIterator(); t.hasNext(); ) {
-            tag = (Tag) t.next();
+        for (final Tag tag1 : tags) {
+            tag = tag1;
             if (tag.getCount() > largest)
                 largest = tag.getCount();
 
@@ -1520,8 +1524,8 @@ public final class Users extends HttpServlet {
         cutLarge = cutSmall * 2;
 
         sb.append("\t<div class=\"menuentity\" id=\"usertags\" style=\"padding-top: 10px;\">\n\t\t<strong style=\"text-transform: uppercase; letter-spacing: 2px; border: 0 none; border-bottom: 1px; border-style: dotted; border-color: #999999; margin-bottom: 5px; width: 100%; font-size: 10px;\">Tags</strong>\n\t\t<p style=\"padding-left: 0; margin-left: 0;\">\n");
-        for (ListIterator t = tags.listIterator(); t.hasNext(); ) {
-            tag = (Tag) t.next();
+        for (final Tag tag1 : tags) {
+            tag = tag1;
             sb.append("<a href=\"/users/");
             sb.append(uc.getBlogUser().getUserName());
             sb.append("/tag/");
@@ -1547,6 +1551,7 @@ public final class Users extends HttpServlet {
      *
      * @param uc User Context
      */
+    @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
     private static void getUserLinks(final UserContext uc) {
         log.debug("getUserLinks(): Init and load collection");
         StringBuffer sb = uc.getSb();
@@ -1571,6 +1576,7 @@ public final class Users extends HttpServlet {
      *
      * @param uc User Context
      */
+    @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
     private static void getUserRecentEntries(final UserContext uc) {
         if (log.isDebugEnabled())
             log.debug("getUserRecentEntries: Loading DAO");
@@ -1708,6 +1714,7 @@ public final class Users extends HttpServlet {
      *
      * @param uc User Context
      */
+    @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
     private static void getArchive(final UserContext uc) {
         final java.util.GregorianCalendar calendarg = new java.util.GregorianCalendar();
         int yearNow = calendarg.get(Calendar.YEAR);
@@ -2287,11 +2294,8 @@ public final class Users extends HttpServlet {
          * @return true if blog owner = auth owner
          */
         public boolean isAuthBlog() {
-            if (authenticatedUser != null && blogUser != null
-                    && authenticatedUser.getUserName().compareTo(blogUser.getUserName()) == 0)
-                return true;
-            else
-                return false;
+            return authenticatedUser != null && blogUser != null
+                    && authenticatedUser.getUserName().compareTo(blogUser.getUserName()) == 0;
         }
     }
 }
