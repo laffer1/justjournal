@@ -35,10 +35,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5430544b-ec83-4634-8b7c-ee7719fe9e3d" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/JustJournal.iml" afterPath="$PROJECT_DIR$/JustJournal.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/JustJournal.ipr" afterPath="$PROJECT_DIR$/JustJournal.ipr" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/justjournal/WebError.java" afterPath="$PROJECT_DIR$/src/main/java/com/justjournal/WebError.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/justjournal/ctl/api/CommentController.java" afterPath="$PROJECT_DIR$/src/main/java/com/justjournal/ctl/api/CommentController.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/justjournal/db/EntryDAO.java" afterPath="$PROJECT_DIR$/src/main/java/com/justjournal/db/EntryDAO.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/JustJournal.iws" afterPath="$PROJECT_DIR$/JustJournal.iws" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pom.xml" afterPath="$PROJECT_DIR$/pom.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/justjournal/ctl/Users.java" afterPath="$PROJECT_DIR$/src/main/java/com/justjournal/ctl/Users.java" />
     </list>
     <ignored path="JustJournal.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -307,55 +308,19 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="UserTo.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/db/UserTo.java">
+      <file leaf-file-name="Users.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/ctl/Users.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="50" column="19" selection-start="1942" selection-end="1942" vertical-scroll-proportion="0.0" vertical-offset="750" max-vertical-offset="4410">
+            <state line="155" column="26" selection-start="5671" selection-end="5671" vertical-scroll-proportion="0.0" vertical-offset="1020" max-vertical-offset="33645">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="UserLinkDao.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/db/UserLinkDao.java">
+      <file leaf-file-name="CommentController.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/ctl/api/CommentController.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="102" column="4" selection-start="3390" selection-end="3390" vertical-scroll-proportion="0.0" vertical-offset="1530" max-vertical-offset="1920">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="UserDao.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/db/UserDao.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="449" column="39" selection-start="15612" selection-end="15612" vertical-scroll-proportion="0.0" vertical-offset="6735" max-vertical-offset="7080">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="TrackbackDao.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/db/TrackbackDao.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="51" column="31" selection-start="1914" selection-end="1914" vertical-scroll-proportion="0.0" vertical-offset="765" max-vertical-offset="3630">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="pom.xml" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/pom.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="28" column="16" selection-start="875" selection-end="875" vertical-scroll-proportion="0.26820603" vertical-offset="269" max-vertical-offset="4905">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="TrackbackTo.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/db/TrackbackTo.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="45" column="13" selection-start="1743" selection-end="1743" vertical-scroll-proportion="0.0" vertical-offset="675" max-vertical-offset="3345">
+            <state line="137" column="51" selection-start="5692" selection-end="5692" vertical-scroll-proportion="1.4967105" vertical-offset="0" max-vertical-offset="2220">
               <folding />
             </state>
           </provider>
@@ -395,12 +360,18 @@
         <option value="$PROJECT_DIR$/src/main/java/com/justjournal/db/EmoticonDao.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/justjournal/db/EmoticonTo.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/justjournal/db/ContentTo.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/justjournal/db/EntryDAO.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/justjournal/db/UserLinkDao.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/justjournal/db/UserDao.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/justjournal/db/TrackbackType.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/justjournal/db/TrackbackDao.java" />
         <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/src/main/java/com/justjournal/WebError.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/justjournal/CalMonth.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/justjournal/ctl/SelectStyleSheet.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/justjournal/ctl/api/FavoriteController.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/justjournal/db/EntryDAO.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/justjournal/ctl/Users.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/justjournal/ctl/api/CommentController.java" />
       </list>
     </option>
   </component>
@@ -854,6 +825,70 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="JustJournal" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="justjournal" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="justjournal" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ctl" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="JustJournal" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="justjournal" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="justjournal" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ctl" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="api" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
       <pane id="PackagesPane" />
@@ -992,6 +1027,9 @@
       <option name="SHMEM_ADDRESS" value="javadebug" />
       <option name="HOST" value="localhost" />
       <option name="PORT" value="5005" />
+      <method />
+    </configuration>
+    <configuration default="true" type="JavascriptDebugType" factoryName="JavaScript Debug" singleton="true">
       <method />
     </configuration>
     <configuration default="true" type="Applet" factoryName="Applet">
@@ -1178,7 +1216,7 @@
       <updated>1306693961865</updated>
       <workItem from="1385438061126" duration="2112000" />
       <workItem from="1386108799167" duration="2509000" />
-      <workItem from="1387659860242" duration="964000" />
+      <workItem from="1387659860242" duration="2209000" />
     </task>
     <task id="LOCAL-00001" summary="mark nullability. move some old unit tests around.">
       <created>1385439296280</created>
@@ -1188,11 +1226,27 @@
       <created>1385527085170</created>
       <updated>1385527085170</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="fix some warnings.">
+      <created>1387724362141</created>
+      <updated>1387724362141</updated>
+    </task>
+    <task id="LOCAL-00004" summary="fix some warnings">
+      <created>1387724450407</created>
+      <updated>1387724450407</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Get rid of depricated usage of">
+      <created>1387724580138</created>
+      <updated>1387724580138</updated>
+    </task>
+    <task id="LOCAL-00006" summary="get rid of depricated view single usage">
+      <created>1387724612750</created>
+      <updated>1387724612750</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="5585000" />
+    <option name="totallyTimeSpent" value="6830000" />
   </component>
   <component name="TodoView" selected-index="0">
     <todo-panel id="selected-file">
@@ -1230,14 +1284,15 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32929516" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32857144" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="true" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32857144" sideWeight="0.5" order="20" side_tool="false" content_ui="tabs" />
       <window_info id="Web" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32928178" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24477245" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32977587" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.16435432" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.40020576" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2171825" sideWeight="0.67070484" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32978722" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2171825" sideWeight="0.67070484" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32978722" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="19" side_tool="false" content_ui="tabs" />
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32944068" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -1254,7 +1309,6 @@
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32929516" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" x="40" y="315" width="954" height="612" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="true" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32857144" sideWeight="0.5" order="20" side_tool="false" content_ui="tabs" />
       <window_info id="EJB" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Module Dependencies" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="CVS" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32857144" sideWeight="0.5" order="16" side_tool="false" content_ui="tabs" />
@@ -1289,10 +1343,6 @@
     <option name="PERFORM_UPDATE_IN_BACKGROUND" value="false" />
     <option name="PERFORM_COMMIT_IN_BACKGROUND" value="false" />
     <option name="CHECK_COMMIT_MESSAGE_SPELLING" value="false" />
-    <MESSAGE value="delete dead code." />
-    <MESSAGE value="add missing cayenne file" />
-    <MESSAGE value="Migrate some of the code to Apache Cayenne ORM." />
-    <MESSAGE value="Update license for 2012" />
     <MESSAGE value="Save progress on migration." />
     <MESSAGE value="Get rid of unused setter methods." />
     <MESSAGE value="switch to new cayenne filter type" />
@@ -1314,7 +1364,11 @@
     <MESSAGE value="sync with site" />
     <MESSAGE value="mark nullability. move some old unit tests around." />
     <MESSAGE value="mark nullability." />
-    <option name="LAST_COMMIT_MESSAGE" value="mark nullability." />
+    <MESSAGE value="fix some warnings." />
+    <MESSAGE value="fix some warnings" />
+    <MESSAGE value="Get rid of depricated usage of" />
+    <MESSAGE value="get rid of depricated view single usage" />
+    <option name="LAST_COMMIT_MESSAGE" value="get rid of depricated view single usage" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
   </component>
   <component name="VssConfiguration">
@@ -1371,54 +1425,13 @@
     <option name="multicastPort" value="3274" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/db/UserTo.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="50" column="19" selection-start="1942" selection-end="1942" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="4410">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/db/UserLinkDao.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="102" column="4" selection-start="3390" selection-end="3390" vertical-scroll-proportion="0.0" vertical-offset="1530" max-vertical-offset="1920">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/db/UserDao.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="449" column="39" selection-start="15612" selection-end="15612" vertical-scroll-proportion="0.0" vertical-offset="6735" max-vertical-offset="7080">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/db/TrackbackDao.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="51" column="31" selection-start="1914" selection-end="1914" vertical-scroll-proportion="0.0" vertical-offset="765" max-vertical-offset="3630">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/db/TrackbackTo.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="45" column="13" selection-start="1743" selection-end="1743" vertical-scroll-proportion="0.0" vertical-offset="675" max-vertical-offset="3345">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/core/Statistics.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="45" column="13" selection-start="1975" selection-end="1975" vertical-scroll-proportion="0.1978022" vertical-offset="0" max-vertical-offset="0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/db/BioDao.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="96" column="4" selection-start="3449" selection-end="3449" vertical-scroll-proportion="0.6208791" vertical-offset="0" max-vertical-offset="0" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/db/BioTo.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="67" column="4" selection-start="2104" selection-end="2104" vertical-scroll-proportion="0.35714287" vertical-offset="0" max-vertical-offset="0" />
+        <state line="67" column="4" selection-start="2104" selection-end="2104" vertical-scroll-proportion="0.35714287" vertical-offset="0" max-vertical-offset="0">
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/db/CommentDao.java">
@@ -1448,11 +1461,6 @@
     <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/db/ContentTo.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="168" column="9" selection-start="4751" selection-end="4751" vertical-scroll-proportion="0.64659977" vertical-offset="0" max-vertical-offset="0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/db/EntryDAO.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="762" column="20" selection-start="29325" selection-end="29325" vertical-scroll-proportion="0.29765886" vertical-offset="0" max-vertical-offset="0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/db/BaseDao.java">
@@ -1500,6 +1508,13 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="28" column="16" selection-start="875" selection-end="875" vertical-scroll-proportion="0.17296678" vertical-offset="269" max-vertical-offset="4905">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/db/TrackbackDao.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="51" column="31" selection-start="1914" selection-end="1914" vertical-scroll-proportion="0.0" vertical-offset="765" max-vertical-offset="3630">
@@ -1507,9 +1522,267 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pom.xml">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/WebLogin.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="28" column="16" selection-start="875" selection-end="875" vertical-scroll-proportion="0.26820603" vertical-offset="269" max-vertical-offset="4905">
+        <state line="56" column="19" selection-start="2334" selection-end="2334" vertical-scroll-proportion="0.0" vertical-offset="166" max-vertical-offset="3615">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/UtilityContextListener.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="62" column="55" selection-start="2623" selection-end="2623" vertical-scroll-proportion="0.42182228" vertical-offset="0" max-vertical-offset="889">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/WebError.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="99" column="45" selection-start="3992" selection-end="3992" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1545">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/User.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="49" column="19" selection-start="1825" selection-end="1825" vertical-scroll-proportion="0.0" vertical-offset="4794" max-vertical-offset="5670">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/CalMonth.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="85" column="68" selection-start="2905" selection-end="2905" vertical-scroll-proportion="0.7592801" vertical-offset="0" max-vertical-offset="1170">
+          <folding>
+            <element signature="e#2857#2858#0" expanded="true" />
+            <element signature="e#2895#2896#0" expanded="true" />
+            <element signature="e#3144#3145#0" expanded="true" />
+            <element signature="e#3184#3185#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/Cal.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="51" column="19" selection-start="1872" selection-end="1872" vertical-scroll-proportion="0.22260274" vertical-offset="0" max-vertical-offset="4785">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/Preferences.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="48" column="19" selection-start="1974" selection-end="1974" vertical-scroll-proportion="0.0" vertical-offset="1451" max-vertical-offset="2340">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/utility/DateConvert.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="17" column="19" selection-start="372" selection-end="372" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="705">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/utility/ETag.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="53" column="13" selection-start="2020" selection-end="2020" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="885">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/ctl/UpdateStyleSheetOverride.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="51" column="19" selection-start="1964" selection-end="1964" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1275">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/ctl/UpdateJournal.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="78" column="19" selection-start="3146" selection-end="3146" vertical-scroll-proportion="0.0" vertical-offset="8" max-vertical-offset="9780">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/ctl/SelectStyleSheet.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="136" column="17" selection-start="4689" selection-end="4689" vertical-scroll-proportion="1.6267123" vertical-offset="0" max-vertical-offset="1560">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/ctl/TrackbackPing.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="61" column="19" selection-start="2387" selection-end="2387" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1830">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/ctl/Rsd.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="27" column="19" selection-start="936" selection-end="936" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1245">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/ctl/RecentBlogs.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="48" column="19" selection-start="2102" selection-end="2102" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1095">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/ctl/LoginAccount.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="56" column="19" selection-start="2293" selection-end="2293" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="3330">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/ctl/JustJournalBaseServlet.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="60" column="13" selection-start="2222" selection-end="2222" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1965">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/ctl/JournalTitle.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="53" column="13" selection-start="2021" selection-end="2021" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1845">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/ctl/Interface.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="84" column="34" selection-start="3008" selection-end="3008" vertical-scroll-proportion="0.0" vertical-offset="278" max-vertical-offset="7935">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/ctl/api/AccountController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="46" column="19" selection-start="1858" selection-end="1858" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2070">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/ctl/api/BiographyController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="44" column="19" selection-start="1828" selection-end="1828" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="990">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/ctl/api/EntryController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="47" column="19" selection-start="2007" selection-end="2007" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1125">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/ctl/api/FavoriteController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="85" column="52" selection-start="3144" selection-end="3144" vertical-scroll-proportion="0.0" vertical-offset="293" max-vertical-offset="1515">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/ctl/api/FriendController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="46" column="19" selection-start="1832" selection-end="1832" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1335">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/ctl/api/LinkController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="56" column="19" selection-start="2196" selection-end="2196" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1125">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/ctl/api/LoginController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="48" column="19" selection-start="1940" selection-end="1940" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1470">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/ctl/api/LogoutController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="39" column="19" selection-start="1693" selection-end="1693" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="390">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/ctl/api/MembersController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="45" column="19" selection-start="1904" selection-end="1904" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="645">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/ctl/api/MoodListController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="53" column="19" selection-start="2010" selection-end="2010" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="525">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/ctl/api/RssReaderController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="47" column="19" selection-start="2045" selection-end="2045" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1110">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/ctl/api/SignUpController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="45" column="19" selection-start="1864" selection-end="1864" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1065">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/ctl/api/StatisticsController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="46" column="19" selection-start="2051" selection-end="2051" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="840">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/ctl/api/TagsController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="43" column="19" selection-start="1869" selection-end="1869" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="480">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/db/EntryDAO.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="96" column="27" selection-start="3432" selection-end="3432" vertical-scroll-proportion="0.28253615" vertical-offset="451" max-vertical-offset="14685">
+          <folding>
+            <element signature="e#14009#14039#0" expanded="true" />
+            <element signature="e#15887#15917#0" expanded="true" />
+            <element signature="e#17485#17515#0" expanded="true" />
+            <element signature="e#26740#26770#0" expanded="true" />
+            <element signature="e#29183#29213#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/ctl/Users.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="155" column="26" selection-start="5671" selection-end="5671" vertical-scroll-proportion="0.0" vertical-offset="1020" max-vertical-offset="33645">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/justjournal/ctl/api/CommentController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="137" column="51" selection-start="5692" selection-end="5692" vertical-scroll-proportion="1.4967105" vertical-offset="0" max-vertical-offset="2220">
           <folding />
         </state>
       </provider>

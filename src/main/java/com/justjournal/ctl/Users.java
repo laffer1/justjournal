@@ -840,13 +840,13 @@ public final class Users extends HttpServlet {
         } else {
             try {
                 if (uc.isAuthBlog()) {
-                    o = EntryDAO.viewSingle(singleEntryId, true);  // should be true
+                    o = EntryDAO.viewSingle(singleEntryId);
 
 
                     if (log.isDebugEnabled())
                         log.debug("getSingleEntry: User is logged in.");
                 } else {
-                    o = EntryDAO.viewSingle(singleEntryId, false);
+                    o = EntryDAO.viewSinglePublic(singleEntryId);
 
                     if (log.isDebugEnabled())
                         log.debug("getSingleEntry: User is not logged in.");

@@ -135,7 +135,7 @@ final public class CommentController {
             java.sql.Date now = new java.sql.Date(System.currentTimeMillis());
             comment.setDate(fmt.format(now));
 
-            EntryTo et = EntryDAO.viewSingle(comment.getEid());
+            EntryTo et = EntryDAO.viewSinglePublic(comment.getEid());
 
             if (!et.getAllowComments()) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);

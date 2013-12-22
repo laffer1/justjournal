@@ -62,8 +62,8 @@ import static java.util.Collections.singletonMap;
  * @version $Id: EntryDAO.java,v 1.33 2012/07/04 18:49:40 laffer1 Exp $
  * @see EntryTo
  * @since 1.0 User: laffer1 Date: Sep 20, 2003 Time: 8:48:24 PM
- *        <p/>
- *        1.1 Fixed a bug selecting older entries. 1.0 initial release
+ * <p/>
+ * 1.1 Fixed a bug selecting older entries. 1.0 initial release
  */
 public final class EntryDAO {
     private final static int MAX_ENTRIES = 20;
@@ -264,23 +264,17 @@ public final class EntryDAO {
         return et;
     }
 
-
-    // not fond of the security model here
-    @Deprecated
-    public static EntryTo viewSingle(final int entryId, final boolean thisUser) {
-        final EntryTo et;
-
-        if (thisUser)  // no security
-        {
-            return viewSingle(entryId);
-        } else {
-            et = viewSingle(entryId);
-
-            if (et.getSecurityLevel() == 2)
-                return et;
-            else
-                return new EntryTo();
-        }
+    /**
+     * Get single entry if it is public
+     * @param entryId unique id for an entry
+     * @return Entry Transfer Object
+     */
+    public static EntryTo viewSinglePublic(final int entryId) {
+        EntryTo et = viewSingle(entryId);
+        if (et.getSecurityLevel() == 2)
+            return et;
+        else
+            return new EntryTo();
     }
 
     public static EntryTo viewSingle(final EntryTo ets) {
@@ -474,6 +468,7 @@ public final class EntryDAO {
 
     /**
      * Generate friends list entries
+     *
      * @param userID  blog owner user id
      * @param aUserId authenticated user id
      * @return blog entries for friends of the specified user
@@ -507,11 +502,11 @@ public final class EntryDAO {
                 for (com.justjournal.model.Friends f : friends) {
                     // check if the friend has a reverse relationship friends.id = friends.friendid
                     com.justjournal.model.User user_friendid = f.getFriendsToFriendUser();
-                    List <Friends> f2list = user_friendid.getUserToFriends(); // Friend's list of friends
+                    List<Friends> f2list = user_friendid.getUserToFriends(); // Friend's list of friends
                     for (Friends f2 : f2list) {
                         if (f2.getFriendsToFriendUser().getUsername().equals(
-                                Cayenne.objectForPK(dataContext, com.justjournal.model.User.class, userID ).getUsername())) {
-                                 myFriends.add(f.getFriendsToFriendUser());
+                                Cayenne.objectForPK(dataContext, com.justjournal.model.User.class, userID).getUsername())) {
+                            myFriends.add(f.getFriendsToFriendUser());
                         }
                     }
                 }
@@ -521,7 +516,7 @@ public final class EntryDAO {
             exp = Expression.fromString("entryToUser.userToFriends = $id and (entryToSecurity=2 or (entryToSecurity=1 and entryToUser.FriendUserToFriends = $friends))");
             map.put("friends", myFriends);
         } else if (aUserId >= 0)
-             // no user logged in or another user's friends page.. just spit out public entries.
+            // no user logged in or another user's friends page.. just spit out public entries.
             exp = Expression.fromString("entryToUser=$id and entryToUser.userToFriends.id = $id and entryToSecurity=2");
         else
             throw new IllegalArgumentException("aUserId must be greater than -1");
@@ -689,9 +684,10 @@ public final class EntryDAO {
 
     /**
      * Get the list of all entries for a single day and user.
-     * @param year year of the entry
-     * @param month month of the year
-     * @param day day of the week
+     *
+     * @param year     year of the entry
+     * @param month    month of the year
+     * @param day      day of the week
      * @param userName the blog user
      * @param thisUser include private and friends entries
      * @return returns entries or an empty list
@@ -760,7 +756,9 @@ public final class EntryDAO {
      * @return Entries from 15 different users (most recent)
      */
     @SuppressWarnings("unchecked")
-    public @NotNull static Collection<EntryTo> viewRecentUniqueUsers() {
+    public
+    @NotNull
+    static Collection<EntryTo> viewRecentUniqueUsers() {
 
         final int SIZE = 15;
         final ArrayList<EntryTo> entries = new ArrayList<EntryTo>(SIZE);
@@ -772,7 +770,7 @@ public final class EntryDAO {
         exp = Expression.fromString("entryToSecurity=2");
         HashMap<String, Boolean> seenUser = new HashMap<String, Boolean>(20);
 
-         try {
+        try {
             SelectQuery query = new SelectQuery(com.justjournal.model.Entry.class, exp);
             List<Ordering> orderings = new ArrayList<Ordering>();
             orderings.add(new Ordering("date", SortOrder.DESCENDING));
@@ -780,7 +778,7 @@ public final class EntryDAO {
             query.addOrderings(orderings);
             query.setPageSize(SIZE * 3);
             List<com.justjournal.model.Entry> entryList = dataContext.performQuery(query);
-                    log.error("viewRecentUniqueUsers " + entryList.size());
+            log.error("viewRecentUniqueUsers " + entryList.size());
             int done = 0;
             for (Entry e : entryList) {
                 String userName = e.getEntryToUser().getUsername();
@@ -797,7 +795,7 @@ public final class EntryDAO {
                     break;
             }
         } catch (Exception e1) {
-             e1.printStackTrace();
+            e1.printStackTrace();
             log.error(e1);
         }
 
@@ -811,7 +809,9 @@ public final class EntryDAO {
      * @param entryId The unique identifier for an entry
      * @return An arraylist of tag names
      */
-    public @NotNull static ArrayList<String> getTags(int entryId) {
+    public
+    @NotNull
+    static ArrayList<String> getTags(int entryId) {
         final ArrayList<String> tags = new ArrayList<String>();
 
         String sqlStatement;
@@ -975,7 +975,8 @@ public final class EntryDAO {
      * @param userId A userid to lookup
      * @return a list of tags
      */
-    public @NotNull
+    public
+    @NotNull
     static ArrayList<Tag> getUserTags(int userId) {
         String sqlStatement;
         ResultSet rs = null;

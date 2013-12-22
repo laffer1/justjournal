@@ -105,6 +105,7 @@ public final class WebError {
      * @param ErrMsg details of error
      * @param sb output string buffer
      */
+     @Deprecated
      public static void mild(final String ErrTitle, final String ErrMsg, final StringBuffer sb) {
         if (sb.length() > 0) {
             // reset the output to display the error.
