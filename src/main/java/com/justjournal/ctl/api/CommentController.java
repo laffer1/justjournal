@@ -59,7 +59,7 @@ final public class CommentController {
     public
     @ResponseBody
     List<CommentTo> getComments(@RequestParam Integer entryId, HttpServletResponse response) throws Exception {
-        EntryTo entry = EntryDAO.viewSingle(entryId, false);
+        EntryTo entry = EntryDAO.viewSingle(entryId);
 
         try {
             User user = new User(entry.getUserName());
@@ -135,7 +135,7 @@ final public class CommentController {
             java.sql.Date now = new java.sql.Date(System.currentTimeMillis());
             comment.setDate(fmt.format(now));
 
-            EntryTo et = EntryDAO.viewSingle(comment.getEid(), false);
+            EntryTo et = EntryDAO.viewSingle(comment.getEid());
 
             if (!et.getAllowComments()) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
