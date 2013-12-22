@@ -68,14 +68,14 @@ public final class SelectStyleSheet extends HttpServlet {
         //String username = "";
         //username = (String) session.getAttribute( "auth.user" );
         Integer userIDasi;
-        synchronized(session) {
+
         // Retreive user id
-            userIDasi = (Integer) session.getAttribute("auth.uid");
-        }
+        userIDasi = (Integer) session.getAttribute("auth.uid");
+
         // convert Integer to int type
         int userID = 0;
         if (userIDasi != null) {
-            userID = userIDasi.intValue();
+            userID = userIDasi;
         }
 
         String styleSheet = request.getParameter("css");
@@ -85,7 +85,7 @@ public final class SelectStyleSheet extends HttpServlet {
         PrintWriter out = response.getWriter();
 
         if (styleSheet != null) {
-            Integer cssId = new Integer(1);
+            Integer cssId = 1;
 
             try {
                 cssId = new Integer(styleSheet);
@@ -118,8 +118,6 @@ public final class SelectStyleSheet extends HttpServlet {
             WebError.Display("Error", "Unknown error has occured.", out);
 
         out.flush();
-
-        return;
     }
 
     // processes get requests
@@ -136,6 +134,6 @@ public final class SelectStyleSheet extends HttpServlet {
 
     // required function for servlets
     public String getServletInfo() {
-        return new String();
+        return "";
     }
 }
