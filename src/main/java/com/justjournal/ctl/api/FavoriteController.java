@@ -83,7 +83,7 @@ final public class FavoriteController {
 
             while (rs.next()) {
                 int eid = rs.getInt("entryid");
-                EntryTo et = EntryDAO.viewSingle(eid, false);
+                EntryTo et = EntryDAO.viewSingle(eid);
                 entries.add(et);
             }
         } catch (Exception e) {
