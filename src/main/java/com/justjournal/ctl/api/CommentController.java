@@ -36,6 +36,7 @@ package com.justjournal.ctl.api;
 
 import com.justjournal.User;
 import com.justjournal.WebLogin;
+import com.justjournal.core.Settings;
 import com.justjournal.db.CommentDao;
 import com.justjournal.db.CommentTo;
 import com.justjournal.db.EntryDAO;
@@ -129,6 +130,7 @@ final public class CommentController {
     Map<String, String> put(@RequestBody CommentTo comment, HttpSession session, HttpServletResponse response) {
 
         try {
+            Settings settings = new Settings();
             CommentDao commentDao = new CommentDao();
             comment.setUserId(WebLogin.currentLoginId(session));
             java.text.SimpleDateFormat fmt = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -149,7 +151,7 @@ final public class CommentController {
 
                 if (et.getEmailComments()) {
                     QueueMail mail = new QueueMail();
-                    mail.setFromAddress("donotreply@justjournal.com");
+                    mail.setFromAddress(settings.getMailFrom());
                     mail.setToAddress(pf.getEmailAddress());
                     mail.setBody(comment.getUserName() + " said: \n"
                             + "Subject: " + comment.getSubject() + "\n"
