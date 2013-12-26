@@ -43,6 +43,10 @@ import java.util.Collection;
 @RequestMapping("/api/tags")
 final public class TagsController {
 
+    /**
+     * Get the tag list for the whole site
+     * @return tag list
+     */
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public
     @ResponseBody
@@ -50,6 +54,11 @@ final public class TagsController {
         return TagDao.list();
     }
 
+    /**
+     * Get an individual tag
+     * @param id tag id
+     * @return tag list
+     */
     @RequestMapping("/api/tags/{id}")
     @ResponseBody
     public Tag getById(@PathVariable Integer id) {

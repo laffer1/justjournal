@@ -29,6 +29,7 @@ package com.justjournal.ctl.api;
 import com.justjournal.core.Statistics;
 import com.justjournal.db.CommentDao;
 import com.justjournal.db.EntryDAO;
+import com.sun.istack.internal.Nullable;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -47,6 +48,10 @@ import javax.servlet.http.HttpServletResponse;
 final public class StatisticsController {
     private static final Logger log = Logger.getLogger(StatisticsController.class);
 
+    /**
+     * Get Site statistics
+     * @return statistics
+     */
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public
     @ResponseBody
@@ -54,8 +59,15 @@ final public class StatisticsController {
         return new Statistics();
     }
 
+    /**
+     * Get statistics for a specific user
+     * @param id username
+     * @param response Servlet response
+     * @return stats
+     */
     @RequestMapping("/api/statistics/{id}")
     @ResponseBody
+    @Nullable
     public Stats getById(@PathVariable String id, HttpServletResponse response) {
         try {
             return new Stats(id);
@@ -66,17 +78,34 @@ final public class StatisticsController {
         }
     }
 
+    /**
+     * Individual statistics for user
+     */
     class Stats {
         private String username;
 
+        /**
+         * Create Stats
+         * @param username user's username
+         */
         public Stats(String username) {
             this.username = username;
         }
 
+        /**
+         * Total number of entries
+         * @return entry count
+         * @throws Exception
+         */
         public int getEntryCount() throws Exception {
             return EntryDAO.entryCount(username);
         }
 
+        /**
+         * Total number of comments
+         * @return comment count
+         * @throws Exception
+         */
         public int getCommentCount() throws Exception {
             return CommentDao.commentCount(username);
         }

@@ -94,7 +94,7 @@ public final class EntryDAO {
             autoFormat = "N";
 
         final String sqlStmt =
-                new StringBuffer().append("INSERT INTO entry (id,uid,date,subject,mood,music,location,body,security,allow_comments,email_comments,autoformat) values(NULL,'").append(et.getUserId()).append("','").append(et.getDate()).append("','").append(et.getSubject()).append("','").append(et.getMoodId()).append("','").append(et.getMusic()).append("','").append(et.getLocationId()).append("','").append(et.getBody()).append("','").append(et.getSecurityLevel()).append("','").append(allowComments).append("','").append(emailComments).append("','").append(autoFormat).append("');").toString();
+                "INSERT INTO entry (id,uid,date,subject,mood,music,location,body,security,allow_comments,email_comments,autoformat) values(NULL,'" + et.getUserId() + "','" + et.getDate() + "','" + et.getSubject() + "','" + et.getMoodId() + "','" + et.getMusic() + "','" + et.getLocationId() + "','" + et.getBody() + "','" + et.getSecurityLevel() + "','" + allowComments + "','" + emailComments + "','" + autoFormat + "');";
 
         try {
             records = SQLHelper.executeNonQuery(sqlStmt);
@@ -133,7 +133,7 @@ public final class EntryDAO {
                 autoFormat = "N";
 
             final String sqlStmt =
-                    new StringBuffer().append("Update entry SET date='").append(et.getDate().toString()).append("', subject='").append(et.getSubject()).append("', body='").append(et.getBody()).append("', security='").append(et.getSecurityLevel()).append("', location='").append(et.getLocationId()).append("', mood='").append(et.getMoodId()).append("', music='").append(et.getMusic()).append("', allow_comments='").append(allowComments).append("', email_comments='").append(emailComments).append("', autoformat='").append(autoFormat).append("' WHERE id='").append(et.getId()).append("' LIMIT 1;").toString();
+                    "Update entry SET date='" + et.getDate().toString() + "', subject='" + et.getSubject() + "', body='" + et.getBody() + "', security='" + et.getSecurityLevel() + "', location='" + et.getLocationId() + "', mood='" + et.getMoodId() + "', music='" + et.getMusic() + "', allow_comments='" + allowComments + "', email_comments='" + emailComments + "', autoformat='" + autoFormat + "' WHERE id='" + et.getId() + "' LIMIT 1;";
 
             try {
                 records = SQLHelper.executeNonQuery(sqlStmt);
@@ -600,6 +600,7 @@ public final class EntryDAO {
      * @return number of entries
      * @throws Exception data access
      */
+    @NotNull
     public static int entryCount(final String userName) throws Exception {
         String sqlStatement;
         ResultSet RS;
