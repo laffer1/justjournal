@@ -106,23 +106,9 @@
     </servlet>
 
     <servlet>
-        <display-name>Edit Entry</display-name>
-        <servlet-name>EditEntry</servlet-name>
-        <servlet-class>com.justjournal.ctl.EditEntry</servlet-class>
-        <load-on-startup>3</load-on-startup>
-    </servlet>
-
-    <servlet>
         <display-name>JJ Login</display-name>
         <servlet-name>loginAccount</servlet-name>
         <servlet-class>com.justjournal.ctl.LoginAccount</servlet-class>
-        <load-on-startup>3</load-on-startup>
-    </servlet>
-
-    <servlet>
-        <display-name>Delete Account</display-name>
-        <servlet-name>DeleteAccount</servlet-name>
-        <servlet-class>com.justjournal.ctl.DeleteAccount</servlet-class>
         <load-on-startup>3</load-on-startup>
     </servlet>
 
@@ -168,13 +154,6 @@
         <load-on-startup>3</load-on-startup>
     </servlet>
 
-    <servlet>
-        <display-name>Biography</display-name>
-        <servlet-name>Biography</servlet-name>
-        <servlet-class>com.justjournal.ctl.Biography</servlet-class>
-        <load-on-startup>3</load-on-startup>
-    </servlet>
-
     <servlet-mapping>
         <servlet-name>users</servlet-name>
         <url-pattern>/users/*</url-pattern>
@@ -196,11 +175,6 @@
     </servlet-mapping>
 
     <servlet-mapping>
-        <servlet-name>EditEntry</servlet-name>
-        <url-pattern>/EditEntry</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
         <servlet-name>UpdateStyleSheetOverride</servlet-name>
         <url-pattern>/prefs/UpdateStyleSheetOverride</url-pattern>
     </servlet-mapping>
@@ -208,11 +182,6 @@
     <servlet-mapping>
         <servlet-name>loginAccount</servlet-name>
         <url-pattern>/loginAccount</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>DeleteAccount</servlet-name>
-        <url-pattern>/DeleteAccount</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>
@@ -238,11 +207,6 @@
     <servlet-mapping>
         <servlet-name>JournalTitle</servlet-name>
         <url-pattern>/prefs/JournalTitle</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>Biography</servlet-name>
-        <url-pattern>/prefs/Biography</url-pattern>
     </servlet-mapping>
 
     <welcome-file-list>
