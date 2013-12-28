@@ -27,7 +27,6 @@
 package com.justjournal.core;
 
 import com.justjournal.db.SQLHelper;
-import com.sun.tools.internal.xjc.reader.xmlschema.bindinfo.BIConversion;
 import org.apache.cayenne.CayenneRuntimeException;
 import org.apache.cayenne.ObjectContext;
 import org.apache.cayenne.access.DataContext;
