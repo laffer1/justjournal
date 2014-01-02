@@ -1,29 +1,21 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <%@ page contentType="text/html; charset=iso-8859-1" language="java" %>
-<%@ page import="com.justjournal.User" %>
-<%@ page import="com.justjournal.WebError" %>
-<%@ page import="com.justjournal.core.Statistics" %>
 <%@ page import="com.justjournal.db.*" %>
 <%@ page import="com.justjournal.search.BaseSearch" %>
-<%@ page import="com.justjournal.utility.StringUtil" %>
 <%@ page import="com.justjournal.utility.Xml" %>
-<%@ page import="javax.sql.rowset.CachedRowSet" %>
-<%@ page import="java.io.PrintWriter" %>
 <%@ page import="java.sql.*" %>
 <%@ page import="java.text.ParsePosition" %>
 <%@ page import="java.text.SimpleDateFormat" %>
-<%@ page import="java.util.Collection" %>
-<%@ page import="java.util.Iterator" %>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>Just Journal: Search</title>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
     <link rel="stylesheet" type="text/css" href="../layout.css" media="all"/>
     <link rel="stylesheet" type="text/css" href="../font-normal.css" media="all"/>
-    <link rel="home" title="Home" href="../index.jsp"/>
-    <link rel="contents" title="Site Map" href="../sitemap.jsp"/>
-    <link rel="help" title="Technical Support" href="../support/index.jsp"/>
+    <link rel="home" title="Home" href="../"/>
+    <link rel="contents" title="Site Map" href="../#/sitemap"/>
+    <link rel="help" title="Technical Support" href="../#/support"/>
 </head>
 
 <body>
@@ -72,7 +64,7 @@
     Boolean err = false;
     int a = 0;
 
-    if (query != null && type != null) {
+    if (type != null) {
         if (query.length() > 0 && type.length() > 0) {
 
 
@@ -183,9 +175,8 @@
 </div>
 
 <%
-    CachedRowSet brs = null;
+    ResultSet brs = null;
 
-    if (bquery != null) {
         if (bquery.length() > 0) {
             try {
                 BaseSearch b = new BaseSearch();
@@ -256,7 +247,6 @@
                 }
             }
         }
-    }
 %>
 
 
