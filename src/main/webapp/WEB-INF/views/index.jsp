@@ -87,6 +87,7 @@
 <script src="scripts/controllers/memberslist.js"></script>
 <script src="scripts/controllers/moodlist.js"></script>
 <script src="scripts/profile.js"></script>
+<script src="scripts/stats.js"></script>
 <script src="scripts/controllers/sitemap.js"></script>
 <script src="scripts/controllers/tags.js"></script>
 

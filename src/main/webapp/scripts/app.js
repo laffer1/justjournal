@@ -35,6 +35,10 @@ angular.module('wwwApp', [])
                         templateUrl: 'views/sitemap.html',
                         controller: 'SitemapCtrl'
                     })
+                    .when('/stats', {
+                        templateUrl: 'views/stats.html',
+                        controller: 'StatsCtrl'
+                    })
                     .when('/support', {
                         templateUrl: 'views/support.html',
                         controller: 'SupportCtrl'
