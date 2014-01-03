@@ -400,6 +400,13 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
   </component>
+  <component name="WebContextManager">
+    <option name="state">
+      <map>
+        <entry key="mock:///index.jsp" value="file://$PROJECT_DIR$/src/main/webapp" />
+      </map>
+    </option>
+  </component>
   <component name="WebManager">
     <option enabled="false" />
   </component>

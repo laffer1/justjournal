@@ -1,7 +1,7 @@
 <!-- Footer: Begin -->
 
 <div id="footer">
-	<p id="copyright">&#169; 2003 - 2012 Lucas Holt.  All rights reserved.</p>
+	<p id="copyright">&#169; 2003 - 2014 Lucas Holt.  All rights reserved.</p>
 	<p><a href="/privacy.jsp" title="Privacy Policy">Privacy</a> |
 	   <a href="/search/index.jsp" title="Search">Search</a>
 </div>
