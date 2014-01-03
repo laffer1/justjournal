@@ -1,7 +1,7 @@
-'use strict';
-
 angular.module('wwwApp', [])
         .config(function ($routeProvider) {
+            'use strict';
+
             $routeProvider
                     .when('/', {
                         templateUrl: 'views/main.html',
@@ -58,6 +58,10 @@ angular.module('wwwApp', [])
                     .when('/tags', {
                         templateUrl: 'views/tags.html',
                         controller: 'TagsCtrl'
+                    })
+                    .when('/update', {
+                        templateUrl: 'views/update.html',
+                        controller: 'UpdateCtrl'
                     })
                     .otherwise({
                         redirectTo: '/'

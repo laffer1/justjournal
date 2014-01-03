@@ -86,10 +86,11 @@
 <script src="scripts/controllers/cancel.js"></script>
 <script src="scripts/controllers/memberslist.js"></script>
 <script src="scripts/controllers/moodlist.js"></script>
-<script src="scripts/profile.js"></script>
-<script src="scripts/stats.js"></script>
+<script src="scripts/controller/profile.js"></script>
+<script src="scripts/controller/stats.js"></script>
 <script src="scripts/controllers/sitemap.js"></script>
 <script src="scripts/controllers/tags.js"></script>
+<script src="scripts/controllers/update.js"></script>
 
 <script src="scripts/services/accountservice.js"></script>
 <script src="scripts/services/friendservice.js"></script>
