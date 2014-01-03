@@ -24,9 +24,28 @@
  * SUCH DAMAGE.
  */
 
-angular.module('wwwApp').controller('UpdateCtrl', ['$scope', 'MoodService', function ($scope, MoodService) {
-  'use strict';
+package com.justjournal.ctl.api;
 
-    $scope.moods = MoodService.query();
+import com.justjournal.db.SecurityDao;
+import com.justjournal.db.SecurityTo;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-}]);
+import java.util.Collection;
+
+/**
+ * @author Lucas Holt
+ */
+@Controller
+@RequestMapping("/api/security")
+public class SecurityController {
+    @RequestMapping(method = RequestMethod.GET, produces="application/json")
+      public
+      @ResponseBody
+        Collection<SecurityTo> getSecurityList() {
+          return SecurityDao.view();
+      }
+
+}

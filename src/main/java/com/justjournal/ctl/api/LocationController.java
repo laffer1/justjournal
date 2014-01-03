@@ -24,9 +24,28 @@
  * SUCH DAMAGE.
  */
 
-angular.module('wwwApp').controller('UpdateCtrl', ['$scope', 'MoodService', function ($scope, MoodService) {
-  'use strict';
+package com.justjournal.ctl.api;
 
-    $scope.moods = MoodService.query();
+import com.justjournal.db.LocationDao;
+import com.justjournal.db.LocationTo;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-}]);
+import java.util.Collection;
+
+/**
+ * @author Lucas Holt
+ */
+@Controller
+@RequestMapping("/api/location")
+public class LocationController {
+
+    @RequestMapping(method = RequestMethod.GET, produces = "application/json")
+    public
+    @ResponseBody
+    Collection<LocationTo> getLocationList() {
+        return LocationDao.view();
+    }
+}
