@@ -28,18 +28,18 @@
 <![endif]-->
 
 <!--[if lt IE 9]>
-<script src="components/es5-shim/es5-shim.js"></script>
-<script src="components/json3/lib/json3.min.js"></script>
+<script src="components/es5-shim/es5-shim.js" type="text/javascript"></script>
+<script src="components/json3/lib/json3.min.js" type="text/javascript"></script>
 <![endif]-->
 
 <!-- Header: Begin -->
 <div id="header">
     <img src="images/jj_header.gif" alt="JustJournal" width="608" height="202" style="border:0;" usemap="#Map"/>
     <map name="Map" id="Map">
-        <area shape="rect" coords="483,163,509,196" href="/update.jsp" alt="Write"/>
-        <area shape="rect" coords="514,163,544,198" href="/#/search/" alt="Search"/>
-        <area shape="rect" coords="549,165,575,195" href="/#/support/" alt="Help"/>
-        <area shape="rect" coords="135,93,392,146" href="/#/" alt="JustJournal"/>
+        <area shape="rect" coords="483,163,509,196" href="#/update" alt="Write"/>
+        <area shape="rect" coords="514,163,544,198" href="#/search" alt="Search"/>
+        <area shape="rect" coords="549,165,575,195" href="#/support" alt="Help"/>
+        <area shape="rect" coords="135,93,392,146" href="#/" alt="JustJournal"/>
     </map>
 </div>
 <!-- Header: End -->
@@ -50,11 +50,11 @@
 <!-- Footer: Begin -->
 
 <div id="footer">
-    <p id="copyright">&#169; 2003 - 2013 Lucas Holt. All rights reserved.</p>
+    <p id="copyright">&#169; 2003 - 2014 Lucas Holt. All rights reserved.</p>
 
-    <p><a href="/privacy" title="Privacy Policy">Privacy</a> |
-        <a href="/search/index.jsp" title="Search">Search</a> |
-        <a href="/sitemap" title="Sitemap">Sitemap</a></p>
+    <p><a href="#/privacy" title="Privacy Policy">Privacy</a> |
+        <a href="#/search" title="Search">Search</a> |
+        <a href="#/sitemap" title="Sitemap">Sitemap</a></p>
 </div>
 
 <div style="text-align: center; margin: auto;">
