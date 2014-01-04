@@ -14,11 +14,30 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <link rel="stylesheet" href="styles/bootstrap.min.css">
     <!-- build:css styles/main.css -->
-    <link rel="stylesheet" href="styles/bootstrap.css">
     <link rel="stylesheet" href="components/angular-ui/build/angular-ui.css"/>
     <link rel="stylesheet" href="styles/main.css">
     <!-- endbuild -->
+    <!-- IE 10 support -->
+    <style type="text/css">
+        @-webkit-viewport   { width: device-width; }
+        @-moz-viewport      { width: device-width; }
+        @-ms-viewport       { width: device-width; }
+        @-o-viewport        { width: device-width; }
+        @viewport           { width: device-width; }
+    </style>
+    <script type="text/javascript">
+        if (navigator.userAgent.match(/IEMobile\/10\.0/)) {
+          var msViewportStyle = document.createElement("style");
+          msViewportStyle.appendChild(
+            document.createTextNode(
+              "@-ms-viewport{width:auto!important}"
+            )
+          );
+          document.getElementsByTagName("head")[0].appendChild(msViewportStyle);
+        }
+    </script>
 </head>
 <body ng-app="wwwApp">
 <!--[if lt IE 7]>
@@ -73,6 +92,7 @@
 <!-- Footer: End -->
 
 <script src="components/jquery/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
 <script src="components/angular/angular.js"></script>
 <script src="components/angular-resource/angular-resource.js"></script>
 <script src="components/angular-cookies/angular-cookies.js"></script>
