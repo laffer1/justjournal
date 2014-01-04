@@ -24,11 +24,54 @@
  * SUCH DAMAGE.
  */
 
-angular.module('wwwApp').controller('UpdateCtrl', ['$scope', 'MoodService', 'LocationService', 'SecurityService',
-    function ($scope, MoodService, LocationService, SecurityService) {
-  'use strict';
+angular.module('wwwApp').controller('UpdateCtrl', ['$scope', 'MoodService', 'LocationService', 'SecurityService', 'EntryService',
+    function ($scope, MoodService, LocationService, SecurityService, EntryService) {
+        'use strict';
 
-    $scope.moods = MoodService.query();
-    $scope.locations = LocationService.query();
-    $scope.Security = SecurityService.query();
-}]);
+        $scope.moods = MoodService.query();
+        $scope.locations = LocationService.query();
+        $scope.security = SecurityService.query();
+        $scope.entry = {
+            date: new Date() // TODO: is this the right format?
+        };
+        $scope.ErrorMessage = '';
+
+        $scope.save = function () {
+            if (jQuery('form#UpdateJournal').valid()) {
+                EntryService.save($scope.entry, function success() {
+                            $location.path('/users/');  // TODO: username
+                        },
+                        function fail(response) {
+                            if (typeof(response.data.ModelState) !== 'undefined') {
+                                $scope.ErrorMessage = response.data.Message + ' (' + response.status + ') ' + angular.toJson(response.data.ModelState);
+                            }
+                            else if (typeof(response.data.ExceptionMessage) !== 'undefined') {
+                                $scope.ErrorMessage = response.data.Message + ' (' + response.status + ') ' + response.data.ExceptionMessage + ' ' + response.data.ExceptionType + ' ' + response.data.StackTrace;
+                            }
+                            else {
+                                $scope.ErrorMessage = 'Unknown error occurred. Response was ' + angular.toJson(response);
+                            }
+                        }
+                );
+            }
+        };
+
+        $scope.$on('$destroy', function finalize() {
+            $scope.moods = null;
+            $scope.locations = null;
+            $scope.security = null;
+        });
+
+        $scope.init = function () {
+            jQuery("#frmUpdateJournal").validate({
+                submitHandler: function (form) {
+                    form.submit();
+                }
+            });
+
+            jQuery('#tags').bind('change', function () {
+                this.value = this.value.toLocaleLowerCase();
+            });
+        };
+        $scope.init();
+    }]);

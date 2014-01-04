@@ -118,6 +118,7 @@
 <script type="text/javascript" src="scripts/controllers/update.js"></script>
 
 <script type="text/javascript" src="scripts/services/accountservice.js"></script>
+<script type="text/javascript" src="scripts/services/entryservice.js"></script>
 <script type="text/javascript" src="scripts/services/friendservice.js"></script>
 <script type="text/javascript" src="scripts/services/locationservice.js"></script>
 <script type="text/javascript" src="scripts/services/memberservice.js"></script>
