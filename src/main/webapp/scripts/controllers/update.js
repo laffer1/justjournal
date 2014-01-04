@@ -39,7 +39,8 @@ angular.module('wwwApp').controller('UpdateCtrl', ['$scope', 'MoodService', 'Loc
         $scope.save = function () {
             if (jQuery('form#UpdateJournal').valid()) {
                 EntryService.save($scope.entry, function success() {
-                            $location.path('/users/');  // TODO: username
+                            //$location.path('/users/');  // TODO: username
+                            alert('Blog Entry Posted');
                         },
                         function fail(response) {
                             if (typeof(response.data.ModelState) !== 'undefined') {
@@ -60,6 +61,8 @@ angular.module('wwwApp').controller('UpdateCtrl', ['$scope', 'MoodService', 'Loc
             $scope.moods = null;
             $scope.locations = null;
             $scope.security = null;
+            $scope.entry = null;
+            $scope.ErrorMessage = null;
         });
 
         $scope.init = function () {
