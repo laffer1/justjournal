@@ -25,7 +25,86 @@
   -->
 
 <div class="container">
-    <form>
+    <form role="form" id="frmUpdateJournal" action="">
 
+        <fieldset>
+            <legend><strong>Journal Entry</strong><br></legend>
+
+            <div class="row">
+                <span class="label"><label for="subject">Subject</label></span>
+        	  <span class="formw"><input name="subject" type="text" id="subject" size="30" maxlength="150"
+                                         value=""
+                        trim="true" />
+        	  (optional)</span>
+            </div>
+
+            <div class="form-group"><textarea id="body" name="body" style="width: 100%" cols="60" rows="20"></textarea>
+            </div>
+
+            <div class="form-group" id="newlinetext">
+                <span class="formw">by default, newlines will be auto-formatted to &lt;br&gt;</span>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend><strong>Optional Settings</strong><br/></legend>
+
+            <div class="form-group">
+                <label for="security">Security</label>
+                <select class="form-control" id="security" name="security" size="1">
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="location">Location</label>
+                <select id="location" name="location" size="1"></select>
+            </div>
+
+            <div class="form-group">
+                <label for="mood"><a href="#/moodlist" title="List of Moods">Mood</a></label>
+
+                <select id="mood" name="mood" size="1"></select>
+            </div>
+
+            <div class="form-group">
+                <label for="tags">Tags</label>
+                <input type="text" name="tags" id="tags" size="30" value=""
+                       trim="true">
+            </div>
+
+            <div class="form-group">
+                <label for="music">Music</label>
+                <input type="text" name="music" id="music" size="30" value="">
+            </div>
+
+            <div class="form-group">
+                <label for="trackback">Trackback</label>
+                <input type="text" name="trackback" id="trackback" size="30" value="" url="true"
+                       required="false">
+            </div>
+
+            <div class="form-group">
+                <input type="checkbox" name="allow_comment" id="allow_comment"
+                       value="checked" checked="checked">
+                <label for="allow_comment">Allow comments on this entry</label>
+
+            </div>
+
+            <div class="form-group">
+                <input type="checkbox" name="email_comment" id="email_comment"
+                       value="checked" checked="checked">
+                <label for="email_comment">Email comments to me</label>
+
+            </div>
+
+            <div class="form-group" id="aformatrow">
+                <input type="checkbox" name="aformat" id="aformat"
+                       value="checked" checked="checked">
+                <label for="aformat">Auto-formatting</label>
+            </div>
+        </fieldset>
+
+        <button type="submit" class="btn btn-default">Submit</button>
     </form>
 </div>
+
