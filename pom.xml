@@ -15,7 +15,7 @@
 
     <properties>
         <java-version>1.6</java-version>
-        <spring.version>4.0.0.RELEASE</spring.version>
+        <spring.version>3.2.6.RELEASE</spring.version>
     </properties>
 
     <packaging>war</packaging>
@@ -212,27 +212,6 @@
             <artifactId>jackson-mrbean</artifactId>
             <version>1.9.11</version>
         </dependency>
-
-        <!--
-        <dependency>
-        	<groupId>org.apache.xbean</groupId>
-        	<artifactId>xbean-naming</artifactId>
-        	<version>3.14</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-        	<groupId>commons-dbcp</groupId>
-        	<artifactId>commons-dbcp</artifactId>
-        	<version>1.4</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-        	<groupId>org.apache.tomcat</groupId>
-        	<artifactId>tomcat-catalina</artifactId>
-        	<version>7.0.47</version>
-            <scope>test</scope>
-        </dependency>
-        -->
     </dependencies>
 
     <repositories>
