@@ -21,10 +21,15 @@
     <!-- endbuild -->
     <!-- IE 10 support -->
     <style type="text/css">
+        /*noinspection ALL*/
         @-webkit-viewport   { width: device-width; }
+        /*noinspection ALL*/
         @-moz-viewport      { width: device-width; }
+        /*noinspection ALL*/
         @-ms-viewport       { width: device-width; }
+        /*noinspection ALL*/
         @-o-viewport        { width: device-width; }
+        /*noinspection ALL*/
         @viewport           { width: device-width; }
     </style>
     <script type="text/javascript">

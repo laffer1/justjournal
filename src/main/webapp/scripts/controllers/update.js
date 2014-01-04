@@ -24,9 +24,11 @@
  * SUCH DAMAGE.
  */
 
-angular.module('wwwApp').controller('UpdateCtrl', ['$scope', 'MoodService', function ($scope, MoodService) {
+angular.module('wwwApp').controller('UpdateCtrl', ['$scope', 'MoodService', 'LocationService', 'SecurityService',
+    function ($scope, MoodService, LocationService, SecurityService) {
   'use strict';
 
     $scope.moods = MoodService.query();
-
+    $scope.locations = LocationService.query();
+    $scope.Security = SecurityService.query();
 }]);
