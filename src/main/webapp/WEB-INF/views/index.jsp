@@ -91,33 +91,35 @@
 
 <!-- Footer: End -->
 
-<script src="components/jquery/jquery.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script src="components/angular/angular.js"></script>
-<script src="components/angular-resource/angular-resource.js"></script>
-<script src="components/angular-cookies/angular-cookies.js"></script>
-<script src="components/angular-sanitize/angular-sanitize.js"></script>
+<script type="text/javascript" src="components/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="js/bootstrap.min.js"></script>
+<script type="text/javascript" src="components/angular/angular.js"></script>
+<script type="text/javascript" src="components/angular-resource/angular-resource.js"></script>
+<script type="text/javascript" src="components/angular-cookies/angular-cookies.js"></script>
+<script type="text/javascript" src="components/angular-sanitize/angular-sanitize.js"></script>
 
-<script src="components/angular-ui/build/angular-ui.js"></script>
+<script type="text/javascript" src="components/angular-ui/build/angular-ui.js"></script>
 
 <!-- build:js scripts/scripts.js -->
-<script src="scripts/app.js"></script>
-<script src="scripts/controllers/main.js"></script>
-<script src="scripts/controllers/cancel.js"></script>
-<script src="scripts/controllers/memberslist.js"></script>
-<script src="scripts/controllers/moodlist.js"></script>
-<script src="scripts/controller/profile.js"></script>
-<script src="scripts/controller/stats.js"></script>
-<script src="scripts/controllers/sitemap.js"></script>
-<script src="scripts/controllers/tags.js"></script>
-<script src="scripts/controllers/update.js"></script>
+<script type="text/javascript" src="scripts/app.js"></script>
+<script type="text/javascript" src="scripts/controllers/main.js"></script>
+<script type="text/javascript" src="scripts/controllers/cancel.js"></script>
+<script type="text/javascript" src="scripts/controllers/memberslist.js"></script>
+<script type="text/javascript" src="scripts/controllers/moodlist.js"></script>
+<script type="text/javascript" src="scripts/controller/profile.js"></script>
+<script type="text/javascript" src="scripts/controller/stats.js"></script>
+<script type="text/javascript" src="scripts/controllers/sitemap.js"></script>
+<script type="text/javascript" src="scripts/controllers/tags.js"></script>
+<script type="text/javascript" src="scripts/controllers/update.js"></script>
 
-<script src="scripts/services/accountservice.js"></script>
-<script src="scripts/services/friendservice.js"></script>
-<script src="scripts/services/memberservice.js"></script>
-<script src="scripts/services/moodervice.js"></script>
-<script src="scripts/services/statisticsservice.js"></script>
-<script src="scripts/services/tagservice.js"></script>
+<script type="text/javascript" src="scripts/services/accountservice.js"></script>
+<script type="text/javascript" src="scripts/services/friendservice.js"></script>
+<script type="text/javascript" src="scripts/services/locationservice.js"></script>
+<script type="text/javascript" src="scripts/services/memberservice.js"></script>
+<script type="text/javascript" src="scripts/services/moodervice.js"></script>
+<script type="text/javascript" src="scripts/services/securityservice.js"></script>
+<script type="text/javascript" src="scripts/services/statisticsservice.js"></script>
+<script type="text/javascript" src="scripts/services/tagservice.js"></script>
 <!-- endbuild -->
 
 <script>
