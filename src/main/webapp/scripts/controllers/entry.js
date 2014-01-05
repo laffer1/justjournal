@@ -24,7 +24,7 @@
  * SUCH DAMAGE.
  */
 
-angular.module('wwwApp').controller('UpdateCtrl', ['$scope', 'MoodService', 'LocationService', 'SecurityService', 'EntryService',
+angular.module('wwwApp').controller('EntryCtrl', ['$scope', 'MoodService', 'LocationService', 'SecurityService', 'EntryService',
     function ($scope, MoodService, LocationService, SecurityService, EntryService) {
         'use strict';
 

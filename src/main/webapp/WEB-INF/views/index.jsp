@@ -103,13 +103,13 @@
 <script type="text/javascript" src="scripts/app.js"></script>
 <script type="text/javascript" src="scripts/controllers/main.js"></script>
 <script type="text/javascript" src="scripts/controllers/cancel.js"></script>
+<script type="text/javascript" src="scripts/controllers/entry.js"></script>
 <script type="text/javascript" src="scripts/controllers/memberslist.js"></script>
 <script type="text/javascript" src="scripts/controllers/moodlist.js"></script>
 <script type="text/javascript" src="scripts/controller/profile.js"></script>
 <script type="text/javascript" src="scripts/controller/stats.js"></script>
 <script type="text/javascript" src="scripts/controllers/sitemap.js"></script>
 <script type="text/javascript" src="scripts/controllers/tags.js"></script>
-<script type="text/javascript" src="scripts/controllers/update.js"></script>
 
 <script type="text/javascript" src="scripts/services/accountservice.js"></script>
 <script type="text/javascript" src="scripts/services/entryservice.js"></script>

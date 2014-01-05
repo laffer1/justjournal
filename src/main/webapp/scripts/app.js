@@ -11,6 +11,10 @@ angular.module('wwwApp', [])
                         templateUrl: 'views/cancel.html',
                         controller: 'CancelCtrl'
                     })
+                    .when('/entry', {
+                        templateUrl: 'views/entry.html',
+                        controller: 'EntryCtrl'
+                    })
                     .when('/members', {
                         templateUrl: 'views/members.html',
                         controller: 'MembersCtrl'
@@ -58,10 +62,6 @@ angular.module('wwwApp', [])
                     .when('/tags', {
                         templateUrl: 'views/tags.html',
                         controller: 'TagsCtrl'
-                    })
-                    .when('/update', {
-                        templateUrl: 'views/update.html',
-                        controller: 'UpdateCtrl'
                     })
                     .otherwise({
                         redirectTo: '/'
