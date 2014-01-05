@@ -179,10 +179,11 @@ public final class EntryDAO {
      * @param userId  unique user id
      * @return Entry Transfer Object
      */
+    @NotNull
     public static EntryTo viewSingle(final int entryId, final int userId) {
         EntryTo et = viewSingle(entryId);
 
-        if (et.getUserId() == userId)
+        if (et != null && et.getUserId() == userId)
             return et;
         else
             return new EntryTo();
@@ -238,6 +239,19 @@ public final class EntryDAO {
 
         }
         return et;
+    }
+
+    public static boolean exists(final int entryId) {
+        try {
+            ObjectContext dataContext = DataContext.getThreadObjectContext();
+
+            com.justjournal.model.Entry entry =
+                    Cayenne.objectForPK(dataContext, com.justjournal.model.Entry.class, entryId);
+            if (entry != null) return true;
+        } catch (Exception e1) {
+            log.error(e1);
+        }
+        return false;
     }
 
     /**

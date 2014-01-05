@@ -48,21 +48,59 @@ import java.util.Map;
 final public class EntryController {
     private static final Logger log = Logger.getLogger(EntryController.class);
 
-    @RequestMapping(method = RequestMethod.POST, produces="application/json")
+    /**
+     * Creates a new entry resource
+     * @param entry
+     * @param session
+     * @param response
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.POST, produces = "application/json")
     public
     @ResponseBody
-    Map<String, String> save(@RequestBody EntryTo entry, HttpSession session, HttpServletResponse response) {
+    Map<String, String> post(@RequestBody EntryTo entry, HttpSession session, HttpServletResponse response) {
 
         if (!WebLogin.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
         }
         // TODO: validate
-        boolean result = EntryDAO.update(entry);
+        boolean result = EntryDAO.add(entry);
 
         if (!result) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return java.util.Collections.singletonMap("error", "Could not edit the comment.");
+            return java.util.Collections.singletonMap("error", "Could not add the entry.");
+        }
+        return java.util.Collections.singletonMap("id", Integer.toString(entry.getId()));
+    }
+
+    /**
+     * PUT generally allows for add or edit in REST.
+     * @param entry
+     * @param session
+     * @param response
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.PUT, produces = "application/json")
+    public
+    @ResponseBody
+    Map<String, String> put(@RequestBody EntryTo entry, HttpSession session, HttpServletResponse response) {
+
+        if (!WebLogin.isAuthenticated(session)) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
+        }
+        // TODO: validate
+        boolean result;
+        EntryTo entryTo = EntryDAO.viewSingle(entry.getId(), WebLogin.currentLoginId(session));
+        if (entryTo != null && entryTo.getId() > 0)
+            result = EntryDAO.update(entry);
+        else
+            result = EntryDAO.add(entry);
+
+        if (!result) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return java.util.Collections.singletonMap("error", "Could not add/edit entry.");
         }
         return java.util.Collections.singletonMap("id", Integer.toString(entry.getId()));
     }
