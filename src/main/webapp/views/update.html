@@ -51,19 +51,22 @@
 
             <div class="form-group">
                 <label for="security">Security</label>
-                <select class="form-control" id="security" name="security" size="1" ng-model="entry.security">
+                <select class="form-control" id="security" name="security" size="1"
+                        ng-options="s.name for s in security" ng-model="entry.security">
                 </select>
             </div>
 
             <div class="form-group">
                 <label for="location">Location</label>
-                <select id="location" name="location" size="1" ng-model="entry.location"></select>
+                <select id="location" name="location" size="1"
+                        ng-options="l.name for l in location" ng-model="entry.location"></select>
             </div>
 
             <div class="form-group">
                 <label for="mood"><a href="#/moodlist" title="List of Moods">Mood</a></label>
 
-                <select id="mood" name="mood" size="1" ng-model="entry.mood"></select>
+                <select id="mood" name="mood" size="1"
+                        ng-options="m.name for m in moods" ng-model="entry.mood"></select>
             </div>
 
             <div class="form-group">
@@ -79,8 +82,8 @@
 
             <div class="form-group">
                 <label for="trackback">Trackback</label>
-                <input type="text" name="trackback" id="trackback" size="30" value="" url="true"
-                       required="false" ng-model="entry.trackback">
+                <input type="url" name="trackback" id="trackback" size="30" value="" url="true"
+                       ng-model="entry.trackback">
             </div>
 
             <div class="form-group">
