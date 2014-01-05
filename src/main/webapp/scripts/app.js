@@ -11,6 +11,10 @@ angular.module('wwwApp', [])
                         templateUrl: 'views/cancel.html',
                         controller: 'CancelCtrl'
                     })
+                    .when('/entry/:entryId', {
+                        templateUrl: 'views/entry.html',
+                        controller: 'EntryCtrl'
+                    })
                     .when('/entry', {
                         templateUrl: 'views/entry.html',
                         controller: 'EntryCtrl'

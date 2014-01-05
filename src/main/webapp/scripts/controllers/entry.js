@@ -73,8 +73,12 @@ angular.module('wwwApp').controller('EntryCtrl', ['$scope', 'MoodService', 'Loca
             });
 
             jQuery('#tags').bind('change', function () {
-                this.value = this.value.toLocaleLowerCase();
+                $(this).value = $(this).value.toLocaleLowerCase();
             });
+
+            if (typeof $routeParams.entryId !== 'undefined') {
+                $scope.entry = EntryService.get({Id: $routeParams.entryId});
+            }
         };
         $scope.init();
     }]);
