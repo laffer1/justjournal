@@ -33,13 +33,12 @@
             <div class="row">
                 <span class="label"><label for="subject">Subject</label></span>
         	  <span class="formw"><input name="subject" type="text" id="subject" size="30" maxlength="150"
-                                         value="" ng-model="entry.subject"
-                        trim="true" />
+                                         value="" ng-model="entry.subject" trim="true" />
         	  (optional)</span>
             </div>
 
             <div class="form-group"><textarea id="body" name="body" style="width: 100%" cols="60" rows="20"
-                    ng-model="entry.body"></textarea>
+                    ng-model="entry.body" required></textarea>
             </div>
 
             <div class="form-group" id="newlinetext">
