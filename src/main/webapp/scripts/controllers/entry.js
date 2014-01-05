@@ -38,6 +38,27 @@ angular.module('wwwApp').controller('EntryCtrl', ['$scope', 'MoodService', 'Loca
 
         $scope.save = function () {
             if (jQuery('form#UpdateJournal').valid()) {
+                // EDIT case
+                if (typeof $routeParams.entryId !== 'undefined') {
+                    EntryService.update($scope.entry, function success() {
+                                //$location.path('/users/');  // TODO: username
+                                alert('Blog Entry Updated');
+                            },
+                            function fail(response) {
+                                if (typeof(response.data.ModelState) !== 'undefined') {
+                                    $scope.ErrorMessage = response.data.Message + ' (' + response.status + ') ' + angular.toJson(response.data.ModelState);
+                                }
+                                else if (typeof(response.data.ExceptionMessage) !== 'undefined') {
+                                    $scope.ErrorMessage = response.data.Message + ' (' + response.status + ') ' + response.data.ExceptionMessage + ' ' + response.data.ExceptionType + ' ' + response.data.StackTrace;
+                                }
+                                else {
+                                    $scope.ErrorMessage = 'Unknown error occurred. Response was ' + angular.toJson(response);
+                                }
+                            }
+                    );
+                    return;
+                }
+
                 EntryService.save($scope.entry, function success() {
                             //$location.path('/users/');  // TODO: username
                             alert('Blog Entry Posted');
