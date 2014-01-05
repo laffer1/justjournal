@@ -33,12 +33,13 @@
             <div class="row">
                 <span class="label"><label for="subject">Subject</label></span>
         	  <span class="formw"><input name="subject" type="text" id="subject" size="30" maxlength="150"
-                                         value=""
+                                         value="" ng-model="entry.subject"
                         trim="true" />
         	  (optional)</span>
             </div>
 
-            <div class="form-group"><textarea id="body" name="body" style="width: 100%" cols="60" rows="20"></textarea>
+            <div class="form-group"><textarea id="body" name="body" style="width: 100%" cols="60" rows="20"
+                    ng-model="entry.body"></textarea>
             </div>
 
             <div class="form-group" id="newlinetext">
@@ -51,54 +52,54 @@
 
             <div class="form-group">
                 <label for="security">Security</label>
-                <select class="form-control" id="security" name="security" size="1">
+                <select class="form-control" id="security" name="security" size="1" ng-model="entry.security">
                 </select>
             </div>
 
             <div class="form-group">
                 <label for="location">Location</label>
-                <select id="location" name="location" size="1"></select>
+                <select id="location" name="location" size="1" ng-model="entry.location"></select>
             </div>
 
             <div class="form-group">
                 <label for="mood"><a href="#/moodlist" title="List of Moods">Mood</a></label>
 
-                <select id="mood" name="mood" size="1"></select>
+                <select id="mood" name="mood" size="1" ng-model="entry.mood"></select>
             </div>
 
             <div class="form-group">
                 <label for="tags">Tags</label>
                 <input type="text" name="tags" id="tags" size="30" value=""
-                       trim="true">
+                       trim="true" ng-model="entry.tag">
             </div>
 
             <div class="form-group">
                 <label for="music">Music</label>
-                <input type="text" name="music" id="music" size="30" value="">
+                <input type="text" name="music" id="music" size="30" value="" ng-model="entry.music">
             </div>
 
             <div class="form-group">
                 <label for="trackback">Trackback</label>
                 <input type="text" name="trackback" id="trackback" size="30" value="" url="true"
-                       required="false">
+                       required="false" ng-model="entry.trackback">
             </div>
 
             <div class="form-group">
                 <input type="checkbox" name="allow_comment" id="allow_comment"
-                       value="checked" checked="checked">
+                       value="checked" checked="checked" ng-model="entry.allowComments">
                 <label for="allow_comment">Allow comments on this entry</label>
 
             </div>
 
             <div class="form-group">
                 <input type="checkbox" name="email_comment" id="email_comment"
-                       value="checked" checked="checked">
+                       value="checked" checked="checked" ng-model="entry.emailComments">
                 <label for="email_comment">Email comments to me</label>
 
             </div>
 
             <div class="form-group" id="aformatrow">
-                <input type="checkbox" name="aformat" id="aformat"
+                <input type="checkbox" name="aformat" id="aformat" ng-model="entry.autoFormat"
                        value="checked" checked="checked">
                 <label for="aformat">Auto-formatting</label>
             </div>
