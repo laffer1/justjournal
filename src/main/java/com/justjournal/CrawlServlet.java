@@ -27,11 +27,6 @@ public final class CrawlServlet implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response,
                          FilterChain chain) throws IOException, ServletException {
 
-        // skip if its not http
-        if (!(request instanceof HttpServletRequest)) {
-            return;
-        }
-
         ServletOutputStream out = response.getOutputStream();
         String escapedFragment = request.getParameter("_escaped_fragment_");
 
