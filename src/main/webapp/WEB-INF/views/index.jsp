@@ -102,24 +102,30 @@
 <!-- build:js scripts/scripts.js -->
 <script type="text/javascript" src="scripts/app.js"></script>
 <script type="text/javascript" src="scripts/controllers/main.js"></script>
+<script type="text/javascript" src="scripts/controllers/bugs.js"></script>
 <script type="text/javascript" src="scripts/controllers/cancel.js"></script>
 <script type="text/javascript" src="scripts/controllers/entry.js"></script>
-<script type="text/javascript" src="scripts/controllers/memberslist.js"></script>
+<script type="text/javascript" src="scripts/controllers/faq.js"></script>
+<script type="text/javascript" src="scripts/controllers/members.js"></script>
 <script type="text/javascript" src="scripts/controllers/moodlist.js"></script>
-<script type="text/javascript" src="scripts/controller/profile.js"></script>
-<script type="text/javascript" src="scripts/controller/stats.js"></script>
+<script type="text/javascript" src="scripts/controllers/privacy.js"></script>
+<script type="text/javascript" src="scripts/controllers/profile.js"></script>
+<script type="text/javascript" src="scripts/controllers/search.js"></script>
 <script type="text/javascript" src="scripts/controllers/sitemap.js"></script>
+<script type="text/javascript" src="scripts/controllers/stats.js"></script>
+<script type="text/javascript" src="scripts/controllers/support.js"></script>
 <script type="text/javascript" src="scripts/controllers/tags.js"></script>
+<script type="text/javascript" src="scripts/controllers/tech.js"></script>
 
-<script type="text/javascript" src="scripts/services/accountservice.js"></script>
-<script type="text/javascript" src="scripts/services/entryservice.js"></script>
-<script type="text/javascript" src="scripts/services/friendservice.js"></script>
-<script type="text/javascript" src="scripts/services/locationservice.js"></script>
-<script type="text/javascript" src="scripts/services/memberservice.js"></script>
-<script type="text/javascript" src="scripts/services/moodervice.js"></script>
-<script type="text/javascript" src="scripts/services/securityservice.js"></script>
-<script type="text/javascript" src="scripts/services/statisticsservice.js"></script>
-<script type="text/javascript" src="scripts/services/tagservice.js"></script>
+<script type="text/javascript" src="scripts/services/AccountService.js"></script>
+<script type="text/javascript" src="scripts/services/EntryService.js"></script>
+<script type="text/javascript" src="scripts/services/FriendService.js"></script>
+<script type="text/javascript" src="scripts/services/LocationService.js"></script>
+<script type="text/javascript" src="scripts/services/MemberService.js"></script>
+<script type="text/javascript" src="scripts/services/MoodService.js"></script>
+<script type="text/javascript" src="scripts/services/SecurityService.js"></script>
+<script type="text/javascript" src="scripts/services/StatisticsService.js"></script>
+<script type="text/javascript" src="scripts/services/TagService.js"></script>
 <!-- endbuild -->
 
 <script>
