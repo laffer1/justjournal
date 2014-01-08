@@ -46,7 +46,7 @@ function str_hmac_sha1(key, data) {
  */
 function sha1_vm_test()
 {
-    return hex_sha1("abc") == "a9993e364706816aba3e25717850c26c9cd0d89d";
+    return hex_sha1("abc") === "a9993e364706816aba3e25717850c26c9cd0d89d";
 }
 
 /*
@@ -161,7 +161,7 @@ function rol(num, cnt)
  */
 function str2binb(str)
 {
-    var bin = Array();
+    var bin = [];
     var mask = (1 << chrsz) - 1;
     for (var i = 0; i < str.length * chrsz; i += chrsz)
         bin[i >> 5] |= (str.charCodeAt(i / chrsz) & mask) << (24 - i % 32);

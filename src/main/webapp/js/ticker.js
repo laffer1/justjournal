@@ -1,13 +1,17 @@
 function addEventToObject(obj, evt, func) {
+    'use strict';
+
     var oldhandler = obj[evt];
-    obj[evt] = (typeof obj[evt] != 'function') ? func : function(ev) {
+    obj[evt] = (typeof obj[evt] !== 'function') ? func : function(ev) {
         oldhandler(ev);
         func(ev);
     };
 }
 function ajaxRequest(url, func, obj) {
+    'use strict';
+    var req;
     if (window.XMLHttpRequest) {
-        var req = new XMLHttpRequest();
+        req = new XMLHttpRequest();
     }
     else if (window.ActiveXObject) {
         try {
@@ -19,7 +23,7 @@ function ajaxRequest(url, func, obj) {
     if (func) {
         req.onreadystatechange = function() {
             func(req, obj);
-        }
+        };
     }
     req.open('GET', url, true);
     req.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
@@ -34,7 +38,7 @@ function ajaxRequest(url, func, obj) {
 var rssFetchAndDisplay = {
     aFeeds: [[['recent-blogs'],['The latest blog entries on jj.'],['<a href="/">Recent Blog Entries <\/a>'],['http://www.justjournal.com/RecentBlogs']]],
     iCurrentFeedsItem: 0,
-    aNews: new Array(),
+    aNews: [],
     iCurrentNewsItem: 0,
     tTM: null,
     sState: 'hide',
@@ -54,9 +58,9 @@ var rssFetchAndDisplay = {
     XmlFetchResponse: function(req)
     {
         var r = rssFetchAndDisplay;
-        if (req.readyState == 4)
+        if (req.readyState === 4)
         {
-            if (req.status == 200)
+            if (req.status === 200)
             {
                 if (r.tTM) {
                     clearTimeout(r.tTM);
@@ -97,7 +101,7 @@ var rssFetchAndDisplay = {
         }
         for (var i = 0; i < aItems.length; i++)
         {
-            r.aNews[i] = new Array();
+            r.aNews[i] = [];
             r.aNews[i].title = aItems[i].getElementsByTagName('title')[0].firstChild.nodeValue;
             r.aNews[i].url = aItems[i].getElementsByTagName('link')[0].firstChild.nodeValue;
         }
@@ -106,9 +110,9 @@ var rssFetchAndDisplay = {
     {
         var r = rssFetchAndDisplay;
         if (r.tTM) {
-            clearTimeout(r.tTM)
+            clearTimeout(r.tTM);
         }
-        ;
+
         var oFadeItem = document.getElementById('tic-item').getElementsByTagName('a')[0];
         oFadeItem.style.KHTMLOpacity = 0.999;
         // Safari<1.2, Konqueror
@@ -142,7 +146,7 @@ var rssFetchAndDisplay = {
             r.iCycleCount -= 100;
             //var iDelay = (r.iCurrentNewsItem == 0) ? 0 : 100;
             r.tTM = setTimeout(function() {
-                r.CycleTicker()
+                r.CycleTicker();
             }, 100);
         }
     },
@@ -150,9 +154,9 @@ var rssFetchAndDisplay = {
     {
         var r = rssFetchAndDisplay;
         if (r.tTM) {
-            clearTimeout(r.tTM)
+            clearTimeout(r.tTM);
         }
-        ;
+
         if (r.iFadeOutCount < 0)
         {
             r.iCurrentNewsItem = (r.iCurrentNewsItem < r.aNews.length - 1) ? r.iCurrentNewsItem + 1 : 0;
@@ -181,10 +185,10 @@ var rssFetchAndDisplay = {
                 //obj.style.filter = 'alpha(opacity:'+obj.fadeCount+')'; // IE/Win
             }
             r.tTM = setTimeout(function() {
-                r.FadeOut()
+                r.FadeOut();
             }, 50);
         }
     }
-}
+};
 
 addEventToObject(window, 'onload', rssFetchAndDisplay.Init);
