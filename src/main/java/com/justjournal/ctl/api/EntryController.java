@@ -30,13 +30,11 @@ import com.justjournal.WebLogin;
 import com.justjournal.db.*;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
@@ -49,7 +47,27 @@ final public class EntryController {
     private static final Logger log = Logger.getLogger(EntryController.class);
 
     /**
+     * Get an individual entry
+     *
+     * @param id entry id
+     * @return entry
+     */
+    @RequestMapping("/api/entry/{id}")
+    @ResponseBody
+    public EntryTo getById(@PathVariable Integer id) {
+        return EntryDAO.viewSinglePublic(id);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, produces = "application/json")
+    public
+    @ResponseBody
+    Collection<EntryTo> getEntries(@RequestParam String username) {
+        return EntryDAO.viewAll(username, false);
+    }
+
+    /**
      * Creates a new entry resource
+     *
      * @param entry
      * @param session
      * @param response
@@ -76,6 +94,7 @@ final public class EntryController {
 
     /**
      * PUT generally allows for add or edit in REST.
+     *
      * @param entry
      * @param session
      * @param response
