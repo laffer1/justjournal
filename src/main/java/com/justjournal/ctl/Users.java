@@ -115,7 +115,6 @@ public final class Users extends HttpServlet {
         final HttpSession session = request.getSession(true);
 
         String authUserTemp;
-        Integer authUserIdTemp;
         com.justjournal.User aUser = null;
         /* Does a username exist in session?  i.e. are we logged in?*/
         authUserTemp = (String) session.getAttribute("auth.user");
@@ -1246,8 +1245,7 @@ public final class Users extends HttpServlet {
                 sb.append(endl);
 
                 if (uc.getAuthenticatedUser() != null && uc.getAuthenticatedUser().getUserId() == o.getUserId()) {
-                    sb.append("<td width=\"30\"><a title=\"Edit Entry\" href=\"/entry/edit.h?entryId=");
-                    sb.append(o.getId());
+                    sb.append("<td width=\"30\"><a title=\"Edit Entry\" href=\"/#/entry/").append(o.getId());
                     sb.append("\"><img src=\"/images/compose-message.png\" width=\"24\" height=\"24\" alt=\"Edit\" /></a></td>");
                     sb.append(endl);
                     sb.append("<td width=\"30\"><a title=\"Delete Entry\" onclick=\"return confirmDelete()\"; href=\"/entry/delete.h?entryId=");
@@ -2111,7 +2109,7 @@ public final class Users extends HttpServlet {
         sb.append(endl);
 
         if (uc.isAuthBlog()) {
-            sb.append("<td style=\"width: 30px\"><a title=\"Edit Entry\" href=\"/entry/edit.h?entryId=");
+            sb.append("<td style=\"width: 30px\"><a title=\"Edit Entry\" href=\"/#/entry/");
             sb.append(o.getId());
             sb.append("\"><img src=\"/images/compose-message.png\" width=\"24\" height=\"24\" alt=\"Edit\" /></a></td>");
             sb.append(endl);
