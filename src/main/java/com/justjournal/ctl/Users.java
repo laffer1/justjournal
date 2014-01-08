@@ -314,6 +314,7 @@ public final class Users extends HttpServlet {
                 sb.append(".css\" />");
                 sb.append(endl);
             }
+            sb.append("<link href=\"//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css\" rel=\"stylesheet\">");
 
             /* Optional style sheet overrides! */
             if (userc.getBlogUser().getStyleDoc().length() != 0 && userc.getBlogUser().getStyleDoc() != null && userc.getBlogUser().getStyleDoc().length() > 0) {
@@ -338,8 +339,8 @@ public final class Users extends HttpServlet {
             // content switch javascript
             sb.append("\t<script type=\"text/javascript\" src=\"/js/switchcontent.js\">/* ie7 hack */</script>\n");
             // lightbox
-            sb.append("\t<script type=\"text/javascript\" src=\"/js/jquery-1.7.2.min.js\"></script>\n");
-            sb.append("\t<script type=\"text/javascript\" src=\"/js/jquery-ui-1.8.18.custom.min.js\"></script>\n");
+            sb.append("\t<script type=\"text/javascript\" src=\"/components/jquery/jquery.min.js\"></script>\n");
+            sb.append("\t<script type=\"text/javascript\" src=\"/components/jquery-ui/minified/jquery-ui.min.js\"></script>\n");
             sb.append("\t<script type=\"text/javascript\" src=\"/js/jquery.smooth-scroll.min.js\"></script>\n");
             sb.append("\t<script type=\"text/javascript\" src=\"/js/lightbox.js\">/* ie7 hack */</script>\n");
             sb.append("\t<link rel=\"stylesheet\" type=\"text/css\" media=\"screen\" href=\"/lightbox.css\" />\n");
@@ -410,7 +411,7 @@ public final class Users extends HttpServlet {
                 // General stuff...
                 sb.append("\t<p id=\"mgen\">");
                 sb.append(endl);
-                sb.append("\t\t<a href=\"/update.jsp\">Update Journal</a><br />");
+                sb.append("\t\t<a href=\"/#/entry\">Update Journal</a><br />");
                 sb.append(endl);
 
                 // Authentication menu choice
@@ -446,11 +447,11 @@ public final class Users extends HttpServlet {
                     // rss feed link
                     sb.append("\t\t<a rel=\"alternate\" href=\"/users/");
                     sb.append(userName);
-                    sb.append("/rss\"><img src=\"/images/feed.gif\" alt=\"RSS\" />RSS</a><br />");
+                    sb.append("/rss\"><i class=\"fa fa-rss\"></i> RSS</a><br />");
                     sb.append(endl);
                     sb.append("\t\t<a rel=\"alternate\" href=\"/users/");
                     sb.append(userName);
-                    sb.append("/atom\"><img src=\"/images/feed.gif\" alt=\"ATOM\" />ATOM</a><br />");
+                    sb.append("/atom\"><i class=\"fa fa-rss\"></i> ATOM</a><br />");
                     sb.append(endl);
                 }
 
@@ -1246,22 +1247,22 @@ public final class Users extends HttpServlet {
 
                 if (uc.getAuthenticatedUser() != null && uc.getAuthenticatedUser().getUserId() == o.getUserId()) {
                     sb.append("<td width=\"30\"><a title=\"Edit Entry\" href=\"/#/entry/").append(o.getId());
-                    sb.append("\"><img src=\"/images/compose-message.png\" width=\"24\" height=\"24\" alt=\"Edit\" /></a></td>");
+                    sb.append("\"><i class=\"fa fa-pencil-square-o\"></i></a></td>");
                     sb.append(endl);
                     sb.append("<td width=\"30\"><a title=\"Delete Entry\" onclick=\"return confirmDelete()\"; href=\"/entry/delete.h?entryId=");
                     sb.append(o.getId());
-                    sb.append("\"><img src=\"/images/stock_calc-cancel.png\" width=\"24\" height=\"24\" alt=\"Delete\" /></a>");
+                    sb.append("\"><i class=\"fa fa-trash-o\"></i></a>");
                     sb.append("</td>");
                     sb.append(endl);
 
                     sb.append("<td width=\"30\"><a title=\"Add Favorite\" href=\"/favorite/add.h?entryId=");
                     sb.append(o.getId());
-                    sb.append("\"><img src=\"/images/favourites-24.png\" width=\"24\" height=\"24\" alt=\"Favorites\" /></a></td>");
+                    sb.append("\"><i class=\"fa fa-heart\"></i></a></td>");
                     sb.append(endl);
                 } else if (uc.getAuthenticatedUser() != null) {
                     sb.append("<td width=\"30\"><a title=\"Add Favorite\" href=\"/favorite/add.h?entryId=");
                     sb.append(o.getId());
-                    sb.append("\"><img src=\"/images/favourites-24.png\" width=\"24\" height=\"24\" alt=\"Favorites\" /></a></td>");
+                    sb.append("\"><i class=\"fa fa-heart\"></i></a></td>");
                     sb.append(endl);
                 }
 
@@ -1521,7 +1522,7 @@ public final class Users extends HttpServlet {
         cutSmall = largest / 3;
         cutLarge = cutSmall * 2;
 
-        sb.append("\t<div class=\"menuentity\" id=\"usertags\" style=\"padding-top: 10px;\">\n\t\t<strong style=\"text-transform: uppercase; letter-spacing: 2px; border: 0 none; border-bottom: 1px; border-style: dotted; border-color: #999999; margin-bottom: 5px; width: 100%; font-size: 10px;\">Tags</strong>\n\t\t<p style=\"padding-left: 0; margin-left: 0;\">\n");
+        sb.append("\t<div class=\"menuentity\" id=\"usertags\" style=\"padding-top: 10px;\">\n\t\t<strong style=\"text-transform: uppercase; letter-spacing: 2px; border: 0 none; border-bottom: 1px; border-style: dotted; border-color: #999999; margin-bottom: 5px; width: 100%; font-size: 10px;\"><i class=\"fa fa-tags\"></i> Tags</strong>\n\t\t<p style=\"padding-left: 0; margin-left: 0;\">\n");
         for (final Tag tag1 : tags) {
             tag = tag1;
             sb.append("<a href=\"/users/");
@@ -1557,7 +1558,7 @@ public final class Users extends HttpServlet {
         Collection links = UserLinkDao.view(uc.getBlogUser().getUserId());
 
         if (!links.isEmpty()) {
-            sb.append("\t<div class=\"menuentity\" id=\"userlinks\" style=\"padding-top: 10px;\">\n\t\t<strong style=\"text-transform: uppercase; letter-spacing: 2px; border: 0 none; border-bottom: 1px; border-style: dotted; border-color: #999999; margin-bottom: 5px; width: 100%; font-size: 10px;\">Links</strong>\n\t\t<ul style=\"padding-left: 0; margin-left: 0;\">\n");
+            sb.append("\t<div class=\"menuentity\" id=\"userlinks\" style=\"padding-top: 10px;\">\n\t\t<strong style=\"text-transform: uppercase; letter-spacing: 2px; border: 0 none; border-bottom: 1px; border-style: dotted; border-color: #999999; margin-bottom: 5px; width: 100%; font-size: 10px;\"><i class=\"fa fa-external-link-square\"></i> Links</strong>\n\t\t<ul style=\"padding-left: 0; margin-left: 0;\">\n");
             final Iterator itr = links.iterator();
             for (int i = 0, n = links.size(); i < n; i++) {
                 link = (UserLinkTo) itr.next();
@@ -2111,11 +2112,11 @@ public final class Users extends HttpServlet {
         if (uc.isAuthBlog()) {
             sb.append("<td style=\"width: 30px\"><a title=\"Edit Entry\" href=\"/#/entry/");
             sb.append(o.getId());
-            sb.append("\"><img src=\"/images/compose-message.png\" width=\"24\" height=\"24\" alt=\"Edit\" /></a></td>");
+            sb.append("\"><i class=\"fa fa-pencil-square-o\"></i></a></td>");
             sb.append(endl);
             sb.append("<td style=\"width: 30px\"><a title=\"Delete Entry\" onclick=\"return confirmDelete()\"; href=\"/entry/delete.h?entryId=");
             sb.append(o.getId());
-            sb.append("\"><img src=\"/images/stock_calc-cancel.png\" width=\"24\" height=\"24\" alt=\"Delete\" /></a>");
+            sb.append("\"><i class=\"fa fa-trash-o\"></i></a>");
             sb.append("</td>");
             sb.append(endl);
 
@@ -2139,7 +2140,7 @@ public final class Users extends HttpServlet {
 
             sb.append("<td><div style=\"float: right\"><a href=\"/users/").append(o.getUserName()).append("/entry/");
             sb.append(o.getId());
-            sb.append("\" title=\"Link to this entry\">link</a> ");
+            sb.append("\" title=\"Link to this entry\"><i class=\"fa fa-external-link\"></i></a> ");
 
             sb.append('(');
 
@@ -2161,7 +2162,7 @@ public final class Users extends HttpServlet {
 
             sb.append("<a href=\"/comment/add.jsp?id=");
             sb.append(o.getId());
-            sb.append("\" title=\"Leave a comment on this entry\">comment on this</a>)");
+            sb.append("\" title=\"Leave a comment on this entry\"><i class=\"fa fa-comment-o\"></i></a>)");
             sb.append("\t\t\t\t\t\t</div></td>");
             sb.append(endl);
         }
@@ -2213,13 +2214,13 @@ public final class Users extends HttpServlet {
                     sb.append("<a href=\"edit.h?commentId=");
                     sb.append(co.getId());
                     sb.append("\" title=\"Edit Comment\">");
-                    sb.append("     <img src=\"../images/compose-message.png\" alt=\"Edit Comment\" width=\"24\" height=\"24\"/>");
+                    sb.append("     <i class=\"fa fa-pencil-square-o\"></i>");
                     sb.append("</a>\n");
 
                     sb.append("<a href=\"delete.h?commentId=");
                     sb.append(co.getId());
                     sb.append("\" title=\"Delete Comment\">");
-                    sb.append("<img src=\"../images/stock_calc-cancel.png\" alt=\"Delete Comment\" width=\"24\" height=\"24\"/>");
+                    sb.append("<i class=\"fa fa-trash-o\"></i>");
                     sb.append("</a>\n");
                     sb.append("</span>\n");
                 }
