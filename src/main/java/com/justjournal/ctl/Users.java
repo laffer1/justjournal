@@ -262,9 +262,7 @@ public final class Users extends HttpServlet {
                 header("Cache-Control: post-check=0, pre-check=0", false);
                 header("Pragma: no-cache"); // HTTP/1.0
             */
-            // XHTML mime type detection
-            String mimeType = "text/html"; //HTMLUtil.determineMimeType(request.getHeader("Accept"), request.getHeader("User-Agent"));
-            response.setContentType(mimeType + "; charset=utf-8");
+            response.setContentType("text/html; charset=utf-8");
             response.setBufferSize(RESPONSE_BUFSIZE);
             // response.setHeader("Vary", "Accept"); // content negotiation
             response.setDateHeader("Expires", System.currentTimeMillis());
@@ -272,40 +270,29 @@ public final class Users extends HttpServlet {
             response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
             response.setHeader("Pragma", "no-cache");
 
-            // Begin HTML document.
-            if (mimeType.compareTo("application/xhtml+xml") == 0) {
-                // IE hates this.
-                sb.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
-                sb.append(endl);
-
-                //  sb.append("<?xml-stylesheet href=\"http://www.w3.org/StyleSheets/TR/W3C-REC.css\" type=\"text/css\"?>");
-                // sb.append(endl);
-                sb.append("<?xml-stylesheet href=\"#UserStyleSheet\" type=\"text/css\"?>");
-                sb.append(endl);
-            }
-            sb.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n\t  \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
+            sb.append("<!DOCTYPE html>");
             sb.append(endl);
 
-            sb.append("<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">");
+            sb.append("<html lang=\"en\">");
             sb.append(endl);
 
             sb.append("<head>");
             sb.append(endl);
             if (!userc.getBlogUser().isSpiderAllowed()) {
-                sb.append("\t<meta name=\"robots\" content=\"noindex, nofollow, noarchive\" />");
+                sb.append("\t<meta name=\"robots\" content=\"noindex, nofollow, noarchive\">");
                 sb.append(endl);
-                sb.append("\t<meta name=\"googlebot\" content=\"nosnippet\" />");
+                sb.append("\t<meta name=\"googlebot\" content=\"nosnippet\">");
                 sb.append(endl);
             }
             sb.append("\t<title>").append(userc.getBlogUser().getJournalName()).append("</title>");
             sb.append(endl);
 
-            sb.append("\t<link rel=\"stylesheet\" type=\"text/css\" href=\"/styles/users.css\"/>");
+            sb.append("\t<link rel=\"stylesheet\" type=\"text/css\" href=\"/styles/users.css\">");
             sb.append(endl);
 
             /* User's custom style URL.. i.e. uri to css doc outside domain */
             if (userc.getBlogUser().getStyleUrl() != null && userc.getBlogUser().getStyleUrl().length() != 0) {
-                sb.append("\t<link rel=\"stylesheet\" type=\"text/css\" media=\"screen\" href=\"").append(userc.getBlogUser().getStyleUrl()).append("\" />");
+                sb.append("\t<link rel=\"stylesheet\" type=\"text/css\" media=\"screen\" href=\"").append(userc.getBlogUser().getStyleUrl()).append("\">");
                 sb.append(endl);
             } else {
                 /* use our template system instead */
@@ -330,20 +317,19 @@ public final class Users extends HttpServlet {
             }
             /* End overrides */
             // rss alt link.
-            sb.append("\t<link rel=\"alternate\" type=\"application/rss+xml\" title=\"RSS\" href=\"http://www.justjournal.com/users/").append(userName).append("/rss\" />\n");
-            sb.append("\t<link rel=\"alternate\" type=\"application/atom+xml\" title=\"Atom\" href=\"http://www.justjournal.com/users/").append(userName).append("/atom\" />\n");
+            sb.append("\t<link rel=\"alternate\" type=\"application/rss+xml\" title=\"RSS\" href=\"http://www.justjournal.com/users/").append(userName).append("/rss\">\n");
+            sb.append("\t<link rel=\"alternate\" type=\"application/atom+xml\" title=\"Atom\" href=\"http://www.justjournal.com/users/").append(userName).append("/atom\">\n");
 
             // Service definitions
-            sb.append("\t<link rel=\"EditURI\" type=\"application/rsd+xml\" title=\"RSD\" href=\"http://www.justjournal.com/rsd?blogID=").append(userName).append("\" />\n");
+            sb.append("\t<link rel=\"EditURI\" type=\"application/rsd+xml\" title=\"RSD\" href=\"http://www.justjournal.com/rsd?blogID=").append(userName).append("\">\n");
 
             // content switch javascript
-            sb.append("\t<script type=\"text/javascript\" src=\"/js/switchcontent.js\">/* ie7 hack */</script>\n");
+            sb.append("\t<script type=\"text/javascript\" src=\"/js/switchcontent.js\"></script>\n");
             // lightbox
             sb.append("\t<script type=\"text/javascript\" src=\"/components/jquery/jquery.min.js\"></script>\n");
-            sb.append("\t<script type=\"text/javascript\" src=\"/components/jquery-ui/minified/jquery-ui.min.js\"></script>\n");
-            sb.append("\t<script type=\"text/javascript\" src=\"/js/jquery.smooth-scroll.min.js\"></script>\n");
-            sb.append("\t<script type=\"text/javascript\" src=\"/js/lightbox.js\">/* ie7 hack */</script>\n");
-            sb.append("\t<link rel=\"stylesheet\" type=\"text/css\" media=\"screen\" href=\"/lightbox.css\" />\n");
+            sb.append("\t<script type=\"text/javascript\" src=\"/components/jquery-ui/ui/minified/jquery-ui.min.js\"></script>\n");
+            sb.append("\t<script type=\"text/javascript\" src=\"/js/lightbox.js\"></script>\n");
+            sb.append("\t<link rel=\"stylesheet\" type=\"text/css\" media=\"screen\" href=\"/lightbox.css\">\n");
             sb.append("</head>\n");
 
             sb.append("<body>\n");
@@ -2122,7 +2108,7 @@ public final class Users extends HttpServlet {
 
             sb.append("<td style=\"width: 30px\"><a title=\"Add Favorite\" href=\"/favorite/add.h?entryId=");
             sb.append(o.getId());
-            sb.append("\"><img src=\"/images/favourites-24.png\" width=\"24\" height=\"24\" alt=\"Favorites\" /></a></td>");
+            sb.append("\"><i class=\"fa fa-heart\"></i></a></td>");
             sb.append(endl);
         }
 
