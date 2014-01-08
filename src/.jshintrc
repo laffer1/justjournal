@@ -1,0 +1,6 @@
+{
+    "globals": {
+        "Globalize": false,
+        "angular": true
+    }
+}

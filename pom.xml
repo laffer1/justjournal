@@ -212,6 +212,13 @@
             <artifactId>jackson-mrbean</artifactId>
             <version>1.9.11</version>
         </dependency>
+
+        <!-- for google search indexing -->
+        <dependency>
+        	<groupId>net.sourceforge.htmlunit</groupId>
+        	<artifactId>htmlunit</artifactId>
+        	<version>2.13</version>
+        </dependency>
     </dependencies>
 
     <repositories>
