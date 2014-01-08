@@ -573,7 +573,7 @@ public class MetaWeblog {
             return s;
         }
 
-        e = EntryDAO.viewSingle(Integer.parseInt(postid), true);
+        e = EntryDAO.viewSingle(Integer.parseInt(postid), userId);
 
         entry.put("link", "http://www.justjournal.com/users/" + e.getUserName() + "/entry/" + e.getId());
         entry.put("permaLink", "http://www.justjournal.com/users/" + e.getUserName() + "/entry/" + e.getId());

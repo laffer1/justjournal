@@ -362,7 +362,7 @@ public class Blogger {
             s.put("faultString", "User authentication failed: " + username);
 
         } else {
-            return !blnError; /* ie true per spec */
+            return true; /* ie true per spec */
         }
 
         return s;
@@ -427,7 +427,7 @@ public class Blogger {
             s.put("faultString", "User authentication failed: " + username);
 
         } else {
-            return !blnError; /* ie true per spec */
+            return true; /* true per spec */
         }
 
         return s;
@@ -604,7 +604,7 @@ public class Blogger {
             return s;
         }
 
-        e = EntryDAO.viewSingle(Integer.parseInt(postid), true);
+        e = EntryDAO.viewSingle(Integer.parseInt(postid), userId);
 
         entry.put("link", "http://www.justjournal.com/users/" + e.getUserName() + "/entry/" + e.getId());
         entry.put("permaLink", "http://www.justjournal.com/users/" + e.getUserName() + "/entry/" + e.getId());
