@@ -56,6 +56,12 @@ import java.util.Map;
 final public class CommentController {
     private static final Logger log = Logger.getLogger(CommentController.class);
 
+    @RequestMapping("/api/comment/{id}")
+    @ResponseBody
+    public CommentTo getById(@PathVariable Integer id) {
+        return CommentDao.viewSingle(id);
+    }
+
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public
     @ResponseBody
