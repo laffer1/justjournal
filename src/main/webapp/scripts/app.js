@@ -1,4 +1,11 @@
-angular.module('wwwApp', [])
+angular.module('wwwApp',
+                [
+                    'ui',
+                    'ngResource',
+                    'ngCookies',
+                    'ngRoute',
+                    'ngSanitize'
+                ])
         .config(function ($routeProvider) {
             'use strict';
 
