@@ -1,3 +1,4 @@
+
 angular.module('ui.config', []).value('ui.config', {});
 angular.module('ui.filters', ['ui.config']);
 angular.module('ui.directives', ['ui.config']);

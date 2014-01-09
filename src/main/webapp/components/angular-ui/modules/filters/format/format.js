@@ -1,3 +1,4 @@
+
 /**
  * A replacement utility for internationalization very similar to sprintf.
  *
@@ -11,23 +12,23 @@
  * @example: 'Records $0 to $1 out of $2 total'.format(['10', '20', '3000'])
  * @example: '$0 agrees to all mentions $0 makes in the event that $0 hits a tree while $0 is driving drunk'.format('Bob')
  */
-angular.module('ui.filters').filter('format', function () {
-    return function (value, replace) {
-        if (!value) {
-            return value;
-        }
-        var target = value.toString(), token;
-        if (replace === undefined) {
-            return target;
-        }
-        if (!angular.isArray(replace) && !angular.isObject(replace)) {
-            return target.split('$0').join(replace);
-        }
-        token = angular.isArray(replace) && '$' || ':';
+angular.module('ui.filters').filter('format', function(){
+  return function(value, replace) {
+    if (!value) {
+      return value;
+    }
+    var target = value.toString(), token;
+    if (replace === undefined) {
+      return target;
+    }
+    if (!angular.isArray(replace) && !angular.isObject(replace)) {
+      return target.split('$0').join(replace);
+    }
+    token = angular.isArray(replace) && '$' || ':';
 
-        angular.forEach(replace, function (value, key) {
-            target = target.split(token + key).join(value);
-        });
-        return target;
-    };
+    angular.forEach(replace, function(value, key){
+      target = target.split(token+key).join(value);
+    });
+    return target;
+  };
 });
