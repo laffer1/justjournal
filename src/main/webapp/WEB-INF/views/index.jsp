@@ -94,6 +94,7 @@
 <script type="text/javascript" src="js/bootstrap.min.js"></script>
 <script type="text/javascript" src="components/angular/angular.js"></script>
 <script type="text/javascript" src="components/angular-resource/angular-resource.js"></script>
+<script type="text/javascript" src="components/angular-route/angular-route.js"></script>
 <script type="text/javascript" src="components/angular-cookies/angular-cookies.js"></script>
 <script type="text/javascript" src="components/angular-sanitize/angular-sanitize.js"></script>
 
