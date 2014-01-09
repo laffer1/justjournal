@@ -16,7 +16,6 @@ import static org.junit.Assert.assertEquals;
 public class LocationDaoTest {
     @BeforeClass
        public static void setUpClass() throws Exception {
-           // rcarver - setup the jndi context and the datasource
            try {
                // Create initial context
                System.setProperty(Context.INITIAL_CONTEXT_FACTORY,
