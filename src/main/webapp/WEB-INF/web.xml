@@ -27,7 +27,7 @@
 
     <filter>
         <filter-name>Crawl</filter-name>
-        <filter-class>com.justjournal.CrawlServlet</filter-class>
+        <filter-class>com.justjournal.CrawlFilter</filter-class>
     </filter>
 
     <filter-mapping>

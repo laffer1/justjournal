@@ -1,40 +1,14 @@
-<!--
-  ~ Copyright (c) 2014 Lucas Holt
-  ~ All rights reserved.
-  ~
-  ~ Redistribution and use in source and binary forms, with or without
-  ~ modification, are permitted provided that the following conditions
-  ~ are met:
-  ~ 1. Redistributions of source code must retain the above copyright
-  ~    notice, this list of conditions and the following disclaimer.
-  ~ 2. Redistributions in binary form must reproduce the above copyright
-  ~    notice, this list of conditions and the following disclaimer in the
-  ~    documentation and/or other materials provided with the distribution.
-  ~
-  ~ THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
-  ~ ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-  ~ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-  ~ ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
-  ~ FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-  ~ DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
-  ~ OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-  ~ HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-  ~ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
-  ~ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-  ~ SUCH DAMAGE.
-  -->
-
 <div class="container">
     <form role="form" id="frmUpdateJournal" action="">
 
         <fieldset>
             <legend><strong>Journal Entry</strong><br></legend>
 
-            <div class="row">
-                <span class="label"><label for="subject">Subject</label></span>
-        	  <span class="formw"><input name="subject" type="text" id="subject" size="30" maxlength="150"
-                                         value="" ng-model="entry.subject" trim="true" />
-        	  (optional)</span>
+            <div class="form-group">
+              <label for="subject">Subject</label>
+        	  <input class="form-control" name="subject" type="text" id="subject" size="30" maxlength="150"
+                                         value="" ng-model="entry.subject" trim="true">
+        	  (optional)
             </div>
 
             <div class="form-group"><textarea id="body" name="body" style="width: 100%" cols="60" rows="20"
@@ -42,7 +16,7 @@
             </div>
 
             <div class="form-group" id="newlinetext">
-                <span class="formw">by default, newlines will be auto-formatted to &lt;br&gt;</span>
+                by default, newlines will be auto-formatted to &lt;br&gt;
             </div>
         </fieldset>
 
@@ -71,18 +45,18 @@
 
             <div class="form-group">
                 <label for="tags">Tags</label>
-                <input type="text" name="tags" id="tags" size="30" value=""
+                <input class="form-control" type="text" name="tags" id="tags" size="30" value=""
                        trim="true" ng-model="entry.tag">
             </div>
 
             <div class="form-group">
                 <label for="music">Music</label>
-                <input type="text" name="music" id="music" size="30" value="" ng-model="entry.music">
+                <input class="form-control" type="text" name="music" id="music" size="30" value="" ng-model="entry.music">
             </div>
 
             <div class="form-group">
                 <label for="trackback">Trackback</label>
-                <input type="url" name="trackback" id="trackback" size="30" value="" url="true"
+                <input class="form-control" type="url" name="trackback" id="trackback" size="30" value="" url="true"
                        ng-model="entry.trackback">
             </div>
 
@@ -110,4 +84,3 @@
         <button type="submit" class="btn btn-default">Submit</button>
     </form>
 </div>
-
