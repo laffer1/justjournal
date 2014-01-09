@@ -41,11 +41,11 @@ import java.util.Collection;
 @Controller
 @RequestMapping("/api/security")
 public class SecurityController {
-    @RequestMapping(method = RequestMethod.GET, produces="application/json")
-      public
-      @ResponseBody
-        Collection<SecurityTo> getSecurityList() {
-          return SecurityDao.view();
-      }
+    @RequestMapping(method = RequestMethod.GET, headers="Accept=*/*", produces = "application/json")
+    public
+    @ResponseBody
+    Collection<SecurityTo> getSecurityList() {
+        return SecurityDao.view();
+    }
 
 }

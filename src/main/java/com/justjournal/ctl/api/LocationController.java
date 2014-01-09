@@ -42,7 +42,7 @@ import java.util.Collection;
 @RequestMapping("/api/location")
 public class LocationController {
 
-    @RequestMapping(method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(method = RequestMethod.GET, headers="Accept=*/*", produces="application/json")
     public
     @ResponseBody
     Collection<LocationTo> getLocationList() {

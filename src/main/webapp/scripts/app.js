@@ -1,6 +1,7 @@
 angular.module('wwwApp',
                 [
                     'ui',
+                    'ngRoute',
                     'ngResource',
                     'ngCookies',
                     'ngRoute',

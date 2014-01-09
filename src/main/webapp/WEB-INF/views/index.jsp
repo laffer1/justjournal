@@ -91,6 +91,7 @@
 <!-- Footer: End -->
 
 <script type="text/javascript" src="components/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="components/jquery.validation/jquery.validate.js"></script>
 <script type="text/javascript" src="js/bootstrap.min.js"></script>
 <script type="text/javascript" src="components/angular/angular.js"></script>
 <script type="text/javascript" src="components/angular-resource/angular-resource.js"></script>

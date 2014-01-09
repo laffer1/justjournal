@@ -1,5 +1,5 @@
-angular.module('wwwApp').controller('EntryCtrl', ['$scope', 'MoodService', 'LocationService', 'SecurityService', 'EntryService',
-    function ($scope, MoodService, LocationService, SecurityService, EntryService) {
+angular.module('wwwApp').controller('EntryCtrl', ['$scope', '$routeParams', 'MoodService', 'LocationService', 'SecurityService', 'EntryService',
+    function ($scope, $routeParams, MoodService, LocationService, SecurityService, EntryService) {
         'use strict';
 
         $scope.moods = MoodService.query();

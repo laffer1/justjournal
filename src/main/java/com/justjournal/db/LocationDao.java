@@ -57,8 +57,7 @@ public final class LocationDao {
 
     public static Collection<LocationTo> view() {
         ObjectContext dataContext = DataContext.getThreadObjectContext();
-        ArrayList<LocationTo> locations = new ArrayList<LocationTo>(4);
-        LocationTo loc;
+        ArrayList<LocationTo> locations = new ArrayList<LocationTo>();
 
         try {
             SelectQuery query = new SelectQuery(com.justjournal.model.Location.class);
@@ -68,9 +67,10 @@ public final class LocationDao {
             List<com.justjournal.model.Location> locationList = dataContext.performQuery(query);
 
             for (com.justjournal.model.Location location : locationList) {
-                loc = new LocationTo();
+                LocationTo loc = new LocationTo();
                 loc.setId(Cayenne.intPKForObject(location));
                 loc.setName(location.getTitle());
+                locations.add(loc);
             }
         } catch (Exception e1) {
             log.error(e1);

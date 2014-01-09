@@ -34,22 +34,16 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
-import javax.sql.rowset.CachedRowSet;
 import java.util.ArrayList;
-import java.util.Collection;     import java.sql.ResultSet;
+import java.util.Collection;
+import java.sql.ResultSet;
 
 
 /**
- * Entry Security!
- * <p/>
- * Created by IntelliJ IDEA.
- * User: laffer1
- * Date: Jan 9, 2004
- * Time: 1:55:49 PM
- * To change this template use Options | File Templates.
+ * Entry Security
  */
 public final class SecurityDao {
-    public static final Collection<SecurityTo> view() {
+    public static Collection<SecurityTo> view() {
         ArrayList<SecurityTo> security = new ArrayList<SecurityTo>(4);
         ResultSet RS;
         SecurityTo sec;
@@ -66,7 +60,7 @@ public final class SecurityDao {
 
                 security.add(sec);
             }
-        } catch (Exception e1) {
+        } catch (Exception ignored) {
 
         }
 
