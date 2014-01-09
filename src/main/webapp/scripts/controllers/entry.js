@@ -10,6 +10,10 @@ angular.module('wwwApp').controller('EntryCtrl', ['$scope', '$routeParams', 'Moo
         };
         $scope.ErrorMessage = '';
 
+        $scope.cancel = function() {
+          // TODO: something
+        };
+
         $scope.save = function () {
             if (jQuery('form#UpdateJournal').valid()) {
                 // EDIT case

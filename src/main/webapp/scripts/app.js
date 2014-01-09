@@ -33,7 +33,7 @@ angular.module('wwwApp',
                     })
                     .when('/moodlist',{
                         templateUrl: 'views/moodlist.html',
-                        controller: 'MoodlistCtrl'
+                        controller: 'MoodListCtrl'
                     })
                     .when('/privacy', {
                         templateUrl: 'views/privacy.html',
