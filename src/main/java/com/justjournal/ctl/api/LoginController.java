@@ -50,6 +50,7 @@ final public class LoginController {
 
     private static final String JJ_LOGIN_OK = "JJ.LOGIN.OK";
     private static final String JJ_LOGIN_FAIL = "JJ.LOGIN.FAIL";
+    private static final String JJ_LOGIN_NONE = "JJ.LOGIN.NONE";
 
     private static final Logger log = Logger.getLogger(LoginController.class);
 
@@ -95,6 +96,22 @@ final public class LoginController {
         public void setStatus(String status) {
             this.status = status;
         }
+    }
+
+    /**
+     * Check the login status of the user
+     * @param session
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.GET, headers = "Accept=*/*", produces = "application/json")
+    public
+    @ResponseBody
+    LoginResponse getLoginStatus(HttpSession session) {
+        LoginResponse response = new LoginResponse();
+        String username = (String) session.getAttribute("auth.user");
+        response.setUsername(username);
+        response.setStatus(username == null ? JJ_LOGIN_NONE : JJ_LOGIN_OK);
+        return response;
     }
 
 

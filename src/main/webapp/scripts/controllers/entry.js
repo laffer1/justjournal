@@ -1,7 +1,9 @@
-angular.module('wwwApp').controller('EntryCtrl', ['$scope', '$routeParams', 'MoodService', 'LocationService', 'SecurityService', 'EntryService',
-    function ($scope, $routeParams, MoodService, LocationService, SecurityService, EntryService) {
+angular.module('wwwApp').controller('EntryCtrl', ['$scope', '$routeParams', '$location',
+    'MoodService', 'LocationService', 'SecurityService', 'EntryService', 'LoginService',
+    function ($scope, $routeParams, $location, MoodService, LocationService, SecurityService, EntryService, LoginService) {
         'use strict';
 
+        $scope.login = LoginService.get();
         $scope.moods = MoodService.query();
         $scope.locations = LocationService.query();
         $scope.security = SecurityService.query();
@@ -19,8 +21,8 @@ angular.module('wwwApp').controller('EntryCtrl', ['$scope', '$routeParams', 'Moo
                 // EDIT case
                 if (typeof $routeParams.entryId !== 'undefined') {
                     EntryService.update($scope.entry, function success() {
-                                //$location.path('/users/');  // TODO: username
                                 alert('Blog Entry Updated');
+                                $location.path('/users/' + $scope.login.username);
                             },
                             function fail(response) {
                                 if (typeof(response.data.ModelState) !== 'undefined') {
@@ -38,8 +40,8 @@ angular.module('wwwApp').controller('EntryCtrl', ['$scope', '$routeParams', 'Moo
                 }
 
                 EntryService.save($scope.entry, function success() {
-                            //$location.path('/users/');  // TODO: username
                             alert('Blog Entry Posted');
+                            $location.path('/users/' + $scope.login.username);
                         },
                         function fail(response) {
                             if (typeof(response.data.ModelState) !== 'undefined') {

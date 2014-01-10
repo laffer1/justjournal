@@ -123,6 +123,7 @@
 <script type="text/javascript" src="scripts/services/EntryService.js"></script>
 <script type="text/javascript" src="scripts/services/FriendService.js"></script>
 <script type="text/javascript" src="scripts/services/LocationService.js"></script>
+<script type="text/javascript" src="scripts/services/LoginService.js"></script>
 <script type="text/javascript" src="scripts/services/MemberService.js"></script>
 <script type="text/javascript" src="scripts/services/MoodService.js"></script>
 <script type="text/javascript" src="scripts/services/SecurityService.js"></script>
