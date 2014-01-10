@@ -8,7 +8,10 @@ angular.module('wwwApp').controller('EntryCtrl', ['$scope', '$routeParams', '$lo
         $scope.locations = LocationService.query();
         $scope.security = SecurityService.query();
         $scope.entry = {
-            date: new Date() // TODO: is this the right format?
+            allowComments: true,
+            autoFormat: true,
+            date: new Date(), // TODO: is this the right format?
+            emailComments: true
         };
         $scope.ErrorMessage = '';
 
