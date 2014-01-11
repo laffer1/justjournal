@@ -52,7 +52,7 @@ final public class StatisticsController {
      * Get Site statistics
      * @return statistics
      */
-    @RequestMapping(method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(method = RequestMethod.GET, headers="Accept=*/*", produces = "application/json")
     public
     @ResponseBody
     Statistics get() {
