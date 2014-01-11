@@ -50,7 +50,7 @@ public class Statistics {
      *
      * @return The number of users or -1 on an error.
      */
-    public int users() {
+    public int getUsers() {
         int count = -1;
         try {
             ObjectContext dataContext = DataContext.getThreadObjectContext();
@@ -70,7 +70,7 @@ public class Statistics {
      *
      * @return The number of entries or -1 on error.
      */
-    public int entries() {
+    public int getEntries() {
         try {
             ObjectContext dataContext = DataContext.getThreadObjectContext();
             SelectQuery query = new SelectQuery(com.justjournal.model.Entry.class);
@@ -87,11 +87,11 @@ public class Statistics {
      *
      * @return public entries as %
      */
-    public float publicEntries() {
+    public float getPublicEntries() {
         float percent;
         String sql = "SELECT count(*) FROM entry WHERE security='2';";
 
-        percent = (((float) sqlCount(sql) / (float) entries()) * 100);
+        percent = (((float) sqlCount(sql) / (float) getEntries()) * 100);
 
         if (log.isDebugEnabled())
             log.debug("publicEntries(): percent is " + percent);
@@ -104,10 +104,10 @@ public class Statistics {
      *
      * @return friends entries as %
      */
-    public float friendsEntries() {
+    public float getFriendsEntries() {
         float percent;
         String sql = "SELECT count(*) FROM entry WHERE security='1';";
-        percent = (((float) sqlCount(sql) / (float) entries()) * 100);
+        percent = (((float) sqlCount(sql) / (float) getEntries()) * 100);
 
         if (log.isDebugEnabled())
             log.debug("friendsEntries(): percent is " + percent);
@@ -120,10 +120,10 @@ public class Statistics {
      *
      * @return private entries as %
      */
-    public float privateEntries() {
+    public float getPrivateEntries() {
         float percent;
         String sql = "SELECT count(*) FROM entry WHERE security='0';";
-        percent = (((float) sqlCount(sql) / (float) entries()) * 100);
+        percent = (((float) sqlCount(sql) / (float) getEntries()) * 100);
 
         if (log.isDebugEnabled())
             log.debug("privateEntries(): percent is " + percent);
@@ -136,7 +136,7 @@ public class Statistics {
      *
      * @return The number of comments or -1 on error.
      */
-    public int comments() {
+    public int getComments() {
         try {
             ObjectContext dataContext = DataContext.getThreadObjectContext();
             SelectQuery query = new SelectQuery(com.justjournal.model.Comments.class);
@@ -153,7 +153,7 @@ public class Statistics {
      *
      * @return The number of styles or -1 on error.
      */
-    public int styles() {
+    public int getStyles() {
         try {
             ObjectContext dataContext = DataContext.getThreadObjectContext();
             SelectQuery query = new SelectQuery(com.justjournal.model.Style.class);
@@ -170,7 +170,7 @@ public class Statistics {
      *
      * @return tag count or -1 on error.
      */
-    public int tags() {
+    public int getTags() {
         try {
             ObjectContext dataContext = DataContext.getThreadObjectContext();
             SelectQuery query = new SelectQuery(com.justjournal.model.Tags.class);
