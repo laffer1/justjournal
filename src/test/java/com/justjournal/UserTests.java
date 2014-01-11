@@ -30,6 +30,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -62,7 +63,7 @@ public class UserTests {
 
     @Test
     public void testGetUserId() throws Exception {
-        assertTrue(user.getUserId() == 2);
+        assertEquals(16, user.getUserId());
     }
 
     @Test
