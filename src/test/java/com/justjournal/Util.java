@@ -40,30 +40,30 @@ import javax.naming.NamingException;
 public class Util {
     public static void setupDb() {
         try {
-                   // Create initial context
-                   System.setProperty(Context.INITIAL_CONTEXT_FACTORY,
-                           "org.apache.naming.java.javaURLContextFactory");
-                   System.setProperty(Context.URL_PKG_PREFIXES,
-                           "org.apache.naming");
-                   InitialContext ic = new InitialContext();
+            // Create initial context
+            System.setProperty(Context.INITIAL_CONTEXT_FACTORY,
+                    "org.apache.naming.java.javaURLContextFactory");
+            System.setProperty(Context.URL_PKG_PREFIXES,
+                    "org.apache.naming");
+            InitialContext ic = new InitialContext();
 
-                   ic.createSubcontext("java:");
-                   ic.createSubcontext("java:comp");
-                   ic.createSubcontext("java:comp/env");
-                   ic.createSubcontext("java:comp/env/jdbc");
+            ic.createSubcontext("java:");
+            ic.createSubcontext("java:comp");
+            ic.createSubcontext("java:comp/env");
+            ic.createSubcontext("java:comp/env/jdbc");
 
-                   // Construct DataSource
-                   MysqlConnectionPoolDataSource ds = new MysqlConnectionPoolDataSource();
-                   ds.setURL("jdbc:mysql://ds9.midnightbsd.org:3306/jj");
-                   ds.setUser("jj");
-                   ds.setPassword("");
+            // Construct DataSource
+            MysqlConnectionPoolDataSource ds = new MysqlConnectionPoolDataSource();
+            ds.setURL("jdbc:mysql://ds9.midnightbsd.org:3306/jj");
+            ds.setUser("jj");
+            ds.setPassword("");
 
-                   ic.bind("java:comp/env/jdbc/jjDB", ds);
+            ic.bind("java:comp/env/jdbc/jjDB", ds);
 
-                   ServerRuntime cayenneRuntime = new ServerRuntime("cayenne-JustJournalDomain.xml");
-                   DataContext.bindThreadObjectContext(cayenneRuntime.getContext());
-               } catch (NamingException ex) {
-                   System.err.println(ex.getMessage());
-               }
+            ServerRuntime cayenneRuntime = new ServerRuntime("cayenne-JustJournalDomain.xml");
+            DataContext.bindThreadObjectContext(cayenneRuntime.getContext());
+        } catch (NamingException ex) {
+            System.err.println(ex.getMessage());
+        }
     }
 }
