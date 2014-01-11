@@ -14,7 +14,7 @@ import javax.naming.NamingException;
 
 import static org.junit.Assert.assertEquals;
 
-public class LocationDaoTest {
+public class LocationDaoTests {
     @BeforeClass
     public static void setup() throws Exception {
         Util.setupDb();

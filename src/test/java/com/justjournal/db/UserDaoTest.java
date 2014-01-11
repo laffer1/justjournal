@@ -26,12 +26,20 @@
 
 package com.justjournal.db;
 
+import com.justjournal.Util;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
  * @author Lucas Holt
  */
 public class UserDaoTest {
+
+    @BeforeClass
+    public static void setup() throws Exception {
+        Util.setupDb();
+    }
+
     @Test
     public void testAdd() throws Exception {
 

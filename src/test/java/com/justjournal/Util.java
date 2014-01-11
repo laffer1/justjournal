@@ -35,6 +35,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 /**
+ * Utilities for unit testing
  * @author Lucas Holt
  */
 public class Util {
