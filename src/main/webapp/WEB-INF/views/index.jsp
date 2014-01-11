@@ -57,9 +57,11 @@
 <![endif]-->
 
 <!-- Header: Begin -->
-<div id="header">
-    <img src="images/jj_header.gif" alt="JustJournal" width="608">
-</div>
+<header>
+    <div id="header">
+        <a href="#/"><img src="images/jj_header.gif" alt="JustJournal" width="608"></a>
+    </div>
+</header>
 <!-- Header: End -->
 
 <!-- Add your site or application content here -->
@@ -67,6 +69,7 @@
 
 <!-- Footer: Begin -->
 
+<footer>
 <div id="footer">
     <p id="copyright">&#169; 2003 - 2014 Lucas Holt. All rights reserved.</p>
 
@@ -87,7 +90,7 @@
     <script type="text/javascript" src="//pagead2.googlesyndication.com/pagead/show_ads.js">
     </script>
 </div>
-
+</footer>
 <!-- Footer: End -->
 
 <script type="text/javascript" src="components/jquery/jquery.min.js"></script>

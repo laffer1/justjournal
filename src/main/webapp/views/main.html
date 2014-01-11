@@ -1,95 +1,91 @@
-<div class="container">
+<div class="jumbotron">
+    <h1>Blogging for Life.</h1>
 
-    <div class="jumbotron">
-        <h1>Blogging for Life.</h1>
+    <p class="lead">
+        Just
+        Journal is an online journal service, also
+        known as a blog. You can publish private
+        entries for yourself, friends' entries to share with those close to you or public entries you wish to share
+        with the Internet.</p>
+</div>
 
-        <p class="lead">
-            Just
-            Journal is an online journal service, also
-            known as a blog. You can publish private
-            entries for yourself, friends' entries to share with those close to you or public entries you wish to share
-            with the Internet.</p>
+<div class="row">
+    <div class="col-xs-6">
+        <form name="frmlogin" role="form">
+            <fieldset>
+                <legend>Login</legend>
+
+                <div class="form-group">
+                    <label for="iusername">Username</label>
+                    <input type="text" name="username" id="iusername" size="18" maxlength="15"
+                           placeholder="Username" data-ng-model="username">
+                </div>
+
+                <div class="form-group">
+                    <label for="ipassword">Password</label>
+                    <input type="password" name="password" id="ipassword" size="18"
+                           placeholder="Password" data-ng-model="password">
+                </div>
+
+                <button class="btn btn-primary btn-md" name="submitlogin"
+                        data-ng-click="AccountLogin()">Login
+                </button>
+            </fieldset>
+        </form>
     </div>
 
-    <div class="row">
-        <div class="col-xs-6">
-            <form name="frmlogin" role="form">
-                <fieldset>
-                    <legend>Login</legend>
+    <div class="col-xs-6">
+        <form action="" name="frmCreateJournal" role="form">
+            <fieldset>
+                <legend>Sign up</legend>
 
-                    <div class="form-group">
-                        <label for="iusername">Username</label>
-                        <input type="text" name="username" id="iusername" size="18" maxlength="15"
-                               placeholder="Username" data-ng-model="username">
-                    </div>
+                <div class="form-group">
+                    <label for="fname">First Name</label>
+                    <input
+                            type="text" name="fname" id="fname" data-ng-model="create.name"
+                            maxlength="50" size="25" placeholder="First Name">
+                </div>
 
-                    <div class="form-group">
-                        <label for="ipassword">Password</label>
-                        <input type="password" name="password" id="ipassword" size="18"
-                               placeholder="Password" data-ng-model="password">
-                    </div>
+                <div class="form-group">
+                    <label for="lname">Last Name</label>
+                    <input type="text" name="lname" id="lname"
+                           data-ng-model="create.lastName" maxlength="50"
+                           size="25" placeholder="Last Name">
+                </div>
 
-                    <button class="btn btn-primary btn-md" name="submitlogin"
-                            data-ng-click="AccountLogin()">Login
-                    </button>
-                </fieldset>
-            </form>
-        </div>
+                <div class="form-group">
+                    <label for="email">E-mail</label>
+                    <input
+                            type="text" name="email" id="email"
+                            data-ng-model="email"
+                            maxlength="100" size="25" placeholder="E-mail">
+                </div>
 
-        <div class="col-xs-6">
-            <form action="" name="frmCreateJournal" role="form">
-                <fieldset>
-                    <legend>Sign up</legend>
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input
+                            type="text" name="username" id="username"
+                            data-ng-model="create.userName"
+                            maxlength="15" size="15">
+                </div>
 
-                    <div class="form-group">
-                        <label for="fname">First Name</label>
-                        <input
-                                type="text" name="fname" id="fname" data-ng-model="create.name"
-                                maxlength="50" size="25" placeholder="First Name">
-                    </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input
+                            type="text" name="password" id="password"
+                            data-ng-model="create.password"
+                            maxlength="18" size="18">
+                </div>
+                <div class="form-group">
+                    <label for="password2">Password (again)</label>
+                    <input
+                            type="text" name="password2" id="password2" maxlength="18" size="18">
+                </div>
+            </fieldset>
 
-                    <div class="form-group">
-                        <label for="lname">Last Name</label>
-                        <input type="text" name="lname" id="lname"
-                               data-ng-model="create.lastName" maxlength="50"
-                               size="25" placeholder="Last Name">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="email">E-mail</label>
-                        <input
-                                type="text" name="email" id="email"
-                                data-ng-model="email"
-                                maxlength="100" size="25" placeholder="E-mail">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="username">Username</label>
-                        <input
-                                type="text" name="username" id="username"
-                                data-ng-model="create.userName"
-                                maxlength="15" size="15">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <input
-                                type="text" name="password" id="password"
-                                data-ng-model="create.password"
-                                maxlength="18" size="18">
-                    </div>
-                    <div class="form-group">
-                        <label for="password2">Password (again)</label>
-                        <input
-                                type="text" name="password2" id="password2" maxlength="18" size="18">
-                    </div>
-                </fieldset>
-
-                <button class="btn btn-md" name="submitlogin"
-                        data-ng-click="CreateAccount()">Sign Up
-                </button>
-            </form>
-        </div>
-
+            <button class="btn btn-md" name="submitlogin"
+                    data-ng-click="CreateAccount()">Sign Up
+            </button>
+        </form>
     </div>
 </div>
