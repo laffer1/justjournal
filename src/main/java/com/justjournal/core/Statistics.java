@@ -71,15 +71,8 @@ public class Statistics {
      * @return The number of entries or -1 on error.
      */
     public int getEntries() {
-        try {
-            ObjectContext dataContext = DataContext.getThreadObjectContext();
-            SelectQuery query = new SelectQuery(com.justjournal.model.Entry.class);
-            List list = dataContext.performQuery(query);
-            return list.size();
-        } catch (CayenneRuntimeException ce) {
-            log.error(ce);
-        }
-        return -1;
+         String sql = "SELECT count(*) FROM entry;";
+         return sqlCount(sql);
     }
 
     /**
