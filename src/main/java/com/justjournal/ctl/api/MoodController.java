@@ -37,6 +37,7 @@ package com.justjournal.ctl.api;
 import com.justjournal.db.MoodDao;
 import com.justjournal.db.MoodTo;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -50,15 +51,21 @@ import java.util.Collection;
  * @since 1.0
  */
 @Controller
-@RequestMapping("/api/moodlist")
-final public class MoodListController {
+@RequestMapping("/api/mood")
+final public class MoodController {
+
+    @RequestMapping("/api/mood/{id}")
+    @ResponseBody
+    public MoodTo getById(@PathVariable Integer id) {
+        return MoodDao.get(id);
+    }
 
     /**
      * All moods usable by blogs
      *
      * @return mood list
      */
-    @RequestMapping(method = RequestMethod.GET, headers="Accept=*/*", produces="application/json")
+    @RequestMapping(method = RequestMethod.GET, headers = "Accept=*/*", produces = "application/json")
     public
     @ResponseBody
     Collection<MoodTo> getMoodList() {

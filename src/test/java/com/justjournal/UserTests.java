@@ -34,7 +34,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * @author Lucas Holt
  */
-public class UserTest {
+public class UserTests {
 
     private User user;
 

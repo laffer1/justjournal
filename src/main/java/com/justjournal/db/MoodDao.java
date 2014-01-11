@@ -34,6 +34,12 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
+import com.sun.istack.internal.NotNull;
+import org.apache.cayenne.Cayenne;
+import org.apache.cayenne.ObjectContext;
+import org.apache.cayenne.access.DataContext;
+import org.apache.log4j.Logger;
+
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -43,18 +49,39 @@ import java.util.Collection;
  * Retrieve and acquire mood's for use with journal entries.
  *
  * @author Lucas Holt
- * @version 1.0
- *          Date: Jan 9, 2004
- *          Time: 1:55:20 PM
+ * @version 1.0 Date: Jan 9, 2004 Time: 1:55:20 PM
  * @since 1.0
  */
 public final class MoodDao {
+
+    private static final Logger log = Logger.getLogger(MoodDao.class);
+
+    @NotNull
+    public static MoodTo get(int id) {
+        MoodTo mood = new MoodTo();
+
+        try {
+            ObjectContext dataContext = DataContext.getThreadObjectContext();
+
+            com.justjournal.model.Mood item =
+                    Cayenne.objectForPK(dataContext, com.justjournal.model.Mood.class, id);
+
+            mood.setId(id);
+            mood.setName(item.getTitle());
+            mood.setParent(item.getParentmood());
+        } catch (Exception e1) {
+            log.error(e1);
+        }
+
+        return mood;
+    }
+
     /**
-     * Retrieve the moods from the data store including
-     * the title, id and parent moods.
+     * Retrieve the moods from the data store including the title, id and parent moods.
      *
      * @return Collection of MoodTo objects.
      */
+    @NotNull
     public static Collection<MoodTo> view() {
         ArrayList<MoodTo> moods = new ArrayList<MoodTo>(125);
         MoodTo mood;
@@ -71,12 +98,13 @@ public final class MoodDao {
                 moods.add(mood);
             }
         } catch (Exception e1) {
-
+            log.error(e1);
         }
 
         return moods;
     }
 
+    @NotNull
     public static Collection<MoodTo> viewByRelationship() {
         ArrayList<MoodTo> moods = new ArrayList<MoodTo>(125);
         MoodTo mood;
@@ -93,7 +121,7 @@ public final class MoodDao {
                 moods.add(mood);
             }
         } catch (Exception e1) {
-
+            log.error(e1);
         }
 
         return moods;

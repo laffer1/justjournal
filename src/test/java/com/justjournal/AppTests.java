@@ -62,4 +62,29 @@ public class AppTests {
                 .andExpect(status().isOk())
                 .andExpect(view().name("index"));
     }
+
+    @Test
+        public void apiMembers() throws Exception {
+              mockMvc.perform(get("/api/members"))
+                         .andExpect(status().isOk());
+        }
+
+
+    @Test
+    public void apiLocation() throws Exception {
+          mockMvc.perform(get("/api/location"))
+                     .andExpect(status().isOk());
+    }
+
+    @Test
+    public void apiStatistics() throws Exception {
+          mockMvc.perform(get("/api/statistics"))
+                     .andExpect(status().isOk());
+    }
+
+    @Test
+    public void apiTags() throws Exception {
+        mockMvc.perform(get("/api/tags"))
+                   .andExpect(status().isOk());
+    }
 }
