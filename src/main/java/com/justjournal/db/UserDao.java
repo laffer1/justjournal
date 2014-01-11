@@ -307,22 +307,22 @@ public final class UserDao {
     public @NotNull static Collection<UserTo> memberList() {
         ArrayList<UserTo> users = new ArrayList<UserTo>(1024);
         UserTo usr;
-        final String sqlStatement = "call memberlist();";
 
         try {
-            final ResultSet RS = SQLHelper.executeResultSet(sqlStatement);
+            ObjectContext dataContext = DataContext.getThreadObjectContext();
+            final SelectQuery query = new SelectQuery(com.justjournal.model.User.class);
+            List<User> userList = dataContext.performQuery(query);
 
-            while (RS.next()) {
+            for (User user : userList) {
                 usr = new UserTo();
-                usr.setId(RS.getInt(1));
-                usr.setUserName(RS.getString(2));
-                usr.setName(RS.getString(3));
-                usr.setSince(RS.getInt(4));
-                usr.setLastName(RS.getString(5));
+                usr.setId(Cayenne.intPKForObject(user));
+                usr.setUserName(user.getUsername());
+                usr.setName(user.getName());
+                usr.setSince(user.getSince());
+                usr.setLastName(user.getLastname());
+                usr.setPrivateJournal(user.getUserToUserPref().getOwnerViewOnly().equalsIgnoreCase("Y"));
                 users.add(usr);
             }
-
-            RS.close();
         } catch (Exception e1) {
             log.error(e1);
         }
