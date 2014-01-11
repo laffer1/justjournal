@@ -33,7 +33,7 @@ import org.junit.Test;
 /**
  * @author Lucas Holt
  */
-public class UserDaoTest {
+public class UserDaoTests {
 
     @BeforeClass
     public static void setup() throws Exception {
