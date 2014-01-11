@@ -27,6 +27,7 @@
 package com.justjournal;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
@@ -35,6 +36,11 @@ import static org.junit.Assert.assertTrue;
  * @author Lucas Holt
  */
 public class UserTests {
+
+    @BeforeClass
+    public static void setup() throws Exception {
+        Util.setupDb();
+    }
 
     private User user;
 
@@ -50,8 +56,8 @@ public class UserTests {
 
     @Test
     public void testSetUserName() throws Exception {
-       user.setUserName("laffer1");
-       assertTrue(user.getUserName().equals("laffer1"));
+        user.setUserName("laffer1");
+        assertTrue(user.getUserName().equals("laffer1"));
     }
 
     @Test
@@ -67,7 +73,7 @@ public class UserTests {
 
     @Test
     public void testGetType() throws Exception {
-         assertTrue(user.getType() == 0);
+        assertTrue(user.getType() == 0);
     }
 
     @Test
