@@ -60,8 +60,10 @@ final public class MembersController {
 
         for (UserTo member : members) {
             try {
-                if (!new User(member.getUserName()).isPrivateJournal())
-                publicMembers.add(member);
+                if (!member.getPrivateJournal())
+                {
+                    publicMembers.add(member);
+                }
             } catch (Exception e) {
                 log.error(e);
             }
