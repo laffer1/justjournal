@@ -27,6 +27,7 @@
 package com.justjournal;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +55,7 @@ public class AppTests {
     @Before
     public void setup() {
         this.mockMvc = webAppContextSetup(this.wac).build();
+        Util.setupDb();
     }
 
     @Test
