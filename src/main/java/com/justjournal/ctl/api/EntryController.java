@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Lucas Holt
+ * Copyright (c) 2013, 2014 Lucas Holt
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -69,8 +69,8 @@ final public class EntryController {
      * Creates a new entry resource
      *
      * @param entry
-     * @param session
-     * @param response
+     * @param session  HttpSession
+     * @param response HttpServletResponse
      * @return
      */
     @RequestMapping(method = RequestMethod.POST, produces = "application/json")
@@ -96,8 +96,8 @@ final public class EntryController {
      * PUT generally allows for add or edit in REST.
      *
      * @param entry
-     * @param session
-     * @param response
+     * @param session  HttpSession
+     * @param response HttpServletResponse
      * @return
      */
     @RequestMapping(method = RequestMethod.PUT, produces = "application/json")
@@ -124,6 +124,14 @@ final public class EntryController {
         return java.util.Collections.singletonMap("id", Integer.toString(entry.getId()));
     }
 
+    /**
+     *
+     * @param entryId
+     * @param session HttpSession
+     * @param response HttpServletResponse
+     * @return
+     * @throws Exception
+     */
     @RequestMapping(method = RequestMethod.DELETE)
     public
     @ResponseBody

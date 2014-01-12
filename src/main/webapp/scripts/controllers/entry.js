@@ -17,7 +17,7 @@ angular.module('wwwApp').controller('EntryCtrl', ['$scope', '$routeParams', '$lo
 
         $scope.cancel = function () {
             // TODO: what about angular stuff?
-            $scope.frmUpdateJournal.$setPristine();
+            $scope.UpdateJournal.$setPristine();
             $scope.entry = {
                 allowComments: true,
                 autoFormat: true,
