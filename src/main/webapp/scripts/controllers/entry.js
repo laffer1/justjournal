@@ -15,12 +15,19 @@ angular.module('wwwApp').controller('EntryCtrl', ['$scope', '$routeParams', '$lo
         };
         $scope.ErrorMessage = '';
 
-        $scope.cancel = function() {
-          // TODO: something
+        $scope.cancel = function () {
+            // TODO: what about angular stuff?
+            $scope.frmUpdateJournal.$setPristine();
+            $scope.entry = {
+                allowComments: true,
+                autoFormat: true,
+                date: new Date(), // TODO: is this the right format?
+                emailComments: true
+            };
         };
 
         $scope.save = function () {
-            if (jQuery('form#UpdateJournal').valid()) {
+            if (jQuery('form#frmUpdateJournal').valid()) {
                 // EDIT case
                 if (typeof $routeParams.entryId !== 'undefined') {
                     EntryService.update($scope.entry, function success() {
@@ -70,11 +77,7 @@ angular.module('wwwApp').controller('EntryCtrl', ['$scope', '$routeParams', '$lo
         });
 
         $scope.init = function () {
-            jQuery("#frmUpdateJournal").validate({
-                submitHandler: function (form) {
-                    form.submit();
-                }
-            });
+            jQuery("#frmUpdateJournal").validate();
 
             jQuery('#tags').bind('change', function () {
                 $(this).value = $(this).value.toLocaleLowerCase();
