@@ -35,15 +35,10 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.db;
 
 import org.apache.log4j.Logger;
-
-import javax.sql.rowset.CachedRowSet;    import java.sql.ResultSet;
-
+import java.sql.ResultSet;
 
 /**
- * Created by IntelliJ IDEA.
- * User: laffer1
- * Date: Apr 27, 2005
- * Time: 9:46:51 PM
+ * RSS cache storage
  *
  * @author Lucas Holt
  * @version 1.0
@@ -136,6 +131,11 @@ public final class RssCacheDao {
         return noError;
     }
 
+    /**
+     * Get a cached RSS feed by URL
+     * @param uri Feed source
+     * @return
+     */
     public static RssCacheTo get(final String uri) {
 
         if (log.isDebugEnabled())

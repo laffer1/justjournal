@@ -36,18 +36,13 @@ package com.justjournal.db;
 
 import com.justjournal.utility.StringUtil;
 
-import javax.sql.rowset.CachedRowSet;
-import java.util.ArrayList;  import java.sql.ResultSet;
-
+import java.util.ArrayList;
+import java.sql.ResultSet;
 
 /**
  * Manipulate trackback storage
  *
  * @author Lucas Holt
- * @version $Id: TrackbackDao.java,v 1.5 2012/06/23 18:15:31 laffer1 Exp $
- *          User: laffer1
- *          Date: May 5, 2008
- *          Time: 3:06:12 AM
  */
 public final class TrackbackDao {
 
