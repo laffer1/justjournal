@@ -39,10 +39,7 @@ import com.sun.istack.internal.NotNull;
 import java.io.Serializable;
 
 /**
- * Created by IntelliJ IDEA.
- * User: laffer1
- * Date: Jan 3, 2004
- * Time: 11:21:22 PM
+ * Biography
  */
 public final class BioTo implements Serializable {
     private int userId;
@@ -66,17 +63,7 @@ public final class BioTo implements Serializable {
 
     public @NotNull
     final String toString() {
-        StringBuffer output = new StringBuffer();
-
-        output.append("user id: ");
-        output.append(userId);
-        output.append('\n');
-
-        output.append("bio: ");
-        output.append(bio);
-        output.append('\n');
-
-        return output.toString();
+        return "user id: " + userId + '\n' + "bio: " + bio + '\n';
     }
 
     public final boolean equals(Object o) {
@@ -85,10 +72,7 @@ public final class BioTo implements Serializable {
 
         final BioTo bioTo = (BioTo) o;
 
-        if (userId != bioTo.userId) return false;
-        if (!bio.equals(bioTo.bio)) return false;
-
-        return true;
+        return userId == bioTo.userId && bio.equals(bioTo.bio);
     }
 
     public final int hashCode() {

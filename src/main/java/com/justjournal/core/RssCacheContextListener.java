@@ -99,7 +99,7 @@ public class RssCacheContextListener extends Thread {
         StringBuilder sbx = new StringBuilder();
         BufferedReader buff;
 
-        rss = RssCacheDao.view(uri);
+        rss = RssCacheDao.get(uri);
 
         if (rss != null && rss.getUri() != null && rss.getUri().length() > 10) {
 

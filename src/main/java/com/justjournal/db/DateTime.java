@@ -38,12 +38,8 @@ import java.util.Date;
 
 /**
  * An interface for just journal's sql friendly dates.
- * User: laffer1
- * Date: Mar 24, 2006
- * Time: 11:22:14 PM
  *
  * @author Lucas Holt
- * @version $Id: DateTime.java,v 1.4 2007/12/26 06:02:35 laffer1 Exp $
  */
 public interface DateTime {
     int getDay();

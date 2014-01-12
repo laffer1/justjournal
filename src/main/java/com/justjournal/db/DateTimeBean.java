@@ -219,7 +219,7 @@ public final class DateTimeBean implements DateTime {
      */
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
 
         // 2004-01-04 14:24:18
 

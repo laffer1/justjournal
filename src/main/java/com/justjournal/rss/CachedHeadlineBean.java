@@ -77,7 +77,7 @@ public final class CachedHeadlineBean
         BufferedReader buff;
         final java.util.GregorianCalendar calendarg = new java.util.GregorianCalendar();
 
-        rss = RssCacheDao.view(uri);
+        rss = RssCacheDao.get(uri);
 
         if (rss != null && rss.getUri() != null && rss.getUri().length() > 10) {
             if (log.isDebugEnabled())

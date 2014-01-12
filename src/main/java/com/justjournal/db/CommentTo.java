@@ -190,8 +190,7 @@ public final class CommentTo {
         if (userId != commentTo.userId) return false;
         if (!body.equals(commentTo.body)) return false;
         if (!date.equals(commentTo.date)) return false;
-        if (subject != null ? !subject.equals(commentTo.subject) : commentTo.subject != null) return false;
-        return userName.equals(commentTo.userName);
+        return !(subject != null ? !subject.equals(commentTo.subject) : commentTo.subject != null) && userName.equals(commentTo.userName);
     }
 
     public final int hashCode() {

@@ -32,7 +32,7 @@ $Id: index.jsp,v 1.5 2008/04/26 17:06:30 laffer1 Exp $
 
     String aUser = (String) session.getAttribute("auth.user");
 
-    Collection comments = CommentDao.view(eid);
+    Collection comments = CommentDao.list(eid);
 
     EntryTo entry = EntryDAO.viewSingle(eid, true);
 
@@ -156,7 +156,7 @@ $Id: index.jsp,v 1.5 2008/04/26 17:06:30 laffer1 Exp $
         <% } %>
 
         <% if (entry.getMoodName().length() > 0 && entry.getMoodId() != 12) { %>
-        <% final EmoticonTo emoto = EmoticonDao.view(1, entry.getMoodId()); %>
+        <% final EmoticonTo emoto = EmoticonDao.get(1, entry.getMoodId()); %>
     <span class="mood">mood: <img src="../images/emoticons/1/<%=emoto.getFileName()%>"
                                   width="<%=emoto.getWidth()%>"
                                   height="<%=emoto.getHeight()%>"

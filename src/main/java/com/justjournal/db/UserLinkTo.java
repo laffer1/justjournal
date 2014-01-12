@@ -35,10 +35,7 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.db;
 
 /**
- * User: laffer1
- * Date: Dec 22, 2005
- * Time: 2:58:39 PM
- *
+ * Blog Link List
  * @author Lucas Holt
  * @version $Id: UserLinkTo.java,v 1.6 2008/09/02 00:52:22 laffer1 Exp $
  */
@@ -131,12 +128,8 @@ public final class UserLinkTo {
 
         final UserLinkTo that = (UserLinkTo) o;
 
-        if (userId != that.userId) return false;
-        if (id != that.id) return false;
-        if (!title.equals(that.title)) return false;
-        if (!uri.equals(that.uri)) return false;
+        return userId == that.userId && id == that.id && title.equals(that.title) && uri.equals(that.uri);
 
-        return true;
     }
 
     public final int hashCode() {

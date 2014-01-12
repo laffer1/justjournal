@@ -52,7 +52,7 @@ public final class RssCacheDao {
 
     private static final Logger log = Logger.getLogger(RssCacheDao.class.getName());
 
-    public static final boolean add(RssCacheTo rss) {
+    public static boolean add(RssCacheTo rss) {
 
         if (log.isDebugEnabled())
             log.debug("Starting add()");
@@ -82,7 +82,7 @@ public final class RssCacheDao {
         return noError;
     }
 
-    public static final boolean update(RssCacheTo rss) {
+    public static boolean update(RssCacheTo rss) {
 
         if (log.isDebugEnabled())
             log.debug("Starting edit()");
@@ -110,7 +110,7 @@ public final class RssCacheDao {
         return noError;
     }
 
-    public static final boolean delete(RssCacheTo rss) {
+    public static boolean delete(RssCacheTo rss) {
 
         if (log.isDebugEnabled())
             log.debug("Starting delete()");
@@ -136,7 +136,7 @@ public final class RssCacheDao {
         return noError;
     }
 
-    public static final RssCacheTo view(final String uri) {
+    public static RssCacheTo get(final String uri) {
 
         if (log.isDebugEnabled())
             log.debug("Starting view()");

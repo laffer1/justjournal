@@ -59,7 +59,7 @@ final public class CommentController {
     @RequestMapping("/api/comment/{id}")
     @ResponseBody
     public CommentTo getById(@PathVariable Integer id) {
-        return CommentDao.viewSingle(id);
+        return CommentDao.get(id);
     }
 
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
@@ -80,7 +80,7 @@ final public class CommentController {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
 
-        return CommentDao.view(entryId);
+        return CommentDao.list(entryId);
     }
 
     @RequestMapping(method = RequestMethod.DELETE)

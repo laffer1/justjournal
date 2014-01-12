@@ -53,7 +53,7 @@ final public class BiographyController {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return null;
         }
-        return BioDao.view(user.getId());
+        return BioDao.get(user.getId());
     }
 
     @RequestMapping(method = RequestMethod.POST, produces = "application/json")

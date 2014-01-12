@@ -93,8 +93,8 @@ public final class BioDao {
         return false;
     }
 
-    public @NotNull
-    static BioTo view(int userId) {
+    @NotNull
+    public static BioTo get(int userId) {
         BioTo bioto = new BioTo();
 
         try {

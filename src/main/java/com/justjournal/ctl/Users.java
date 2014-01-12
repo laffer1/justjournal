@@ -1190,7 +1190,7 @@ public final class Users extends HttpServlet {
                 }
 
                 if (o.getMoodName().length() > 0 && o.getMoodId() != 12) {
-                    final EmoticonTo emoto = EmoticonDao.view(1, o.getMoodId());
+                    final EmoticonTo emoto = EmoticonDao.get(1, o.getMoodId());
 
                     sb.append("<span class=\"mood\">mood: <img src=\"/images/emoticons/1/");
                     sb.append(emoto.getFileName());
@@ -2045,7 +2045,7 @@ public final class Users extends HttpServlet {
         }
 
         if (o.getMoodName().length() > 0 && o.getMoodId() != 12) {
-            final EmoticonTo emoto = EmoticonDao.view(1, o.getMoodId());
+            final EmoticonTo emoto = EmoticonDao.get(1, o.getMoodId());
 
             sb.append("\t\t\t<span class=\"mood\">mood: <img src=\"/images/emoticons/1/");
             sb.append(emoto.getFileName());
@@ -2161,7 +2161,7 @@ public final class Users extends HttpServlet {
         sb.append(endl);
 
         if (single) {
-            Collection comments = CommentDao.view(o.getId());
+            Collection comments = CommentDao.list(o.getId());
 
             sb.append("<div class=\"commentcount\">");
             sb.append(o.getCommentCount());

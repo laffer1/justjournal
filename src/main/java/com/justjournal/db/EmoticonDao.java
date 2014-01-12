@@ -48,7 +48,7 @@ package com.justjournal.db;
 public final class EmoticonDao {
 
     public @NotNull
-    static EmoticonTo view(int themeId, int moodId) {
+    static EmoticonTo get(int themeId, int moodId) {
         int id = moodId;  // start at mood id but change as necessary
 
         String sqlStatement;

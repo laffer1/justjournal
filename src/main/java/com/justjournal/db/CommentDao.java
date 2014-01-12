@@ -133,7 +133,7 @@ public final class CommentDao {
     }
 
     public @NotNull
-    static CommentTo viewSingle(final int commentId) {
+    static CommentTo get(final int commentId) {
         ResultSet rs = null;
         final CommentTo comment = new CommentTo();
         final String sqlStmt =
@@ -169,7 +169,7 @@ public final class CommentDao {
         return comment;
     }
 
-    public @NotNull static ArrayList<CommentTo> view(final int entryId) {
+    public @NotNull static ArrayList<CommentTo> list(final int entryId) {
         final ArrayList<CommentTo> comments = new ArrayList<CommentTo>(5);  // 5 is average comments on entry?
         ResultSet  rs = null;
         CommentTo comment;
