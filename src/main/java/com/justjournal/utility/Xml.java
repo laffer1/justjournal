@@ -51,7 +51,7 @@ public final class Xml {
      * to their equivalents.
      * <p/>
      * This does not alter elements that may be part of DTDs
-     * like &nbsp; (formermly) but &nbsp; is converted to a plain space.
+     * like &nbsp; (formerly) but &nbsp; is converted to a plain space.
      * <p/>
      * It currently does not handle numerical escapes as
      * defined in XML either. &#xA0; etc
@@ -61,6 +61,8 @@ public final class Xml {
      */
     public @NotNull
     static String cleanString(final String input) {
+        if (input == null) return "";
+
         String work = input;
 
         // warning, if this is already correct,
