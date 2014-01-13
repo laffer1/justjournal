@@ -384,6 +384,12 @@ public final class EntryDAO {
     }
 
 
+    /**
+     * view retrieves journal entries from the database.
+     * @param userName user who owns the entries.
+     * @param thisUser is the owner the one accessing the data?
+     * @return A <code>Collection</code> of entries.
+     */
     public static Collection<EntryTo> view(final String userName, final boolean thisUser) {
         return view(userName, thisUser, 0); // don't skip any!
     }
@@ -391,7 +397,7 @@ public final class EntryDAO {
     /**
      * view retrieves journal entries from the database.
      *
-     * @param userName user who own's the entries.
+     * @param userName user who owns the entries.
      * @param thisUser is the owner the one accessing the data?
      * @param skip     number of records to skip (in the past)
      * @return A <code>Collection</code> of entries.
