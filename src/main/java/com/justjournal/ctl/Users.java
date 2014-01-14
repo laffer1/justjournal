@@ -1749,15 +1749,15 @@ public final class Users extends HttpServlet {
         try {
             Rss rss = new Rss();
 
-            final java.util.GregorianCalendar calendarg = new java.util.GregorianCalendar();
-            calendarg.setTime(new java.util.Date());
+            final java.util.GregorianCalendar calendar = new java.util.GregorianCalendar();
+            calendar.setTime(new java.util.Date());
 
             rss.setTitle(uc.getBlogUser().getUserName());
             rss.setLink("http://www.justjournal.com/users/" + uc.getBlogUser().getUserName());
             rss.setSelfLink("http://www.justjournal.com/users/" + uc.getBlogUser().getUserName() + "/rss");
             rss.setDescription("Just Journal for " + uc.getBlogUser().getUserName());
             rss.setLanguage("en-us");
-            rss.setCopyright("Copyright " + calendarg.get(Calendar.YEAR) + ' ' + uc.getBlogUser().getFirstName());
+            rss.setCopyright("Copyright " + calendar.get(Calendar.YEAR) + ' ' + uc.getBlogUser().getFirstName());
             rss.setWebMaster("webmaster@justjournal.com (Lucas)");
             // RSS advisory board format
             rss.setManagingEditor(uc.getBlogUser().getEmailAddress() + " (" + uc.getBlogUser().getFirstName() + ")");
