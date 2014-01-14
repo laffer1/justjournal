@@ -46,7 +46,7 @@ angular.module('wwwApp').controller('EntryCtrl', ['$scope', '$routeParams', '$lo
                                 }
                             }
                     );
-                    return;
+                    return false;
                 }
 
                 EntryService.save($scope.entry, function success() {
@@ -66,6 +66,7 @@ angular.module('wwwApp').controller('EntryCtrl', ['$scope', '$routeParams', '$lo
                         }
                 );
             }
+            return false;
         };
 
         $scope.$on('$destroy', function finalize() {
