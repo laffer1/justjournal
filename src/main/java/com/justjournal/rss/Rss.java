@@ -33,7 +33,6 @@ import com.justjournal.utility.DateConvert;
 import com.justjournal.utility.Xml;
 import com.justjournal.utility.HTMLUtil;
 
-import javax.sql.rowset.CachedRowSet;
 import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -159,7 +158,7 @@ public final class Rss {
                 Date date = d.toDate();
                 if (newestEntryDate == null || date.compareTo(newestEntryDate) > 0)
                     newestEntryDate = date;
-                Add(item);
+                add(item);
             }
 
         } catch (Exception e) {
@@ -193,7 +192,7 @@ public final class Rss {
                 item.setEnclosureType(rs.getString("mimetype").trim());
                 item.setEnclosureLength(Integer.toString(rs.getInt("imglen") / 8));
                 //item.setPubDate();
-                Add(item);
+                add(item);
             }
 
             rs.close();
@@ -210,7 +209,11 @@ public final class Rss {
         }
     }
 
-    public void Add(RssItem item) {
+    /**
+     * Add RSS item
+     * @param item rss item
+     */
+    public void add(RssItem item) {
         items.add(item);
     }
 
@@ -337,6 +340,16 @@ public final class Rss {
         sb.append("</rss>\n");
 
         return sb.toString();
+    }
+
+    /**
+     * Number of RSS items populated.
+     * @return rss item count
+     */
+    public int size() {
+        if (items == null) return 0;
+
+        return items.size();
     }
 
     private String date() {
