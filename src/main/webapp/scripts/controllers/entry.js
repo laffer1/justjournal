@@ -11,7 +11,12 @@ angular.module('wwwApp').controller('EntryCtrl', ['$scope', '$routeParams', '$lo
             allowComments: true,
             autoFormat: true,
             date: new Date(), // TODO: is this the right format?
-            emailComments: true
+            emailComments: true,
+            subject: '',
+            body: '',
+            tag: '',
+            music: '',
+            trackback: ''
         };
         $scope.ErrorMessage = '';
 
@@ -22,7 +27,12 @@ angular.module('wwwApp').controller('EntryCtrl', ['$scope', '$routeParams', '$lo
                 allowComments: true,
                 autoFormat: true,
                 date: new Date(), // TODO: is this the right format?
-                emailComments: true
+                emailComments: true ,
+                subject: '',
+                body: '',
+                tag: '',
+                music: '',
+                trackback: ''
             };
         };
 
