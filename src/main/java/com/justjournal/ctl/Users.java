@@ -1004,7 +1004,7 @@ public final class Users extends HttpServlet {
 
                 // Parse the previous string back into a Date.
                 final ParsePosition pos = new ParsePosition(0);
-                final java.util.Date currentDate = formatter.parse(o.getDate().toString(), pos);
+                final java.util.Date currentDate = formatter.parse(o.getDateTime().toString(), pos);
 
                 curDate = formatmydate.format(currentDate);
 
@@ -1103,7 +1103,7 @@ public final class Users extends HttpServlet {
 
                 // Parse the previous string back into a Date.
                 final ParsePosition pos = new ParsePosition(0);
-                final java.util.Date currentDate = formatter.parse(o.getDate().toString(), pos);
+                final java.util.Date currentDate = formatter.parse(o.getDateTime().toString(), pos);
 
                 curDate = formatmydate.format(currentDate);
 
@@ -1344,17 +1344,13 @@ public final class Users extends HttpServlet {
         sb.append(endl);
         // END: YEARS
 
-        // load recordset and display the calendar
+        // load ResultSet and display the calendar
         try {
 
             ResultSet RS;
 
             // are we logged in?
-            if (uc.isAuthBlog()) {
-                RS = EntryDAO.ViewCalendarYear(year, uc.getBlogUser().getUserName(), true);  // should be true
-            } else {
-                RS = EntryDAO.ViewCalendarYear(year, uc.getBlogUser().getUserName(), false);
-            }
+            RS = EntryDAO.ViewCalendarYear(year, uc.getBlogUser().getUserName(), uc.isAuthBlog());
 
             if (RS == null) {
                 sb.append("<p>Calendar data not available.</p>");
@@ -1400,11 +1396,7 @@ public final class Users extends HttpServlet {
         try {
 
             final ResultSet RS;
-            if (uc.isAuthBlog()) {
-                RS = EntryDAO.ViewCalendarMonth(year, month, uc.getBlogUser().getUserName(), true);  // should be true
-            } else {
-                RS = EntryDAO.ViewCalendarMonth(year, month, uc.getBlogUser().getUserName(), false);
-            }
+            RS = EntryDAO.ViewCalendarMonth(year, month, uc.getBlogUser().getUserName(), uc.isAuthBlog());
 
             if (RS == null) {
                 sb.append("<p>Calendar data not available.</p>");
@@ -1571,17 +1563,7 @@ public final class Users extends HttpServlet {
         final int maxrecent = 5;
 
         try {
-            if (uc.isAuthBlog()) {
-                entries = EntryDAO.view(uc.getBlogUser().getUserName(), true, 0);  // should be true
-
-                if (log.isDebugEnabled())
-                    log.debug("getUserRecentEntries: User is logged in.");
-            } else {
-                entries = EntryDAO.view(uc.getBlogUser().getUserName(), false, 0);
-
-                if (log.isDebugEnabled())
-                    log.debug("getUserRecentEntries: User is not logged in.");
-            }
+            entries = EntryDAO.view(uc.getBlogUser().getUserName(), uc.isAuthBlog(), 0);
 
             if (log.isDebugEnabled())
                 log.debug("getUserRecentEntries: Begin Iteration of records.");
@@ -1644,12 +1626,7 @@ public final class Users extends HttpServlet {
         try {
 
             final Collection entries;
-
-            if (uc.isAuthBlog()) {
-                entries = EntryDAO.ViewCalendarDay(year, month, day, uc.getBlogUser().getUserName(), true);  // should be true
-            } else {
-                entries = EntryDAO.ViewCalendarDay(year, month, day, uc.getBlogUser().getUserName(), false);
-            }
+             entries = EntryDAO.ViewCalendarDay(year, month, day, uc.getBlogUser().getUserName(), uc.isAuthBlog());
 
             if (entries == null || entries.size() == 0) {
                 sb.append("<p>Calendar data not available.</p>");
@@ -1670,7 +1647,7 @@ public final class Users extends HttpServlet {
 
                     // Parse the previous string back into a Date.
                     final ParsePosition pos = new ParsePosition(0);
-                    final java.util.Date currentDate = formatter.parse(o.getDate().toString(), pos);
+                    final java.util.Date currentDate = formatter.parse(o.getDateTime().toString(), pos);
 
                     curDate = formatmydate.format(currentDate);
 
@@ -1875,7 +1852,7 @@ public final class Users extends HttpServlet {
 
                 // Parse the previous string back into a Date.
                 final ParsePosition pos = new ParsePosition(0);
-                final java.util.Date currentDate = formatter.parse(o.getDate().toString(), pos);
+                final java.util.Date currentDate = formatter.parse(o.getDateTime().toString(), pos);
 
                 curDate = formatmydate.format(currentDate);
 

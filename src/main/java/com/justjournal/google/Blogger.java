@@ -70,7 +70,7 @@ import java.util.regex.Pattern;
  * blogger.setTemplate: Edits the main or archive index template of a given blog.
  *
  *
- * TODO: Remove justjournal.com static maping.  Settings class will not work here.
+ * TODO: Remove justjournal.com static mapping.  Settings class will not work here.
  */
 @SuppressWarnings({"UnusedParameters"})
 public class Blogger {
@@ -566,7 +566,7 @@ public class Blogger {
                 entry.put("mt_keywords", "");
                 entry.put("title", e.getSubject());
                 entry.put("mt_text_more", "");
-                entry.put("dateCreated", e.getDate().toDate()); /* TODO: needs to be iso8601 */
+                entry.put("dateCreated", e.getDate()); /* TODO: needs to be iso8601 */
                 arr.add(entry);
             }
 
@@ -619,7 +619,7 @@ public class Blogger {
         entry.put("mt_keywords", "");
         entry.put("title", e.getSubject());
         entry.put("mt_text_more", "");
-        entry.put("dateCreated", e.getDate().toDate()); /* TODO: needs to be iso8601 */
+        entry.put("dateCreated", e.getDate()); /* TODO: needs to be iso8601 */
 
         return entry;
     }

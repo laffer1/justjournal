@@ -38,6 +38,7 @@ import com.justjournal.utility.HTMLUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 
 /**
  * Journal entry transfer object.  Contains one journal entry.
@@ -47,7 +48,7 @@ import java.util.Collection;
  * @version 1.0
  * @see EntryDAO
  */
-public final class EntryTo {
+public class EntryTo {
     private int id;
     private int locationId;
     private int moodId;
@@ -55,7 +56,7 @@ public final class EntryTo {
     private int userId;
     private int securityLevel;
 
-    private DateTime date;
+    private Date date;
 
     private String subject;
     private String body;
@@ -149,13 +150,16 @@ public final class EntryTo {
     }
 
     /**
-     * Retrieve date as a <code>DateTimeBean</code>
+     * Retrieve date
      *
-     * @return current date in a DateTimeBean
-     * @see DateTimeBean
+     * @return current date
      */
-    public DateTime getDate() {
+    public Date getDate() {
         return date;
+    }
+
+    public DateTime getDateTime() {
+        return new DateTimeBean(date);
     }
 
     /**
@@ -182,7 +186,7 @@ public final class EntryTo {
 
         try {
             newDate.set(date);
-            this.date = newDate;
+            this.date = newDate.toDate();
         } catch (Exception e) {
             throw new IllegalArgumentException("Illegal date");
         }
@@ -196,6 +200,10 @@ public final class EntryTo {
      * @see DateTimeBean
      */
     public void setDate(DateTime date) {
+        this.date = date.toDate();
+    }
+
+    public void setDate(Date date) {
         this.date = date;
     }
 
@@ -212,16 +220,11 @@ public final class EntryTo {
      * Set the subject.  If the subject is null or
      * an empty string, it will be set as (no subject).
      *
-     * @param subject
+     * @param subject subject to use
      * @throws IllegalArgumentException
      */
     public void setSubject(String subject)
             throws IllegalArgumentException {
-        /* i'm going to allow blanks
-        if ( subject.length() < 2 )
-            throw new IllegalArgumentException("Illegal subject: " +
-                                               subject);
-        */
 
         if (subject == null || subject.length() == 0)
             this.subject = "(no subject)";
@@ -454,9 +457,7 @@ public final class EntryTo {
         if (moodName != null ? !moodName.equals(entryTo.moodName) : entryTo.moodName != null) return false;
         if (music != null ? !music.equals(entryTo.music) : entryTo.music != null) return false;
         if (subject != null ? !subject.equals(entryTo.subject) : entryTo.subject != null) return false;
-        if (userName != null ? !userName.equals(entryTo.userName) : entryTo.userName != null) return false;
-
-        return true;
+        return !(userName != null ? !userName.equals(entryTo.userName) : entryTo.userName != null);
     }
 
     public int hashCode() {

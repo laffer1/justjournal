@@ -68,8 +68,8 @@ public final class AtomFeed {
                 item.setTitle(o.getSubject());
                 item.setContent(o.getBody());
                 item.setLink("http://www.justjournal.com/users/" + o.getUserName() + "/entry/" + o.getId());
-                item.setPublished(o.getDate().toRFC3339());
-                item.setUpdated(o.getDate().toRFC3339());
+                item.setPublished(o.getDateTime().toRFC3339());
+                item.setUpdated(o.getDateTime().toRFC3339());
                 Add(item);
             }
         } catch (Exception ignored) {

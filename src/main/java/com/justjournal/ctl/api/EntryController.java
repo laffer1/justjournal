@@ -29,6 +29,9 @@ package com.justjournal.ctl.api;
 import com.justjournal.WebLogin;
 import com.justjournal.db.*;
 import org.apache.log4j.Logger;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.SerializationConfig;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -63,6 +66,11 @@ final public class EntryController {
     @ResponseBody
     Collection<EntryTo> getEntries(@RequestParam String username) {
         return EntryDAO.viewAll(username, false);
+    }
+
+    @JsonIgnoreProperties({"tags"})
+    public class EntryJsonMixin extends EntryTo {
+
     }
 
     /**
@@ -103,7 +111,11 @@ final public class EntryController {
     @RequestMapping(method = RequestMethod.PUT, produces = "application/json")
     public
     @ResponseBody
-    Map<String, String> put(@RequestBody EntryTo entry, HttpSession session, HttpServletResponse response) {
+    Map<String, String> put(@RequestBody EntryJsonMixin entry, HttpSession session, HttpServletResponse response) {
+        ObjectMapper mapper = new ObjectMapper();
+        SerializationConfig serializationConfig = mapper.getSerializationConfig();
+        serializationConfig.addMixInAnnotations(EntryTo.class, EntryJsonMixin.class);
+
 
         if (!WebLogin.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -125,9 +137,8 @@ final public class EntryController {
     }
 
     /**
-     *
      * @param entryId
-     * @param session HttpSession
+     * @param session  HttpSession
      * @param response HttpServletResponse
      * @return
      * @throws Exception

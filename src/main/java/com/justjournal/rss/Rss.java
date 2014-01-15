@@ -153,9 +153,9 @@ public final class Rss {
                 String description = HTMLUtil.clean(o.getBody(), false);
                 item.setDescription(HTMLUtil.convertCharacterEntities(description));
                 item.setGuid("http://www.justjournal.com/users/" + o.getUserName() + "/entry/" + o.getId());
-                item.setPubDate(o.getDate().toPubDate());
-                DateTime d = o.getDate();
-                Date date = d.toDate();
+                item.setPubDate(o.getDateTime().toPubDate());
+
+                Date date = o.getDate();
                 if (newestEntryDate == null || date.compareTo(newestEntryDate) > 0)
                     newestEntryDate = date;
                 add(item);

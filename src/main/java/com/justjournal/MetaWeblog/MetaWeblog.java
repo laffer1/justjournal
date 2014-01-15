@@ -533,7 +533,7 @@ public class MetaWeblog {
                 entry.put("mt_keywords", "");
                 entry.put("title", e.getSubject());
                 entry.put("mt_text_more", "");
-                entry.put("dateCreated", e.getDate().toDate()); /* TODO: needs to be iso8601 */
+                entry.put("dateCreated", e.getDate()); /* TODO: needs to be iso8601 */
                 ArrayList<String> tags = EntryDAO.getTags(e.getId());
                 String str[] = (String[]) tags.toArray(new String[tags.size()]);
                 entry.put("categories", str); // according to microsoft it's a string array
@@ -588,7 +588,7 @@ public class MetaWeblog {
         entry.put("mt_keywords", "");
         entry.put("title", e.getSubject());
         entry.put("mt_text_more", "");
-        entry.put("dateCreated", e.getDate().toDate()); /* TODO: needs to be iso8601 */
+        entry.put("dateCreated", e.getDate()); /* TODO: needs to be iso8601 */
         ArrayList<String> tags = EntryDAO.getTags(e.getId());
         String str[] = (String[]) tags.toArray(new String[tags.size()]);
         entry.put("categories", str); // according to microsoft it's a string array
