@@ -744,6 +744,7 @@ public final class EntryDAO {
             orderings.add(new Ordering("date", SortOrder.DESCENDING));
             orderings.add(new Ordering("db:" + Entry.ID_PK_COLUMN, SortOrder.DESCENDING));
             query.addOrderings(orderings);
+            @SuppressWarnings("unchecked")
             List<com.justjournal.model.Entry> entryList = dataContext.performQuery(query);
 
             for (com.justjournal.model.Entry e : entryList) {
