@@ -34,12 +34,13 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal;
 
+import com.justjournal.db.EntryTo;
 import org.apache.log4j.Logger;
 
-import java.sql.ResultSet;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 
 /**
@@ -52,7 +53,7 @@ import java.util.Iterator;
 public final class Cal {
     private static final Logger log = Logger.getLogger(Cal.class);
 
-    private ResultSet RS;
+    private Collection<EntryTo> entries;
     private final ArrayList<CalMonth> Months = new ArrayList<CalMonth>(12);
     private final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
     private final SimpleDateFormat shortDate = new SimpleDateFormat("yyyy-MM-dd");
@@ -66,12 +67,8 @@ public final class Cal {
 
     private String baseUrl;
 
-    public Cal(final ResultSet RS) {
-
-        if (log.isDebugEnabled())
-            log.debug("Storing Recordsest");
-
-        this.RS = RS;
+    public Cal(final Collection<EntryTo> entries) {
+        this.entries = entries;
         this.calculateEntryCounts();
     }
 
@@ -87,10 +84,8 @@ public final class Cal {
         int[] monthPostCt = null;
 
         try {
-            while (RS.next()) {
-                // Parse the previous string back into a Date.
-                final ParsePosition pos = new ParsePosition(0);
-                final java.util.Date currentDate = formatter.parse(RS.getString("date"), pos);
+            for (EntryTo entryTo : entries) {
+                final java.util.Date currentDate = entryTo.getDate();
 
                 calendarg.setTime(currentDate);
                 year = calendarg.get(java.util.Calendar.YEAR);
@@ -124,20 +119,8 @@ public final class Cal {
             final java.util.Date baseDate = shortDate.parse(year + "-" + (month + 1) + "-01", pos2);
             final int[] n = monthPostCt;
             Months.add(new CalMonth(month, n, baseDate));
-            RS.close();
         } catch (Exception e) {
-            if (log.isDebugEnabled())
-                log.debug("Exception raised in calculateEntryCounts... " + e.toString());
-        } finally {
-            if (RS != null) {
-                try {
-                    RS.close();
-                } catch (Exception e) {
-                    // can't fix it now
-                    if (log.isDebugEnabled())
-                        log.debug("Can't close cached recordset");
-                }
-            }
+            log.debug("Exception raised in calculateEntryCounts... " + e.toString());
         }
     }
 

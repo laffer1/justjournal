@@ -280,6 +280,7 @@ public final class EntryDAO {
 
     /**
      * Get single entry if it is public
+     *
      * @param entryId unique id for an entry
      * @return Entry Transfer Object
      */
@@ -386,6 +387,7 @@ public final class EntryDAO {
 
     /**
      * view retrieves journal entries from the database.
+     *
      * @param userName user who owns the entries.
      * @param thisUser is the owner the one accessing the data?
      * @return A <code>Collection</code> of entries.
@@ -640,67 +642,45 @@ public final class EntryDAO {
         return count;
     }
 
-    public static ResultSet ViewCalendarYear(final int year,
-                                             final String userName,
-                                             final boolean thisUser)
+    @NotNull
+    public static Collection<EntryTo> ViewCalendarYear(final int year,
+                                                       final String userName,
+                                                       final boolean thisUser)
             throws Exception {
-        String sqlStatement;
-        ResultSet RS;
 
-        if (thisUser) {
-            // NO SECURITY RESTRICTION
-            sqlStatement = "SELECT us.id As id, " +
-                    " eh.date As date, " +
-                    " eh.id As entryid " +
-                    " FROM user As us, entry As eh " +
-                    " WHERE us.username = '" + userName +
-                    "' AND YEAR(eh.date)=" + year + " AND us.id = eh.uid ORDER BY eh.date DESC, eh.id DESC;";
-        } else {
-            // PUBLIC ONLY
-            sqlStatement = "SELECT us.id As id, " +
-                    " eh.date As date, " +
-                    " eh.id As entryid " +
-                    "FROM user As us, entry As eh WHERE us.username = '" + userName +
-                    "' AND YEAR(eh.date)=" + year + " AND us.id = eh.uid AND eh.security = '2' ORDER BY eh.date DESC, eh.id DESC;";
-        }
+        DateTimeBean dtb = new DateTimeBean();
+        dtb.setYear(year);
+        dtb.setMonth(1);
+        dtb.setDay(1);
+        dtb.setHour(0);
+        dtb.setMinutes(1);
+        Date startDate = dtb.toDate();
 
-        RS = SQLHelper.executeResultSet(sqlStatement);
-
-        return RS;
+        dtb.add(Calendar.YEAR, 1);
+        dtb.add(Calendar.MINUTE, -1);
+        Date endDate = dtb.toDate();
+        return getEntriesByDateRange(startDate, endDate, userName, thisUser);
     }
 
-    public static ResultSet ViewCalendarMonth(final int year,
-                                              final int month,
-                                              final String userName,
-                                              final boolean thisUser)
+    @NotNull
+    public static Collection<EntryTo> ViewCalendarMonth(final int year,
+                                                        final int month,
+                                                        final String userName,
+                                                        final boolean thisUser)
             throws Exception {
 
-        String sqlStatement;
-        ResultSet RS;
+        DateTimeBean dtb = new DateTimeBean();
+        dtb.setYear(year);
+        dtb.setMonth(month);
+        dtb.setDay(1);
+        dtb.setHour(0);
+        dtb.setMinutes(1);
+        Date startDate = dtb.toDate();
 
-        if (thisUser) {
-            // NO SECURITY RESTRICTION
-            sqlStatement = "SELECT us.id As id, " +
-                    " eh.date As date, " +
-                    " eh.id As entryid, eh.subject as subject " +
-                    " FROM user As us, entry As eh " +
-                    " WHERE us.username = '" + userName +
-                    "' AND YEAR(eh.date)=" + year + " AND MONTH(eh.date)=" + month +
-                    " AND us.id = eh.uid ORDER BY eh.date DESC, eh.id DESC;";
-        } else {
-            // PUBLIC ONLY
-            sqlStatement = "SELECT us.id As id, " +
-                    " eh.date As date, " +
-                    " eh.id As entryid, eh.subject as subject " +
-                    "FROM user As us, entry As eh WHERE us.username = '" + userName +
-                    "' AND YEAR(eh.date)=" + year + " AND MONTH(eh.date)=" + month +
-                    " AND us.id = eh.uid AND eh.security = '2' ORDER BY eh.date DESC, eh.id DESC;";
-        }
-
-        RS = SQLHelper.executeResultSet(sqlStatement);
-
-
-        return RS;
+        dtb.add(Calendar.MONTH, 1);
+        dtb.add(Calendar.MINUTE, -1);
+        Date endDate = dtb.toDate();
+        return getEntriesByDateRange(startDate, endDate, userName, thisUser);
     }
 
     /**
@@ -713,17 +693,13 @@ public final class EntryDAO {
      * @param thisUser include private and friends entries
      * @return returns entries or an empty list
      */
+    @NotNull
     @SuppressWarnings("unchecked")
-    public static Collection ViewCalendarDay(final int year,
-                                             final int month,
-                                             final int day,
-                                             final String userName,
-                                             final boolean thisUser) {
-
-        final int SIZE = 15;
-        final ArrayList<EntryTo> entries = new ArrayList<EntryTo>(SIZE);
-
-        ObjectContext dataContext = DataContext.getThreadObjectContext();
+    public static Collection<EntryTo> ViewCalendarDay(final int year,
+                                                      final int month,
+                                                      final int day,
+                                                      final String userName,
+                                                      final boolean thisUser) {
 
         DateTimeBean dtb = new DateTimeBean();
         dtb.setYear(year);
@@ -735,6 +711,18 @@ public final class EntryDAO {
         dtb.setHour(23);
         dtb.setMinutes(59);
         Date endDate = dtb.toDate();
+
+        return getEntriesByDateRange(startDate, endDate, userName, thisUser);
+    }
+
+    @NotNull
+    public static Collection<EntryTo> getEntriesByDateRange(Date startDate, Date endDate,
+                                                            final String userName,
+                                                            final boolean thisUser) {
+
+        final ArrayList<EntryTo> entries = new ArrayList<EntryTo>();
+
+        ObjectContext dataContext = DataContext.getThreadObjectContext();
 
         EntryTo et;
         Expression exp;
@@ -768,7 +756,6 @@ public final class EntryDAO {
 
         return entries;
     }
-
 
     /**
      * Retrieve the 15 most recent journal entries from unique users.  So if I post 10 entries, it will only select the

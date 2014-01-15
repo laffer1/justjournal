@@ -1344,20 +1344,15 @@ public final class Users extends HttpServlet {
         sb.append(endl);
         // END: YEARS
 
-        // load ResultSet and display the calendar
         try {
+            Collection<EntryTo> entries = EntryDAO.ViewCalendarYear(year, uc.getBlogUser().getUserName(), uc.isAuthBlog());
 
-            ResultSet RS;
-
-            // are we logged in?
-            RS = EntryDAO.ViewCalendarYear(year, uc.getBlogUser().getUserName(), uc.isAuthBlog());
-
-            if (RS == null) {
+            if (entries == null || entries.size() == 0) {
                 sb.append("<p>Calendar data not available.</p>");
                 sb.append(endl);
             } else {
                 // we have calendar data!
-                final Cal mycal = new Cal(RS);
+                final Cal mycal = new Cal(entries);
                 sb.append(mycal.render());
             }
 
@@ -1375,8 +1370,6 @@ public final class Users extends HttpServlet {
      * @param year  the year to display data for
      * @param month the month we want
      * @param uc    The UserContext we are working on including blog owner, authenticated user, and sb to write
-     *              <p/>
-     *              TODO: change to Entries DAO code
      */
     private static void getCalendarMonth(final int year,
                                          final int month,
@@ -1394,27 +1387,22 @@ public final class Users extends HttpServlet {
         sb.append(endl);
 
         try {
+            Collection<EntryTo> entries = EntryDAO.ViewCalendarMonth(year, month, uc.getBlogUser().getUserName(), uc.isAuthBlog());
 
-            final ResultSet RS;
-            RS = EntryDAO.ViewCalendarMonth(year, month, uc.getBlogUser().getUserName(), uc.isAuthBlog());
-
-            if (RS == null) {
+            if (entries.size() == 0) {
                 sb.append("<p>Calendar data not available.</p>");
                 sb.append(endl);
             } else {
 
-                final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
                 final SimpleDateFormat formatmydate = new SimpleDateFormat("dd");
                 final SimpleDateFormat formatmytime = new SimpleDateFormat("h:mm a");
 
                 String curDate;
                 String lastDate = "";
 
-                while (RS.next()) {
-                    // Parse the previous string back into a Date.
-                    final ParsePosition pos = new ParsePosition(0);
-                    final java.util.Date currentDate = formatter.parse(RS.getString("date"), pos);
+                for (EntryTo entryTo : entries) {
 
+                    Date currentDate = entryTo.getDate();
                     curDate = formatmydate.format(currentDate);
 
                     if (curDate.compareTo(lastDate) != 0) {
@@ -1431,7 +1419,7 @@ public final class Users extends HttpServlet {
                     if (month < 10)
                         sb.append('0');
 
-                    sb.append(month).append('/').append(curDate).append("\">").append(RS.getString("subject")).append("</a></span></p> ");
+                    sb.append(month).append('/').append(curDate).append("\">").append(entryTo.getSubject()).append("</a></span></p> ");
                     sb.append(endl);
                 }
             }
@@ -1452,24 +1440,23 @@ public final class Users extends HttpServlet {
     private static void getCalendarMini(UserContext uc) {
         try {
             final StringBuffer sb = uc.getSb();
-            final ResultSet RS;
+
             final Calendar cal = new GregorianCalendar(java.util.TimeZone.getDefault());
             int year = cal.get(Calendar.YEAR);
             int month = cal.get(Calendar.MONTH) + 1; // zero based
 
-            RS = EntryDAO.ViewCalendarMonth(year, month, uc.getBlogUser().getUserName(), uc.isAuthBlog());
+            Collection<EntryTo> entries = EntryDAO.ViewCalendarMonth(year, month, uc.getBlogUser().getUserName(), uc.isAuthBlog());
 
-            if (RS == null) {
+            if (entries.size() == 0) {
                 sb.append("\t<!-- could not render calendar -->");
                 sb.append(endl);
             } else {
-                final Cal mycal = new Cal(RS);
+                final Cal mycal = new Cal(entries);
                 mycal.setBaseUrl("/users/" + uc.getBlogUser().getUserName() + '/');
                 sb.append(mycal.renderMini());
             }
-
-        } catch (Exception ignored) {
-
+        } catch (Exception ex) {
+            log.debug(ex);
         }
     }
 

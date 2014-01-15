@@ -71,6 +71,18 @@ public final class DateTimeBean implements DateTime {
         this.set(date);
     }
 
+    /***
+     * Add to a date using fields just like Calendar
+     * @param field
+     * @param count
+     */
+    public void add(int field, int count) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(this.toDate());
+        calendar.add(field, count);
+        this.set(calendar.getTime());
+    }
+
     public int getDay() {
         return this.day;
     }
