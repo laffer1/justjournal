@@ -10,7 +10,7 @@ angular.module('wwwApp').controller('EntryCtrl', ['$scope', '$routeParams', '$lo
         $scope.entry = {
             allowComments: true,
             autoFormat: true,
-           // date: new Date(), // TODO: is this the right format?
+            // date: new Date(), // TODO: is this the right format?
             emailComments: true,
             subject: '',
             body: '',
@@ -26,8 +26,8 @@ angular.module('wwwApp').controller('EntryCtrl', ['$scope', '$routeParams', '$lo
             $scope.entry = {
                 allowComments: true,
                 autoFormat: true,
-               // date: new Date(), // TODO: is this the right format?
-                emailComments: true ,
+                // date: new Date(), // TODO: is this the right format?
+                emailComments: true,
                 subject: '',
                 body: '',
                 tag: '',
@@ -38,6 +38,16 @@ angular.module('wwwApp').controller('EntryCtrl', ['$scope', '$routeParams', '$lo
 
         $scope.save = function () {
             if (jQuery('form#frmUpdateJournal').valid()) {
+
+                if ($scope.entry.mood.id !== 'undefined')
+                    $scope.entry.moodId = $scope.entry.mood.id;
+
+                if ($scope.entry.location.id !== 'undefined')
+                    $scope.entry.locationId = $scope.entry.location.id;
+
+                if ($scope.entry.security.id !== 'undefined')
+                    $scope.entry.securityId = $scope.entry.security.id;
+
                 // EDIT case
                 if (typeof $routeParams.entryId !== 'undefined') {
                     EntryService.update($scope.entry, function success() {
