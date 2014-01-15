@@ -50,8 +50,8 @@ import java.util.Date;
  */
 public class EntryTo {
     private int id;
-    private int locationId;
-    private int moodId;
+    private int locationId = 0;
+    private int moodId = 0;
     private int commentCount;
     private int userId;
     private int securityLevel;
