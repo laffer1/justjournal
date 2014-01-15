@@ -68,7 +68,7 @@ final public class EntryController {
         return EntryDAO.viewAll(username, false);
     }
 
-    @JsonIgnoreProperties({"tags"})
+    @JsonIgnoreProperties({"tags", "date"})
     public class EntryJsonMixin extends EntryTo {
 
     }
@@ -81,10 +81,13 @@ final public class EntryController {
      * @param response HttpServletResponse
      * @return
      */
-    @RequestMapping(method = RequestMethod.POST, produces = "application/json")
+    @RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     public
     @ResponseBody
-    Map<String, String> post(@RequestBody EntryTo entry, HttpSession session, HttpServletResponse response) {
+    Map<String, String> post(@RequestBody EntryJsonMixin entry, HttpSession session, HttpServletResponse response) {
+        ObjectMapper mapper = new ObjectMapper();
+        SerializationConfig serializationConfig = mapper.getSerializationConfig();
+        serializationConfig.addMixInAnnotations(EntryTo.class, EntryJsonMixin.class);
 
         if (!WebLogin.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -108,7 +111,7 @@ final public class EntryController {
      * @param response HttpServletResponse
      * @return
      */
-    @RequestMapping(method = RequestMethod.PUT, produces = "application/json")
+    @RequestMapping(method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
     public
     @ResponseBody
     Map<String, String> put(@RequestBody EntryJsonMixin entry, HttpSession session, HttpServletResponse response) {
