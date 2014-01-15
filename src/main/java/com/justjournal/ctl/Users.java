@@ -88,7 +88,7 @@ public final class Users extends HttpServlet {
     /**
      * Initializes the servlet.
      *
-     * @param config The sevlet config
+     * @param config The servlet config
      * @throws ServletException The servlet is hosed.
      */
     @Override
