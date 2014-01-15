@@ -10,7 +10,7 @@ angular.module('wwwApp').controller('EntryCtrl', ['$scope', '$routeParams', '$lo
         $scope.entry = {
             allowComments: true,
             autoFormat: true,
-            date: new Date(), // TODO: is this the right format?
+           // date: new Date(), // TODO: is this the right format?
             emailComments: true,
             subject: '',
             body: '',
@@ -26,7 +26,7 @@ angular.module('wwwApp').controller('EntryCtrl', ['$scope', '$routeParams', '$lo
             $scope.entry = {
                 allowComments: true,
                 autoFormat: true,
-                date: new Date(), // TODO: is this the right format?
+               // date: new Date(), // TODO: is this the right format?
                 emailComments: true ,
                 subject: '',
                 body: '',

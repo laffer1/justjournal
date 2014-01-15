@@ -56,7 +56,7 @@ public class EntryTo {
     private int userId;
     private int securityLevel;
 
-    private Date date;
+    private Date date = new Date();
 
     private String subject;
     private String body;
