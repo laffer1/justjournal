@@ -73,6 +73,34 @@ final public class EntryController {
 
     }
 
+    public class Entry {
+        private String subject;
+        private String body;
+
+        public String getBody() {
+            return this.body;
+        }
+
+        public String getSubject() {
+            return this.subject;
+        }
+
+        public void setSubject(String subject) {
+            this.subject = subject;
+        }
+
+        public void setBody(String body) {
+            this.body = body;
+        }
+    }
+
+    private EntryTo convertEntryToEntryTo(Entry entry) {
+         EntryTo entryTo = new EntryTo();
+        entryTo.setSubject(entry.getSubject());
+        entryTo.setBody(entry.getBody());
+        return entryTo;
+    }
+
     /**
      * Creates a new entry resource
      *
@@ -84,7 +112,7 @@ final public class EntryController {
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     public
     @ResponseBody
-    Map<String, String> post(@RequestBody EntryJsonMixin entry, HttpSession session, HttpServletResponse response) {
+    Map<String, String> post(@RequestBody Entry entry, HttpSession session, HttpServletResponse response) {
         ObjectMapper mapper = new ObjectMapper();
         SerializationConfig serializationConfig = mapper.getSerializationConfig();
         serializationConfig.addMixInAnnotations(EntryTo.class, EntryJsonMixin.class);
@@ -94,13 +122,14 @@ final public class EntryController {
             return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
         }
         // TODO: validate
-        boolean result = EntryDAO.add(entry);
+        boolean result = EntryDAO.add(convertEntryToEntryTo(entry));
 
         if (!result) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return java.util.Collections.singletonMap("error", "Could not add the entry.");
         }
-        return java.util.Collections.singletonMap("id", Integer.toString(entry.getId()));
+       // return java.util.Collections.singletonMap("id", Integer.toString(entry.getId()));
+        return java.util.Collections.singletonMap("status", "OK");
     }
 
     /**
