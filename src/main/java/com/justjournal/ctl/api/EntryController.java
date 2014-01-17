@@ -169,10 +169,10 @@ final public class EntryController {
     }
 
     /**
-     * @param entryId
+     * @param entryId  entry id
      * @param session  HttpSession
      * @param response HttpServletResponse
-     * @return
+     * @return errors or entry id if success
      * @throws Exception
      */
     @RequestMapping(method = RequestMethod.DELETE)
