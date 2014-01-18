@@ -65,6 +65,25 @@ public class TrackbackTo {
     private String url;
     private TrackbackType type;
 
+    public TrackbackTo() {
+
+    }
+
+    public TrackbackTo(int id, int entryId, DateTime date, String subject, String body, String authorEmail, String authorName,
+                       String blogName, String url, TrackbackType type) {
+
+        this.id = id;
+        this.entryId = entryId;
+        this.date = date;
+        this.subject = subject;
+        this.body = body;
+        this.authorEmail = authorEmail;
+        this.authorName = authorName;
+        this.blogName = blogName;
+        this.url = url;
+        this.type = type;
+    }
+
     public String getUrl() {
         return url;
     }
