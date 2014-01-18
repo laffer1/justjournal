@@ -78,6 +78,10 @@
             <element id="library" level="project" name="Maven: log4j:log4j:1.2.17" />
             <element id="library" level="project" name="Maven: javax.mail:com.springsource.javax.mail:1.4.5" />
             <element id="library" level="project" name="Maven: org.kohsuke.redstone:redstone:1.1.1" />
+            <element id="library" level="project" name="Maven: net.sf.ehcache:ehcache:2.8.0" />
+            <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:1.6.6" />
+            <element id="library" level="project" name="Maven: net.sf.ehcache:ehcache-web:2.0.4" />
+            <element id="library" level="project" name="Maven: net.sf.ehcache:ehcache-core:2.4.6" />
             <element id="library" level="project" name="Maven: com.google.code.gson:gson:2.2.4" />
             <element id="library" level="project" name="Maven: org.springframework:spring-core:3.2.6.RELEASE" />
             <element id="library" level="project" name="Maven: org.springframework:spring-web:3.2.6.RELEASE" />
@@ -780,6 +784,39 @@
         <root url="jar://$MAVEN_REPOSITORY$/net/java/dev/inflector/inflector/0.7.0/inflector-0.7.0-sources.jar!/" />
       </SOURCES>
     </library>
+    <library name="Maven: net.sf.ehcache:ehcache-core:2.4.6">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/net/sf/ehcache/ehcache-core/2.4.6/ehcache-core-2.4.6.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/net/sf/ehcache/ehcache-core/2.4.6/ehcache-core-2.4.6-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/net/sf/ehcache/ehcache-core/2.4.6/ehcache-core-2.4.6-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: net.sf.ehcache:ehcache-web:2.0.4">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/net/sf/ehcache/ehcache-web/2.0.4/ehcache-web-2.0.4.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/net/sf/ehcache/ehcache-web/2.0.4/ehcache-web-2.0.4-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/net/sf/ehcache/ehcache-web/2.0.4/ehcache-web-2.0.4-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: net.sf.ehcache:ehcache:2.8.0">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/net/sf/ehcache/ehcache/2.8.0/ehcache-2.8.0.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/net/sf/ehcache/ehcache/2.8.0/ehcache-2.8.0-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/net/sf/ehcache/ehcache/2.8.0/ehcache-2.8.0-sources.jar!/" />
+      </SOURCES>
+    </library>
     <library name="Maven: net.sf.jazzy:jazzy-core:0.5.2">
       <CLASSES>
         <root url="jar://$MAVEN_REPOSITORY$/net/sf/jazzy/jazzy-core/0.5.2/jazzy-core-0.5.2.jar!/" />
@@ -1229,6 +1266,17 @@
       </JAVADOC>
       <SOURCES>
         <root url="jar://$MAVEN_REPOSITORY$/org/kohsuke/redstone/redstone/1.1.1/redstone-1.1.1-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: org.slf4j:slf4j-api:1.6.6">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.6.6/slf4j-api-1.6.6.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.6.6/slf4j-api-1.6.6-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.6.6/slf4j-api-1.6.6-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.springframework:spring-aop:3.2.6.RELEASE">

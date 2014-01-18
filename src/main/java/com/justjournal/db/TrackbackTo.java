@@ -213,11 +213,7 @@ public class TrackbackTo {
         if (authorEmail != null ? !authorEmail.equals(that.authorEmail) : that.authorEmail != null) return false;
         if (authorName != null ? !authorName.equals(that.authorName) : that.authorName != null) return false;
         if (body != null ? !body.equals(that.body) : that.body != null) return false;
-        if (date != null ? !date.equals(that.date) : that.date != null) return false;
-        if (subject != null ? !subject.equals(that.subject) : that.subject != null) return false;
-        if (type != that.type) return false;
-
-        return true;
+        return !(date != null ? !date.equals(that.date) : that.date != null) && !(subject != null ? !subject.equals(that.subject) : that.subject != null) && type == that.type;
     }
 
     public int hashCode() {
