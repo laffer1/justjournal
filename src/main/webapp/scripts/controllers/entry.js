@@ -39,13 +39,13 @@ angular.module('wwwApp').controller('EntryCtrl', ['$scope', '$routeParams', '$lo
         $scope.save = function () {
             if (jQuery('form#frmUpdateJournal').valid()) {
 
-                if ($scope.entry.mood.id !== 'undefined')
+                if (typeof $scope.entry.mood.id !== 'undefined')
                     $scope.entry.moodId = $scope.entry.mood.id;
 
-                if ($scope.entry.location.id !== 'undefined')
+                if (typeof $scope.entry.location.id !== 'undefined')
                     $scope.entry.locationId = $scope.entry.location.id;
 
-                if ($scope.entry.security.id !== 'undefined')
+                if (typeof $scope.entry.security.id !== 'undefined')
                     $scope.entry.securityId = $scope.entry.security.id;
 
                 // EDIT case
