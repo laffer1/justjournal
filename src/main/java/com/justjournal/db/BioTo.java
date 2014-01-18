@@ -45,6 +45,15 @@ public final class BioTo implements Serializable {
     private int userId;
     private String bio;
 
+    public BioTo() {
+
+    }
+
+    public BioTo(int userId, String bio) {
+        this.userId = userId;
+        this.bio = bio;
+    }
+
     public final int getUserId() {
         return this.userId;
     }
@@ -61,11 +70,13 @@ public final class BioTo implements Serializable {
         this.bio = bio;
     }
 
+    @Override
     public @NotNull
     final String toString() {
         return "user id: " + userId + '\n' + "bio: " + bio + '\n';
     }
 
+    @Override
     public final boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -75,6 +86,7 @@ public final class BioTo implements Serializable {
         return userId == bioTo.userId && bio.equals(bioTo.bio);
     }
 
+    @Override
     public final int hashCode() {
         int result;
         result = userId;

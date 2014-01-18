@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2005, Lucas Holt
+Copyright (c) 2005, 2014 Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -35,15 +35,21 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.db;
 
 /**
- * Created by IntelliJ IDEA.
- * User: laffer1
- * Date: Jan 9, 2004
- * Time: 1:55:59 PM
- * To change this template use Options | File Templates.
+ * Security Transfer Object
+ * @author Lucas Holt
  */
 public final class SecurityTo {
     private int id;
     private String name;
+
+    public SecurityTo() {
+
+    }
+
+    public SecurityTo(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 
     public final int getId() {
         return this.id;
@@ -61,18 +67,17 @@ public final class SecurityTo {
         this.name = name;
     }
 
+    @Override
     public final boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
         final SecurityTo that = (SecurityTo) o;
 
-        if (id != that.id) return false;
-        if (!name.equals(that.name)) return false;
-
-        return true;
+        return id == that.id && name.equals(that.name);
     }
 
+    @Override
     public final int hashCode() {
         int result;
         result = id;

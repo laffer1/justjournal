@@ -34,14 +34,29 @@ import com.justjournal.utility.StringUtil;
  * @author Lucas Holt
  * @version $Id: Tag.java,v 1.7 2012/06/23 18:15:31 laffer1 Exp $
  *          <p/>
- *          Date: Apr 25, 2008
- *          Time: 5:13:16 PM
+ *          Date: Apr 25, 2008 Time: 5:13:16 PM
  */
 public final class Tag {
     private int id;      // Unique id to represent the global tag
     private String name; // common string representation for public consumption
     private int count;
     // timestamp comes later
+
+    public Tag(int id, String name, int count) {
+        if (name == null || name.equalsIgnoreCase(""))
+            throw new IllegalArgumentException("Name must be set");
+        if (name.length() > 30)
+            throw new IllegalArgumentException("Name cannot be longer than 30 characters.");
+        if (!StringUtil.isAlpha(name))
+            throw new IllegalArgumentException("Name contains invalid characters.  Must be A-Za-z");
+        if (id < 1)
+            throw new IllegalArgumentException("Tag id must be > 0");
+
+        this.id = id;
+        this.name = name.toLowerCase();
+
+        this.count = count;
+    }
 
     /**
      * Create a Tag with a unique id and name
@@ -105,7 +120,8 @@ public final class Tag {
 
     /**
      * The number of tags
-     * @return  tag count
+     *
+     * @return tag count
      */
     public int getCount() {
         return count;
@@ -113,6 +129,7 @@ public final class Tag {
 
     /**
      * Set the number of tag instances
+     *
      * @param count number of tags
      */
     public void setCount(int count) {

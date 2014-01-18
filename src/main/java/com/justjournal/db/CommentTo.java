@@ -27,6 +27,7 @@
 package com.justjournal.db;
 
 import com.justjournal.utility.HTMLUtil;
+import com.sun.istack.internal.NotNull;
 
 /**
  * A comment
@@ -36,7 +37,6 @@ import com.justjournal.utility.HTMLUtil;
  */
 public final class CommentTo {
 
-    //id,uid,eid,date,subject,body
     private int id;
     private int eid;
     private int userId;
@@ -45,6 +45,20 @@ public final class CommentTo {
     private String subject;
     private String body;
     private String userName;
+
+    public CommentTo() {
+
+    }
+
+    public CommentTo(int id, int eid, int userId, DateTime date, String subject, String body, String userName) {
+        this.id = id;
+        this.eid = eid;
+        this.userId = userId;
+        this.date = date;
+        this.subject = subject;
+        this.body = body;
+        this.userName = userName;
+    }
 
     public final int getId() {
         return id;
@@ -149,6 +163,8 @@ public final class CommentTo {
         userName = user;
     }
 
+    @NotNull
+    @Override
     public final String toString() {
         StringBuilder output = new StringBuilder();
 
@@ -179,6 +195,7 @@ public final class CommentTo {
         return output.toString();
     }
 
+    @Override
     public final boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -193,6 +210,7 @@ public final class CommentTo {
         return !(subject != null ? !subject.equals(commentTo.subject) : commentTo.subject != null) && userName.equals(commentTo.userName);
     }
 
+    @Override
     public final int hashCode() {
         int result;
         result = id;
