@@ -48,6 +48,18 @@ public final class EmoticonTo {
     private int width;
     private int height;
 
+    public EmoticonTo() {
+
+    }
+
+    public EmoticonTo(String filename, int moodId, int moodTheme, int width, int height) {
+        this.filename = filename;
+        this.moodId = moodId;
+        this.moodTheme = moodTheme;
+        this.width = width;
+        this.height = height;
+    }
+
     public final String getFileName() {
         return filename;
     }

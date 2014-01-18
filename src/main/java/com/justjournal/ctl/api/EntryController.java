@@ -29,9 +29,11 @@ package com.justjournal.ctl.api;
 import com.justjournal.WebLogin;
 import com.justjournal.db.*;
 import org.apache.log4j.Logger;
+import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -73,9 +75,20 @@ final public class EntryController {
 
     }
 
+    @JsonAutoDetect
     public class Entry {
         private String subject;
         private String body;
+
+        public Entry() {
+            subject = "";
+            body = "";
+        }
+
+        public Entry(String subject, String body) {
+            this.subject = subject;
+            this.body = body;
+        }
 
         public String getBody() {
             return this.body;
@@ -92,10 +105,15 @@ final public class EntryController {
         public void setBody(String body) {
             this.body = body;
         }
+
+        @Override
+        public String toString() {
+            return this.getSubject() + " | " + this.getBody();
+        }
     }
 
     private EntryTo convertEntryToEntryTo(Entry entry) {
-         EntryTo entryTo = new EntryTo();
+        EntryTo entryTo = new EntryTo();
         entryTo.setSubject(entry.getSubject());
         entryTo.setBody(entry.getBody());
         return entryTo;
@@ -128,7 +146,7 @@ final public class EntryController {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return java.util.Collections.singletonMap("error", "Could not add the entry.");
         }
-       // return java.util.Collections.singletonMap("id", Integer.toString(entry.getId()));
+        // return java.util.Collections.singletonMap("id", Integer.toString(entry.getId()));
         return java.util.Collections.singletonMap("status", "OK");
     }
 

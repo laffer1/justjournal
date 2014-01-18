@@ -73,7 +73,36 @@ public class EntryTo {
     private int attachImage = 0;
     private int attachFile = 0;
 
-    private ArrayList<String> tags = new ArrayList<String>();
+    private Collection<String> tags = new ArrayList<String>();
+
+    public EntryTo() {
+
+    }
+
+    public EntryTo(int id, int locationId, int moodId, int commentCount, int userId, int securityLevel, Date date, String subject, String body,
+                   String music, String userName, String moodName, String locationName, boolean autoFormat, boolean allowComments,
+                   boolean draft, int attachImage, int attachFile, Collection<String> tags) {
+        this.id = id;
+        this.locationId = locationId;
+        this.moodId = moodId;
+        this.commentCount = commentCount;
+        this.music = music;
+        this.draft = draft;
+        this.date = date;
+        this.userId = userId;
+        this.securityLevel = securityLevel;
+        this.subject = subject;
+        this.body = body;
+        this.userName = userName;
+        this.moodName = moodName;
+        this.userName = userName;
+        this.locationName = locationName;
+        this.tags = tags;
+        this.autoFormat = autoFormat;
+        this.allowComments = allowComments;
+        this.attachFile = attachFile;
+        this.attachImage = attachImage;
+    }
 
 
     /**
@@ -369,6 +398,7 @@ public class EntryTo {
         this.tags = tag;
     }
 
+    @Override
     public String toString() {
         StringBuilder output = new StringBuilder();
 
@@ -435,6 +465,7 @@ public class EntryTo {
         return output.toString();
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -460,6 +491,7 @@ public class EntryTo {
         return !(userName != null ? !userName.equals(entryTo.userName) : entryTo.userName != null);
     }
 
+    @Override
     public int hashCode() {
         int result;
         result = id;

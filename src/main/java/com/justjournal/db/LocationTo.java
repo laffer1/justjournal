@@ -59,6 +59,7 @@ public final class LocationTo {
         this.name = name;
     }
 
+    @Override
     public final boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -68,6 +69,7 @@ public final class LocationTo {
         return id == that.id && name.equals(that.name);
     }
 
+    @Override
     public final int hashCode() {
         int result;
         result = id;
