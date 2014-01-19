@@ -56,19 +56,14 @@ final class BaseDao {
     }
 
     public static boolean edit(String sql) {
-        boolean noError = true;
-
-        try {
-            SQLHelper.executeNonQuery(sql);
-        } catch (Exception e) {
-            noError = false;
-        }
-
-        return noError;
-
+        return execute(sql);
     }
 
     public static boolean delete(String sql) {
+        return execute(sql);
+    }
+
+    private static boolean execute(String sql) {
         boolean noError = true;
 
         try {
