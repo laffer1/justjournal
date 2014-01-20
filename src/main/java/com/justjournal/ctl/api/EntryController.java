@@ -30,7 +30,9 @@ import com.justjournal.WebLogin;
 import com.justjournal.db.*;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
 import org.springframework.stereotype.Component;
@@ -85,7 +87,8 @@ final public class EntryController {
             body = "";
         }
 
-        public Entry(String subject, String body) {
+        @JsonCreator
+        public Entry(@JsonProperty("subject") String subject, @JsonProperty("body") String body) {
             this.subject = subject;
             this.body = body;
         }
