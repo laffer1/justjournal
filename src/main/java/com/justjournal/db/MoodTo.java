@@ -26,18 +26,21 @@
 
 package com.justjournal.db;
 
-import java.io.Serializable;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
 
 /**
  * Represents a mood
  *
  * @author Lucas Holt
  */
-public final class MoodTo implements Serializable {
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+public final class MoodTo {
     private int id;
     private int parent;  // parent mood
     private String name;
 
+    @JsonCreator
     public MoodTo() {
 
     }

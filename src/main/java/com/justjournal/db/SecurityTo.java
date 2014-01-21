@@ -34,14 +34,20 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 /**
  * Security Transfer Object
+ *
  * @author Lucas Holt
  */
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public final class SecurityTo {
     private int id;
     private String name;
 
+    @JsonCreator
     public SecurityTo() {
 
     }

@@ -26,14 +26,19 @@
 
 package com.justjournal.db;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 /**
  * Location
  * @author Lucas Holt
  */
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public final class LocationTo {
     private int id;
     private String name;
 
+    @JsonCreator
     public LocationTo() {
 
     }
