@@ -5,11 +5,15 @@ angular.module('wwwApp').controller('MainCtrl', ['$scope', '$http', function ($s
     $scope.password = '';
 
     $scope.AccountLogin = function() {
-        if (typeof $scope.username === 'undefined' || $scope.username.length < 3)
+        if (typeof $scope.username === 'undefined' || $scope.username.length < 3) {
             alert('Username must be greater than 2 characters');
+            return;
+        }
 
-        if (typeof $scope.password === 'undefined' || $scope.password.length < 5)
+        if (typeof $scope.password === 'undefined' || $scope.password.length < 5) {
             alert('Password must be greater than 4 characters');
+            return;
+        }
 
         var data = { username: $scope.username, password: $scope.password };
         $http.post('api/login', data).success(function(data, status) {
@@ -28,7 +32,7 @@ angular.module('wwwApp').controller('MainCtrl', ['$scope', '$http', function ($s
 
     $scope.CreateAccount = function() {
         var data = $scope.create;
-        $http.post('api/login?email=' + $scope.email, data).success(function(data,status) {
+        $http.post('api/login?email=' + $scope.email, data).success(function() {
             alert('Your account has been created. You may login after responding to the verification email.');
             return false;
         }.fail(function() {
