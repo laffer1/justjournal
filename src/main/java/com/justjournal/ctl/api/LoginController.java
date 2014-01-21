@@ -74,6 +74,14 @@ final public class LoginController {
         public void setPassword(String password) {
             this.password = password;
         }
+
+        @Override
+        public String toString() {
+            return "Login{" +
+                    "username='" + username + '\'' +
+                    ", password='" + password + '\'' +
+                    '}';
+        }
     }
 
     // Response format
@@ -95,6 +103,14 @@ final public class LoginController {
 
         public void setStatus(String status) {
             this.status = status;
+        }
+
+        @Override
+        public String toString() {
+            return "LoginResponse{" +
+                    "status='" + status + '\'' +
+                    ", username='" + username + '\'' +
+                    '}';
         }
     }
 
@@ -118,12 +134,12 @@ final public class LoginController {
     @RequestMapping(method = RequestMethod.POST, produces = "application/json")
     public
     @ResponseBody
-    ResponseEntity<String> post(@RequestBody String loginJSON, HttpSession session) {
+    ResponseEntity<String> post(@RequestBody  Login login, HttpSession session) {
         Gson gson = new GsonBuilder().create();
         LoginResponse loginResponse = new LoginResponse();
 
         try {
-            Login login = gson.fromJson(loginJSON, Login.class);
+          //  Login login = gson.fromJson(loginJSON, Login.class);
 
             // Current authentication needs to get whacked
             if (WebLogin.isAuthenticated(session)) {

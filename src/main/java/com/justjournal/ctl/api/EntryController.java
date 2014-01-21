@@ -29,12 +29,7 @@ package com.justjournal.ctl.api;
 import com.justjournal.WebLogin;
 import com.justjournal.db.*;
 import org.apache.log4j.Logger;
-import org.codehaus.jackson.annotate.JsonAutoDetect;
-import org.codehaus.jackson.annotate.JsonCreator;
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
+import com.fasterxml.jackson.annotation.*;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -72,12 +67,9 @@ final public class EntryController {
         return EntryDAO.viewAll(username, false);
     }
 
-    @JsonIgnoreProperties({"tags", "date"})
-    public class EntryJsonMixin extends EntryTo {
 
-    }
-
-    @JsonAutoDetect
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
     public class Entry {
         private String subject;
         private String body;
@@ -134,9 +126,6 @@ final public class EntryController {
     public
     @ResponseBody
     Map<String, String> post(@RequestBody Entry entry, HttpSession session, HttpServletResponse response) {
-        ObjectMapper mapper = new ObjectMapper();
-        SerializationConfig serializationConfig = mapper.getSerializationConfig();
-        serializationConfig.addMixInAnnotations(EntryTo.class, EntryJsonMixin.class);
 
         if (!WebLogin.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -164,12 +153,7 @@ final public class EntryController {
     @RequestMapping(method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
     public
     @ResponseBody
-    Map<String, String> put(@RequestBody EntryJsonMixin entry, HttpSession session, HttpServletResponse response) {
-        ObjectMapper mapper = new ObjectMapper();
-        SerializationConfig serializationConfig = mapper.getSerializationConfig();
-        serializationConfig.addMixInAnnotations(EntryTo.class, EntryJsonMixin.class);
-
-
+    Map<String, String> put(@RequestBody EntryTo entry, HttpSession session, HttpServletResponse response) {
         if (!WebLogin.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
