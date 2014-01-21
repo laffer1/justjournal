@@ -24,7 +24,7 @@ angular.module('wwwApp').controller('MainCtrl', ['$scope', '$http', function ($s
                   alert("Your login information was invalid. Please try again");
                   return false;
               }
-        }).fail(function() {
+        }).error(function() {
               alert("Your login information was invalid. Please try again");
               return false;
         });
