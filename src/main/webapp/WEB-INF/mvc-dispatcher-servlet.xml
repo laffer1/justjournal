@@ -43,7 +43,7 @@
     </bean>
 
     <mvc:annotation-driven>
-        <mvc:message-converters register-defaults="false">
+        <mvc:message-converters>
             <bean id="jacksonMessageConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
                 <property name="prefixJson" value="false"/>
                 <property name="supportedMediaTypes" value="application/json"/>
