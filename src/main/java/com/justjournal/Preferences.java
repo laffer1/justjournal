@@ -80,23 +80,11 @@ public final class Preferences {
                 if (RS.getInt("since") > 2003)
                     startYear = RS.getInt("since");
 
-                if (RS.getString("allow_spider").equals("Y")) {
-                    this.allowSpider = true;
-                } else {
-                    this.allowSpider = false;
-                }
+                this.allowSpider = RS.getString("allow_spider").equals("Y");
 
-                if (RS.getString("owner_view_only").equals("Y")) {
-                    this.privateJournal = true;
-                } else {
-                    this.privateJournal = false;
-                }
+                this.privateJournal = RS.getString("owner_view_only").equals("Y");
 
-                if (RS.getString("show_avatar").equals("Y")) {
-                    this.showAvatar = true;
-                } else {
-                    this.showAvatar = false;
-                }
+                this.showAvatar = RS.getString("show_avatar").equals("Y");
             }
 
             RS.close();
