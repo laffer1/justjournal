@@ -44,9 +44,8 @@ import java.net.URL;
  * Update the RSS cache
  *
  * @author Lucas Holt
- * @version $Id: RssCacheContextListener.java,v 1.5 2012/06/23 18:15:31 laffer1 Exp $
  */
-public class RssCacheContextListener extends Thread {
+final public class RssCacheContextListener extends Thread {
 
     public void run() {
         System.out.println("RssCache: Init");

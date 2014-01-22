@@ -34,7 +34,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author Lucas Holt
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-public class Login {
+final public class Login {
     @JsonProperty("username")
     private String username;
     @JsonProperty("password")

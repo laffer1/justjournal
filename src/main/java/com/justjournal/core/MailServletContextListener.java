@@ -40,11 +40,10 @@ import javax.servlet.ServletContextListener;
 
 /**
  * Mail Sender Context Listener runs mail sender code continuously on the servlet engine.
+ *
  * @author Lucas Holt
- * @version $Id: MailServletContextListener.java,v 1.5 2006/10/14 00:29:03 laffer1 Exp $
- * @since 1.0
  */
-public class MailServletContextListener
+final public class MailServletContextListener
         implements ServletContextListener {
 
     MailSender m;

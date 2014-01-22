@@ -42,7 +42,7 @@ import java.util.List;
  * @author Lucas Holt
  * @version $Id: Statistics.java,v 1.8 2012/06/23 18:15:31 laffer1 Exp $
  */
-public class Statistics {
+final public class Statistics {
     private static Logger log = Logger.getLogger(Statistics.class.getName());
 
     /**
