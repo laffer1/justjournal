@@ -39,13 +39,18 @@ angular.module('wwwApp').controller('EntryCtrl', ['$scope', '$routeParams', '$lo
         $scope.save = function () {
             if (jQuery('form#frmUpdateJournal').valid()) {
 
-                if (typeof $scope.entry.mood.id !== 'undefined')
+                if (typeof $scope.entry === 'undefined') {
+                    $scope.ErrorMessage = 'Unknown error occurred.';
+                    return false;
+                }
+
+                if (typeof $scope.entry.mood !== 'undefined' && typeof $scope.entry.mood.id !== 'undefined')
                     $scope.entry.moodId = $scope.entry.mood.id;
 
-                if (typeof $scope.entry.location.id !== 'undefined')
+                if (typeof $scope.entry.location !== 'undefined' && typeof $scope.entry.location.id !== 'undefined')
                     $scope.entry.locationId = $scope.entry.location.id;
 
-                if (typeof $scope.entry.security.id !== 'undefined')
+                if (typeof $scope.entry.security !== 'undefined' && typeof $scope.entry.security.id !== 'undefined')
                     $scope.entry.securityId = $scope.entry.security.id;
 
                 // EDIT case
