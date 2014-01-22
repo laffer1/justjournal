@@ -34,6 +34,10 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.justjournal.utility.HTMLUtil;
 
 import java.util.ArrayList;
@@ -48,18 +52,30 @@ import java.util.Date;
  * @version 1.0
  * @see EntryDAO
  */
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class EntryTo {
+    @JsonProperty("id")
     private int id;
+
+    @JsonProperty("locationId")
     private int locationId = 0;
+
+    @JsonProperty("moodId")
     private int moodId = 0;
+
+    @JsonProperty("commentCount")
     private int commentCount;
     private int userId;
     private int securityLevel;
 
+    @JsonIgnore
     private Date date = new Date();
 
     private String subject;
+
+    @JsonProperty("body")
     private String body;
+
     private String music;
     private String userName;
     private String moodName;
@@ -73,12 +89,15 @@ public class EntryTo {
     private int attachImage = 0;
     private int attachFile = 0;
 
+    @JsonIgnore
     private Collection<String> tags = new ArrayList<String>();
 
+    @JsonCreator
     public EntryTo() {
 
     }
 
+    @JsonIgnore
     public EntryTo(int id, int locationId, int moodId, int commentCount, int userId, int securityLevel, Date date, String subject, String body,
                    String music, String userName, String moodName, String locationName, boolean autoFormat, boolean allowComments,
                    boolean draft, int attachImage, int attachFile, Collection<String> tags) {
@@ -269,10 +288,12 @@ public class EntryTo {
         return body;
     }
 
+    @JsonIgnore
     public String getBodyWithLinks() {
         return HTMLUtil.uriToLink(body);
     }
 
+    @JsonIgnore
     public String getBodyWithoutHTML() {
         return HTMLUtil.stripHTMLTags(body);
     }
@@ -398,6 +419,7 @@ public class EntryTo {
         this.tags = tag;
     }
 
+    @JsonIgnore
     @Override
     public String toString() {
         StringBuilder output = new StringBuilder();
@@ -465,6 +487,7 @@ public class EntryTo {
         return output.toString();
     }
 
+    @JsonIgnore
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -491,6 +514,7 @@ public class EntryTo {
         return !(userName != null ? !userName.equals(entryTo.userName) : entryTo.userName != null);
     }
 
+    @JsonIgnore
     @Override
     public int hashCode() {
         int result;
