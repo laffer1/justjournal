@@ -44,6 +44,7 @@
             <groupId>org.apache.cayenne.plugins</groupId>
             <artifactId>maven-cayenne-plugin</artifactId>
             <version>3.1B2</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.sf.jtidy</groupId>
@@ -198,32 +199,6 @@
         </dependency>
 
         <!-- jackson JSON -->
-        <!--
-        <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-core-asl</artifactId>
-            <version>1.9.13</version>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-mapper-asl</artifactId>
-            <version>1.9.13</version>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-xc</artifactId>
-            <version>1.9.13</version>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-jaxrs</artifactId>
-            <version>1.9.13</version>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-mrbean</artifactId>
-            <version>1.9.13</version>
-        </dependency>  -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
