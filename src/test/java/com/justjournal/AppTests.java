@@ -135,7 +135,7 @@ public class AppTests {
                 .accept(MediaType.parseMediaType("application/json"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"username\":\"laffer1\", \"password\":\"blah\"}"))
-                .andExpect(status().is(403))
+                .andExpect(status().is(400))
                 .andExpect(content().contentTypeCompatibleWith("application/json;charset=UTF-8"));
     }
 }
