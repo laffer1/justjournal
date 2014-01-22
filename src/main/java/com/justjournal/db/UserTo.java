@@ -34,6 +34,9 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.justjournal.utility.StringUtil;
 
 /**
@@ -46,6 +49,7 @@ import com.justjournal.utility.StringUtil;
  *         <p/>
  *         TODO: add the rest of the properties.
  */
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public final class UserTo {
     private int id;          // the user id imposed by mysql
     private String userName;
@@ -56,6 +60,9 @@ public final class UserTo {
     private int since;
     private DateTime lastLogin;
     private boolean privateJournal = false;
+
+    @JsonCreator
+    public UserTo() {}
 
     public boolean getPrivateJournal() {
         return privateJournal;
@@ -99,6 +106,10 @@ public final class UserTo {
      */
     public DateTime getLastLogin() {
          return lastLogin;
+    }
+
+    public void setLastLogin(DateTime dateTime) {
+        this.lastLogin = dateTime;
     }
 
     public void setLastLogin(java.util.Date dt) {
@@ -243,6 +254,8 @@ public final class UserTo {
      *
      * @return Representation of some fields for debuging.
      */
+    @JsonIgnore
+    @Override
     public final String toString() {
         StringBuilder sb = new StringBuilder();
 
@@ -262,6 +275,8 @@ public final class UserTo {
         return sb.toString();
     }
 
+    @JsonIgnore
+    @Override
     public final boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -271,11 +286,11 @@ public final class UserTo {
         if (id != userTo.id) return false;
         if (name != null ? !name.equals(userTo.name) : userTo.name != null) return false;
         if (password != null ? !password.equals(userTo.password) : userTo.password != null) return false;
-        if (passwordSha1 != null ? !passwordSha1.equals(userTo.passwordSha1) : userTo.passwordSha1 != null)
-            return false;
-        return userName.equals(userTo.userName);
+        return !(passwordSha1 != null ? !passwordSha1.equals(userTo.passwordSha1) : userTo.passwordSha1 != null) && userName.equals(userTo.userName);
     }
 
+    @JsonIgnore
+    @Override
     public final int hashCode() {
         int result;
         result = id;
