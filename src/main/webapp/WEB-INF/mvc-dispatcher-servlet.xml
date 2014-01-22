@@ -47,10 +47,12 @@
             <bean id="jacksonMessageConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
                 <property name="prefixJson" value="false"/>
                 <property name="supportedMediaTypes" value="application/json"/>
+                <property name="objectMapper" ref="dateObjectMapper"/>
             </bean>
         </mvc:message-converters>
     </mvc:annotation-driven>
 
+    <bean id="dateObjectMapper" class="com.justjournal.core.CustomObjectMapper"/>
 </beans>
 
 
