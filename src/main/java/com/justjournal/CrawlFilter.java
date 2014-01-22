@@ -65,7 +65,7 @@ public final class CrawlFilter implements Filter {
             String pageName = pageNameSb.toString();
             HtmlPage page = webClient.getPage(pageName);
             webClient.waitForBackgroundJavaScriptStartingBefore(2000);
-            webClient.waitForBackgroundJavaScript(10000);
+            webClient.waitForBackgroundJavaScript(8000);
 
             res.setContentType("text/html;charset=UTF-8");
             PrintWriter out = res.getWriter();
