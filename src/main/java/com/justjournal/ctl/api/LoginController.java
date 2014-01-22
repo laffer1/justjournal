@@ -26,9 +26,13 @@
 
 package com.justjournal.ctl.api;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.justjournal.WebLogin;
+import com.justjournal.core.Login;
 import com.justjournal.utility.StringUtil;
 import org.apache.log4j.Logger;
 import org.springframework.http.HttpStatus;
@@ -54,40 +58,15 @@ final public class LoginController {
 
     private static final Logger log = Logger.getLogger(LoginController.class);
 
-    // Front End returns data in this format
-    class Login implements Serializable {
-        public String username;
-        public String password;
-
-        public String getUsername() {
-            return username;
-        }
-
-        public String getPassword() {
-            return password;
-        }
-
-        public void setUsername(String username) {
-            this.username = username;
-        }
-
-        public void setPassword(String password) {
-            this.password = password;
-        }
-
-        @Override
-        public String toString() {
-            return "Login{" +
-                    "username='" + username + '\'' +
-                    ", password='" + password + '\'' +
-                    '}';
-        }
-    }
-
     // Response format
-    class LoginResponse implements Serializable {
+    @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+    public class LoginResponse implements Serializable {
         private String status;
         private String username;
+
+        @JsonCreator
+        public LoginResponse() {
+        }
 
         public String getUsername() {
             return username;
@@ -105,6 +84,7 @@ final public class LoginController {
             this.status = status;
         }
 
+        @JsonIgnore
         @Override
         public String toString() {
             return "LoginResponse{" +
@@ -116,10 +96,11 @@ final public class LoginController {
 
     /**
      * Check the login status of the user
-     * @param session
-     * @return
+     *
+     * @param session HttpSession
+     * @return LoginResponse with login OK or NONE
      */
-    @RequestMapping(method = RequestMethod.GET, headers = "Accept=*/*", produces = "application/json")
+    @RequestMapping(method = RequestMethod.GET, headers = "Accept=*/*", produces = "application/json;charset=UTF-8")
     public
     @ResponseBody
     LoginResponse getLoginStatus(HttpSession session) {
@@ -131,15 +112,15 @@ final public class LoginController {
     }
 
 
-    @RequestMapping(method = RequestMethod.POST, produces = "application/json")
+    @RequestMapping(method = RequestMethod.POST, consumes = "application/json;charset=UTF-8", produces = "application/json;charset=UTF-8", headers={"Accept=*/*","content-type=application/json"})
     public
     @ResponseBody
-    ResponseEntity<String> post(@RequestBody  Login login, HttpSession session) {
+    ResponseEntity<String> post(@RequestBody Login login, HttpSession session) {
         Gson gson = new GsonBuilder().create();
         LoginResponse loginResponse = new LoginResponse();
 
         try {
-          //  Login login = gson.fromJson(loginJSON, Login.class);
+            //  Login login = gson.fromJson(loginJSON, Login.class);
 
             // Current authentication needs to get whacked
             if (WebLogin.isAuthenticated(session)) {
