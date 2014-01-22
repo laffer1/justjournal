@@ -26,6 +26,10 @@
 
 package com.justjournal.db;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.justjournal.utility.StringUtil;
 
 /**
@@ -36,12 +40,31 @@ import com.justjournal.utility.StringUtil;
  *          <p/>
  *          Date: Apr 25, 2008 Time: 5:13:16 PM
  */
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public final class Tag {
-    private int id;      // Unique id to represent the global tag
-    private String name; // common string representation for public consumption
+    /**
+     * Unique id to represent the global tag
+     */
+    @JsonProperty("id")
+    private int id;
+
+    /**
+     * common string representation for public consumption
+     */
+    @JsonProperty("name")
+    private String name;
+
+    @JsonProperty("count")
     private int count;
+
     // timestamp comes later
 
+    @JsonCreator
+    public Tag() {
+
+    }
+
+    @JsonIgnore
     public Tag(int id, String name, int count) {
         if (name == null || name.equalsIgnoreCase(""))
             throw new IllegalArgumentException("Name must be set");
@@ -64,6 +87,7 @@ public final class Tag {
      * @param id   unique identity
      * @param name the user visible name
      */
+    @JsonIgnore
     public Tag(int id, String name) {
         if (name == null || name.equalsIgnoreCase(""))
             throw new IllegalArgumentException("Name must be set");
@@ -84,6 +108,7 @@ public final class Tag {
      *
      * @param name user visible name
      */
+    @JsonIgnore
     public Tag(String name) {
         if (name == null || name.equalsIgnoreCase(""))
             throw new IllegalArgumentException("Name must be set");
