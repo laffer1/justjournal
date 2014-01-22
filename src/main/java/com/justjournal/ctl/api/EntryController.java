@@ -29,9 +29,8 @@ package com.justjournal.ctl.api;
 import com.justjournal.WebLogin;
 import com.justjournal.db.*;
 import org.apache.log4j.Logger;
-import com.fasterxml.jackson.annotation.*;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -54,90 +53,44 @@ final public class EntryController {
      * @param id entry id
      * @return entry
      */
-    @RequestMapping("/api/entry/{id}")
+    @RequestMapping(value = "{username}/{id}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public EntryTo getById(@PathVariable Integer id) {
+    public EntryTo getById(@PathVariable("username") String username, @PathVariable("id") int id) {
         return EntryDAO.viewSinglePublic(id);
     }
 
-    @RequestMapping(method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "{username}", method = RequestMethod.GET, produces = "application/json")
     public
     @ResponseBody
-    Collection<EntryTo> getEntries(@RequestParam String username) {
+    Collection<EntryTo> getEntries(@PathVariable("username") String username) {
         return EntryDAO.viewAll(username, false);
-    }
-
-
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-    public class Entry {
-        private String subject;
-        private String body;
-
-        public Entry() {
-            subject = "";
-            body = "";
-        }
-
-        @JsonCreator
-        public Entry(@JsonProperty("subject") String subject, @JsonProperty("body") String body) {
-            this.subject = subject;
-            this.body = body;
-        }
-
-        public String getBody() {
-            return this.body;
-        }
-
-        public String getSubject() {
-            return this.subject;
-        }
-
-        public void setSubject(String subject) {
-            this.subject = subject;
-        }
-
-        public void setBody(String body) {
-            this.body = body;
-        }
-
-        @Override
-        public String toString() {
-            return this.getSubject() + " | " + this.getBody();
-        }
-    }
-
-    private EntryTo convertEntryToEntryTo(Entry entry) {
-        EntryTo entryTo = new EntryTo();
-        entryTo.setSubject(entry.getSubject());
-        entryTo.setBody(entry.getBody());
-        return entryTo;
     }
 
     /**
      * Creates a new entry resource
      *
-     * @param entry
+     * @param entry EntryTo
      * @param session  HttpSession
      * @param response HttpServletResponse
-     * @return
+     * @return status ok or error
      */
-    @RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+    @RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json", headers={"Accept=*/*","content-type=application/json"})
     public
     @ResponseBody
-    Map<String, String> post(@RequestBody Entry entry, HttpSession session, HttpServletResponse response) {
+    Map<String, String> post(@RequestBody EntryTo entry, HttpSession session, HttpServletResponse response, Model model) {
 
         if (!WebLogin.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
         }
         // TODO: validate
-        boolean result = EntryDAO.add(convertEntryToEntryTo(entry));
+        boolean result = EntryDAO.add(entry);
 
         if (!result) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return java.util.Collections.singletonMap("error", "Could not add the entry.");
         }
+        model.addAttribute("status", "ok");
         // return java.util.Collections.singletonMap("id", Integer.toString(entry.getId()));
         return java.util.Collections.singletonMap("status", "OK");
     }
