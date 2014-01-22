@@ -49,7 +49,7 @@ public final class CrawlFilter implements Filter {
         String queryString = req.getQueryString();
 
         if ((queryString != null) && (queryString.contains("_escaped_fragment_"))) {
-            StringBuilder pageNameSb = new StringBuilder("http://");
+            StringBuilder pageNameSb = new StringBuilder(req.getScheme() + "://");
             pageNameSb.append(req.getServerName());
             if (req.getServerPort() != 0) {
                 pageNameSb.append(":");
