@@ -26,9 +26,13 @@
 
 package com.justjournal.db;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 /**
  * User contact information including IM accounts, email and homepage
  */
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public final class UserContactTo {
     private String email;
     private String icq;
@@ -39,6 +43,7 @@ public final class UserContactTo {
     private String hpTitle;
     private String hpUri;
 
+    @JsonCreator
     public UserContactTo() {
 
     }

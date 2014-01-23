@@ -34,11 +34,15 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 /**
  * Blog Link List
  * @author Lucas Holt
  * @version $Id: UserLinkTo.java,v 1.6 2008/09/02 00:52:22 laffer1 Exp $
  */
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public final class UserLinkTo {
     private int id;
     private int userId;
@@ -157,6 +161,7 @@ public final class UserLinkTo {
         setUri(uri);
     }
 
+    @JsonCreator
     public UserLinkTo() {
     }
 }

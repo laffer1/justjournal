@@ -34,16 +34,16 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 /**
  * A Trackback ping
  *
  * @author Lucas Holt
- * @version $Id: TrackbackTo.java,v 1.5 2008/05/05 09:36:16 laffer1 Exp $
- *          User: laffer1
- *          Date: May 5, 2008
- *          Time: 3:11:11 AM
  */
-public class TrackbackTo {
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+final public class TrackbackTo {
     /*
     id  int 10  unsigned auto  (trackback unit id)
     eid (entry it refers to)
@@ -65,6 +65,7 @@ public class TrackbackTo {
     private String url;
     private TrackbackType type;
 
+    @JsonCreator
     public TrackbackTo() {
 
     }

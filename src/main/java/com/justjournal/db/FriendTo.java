@@ -26,23 +26,28 @@
 
 package com.justjournal.db;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 /**
  * Friend
  *
  * @author Lucas Holt
  */
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public final class FriendTo {
     private int id;
     private String userName;
     private int ownerId;
     private String ownerUserName;
 
+    @JsonCreator
     public FriendTo() {
 
     }
 
     public FriendTo(int id, String userName, int ownerId, String ownerUserName) {
-        this.id = id;
+        this.setId(id);
         this.userName = userName;
         this.ownerId = ownerId;
         this.ownerUserName = ownerUserName;
@@ -82,7 +87,7 @@ public final class FriendTo {
 
     @Override
     public String toString() {
-        return Integer.toString(id) + "," + userName + ","
+        return Integer.toString(getId()) + "," + userName + ","
                 + ownerId + "," + ownerUserName;
     }
 
@@ -93,13 +98,13 @@ public final class FriendTo {
 
         final FriendTo friendTo = (FriendTo) o;
 
-        return id == friendTo.id && ownerId == friendTo.ownerId && ownerUserName.equals(friendTo.ownerUserName) && userName.equals(friendTo.userName);
+        return getId() == friendTo.getId() && ownerId == friendTo.ownerId && ownerUserName.equals(friendTo.ownerUserName) && userName.equals(friendTo.userName);
     }
 
     @Override
     public int hashCode() {
         int result;
-        result = id;
+        result = getId();
         result = 29 * result + userName.hashCode();
         result = 29 * result + ownerId;
         result = 29 * result + ownerUserName.hashCode();
