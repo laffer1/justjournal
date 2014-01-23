@@ -53,6 +53,12 @@ angular.module('wwwApp').controller('EntryCtrl', ['$scope', '$routeParams', '$lo
                 if (typeof $scope.entry.security !== 'undefined' && typeof $scope.entry.security.id !== 'undefined')
                     $scope.entry.securityId = $scope.entry.security.id;
 
+                $scope.entry.tags = [];
+                if (typeof $scope.tag !== 'undefined') {
+                    $scope.entry.tags = $scope.tag.split(", ");
+                    $scope.entry.tag = undefined;
+                }
+
                 // EDIT case
                 if (typeof $routeParams.entryId !== 'undefined') {
                     EntryService.update($scope.entry, function success() {
