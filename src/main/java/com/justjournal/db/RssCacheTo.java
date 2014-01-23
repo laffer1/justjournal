@@ -34,23 +34,24 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 /**
  * Rss file record.
- * <p/>
- * Created by IntelliJ IDEA.
- * User: laffer1
- * Date: Apr 27, 2005
- * Time: 9:47:00 PM
  *
  * @author Lucas Holt
- * @version 1.0
  */
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public final class RssCacheTo {
     private int id;
     private int interval;
     private DateTime lastUpdated;
     private String uri;
     private String content;
+
+    @JsonCreator
+    public RssCacheTo() {}
 
     public int getId() {
         return id;
@@ -92,28 +93,26 @@ public final class RssCacheTo {
         this.content = content;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
         final RssCacheTo that = (RssCacheTo) o;
 
-        if (id != that.id) return false;
-        if (interval != that.interval) return false;
-        if (!content.equals(that.content)) return false;
-        if (!lastUpdated.equals(that.lastUpdated)) return false;
-        if (!uri.equals(that.uri)) return false;
+        return getId() == that.getId() && getInterval() == that.getInterval() && getContent().equals(that.getContent())
+                && getLastUpdated().equals(that.getLastUpdated()) && getUri().equals(that.getUri());
 
-        return true;
     }
 
+    @Override
     public int hashCode() {
         int result;
-        result = id;
-        result = 29 * result + interval;
-        result = 29 * result + lastUpdated.hashCode();
-        result = 29 * result + uri.hashCode();
-        result = 29 * result + content.hashCode();
+        result = getId();
+        result = 29 * result + getInterval();
+        result = 29 * result + getLastUpdated().hashCode();
+        result = 29 * result + getUri().hashCode();
+        result = 29 * result + getContent().hashCode();
         return result;
     }
 }
