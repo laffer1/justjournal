@@ -97,32 +97,6 @@ public class EntryTo {
 
     }
 
-    @JsonIgnore
-    public EntryTo(int id, int locationId, int moodId, int commentCount, int userId, int securityLevel, Date date, String subject, String body,
-                   String music, String userName, String moodName, String locationName, boolean autoFormat, boolean allowComments,
-                   boolean draft, int attachImage, int attachFile, Collection<String> tags) {
-        this.id = id;
-        this.locationId = locationId;
-        this.moodId = moodId;
-        this.commentCount = commentCount;
-        this.music = music;
-        this.draft = draft;
-        this.date = date;
-        this.userId = userId;
-        this.securityLevel = securityLevel;
-        this.subject = subject;
-        this.body = body;
-        this.userName = userName;
-        this.moodName = moodName;
-        this.userName = userName;
-        this.locationName = locationName;
-        this.tags = tags;
-        this.autoFormat = autoFormat;
-        this.allowComments = allowComments;
-        this.attachFile = attachFile;
-        this.attachImage = attachImage;
-    }
-
 
     /**
      * Retrieves entry id as an int >0
@@ -244,11 +218,11 @@ public class EntryTo {
     /**
      * Set the date using a <code>DateTimeBean</code>
      *
-     * @param date DateTimeBean
+     * @param dateTime DateTimeBean
      * @see DateTimeBean
      */
-    public void setDate(DateTime date) {
-        this.date = date.toDate();
+    public void setDate(DateTime dateTime) {
+        this.date = dateTime.toDate();
     }
 
     public void setDate(Date date) {
@@ -419,8 +393,8 @@ public class EntryTo {
         this.tags = tag;
     }
 
-    @JsonIgnore
     @Override
+    @JsonIgnore
     public String toString() {
         StringBuilder output = new StringBuilder();
 

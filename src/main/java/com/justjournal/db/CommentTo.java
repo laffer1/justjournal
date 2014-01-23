@@ -26,6 +26,9 @@
 
 package com.justjournal.db;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.justjournal.utility.HTMLUtil;
 import com.sun.istack.internal.NotNull;
 
@@ -33,8 +36,8 @@ import com.sun.istack.internal.NotNull;
  * A comment
  *
  * @author Lucas Holt
- * @version $Id: CommentTo.java,v 1.9 2012/06/23 18:15:31 laffer1 Exp $
  */
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public final class CommentTo {
 
     private int id;
@@ -46,101 +49,94 @@ public final class CommentTo {
     private String body;
     private String userName;
 
+    @JsonCreator
     public CommentTo() {
 
-    }
-
-    public CommentTo(int id, int eid, int userId, DateTime date, String subject, String body, String userName) {
-        this.id = id;
-        this.eid = eid;
-        this.userId = userId;
-        this.date = date;
-        this.subject = subject;
-        this.body = body;
-        this.userName = userName;
     }
 
     public final int getId() {
         return id;
     }
 
-    public final void setId(int id)
+    public final void setId(int commentId)
             throws IllegalArgumentException {
-        if (id < 0)
-            throw new IllegalArgumentException("Illegal id: " +
-                    id);
+        if (commentId < 0)
+            throw new IllegalArgumentException("Illegal commentId: " +
+                    commentId);
 
-        this.id = id;
+        this.id = commentId;
     }
 
     public final int getEid() {
         return eid;
     }
 
-    public final void setEid(int eid)
+    public final void setEid(int entryId)
             throws IllegalArgumentException {
-        if (eid < 0)
-            throw new IllegalArgumentException("Illegal eid: " +
-                    eid);
+        if (entryId < 0)
+            throw new IllegalArgumentException("Illegal entryId: " +
+                    entryId);
 
-        this.eid = eid;
+        this.eid = entryId;
     }
 
     public final DateTime getDate() {
         return date;
     }
 
-    public final void setDate(String date)
+    public final void setDate(String commentDate)
             throws IllegalArgumentException {
-        if (date.length() < 6)
-            throw new IllegalArgumentException("Illegal date: " +
-                    date);
+        if (commentDate.length() < 6)
+            throw new IllegalArgumentException("Illegal commentDate: " +
+                    commentDate);
         DateTime newDate = new DateTimeBean();
 
         try {
-            newDate.set(date);
-            this.date = newDate;
+            newDate.set(commentDate);
+            this.setDate(newDate);
         } catch (Exception e) {
-            throw new IllegalArgumentException("Illegal date");
+            throw new IllegalArgumentException("Illegal commentDate");
         }
     }
 
-    public final void setDate(DateTime date) {
-        this.date = date;
+    public final void setDate(DateTime dateTime) {
+        this.date = dateTime;
     }
 
     public final String getSubject() {
         return subject;
     }
 
-    public final void setSubject(String subject)
+    public final void setSubject(String subjectText)
             throws IllegalArgumentException {
 
-        if (subject.length() == 0)
+        if (subjectText.length() == 0)
             this.subject = "(no subject)";
         else
-            this.subject = subject;
+            this.subject = subjectText;
     }
 
     public final String getBody() {
         return body;
     }
 
+    @JsonIgnore
     public final String getBodyWithLinks() {
-        return HTMLUtil.uriToLink(body);
+        return HTMLUtil.uriToLink(getBody());
     }
 
+    @JsonIgnore
     public final String getBodyWithoutHTML() {
-        return HTMLUtil.stripHTMLTags(body);
+        return HTMLUtil.stripHTMLTags(getBody());
     }
 
-    public final void setBody(String body)
+    public final void setBody(String bodyText)
             throws IllegalArgumentException {
-        if (body.length() < 2)
-            throw new IllegalArgumentException("Illegal body: " +
-                    body);
+        if (bodyText.length() < 2)
+            throw new IllegalArgumentException("Illegal bodyText: " +
+                    bodyText);
 
-        this.body = body;
+        this.body = bodyText;
     }
 
     public final int getUserId() {
@@ -150,7 +146,7 @@ public final class CommentTo {
     public final void setUserId(int uid)
             throws IllegalArgumentException {
         if (uid < 0)
-            throw new IllegalArgumentException("Illegal user id: " +
+            throw new IllegalArgumentException("Illegal user commentId: " +
                     uid);
         userId = uid;
     }
@@ -163,63 +159,39 @@ public final class CommentTo {
         userName = user;
     }
 
+    @JsonIgnore
     @NotNull
     @Override
     public final String toString() {
-        StringBuilder output = new StringBuilder();
 
-        output.append("comment id: ");
-        output.append(id);
-        output.append('\n');
-
-        output.append("entry id: ");
-        output.append(eid);
-        output.append('\n');
-
-        output.append("date: ");
-        output.append(date);
-        output.append('\n');
-
-        output.append("subject: ");
-        output.append(subject);
-        output.append('\n');
-
-        output.append("body: ");
-        output.append(body);
-        output.append('\n');
-
-        output.append("user id: ");
-        output.append(userId);
-        output.append('\n');
-
-        return output.toString();
+        return "comment commentId: " + getId() + '\n' + "entry commentId: " + getEid() + '\n'
+                + "commentDate: " + getDate() + '\n' + "subjectText: " + getSubject() + '\n'
+                + "bodyText: " + getBody() + '\n' + "user commentId: " + getUserId() + '\n';
     }
 
+    @JsonIgnore
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
+        @SuppressWarnings("LocalVariableOfConcreteClass")
         final CommentTo commentTo = (CommentTo) o;
 
-        if (eid != commentTo.eid) return false;
-        if (id != commentTo.id) return false;
-        if (userId != commentTo.userId) return false;
-        if (!body.equals(commentTo.body)) return false;
-        if (!date.equals(commentTo.date)) return false;
-        return !(subject != null ? !subject.equals(commentTo.subject) : commentTo.subject != null) && userName.equals(commentTo.userName);
+        return getEid() == commentTo.getEid() && getId() == commentTo.getId() && getUserId() == commentTo.getUserId() && getBody().equals(commentTo.getBody()) && getDate().equals(commentTo.getDate()) && !(getSubject() != null ? !getSubject().equals(commentTo.getSubject()) : commentTo.getSubject() != null) && getUserName().equals(commentTo.getUserName());
     }
 
+    @JsonIgnore
     @Override
     public final int hashCode() {
         int result;
-        result = id;
-        result = 29 * result + eid;
-        result = 29 * result + userId;
-        result = 29 * result + date.hashCode();
-        result = 29 * result + (subject != null ? subject.hashCode() : 0);
-        result = 29 * result + body.hashCode();
-        result = 29 * result + userName.hashCode();
+        result = getId();
+        result = 29 * result + getEid();
+        result = 29 * result + getUserId();
+        result = 29 * result + getDate().hashCode();
+        result = 29 * result + (getSubject() != null ? getSubject().hashCode() : 0);
+        result = 29 * result + getBody().hashCode();
+        result = 29 * result + getUserName().hashCode();
         return result;
     }
 

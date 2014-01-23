@@ -34,6 +34,9 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.istack.internal.NotNull;
 
 import java.io.Serializable;
@@ -41,41 +44,41 @@ import java.io.Serializable;
 /**
  * Biography
  */
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public final class BioTo implements Serializable {
+    private static final long serialVersionUID = -8084680761484133150L;
     private int userId;
     private String bio;
 
+    @JsonCreator
     public BioTo() {
 
-    }
-
-    public BioTo(int userId, String bio) {
-        this.userId = userId;
-        this.bio = bio;
     }
 
     public final int getUserId() {
         return this.userId;
     }
 
-    public final void setUserId(int userId) {
-        this.userId = userId;
+    public final void setUserId(int uid) {
+        this.userId = uid;
     }
 
     public final String getBio() {
         return this.bio;
     }
 
-    public final void setBio(String bio) {
-        this.bio = bio;
+    public final void setBio(String bioText) {
+        this.bio = bioText;
     }
 
+    @JsonIgnore
     @Override
     public @NotNull
     final String toString() {
         return "user id: " + userId + '\n' + "bio: " + bio + '\n';
     }
 
+    @JsonIgnore
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;
@@ -83,9 +86,10 @@ public final class BioTo implements Serializable {
 
         final BioTo bioTo = (BioTo) o;
 
-        return userId == bioTo.userId && bio.equals(bioTo.bio);
+        return userId == bioTo.getUserId() && bio.equals(bioTo.getBio());
     }
 
+    @JsonIgnore
     @Override
     public final int hashCode() {
         int result;

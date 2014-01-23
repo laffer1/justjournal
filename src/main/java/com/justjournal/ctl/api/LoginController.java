@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Lucas Holt
+ * Copyright (c) 2013, 2014 Lucas Holt
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,17 +29,15 @@ package com.justjournal.ctl.api;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.justjournal.WebLogin;
 import com.justjournal.core.Login;
-import com.justjournal.utility.StringUtil;
 import org.apache.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.Serializable;
 
@@ -112,46 +110,38 @@ final public class LoginController {
     }
 
 
-    @RequestMapping(method = RequestMethod.POST, consumes = "application/json;charset=UTF-8", produces = "application/json;charset=UTF-8", headers={"Accept=*/*","content-type=application/json"})
+    @RequestMapping(method = RequestMethod.POST, consumes = "application/json;charset=UTF-8", produces = "application/json;charset=UTF-8", headers = {"Accept=*/*", "content-type=application/json"})
     public
     @ResponseBody
-    ResponseEntity<String> post(@RequestBody Login login, HttpSession session) {
-        Gson gson = new GsonBuilder().create();
+    ResponseEntity<LoginResponse> post(@RequestBody Login login, HttpServletRequest request) {
         LoginResponse loginResponse = new LoginResponse();
 
         try {
-            //  Login login = gson.fromJson(loginJSON, Login.class);
-
             // Current authentication needs to get whacked
+            HttpSession session = request.getSession(true);
             if (WebLogin.isAuthenticated(session)) {
                 session.invalidate();
+                session = request.getSession(true); // reset
             }
 
-            if (StringUtil.lengthCheck(login.getUsername(), 3, 15) && StringUtil.lengthCheck(login.getPassword(), 5, 18)) {
-                int userID = WebLogin.validate(login.getUsername(), login.getPassword());
-                if (userID > 0) {
-                    log.debug("LoginController.post(): Username is " + login.getUsername());
-                    session.setAttribute("auth.uid", userID);
-                    session.setAttribute("auth.user", login.getUsername());
-                } else {
-                    log.error("Login attempt failed with user: " + login.getUsername());
-
-                    loginResponse.setStatus(JJ_LOGIN_FAIL);
-                    return new ResponseEntity<String>(gson.toJson(loginResponse), HttpStatus.BAD_REQUEST);
-                }
-
+            int userID = WebLogin.validate(login.getUsername(), login.getPassword());
+            if (userID > WebLogin.BAD_USER_ID) {
+                log.debug("LoginController.post(): Username is " + login.getUsername());
+                session.setAttribute("auth.uid", userID);
+                session.setAttribute("auth.user", login.getUsername());
             } else {
-                log.error("Login failed in validation of user: " + login.getUsername());
+                log.error("Login attempt failed with user: " + login.getUsername());
+
                 loginResponse.setStatus(JJ_LOGIN_FAIL);
-                return new ResponseEntity<String>(gson.toJson(loginResponse), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<LoginResponse>(loginResponse, HttpStatus.BAD_REQUEST);
             }
 
             loginResponse.setUsername(login.getUsername());
             loginResponse.setStatus(JJ_LOGIN_OK);
-            return new ResponseEntity<String>(gson.toJson(loginResponse), HttpStatus.OK);
+            return new ResponseEntity<LoginResponse>(loginResponse, HttpStatus.OK);
         } catch (Exception e) {
             log.error(e);
-            return new ResponseEntity<String>(gson.toJson(loginResponse), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<LoginResponse>(loginResponse, HttpStatus.BAD_REQUEST);
         }
     }
 }
