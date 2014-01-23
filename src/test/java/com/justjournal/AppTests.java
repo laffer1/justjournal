@@ -47,9 +47,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebAppConfiguration
 @ContextConfiguration("file:src/main/webapp/WEB-INF/mvc-dispatcher-servlet.xml")
 public class AppTests {
+    public static final int STATUS_HTTP_400 = 400;
+    public static final int STATUS_HTTP_403 = 403;
     private MockMvc mockMvc;
 
-    @SuppressWarnings("SpringJavaAutowiringInspection")
+    @SuppressWarnings({"SpringJavaAutowiringInspection", "ProtectedField"})
     @Autowired
     protected WebApplicationContext wac;
 
@@ -101,7 +103,7 @@ public class AppTests {
                 .contentType(MediaType.APPLICATION_JSON)
 
                 .accept(MediaType.parseMediaType("application/json")))
-                .andExpect(status().is(403))
+                .andExpect(status().is(STATUS_HTTP_403))
                 .andExpect(content().string("{\"error\":\"The login timed out or is invalid.\"}"))
                 .andExpect(content().contentTypeCompatibleWith("application/json"));
     }
@@ -135,7 +137,7 @@ public class AppTests {
                 .accept(MediaType.parseMediaType("application/json"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"username\":\"laffer1\", \"password\":\"blah\"}"))
-                .andExpect(status().is(400))
+                .andExpect(status().is(STATUS_HTTP_400))
                 .andExpect(content().contentTypeCompatibleWith("application/json;charset=UTF-8"));
     }
 }
