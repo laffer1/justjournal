@@ -56,7 +56,6 @@ angular.module('wwwApp').controller('EntryCtrl', ['$scope', '$routeParams', '$lo
                 $scope.entry.tags = [];
                 if (typeof $scope.tag !== 'undefined') {
                     $scope.entry.tags = $scope.tag.split(", ");
-                    $scope.entry.tag = undefined;
                 }
 
                 // EDIT case
