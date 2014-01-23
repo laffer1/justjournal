@@ -33,6 +33,7 @@ import org.apache.cayenne.Cayenne;
 import org.apache.cayenne.ObjectContext;
 import org.apache.cayenne.access.DataContext;
 import org.apache.cayenne.exp.Expression;
+import org.apache.cayenne.query.Query;
 import org.apache.cayenne.query.SelectQuery;
 import org.apache.log4j.Logger;
 
@@ -51,15 +52,17 @@ import java.util.regex.Pattern;
  * Created on March 23, 2003, 2:34 PM
  *
  * @author Lucas Holt
- * @version $Id: WebLogin.java,v 1.13 2012/07/04 18:49:20 laffer1 Exp $
- * @since 1.0
  */
 public final class WebLogin {
     private static final Logger log = Logger.getLogger(WebLogin.class);
-    private static final int BAD_USER_ID = 0;
 
     protected static final String LOGIN_ATTRNAME = "auth.user";
     protected static final String LOGIN_ATTRID = "auth.uid";
+
+    public static final int USERNAME_MAX_LENGTH = 15;
+    public static final int PASSWORD_MAX_LENGTH = 18;
+    public static final int SHA1_HASH_LENGTH = 40;
+    public static final int BAD_USER_ID = 0;
 
     public static boolean isAuthenticated(HttpSession session) {
         String username = (String) session.getAttribute("auth.user");
@@ -86,14 +89,14 @@ public final class WebLogin {
         session.removeAttribute(LOGIN_ATTRID);
     }
 
-    public static boolean isUserName(String input) {
+    public static boolean isUserName(CharSequence input) {
         final Pattern p = Pattern.compile("[A-Za-z0-9_]+");
         final Matcher m = p.matcher(input);
 
         return m.matches(); // valid on true
     }
 
-    public static boolean isPassword(String input) {
+    public static boolean isPassword(CharSequence input) {
         final Pattern p = Pattern.compile("[A-Za-z0-9_@.#$ ]+");
         final Matcher m = p.matcher(input);
 
@@ -110,10 +113,10 @@ public final class WebLogin {
     public static int validate(final String userName, final String password) {
         // the password is SHA1 encrypted in the sql server
 
-        if (!StringUtil.lengthCheck(userName, 3, 15))
+        if (!StringUtil.lengthCheck(userName, 3, USERNAME_MAX_LENGTH))
             return BAD_USER_ID; // bad username
 
-        if (!StringUtil.lengthCheck(password, 5, 18))
+        if (!StringUtil.lengthCheck(password, 5, PASSWORD_MAX_LENGTH))
             return BAD_USER_ID;
 
         if (!isUserName(userName))
@@ -147,7 +150,7 @@ public final class WebLogin {
             map.put("user", userName);
             map.put("pass", passwordHash);
             exp = exp.expWithParameters(map);
-            SelectQuery query = new SelectQuery(com.justjournal.model.User.class, exp);
+            Query query = new SelectQuery(com.justjournal.model.User.class, exp);
 
             List<com.justjournal.model.User> userList = dataContext.performQuery(query);
 
@@ -163,16 +166,22 @@ public final class WebLogin {
     }
 
 
+    /**
+     * Validate credentials using SHA1 hash algorithm
+     * @param userName username
+     * @param password password (hashed)
+     * @return  > 0 on success
+     */
     public static int validateSHA1(final String userName, final String password) {
         // the password is SHA1 encrypted in the sql server
 
-        if (!StringUtil.lengthCheck(userName, 3, 15))
+        if (!StringUtil.lengthCheck(userName, 3, USERNAME_MAX_LENGTH))
             return BAD_USER_ID; // bad username
 
         if (!isUserName(userName))
             return BAD_USER_ID; // bad username
 
-        if (!StringUtil.lengthCheck(password, 40, 40))
+        if (!StringUtil.lengthCheck(password, SHA1_HASH_LENGTH, SHA1_HASH_LENGTH))
             return BAD_USER_ID;
 
         try {
