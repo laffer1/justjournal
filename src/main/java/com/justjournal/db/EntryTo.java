@@ -34,10 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import com.justjournal.utility.HTMLUtil;
 
 import java.util.ArrayList;
@@ -45,14 +42,14 @@ import java.util.Collection;
 import java.util.Date;
 
 /**
- * Journal entry transfer object.  Contains one journal entry.
- * Maps relationship between table "entry" and java.
+ * Journal entry transfer object.  Contains one journal entry. Maps relationship between table "entry" and java.
  *
  * @author Lucas Holt
  * @version 1.0
  * @see EntryDAO
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class EntryTo {
     @JsonProperty("id")
     private int id;
@@ -90,7 +87,7 @@ public class EntryTo {
     private int attachFile = 0;
 
     @JsonIgnore
-    private Collection<String> tags = new ArrayList<String>();
+    private ArrayList<String> tags = new ArrayList<String>();
 
     @JsonCreator
     public EntryTo() {
@@ -185,12 +182,10 @@ public class EntryTo {
     }
 
     /**
-     * Set the date using a string in the form
-     * 2004-01-30 22:02
+     * Set the date using a string in the form 2004-01-30 22:02
      * <p/>
-     * TODO: create a parser to check the date
-     * more thoroughly.  DateTimeBean will throw
-     * an exception if the format is wrong though!
+     * TODO: create a parser to check the date more thoroughly.  DateTimeBean will throw an exception if the format is
+     * wrong though!
      *
      * @param date date in format YYYY-MM-DD hh:mm
      * @throws IllegalArgumentException null or len < 6
@@ -239,8 +234,7 @@ public class EntryTo {
     }
 
     /**
-     * Set the subject.  If the subject is null or
-     * an empty string, it will be set as (no subject).
+     * Set the subject.  If the subject is null or an empty string, it will be set as (no subject).
      *
      * @param subject subject to use
      * @throws IllegalArgumentException
@@ -385,7 +379,7 @@ public class EntryTo {
         this.autoFormat = autoFormat;
     }
 
-    public Collection<String> getTags() {
+    public ArrayList<String> getTags() {
         return tags;
     }
 
