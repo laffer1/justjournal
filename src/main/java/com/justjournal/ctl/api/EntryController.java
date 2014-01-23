@@ -83,6 +83,8 @@ final public class EntryController {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
         }
+        entry.setUserId(WebLogin.currentLoginId(session)); // can't trust the client with this
+
         // TODO: validate
         boolean result = EntryDAO.add(entry);
 
@@ -111,6 +113,8 @@ final public class EntryController {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
         }
+        entry.setUserId(WebLogin.currentLoginId(session)); // can't trust the client with this
+
         // TODO: validate
         boolean result;
         EntryTo entryTo = EntryDAO.viewSingle(entry.getId(), WebLogin.currentLoginId(session));
