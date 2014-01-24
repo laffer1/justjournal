@@ -36,6 +36,7 @@ package com.justjournal.db;
 
 import com.justjournal.model.Entry;
 import com.justjournal.model.Friends;
+import com.justjournal.model.User;
 import com.justjournal.utility.StringUtil;
 import com.sun.istack.internal.NotNull;
 import org.apache.cayenne.Cayenne;
@@ -44,12 +45,13 @@ import org.apache.cayenne.ObjectContext;
 import org.apache.cayenne.access.DataContext;
 import org.apache.cayenne.exp.Expression;
 import org.apache.cayenne.query.Ordering;
+import org.apache.cayenne.query.Query;
 import org.apache.cayenne.query.SelectQuery;
 import org.apache.cayenne.query.SortOrder;
 import org.apache.log4j.Logger;
 
-import java.util.*;
 import java.sql.ResultSet;
+import java.util.*;
 
 import static java.util.Collections.singletonMap;
 
@@ -68,6 +70,7 @@ import static java.util.Collections.singletonMap;
 public final class EntryDAO {
     private final static int MAX_ENTRIES = 20;
     private final static int MAX_FRIENDS = 15;
+    private final static int TAG_MAX_LENGTH = 30;
 
     private static final Logger log = Logger.getLogger(EntryDAO.class.getName());
 
@@ -94,12 +97,14 @@ public final class EntryDAO {
             autoFormat = "N";
 
         final String sqlStmt =
-                "INSERT INTO entry (id,uid,date,subject,mood,music,location,body,security,allow_comments,email_comments,autoformat) values(NULL,'" + et.getUserId() + "','" + et.getDate() + "','" + et.getSubject() + "','" + et.getMoodId() + "','" + et.getMusic() + "','" + et.getLocationId() + "','" + et.getBody() + "','" + et.getSecurityLevel() + "','" + allowComments + "','" + emailComments + "','" + autoFormat + "');";
+                "INSERT INTO entry (id,uid,date,subject,mood,music,location,body,security,allow_comments,email_comments,autoformat) values(NULL,'" + et.getUserId() + "','" + et.getDateTime().toString() + "','" + et.getSubject() + "','" + et.getMoodId() + "','" + et.getMusic() + "','" + et.getLocationId() + "','" + et.getBody() + "','" + et.getSecurityLevel() + "','" + allowComments + "','" + emailComments + "','" + autoFormat + "');";
 
         try {
             records = SQLHelper.executeNonQuery(sqlStmt);
         } catch (Exception e) {
             noError = false;
+            log.error(e);
+            log.trace(sqlStmt);
         }
 
         if (records != 1)
@@ -139,6 +144,8 @@ public final class EntryDAO {
                 records = SQLHelper.executeNonQuery(sqlStmt);
             } catch (Exception e) {
                 noError = false;
+                log.error(e);
+                log.trace(sqlStmt);
             }
 
             if (records != 1)
@@ -161,6 +168,8 @@ public final class EntryDAO {
                 records = SQLHelper.executeNonQuery(sqlStmt);
             } catch (Exception e) {
                 noError = false;
+                log.error(e);
+                log.trace(sqlStmt);
             }
         } else {
             noError = false;
@@ -355,7 +364,6 @@ public final class EntryDAO {
                     }
 
                     rsComment.close();
-                    rsComment = null;
                 } catch (Exception ex) {
                     if (rsComment != null) {
                         try {
@@ -441,7 +449,6 @@ public final class EntryDAO {
             }
         } catch (Exception e1) {
             log.error(e1);
-            e1.printStackTrace();
         }
 
         return entries;
@@ -513,12 +520,12 @@ public final class EntryDAO {
 
         Expression exp;
         if (aUserId > 0 && (userID == aUserId)) {
-            List<com.justjournal.model.User> myFriends = new ArrayList<com.justjournal.model.User>();
+            Collection<User> myFriends = new ArrayList<com.justjournal.model.User>();
             try {
                 // Get the list of friends for this user id
                 Expression e = Expression.fromString("FriendsToUser = $uid");
                 e.expWithParameters(Collections.singletonMap("uid", userID));
-                SelectQuery fq = new SelectQuery(com.justjournal.model.Friends.class, e);
+                Query fq = new SelectQuery(com.justjournal.model.Friends.class, e);
                 List<com.justjournal.model.Friends> friends = dataContext.performQuery(fq);
 
                 for (com.justjournal.model.Friends f : friends) {
@@ -563,7 +570,6 @@ public final class EntryDAO {
             }
         } catch (Exception e1) {
             log.error(e1);
-            e1.printStackTrace();
         }
 
         return entries;
@@ -701,7 +707,7 @@ public final class EntryDAO {
                                                       final String userName,
                                                       final boolean thisUser) {
 
-        DateTimeBean dtb = new DateTimeBean();
+        DateTime dtb = new DateTimeBean();
         dtb.setYear(year);
         dtb.setMonth(month);
         dtb.setDay(day);
@@ -777,7 +783,7 @@ public final class EntryDAO {
         EntryTo et;
         Expression exp;
         exp = Expression.fromString("entryToSecurity=2");
-        HashMap<String, Boolean> seenUser = new HashMap<String, Boolean>(20);
+        Map<String, Boolean> seenUser = new HashMap<String, Boolean>(20);
 
         try {
             SelectQuery query = new SelectQuery(com.justjournal.model.Entry.class, exp);
@@ -804,7 +810,6 @@ public final class EntryDAO {
                     break;
             }
         } catch (Exception e1) {
-            e1.printStackTrace();
             log.error(e1);
         }
 
@@ -861,15 +866,15 @@ public final class EntryDAO {
      * @param tags    An arralist of tags
      * @return true on success, false otherwise
      */
-    public static boolean setTags(int entryId, ArrayList tags) {
+    public static boolean setTags(int entryId, Iterable tags) {
 
         if (entryId < 1)
             throw new IllegalArgumentException("Entry id must be greater than 0");
 
         boolean noError = true;
         ArrayList<String> current = getTags(entryId);
-        ArrayList<String> newTags = new ArrayList<String>();
-        ArrayList<String> deadTags = new ArrayList<String>();
+        AbstractList<String> newTags = new ArrayList<String>();
+        AbstractList<String> deadTags = new ArrayList<String>();
 
         // delete test
         for (String curtag : current) {
@@ -946,7 +951,7 @@ public final class EntryDAO {
 
         if (tagname == null || tagname.equalsIgnoreCase(""))
             throw new IllegalArgumentException("Name must be set");
-        if (tagname.length() > 30)
+        if (tagname.length() > TAG_MAX_LENGTH)
             throw new IllegalArgumentException("Name cannot be longer than 30 characters.");
         if (!StringUtil.isAlpha(tagname))
             throw new IllegalArgumentException("Name contains invalid characters.  Must be A-Za-z");

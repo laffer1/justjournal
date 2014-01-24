@@ -63,7 +63,7 @@ public final class SQLHelper {
             ctx = new InitialContext();
             ds = (DataSource) ctx.lookup(DbEnv);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e);
         }
     }
 
@@ -82,8 +82,7 @@ public final class SQLHelper {
                 ctx = new InitialContext();
                 ds = (DataSource) ctx.lookup(DbEnv);
             } catch (Exception e) {
-                log.error(e.getMessage());
-                e.printStackTrace();
+                log.error(e);
             }
         }
 
@@ -123,22 +122,24 @@ public final class SQLHelper {
              */
 
             try {
-                stmt.close();
+                if (stmt != null)
+                    stmt.close();
             } catch (SQLException sqlEx) {
                 // ignore -- as we can't do anything about it here
-                 log.error(sqlEx.getMessage());
+                log.error(sqlEx.getMessage());
             } catch (NullPointerException e) {
-                 log.error(e.getMessage());
+                log.error(e.getMessage());
             }
 
 
             try {
-                conn.close();
+                if (conn != null)
+                    conn.close();
             } catch (SQLException sqlEx) {
-                 log.error(sqlEx.getMessage());
+                log.error(sqlEx.getMessage());
                 // ignore -- as we can't do anything about it here
             } catch (NullPointerException e) {
-                 log.error(e.getMessage());
+                log.error(e.getMessage());
             }
         }
 
@@ -170,8 +171,8 @@ public final class SQLHelper {
             crs.populate(rs);
 
             rs.close();
-         } catch (Exception e) {
-             log.error(e.getMessage());
+        } catch (Exception e) {
+            log.error(e.getMessage());
             throw new Exception("Error getting connect or executing it", e);
         } finally {
             /*
@@ -182,12 +183,12 @@ public final class SQLHelper {
 
             try {
                 if (stmt != null)
-                   stmt.close();
+                    stmt.close();
             } catch (SQLException sqlEx) {
-                 log.error("executeResultSet() Close statement: " + sqlEx.getMessage());
+                log.error("executeResultSet() Close statement: " + sqlEx.getMessage());
                 // ignore -- as we can't do anything about it here
             } catch (NullPointerException e) {
-                 log.error("executeResultSet() Close statement: " + e.getMessage());
+                log.error("executeResultSet() Close statement: " + e.getMessage());
             }
 
             try {
@@ -196,10 +197,10 @@ public final class SQLHelper {
                     conn.close();
                 }
             } catch (SQLException sqlEx) {
-                 log.error("executeResultSet() Close connection: " + sqlEx.getMessage());
+                log.error("executeResultSet() Close connection: " + sqlEx.getMessage());
                 // ignore -- as we can't do anything about it here
             } catch (NullPointerException e) {
-                 log.error("executeResultSet() Close connection: " + e.getMessage());
+                log.error("executeResultSet() Close connection: " + e.getMessage());
             }
 
         }
@@ -214,10 +215,10 @@ public final class SQLHelper {
         Connection conn;
 
         conn = getConn();
-        conn.setReadOnly( true );
+        conn.setReadOnly(true);
         Statement stmt = conn.createStatement();
 
-        ResultSet rs = stmt.executeQuery( commandText );
+        ResultSet rs = stmt.executeQuery(commandText);
         ResultSetMetaData rsmd = rs.getMetaData();
 
         // Meta Data Properties
@@ -230,10 +231,10 @@ public final class SQLHelper {
         }
 
         // Create XML Document
-        sw.write( "<?xml version=\"1.0\" ?>\n\n" );
-        sw.write( "<records>\n\n" );
+        sw.write("<?xml version=\"1.0\" ?>\n\n");
+        sw.write("<records>\n\n");
 
-        while ( rs.next() ) {
+        while (rs.next()) {
             sw.write("<record>\n");
             for (int i = 1; i <= numberOfColumns; i++) {
                 sw.write("<" + namesOfColumns[i] + ">");
@@ -243,7 +244,7 @@ public final class SQLHelper {
             sw.write("</record>\n\n");
         }
 
-        sw.write( "</records>" );
+        sw.write("</records>");
         // End of XML Document Generation
 
         //rsmd.close();
