@@ -26,11 +26,13 @@
 
 package com.justjournal.ctl.api;
 
-import com.justjournal.core.Statistics;
-import com.justjournal.db.CommentDao;
-import com.justjournal.db.EntryDAO;
+import com.justjournal.db.Statistics;
+import com.justjournal.db.UserStatistics;
+import com.justjournal.services.ServiceException;
+import com.justjournal.services.StatisticsService;
 import com.sun.istack.internal.Nullable;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,6 +43,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * Generate Global and per user statistics on blogging entries and comments.
+ *
  * @author Lucas Holt
  */
 @Controller
@@ -48,66 +51,58 @@ import javax.servlet.http.HttpServletResponse;
 final public class StatisticsController {
     private static final Logger log = Logger.getLogger(StatisticsController.class);
 
-    /**
-     * Get Site statistics
-     * @return statistics
-     */
-    @RequestMapping(method = RequestMethod.GET, headers="Accept=*/*", produces = "application/json")
-    public
-    @ResponseBody
-    Statistics get() {
-        return new Statistics();
+    private StatisticsService statisticsService = null;
+
+    @Autowired
+    public void setStatisticsService(StatisticsService statisticsService) {
+        this.statisticsService = statisticsService;
     }
 
     /**
-     * Get statistics for a specific user
-     * @param id username
-     * @param response Servlet response
-     * @return stats
+     * Get Site statistics
+     *
+     * @return statistics
      */
-    @RequestMapping("/api/statistics/{id}")
+    @RequestMapping(method = RequestMethod.GET, headers = "Accept=*/*", produces = "application/json")
+    public
     @ResponseBody
     @Nullable
-    public Stats getById(@PathVariable String id, HttpServletResponse response) {
+    Statistics get(HttpServletResponse response) {
         try {
-            return new Stats(id);
-        } catch (Exception e) {
-            log.warn("Statistics User not found " + id);
+            return statisticsService.getStatistics();
+        } catch (ServiceException e) {
+            log.warn("Statistics not available");
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return null;
         }
     }
 
     /**
-     * Individual statistics for user
+     * Get statistics for a specific user
+     *
+     * @param id       username
+     * @param response Servlet response
+     * @return stats
      */
-    class Stats {
-        private String username;
+    @RequestMapping(value = "{id}", method = RequestMethod.GET, headers = "Accept=*/*", produces = "application/json")
+    @ResponseBody
+    @Nullable
+    public UserStatistics getById(@PathVariable String id, HttpServletResponse response) {
+        try {
+            if (id == null || id.equals("") || id.length() < 3) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                return null;
+            }
 
-        /**
-         * Create Stats
-         * @param username user's username
-         */
-        public Stats(String username) {
-            this.username = username;
-        }
-
-        /**
-         * Total number of entries
-         * @return entry count
-         * @throws Exception
-         */
-        public int getEntryCount() throws Exception {
-            return EntryDAO.entryCount(username);
-        }
-
-        /**
-         * Total number of comments
-         * @return comment count
-         * @throws Exception
-         */
-        public int getCommentCount() throws Exception {
-            return CommentDao.commentCount(username);
+            UserStatistics us = statisticsService.getUserStatistics(id);
+            if (us == null) {
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            }
+            return us;
+        } catch (ServiceException e) {
+            log.warn("User Statistics error: (" + id + "), " + e.getMessage());
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            return null;
         }
     }
 }

@@ -26,6 +26,7 @@
 
 package com.justjournal;
 
+import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,19 +38,19 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration("file:src/main/webapp/WEB-INF/mvc-dispatcher-servlet.xml")
 public class AppTests {
-    public static final int STATUS_HTTP_400 = 400;
-    public static final int STATUS_HTTP_403 = 403;
-    private MockMvc mockMvc;
+    private static final Logger log = Logger.getLogger(AppTests.class);
+    private static final int STATUS_HTTP_400 = 400;
+    private static final int STATUS_HTTP_403 = 403;
+    private MockMvc mockMvc = null;
 
     @SuppressWarnings({"SpringJavaAutowiringInspection", "ProtectedField"})
     @Autowired
@@ -74,7 +75,6 @@ public class AppTests {
                 .andExpect(status().isOk());
     }
 
-
     @Test
     public void apiLocation() throws Exception {
         mockMvc.perform(get("/api/location"))
@@ -85,6 +85,27 @@ public class AppTests {
     public void apiStatistics() throws Exception {
         mockMvc.perform(get("/api/statistics"))
                 .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith("application/json;charset=UTF-8"));
+    }
+
+    @Test
+    public void apiStatisticsUser() throws Exception {
+        mockMvc.perform(get("/api/statistics/jjsite"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith("application/json;charset=UTF-8"));
+    }
+
+    @Test
+    public void apiStatisticsBadUser() throws Exception {
+        mockMvc.perform(get("/api/statistics/root"))
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentTypeCompatibleWith("application/json;charset=UTF-8"));
+    }
+
+    @Test
+    public void apiStatisticsInvalid() throws Exception {
+        mockMvc.perform(get("/api/statistics/r"))
+                .andExpect(status().isBadRequest())
                 .andExpect(content().contentTypeCompatibleWith("application/json;charset=UTF-8"));
     }
 
@@ -129,7 +150,6 @@ public class AppTests {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith("application/json;charset=UTF-8"));
     }
-
 
     @Test
     public void apiLogin() throws Exception {

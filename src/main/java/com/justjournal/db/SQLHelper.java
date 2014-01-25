@@ -254,4 +254,44 @@ public final class SQLHelper {
 
         return sw.toString();
     }
+
+    /**
+     * Perform a sql query returning a scalar int value typically form a count(*)
+     *
+     * @param sql query to perform
+     * @return int scalar from sql query
+     */
+    public static int scalarInt(String sql) {
+        int count = -1;
+
+        if (log.isDebugEnabled())
+            log.debug("sqlCount(): sql is " + sql);
+
+        try {
+            ResultSet rs = SQLHelper.executeResultSet(sql);
+
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+
+            rs.close();
+        } catch (Exception e) {
+            log.error("sqlCount(): " + e.getMessage());
+        }
+
+        if (log.isDebugEnabled())
+            log.debug("sqlCount(): count is " + count);
+
+        return count;
+    }
+
+    /**
+     * Count the number of items present in a table
+     *
+     * @param tablename
+     * @return
+     */
+    public static int count(String tablename) {
+        return scalarInt("SELECT count(*) from " + tablename);
+    }
 }
