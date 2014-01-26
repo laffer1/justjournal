@@ -45,7 +45,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration("file:src/main/webapp/WEB-INF/mvc-dispatcher-servlet.xml")
+@ContextConfiguration("file:src/test/resources/mvc-dispatcher-servlet.xml")
 public class AppTests {
     private static final Logger log = Logger.getLogger(AppTests.class);
     private static final int STATUS_HTTP_400 = 400;
