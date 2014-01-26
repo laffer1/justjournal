@@ -26,30 +26,40 @@
 
 package com.justjournal.db;
 
-import com.sun.istack.internal.NotNull;
 import org.springframework.stereotype.Component;
-
-import java.util.Collection;
 
 /**
  * @author Lucas Holt
  */
 @Component
-public interface CommentDao {
-    public boolean add(final Comment comment);
+public interface Comment {
+    public int getId();
 
-    public boolean update(final Comment comment);
+    public void setId(int commentId);
 
-    public boolean delete(final int commentId, final int userId);
+    public int getEid();
 
-    public boolean deleteByEntry(final int entryId);
+    public void setEid(int entryId);
 
-    public
-    @NotNull
-    Comment get(final int commentId);
+    public DateTime getDate();
 
-    public @NotNull
-    Collection<Comment> list(final int entryId);
+    public void setDate(DateTime dateTime);
 
-    public int count(final String userName) throws Exception;
+    public void setDate(String commentDate);
+
+    public String getSubject();
+
+    public void setSubject(String subjectText);
+
+    public String getBody();
+
+    public void setBody(String bodyText);
+
+    public int getUserId();
+
+    public void setUserId(int uid);
+
+    public String getUserName();
+
+    public void setUserName(String user);
 }

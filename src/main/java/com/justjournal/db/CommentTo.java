@@ -38,28 +38,28 @@ import com.sun.istack.internal.NotNull;
  * @author Lucas Holt
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-public final class CommentTo {
+public final class CommentTo implements Comment {
 
-    private int id;
-    private int eid;
-    private int userId;
+    private int id = 0;
+    private int eid = 0;
+    private int userId = 0;
 
-    private DateTime date;
-    private String subject;
-    private String body;
-    private String userName;
+    private DateTime date = new DateTimeBean();
+    private String subject = "";
+    private String body = "";
+    private String userName = "";
 
     @JsonCreator
     public CommentTo() {
 
     }
 
-    public final int getId() {
+    public int getId() {
         return id;
     }
 
-    public final void setId(int commentId)
-            throws IllegalArgumentException {
+    public void setId(int commentId)
+    throws IllegalArgumentException {
         if (commentId < 0)
             throw new IllegalArgumentException("Illegal commentId: " +
                     commentId);
@@ -67,12 +67,12 @@ public final class CommentTo {
         this.id = commentId;
     }
 
-    public final int getEid() {
+    public int getEid() {
         return eid;
     }
 
-    public final void setEid(int entryId)
-            throws IllegalArgumentException {
+    public void setEid(int entryId)
+    throws IllegalArgumentException {
         if (entryId < 0)
             throw new IllegalArgumentException("Illegal entryId: " +
                     entryId);
@@ -80,12 +80,12 @@ public final class CommentTo {
         this.eid = entryId;
     }
 
-    public final DateTime getDate() {
+    public DateTime getDate() {
         return date;
     }
 
-    public final void setDate(String commentDate)
-            throws IllegalArgumentException {
+    public void setDate(String commentDate)
+    throws IllegalArgumentException {
         if (commentDate.length() < 6)
             throw new IllegalArgumentException("Illegal commentDate: " +
                     commentDate);
@@ -99,16 +99,16 @@ public final class CommentTo {
         }
     }
 
-    public final void setDate(DateTime dateTime) {
+    public void setDate(DateTime dateTime) {
         this.date = dateTime;
     }
 
-    public final String getSubject() {
+    public String getSubject() {
         return subject;
     }
 
-    public final void setSubject(String subjectText)
-            throws IllegalArgumentException {
+    public void setSubject(String subjectText)
+    throws IllegalArgumentException {
 
         if (subjectText.length() == 0)
             this.subject = "(no subject)";
@@ -116,22 +116,22 @@ public final class CommentTo {
             this.subject = subjectText;
     }
 
-    public final String getBody() {
+    public String getBody() {
         return body;
     }
 
     @JsonIgnore
-    public final String getBodyWithLinks() {
+    public String getBodyWithLinks() {
         return HTMLUtil.uriToLink(getBody());
     }
 
     @JsonIgnore
-    public final String getBodyWithoutHTML() {
+    public String getBodyWithoutHTML() {
         return HTMLUtil.stripHTMLTags(getBody());
     }
 
-    public final void setBody(String bodyText)
-            throws IllegalArgumentException {
+    public void setBody(String bodyText)
+    throws IllegalArgumentException {
         if (bodyText.length() < 2)
             throw new IllegalArgumentException("Illegal bodyText: " +
                     bodyText);
@@ -139,23 +139,23 @@ public final class CommentTo {
         this.body = bodyText;
     }
 
-    public final int getUserId() {
+    public int getUserId() {
         return userId;
     }
 
-    public final void setUserId(int uid)
-            throws IllegalArgumentException {
+    public void setUserId(int uid)
+    throws IllegalArgumentException {
         if (uid < 0)
             throw new IllegalArgumentException("Illegal user commentId: " +
                     uid);
         userId = uid;
     }
 
-    public final String getUserName() {
+    public String getUserName() {
         return userName;
     }
 
-    public final void setUserName(String user) {
+    public void setUserName(String user) {
         userName = user;
     }
 
@@ -174,9 +174,7 @@ public final class CommentTo {
     public final boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
-        @SuppressWarnings("LocalVariableOfConcreteClass")
-        final CommentTo commentTo = (CommentTo) o;
+        final Comment commentTo = (Comment) o;
 
         return getEid() == commentTo.getEid() && getId() == commentTo.getId() && getUserId() == commentTo.getUserId() && getBody().equals(commentTo.getBody()) && getDate().equals(commentTo.getDate()) && !(getSubject() != null ? !getSubject().equals(commentTo.getSubject()) : commentTo.getSubject() != null) && getUserName().equals(commentTo.getUserName());
     }
