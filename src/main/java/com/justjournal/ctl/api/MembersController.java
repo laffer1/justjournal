@@ -26,10 +26,10 @@
 
 package com.justjournal.ctl.api;
 
-import com.justjournal.User;
 import com.justjournal.db.UserDao;
 import com.justjournal.db.UserTo;
 import org.apache.log4j.Logger;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -51,17 +51,17 @@ final public class MembersController {
      *
      * @return mood list
      */
-    @RequestMapping(method = RequestMethod.GET, headers="Accept=*/*", produces="application/json")
+    @Cacheable("members")
+    @RequestMapping(method = RequestMethod.GET, headers = "Accept=*/*", produces = "application/json")
     public
     @ResponseBody
     Collection<UserTo> list() {
         Collection<UserTo> members = UserDao.memberList();
-        ArrayList<UserTo> publicMembers = new ArrayList<UserTo>();
+        Collection<UserTo> publicMembers = new ArrayList<UserTo>();
 
         for (UserTo member : members) {
             try {
-                if (!member.getPrivateJournal())
-                {
+                if (!member.getPrivateJournal()) {
                     publicMembers.add(member);
                 }
             } catch (Exception e) {

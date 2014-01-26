@@ -47,6 +47,8 @@ import java.util.Map;
 @RequestMapping("/api/rssreader")
 final public class RssReaderController {
     private static final Logger log = Logger.getLogger(RssReaderController.class);
+    public static final int RSS_URL_MAX_LENGTH = 1024;
+    public static final int RSS_URL_MIN_LENGTH = 10;
 
     @RequestMapping(method = RequestMethod.PUT)
     public
@@ -57,7 +59,7 @@ final public class RssReaderController {
             RssSubscriptionsTO to = new RssSubscriptionsTO();
             boolean result;
 
-            if (uri == null || uri.length() < 10 || uri.length() > 1024) {
+            if (uri == null || uri.length() < RSS_URL_MIN_LENGTH || uri.length() > RSS_URL_MAX_LENGTH) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 return java.util.Collections.singletonMap("error", "Error adding link.");
             }

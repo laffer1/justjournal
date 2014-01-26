@@ -36,6 +36,7 @@ package com.justjournal.ctl.api;
 
 import com.justjournal.db.MoodDao;
 import com.justjournal.db.MoodTo;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -54,6 +55,7 @@ import java.util.Collection;
 @RequestMapping("/api/mood")
 final public class MoodController {
 
+    @Cacheable(value = "mood", key = "id")
     @RequestMapping("/api/mood/{id}")
     @ResponseBody
     public MoodTo getById(@PathVariable Integer id) {
@@ -65,6 +67,7 @@ final public class MoodController {
      *
      * @return mood list
      */
+    @Cacheable("mood")
     @RequestMapping(method = RequestMethod.GET, headers = "Accept=*/*", produces = "application/json")
     public
     @ResponseBody

@@ -27,8 +27,11 @@
 package com.justjournal.ctl.api;
 
 import com.justjournal.WebLogin;
-import com.justjournal.db.*;
+import com.justjournal.db.CommentDao;
+import com.justjournal.db.EntryDAO;
+import com.justjournal.db.EntryTo;
 import org.apache.log4j.Logger;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -69,12 +72,13 @@ final public class EntryController {
     /**
      * Creates a new entry resource
      *
-     * @param entry EntryTo
+     * @param entry    EntryTo
      * @param session  HttpSession
      * @param response HttpServletResponse
      * @return status ok or error
      */
-    @RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json", headers={"Accept=*/*","content-type=application/json"})
+    @CacheEvict(value = "recentblogs")
+    @RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json", headers = {"Accept=*/*", "content-type=application/json"})
     public
     @ResponseBody
     Map<String, String> post(@RequestBody EntryTo entry, HttpSession session, HttpServletResponse response, Model model) {
@@ -105,6 +109,7 @@ final public class EntryController {
      * @param response HttpServletResponse
      * @return
      */
+    @CacheEvict(value = "recentblogs")
     @RequestMapping(method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
     public
     @ResponseBody
@@ -137,6 +142,7 @@ final public class EntryController {
      * @return errors or entry id if success
      * @throws Exception
      */
+    @CacheEvict(value = "recentblogs")
     @RequestMapping(method = RequestMethod.DELETE)
     public
     @ResponseBody

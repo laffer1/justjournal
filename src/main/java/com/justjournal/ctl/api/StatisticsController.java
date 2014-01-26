@@ -31,9 +31,10 @@ import com.justjournal.db.UserStatistics;
 import com.justjournal.db.UserStatisticsImpl;
 import com.justjournal.services.ServiceException;
 import com.justjournal.services.StatisticsService;
+import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -54,8 +55,7 @@ final public class StatisticsController {
 
     private StatisticsService statisticsService = null;
 
-    @Autowired
-    public void setStatisticsService(StatisticsService statisticsService) {
+    public void setStatisticsService(@NotNull StatisticsService statisticsService) {
         this.statisticsService = statisticsService;
     }
 
@@ -64,6 +64,7 @@ final public class StatisticsController {
      *
      * @return statistics
      */
+    @Cacheable("statistics")
     @RequestMapping(method = RequestMethod.GET, headers = "Accept=*/*", produces = "application/json")
     public
     @ResponseBody
@@ -85,6 +86,7 @@ final public class StatisticsController {
      * @param response Servlet response
      * @return stats
      */
+    @Cacheable(value = "userstatistics", key = "id")
     @RequestMapping(value = "{id}", method = RequestMethod.GET, headers = "Accept=*/*", produces = "application/json")
     @ResponseBody
     public UserStatistics getById(@PathVariable String id, HttpServletResponse response) {

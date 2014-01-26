@@ -29,6 +29,7 @@ import com.justjournal.core.Settings;
 import com.justjournal.db.EntryDAO;
 import com.justjournal.rss.Rss;
 import org.apache.log4j.Logger;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -41,6 +42,7 @@ import java.util.Date;
 
 /**
  * Display recent blog entries in RSS format.
+ *
  * @author Lucas Holt
  * @version $Id: RecentBlogs.java,v 1.15 2011/07/01 11:54:31 laffer1 Exp $
  */
@@ -49,8 +51,10 @@ import java.util.Date;
 final public class RecentBlogs {
     private static final Logger log = Logger.getLogger(RecentBlogs.class);
 
-    @RequestMapping(method= RequestMethod.GET, produces = "application/rss+xml")
-    public @ResponseBody
+    @Cacheable("recentblogs")
+    @RequestMapping(method = RequestMethod.GET, produces = "application/rss+xml")
+    public
+    @ResponseBody
     String get(HttpServletResponse response) {
         Settings set = new Settings();
 

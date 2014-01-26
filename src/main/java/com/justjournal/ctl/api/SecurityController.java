@@ -28,6 +28,7 @@ package com.justjournal.ctl.api;
 
 import com.justjournal.db.SecurityDao;
 import com.justjournal.db.SecurityTo;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -41,7 +42,9 @@ import java.util.Collection;
 @Controller
 @RequestMapping("/api/security")
 public class SecurityController {
-    @RequestMapping(method = RequestMethod.GET, headers="Accept=*/*", produces = "application/json")
+
+    @Cacheable("security")
+    @RequestMapping(method = RequestMethod.GET, headers = "Accept=*/*", produces = "application/json")
     public
     @ResponseBody
     Collection<SecurityTo> getSecurityList() {

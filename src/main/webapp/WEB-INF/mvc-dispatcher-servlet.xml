@@ -25,6 +25,7 @@
   ~ SUCH DAMAGE.
   -->
 
+<!-- http://docs.spring.io/spring/docs/3.1.0.M1/spring-framework-reference/html/cache.html -->
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
@@ -37,22 +38,28 @@
 
     <context:component-scan base-package="com.justjournal"/>
 
+    <bean id="statisticsService" class="com.justjournal.services.StatisticsServiceImpl"/>
+    <bean id="statisticsController" class="com.justjournal.ctl.api.StatisticsController">
+        <property name="statisticsService" ref="statisticsService"/>
+    </bean>
+
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix" value="/WEB-INF/views/"/>
         <property name="suffix" value=".jsp"/>
     </bean>
 
+    <bean id="dateObjectMapper" class="com.justjournal.core.CustomObjectMapper"/>
+
     <mvc:annotation-driven>
         <mvc:message-converters>
-            <bean id="jacksonMessageConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+            <bean id="jacksonMessageConverter"
+                  class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
                 <property name="prefixJson" value="false"/>
                 <property name="supportedMediaTypes" value="application/json"/>
                 <property name="objectMapper" ref="dateObjectMapper"/>
             </bean>
         </mvc:message-converters>
     </mvc:annotation-driven>
-
-    <bean id="dateObjectMapper" class="com.justjournal.core.CustomObjectMapper"/>
 </beans>
 
 

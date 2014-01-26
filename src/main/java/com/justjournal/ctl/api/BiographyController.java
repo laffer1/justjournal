@@ -30,6 +30,8 @@ import com.justjournal.WebLogin;
 import com.justjournal.db.*;
 import com.justjournal.utility.StringUtil;
 import org.apache.log4j.Logger;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,6 +40,8 @@ import javax.servlet.http.HttpSession;
 import java.util.Map;
 
 /**
+ * Retrieve and manage user biography content.
+ *
  * @author Lucas Holt
  */
 @Controller
@@ -45,8 +49,10 @@ import java.util.Map;
 final public class BiographyController {
     private static final Logger log = Logger.getLogger(BiographyController.class);
 
+    @Cacheable(value = "biography", key = "username")
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody
+    public
+    @ResponseBody
     BioTo get(@RequestParam String username, HttpServletResponse response) {
         UserTo user = UserDao.view(username);
         if (user == null) {
@@ -56,6 +62,8 @@ final public class BiographyController {
         return BioDao.get(user.getId());
     }
 
+    // TODO: API is bad for caching.
+    @CacheEvict(value = "biography", allEntries = true)
     @RequestMapping(method = RequestMethod.POST, produces = "application/json")
     public
     @ResponseBody

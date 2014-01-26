@@ -29,6 +29,8 @@ package com.justjournal.ctl.api;
 import com.justjournal.WebLogin;
 import com.justjournal.db.*;
 import org.apache.log4j.Logger;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,6 +56,7 @@ final public class FriendController {
      * @param response http response
      * @return List of usernames as strings
      */
+    @Cacheable(value = "friends", key = "id")
     @RequestMapping("/api/friend/{id}")
     @ResponseBody
     public Collection<String> getById(@PathVariable String id, HttpServletResponse response) {
@@ -65,6 +68,7 @@ final public class FriendController {
         }
     }
 
+    @CacheEvict(value = "friends", key = "friend")
     @RequestMapping(method = RequestMethod.PUT, produces = "application/json")
     @ResponseBody
     public Map<String, String> put(@RequestParam String friend, HttpSession session, HttpServletResponse response) {
@@ -92,7 +96,8 @@ final public class FriendController {
 
     }
 
-
+    // TODO: api makes it hard to selectively delete cache entries
+    @CacheEvict(value = "friends", allEntries = true)
     @RequestMapping(method = RequestMethod.DELETE)
     public
     @ResponseBody

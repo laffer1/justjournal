@@ -28,6 +28,7 @@ package com.justjournal.ctl.api;
 
 import com.justjournal.db.Tag;
 import com.justjournal.db.TagDao;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,8 +46,10 @@ final public class TagsController {
 
     /**
      * Get the tag list for the whole site
+     *
      * @return tag list
      */
+    @Cacheable("tags")
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public
     @ResponseBody
@@ -56,9 +59,11 @@ final public class TagsController {
 
     /**
      * Get an individual tag
+     *
      * @param id tag id
      * @return tag list
      */
+    @Cacheable(value = "tags", key = "id")
     @RequestMapping("/api/tags/{id}")
     @ResponseBody
     public Tag getById(@PathVariable Integer id) {
