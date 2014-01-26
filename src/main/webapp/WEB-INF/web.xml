@@ -112,13 +112,6 @@
     </servlet-mapping>
 
     <servlet>
-        <display-name>Users Viewer</display-name>
-        <servlet-name>users</servlet-name>
-        <servlet-class>com.justjournal.ctl.Users</servlet-class>
-        <load-on-startup>3</load-on-startup>
-    </servlet>
-
-    <servlet>
         <display-name>Image Viewer</display-name>
         <servlet-name>image</servlet-name>
         <servlet-class>com.justjournal.ctl.Image</servlet-class>
@@ -194,11 +187,6 @@
         <servlet-class>com.justjournal.ctl.JournalTitle</servlet-class>
         <load-on-startup>3</load-on-startup>
     </servlet>
-
-    <servlet-mapping>
-        <servlet-name>users</servlet-name>
-        <url-pattern>/users/*</url-pattern>
-    </servlet-mapping>
 
     <servlet-mapping>
         <servlet-name>image</servlet-name>

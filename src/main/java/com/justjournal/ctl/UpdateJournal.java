@@ -37,21 +37,18 @@ package com.justjournal.ctl;
 import com.justjournal.User;
 import com.justjournal.WebError;
 import com.justjournal.WebLogin;
+import com.justjournal.core.Settings;
+import com.justjournal.core.TrackbackOut;
+import com.justjournal.db.EntryDao;
+import com.justjournal.db.EntryTo;
 import com.justjournal.restping.BasePing;
 import com.justjournal.restping.IceRocket;
 import com.justjournal.restping.TechnoratiPing;
-import com.justjournal.core.Settings;
-import com.justjournal.core.TrackbackOut;
-import com.justjournal.db.EntryDAO;
-import com.justjournal.db.EntryTo;
 import com.justjournal.utility.HTMLUtil;
 import com.justjournal.utility.Spelling;
 import com.justjournal.utility.StringUtil;
 import org.apache.log4j.Logger;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -70,32 +67,23 @@ import java.util.regex.Pattern;
  * @author Lucas Holt
  * @version $Id: UpdateJournal.java,v 1.33 2012/07/04 18:49:20 laffer1 Exp $
  * @since 1.0 Created on March 23, 2003, 12:42 PM
- *        <p/>
- *        1.4.1 Introduced some bug fixes with null handling.
- *        <p/>
- *        1.4 Changed default behavior for allow comments flag.  Assumes the user will uncheck a box to disable
- *        comments.  auto formatting was changed in a similar manner for usability.
+ * <p/>
+ * 1.4.1 Introduced some bug fixes with null handling.
+ * <p/>
+ * 1.4 Changed default behavior for allow comments flag.  Assumes the user will uncheck a box to disable comments.  auto
+ * formatting was changed in a similar manner for usability.
  */
 public final class UpdateJournal extends HttpServlet {
 
     private static final char endl = '\n';
     private static final Logger log = Logger.getLogger(UpdateJournal.class);
     @SuppressWarnings({"InstanceVariableOfConcreteClass"})
-    private Settings set;  // global jj settings
+    private Settings settings = new Settings();  // global jj settings
 
     enum ClientType {
         web, mobile, dashboard, desktop
     }
 
-    /**
-     * Initializes the servlet.
-     */
-    @Override
-    public void init(final ServletConfig config) throws ServletException {
-        super.init(config);
-        final ServletContext ctx = config.getServletContext();
-        set = Settings.getSettings(ctx);
-    }
 
     /**
      * Print out the webpage for HTML friendly clients.
@@ -273,9 +261,9 @@ public final class UpdateJournal extends HttpServlet {
         sb.append("\t<div id=\"footer\">");
         sb.append(endl);
         sb.append("\t\t<a href=\"/index.jsp\" title=\"");
-        sb.append(set.getSiteName()); // TODO: long name?
+        sb.append(settings.getSiteName()); // TODO: long name?
         sb.append("\">");
-        sb.append(set.getSiteName());
+        sb.append(settings.getSiteName());
         sb.append("</a> ");
         sb.append("\t</div>");
         sb.append(endl);
@@ -328,8 +316,8 @@ public final class UpdateJournal extends HttpServlet {
         String userName;
         final Integer userIDasi;
 
-            userName = (String) session.getAttribute("auth.user");
-            userIDasi = (Integer) session.getAttribute("auth.uid");
+        userName = (String) session.getAttribute("auth.user");
+        userIDasi = (Integer) session.getAttribute("auth.uid");
 
         if (userIDasi != null) {
             userID = userIDasi;
@@ -374,8 +362,8 @@ public final class UpdateJournal extends HttpServlet {
                 if (keepLogin == null)
                     keepLogin = "";
                 if (keepLogin.compareTo("checked") == 0) {
-                        session.setAttribute("auth.uid", userID);
-                        session.setAttribute("auth.user", userName);
+                    session.setAttribute("auth.uid", userID);
+                    session.setAttribute("auth.user", userName);
                     WebLogin.setLastLogin(userID);
                 }
             } catch (Exception e3) {
@@ -468,7 +456,7 @@ public final class UpdateJournal extends HttpServlet {
                 et.setMoodId(mood);
 
                 // the check box says disable auto format
-                if ((aformat != null && aformat.equals("checked")) || myclient == ClientType.dashboard || myclient == ClientType.mobile)
+                if ((aformat.equals("checked")) || myclient == ClientType.dashboard || myclient == ClientType.mobile)
                     et.setAutoFormat(true);
                 else {
                     et.setAutoFormat(false);
@@ -482,13 +470,13 @@ public final class UpdateJournal extends HttpServlet {
 
 
                 // disable comments
-                if ((allowcomment != null && allowcomment.equals("checked")) || myclient == ClientType.dashboard || myclient == ClientType.mobile)
+                if ((allowcomment.equals("checked")) || myclient == ClientType.dashboard || myclient == ClientType.mobile)
                     et.setAllowComments(true);
                 else
                     et.setAllowComments(false);
 
                 // disable email notifications
-                if ((emailcomment != null && emailcomment.equals("checked")) || myclient == ClientType.dashboard || myclient == ClientType.mobile)
+                if ((emailcomment.equals("checked")) || myclient == ClientType.dashboard || myclient == ClientType.mobile)
                     et.setEmailComments(true);
                 else
                     et.setEmailComments(false);
@@ -509,19 +497,19 @@ public final class UpdateJournal extends HttpServlet {
                 final Spelling sp = new Spelling();
 
                 // store everything
-                    session.setAttribute("spell.check", "true");
-                    session.setAttribute("spell.body", et.getBody());
-                    session.setAttribute("spell.music", et.getMusic());
-                    session.setAttribute("spell.location", et.getLocationId());
-                    session.setAttribute("spell.subject", et.getSubject());
-                    session.setAttribute("spell.date", et.getDate());
-                    session.setAttribute("spell.security", et.getSecurityLevel());
-                    session.setAttribute("spell.mood", et.getMoodId());
-                    session.setAttribute("spell.tags", tags);
-                    session.setAttribute("spell.trackback", trackback);
+                session.setAttribute("spell.check", "true");
+                session.setAttribute("spell.body", et.getBody());
+                session.setAttribute("spell.music", et.getMusic());
+                session.setAttribute("spell.location", et.getLocationId());
+                session.setAttribute("spell.subject", et.getSubject());
+                session.setAttribute("spell.date", et.getDate());
+                session.setAttribute("spell.security", et.getSecurityLevel());
+                session.setAttribute("spell.mood", et.getMoodId());
+                session.setAttribute("spell.tags", tags);
+                session.setAttribute("spell.trackback", trackback);
 
-                    //check the spelling now
-                    session.setAttribute("spell.suggest", sp.checkSpelling(HTMLUtil.textFromHTML(et.getBody())));
+                //check the spelling now
+                session.setAttribute("spell.suggest", sp.checkSpelling(HTMLUtil.textFromHTML(et.getBody())));
 
                 // redirect the user agent to the promised land.
                 response.sendRedirect("/update.jsp");
@@ -529,21 +517,21 @@ public final class UpdateJournal extends HttpServlet {
             } else {
                 // clear out spell check variables to be safe
                 // note this might be wrong still
-                    session.setAttribute("spell.check", ""); //false
-                    session.setAttribute("spell.body", "");
-                    session.setAttribute("spell.music", "");
-                    session.setAttribute("spell.location", 0);
-                    session.setAttribute("spell.subject", "");
-                    session.setAttribute("spell.date", "");
-                    session.setAttribute("spell.time", "");
-                    session.setAttribute("spell.security", 0);
-                    session.setAttribute("spell.mood", -1);
-                    session.setAttribute("spell.tags", "");
-                    session.setAttribute("spell.trackback", "");
+                session.setAttribute("spell.check", ""); //false
+                session.setAttribute("spell.body", "");
+                session.setAttribute("spell.music", "");
+                session.setAttribute("spell.location", 0);
+                session.setAttribute("spell.subject", "");
+                session.setAttribute("spell.date", "");
+                session.setAttribute("spell.time", "");
+                session.setAttribute("spell.security", 0);
+                session.setAttribute("spell.mood", -1);
+                session.setAttribute("spell.tags", "");
+                session.setAttribute("spell.trackback", "");
 
                 // create entry
                 if (!blnError) {
-                    final boolean result = EntryDAO.add(et);
+                    final boolean result = EntryDao.add(et);
 
                     if (!result) {
                         if (myclient == ClientType.web)
@@ -557,7 +545,7 @@ public final class UpdateJournal extends HttpServlet {
                 // add tags
                 if (!blnError) {
                     log.debug("Add Tags");
-                    if (tags != null && tags.length() > 0) {
+                    if (tags.length() > 0) {
                         final ArrayList<String> t = new ArrayList<String>();
                         final StringTokenizer st = new StringTokenizer(tags, " :,;");
                         while (st.hasMoreTokens()) {
@@ -574,8 +562,8 @@ public final class UpdateJournal extends HttpServlet {
 
                         // lookup the tag id
                         if (t.size() > 0) {
-                            final EntryTo et2 = EntryDAO.viewSingle(et);
-                            EntryDAO.setTags(et2.getId(), t);
+                            final EntryTo et2 = EntryDao.viewSingle(et);
+                            EntryDao.setTags(et2.getId(), t);
                         }
                     }
                 }
@@ -617,8 +605,8 @@ public final class UpdateJournal extends HttpServlet {
                             /* WebLogs, Google, blo.gs */
                             final BasePing rp = new BasePing("http://rpc.weblogs.com/pingSiteForm");
                             rp.setName(pf.getJournalName());
-                            rp.setUri(set.getBaseUri() + "users/" + userName);
-                            rp.setChangesURL(set.getBaseUri() + "/users/" + userName + "/rss");
+                            rp.setUri(settings.getBaseUri() + "users/" + userName);
+                            rp.setChangesURL(settings.getBaseUri() + "/users/" + userName + "/rss");
                             rp.ping();
                             rp.setPingUri("http://blogsearch.google.com/ping");
                             rp.ping();
@@ -628,21 +616,21 @@ public final class UpdateJournal extends HttpServlet {
                             /* Technorati */
                             final TechnoratiPing rpt = new TechnoratiPing();
                             rpt.setName(pf.getJournalName());
-                            rpt.setUri(set.getBaseUri() + "users/" + userName);
+                            rpt.setUri(settings.getBaseUri() + "users/" + userName);
                             rpt.ping();
 
                             /* IceRocket */
                             final IceRocket ice = new IceRocket();
                             ice.setName(pf.getJournalName());
-                            ice.setUri(set.getBaseUri() + "users/" + userName);
+                            ice.setUri(settings.getBaseUri() + "users/" + userName);
                             ice.ping();
 
 
                             /* do trackback */
-                            if (trackback != null && trackback.length() > 0) {
-                                final EntryTo et2 = EntryDAO.viewSingle(et);
+                            if (trackback.length() > 0) {
+                                final EntryTo et2 = EntryDao.viewSingle(et);
                                 final TrackbackOut tbout = new TrackbackOut(trackback,
-                                        set.getBaseUri() + "users/" + userName + "/entry/" + et2.getId(),
+                                        settings.getBaseUri() + "users/" + userName + "/entry/" + et2.getId(),
                                         et.getSubject(), et.getBody(), pf.getJournalName());
                                 tbout.ping();
                             }

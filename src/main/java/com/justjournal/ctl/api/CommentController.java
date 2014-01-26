@@ -37,12 +37,13 @@ package com.justjournal.ctl.api;
 import com.justjournal.User;
 import com.justjournal.WebLogin;
 import com.justjournal.core.Settings;
+import com.justjournal.db.Comment;
 import com.justjournal.db.CommentDao;
-import com.justjournal.db.CommentTo;
-import com.justjournal.db.EntryDAO;
+import com.justjournal.db.EntryDao;
 import com.justjournal.db.EntryTo;
 import com.justjournal.utility.QueueMail;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -56,17 +57,24 @@ import java.util.Map;
 final public class CommentController {
     private static final Logger log = Logger.getLogger(CommentController.class);
 
+    private CommentDao commentDao = null;
+
+    @Autowired
+    public void setCommentDao(CommentDao commentDao) {
+        this.commentDao = commentDao;
+    }
+
     @RequestMapping("/api/comment/{id}")
     @ResponseBody
-    public CommentTo getById(@PathVariable Integer id) {
-        return CommentDao.get(id);
+    public Comment getById(@PathVariable Integer id) {
+        return commentDao.get(id);
     }
 
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public
     @ResponseBody
-    List<CommentTo> getComments(@RequestParam Integer entryId, HttpServletResponse response) throws Exception {
-        EntryTo entry = EntryDAO.viewSingle(entryId);
+    List<Comment> getComments(@RequestParam Integer entryId, HttpServletResponse response) throws Exception {
+        EntryTo entry = EntryDao.viewSingle(entryId);
 
         try {
             User user = new User(entry.getUserName());
@@ -80,13 +88,13 @@ final public class CommentController {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
 
-        return CommentDao.list(entryId);
+        return commentDao.list(entryId);
     }
 
     @RequestMapping(method = RequestMethod.DELETE)
     public
     @ResponseBody
-    Map<String, String> delete(@RequestBody CommentTo comment, HttpSession session, HttpServletResponse response) throws Exception {
+    Map<String, String> delete(@RequestBody Comment comment, HttpSession session, HttpServletResponse response) throws Exception {
 
         if (!WebLogin.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -94,7 +102,7 @@ final public class CommentController {
         }
 
         try {
-            boolean result = CommentDao.delete(comment.getId(), WebLogin.currentLoginId(session));
+            boolean result = commentDao.delete(comment.getId(), WebLogin.currentLoginId(session));
 
             if (!result) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -111,10 +119,9 @@ final public class CommentController {
     @RequestMapping(method = RequestMethod.POST, produces = "application/json")
     public
     @ResponseBody
-    Map<String, String> update(@RequestBody CommentTo comment, HttpSession session, HttpServletResponse response) {
+    Map<String, String> update(@RequestBody Comment comment, HttpSession session, HttpServletResponse response) {
 
         try {
-            CommentDao commentDao = new CommentDao();
             comment.setUserId(WebLogin.currentLoginId(session));
             boolean result = commentDao.update(comment);
 
@@ -133,17 +140,16 @@ final public class CommentController {
     @RequestMapping(method = RequestMethod.PUT, produces = "application/json")
     public
     @ResponseBody
-    Map<String, String> put(@RequestBody CommentTo comment, HttpSession session, HttpServletResponse response) {
+    Map<String, String> put(@RequestBody Comment comment, HttpSession session, HttpServletResponse response) {
 
         try {
             Settings settings = new Settings();
-            CommentDao commentDao = new CommentDao();
             comment.setUserId(WebLogin.currentLoginId(session));
             java.text.SimpleDateFormat fmt = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             java.sql.Date now = new java.sql.Date(System.currentTimeMillis());
             comment.setDate(fmt.format(now));
 
-            EntryTo et = EntryDAO.viewSinglePublic(comment.getEid());
+            EntryTo et = EntryDao.viewSinglePublic(comment.getEid());
 
             if (!et.getAllowComments()) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);

@@ -26,14 +26,14 @@
 
 package com.justjournal.db;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 /**
  * Per user blog statistics
  *
  * @author Lucas Holt
  */
-@Service
+@Component
 public interface UserStatistics {
     public int getEntryCount();
 

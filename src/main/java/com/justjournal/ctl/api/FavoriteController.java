@@ -34,7 +34,9 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.ctl.api;
 
 import com.justjournal.WebLogin;
-import com.justjournal.db.*;
+import com.justjournal.db.EntryDao;
+import com.justjournal.db.EntryTo;
+import com.justjournal.db.SQLHelper;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -44,9 +46,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.sql.ResultSet;
 import java.util.Map;
 
 
@@ -56,8 +58,8 @@ import java.util.Map;
  * @author Lucas Holt
  * @version 1.0
  * @since 1.0
- *        <p/>
- *        Created: Date: Dec 10, 2005 Time: 8:44:39 PM
+ * <p/>
+ * Created: Date: Dec 10, 2005 Time: 8:44:39 PM
  */
 @Controller
 @RequestMapping("/api/favorite")
@@ -70,7 +72,7 @@ final public class FavoriteController {
      * @return an arraylist containing EntryTo objects
      */
 
-    @RequestMapping(method = RequestMethod.GET, produces="application/json")
+    @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public
     @ResponseBody
     Collection<EntryTo> getFavorites(HttpSession session, HttpServletResponse response) {
@@ -83,7 +85,7 @@ final public class FavoriteController {
 
             while (rs.next()) {
                 int eid = rs.getInt("entryid");
-                EntryTo et = EntryDAO.viewSingle(eid);
+                EntryTo et = EntryDao.viewSingle(eid);
                 entries.add(et);
             }
         } catch (Exception e) {

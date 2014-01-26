@@ -38,18 +38,18 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.justjournal.utility.StringUtil;
+import org.springframework.stereotype.Component;
 
 /**
  * Represents a user most basic properties.
  *
  * @author Lucas Holt
- * @version $Id: UserTo.java,v 1.10 2012/06/23 18:15:31 laffer1 Exp $
- *         Date: Jan 21, 2004
- *         Time: 12:20:53 PM
- *         <p/>
- *         TODO: add the rest of the properties.
+ * @version $Id: UserTo.java,v 1.10 2012/06/23 18:15:31 laffer1 Exp $ Date: Jan 21, 2004 Time: 12:20:53 PM
+ *          <p/>
+ *          TODO: add the rest of the properties.
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+@Component
 public final class UserTo {
     private int id;          // the user id imposed by mysql
     private String userName;
@@ -62,7 +62,8 @@ public final class UserTo {
     private boolean privateJournal = false;
 
     @JsonCreator
-    public UserTo() {}
+    public UserTo() {
+    }
 
     public boolean getPrivateJournal() {
         return privateJournal;
@@ -92,20 +93,20 @@ public final class UserTo {
     /**
      * Set the user id.
      *
-     * @param id  user id
+     * @param id user id
      */
     public final void setId(final int id) {
         this.id = id;
     }
 
-     /**
+    /**
      * Retrieve last login date as a <code>DateTimeBean</code>
      *
      * @return last login in a DateTimeBean
      * @see DateTimeBean
      */
     public DateTime getLastLogin() {
-         return lastLogin;
+        return lastLogin;
     }
 
     public void setLastLogin(DateTime dateTime) {
@@ -119,14 +120,12 @@ public final class UserTo {
     }
 
     /**
-     * Set the date using a string in the form
-     * 2004-01-30 22:02
+     * Set the date using a string in the form 2004-01-30 22:02
      * <p/>
-     * TODO: create a parser to check the date
-     * more thoroughly.  DateTimeBean will throw
-     * an exception if the format is wrong though!
+     * TODO: create a parser to check the date more thoroughly.  DateTimeBean will throw an exception if the format is
+     * wrong though!
      *
-     * @param date  last login date
+     * @param date last login date
      * @throws IllegalArgumentException null or len < 6
      * @see DateTimeBean
      */
@@ -191,10 +190,8 @@ public final class UserTo {
     }
 
     /**
-     * Retrieve clear text password.
-     * Used to set passwords in the database.
-     * Passwords are not permenently stored
-     * clear text.
+     * Retrieve clear text password. Used to set passwords in the database. Passwords are not permenently stored clear
+     * text.
      *
      * @return Password of user in clear text
      */
@@ -203,10 +200,7 @@ public final class UserTo {
     }
 
     /**
-     * Set clear text password.
-     * Used to set passwords, but they are
-     * not stored perminently in clear
-     * text password.
+     * Set clear text password. Used to set passwords, but they are not stored perminently in clear text password.
      *
      * @param password user's password
      */
@@ -245,12 +239,9 @@ public final class UserTo {
     }
 
     /**
-     * A string representation of the user
-     * in the form
-     * field: value, nextfield: value ...
+     * A string representation of the user in the form field: value, nextfield: value ...
      * <p/>
-     * Password fields are not returned
-     * by this method.
+     * Password fields are not returned by this method.
      *
      * @return Representation of some fields for debuging.
      */

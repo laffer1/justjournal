@@ -34,12 +34,12 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.metaweblog;
 
-import com.justjournal.restping.BasePing;
-import com.justjournal.restping.IceRocket;
-import com.justjournal.restping.TechnoratiPing;
 import com.justjournal.User;
 import com.justjournal.WebLogin;
 import com.justjournal.db.*;
+import com.justjournal.restping.BasePing;
+import com.justjournal.restping.IceRocket;
+import com.justjournal.restping.TechnoratiPing;
 import com.justjournal.utility.StringUtil;
 import org.apache.log4j.Logger;
 
@@ -52,9 +52,7 @@ import java.util.*;
  * @author Lucas Holt
  * @version $Id: MetaWeblog.java,v 1.6 2011/06/12 06:24:38 laffer1 Exp $
  *          <p/>
- *          User: laffer1
- *          Date: Apr 26, 2008
- *          Time: 2:46:56 PM
+ *          User: laffer1 Date: Apr 26, 2008 Time: 2:46:56 PM
  *          <p/>
  *          TODO: Implement the media method
  */
@@ -63,11 +61,9 @@ public class MetaWeblog {
     private static final Logger log = Logger.getLogger(MetaWeblog.class);
 
     /**
-     * Fetch the users personal information including their username, userid,
-     * email address and name.
+     * Fetch the users personal information including their username, userid, email address and name.
      * <p/>
-     * The Blogger API defines nickname, userid, url, email, firstname and lastname here.  We don't track
-     * last name.
+     * The Blogger API defines nickname, userid, url, email, firstname and lastname here.  We don't track last name.
      *
      * @param appkey   Not used but required by Blogger API
      * @param username username to authenticate/check
@@ -118,8 +114,7 @@ public class MetaWeblog {
 
 
     /**
-     * Fetch the users blogs.  JJ only supports 1 blog per user right now.  Still this must be a list
-     * of all blogs.
+     * Fetch the users blogs.  JJ only supports 1 blog per user right now.  Still this must be a list of all blogs.
      * <p/>
      * The Blogger API defines url, blogid and blogName.
      *
@@ -221,8 +216,8 @@ public class MetaWeblog {
                 et.setEmailComments(true);
                 et.setUserName(user.getUserName());
 
-                EntryDAO.add(et);
-                et2 = EntryDAO.viewSingle(et);
+                EntryDao.add(et);
+                et2 = EntryDao.viewSingle(et);
                 result = Integer.toString(et2.getId());
                 log.debug("Result is: " + result);
 
@@ -308,7 +303,7 @@ public class MetaWeblog {
 
         if (!blnError && eid > 0) {
             try {
-                EntryDAO.delete(eid, userId);
+                EntryDao.delete(eid, userId);
             } catch (Exception e) {
                 blnError = true;
                 log.debug(e.getMessage());
@@ -370,15 +365,15 @@ public class MetaWeblog {
             try {
                 /* we're just updating the content aka body as this is the
            only thing the protocol supports. */
-                EntryTo et2 = EntryDAO.viewSingle(eid, userId);
+                EntryTo et2 = EntryDao.viewSingle(eid, userId);
                 et2.setSubject((String) content.get("title"));
                 et2.setBody(StringUtil.replace((String) content.get("description"), '\'', "\\\'"));
                 /* TODO: add date edit support */
-                EntryDAO.update(et2);
+                EntryDao.update(et2);
                 String tag[] = (String[]) content.get("categories");
                 ArrayList<String> tags = new ArrayList<String>(tag.length);
                 tags.addAll(Arrays.asList(tag));
-                EntryDAO.setTags(eid, tags);
+                EntryDao.setTags(eid, tags);
             } catch (Exception e) {
                 blnError = true;
                 log.debug(e.getMessage());
@@ -407,80 +402,32 @@ public class MetaWeblog {
      * Sample request:
      * <p/>
      * <p/>
-     * <?xml version="1.0" encoding="UTF-8"?>
-     * <methodCall>
-     * <methodName>metaWeblog.getRecentPosts</methodName>
-     * <params>
-     * <param><value><int>178663</int></value></param>
-     * <param><value><string>yourUsername</string></value></param>
-     * <param><value><string>somePassword</string></value></param>
-     * <param><value><int>4</int></value></param>
-     * </params>
+     * <?xml version="1.0" encoding="UTF-8"?> <methodCall> <methodName>metaWeblog.getRecentPosts</methodName> <params>
+     * <param><value><int>178663</int></value></param> <param><value><string>yourUsername</string></value></param>
+     * <param><value><string>somePassword</string></value></param> <param><value><int>4</int></value></param> </params>
      * </methodCall>
      * <p/>
      * Sample response:
      * <p/>
-     * <?xml version="1.0" encoding="UTF-8"?>
-     * 2	<methodResponse>
-     * 3	  <params>
-     * 4	    <param><value><array><data><value>
-     * 5	      <struct>
-     * 6	        <member>
-     * 7	          <name>link</name>
-     * 8	          <value><string>http://typekeytest111.typepad.com/my_weblog/2005/07/one_more.html</string></value>
-     * 9	        </member>
-     * 10	        <member>
-     * 11	          <name>permaLink</name>
-     * 12	          <value><string>http://typekeytest111.typepad.com/my_weblog/2005/07/one_more.html</string></value>
-     * 13	        </member>
-     * 14	        <member>
-     * 15	          <name>userid</name>
-     * 16	          <value><string>28376</string></value>
-     * 17	        </member>
-     * 18	        <member>
-     * 19	          <name>mt_allow_pings</name>
-     * 20	          <value><int>0</int></value>
-     * 21	        </member>
-     * 22	        <member>
-     * 23	          <name>mt_allow_comments</name>
-     * 24	          <value><int>1</int></value>
-     * 25	        </member>
-     * 26	        <member>
-     * 27	          <name>description</name>
-     * 28	          <value><string/></value>
-     * 29	        </member>
-     * 30	        <member>
-     * 31	          <name>mt_convert_breaks</name>
-     * 32	          <value><string>0</string></value>
-     * 33	        </member>
-     * 34	        <member>
-     * 35	          <name>postid</name>
-     * 36	          <value><string>5423957</string></value>
-     * 37	        </member>
-     * 38	        <member>
-     * 39	          <name>mt_excerpt</name>
-     * 40	          <value><string/></value>
-     * 41	        </member>
-     * 42	        <member>
-     * 43	          <name>mt_keywords</name>
-     * 44	          <value><string/></value>
-     * 45	        </member>
-     * 46	        <member>
-     * 47	          <name>title</name>
-     * 48	          <value><string>One more!</string></value>
-     * 49	        </member>
-     * 50	        <member>
-     * 51	          <name>mt_text_more</name>
-     * 52	          <value><string/></value>
-     * 53	        </member>
-     * 54	        <member>
-     * 55	          <name>dateCreated</name>
-     * 56	          <value><dateTime.iso8601>2005-07-02T02:37:04Z</dateTime.iso8601></value>
-     * 57	        </member>
-     * 58	      </struct></value></data></array></value>
-     * 59	    </param>
-     * 60	  </params>
-     * 61	</methodResponse>
+     * <?xml version="1.0" encoding="UTF-8"?> 2	<methodResponse> 3	  <params> 4	    <param><value><array><data><value>
+     * 5	      <struct> 6	        <member> 7	          <name>link</name> 8
+     * <value><string>http://typekeytest111.typepad.com/my_weblog/2005/07/one_more.html</string></value> 9
+     * </member> 10	        <member> 11	          <name>permaLink</name> 12
+     * <value><string>http://typekeytest111.typepad.com/my_weblog/2005/07/one_more.html</string></value> 13
+     * </member> 14	        <member> 15	          <name>userid</name> 16	          <value><string>28376</string></value>
+     * 17	        </member> 18	        <member> 19	          <name>mt_allow_pings</name> 20
+     * <value><int>0</int></value> 21	        </member> 22	        <member> 23	          <name>mt_allow_comments</name>
+     * 24	          <value><int>1</int></value> 25	        </member> 26	        <member> 27
+     * <name>description</name> 28	          <value><string/></value> 29	        </member> 30	        <member> 31
+     *    <name>mt_convert_breaks</name> 32	          <value><string>0</string></value> 33	        </member> 34
+     * <member> 35	          <name>postid</name> 36	          <value><string>5423957</string></value> 37
+     * </member> 38	        <member> 39	          <name>mt_excerpt</name> 40	          <value><string/></value> 41
+     *   </member> 42	        <member> 43	          <name>mt_keywords</name> 44	          <value><string/></value> 45
+     *      </member> 46	        <member> 47	          <name>title</name> 48	          <value><string>One
+     * more!</string></value> 49	        </member> 50	        <member> 51	          <name>mt_text_more</name> 52
+     *   <value><string/></value> 53	        </member> 54	        <member> 55	          <name>dateCreated</name> 56
+     *      <value><dateTime.iso8601>2005-07-02T02:37:04Z</dateTime.iso8601></value> 57	        </member> 58
+     * </struct></value></data></array></value> 59	    </param> 60	  </params> 61	</methodResponse>
      * <p/>
      * URI of example: http://www.sixapart.com/developers/xmlrpc/blogger_api/bloggergetrecentposts.html
      *
@@ -512,7 +459,7 @@ public class MetaWeblog {
             return s;
         }
 
-        total = EntryDAO.viewAll(username, true);
+        total = EntryDao.viewAll(username, true);
 
         Iterator<EntryTo> it = total.iterator();
 
@@ -534,7 +481,7 @@ public class MetaWeblog {
                 entry.put("title", e.getSubject());
                 entry.put("mt_text_more", "");
                 entry.put("dateCreated", e.getDate()); /* TODO: needs to be iso8601 */
-                ArrayList<String> tags = EntryDAO.getTags(e.getId());
+                ArrayList<String> tags = EntryDao.getTags(e.getId());
                 String str[] = (String[]) tags.toArray(new String[tags.size()]);
                 entry.put("categories", str); // according to microsoft it's a string array
                 arr.add(entry);
@@ -573,7 +520,7 @@ public class MetaWeblog {
             return s;
         }
 
-        e = EntryDAO.viewSingle(Integer.parseInt(postid), userId);
+        e = EntryDao.viewSingle(Integer.parseInt(postid), userId);
 
         entry.put("link", "http://www.justjournal.com/users/" + e.getUserName() + "/entry/" + e.getId());
         entry.put("permaLink", "http://www.justjournal.com/users/" + e.getUserName() + "/entry/" + e.getId());
@@ -589,7 +536,7 @@ public class MetaWeblog {
         entry.put("title", e.getSubject());
         entry.put("mt_text_more", "");
         entry.put("dateCreated", e.getDate()); /* TODO: needs to be iso8601 */
-        ArrayList<String> tags = EntryDAO.getTags(e.getId());
+        ArrayList<String> tags = EntryDao.getTags(e.getId());
         String str[] = (String[]) tags.toArray(new String[tags.size()]);
         entry.put("categories", str); // according to microsoft it's a string array
 
@@ -618,9 +565,9 @@ public class MetaWeblog {
             return s;
         }
 
-        tags = EntryDAO.getUserTags(userId);
+        tags = EntryDao.getUserTags(userId);
 
-        for (ListIterator<Tag> cur = tags.listIterator(); cur.hasNext();) {
+        for (ListIterator<Tag> cur = tags.listIterator(); cur.hasNext(); ) {
             Tag curtag = cur.next(); // get the tag
             HashMap<Object, Serializable> entry = new HashMap<Object, Serializable>();
             entry.put("description", curtag.getName());

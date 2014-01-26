@@ -27,14 +27,15 @@
 package com.justjournal.rss;
 
 import com.justjournal.Util;
-import com.justjournal.db.EntryDAO;
+import com.justjournal.db.EntryDao;
 import com.justjournal.db.EntryTo;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.Collection;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Lucas Holt
@@ -53,7 +54,7 @@ public class RssTests {
 
         final java.util.GregorianCalendar calendar = new java.util.GregorianCalendar();
         calendar.setTime(new java.util.Date());
-        Collection<EntryTo> entries = EntryDAO.view(TEST_USER, false);
+        Collection<EntryTo> entries = EntryDao.view(TEST_USER, false);
         assertTrue(entries.size() > 0);
         rss.populate(entries);
 

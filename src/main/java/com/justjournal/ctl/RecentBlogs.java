@@ -26,7 +26,7 @@
 package com.justjournal.ctl;
 
 import com.justjournal.core.Settings;
-import com.justjournal.db.EntryDAO;
+import com.justjournal.db.EntryDao;
 import com.justjournal.rss.Rss;
 import org.apache.log4j.Logger;
 import org.springframework.cache.annotation.Cacheable;
@@ -79,7 +79,7 @@ final public class RecentBlogs {
             rss.setWebMaster(set.getSiteAdminEmail() + " (" + set.getSiteAdmin() + ")");
             rss.setManagingEditor(set.getSiteAdminEmail() + " (" + set.getSiteAdmin() + ")");
             rss.setSelfLink(set.getBaseUri() + "RecentBlogs");
-            rss.populate(EntryDAO.viewRecentUniqueUsers());
+            rss.populate(EntryDao.viewRecentUniqueUsers());
 
             Date d = rss.getNewestEntryDate();
 

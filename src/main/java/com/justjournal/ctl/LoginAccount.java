@@ -29,7 +29,7 @@ package com.justjournal.ctl;
 import com.justjournal.User;
 import com.justjournal.WebError;
 import com.justjournal.WebLogin;
-import com.justjournal.db.EntryDAO;
+import com.justjournal.db.EntryDao;
 import com.justjournal.db.EntryTo;
 import com.justjournal.utility.FileIO;
 import com.justjournal.utility.StringUtil;
@@ -46,13 +46,13 @@ import java.util.Iterator;
  * Login account servlet.
  *
  * @author Lucas Holt
- *          <p/>
- *          Version 1.1 changes to a stringbuffer for output. This should improve performance a bit.
- *          <p/>
- *          1.2 fixed a bug with NULL pointer exceptions.
- *          <p/>
- *          Mon Sep 19 2005 1.3 added JJ.LOGIN.FAIL and JJ.LOGIN.OK for desktop clients.
- *          <p/>
+ *         <p/>
+ *         Version 1.1 changes to a stringbuffer for output. This should improve performance a bit.
+ *         <p/>
+ *         1.2 fixed a bug with NULL pointer exceptions.
+ *         <p/>
+ *         Mon Sep 19 2005 1.3 added JJ.LOGIN.FAIL and JJ.LOGIN.OK for desktop clients.
+ *         <p/>
  */
 public final class LoginAccount extends JustJournalBaseServlet {
     private static final Logger log = Logger.getLogger(LoginAccount.class);
@@ -86,7 +86,7 @@ public final class LoginAccount extends JustJournalBaseServlet {
             content.append(endl);
 
             final Collection entries;
-            entries = EntryDAO.viewFriends(user.getUserId(), user.getUserId());
+            entries = EntryDao.viewFriends(user.getUserId(), user.getUserId());
 
             EntryTo o;
             final Iterator itr = entries.iterator();

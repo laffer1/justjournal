@@ -29,7 +29,7 @@ package com.justjournal.db;
 import com.sun.istack.internal.NotNull;
 import org.springframework.stereotype.Component;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  * @author Lucas Holt
@@ -48,8 +48,9 @@ public interface CommentDao {
     @NotNull
     Comment get(final int commentId);
 
-    public @NotNull
-    Collection<Comment> list(final int entryId);
+    public
+    @NotNull
+    List<Comment> list(final int entryId);
 
     public int count(final String userName) throws Exception;
 }

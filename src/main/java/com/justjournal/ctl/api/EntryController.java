@@ -28,9 +28,10 @@ package com.justjournal.ctl.api;
 
 import com.justjournal.WebLogin;
 import com.justjournal.db.CommentDao;
-import com.justjournal.db.EntryDAO;
+import com.justjournal.db.EntryDao;
 import com.justjournal.db.EntryTo;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -50,6 +51,13 @@ import java.util.Map;
 final public class EntryController {
     private static final Logger log = Logger.getLogger(EntryController.class);
 
+    private CommentDao commentDao = null;
+
+    @Autowired
+    public void setCommentDao(CommentDao commentDao) {
+        this.commentDao = commentDao;
+    }
+
     /**
      * Get an individual entry
      *
@@ -59,14 +67,14 @@ final public class EntryController {
     @RequestMapping(value = "{username}/{id}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public EntryTo getById(@PathVariable("username") String username, @PathVariable("id") int id) {
-        return EntryDAO.viewSinglePublic(id);
+        return EntryDao.viewSinglePublic(id);
     }
 
     @RequestMapping(value = "{username}", method = RequestMethod.GET, produces = "application/json")
     public
     @ResponseBody
     Collection<EntryTo> getEntries(@PathVariable("username") String username) {
-        return EntryDAO.viewAll(username, false);
+        return EntryDao.viewAll(username, false);
     }
 
     /**
@@ -90,7 +98,7 @@ final public class EntryController {
         entry.setUserId(WebLogin.currentLoginId(session)); // can't trust the client with this
 
         // TODO: validate
-        boolean result = EntryDAO.add(entry);
+        boolean result = EntryDao.add(entry);
 
         if (!result) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -122,11 +130,11 @@ final public class EntryController {
 
         // TODO: validate
         boolean result;
-        EntryTo entryTo = EntryDAO.viewSingle(entry.getId(), WebLogin.currentLoginId(session));
+        EntryTo entryTo = EntryDao.viewSingle(entry.getId(), WebLogin.currentLoginId(session));
         if (entryTo != null && entryTo.getId() > 0)
-            result = EntryDAO.update(entry);
+            result = EntryDao.update(entry);
         else
-            result = EntryDAO.add(entry);
+            result = EntryDao.add(entry);
 
         if (!result) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -158,14 +166,14 @@ final public class EntryController {
 
         try {
             boolean result2;
-            boolean result = EntryDAO.delete(entryId, WebLogin.currentLoginId(session));
+            boolean result = EntryDao.delete(entryId, WebLogin.currentLoginId(session));
 
             if (!result) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 return java.util.Collections.singletonMap("error", "Could not delete entry.");
             }
 
-            result2 = CommentDao.deleteByEntry(entryId);
+            result2 = commentDao.deleteByEntry(entryId);
             if (!result2) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 return java.util.Collections.singletonMap("error", "Could not delete comments associated with entry.");

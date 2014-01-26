@@ -50,9 +50,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 /**
- * User: laffer1
- * Date: Jan 18, 2004
- * Time: 10:11:10 PM
+ * User: laffer1 Date: Jan 18, 2004 Time: 10:11:10 PM
  *
  * @version $Id: Interface.java,v 1.10 2012/07/04 18:49:20 laffer1 Exp $
  */
@@ -348,7 +346,7 @@ public class Interface extends HttpServlet {
 
                 // create header fields
                 if (!blnError) {
-                    EntryDAO edao = new EntryDAO();
+                    EntryDao edao = new EntryDao();
                     boolean result = edao.add(et);
 
                     if (!result)

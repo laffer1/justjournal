@@ -28,12 +28,12 @@ package com.justjournal.db;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 /**
  * @author Lucas Holt
  */
-@Service
+@Component
 public class UserStatisticsImpl implements UserStatistics {
     private String username = "";
     private int entryCount = 0;

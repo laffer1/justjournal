@@ -40,7 +40,7 @@ import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 /**
  * Manipulate and fetch comments
@@ -170,8 +170,8 @@ public final class CommentDaoImpl implements CommentDao {
 
     public
     @NotNull
-    Collection<Comment> list(final int entryId) {
-        final Collection<Comment> comments = new ArrayList<Comment>(5);  // 5 is average comments on entry?
+    List<Comment> list(final int entryId) {
+        final List<Comment> comments = new ArrayList<Comment>(5);  // 5 is average comments on entry?
         ResultSet rs = null;
         Comment comment;
         final String sqlStmt =

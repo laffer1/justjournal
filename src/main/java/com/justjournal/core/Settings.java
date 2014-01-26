@@ -32,8 +32,8 @@ import org.apache.cayenne.access.DataContext;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.query.SelectQuery;
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Component;
 
-import javax.servlet.ServletContext;
 import java.util.List;
 
 /**
@@ -42,9 +42,8 @@ import java.util.List;
  * even if Users have them turned on.
  *
  * @author Lucas Holt
- * @version $Id: Settings.java,v 1.11 2012/06/24 16:45:58 laffer1 Exp $
- * @since 1.0
  */
+@Component
 public class Settings {
     private static Logger log = Logger.getLogger(Settings.class.getName());
 
@@ -159,7 +158,6 @@ public class Settings {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
             log.error(e);
         }
     }
@@ -304,17 +302,6 @@ public class Settings {
 
     public boolean isUserAllowNew() {
         return userAllowNew;
-    }
-
-
-    public static Settings getSettings(ServletContext ctx) {
-        Settings set;
-        set = (Settings) ctx.getAttribute("JustJournal_Settings");
-        if (set == null) {
-            set = new Settings();
-            ctx.setAttribute("JustJournal_Settings", set);
-        }
-        return set;
     }
 
 }

@@ -26,14 +26,14 @@
 
 package com.justjournal.db;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 /**
  * Track the number of users, entry and comment statistics, and other information.
  *
  * @author Lucas Holt
  */
-@Service
+@Component
 public interface Statistics {
     public int getComments();
 

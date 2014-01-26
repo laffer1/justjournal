@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2003-2011 Lucas Holt
+ * Copyright (c) 2003-2011, 2014 Lucas Holt
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,6 +29,7 @@ package com.justjournal.ctl;
 import com.justjournal.Cal;
 import com.justjournal.User;
 import com.justjournal.WebError;
+import com.justjournal.WebLogin;
 import com.justjournal.atom.AtomFeed;
 import com.justjournal.core.Settings;
 import com.justjournal.db.*;
@@ -44,13 +45,13 @@ import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfWriter;
 import com.lowagie.text.rtf.RtfWriter2;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.awt.*;
@@ -60,556 +61,417 @@ import java.sql.ResultSet;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.regex.Pattern;
+import java.util.List;
 
 /**
  * Journal viewer for JustJournal.
  *
  * @author Lucas Holt
- * @version $Id: Users.java,v 1.43 2012/06/23 18:15:31 laffer1 Exp $
- * @since 1.0
  */
-@SuppressWarnings({"ClassWithoutLogger"})
-public final class Users extends HttpServlet {
+@Controller
+@RequestMapping("/users")
+public final class UsersController extends HttpServlet {
     // constants
     private static final char endl = '\n';
-    private static final int RESPONSE_BUFSIZE = 8192;
 
-    enum RequestType {
-        entries, friends, calendar, atom, rss, rsspics,
-        calendarnumeric, calendarmonth, calendarday,
-        feedreader, singleentry, imagelist, search, pdf, rtf, tag
-    }
+    private static final Logger log = Logger.getLogger(UsersController.class);
+    private static final long serialVersionUID = 1191172806869579057L;
+    public static final int SEARCH_MAX_LENGTH = 20;
+    public static final float FONT_10_POINT = 10.0F;
 
-    private static final Logger log = Logger.getLogger(Users.class);
     @SuppressWarnings({"InstanceVariableOfConcreteClass"})
-    private Settings set = null;
+    private Settings settings = null;
+    private CommentDao commentDao = null;
 
-    /**
-     * Initializes the servlet.
-     *
-     * @param config The servlet config
-     * @throws ServletException The servlet is hosed.
-     */
-    @Override
-    public void init(final ServletConfig config) throws ServletException {
-        super.init(config);
-        final ServletContext ctx = config.getServletContext();
-        set = Settings.getSettings(ctx);
+    @Autowired
+    public void setCommentDao(CommentDao commentDao) {
+        this.commentDao = commentDao;
     }
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
-     *
-     * @param request  servlet request
-     * @param response servlet response
-     * @throws ServletException    We screwed up.
-     * @throws java.io.IOException Doh.
-     */
-    private void processRequest(final HttpServletRequest request, final HttpServletResponse response)
-            throws ServletException, java.io.IOException {
+    @Autowired
+    public void setSettings(Settings settings) {
+        this.settings = settings;
+    }
 
-        final StringBuffer sb = new StringBuffer(512);
+    @RequestMapping(value = "{username}", method = RequestMethod.GET, produces = "text/html")
+    public String entries(@PathVariable String username, @RequestParam int skip, Model model, HttpSession session, HttpServletResponse response) {
+        UserContext userContext = getUserContext(username, session);
+        model.addAttribute("authenticatedUsername", WebLogin.currentLoginName(session));
+        model.addAttribute("user", userContext.getBlogUser());
 
-        /* start session if one does not exist.*/
-        final HttpSession session = request.getSession(true);
-
-        String authUserTemp;
-        com.justjournal.User aUser = null;
-        /* Does a username exist in session?  i.e. are we logged in?*/
-        authUserTemp = (String) session.getAttribute("auth.user");
-
-        if (authUserTemp != null) {
-            try {
-                aUser = new com.justjournal.User(authUserTemp); // authenticated user
-            } catch (Exception ex) {
-                log.error("processRequest(): Unable to load user information; " + ex.getMessage());
-            }
-        }
-        /*
-            Get username for Journal we are trying to view/access.
-        */
-        String userName = "";
-
-        // Create a pattern to match slashes
-        final Pattern p = Pattern.compile("[/]+");
-
-        // Split input with the pattern
-        final String[] arrUri = p.split(request.getRequestURI());
-        final int arrUriLength = java.lang.reflect.Array.getLength(arrUri);
-
-        if (arrUriLength > 2) {
-            if (arrUri[1].equals("justjournal"))
-                userName = arrUri[3].toLowerCase();
-            else
-                userName = arrUri[2].toLowerCase();
+        if (userContext.getBlogUser().isPrivateJournal() && !userContext.isAuthBlog()) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return "";
         }
 
-        /* Initialize Preferences Object */
-        final User buser;
+        model.addAttribute("calendarMini", getCalendarMini(userContext));
+        model.addAttribute("recentEntries", getUserRecentEntries(userContext));
+        model.addAttribute("links", getUserLinks(userContext));
+        model.addAttribute("archive", getArchive(userContext));
+        model.addAttribute("taglist", getTagMini(userContext));
+
+        model.addAttribute("entries", getEntries(userContext, skip));
+        return "users";
+    }
+
+    @RequestMapping(value = "{username}/entry/{id}", method = RequestMethod.GET, produces = "text/html")
+    public String entry(@PathVariable String username, @PathVariable int id, Model model, HttpSession session, HttpServletResponse response) {
+        UserContext userc = getUserContext(username, session);
+        model.addAttribute("authenticatedUsername", WebLogin.currentLoginName(session));
+        model.addAttribute("user", userc.getBlogUser());
+
+        if (userc.getBlogUser().isPrivateJournal() && !userc.isAuthBlog()) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return "";
+        }
+
+        model.addAttribute("calendarMini", getCalendarMini(userc));
+        model.addAttribute("recentEntries", getUserRecentEntries(userc));
+        model.addAttribute("links", getUserLinks(userc));
+        model.addAttribute("archive", getArchive(userc));
+        model.addAttribute("taglist", getTagMini(userc));
+
+        model.addAttribute("entry", getSingleEntry(id, userc));
+
+        return "users";
+    }
+
+    @RequestMapping(value = "{username}/friends", method = RequestMethod.GET, produces = "text/html")
+    public String friends(@PathVariable String username, Model model, HttpSession session, HttpServletResponse response) {
+        UserContext userc = getUserContext(username, session);
+        model.addAttribute("authenticatedUsername", WebLogin.currentLoginName(session));
+        model.addAttribute("user", userc.getBlogUser());
+
+        if (userc.getBlogUser().isPrivateJournal() && !userc.isAuthBlog()) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return "";
+        }
+
+        model.addAttribute("calendarMini", getCalendarMini(userc));
+        model.addAttribute("recentEntries", getUserRecentEntries(userc));
+        model.addAttribute("links", getUserLinks(userc));
+        model.addAttribute("archive", getArchive(userc));
+        model.addAttribute("taglist", getTagMini(userc));
+
+        model.addAttribute("friends", getFriends(userc));
+
+        return "users";
+    }
+
+    //TODO: finish
+    @RequestMapping(value = "{username}/calendar", method = RequestMethod.GET, produces = "text/html")
+    public String calendar(@PathVariable String username, Model model, HttpSession session, HttpServletResponse response) {
+        UserContext userc = getUserContext(username, session);
+        model.addAttribute("authenticatedUsername", WebLogin.currentLoginName(session));
+        model.addAttribute("user", userc.getBlogUser());
+
+        if (userc.getBlogUser().isPrivateJournal() && !userc.isAuthBlog()) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return "";
+        }
+
+        model.addAttribute("calendarMini", getCalendarMini(userc));
+        model.addAttribute("recentEntries", getUserRecentEntries(userc));
+        model.addAttribute("links", getUserLinks(userc));
+        model.addAttribute("archive", getArchive(userc));
+        model.addAttribute("taglist", getTagMini(userc));
+
+        final java.util.Calendar cal = new GregorianCalendar();
+        int year = cal.get(java.util.Calendar.YEAR);
+
+        return "users";
+    }
+
+    @RequestMapping(value = "{username}/{year}", method = RequestMethod.GET, produces = "text/html")
+    public String calendarYear(@PathVariable String username, @PathVariable int year, Model model, HttpSession session, HttpServletResponse response) {
+        UserContext userc = getUserContext(username, session);
+        model.addAttribute("authenticatedUsername", WebLogin.currentLoginName(session));
+        model.addAttribute("user", userc.getBlogUser());
+
+        if (userc.getBlogUser().isPrivateJournal() && !userc.isAuthBlog()) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return "";
+        }
+
+        model.addAttribute("calendarMini", getCalendarMini(userc));
+        model.addAttribute("recentEntries", getUserRecentEntries(userc));
+        model.addAttribute("links", getUserLinks(userc));
+        model.addAttribute("archive", getArchive(userc));
+        model.addAttribute("taglist", getTagMini(userc));
+        getCalendar(year, userc);
+
+        return "users_calendar";
+    }
+
+    @RequestMapping(value = "{username}/{year}/{month}", method = RequestMethod.GET, produces = "text/html")
+    public String calendarMonth(@PathVariable String username, @PathVariable int year, @PathVariable int month, Model model, HttpSession session, HttpServletResponse response) {
+        UserContext userc = getUserContext(username, session);
+        model.addAttribute("authenticatedUsername", WebLogin.currentLoginName(session));
+        model.addAttribute("user", userc.getBlogUser());
+
+        if (userc.getBlogUser().isPrivateJournal() && !userc.isAuthBlog()) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return "";
+        }
+
+        model.addAttribute("calendarMini", getCalendarMini(userc));
+        model.addAttribute("recentEntries", getUserRecentEntries(userc));
+        model.addAttribute("links", getUserLinks(userc));
+        model.addAttribute("archive", getArchive(userc));
+        model.addAttribute("taglist", getTagMini(userc));
+
+        getCalendarMonth(year, month, userc);
+
+        return "users_calendar";
+    }
+
+    @RequestMapping(value = "{username}/{year}/{month}/{day}", method = RequestMethod.GET, produces = "text/html")
+    public String calendarDay(@PathVariable String username, @PathVariable int year, @PathVariable int month, @PathVariable int day, Model model, HttpServletResponse response, HttpSession session) {
+        UserContext userc = getUserContext(username, session);
+        model.addAttribute("authenticatedUsername", WebLogin.currentLoginName(session));
+        model.addAttribute("user", userc.getBlogUser());
+
+        if (userc.getBlogUser().isPrivateJournal() && !userc.isAuthBlog()) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return "";
+        }
+
+        model.addAttribute("calendarMini", getCalendarMini(userc));
+        model.addAttribute("recentEntries", getUserRecentEntries(userc));
+        model.addAttribute("links", getUserLinks(userc));
+        model.addAttribute("archive", getArchive(userc));
+        model.addAttribute("taglist", getTagMini(userc));
+        getCalendarDay(year, month, day, userc);
+
+        return "users_calendar";
+    }
+
+    @RequestMapping(value = "{username}/atom", method = RequestMethod.GET, produces = "text/xml; charset=UTF-8")
+    public
+    @ResponseBody
+    String atom(@PathVariable String username, HttpServletResponse response) {
         try {
-            buser = new User(userName);
-        } catch (Exception ex) {
-            throw new ServletException(ex);
-        }
+            User user = new User(username);
 
-        final UserContext userc = new UserContext(sb, buser, aUser);
-
-        // if the length is greater than three then the uri is like /users/laffer1/friends
-        RequestType reqtype = RequestType.entries;  //default
-
-        int year = 0;
-        int month = 0;
-        int day = 0;
-        int singleEntryId = 0;
-        String tag = "";
-
-        if (arrUriLength > 3) {
-            if (arrUri[3].compareTo("friends") == 0) {
-                reqtype = RequestType.friends;
-            } else if (arrUri[3].compareTo("calendar") == 0) {
-                final java.util.Calendar cal = new GregorianCalendar();
-                year = cal.get(java.util.Calendar.YEAR);
-                reqtype = RequestType.calendar;
-            } else if (arrUri[3].compareTo("atom") == 0) {
-                reqtype = RequestType.atom;
-            } else if (arrUri[3].compareTo("rss") == 0) {
-                reqtype = RequestType.rss;
-            } else if (arrUri[3].compareTo("rsspics") == 0) {
-                reqtype = RequestType.rsspics;
-            } else if (arrUri[3].compareTo("subscriptions") == 0) {
-                reqtype = RequestType.feedreader;
-            } else if (arrUri[3].compareTo("search") == 0) {
-                reqtype = RequestType.search;
-            } else if (arrUri[3].compareTo("pictures") == 0) {
-                reqtype = RequestType.imagelist;
-            } else if (arrUri[3].compareTo("pdf") == 0) {
-                reqtype = RequestType.pdf;
-            } else if (arrUri[3].compareTo("rtf") == 0) {
-                reqtype = RequestType.rtf;
-            } else if (arrUri[3].compareTo("tag") == 0) {
-                reqtype = RequestType.tag;
-                if (arrUriLength > 3)
-                    tag = arrUri[4];
-
-            } else if (arrUri[3].matches("\\d\\d\\d\\d")) {
-
-                year = Integer.parseInt(arrUri[3]);
-
-                if (arrUriLength > 4 && arrUri[4].matches("\\d\\d")) {
-                    month = Integer.parseInt(arrUri[4]);
-
-                    if (arrUriLength > 5 && arrUri[5].matches("\\d\\d")) {
-                        day = Integer.parseInt(arrUri[5]);
-                        reqtype = RequestType.calendarday;
-                    } else {
-                        reqtype = RequestType.calendarmonth;
-                    }
-                } else {
-                    reqtype = RequestType.calendarnumeric;
-                }
-            } else if (arrUri[3].compareTo("entry") == 0 && arrUriLength > 4) {
-                reqtype = RequestType.singleentry;
-                try {
-                    singleEntryId = Integer.parseInt(arrUri[4]);
-                } catch (NumberFormatException e) {
-                    log.error(e.getMessage());
-                    singleEntryId = -1; // invalid entry id.  flag the problem.
-                }
+            if (user.isPrivateJournal()) {
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                return "";
             }
+
+            return getAtom(user);
+        } catch (Exception e) {
+            log.error(e);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            return "";
+        }
+    }
+
+    @RequestMapping(value = "{user}/rss", method = RequestMethod.GET, produces = "application/rss+xml; charset=ISO-8859-1")
+    public
+    @ResponseBody
+    String rss(@PathVariable String username, HttpServletResponse response) {
+        try {
+            User user = new User(username);
+
+            if (user.isPrivateJournal()) {
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                return "";
+            }
+
+            return getRSS(user);
+        } catch (Exception e) {
+            log.error(e);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            return "";
+        }
+    }
+
+    @RequestMapping(value = "{user}/rsspics", method = RequestMethod.GET, produces = "application/rss+xml; charset=ISO-8859-1")
+    public
+    @ResponseBody
+    String rssPictures(@PathVariable String username, HttpServletResponse response) {
+        try {
+            User user = new User(username);
+
+            if (user.isPrivateJournal()) {
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                return "";
+            }
+
+            return getPicturesRSS(user);
+        } catch (Exception e) {
+            log.error(e);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            return "";
+        }
+    }
+
+    @RequestMapping(value = "{user}/pdf", method = RequestMethod.GET, produces = "application/pdf")
+    public void pdf(@PathVariable String username, HttpServletResponse response, HttpSession session) {
+        User authUser = null;
+        try {
+            authUser = new User(WebLogin.currentLoginName(session));
+        } catch (Exception ignored) {
+
         }
 
-        if (reqtype == RequestType.rss || reqtype == RequestType.rsspics) {
-            response.setContentType("application/rss+xml; charset=ISO-8859-1");
-            response.setBufferSize(RESPONSE_BUFSIZE);
-
-            if (!userc.getBlogUser().isPrivateJournal() || userc.isAuthBlog())
-                if (reqtype == RequestType.rss)
-                    getRSS(userc);
-                else
-                    getPicturesRSS(userc);
-            else
-                sb.append("Security restriction");
-        } else if (reqtype == RequestType.atom) {
-            response.setContentType("text/xml; charset=UTF-8");
-            response.setBufferSize(RESPONSE_BUFSIZE);
-
-            if (!userc.getBlogUser().isPrivateJournal() || userc.isAuthBlog())
-                getAtom(userc);
-            else
-                sb.append("Security restriction");
-        } else if (reqtype == RequestType.pdf) {
-            response.setContentType("application/pdf");
-            response.setBufferSize(RESPONSE_BUFSIZE);
-
-            if ((!(userc.getBlogUser().isPrivateJournal()) || userc.isAuthBlog()))
+        try {
+            User user = new User(username);
+            UserContext userc = new UserContext(user, authUser);
+            if (!(userc.getBlogUser().isPrivateJournal()) || userc.isAuthBlog())
                 getPDF(response, userc);
-        } else if (reqtype == RequestType.rtf) {
-            // this version is from an RFC
-            response.setContentType("application/rtf"); // originally text/rtf
-            response.setBufferSize(RESPONSE_BUFSIZE);
+            else
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        } catch (Exception e) {
+            log.error(e);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+    }
 
+    @RequestMapping(value = "{user}/rtf", method = RequestMethod.GET, produces = "application/rtf")
+    public void rtf(@PathVariable String username, HttpServletResponse response, HttpSession session) {
+        User authUser = null;
+        try {
+            authUser = new User(WebLogin.currentLoginName(session));
+        } catch (Exception ignored) {
+
+        }
+
+        try {
+            User user = new User(username);
+            UserContext userc = new UserContext(user, authUser);
             if (!(userc.getBlogUser().isPrivateJournal()) || userc.isAuthBlog())
                 getRTF(response, userc);
-        } else {
-
-            /*
-                Example of Expiring Headers for browsers!
-
-                header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");    // Date in the past
-                header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT"); // always modified
-                header("Cache-Control: no-store, no-cache, must-revalidate");  // HTTP/1.1
-                header("Cache-Control: post-check=0, pre-check=0", false);
-                header("Pragma: no-cache"); // HTTP/1.0
-            */
-            response.setContentType("text/html; charset=utf-8");
-            response.setBufferSize(RESPONSE_BUFSIZE);
-            // response.setHeader("Vary", "Accept"); // content negotiation
-            response.setDateHeader("Expires", System.currentTimeMillis());
-            response.setDateHeader("Last-Modified", System.currentTimeMillis());
-            response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
-            response.setHeader("Pragma", "no-cache");
-
-            sb.append("<!DOCTYPE html>");
-            sb.append(endl);
-
-            sb.append("<html lang=\"en\">");
-            sb.append(endl);
-
-            sb.append("<head>");
-            sb.append(endl);
-            if (!userc.getBlogUser().isSpiderAllowed()) {
-                sb.append("\t<meta name=\"robots\" content=\"noindex, nofollow, noarchive\">");
-                sb.append(endl);
-                sb.append("\t<meta name=\"googlebot\" content=\"nosnippet\">");
-                sb.append(endl);
-            }
-            sb.append("\t<title>").append(userc.getBlogUser().getJournalName()).append("</title>");
-            sb.append(endl);
-
-            sb.append("\t<link rel=\"stylesheet\" type=\"text/css\" href=\"/styles/users.css\">");
-            sb.append(endl);
-
-            /* User's custom style URL.. i.e. uri to css doc outside domain */
-            if (userc.getBlogUser().getStyleUrl() != null && userc.getBlogUser().getStyleUrl().length() != 0) {
-                sb.append("\t<link rel=\"stylesheet\" type=\"text/css\" media=\"screen\" href=\"").append(userc.getBlogUser().getStyleUrl()).append("\">");
-                sb.append(endl);
-            } else {
-                /* use our template system instead */
-                sb.append("\t<link rel=\"stylesheet\" type=\"text/css\" media=\"screen\" href=\"/styles/");
-                sb.append(userc.getBlogUser().getStyleId());
-                sb.append(".css\" />");
-                sb.append(endl);
-            }
-            sb.append("<link href=\"//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css\" rel=\"stylesheet\">");
-
-            /* Optional style sheet overrides! */
-            if (userc.getBlogUser().getStyleDoc().length() != 0 && userc.getBlogUser().getStyleDoc() != null && userc.getBlogUser().getStyleDoc().length() > 0) {
-                sb.append("\t<style type=\"text/css\" media=\"all\" id=\"UserStyleSheet\">");
-                sb.append(endl);
-                sb.append("\t<!--");
-                sb.append(endl);
-                sb.append(userc.getBlogUser().getStyleDoc());
-                sb.append("\t-->");
-                sb.append(endl);
-                sb.append("\t</style>");
-                sb.append(endl);
-            }
-            /* End overrides */
-            // rss alt link.
-            sb.append("\t<link rel=\"alternate\" type=\"application/rss+xml\" title=\"RSS\" href=\"http://www.justjournal.com/users/").append(userName).append("/rss\">\n");
-            sb.append("\t<link rel=\"alternate\" type=\"application/atom+xml\" title=\"Atom\" href=\"http://www.justjournal.com/users/").append(userName).append("/atom\">\n");
-
-            // Service definitions
-            sb.append("\t<link rel=\"EditURI\" type=\"application/rsd+xml\" title=\"RSD\" href=\"http://www.justjournal.com/rsd?blogID=").append(userName).append("\">\n");
-
-            // content switch javascript
-            sb.append("\t<script type=\"text/javascript\" src=\"/js/switchcontent.js\"></script>\n");
-            // lightbox
-            sb.append("\t<script type=\"text/javascript\" src=\"/components/jquery/jquery.min.js\"></script>\n");
-            sb.append("\t<script type=\"text/javascript\" src=\"/components/jquery-ui/ui/minified/jquery-ui.min.js\"></script>\n");
-            sb.append("\t<script type=\"text/javascript\" src=\"/js/lightbox.js\"></script>\n");
-            sb.append("\t<link rel=\"stylesheet\" type=\"text/css\" media=\"screen\" href=\"/lightbox.css\">\n");
-            sb.append("</head>\n");
-
-            sb.append("<body>\n");
-
-            // if the user has owner only the first check will fail
-            // but if they are logged in then they can see it anyway!
-            if (!(userc.getBlogUser().isPrivateJournal()) || userc.isAuthBlog()) {
-
-                // BEGIN MENU
-                sb.append("\t<!-- Header: Begin -->");
-                sb.append(endl);
-                sb.append("\t<div id=\"header\">");
-                sb.append(endl);
-                sb.append("\t\t<h1>");
-                sb.append(userc.getBlogUser().getJournalName());
-                sb.append("</h1>");
-                sb.append(endl);
-                sb.append("\t</div>");
-                sb.append(endl);
-                sb.append("\t<!-- Header: End -->\n");
-                sb.append(endl);
-
-                sb.append("\t<!-- Menu: Begin -->");
-                sb.append(endl);
-                sb.append("\t<div id=\"menu\">");
-                sb.append(endl);
-
-                if (userc.getBlogUser().showAvatar()) {
-                    sb.append("\t\t<img alt=\"avatar\" src=\"/image?id=");
-                    sb.append(userc.getBlogUser().getUserId());
-                    sb.append("\"/>");
-                    sb.append(endl);
-                }
-
-                sb.append("\t<p id=\"muser\">");
-                sb.append(endl);
-                sb.append("\t\t<a href=\"/users/");
-                sb.append(userName);
-                sb.append("\">Journal Entries</a><br />");
-                sb.append(endl);
-                sb.append("\t\t<a href=\"/users/");
-                sb.append(userName);
-                sb.append("/calendar\">Calendar</a><br />");
-                sb.append(endl);
-                sb.append("\t\t<a href=\"/users/");
-                sb.append(userName);
-                sb.append("/friends\">Friends</a><br />");
-                sb.append(endl);
-                if (aUser != null && aUser.getUserId() > 0) {
-                    sb.append("\t\t<a href=\"/favorite/view.h");
-                    sb.append("\">Favorites</a><br />");
-                    sb.append(endl);
-                }
-                sb.append("\t\t<a href=\"/users/");
-                sb.append(userName);
-                sb.append("/pictures\">Pictures</a><br />");
-                sb.append(endl);
-                sb.append("\t\t<a href=\"/profile.jsp?user=");
-                sb.append(userName);
-                sb.append("\">Profile</a><br />");
-                sb.append(endl);
-                sb.append("\t</p>");
-                sb.append(endl);
-
-                // General stuff...
-                sb.append("\t<p id=\"mgen\">");
-                sb.append(endl);
-                sb.append("\t\t<a href=\"/#/entry\">Update Journal</a><br />");
-                sb.append(endl);
-
-                // Authentication menu choice
-                if (aUser != null && aUser.getUserId() > 0) {
-                    // User is logged in.. give them the option to log out.
-                    sb.append("\t\t<a href=\"/prefs/index.jsp\">Preferences</a><br />");
-                    sb.append(endl);
-                    sb.append("\t\t<a href=\"/logout.jsp\">Log Out</a>");
-                    sb.append(endl);
-                } else {
-                    // User is logged out.. give then the option to login.
-                    sb.append("\t\t<a href=\"/login.jsp\">Login</a>");
-                    sb.append(endl);
-                }
-                sb.append("\t</p>");
-                sb.append(endl);
-
-                sb.append("\t<p id=\"mrssreader\">");
-                sb.append(endl);
-                // rss reader link
-                sb.append("\t\t<a href=\"/users/");
-                sb.append(userName);
-                sb.append("/subscriptions\">RSS Reader</a><br />");
-                sb.append(endl);
-                sb.append("\t</p>");
-                sb.append(endl);
-
-                sb.append("<div id=\"mformats\"><strong style=\"text-transform: uppercase; letter-spacing: 2px; border: 0 none; border-bottom: 1px; border-style: dotted; border-color: #999999; margin-bottom: 10px; width: 100%; font-size: 10px;\">Formats</strong><br />\n");
-                sb.append("<p>");
-                /* If the user has a private journal, their RSS feed
-                   isn't public anyway. */
-                if (!userc.getBlogUser().isPrivateJournal()) {
-                    // rss feed link
-                    sb.append("\t\t<a rel=\"alternate\" href=\"/users/");
-                    sb.append(userName);
-                    sb.append("/rss\"><i class=\"fa fa-rss\"></i> RSS</a><br />");
-                    sb.append(endl);
-                    sb.append("\t\t<a rel=\"alternate\" href=\"/users/");
-                    sb.append(userName);
-                    sb.append("/atom\"><i class=\"fa fa-rss\"></i> ATOM</a><br />");
-                    sb.append(endl);
-                }
-
-                sb.append("\t\t<img src=\"/images/icon_pdf.gif\" alt=\"PDF\" /><a href=\"").append(set.getBaseUri()).append("users/");
-                sb.append(userName);
-                sb.append("/pdf\">PDF</a><br />");
-                sb.append(endl);
-                sb.append("\t\t<img src=\"/images/icon_rtf.gif\" alt=\"RTF\" /><a href=\"").append(set.getBaseUri()).append("users/");
-                sb.append(userName);
-                sb.append("/rtf\">RTF</a><br />");
-                sb.append(endl);
-                sb.append("\t</p>");
-                sb.append(endl);
-                sb.append("</div>");
-                sb.append(endl);
-
-                sb.append("<div id=\"msearchbox\"><strong style=\"text-transform: uppercase; letter-spacing: 2px; border: 0 none; border-bottom: 1px; border-style: dotted; border-color: #999999; margin-bottom: 5px; width: 100%; font-size: 10px;\">Search</strong>\n");
-
-                sb.append("\t<form id=\"msearch\" action=\"");
-                sb.append(set.getBaseUri()).append("/users/");
-                sb.append(userName);
-                sb.append("/search\" method=\"get\">");
-                sb.append(endl);
-                sb.append("\t\t<p><input type=\"text\" name=\"bquery\" id=\"bquery\" style=\"width: 90px;\" /><br />");
-                sb.append(endl);
-                sb.append("\t\t<input type=\"submit\" name=\"search\" id=\"searchbtn\" value=\"Search Blog\" /></p>");
-
-                sb.append(endl);
-                sb.append("\t</form>");
-                sb.append(endl);
-                sb.append("</div>");
-                sb.append(endl);
-
-                // display mini calendar in menu
-                getCalendarMini(userc);
-
-                // display recent entry links
-                getUserRecentEntries(userc);
-
-                log.debug("getUserLinks call");
-                // user links display
-                getUserLinks(userc);
-
-                // Archive of entries...
-                getArchive(userc);
-
-                // List tags
-                getTagMini(userc);
-
-                sb.append("\t</div>");
-                sb.append(endl);
-                sb.append("\t<!-- Menu: End -->\n");
-                sb.append(endl);
-
-                // END MENU
-
-                sb.append("\t<!-- Content: Begin -->");
-                sb.append(endl);
-                sb.append("\t<div id=\"content\">");
-                sb.append(endl);
-
-                if (aUser != null && aUser.getUserId() > 0) {
-                    sb.append("\t<p>You are logged in as <a href=\"/users/");
-                    sb.append(aUser.getUserName());
-                    sb.append("\"><img src=\"/images/userclass_16.png\" alt=\"user\" />");
-                    sb.append(aUser.getUserName());
-                    sb.append("</a>.</p>");
-                    sb.append(endl);
-                }
-
-                try {
-                    switch (reqtype) {
-                        case entries:
-                            // number of entries to skip!  (currently only userful for recent entries)
-                            int skip = 0;
-
-                            try {
-                                if (request.getParameter("skip") != null)
-                                    skip = Integer.valueOf(request.getParameter("skip"));
-                            } catch (NumberFormatException exInt) {
-                                skip = 0;
-                                log.error(exInt.getMessage());
-                            }
-
-                            getEntries(userc, skip);
-
-                            break;
-                        case friends:
-                            getFriends(userc);
-                            break;
-                        case calendar:
-                            getCalendar(year, userc);
-                            break;
-                        case feedreader:
-                            getSubscriptions(userc);
-                            break;
-                        case calendarnumeric:
-                            getCalendar(year, userc);
-                            break;
-                        case calendarmonth:
-                            getCalendarMonth(year, month, userc);
-                            break;
-                        case calendarday:
-                            getCalendarDay(year, month, day, userc);
-                            break;
-                        case singleentry:
-                            getSingleEntry(singleEntryId, userc);
-                            break;
-                        case imagelist:
-                            getImageList(userc);
-                            break;
-                        case search:
-                            int maxr = 20;
-                            final String max = request.getParameter("max");
-                            String bquery = request.getParameter("bquery");
-                            if (bquery == null)
-                                bquery = "";
-
-                            if (max != null && max.length() > 0)
-                                try {
-                                    maxr = Integer.parseInt(max);
-                                } catch (NumberFormatException exInt) {
-                                    maxr = 20;
-                                    log.error(exInt.getMessage());
-                                }
-                            search(userc, maxr, bquery);
-                            break;
-                        case tag:
-                            getTags(userc, tag);
-                            break;
-                    }
-                } catch (Exception ex) {
-                    log.error(ex.getMessage());
-                    log.error(ex.toString());
-                    WebError.Display(" Error",
-                            "Error accessing data.",
-                            sb);
-                }
-
-                sb.append("\t</div>");
-                sb.append(endl);
-                sb.append("\t<!-- Content: End -->");
-                sb.append(endl);
-                sb.append(endl);
-
-                sb.append("\t<!-- Footer: Begin -->");
-                sb.append(endl);
-                sb.append("\t<div id=\"footer\">");
-                sb.append(endl);
-                sb.append("\t\t<a href=\"/index.jsp\" title=\"JustJournal.com: Online Journals\">JustJournal.com</a> ");
-                sb.append("\t</div>");
-                sb.append(endl);
-
-                sb.append("\t<!-- Footer: End -->\n");
-                sb.append(endl);
-            }
-
-            sb.append("</body>");
-            sb.append(endl);
-            sb.append("</html>");
-            sb.append(endl);
+            else
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        } catch (Exception e) {
+            log.error(e);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
-
-        response.setContentLength(sb.length());
-        // output the result of our processing
-        final ServletOutputStream outstream = response.getOutputStream();
-        outstream.print(sb.toString());
-        outstream.flush();
-        outstream.close();
     }
 
-    private static void getPDF(final HttpServletResponse response, final UserContext uc) {
+    @RequestMapping(value = "{username}/pictures", method = RequestMethod.GET, produces = "text/html")
+    public String pictures(@PathVariable String username, Model model, HttpSession session, HttpServletResponse response) {
+        UserContext userc = getUserContext(username, session);
+        model.addAttribute("authenticatedUsername", WebLogin.currentLoginName(session));
+        model.addAttribute("user", userc.getBlogUser());
+
+        if (userc.getBlogUser().isPrivateJournal() && !userc.isAuthBlog()) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return "";
+        }
+
+        model.addAttribute("calendarMini", getCalendarMini(userc));
+        model.addAttribute("recentEntries", getUserRecentEntries(userc));
+        model.addAttribute("links", getUserLinks(userc));
+        model.addAttribute("archive", getArchive(userc));
+        model.addAttribute("taglist", getTagMini(userc));
+
+        getImageList(userc);
+
+        return "users";
+    }
+
+    @RequestMapping(value = "{username}/search", method = RequestMethod.GET, produces = "text/html")
+    public String search(@PathVariable String username, @RequestParam String max, @RequestParam String bquery, Model model, HttpSession session, HttpServletResponse response) {
+        UserContext userc = getUserContext(username, session);
+        model.addAttribute("authenticatedUsername", WebLogin.currentLoginName(session));
+        model.addAttribute("user", userc.getBlogUser());
+
+        if (userc.getBlogUser().isPrivateJournal() && !userc.isAuthBlog()) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return "";
+        }
+
+        model.addAttribute("calendarMini", getCalendarMini(userc));
+        model.addAttribute("recentEntries", getUserRecentEntries(userc));
+        model.addAttribute("links", getUserLinks(userc));
+        model.addAttribute("archive", getArchive(userc));
+        model.addAttribute("taglist", getTagMini(userc));
+        int maxr = SEARCH_MAX_LENGTH;
+
+        if (max != null && max.length() > 0)
+            try {
+                maxr = Integer.parseInt(max);
+            } catch (NumberFormatException exInt) {
+                maxr = SEARCH_MAX_LENGTH;
+                log.error(exInt.getMessage());
+            }
+        search(userc, maxr, bquery);
+
+        return "users";
+    }
+
+    @RequestMapping(value = "{username}/subscriptions", method = RequestMethod.GET, produces = "text/html")
+    public String subscriptions(@PathVariable String username, Model model, HttpSession session, HttpServletResponse response) {
+        UserContext userc = getUserContext(username, session);
+        model.addAttribute("authenticatedUsername", WebLogin.currentLoginName(session));
+        model.addAttribute("user", userc.getBlogUser());
+
+        if (userc.getBlogUser().isPrivateJournal() && !userc.isAuthBlog()) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return "";
+        }
+
+        model.addAttribute("calendarMini", getCalendarMini(userc));
+        model.addAttribute("recentEntries", getUserRecentEntries(userc));
+        model.addAttribute("links", getUserLinks(userc));
+        model.addAttribute("archive", getArchive(userc));
+        model.addAttribute("taglist", getTagMini(userc));
+
+        getSubscriptions(userc);
+
+        return "users";
+    }
+
+    @RequestMapping(value = "{username}/tag/{tag}", method = RequestMethod.GET, produces = "text/html")
+    public String tag(@PathVariable String username, @PathVariable String tag, Model model, HttpSession session, HttpServletResponse response) {
+
+        User authUser = null;
+        try {
+            authUser = new User(WebLogin.currentLoginName(session));
+        } catch (Exception ignored) {
+
+        }
+
+        try {
+            User user = new User(username);
+            UserContext userc = new UserContext(user, authUser);
+
+            model.addAttribute("username", user);
+            model.addAttribute("authenticatedUsername", WebLogin.currentLoginName(session));
+
+            if (!(userc.getBlogUser().isPrivateJournal()) || userc.isAuthBlog())
+                model.addAttribute("tags", getTags(userc, tag));
+            else
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        } catch (Exception e) {
+            log.error(e);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+
+
+        return "users_tag";
+    }
+
+    private UserContext getUserContext(String username, HttpSession session) {
+        User authUser = null;
+        try {
+            authUser = new User(WebLogin.currentLoginName(session));
+        } catch (Exception ignored) {
+
+        }
+
+        try {
+            User user = new User(username);
+            return new UserContext(user, authUser);
+        } catch (Exception e) {
+            log.error(e);
+        }
+        return null;
+    }
+
+    private void getPDF(final HttpServletResponse response, final UserContext uc) {
         try {
             final Document document = new Document();
             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -637,7 +499,7 @@ public final class Users extends HttpServlet {
         }
     }
 
-    private static void getRTF(final HttpServletResponse response, final UserContext uc) {
+    private void getRTF(final HttpServletResponse response, final UserContext uc) {
         try {
             final Document document = new Document();
             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -673,16 +535,16 @@ public final class Users extends HttpServlet {
         Chunk chunk = new Chunk(uc.getBlogUser().getJournalName());
         chunk.setTextRenderMode(PdfContentByte.TEXT_RENDER_MODE_STROKE, 0.4f, new Color(0x00, 0x00, 0xFF));
         document.add(chunk);
-        document.add(new Paragraph(new Date().toString(), new Font(Font.HELVETICA, 10.0F)));
+        document.add(new Paragraph(new Date().toString(), new Font(Font.HELVETICA, FONT_10_POINT)));
         document.add(Chunk.NEWLINE);
 
         final Collection<EntryTo> entries;
 
         // The blog owner should see all entries
         if (uc.isAuthBlog())
-            entries = EntryDAO.viewAll(uc.getBlogUser().getUserName(), true);
+            entries = EntryDao.viewAll(uc.getBlogUser().getUserName(), true);
         else
-            entries = EntryDAO.viewAll(uc.getBlogUser().getUserName(), false); // not logged in security
+            entries = EntryDao.viewAll(uc.getBlogUser().getUserName(), false); // not logged in security
 
         // Format the current time.
         final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm");
@@ -736,8 +598,8 @@ public final class Users extends HttpServlet {
     }
 
     @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
-    private static void getImageList(final UserContext uc) {
-        final StringBuffer sb = uc.getSb();
+    private String getImageList(final UserContext uc) {
+        StringBuilder sb = new StringBuilder();
         sb.append("<h2>Pictures</h2>");
         sb.append(endl);
         sb.append("<ul style=\"list-style-image: url('/images/pictureframe.png'); list-style-type: circle;\">");
@@ -781,10 +643,12 @@ public final class Users extends HttpServlet {
         sb.append("<a href=\"/users/");
         sb.append(uc.getBlogUser().getUserName());
         sb.append("/rsspics\">feed</a>.</p>");
+
+        return sb.toString();
     }
 
-    private static void getSubscriptions(final UserContext uc) {
-        final StringBuffer sb = uc.getSb();
+    private String getSubscriptions(final UserContext uc) {
+        StringBuilder sb = new StringBuilder();
 
         sb.append("<h2>RSS Reader</h2>");
         sb.append(endl);
@@ -810,15 +674,14 @@ public final class Users extends HttpServlet {
 
         } catch (Exception e) {
             log.error(e.getMessage());
-            WebError.Display("RSS Subscriptions Error", "Can not retrieve RSS content.", sb);
+            return null;
         }
+        return sb.toString();
     }
 
-    private static void getSingleEntry(final int singleEntryId, final UserContext uc) {
-        if (log.isDebugEnabled())
-            log.debug("getSingleEntry: Loading DAO");
+    private String getSingleEntry(final int singleEntryId, final UserContext uc) {
 
-        final StringBuffer sb = uc.getSb();
+        StringBuffer sb = new StringBuffer();
         EntryTo o;
 
         if (singleEntryId < 1) {
@@ -826,13 +689,13 @@ public final class Users extends HttpServlet {
         } else {
             try {
                 if (uc.isAuthBlog()) {
-                    o = EntryDAO.viewSingle(singleEntryId);
+                    o = EntryDao.viewSingle(singleEntryId);
 
 
                     if (log.isDebugEnabled())
                         log.debug("getSingleEntry: User is logged in.");
                 } else {
-                    o = EntryDAO.viewSinglePublic(singleEntryId);
+                    o = EntryDao.viewSinglePublic(singleEntryId);
 
                     if (log.isDebugEnabled())
                         log.debug("getSingleEntry: User is not logged in.");
@@ -871,11 +734,12 @@ public final class Users extends HttpServlet {
                     log.debug("getSingleEntry: Exception is " + e1.getMessage() + '\n' + e1.toString());
             }
         }
+        return sb.toString();
     }
 
     @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
-    private static void search(final UserContext uc, final int maxresults, final String bquery) {
-        final StringBuffer sb = uc.getSb();
+    private String search(final UserContext uc, final int maxresults, final String bquery) {
+        StringBuilder sb = new StringBuilder();
         ResultSet brs = null;
         String sql;
 
@@ -961,23 +825,21 @@ public final class Users extends HttpServlet {
                 }
             }
         }
+        return sb.toString();
     }
 
-    private static void getEntries(final UserContext uc, final int skip) {
-        if (log.isDebugEnabled())
-            log.debug("getEntries: Loading DAO");
-
-        final StringBuffer sb = uc.getSb();
+    private String getEntries(final UserContext uc, final int skip) {
+        StringBuffer sb = new StringBuffer();
         final Collection entries;
 
         try {
             if (uc.isAuthBlog()) {
-                entries = EntryDAO.view(uc.getBlogUser().getUserName(), true, skip);  // should be true
+                entries = EntryDao.view(uc.getBlogUser().getUserName(), true, skip);  // should be true
 
                 if (log.isDebugEnabled())
                     log.debug("getEntries: User is logged in.");
             } else {
-                entries = EntryDAO.view(uc.getBlogUser().getUserName(), false, skip);
+                entries = EntryDao.view(uc.getBlogUser().getUserName(), false, skip);
 
                 if (log.isDebugEnabled())
                     log.debug("getEntries: User is not logged in.");
@@ -1029,12 +891,12 @@ public final class Users extends HttpServlet {
             if (log.isDebugEnabled())
                 log.debug("getEntries: Exception is " + e1.getMessage() + '\n' + e1.toString());
         }
-
+        return sb.toString();
     }
 
     @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
-    private static void jumpmenu(final int skip, final int offset, final boolean back, final boolean forward, final UserContext uc) {
-        final StringBuffer sb = uc.sb;
+    private String jumpmenu(final int skip, final int offset, final boolean back, final boolean forward, final UserContext uc) {
+        StringBuilder sb = new StringBuilder();
         sb.append("\t\t<p>");
 
         if (back) {
@@ -1054,6 +916,7 @@ public final class Users extends HttpServlet {
         }
         sb.append("</p>");
         sb.append(endl);
+        return sb.toString();
     }
 
     /**
@@ -1061,18 +924,15 @@ public final class Users extends HttpServlet {
      *
      * @param uc The UserContext we are working on including blog owner, authenticated user, and sb to write
      */
-    private static void getFriends(final UserContext uc) {
+    private String getFriends(final UserContext uc) {
 
-        if (log.isDebugEnabled())
-            log.debug("getFriends: Load DAO.");
-
-        final StringBuffer sb = uc.getSb();
+        StringBuffer sb = new StringBuffer();
         final Collection entries;
 
         if (uc.getAuthenticatedUser() != null)
-            entries = EntryDAO.viewFriends(uc.getBlogUser().getUserId(), uc.getAuthenticatedUser().getUserId());
+            entries = EntryDao.viewFriends(uc.getBlogUser().getUserId(), uc.getAuthenticatedUser().getUserId());
         else
-            entries = EntryDAO.viewFriends(uc.getBlogUser().getUserId(), 0);
+            entries = EntryDao.viewFriends(uc.getBlogUser().getUserId(), 0);
 
         sb.append("<h2>Friends</h2>");
         sb.append(endl);
@@ -1296,7 +1156,7 @@ public final class Users extends HttpServlet {
                     "Error retrieving the friends entries",
                     sb);
         }
-
+        return sb.toString();
     }
 
     /**
@@ -1307,11 +1167,11 @@ public final class Users extends HttpServlet {
      * @see com.justjournal.Cal
      * @see com.justjournal.CalMonth
      */
-    private static void getCalendar(final int year,
-                                    final UserContext uc) {
-        StringBuffer sb = uc.getSb();
-        final java.util.GregorianCalendar calendarg = new java.util.GregorianCalendar();
-        int yearNow = calendarg.get(Calendar.YEAR);
+    private String getCalendar(final int year,
+                               final UserContext uc) {
+        StringBuffer sb = new StringBuffer();
+        final java.util.GregorianCalendar calendar = new java.util.GregorianCalendar();
+        int yearNow = calendar.get(Calendar.YEAR);
 
         // print out header
         sb.append("<h2>Calendar: ");
@@ -1345,7 +1205,7 @@ public final class Users extends HttpServlet {
         // END: YEARS
 
         try {
-            Collection<EntryTo> entries = EntryDAO.ViewCalendarYear(year, uc.getBlogUser().getUserName(), uc.isAuthBlog());
+            Collection<EntryTo> entries = EntryDao.ViewCalendarYear(year, uc.getBlogUser().getUserName(), uc.isAuthBlog());
 
             if (entries == null || entries.size() == 0) {
                 sb.append("<p>Calendar data not available.</p>");
@@ -1362,6 +1222,7 @@ public final class Users extends HttpServlet {
                     sb);
         }
 
+        return sb.toString();
     }
 
     /**
@@ -1371,10 +1232,10 @@ public final class Users extends HttpServlet {
      * @param month the month we want
      * @param uc    The UserContext we are working on including blog owner, authenticated user, and sb to write
      */
-    private static void getCalendarMonth(final int year,
-                                         final int month,
-                                         final UserContext uc) {
-        StringBuffer sb = uc.getSb();
+    private String getCalendarMonth(final int year,
+                                    final int month,
+                                    final UserContext uc) {
+        StringBuffer sb = new StringBuffer();
 
         sb.append("<h2>Calendar: ");
         sb.append(month);
@@ -1387,7 +1248,7 @@ public final class Users extends HttpServlet {
         sb.append(endl);
 
         try {
-            Collection<EntryTo> entries = EntryDAO.ViewCalendarMonth(year, month, uc.getBlogUser().getUserName(), uc.isAuthBlog());
+            Collection<EntryTo> entries = EntryDao.ViewCalendarMonth(year, month, uc.getBlogUser().getUserName(), uc.isAuthBlog());
 
             if (entries.size() == 0) {
                 sb.append("<p>Calendar data not available.</p>");
@@ -1429,6 +1290,7 @@ public final class Users extends HttpServlet {
                     "An error has occured rendering calendar.",
                     sb);
         }
+        return sb.toString();
     }
 
     /**
@@ -1437,15 +1299,14 @@ public final class Users extends HttpServlet {
      * @param uc User Context
      */
     @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
-    private static void getCalendarMini(UserContext uc) {
+    private String getCalendarMini(UserContext uc) {
+        StringBuilder sb = new StringBuilder();
         try {
-            final StringBuffer sb = uc.getSb();
-
             final Calendar cal = new GregorianCalendar(java.util.TimeZone.getDefault());
             int year = cal.get(Calendar.YEAR);
             int month = cal.get(Calendar.MONTH) + 1; // zero based
 
-            Collection<EntryTo> entries = EntryDAO.ViewCalendarMonth(year, month, uc.getBlogUser().getUserName(), uc.isAuthBlog());
+            Collection<EntryTo> entries = EntryDao.ViewCalendarMonth(year, month, uc.getBlogUser().getUserName(), uc.isAuthBlog());
 
             if (entries.size() == 0) {
                 sb.append("\t<!-- could not render calendar -->");
@@ -1458,6 +1319,7 @@ public final class Users extends HttpServlet {
         } catch (Exception ex) {
             log.debug(ex);
         }
+        return sb.toString();
     }
 
     /**
@@ -1466,10 +1328,10 @@ public final class Users extends HttpServlet {
      * @param uc User Context
      */
     @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
-    private static void getTagMini(final UserContext uc) {
-        final StringBuffer sb = uc.getSb();
+    private String getTagMini(final UserContext uc) {
+        StringBuilder sb = new StringBuilder();
         Tag tag;
-        final ArrayList<Tag> tags = EntryDAO.getUserTags(uc.getBlogUser().getUserId());
+        final ArrayList<Tag> tags = EntryDao.getUserTags(uc.getBlogUser().getUserId());
         int largest = 0;
         int smallest = 10;
         int cutSmall;
@@ -1508,6 +1370,8 @@ public final class Users extends HttpServlet {
         }
         sb.append("\t\t</p>\n\t</div>");
         sb.append(endl);
+
+        return sb.toString();
     }
 
     /**
@@ -1516,9 +1380,9 @@ public final class Users extends HttpServlet {
      * @param uc User Context
      */
     @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
-    private static void getUserLinks(final UserContext uc) {
+    private String getUserLinks(final UserContext uc) {
         log.debug("getUserLinks(): Init and load collection");
-        StringBuffer sb = uc.getSb();
+        StringBuilder sb = new StringBuilder();
         UserLinkTo link;
         Collection links = UserLinkDao.view(uc.getBlogUser().getUserId());
 
@@ -1533,6 +1397,7 @@ public final class Users extends HttpServlet {
             sb.append("\t\t</ul>\n\t</div>");
             sb.append(endl);
         }
+        return sb.toString();
     }
 
     /**
@@ -1541,16 +1406,13 @@ public final class Users extends HttpServlet {
      * @param uc User Context
      */
     @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
-    private static void getUserRecentEntries(final UserContext uc) {
-        if (log.isDebugEnabled())
-            log.debug("getUserRecentEntries: Loading DAO");
-
-        StringBuffer sb = uc.getSb();
+    private String getUserRecentEntries(final UserContext uc) {
+        StringBuilder sb = new StringBuilder();
         final Collection entries;
         final int maxrecent = 5;
 
         try {
-            entries = EntryDAO.view(uc.getBlogUser().getUserName(), uc.isAuthBlog(), 0);
+            entries = EntryDao.view(uc.getBlogUser().getUserName(), uc.isAuthBlog(), 0);
 
             if (log.isDebugEnabled())
                 log.debug("getUserRecentEntries: Begin Iteration of records.");
@@ -1588,6 +1450,7 @@ public final class Users extends HttpServlet {
         } catch (Exception e) {
             log.error(e.getMessage());
         }
+        return sb.toString();
     }
 
     /**
@@ -1598,12 +1461,12 @@ public final class Users extends HttpServlet {
      * @param day   the day we are interested in
      * @param uc    The UserContext we are working on including blog owner, authenticated user, and sb to write
      */
-    private static void getCalendarDay(final int year,
-                                       final int month,
-                                       final int day,
-                                       final UserContext uc) {
+    private String getCalendarDay(final int year,
+                                  final int month,
+                                  final int day,
+                                  final UserContext uc) {
 
-        StringBuffer sb = uc.getSb();
+        StringBuffer sb = new StringBuffer();
 
         // sb.append("<h2>Calendar: " + day + "/" + month + "/" + year + "</h2>" );
 
@@ -1613,7 +1476,7 @@ public final class Users extends HttpServlet {
         try {
 
             final Collection entries;
-             entries = EntryDAO.ViewCalendarDay(year, month, day, uc.getBlogUser().getUserName(), uc.isAuthBlog());
+            entries = EntryDao.ViewCalendarDay(year, month, day, uc.getBlogUser().getUserName(), uc.isAuthBlog());
 
             if (entries == null || entries.size() == 0) {
                 sb.append("<p>Calendar data not available.</p>");
@@ -1655,6 +1518,8 @@ public final class Users extends HttpServlet {
                     "An error has occured rendering calendar.",
                     sb);
         }
+
+        return sb.toString();
     }
 
     /**
@@ -1664,10 +1529,10 @@ public final class Users extends HttpServlet {
      * @param uc User Context
      */
     @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
-    private static void getArchive(final UserContext uc) {
+    private String getArchive(final UserContext uc) {
         final java.util.GregorianCalendar calendarg = new java.util.GregorianCalendar();
         int yearNow = calendarg.get(Calendar.YEAR);
-        StringBuffer sb = uc.getSb();
+        StringBuffer sb = new StringBuffer();
 
         // BEGIN: YEARS
         sb.append("\t<div class=\"menuentity\" id=\"archive\" style=\"padding-top: 10px;\"><strong style=\"text-transform: uppercase; letter-spacing: 2px; border: 0 none; border-bottom: 1px; border-style: dotted; border-color: #999999; margin-bottom: 5px; width: 100%; font-size: 10px;\">Archive</strong><ul style=\"padding-left: 0; margin-left: 0;\">");
@@ -1682,7 +1547,7 @@ public final class Users extends HttpServlet {
             sb.append(i);
             sb.append(" (");
             try {
-                sb.append(EntryDAO.calendarCount(i, uc.getBlogUser().getUserName()));
+                sb.append(EntryDao.calendarCount(i, uc.getBlogUser().getUserName()));
             } catch (Exception e) {
                 log.error("getArchive: could not fetch count for " + uc.getBlogUser().getUserName() + ": " + i + e.getMessage());
                 sb.append("0");
@@ -1699,122 +1564,95 @@ public final class Users extends HttpServlet {
         sb.append("</div>");
         sb.append(endl);
         // END: YEARS
+
+        return sb.toString();
     }
 
     /**
      * Handles requests for syndication content (RSS). Only returns public journal entries for the specified user.
      *
-     * @param uc The UserContext we are working on including blog owner, authenticated user, and sb to write
+     * @param user
      */
-    private static void getRSS(final UserContext uc) {
-        // Create an RSS object, set the required
-        // properites (title, description language, url)
-        // and write it to the sb output.
-        try {
-            Rss rss = new Rss();
+    private String getRSS(final User user) {
+        Rss rss = new Rss();
 
-            final java.util.GregorianCalendar calendar = new java.util.GregorianCalendar();
-            calendar.setTime(new java.util.Date());
+        final java.util.GregorianCalendar calendar = new java.util.GregorianCalendar();
+        calendar.setTime(new java.util.Date());
 
-            rss.setTitle(uc.getBlogUser().getUserName());
-            rss.setLink("http://www.justjournal.com/users/" + uc.getBlogUser().getUserName());
-            rss.setSelfLink("http://www.justjournal.com/users/" + uc.getBlogUser().getUserName() + "/rss");
-            rss.setDescription("Just Journal for " + uc.getBlogUser().getUserName());
-            rss.setLanguage("en-us");
-            rss.setCopyright("Copyright " + calendar.get(Calendar.YEAR) + ' ' + uc.getBlogUser().getFirstName());
-            rss.setWebMaster("webmaster@justjournal.com (Lucas)");
-            // RSS advisory board format
-            rss.setManagingEditor(uc.getBlogUser().getEmailAddress() + " (" + uc.getBlogUser().getFirstName() + ")");
-            rss.populate(EntryDAO.view(uc.getBlogUser().getUserName(), false));
-            uc.getSb().append(rss.toXml());
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            // oops we goofed somewhere.  Its not in the original spec
-            // how to handle error conditions with rss.
-            // html back isn't good, but what do we do?
-            WebError.Display("RSS ERROR", "Unable to retrieve RSS content.", uc.getSb());
-        }
+        rss.setTitle(user.getUserName());
+        rss.setLink("http://www.justjournal.com/users/" + user.getUserName());
+        rss.setSelfLink("http://www.justjournal.com/users/" + user.getUserName() + "/rss");
+        rss.setDescription("Just Journal for " + user.getUserName());
+        rss.setLanguage("en-us");
+        rss.setCopyright("Copyright " + calendar.get(Calendar.YEAR) + ' ' + user.getFirstName());
+        rss.setWebMaster("webmaster@justjournal.com (Lucas)");
+        // RSS advisory board format
+        rss.setManagingEditor(user.getEmailAddress() + " (" + user.getFirstName() + ")");
+        rss.populate(EntryDao.view(user.getUserName(), false));
+        return rss.toXml();
     }
 
     /**
      * Handles requests for syndication content (Atom). Only returns public journal entries for the specified user.
      *
-     * @param uc The UserContext we are working on including blog owner, authenticated user, and sb to write
+     * @param user blog user
      */
-    private static void getAtom(final UserContext uc) {
-        // Create an Atom object, set the required
-        // properites (title, description language, url)
-        // and write it to the sb output.
-        try {
-            AtomFeed atom = new AtomFeed();
+    private String getAtom(final User user) {
 
-            final java.util.GregorianCalendar calendarg = new java.util.GregorianCalendar();
-            calendarg.setTime(new java.util.Date());
+        AtomFeed atom = new AtomFeed();
 
-            atom.setUserName(uc.getBlogUser().getUserName());
-            atom.setAlternateLink("http://www.justjournal.com/users/" + uc.getBlogUser().getUserName());
-            atom.setAuthorName(uc.getBlogUser().getFirstName());
-            atom.setUpdated(calendarg.toString());
-            atom.setTitle(uc.getBlogUser().getJournalName());
-            atom.setId("http://www.justjournal.com/users/" + uc.getBlogUser().getUserName() + "/atom");
-            atom.setSelfLink("/users/" + uc.getBlogUser().getUserName() + "/atom");
-            atom.populate(EntryDAO.view(uc.getBlogUser().getUserName(), false));
-            uc.getSb().append(atom.toXml());
-        } catch (Exception e) {
-            // oops we goofed somewhere.  Its not in the original spec
-            // how to handle error conditions with atom.
-            // html back isn't good, but what do we do?
-            WebError.Display("Atom ERROR", "Unable to retrieve Atom content.", uc.getSb());
-        }
+        final java.util.GregorianCalendar calendarg = new java.util.GregorianCalendar();
+        calendarg.setTime(new java.util.Date());
+
+        atom.setUserName(user.getUserName());
+        atom.setAlternateLink("http://www.justjournal.com/users/" + user.getUserName());
+        atom.setAuthorName(user.getFirstName());
+        atom.setUpdated(calendarg.toString());
+        atom.setTitle(user.getJournalName());
+        atom.setId("http://www.justjournal.com/users/" + user.getUserName() + "/atom");
+        atom.setSelfLink("/users/" + user.getUserName() + "/atom");
+        atom.populate(EntryDao.view(user.getUserName(), false));
+        return (atom.toXml());
     }
 
     /**
      * List the pictures associated with a blog in RSS.  This should be compatible with iPhoto.
      *
-     * @param uc User Context
+     * @param user blog user
      */
-    private static void getPicturesRSS(final UserContext uc) {
-        // Create an RSS object, set the required
-        // properites (title, description language, url)
-        // and write it to the sb output.
-        try {
-            final Rss rss = new Rss();
+    private String getPicturesRSS(final User user) {
 
-            final java.util.GregorianCalendar calendarg = new java.util.GregorianCalendar();
-            calendarg.setTime(new java.util.Date());
+        final Rss rss = new Rss();
 
-            rss.setTitle(uc.getBlogUser().getUserName() + "\'s pictures");
-            rss.setLink("http://www.justjournal.com/users/" + uc.getBlogUser().getUserName() + "/pictures");
-            rss.setSelfLink("http://www.justjournal.com/users/" + uc.getBlogUser().getUserName() + "/pictures/rss");
-            rss.setDescription("Just Journal Pictures for " + uc.getBlogUser().getUserName());
-            rss.setLanguage("en-us");
-            rss.setCopyright("Copyright " + calendarg.get(Calendar.YEAR) + ' ' + uc.getBlogUser().getFirstName());
-            rss.setWebMaster("webmaster@justjournal.com (Luke)");
-            // RSS advisory board format
-            rss.setManagingEditor(uc.getBlogUser().getEmailAddress() + " (" + uc.getBlogUser().getFirstName() + ")");
-            rss.populateImageList(uc.getBlogUser().getUserId(), uc.getBlogUser().getUserName());
-            uc.getSb().append(rss.toXml());
-        } catch (Exception e) {
-            // oops we goofed somewhere.  Its not in the original spec
-            // how to handle error conditions with rss.
-            // html back isn't good, but what do we do?
-            WebError.Display("RSS ERROR", "Unable to retrieve RSS content.", uc.getSb());
-        }
+        final java.util.GregorianCalendar calendarg = new java.util.GregorianCalendar();
+        calendarg.setTime(new java.util.Date());
+
+        rss.setTitle(user.getUserName() + "\'s pictures");
+        rss.setLink("http://www.justjournal.com/users/" + user.getUserName() + "/pictures");
+        rss.setSelfLink("http://www.justjournal.com/users/" + user.getUserName() + "/pictures/rss");
+        rss.setDescription("Just Journal Pictures for " + user.getUserName());
+        rss.setLanguage("en-us");
+        rss.setCopyright("Copyright " + calendarg.get(Calendar.YEAR) + ' ' + user.getFirstName());
+        rss.setWebMaster("webmaster@justjournal.com (Luke)");
+        // RSS advisory board format
+        rss.setManagingEditor(user.getEmailAddress() + " (" + user.getFirstName() + ")");
+        rss.populateImageList(user.getUserId(), user.getUserName());
+        return (rss.toXml());
     }
 
     /* TODO: finish this */
-    private static void getTags(final UserContext uc, String tag) {
-        StringBuffer sb = uc.getSb();
+    private String getTags(final UserContext uc, String tag) {
+        final StringBuilder sb = new StringBuilder();
         final Collection entries;
 
         try {
             if (uc.isAuthBlog()) {
-                entries = EntryDAO.viewAll(uc.getBlogUser().getUserName(), true);  // should be true
+                entries = EntryDao.viewAll(uc.getBlogUser().getUserName(), true);  // should be true
 
                 if (log.isDebugEnabled())
                     log.debug("getTags: User is logged in.");
             } else {
-                entries = EntryDAO.viewAll(uc.getBlogUser().getUserName(), false);
+                entries = EntryDao.viewAll(uc.getBlogUser().getUserName(), false);
 
                 if (log.isDebugEnabled())
                     log.debug("getTags: User is not logged in.");
@@ -1858,38 +1696,10 @@ public final class Users extends HttpServlet {
                 }
             }
         } catch (Exception e1) {
-            WebError.Display("Error",
-                    "Unable to retrieve journal entries from data store.",
-                    sb);
-
             if (log.isDebugEnabled())
                 log.debug("getTags: Exception is " + e1.getMessage() + '\n' + e1.toString());
         }
-    }
-
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request  servlet request
-     * @param response servlet response
-     * @throws ServletException
-     * @throws java.io.IOException
-     */
-    @Override
-    protected void doGet(final HttpServletRequest request, final HttpServletResponse response)
-            throws ServletException, java.io.IOException {
-        processRequest(request, response);
-
-    }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return description string
-     */
-    @Override
-    public String getServletInfo() {
-        return "view journal entries";
+        return sb.toString();
     }
 
     /**
@@ -1901,7 +1711,7 @@ public final class Users extends HttpServlet {
      * @param single      Single blog entries are formatted differently
      * @return HTML formatted entry
      */
-    protected static String formatEntry(final UserContext uc, final EntryTo o, final Date currentDate, boolean single) {
+    protected String formatEntry(final UserContext uc, final EntryTo o, final Date currentDate, boolean single) {
         final StringBuilder sb = new StringBuilder();
         final SimpleDateFormat formatmytime = new SimpleDateFormat("h:mm a");
 
@@ -2125,7 +1935,7 @@ public final class Users extends HttpServlet {
         sb.append(endl);
 
         if (single) {
-            Collection comments = CommentDao.list(o.getId());
+            List<Comment> comments = commentDao.list(o.getId());
 
             sb.append("<div class=\"commentcount\">");
             sb.append(o.getCommentCount());
@@ -2134,12 +1944,7 @@ public final class Users extends HttpServlet {
             sb.append("<div class=\"rightflt\">");
             sb.append("<a href=\"add.jsp?id=").append(o.getId()).append("\" title=\"Add Comment\">Add Comment</a></div>\n");
 
-            CommentTo co;
-            final Iterator itr = comments.iterator();
-
-            for (int i = 0, n = comments.size(); i < n; i++) {
-                co = (CommentTo) itr.next();
-
+            for (Comment co : comments) {
                 sb.append("<div class=\"comment\">\n");
                 sb.append("<div class=\"chead\">\n");
                 sb.append("<h3><span class=\"subject\">");
@@ -2193,30 +1998,18 @@ public final class Users extends HttpServlet {
      */
     @SuppressWarnings({"InstanceVariableOfConcreteClass"})
     private class UserContext {
-        private StringBuffer sb;        // the output buffer.
         private User blogUser;          // the blog owner
         private User authenticatedUser; // the logged in user
 
         /**
          * Default constructor for User Context.  Creates a usable instance.
          *
-         * @param sb       Output buffer
          * @param blogUser blog owner
          * @param authUser logged in user
          */
-        UserContext(final StringBuffer sb, final User blogUser, final User authUser) {
+        UserContext(final User blogUser, final User authUser) {
             this.blogUser = blogUser;
             this.authenticatedUser = authUser;
-            this.sb = sb;
-        }
-
-        /**
-         * Retrieve the output buffer
-         *
-         * @return output string buffer
-         */
-        public StringBuffer getSb() {
-            return sb;
         }
 
         /**

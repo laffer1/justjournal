@@ -27,14 +27,14 @@
 package com.justjournal.db;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 /**
  * Track the number of users, entry and comment statistics, and other information.
  *
  * @author Lucas Holt
  */
-@Service
+@Component
 final public class StatisticsImpl implements Statistics {
 
     private int users = 0;

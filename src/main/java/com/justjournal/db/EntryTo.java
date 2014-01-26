@@ -38,7 +38,6 @@ import com.fasterxml.jackson.annotation.*;
 import com.justjournal.utility.HTMLUtil;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 
 /**
@@ -46,7 +45,7 @@ import java.util.Date;
  *
  * @author Lucas Holt
  * @version 1.0
- * @see EntryDAO
+ * @see EntryDao
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @JsonIgnoreProperties(ignoreUnknown = true)

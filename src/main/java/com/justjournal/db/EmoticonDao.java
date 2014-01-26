@@ -34,20 +34,20 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
- import com.sun.istack.internal.NotNull;
+import com.sun.istack.internal.NotNull;
+import org.springframework.stereotype.Component;
 
- import java.sql.ResultSet;
+import java.sql.ResultSet;
 
 
 /**
- * @author Lucas Holt
- *         User: laffer1
- *         Date: Sep 22, 2003
- *         Time: 11:01:27 PM
+ * @author Lucas Holt User: laffer1 Date: Sep 22, 2003 Time: 11:01:27 PM
  */
+@Component
 public final class EmoticonDao {
 
-    public @NotNull
+    public
+    @NotNull
     static EmoticonTo get(int themeId, int moodId) {
         int id = moodId;  // start at mood id but change as necessary
 

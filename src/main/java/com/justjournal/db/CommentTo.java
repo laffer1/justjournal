@@ -31,6 +31,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.justjournal.utility.HTMLUtil;
 import com.sun.istack.internal.NotNull;
+import org.springframework.stereotype.Component;
 
 /**
  * A comment
@@ -38,6 +39,7 @@ import com.sun.istack.internal.NotNull;
  * @author Lucas Holt
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+@Component
 public final class CommentTo implements Comment {
 
     private int id = 0;
@@ -59,7 +61,7 @@ public final class CommentTo implements Comment {
     }
 
     public void setId(int commentId)
-    throws IllegalArgumentException {
+            throws IllegalArgumentException {
         if (commentId < 0)
             throw new IllegalArgumentException("Illegal commentId: " +
                     commentId);
@@ -72,7 +74,7 @@ public final class CommentTo implements Comment {
     }
 
     public void setEid(int entryId)
-    throws IllegalArgumentException {
+            throws IllegalArgumentException {
         if (entryId < 0)
             throw new IllegalArgumentException("Illegal entryId: " +
                     entryId);
@@ -85,7 +87,7 @@ public final class CommentTo implements Comment {
     }
 
     public void setDate(String commentDate)
-    throws IllegalArgumentException {
+            throws IllegalArgumentException {
         if (commentDate.length() < 6)
             throw new IllegalArgumentException("Illegal commentDate: " +
                     commentDate);
@@ -108,7 +110,7 @@ public final class CommentTo implements Comment {
     }
 
     public void setSubject(String subjectText)
-    throws IllegalArgumentException {
+            throws IllegalArgumentException {
 
         if (subjectText.length() == 0)
             this.subject = "(no subject)";
@@ -131,7 +133,7 @@ public final class CommentTo implements Comment {
     }
 
     public void setBody(String bodyText)
-    throws IllegalArgumentException {
+            throws IllegalArgumentException {
         if (bodyText.length() < 2)
             throw new IllegalArgumentException("Illegal bodyText: " +
                     bodyText);
@@ -144,7 +146,7 @@ public final class CommentTo implements Comment {
     }
 
     public void setUserId(int uid)
-    throws IllegalArgumentException {
+            throws IllegalArgumentException {
         if (uid < 0)
             throw new IllegalArgumentException("Illegal user commentId: " +
                     uid);
