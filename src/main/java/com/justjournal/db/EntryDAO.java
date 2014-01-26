@@ -49,6 +49,7 @@ import org.apache.cayenne.query.Query;
 import org.apache.cayenne.query.SelectQuery;
 import org.apache.cayenne.query.SortOrder;
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.util.*;
@@ -67,12 +68,13 @@ import static java.util.Collections.singletonMap;
  * <p/>
  * 1.1 Fixed a bug selecting older entries. 1.0 initial release
  */
-public final class EntryDAO {
+@Component
+public final class EntryDao {
     private final static int MAX_ENTRIES = 20;
     private final static int MAX_FRIENDS = 15;
     private final static int TAG_MAX_LENGTH = 30;
 
-    private static final Logger log = Logger.getLogger(EntryDAO.class.getName());
+    private static final Logger log = Logger.getLogger(EntryDao.class.getName());
 
     /**
      * Adds a journal entry to the data store.
