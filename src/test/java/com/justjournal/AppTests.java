@@ -98,8 +98,7 @@ public class AppTests {
     @Test
     public void apiStatisticsBadUser() throws Exception {
         mockMvc.perform(get("/api/statistics/root"))
-                .andExpect(status().isNotFound())
-                .andExpect(content().contentTypeCompatibleWith("application/json;charset=UTF-8"));
+                .andExpect(status().isNotFound());
     }
 
     @Test

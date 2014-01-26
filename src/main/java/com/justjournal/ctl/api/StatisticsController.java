@@ -28,6 +28,7 @@ package com.justjournal.ctl.api;
 
 import com.justjournal.db.Statistics;
 import com.justjournal.db.UserStatistics;
+import com.justjournal.db.UserStatisticsImpl;
 import com.justjournal.services.ServiceException;
 import com.justjournal.services.StatisticsService;
 import com.sun.istack.internal.Nullable;
@@ -86,12 +87,11 @@ final public class StatisticsController {
      */
     @RequestMapping(value = "{id}", method = RequestMethod.GET, headers = "Accept=*/*", produces = "application/json")
     @ResponseBody
-    @Nullable
     public UserStatistics getById(@PathVariable String id, HttpServletResponse response) {
         try {
             if (id == null || id.equals("") || id.length() < 3) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                return null;
+                return new UserStatisticsImpl();
             }
 
             UserStatistics us = statisticsService.getUserStatistics(id);
@@ -102,7 +102,7 @@ final public class StatisticsController {
         } catch (ServiceException e) {
             log.warn("User Statistics error: (" + id + "), " + e.getMessage());
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            return null;
+            return new UserStatisticsImpl();
         }
     }
 }
