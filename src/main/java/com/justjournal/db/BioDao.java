@@ -40,10 +40,12 @@ import org.apache.cayenne.CayenneRuntimeException;
 import org.apache.cayenne.ObjectContext;
 import org.apache.cayenne.access.DataContext;
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Component;
 
 /**
  * Manage biography for users
  */
+@Component
 public final class BioDao {
     private static final Logger log = Logger.getLogger(BioDao.class.getName());
 

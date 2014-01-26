@@ -36,6 +36,7 @@ package com.justjournal.db;
 
 import com.justjournal.utility.StringUtil;
 import com.sun.istack.internal.NotNull;
+import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -49,6 +50,7 @@ import java.util.ArrayList;
  *          Date: Dec 25, 2003
  *          Time: 2:19:28 PM
  */
+@Component
 public final class CommentDao {
 
     /**
