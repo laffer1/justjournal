@@ -30,6 +30,7 @@ import com.justjournal.db.*;
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -41,6 +42,13 @@ import org.springframework.stereotype.Service;
 public class StatisticsServiceImpl implements StatisticsService {
     private static final Logger log = Logger.getLogger(StatisticsServiceImpl.class);
 
+    private CommentDao commentDao = null;
+
+    @Autowired
+    public void setCommentDao(CommentDao commentDao) {
+        this.commentDao = commentDao;
+    }
+
     @Override
     @Nullable
     public UserStatistics getUserStatistics(String username) throws ServiceException {
@@ -51,8 +59,8 @@ public class StatisticsServiceImpl implements StatisticsService {
             if (UserDao.view(username) == null) return null;
 
             userStatistics.setUsername(username);
-            userStatistics.setEntryCount(EntryDAO.entryCount(username));
-            userStatistics.setCommentCount(CommentDao.commentCount(username));
+            userStatistics.setEntryCount(EntryDao.entryCount(username));
+            userStatistics.setCommentCount(commentDao.count(username));
 
             return userStatistics;
         } catch (Exception e) {
