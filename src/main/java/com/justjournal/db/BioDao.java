@@ -49,8 +49,8 @@ import org.springframework.stereotype.Component;
 public final class BioDao {
     private static final Logger log = Logger.getLogger(BioDao.class.getName());
 
-    public static boolean add(BioTo bioTo) {
-          try {
+    public boolean add(Bio bioTo) {
+        try {
             ObjectContext dataContext = DataContext.getThreadObjectContext();
             com.justjournal.model.UserBio bio = dataContext.newObject(com.justjournal.model.UserBio.class);
 
@@ -65,8 +65,8 @@ public final class BioDao {
        return false;
     }
 
-    public static boolean update(BioTo bioTo) {
-          try {
+    public boolean update(Bio bioTo) {
+        try {
             ObjectContext dataContext = DataContext.getThreadObjectContext();
 
             com.justjournal.model.UserBio bio =
@@ -80,7 +80,7 @@ public final class BioDao {
         return false;
     }
 
-    public static boolean delete(int userId) {
+    public boolean delete(int userId) {
         try {
             ObjectContext dataContext = DataContext.getThreadObjectContext();
 
@@ -96,8 +96,8 @@ public final class BioDao {
     }
 
     @NotNull
-    public static BioTo get(int userId) {
-        BioTo bioto = new BioTo();
+    public Bio get(int userId) {
+        Bio bioto = new BioTo();
 
         try {
             ObjectContext dataContext = DataContext.getThreadObjectContext();

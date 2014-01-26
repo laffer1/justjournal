@@ -30,6 +30,7 @@ import com.justjournal.WebLogin;
 import com.justjournal.db.*;
 import com.justjournal.utility.StringUtil;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Controller;
@@ -48,18 +49,26 @@ import java.util.Map;
 @RequestMapping("/api/biography")
 final public class BiographyController {
     private static final Logger log = Logger.getLogger(BiographyController.class);
+    public static final int BIO_MAX_LENGTH = 150;
+
+    private BioDao bioDao = null;
+
+    @Autowired
+    public void setBioDao(BioDao bioDao) {
+        this.bioDao = bioDao;
+    }
 
     @Cacheable(value = "biography", key = "username")
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public
     @ResponseBody
-    BioTo get(@RequestParam String username, HttpServletResponse response) {
+    Bio get(@RequestParam String username, HttpServletResponse response) {
         UserTo user = UserDao.view(username);
         if (user == null) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return null;
         }
-        return BioDao.get(user.getId());
+        return bioDao.get(user.getId());
     }
 
     // TODO: API is bad for caching.
@@ -71,17 +80,17 @@ final public class BiographyController {
 
         int userID = WebLogin.currentLoginId(session);
 
-        if (!StringUtil.lengthCheck(bio, 5, 150)) {
+        if (!StringUtil.lengthCheck(bio, 5, BIO_MAX_LENGTH)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return java.util.Collections.singletonMap("error", "Biography must be > 5 characters");
         }
 
         try {
-
             if (userID > 0) {
-                String strSQL = "UPDATE user_bio SET content='" +
-                        StringUtil.replace(bio, '\'', "\\\'") + "' WHERE id='" + userID + "' LIMIT 1;";
-                if (SQLHelper.executeNonQuery(strSQL) == 1)
+                Bio biography = new BioTo();
+                biography.setUserId(userID);
+                biography.setBio(bio);
+                if (bioDao.update(biography))
                     return java.util.Collections.singletonMap("status", "success");
 
             } else {
@@ -95,7 +104,6 @@ final public class BiographyController {
 
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         return java.util.Collections.singletonMap("error", "Unable to save biography");
-
     }
 
 }

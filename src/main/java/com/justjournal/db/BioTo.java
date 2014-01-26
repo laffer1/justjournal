@@ -38,6 +38,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.istack.internal.NotNull;
+import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 
@@ -45,53 +46,55 @@ import java.io.Serializable;
  * Biography
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-public final class BioTo implements Serializable {
+@Component
+public final class BioTo implements Serializable, Bio {
     private static final long serialVersionUID = -8084680761484133150L;
-    private int userId;
-    private String bio;
+    private int userId = 0;
+    private String bio = "";
 
     @JsonCreator
     public BioTo() {
 
     }
 
-    public final int getUserId() {
+    public int getUserId() {
         return this.userId;
     }
 
-    public final void setUserId(int uid) {
+    public void setUserId(int uid) {
         this.userId = uid;
     }
 
-    public final String getBio() {
+    public String getBio() {
         return this.bio;
     }
 
-    public final void setBio(String bioText) {
+    public void setBio(String bioText) {
         this.bio = bioText;
     }
 
     @JsonIgnore
     @Override
-    public @NotNull
+    public
+    @NotNull
     final String toString() {
         return "user id: " + userId + '\n' + "bio: " + bio + '\n';
     }
 
     @JsonIgnore
     @Override
-    public final boolean equals(Object o) {
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        final BioTo bioTo = (BioTo) o;
+        final Bio bioTo = (Bio) o;
 
         return userId == bioTo.getUserId() && bio.equals(bioTo.getBio());
     }
 
     @JsonIgnore
     @Override
-    public final int hashCode() {
+    public int hashCode() {
         int result;
         result = userId;
         result = 29 * result + bio.hashCode();
