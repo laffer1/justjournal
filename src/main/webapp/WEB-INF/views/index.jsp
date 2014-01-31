@@ -14,10 +14,10 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-    <link rel="stylesheet" href="styles/bootstrap.min.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/bootstrap.min.css">
     <!-- build:css styles/main.css -->
-    <link rel="stylesheet" href="components/angular-ui/build/angular-ui.css"/>
-    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/components/angular-ui/build/angular-ui.css"/>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/main.css">
     <!-- endbuild -->
     <!-- IE 10 support -->
     <style type="text/css">
@@ -53,14 +53,15 @@
 <![endif]-->
 
 <!--[if lt IE 9]>
-<script src="components/es5-shim/es5-shim.js" type="text/javascript"></script>
-<script src="components/json3/lib/json3.min.js" type="text/javascript"></script>
+<script src="${pageContext.request.contextPath}/components/es5-shim/es5-shim.js" type="text/javascript"></script>
+<script src="${pageContext.request.contextPath}/components/json3/lib/json3.min.js" type="text/javascript"></script>
 <![endif]-->
 
 <!-- Header: Begin -->
 <header>
     <div id="header">
-        <a href="#/"><img src="images/jj_header.gif" alt="JustJournal" width="608"></a>
+        <a href="${pageContext.request.contextPath}#/"><img
+                src="${pageContext.request.contextPath}/images/jj_header.gif" alt="JustJournal" width="608"></a>
     </div>
 </header>
 <!-- Header: End -->
@@ -74,9 +75,9 @@
 <div id="footer">
     <p id="copyright">&#169; 2003 - 2014 Lucas Holt. All rights reserved.</p>
 
-    <p><a href="#/privacy" title="Privacy Policy">Privacy</a> |
-        <a href="#/search" title="Search">Search</a> |
-        <a href="#/sitemap" title="Sitemap">Sitemap</a></p>
+    <p><a href="${pageContext.request.contextPath}#/privacy" title="Privacy Policy">Privacy</a> |
+        <a href="${pageContext.request.contextPath}#/search" title="Search">Search</a> |
+        <a href="${pageContext.request.contextPath}#/sitemap" title="Sitemap">Sitemap</a></p>
 </div>
 
 <div style="text-align: center; margin: auto;">
@@ -94,16 +95,22 @@
 </footer>
 <!-- Footer: End -->
 
-<script type="text/javascript" src="components/jquery/jquery.min.js"></script>
-<script type="text/javascript" src="components/jquery.validation/jquery.validate.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}components/jquery/jquery.min.js"></script>
+<script type="text/javascript"
+        src="${pageContext.request.contextPath}components/jquery.validation/jquery.validate.js"></script>
 <script type="text/javascript" src="js/bootstrap.min.js"></script>
-<script type="text/javascript" src="components/angular/angular.js"></script>
-<script type="text/javascript" src="components/angular-resource/angular-resource.js"></script>
-<script type="text/javascript" src="components/angular-route/angular-route.js"></script>
-<script type="text/javascript" src="components/angular-cookies/angular-cookies.js"></script>
-<script type="text/javascript" src="components/angular-sanitize/angular-sanitize.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}components/angular/angular.js"></script>
+<script type="text/javascript"
+        src="${pageContext.request.contextPath}components/angular-resource/angular-resource.js"></script>
+<script type="text/javascript"
+        src="${pageContext.request.contextPath}components/angular-route/angular-route.js"></script>
+<script type="text/javascript"
+        src="${pageContext.request.contextPath}components/angular-cookies/angular-cookies.js"></script>
+<script type="text/javascript"
+        src="${pageContext.request.contextPath}components/angular-sanitize/angular-sanitize.js"></script>
 
-<script type="text/javascript" src="components/angular-ui/build/angular-ui.js"></script>
+<script type="text/javascript"
+        src="${pageContext.request.contextPath}components/angular-ui/build/angular-ui.js"></script>
 
 <!-- build:js scripts/scripts.js -->
 <script type="text/javascript" src="scripts/app.js"></script>
