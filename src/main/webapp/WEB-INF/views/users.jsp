@@ -35,45 +35,48 @@
 <!-- Menu: Begin -->
 <div id="menu">
     <c:if test="${user.showAvatar == true}">
-        <img alt="avatar" src="../../image?id=<c:out value="${user.userId}"/>">
+        <img alt="avatar" src="${pageContext.request.contextPath}image?id=<c:out value="${user.userId}"/>">
     </c:if>
 
     <p id="muser">
-        <a href="/users/<c:out value="${user.userName}"/>">Journal Entries</a><br/>
-        <a href="/users/<c:out value="${user.userName}"/>/calendar">Calendar</a><br/>
-        <a href="/users/<c:out value="${user.userName}"/>/friends">Friends</a><br/>
-        <a href="/users/<c:out value="${user.userName}"/>/pictures">Pictures</a><br/>
-        <a href="/profile.jsp?user=<c:out value="${user.userName}"/>">Profile</a><br/>
+        <a href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>">Journal Entries</a><br/>
+        <a href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>/calendar">Calendar</a><br/>
+        <a href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>/friends">Friends</a><br/>
+        <a href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>/pictures">Pictures</a><br/>
+        <a href="${pageContext.request.contextPath}profile.jsp?user=<c:out value="${user.userName}"/>">Profile</a><br/>
     </p>
 
     <p id="mgen">
-        <a href="/#/entry">Update Journal</a><br/>
-        <a href="/">Login</a>
+        <a href="${pageContext.request.contextPath}#/entry">Update Journal</a><br/>
+        <a href="${pageContext.request.contextPath}">Login</a>
     </p>
 
     <p id="mrssreader">
-        <a href="/users/<c:out value="${user.userName}"/>/subscriptions">RSS Reader</a><br/>
+        <a href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>/subscriptions">RSS
+            Reader</a><br/>
     </p>
 
     <div id="mformats"><strong
-            style="text-transform: uppercase; letter-spacing: 2px; border: 0 none; border-bottom: 1px; border-style: dotted; border-color: #999999; margin-bottom: 10px; width: 100%; font-size: 10px;">Formats</strong><br/>
+            style="text-transform: uppercase; letter-spacing: 2px; border: 0 dotted #999999;border-bottom-width: 1px;margin-bottom: 10px; width: 100%; font-size: 10px;">Formats</strong><br/>
 
-        <p><a rel="alternate" href="/users/<c:out value="${user.userName}"/>/rss"><i class="fa fa-rss"></i> RSS</a><br/>
-            <a rel="alternate" href="/users/<c:out value="${user.userName}"/>/atom"><i class="fa fa-rss"></i>
+        <p><a rel="alternate" href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>/rss"><i
+                class="fa fa-rss"></i> RSS</a><br/>
+            <a rel="alternate" href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>/atom"><i
+                    class="fa fa-rss"></i>
                 ATOM</a><br/>
-            <img src="../../images/icon_pdf.gif" alt="PDF"/><a
+            <img src="${pageContext.request.contextPath}/images/icon_pdf.gif" alt="PDF"/><a
                     href="http://www.justjournal.com/users/<c:out value="${user.userName}"/>/pdf">PDF</a><br/>
-            <img src="../../images/icon_rtf.gif" alt="RTF"/><a
+            <img src="${pageContext.request.contextPath}/images/icon_rtf.gif" alt="RTF"/><a
                     href="http://www.justjournal.com/users/<c:out value="${user.userName}"/>/rtf">RTF</a><br/>
         </p>
     </div>
     <div id="msearchbox"><strong
-            style="text-transform: uppercase; letter-spacing: 2px; border: 0 none; border-bottom: 1px; border-style: dotted; border-color: #999999; margin-bottom: 5px; width: 100%; font-size: 10px;">Search</strong>
+            style="text-transform: uppercase; letter-spacing: 2px; border: 0 dotted #999999;border-bottom-width: 1px;margin-bottom: 5px; width: 100%; font-size: 10px;">Search</strong>
 
-        <form id="msearch" action="http://www.justjournal.com/users/<c:out value="${user.userName}"/>/search"
+        <form id="msearch" action="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>/search"
               method="get">
-        <p><input type="text" name="bquery" id="bquery" style="width: 90px;"/><br/>
-                <input type="submit" name="search" id="searchbtn" value="Search Blog"/></p>
+            <p><input type="search" name="bquery" id="bquery" style="width: 90px;" placeholder="Search"><br>
+                <input type="submit" name="search" id="searchbtn" value="Search Blog"></p>
         </form>
     </div>
 
@@ -94,7 +97,7 @@
 <div id="content">
     <c:if test="${authenticatedUsername != null}">
         <p>You are logged in as <a href="/users/<c:out value="${user.userName}"/>"><img
-                src="../../images/userclass_16.png"
+                src="${pageContext.request.contextPath}/images/userclass_16.png"
                 alt="user"> <c:out value="${user.userName}"/></a>
         </p>
     </c:if>
@@ -107,11 +110,21 @@
     <c:out value="${subscriptions}"/>
     <c:out value="${tags}"/>
     <c:out value="${calendar}"/>
+
+    <c:if test="${startYear} != null && ${startYear > 2002}">
+        <p>The calendar lists months with journal entries.</p>
+
+        <p>
+            <c:forEach begin="${startYear}" end="${currentYear}" var="yr">
+                <a href="../${yr}">${yr}</a>
+            </c:forEach>
+        </p>
+    </c:if>
 </div>
 
 <!-- Footer: Begin -->
 <div id="footer">
-    <a href="/" title="JustJournal.com: Online Journals">JustJournal.com</a>
+    <a href="${pageContext.request.contextPath}" title="JustJournal.com: Online Journals">JustJournal.com</a>
 </div>
 <!-- Footer: End -->
 
