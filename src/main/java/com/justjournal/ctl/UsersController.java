@@ -158,7 +158,6 @@ public final class UsersController extends HttpServlet {
         return "users";
     }
 
-    //TODO: finish
     @RequestMapping(value = "{username}/calendar", method = RequestMethod.GET, produces = "text/html")
     public String calendar(@PathVariable String username, Model model, HttpSession session, HttpServletResponse response) {
         UserContext userc = getUserContext(username, session);
@@ -178,6 +177,9 @@ public final class UsersController extends HttpServlet {
 
         final java.util.Calendar cal = new GregorianCalendar();
         int year = cal.get(java.util.Calendar.YEAR);
+
+        model.addAttribute("startYear", userc.getBlogUser().getStartYear());
+        model.addAttribute("currentYear", year);
 
         return "users";
     }

@@ -96,7 +96,8 @@
 <!-- Content: Begin -->
 <div id="content">
     <c:if test="${authenticatedUsername != null}">
-        <p>You are logged in as <a href="/users/<c:out value="${user.userName}"/>"><img
+        <p>You are logged in as <a
+                href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>"><img
                 src="${pageContext.request.contextPath}/images/userclass_16.png"
                 alt="user"> <c:out value="${user.userName}"/></a>
         </p>
