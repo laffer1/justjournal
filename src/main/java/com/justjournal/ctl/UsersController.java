@@ -198,9 +198,10 @@ public final class UsersController extends HttpServlet {
         model.addAttribute("links", getUserLinks(userc));
         model.addAttribute("archive", getArchive(userc));
         model.addAttribute("taglist", getTagMini(userc));
-        getCalendar(year, userc);
 
-        return "users_calendar";
+        model.addAttribute("calendar", getCalendar(year, userc));
+
+        return "users";
     }
 
     @RequestMapping(value = "{username}/{year}/{month}", method = RequestMethod.GET, produces = "text/html")
@@ -220,9 +221,9 @@ public final class UsersController extends HttpServlet {
         model.addAttribute("archive", getArchive(userc));
         model.addAttribute("taglist", getTagMini(userc));
 
-        getCalendarMonth(year, month, userc);
+        model.addAttribute("calendar", getCalendarMonth(year, month, userc));
 
-        return "users_calendar";
+        return "users";
     }
 
     @RequestMapping(value = "{username}/{year}/{month}/{day}", method = RequestMethod.GET, produces = "text/html")
@@ -241,9 +242,10 @@ public final class UsersController extends HttpServlet {
         model.addAttribute("links", getUserLinks(userc));
         model.addAttribute("archive", getArchive(userc));
         model.addAttribute("taglist", getTagMini(userc));
-        getCalendarDay(year, month, day, userc);
 
-        return "users_calendar";
+        model.addAttribute("calendar", getCalendarDay(year, month, day, userc));
+
+        return "users";
     }
 
     @RequestMapping(value = "{username}/atom", method = RequestMethod.GET, produces = "text/xml; charset=UTF-8")
@@ -367,7 +369,7 @@ public final class UsersController extends HttpServlet {
         model.addAttribute("archive", getArchive(userc));
         model.addAttribute("taglist", getTagMini(userc));
 
-        getImageList(userc);
+        model.addAttribute("pictures", getImageList(userc));
 
         return "users";
     }
@@ -397,7 +399,8 @@ public final class UsersController extends HttpServlet {
                 maxr = SEARCH_MAX_LENGTH;
                 log.error(exInt.getMessage());
             }
-        search(userc, maxr, bquery);
+
+        model.addAttribute("search", search(userc, maxr, bquery));
 
         return "users";
     }
@@ -419,7 +422,7 @@ public final class UsersController extends HttpServlet {
         model.addAttribute("archive", getArchive(userc));
         model.addAttribute("taglist", getTagMini(userc));
 
-        getSubscriptions(userc);
+        model.addAttribute("subscriptions", getSubscriptions(userc));
 
         return "users";
     }
@@ -450,8 +453,7 @@ public final class UsersController extends HttpServlet {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
 
-
-        return "users_tag";
+        return "users";
     }
 
     private UserContext getUserContext(String username, HttpSession session) {
