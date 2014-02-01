@@ -43,11 +43,11 @@ public class UserTests {
         Util.setupDb();
     }
 
-    private User user;
+    private UserImpl user;
 
     @Before
     public void setUp() throws Exception {
-        user = new User("jjsite");
+        user = new UserImpl("jjsite");
     }
 
     @Test

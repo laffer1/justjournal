@@ -41,6 +41,7 @@ import com.justjournal.core.Settings;
 import com.justjournal.core.TrackbackOut;
 import com.justjournal.db.EntryDaoImpl;
 import com.justjournal.db.EntryImpl;
+import com.justjournal.db.EntryTo;
 import com.justjournal.restping.BasePing;
 import com.justjournal.restping.IceRocket;
 import com.justjournal.restping.TechnoratiPing;
@@ -55,6 +56,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -77,6 +79,8 @@ public final class UpdateJournal extends HttpServlet {
 
     private static final char endl = '\n';
     private static final Logger log = Logger.getLogger(UpdateJournal.class);
+    public static final int DEFAULT_BUFFER_SIZE = 8192;
+    private static final long serialVersionUID = -6905389941955230503L;
     @SuppressWarnings({"InstanceVariableOfConcreteClass"})
     private Settings settings = new Settings();  // global jj settings
 
@@ -261,7 +265,7 @@ public final class UpdateJournal extends HttpServlet {
         sb.append("\t<div id=\"footer\">");
         sb.append(endl);
         sb.append("\t\t<a href=\"/index.jsp\" title=\"");
-        sb.append(settings.getSiteName()); // TODO: long name?
+        sb.append(settings.getSiteName());
         sb.append("\">");
         sb.append(settings.getSiteName());
         sb.append("</a> ");
@@ -275,7 +279,6 @@ public final class UpdateJournal extends HttpServlet {
         sb.append(endl);
         sb.append("</html>");
         sb.append(endl);
-
     }
 
     /**
@@ -285,7 +288,7 @@ public final class UpdateJournal extends HttpServlet {
      * @param client client param
      * @return ClientType
      */
-    public static ClientType detectClient(final String ua, final String client) {
+    private static ClientType detectClient(final String ua, final String client) {
         if (ua != null && ua.contains("JustJournal")) {
             return ClientType.desktop;
         } else if (client != null && client.contains("dash")) {
@@ -331,14 +334,14 @@ public final class UpdateJournal extends HttpServlet {
             // Send HTML type in http stream
             final String mimeType = HTMLUtil.determineMimeType(request.getHeader("Accept"), userAgent);
             response.setContentType(mimeType + "; charset=utf-8");
-            response.setBufferSize(8192);
+            response.setBufferSize(DEFAULT_BUFFER_SIZE);
             response.setDateHeader("Expires", System.currentTimeMillis());
             response.setDateHeader("Last-Modified", System.currentTimeMillis());
             response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
             response.setHeader("Pragma", "no-cache");
         } else if (myclient == ClientType.mobile) {
             response.setContentType("application/xhtml+xml; charset=utf-8");
-            response.setBufferSize(8192);
+            response.setBufferSize(DEFAULT_BUFFER_SIZE);
             response.setDateHeader("Expires", System.currentTimeMillis());
             response.setDateHeader("Last-Modified", System.currentTimeMillis());
             response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
@@ -546,7 +549,7 @@ public final class UpdateJournal extends HttpServlet {
                 if (!blnError) {
                     log.debug("Add Tags");
                     if (tags.length() > 0) {
-                        final ArrayList<String> t = new ArrayList<String>();
+                        final Collection<String> t = new ArrayList<String>();
                         final StringTokenizer st = new StringTokenizer(tags, " :,;");
                         while (st.hasMoreTokens()) {
                             String tok = st.nextToken();
@@ -562,7 +565,7 @@ public final class UpdateJournal extends HttpServlet {
 
                         // lookup the tag id
                         if (t.size() > 0) {
-                            final EntryImpl et2 = EntryDaoImpl.viewSingle(et);
+                            final EntryTo et2 = EntryDaoImpl.viewSingle(et);
                             EntryDaoImpl.setTags(et2.getId(), t);
                         }
                     }
@@ -600,7 +603,7 @@ public final class UpdateJournal extends HttpServlet {
                                     sb);
                         }
 
-                        if (!pf.isPrivateJournal() && pf.getPingServices()) {
+                        if (pf != null && !pf.isPrivateJournal() && pf.getPingServices()) {
                             log.debug("Ping weblogs");
                             /* WebLogs, Google, blo.gs */
                             final BasePing rp = new BasePing("http://rpc.weblogs.com/pingSiteForm");
@@ -628,7 +631,7 @@ public final class UpdateJournal extends HttpServlet {
 
                             /* do trackback */
                             if (trackback.length() > 0) {
-                                final EntryImpl et2 = EntryDaoImpl.viewSingle(et);
+                                final EntryTo et2 = EntryDaoImpl.viewSingle(et);
                                 final TrackbackOut tbout = new TrackbackOut(trackback,
                                         settings.getBaseUri() + "users/" + userName + "/entry/" + et2.getId(),
                                         et.getSubject(), et.getBody(), pf.getJournalName());

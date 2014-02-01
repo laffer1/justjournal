@@ -95,8 +95,7 @@ final public class RecentBlogs {
             // html back isn't good, but what do we do?
             log.debug(e);
             try {
-
-                response.sendError(500);
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             } catch (IOException e1) {
                 log.debug(e1);
             }

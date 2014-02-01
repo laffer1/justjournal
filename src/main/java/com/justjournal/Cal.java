@@ -34,14 +34,16 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal;
 
-import com.justjournal.db.EntryImpl;
+import com.justjournal.db.EntryTo;
 import org.apache.log4j.Logger;
 
+import java.lang.reflect.Array;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Storage for calendar months.
@@ -52,9 +54,10 @@ import java.util.Iterator;
  */
 public final class Cal {
     private static final Logger log = Logger.getLogger(Cal.class);
+    public static final int MONTHS_IN_YEAR = 12;
 
-    private Collection<EntryImpl> entries;
-    private final ArrayList<CalMonth> Months = new ArrayList<CalMonth>(12);
+    private Collection<EntryTo> entries;
+    private final List<CalMonth> Months = new ArrayList<CalMonth>(MONTHS_IN_YEAR);
     private final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
     private final SimpleDateFormat shortDate = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -65,9 +68,9 @@ public final class Cal {
             "May", "June", "July", "August", "September",
             "October", "November", "December"};
 
-    private String baseUrl;
+    private String baseUrl = null;
 
-    public Cal(final Collection<EntryImpl> entries) {
+    public Cal(final Collection<EntryTo> entries) {
         this.entries = entries;
         this.calculateEntryCounts();
     }
@@ -84,7 +87,7 @@ public final class Cal {
         int[] monthPostCt = null;
 
         try {
-            for (EntryImpl entryTo : entries) {
+            for (EntryTo entryTo : entries) {
                 final java.util.Date currentDate = entryTo.getDate();
 
                 calendarg.setTime(currentDate);
@@ -234,13 +237,10 @@ public final class Cal {
 
     public String renderMini() {
         final StringBuilder sb = new StringBuilder();
-        CalMonth o;
-        final Iterator<CalMonth> itr = Months.listIterator();
 
         sb.append("\t<!-- Calendar Output -->\n");
 
-        for (int i = 0, n = Months.size(); i < n; i++) {
-            o = itr.next();
+        for (CalMonth o : Months) {
             sb.append("\t<table class=\"minicalendar\" cellpadding=\"1\" cellspacing=\"1\">\n");
 
             sb.append("\t\t<caption>");
@@ -266,7 +266,7 @@ public final class Cal {
 
             dayinweek = o.getFirstDayInWeek() - 1;
 
-            for (int y = 0; y < java.lang.reflect.Array.getLength(o.storage); y++) {
+            for (int y = 0; y < Array.getLength(o.storage); y++) {
                 if (dayinweek == 0 && !blnFirstTime) {
                     sb.append("\t\t<tr>\n");
                 }

@@ -34,12 +34,10 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.google;
 
+import com.justjournal.User;
 import com.justjournal.UserImpl;
 import com.justjournal.WebLogin;
-import com.justjournal.db.DateTime;
-import com.justjournal.db.DateTimeBean;
-import com.justjournal.db.EntryDaoImpl;
-import com.justjournal.db.EntryImpl;
+import com.justjournal.db.*;
 import com.justjournal.restping.BasePing;
 import com.justjournal.restping.IceRocket;
 import com.justjournal.restping.TechnoratiPing;
@@ -64,9 +62,6 @@ import java.util.regex.Pattern;
  * blogger.getUserInfo: Authenticates a user and returns basic user info (name, email, userid, etc.)
  * blogger.getTemplate: Returns the main or archive index template of a given blog. blogger.setTemplate: Edits the main
  * or archive index template of a given blog.
- * <p/>
- * <p/>
- * TODO: Remove justjournal.com static mapping.  Settings class will not work here.
  */
 @SuppressWarnings({"UnusedParameters"})
 public class Blogger {
@@ -103,7 +98,7 @@ public class Blogger {
 
         if (!blnError)
             try {
-                UserImpl user = new UserImpl(userId);
+                User user = new UserImpl(userId);
 
                 s.put("nickname", user.getUserName());
                 s.put("userid", userId);
@@ -157,7 +152,7 @@ public class Blogger {
 
         if (!blnError)
             try {
-                UserImpl user = new UserImpl(userId);
+                User user = new UserImpl(userId);
 
                 s.put("url", "http://www.justjournal.com/users/" + user.getUserName());
                 s.put("blogid", userId);
@@ -194,15 +189,15 @@ public class Blogger {
         String result = "";
         int userId;
         boolean blnError = false;
-        final EntryImpl et = new EntryImpl();
-        EntryImpl et2;
+        final EntryTo et = new EntryImpl();
+        EntryTo et2;
         HashMap<String, Serializable> s = new HashMap<String, Serializable>();
 
-        if (!StringUtil.lengthCheck(username, 3, 15)) {
+        if (!StringUtil.lengthCheck(username, 3, WebLogin.USERNAME_MAX_LENGTH)) {
             blnError = true;
         }
 
-        if (!StringUtil.lengthCheck(password, 5, 18)) {
+        if (!StringUtil.lengthCheck(password, 5, WebLogin.PASSWORD_MAX_LENGTH)) {
             blnError = true;
         }
 
@@ -212,7 +207,7 @@ public class Blogger {
 
         if (!blnError)
             try {
-                UserImpl user = new UserImpl(userId);
+                User user = new UserImpl(userId);
                 et.setUserId(userId);
                 DateTime d = new DateTimeBean();
                 d.set(new java.util.Date());
@@ -400,7 +395,7 @@ public class Blogger {
             try {
                 /* we're just updating the content aka body as this is the
            only thing the protocol supports. */
-                EntryImpl et2 = EntryDaoImpl.viewSingle(eid, userId);
+                EntryTo et2 = EntryDaoImpl.viewSingle(eid, userId);
                 et2.setBody(StringUtil.replace(content, '\'', "\\\'"));
                 EntryDaoImpl.update(et2);
             } catch (Exception e) {
@@ -442,18 +437,17 @@ public class Blogger {
      * 5	      <struct> 6	        <member> 7	          <name>link</name> 8 <value><string>http://typekeytest111.typepad.com/my_weblog/2005/07/one_more.html</string></value>
      * 9 </member> 10	        <member> 11	          <name>permaLink</name> 12 <value><string>http://typekeytest111.typepad.com/my_weblog/2005/07/one_more.html</string></value>
      * 13 </member> 14	        <member> 15	          <name>userid</name> 16 <value><string>28376</string></value> 17
-     *     </member> 18	        <member> 19 <name>mt_allow_pings</name> 20 <value><int>0</int></value> 21
-     * </member> 22	        <member> 23 <name>mt_allow_comments</name> 24	          <value><int>1</int></value> 25
-     *   </member> 26	        <member> 27 <name>description</name> 28	          <value><string/></value> 29
-     * </member> 30	        <member> 31 <name>mt_convert_breaks</name> 32	          <value><string>0</string></value>
-     * 33	        </member> 34 <member> 35	          <name>postid</name> 36
-     * <value><string>5423957</string></value> 37 </member> 38 <member> 39	          <name>mt_excerpt</name> 40
-     *  <value><string/></value> 41 </member> 42 <member> 43	          <name>mt_keywords</name> 44
-     * <value><string/></value> 45 </member> 46 <member> 47	          <name>title</name> 48	          <value><string>One
-     * more!</string></value> 49 </member> 50	        <member> 51	          <name>mt_text_more</name> 52
-     * <value><string/></value> 53 </member> 54	        <member> 55	          <name>dateCreated</name> 56
-     * <value><dateTime.iso8601>2005-07-02T02:37:04Z</dateTime.iso8601></value> 57	        </member> 58
-     * </struct></value></data></array></value> 59	    </param> 60	  </params> 61	</methodResponse>
+     * </member> 18	        <member> 19 <name>mt_allow_pings</name> 20 <value><int>0</int></value> 21 </member> 22
+     *   <member> 23 <name>mt_allow_comments</name> 24	          <value><int>1</int></value> 25 </member> 26
+     * <member> 27 <name>description</name> 28	          <value><string/></value> 29 </member> 30	        <member> 31
+     * <name>mt_convert_breaks</name> 32	          <value><string>0</string></value> 33	        </member> 34 <member>
+     * 35	          <name>postid</name> 36 <value><string>5423957</string></value> 37 </member> 38 <member> 39
+     * <name>mt_excerpt</name> 40 <value><string/></value> 41 </member> 42 <member> 43
+     * <name>mt_keywords</name> 44 <value><string/></value> 45 </member> 46 <member> 47	          <name>title</name> 48
+     *          <value><string>One more!</string></value> 49 </member> 50	        <member> 51
+     * <name>mt_text_more</name> 52 <value><string/></value> 53 </member> 54	        <member> 55
+     * <name>dateCreated</name> 56 <value><dateTime.iso8601>2005-07-02T02:37:04Z</dateTime.iso8601></value> 57
+     * </member> 58 </struct></value></data></array></value> 59	    </param> 60	  </params> 61	</methodResponse>
      * <p/>
      * URI of example: http://www.sixapart.com/developers/xmlrpc/blogger_api/bloggergetrecentposts.html
      *
@@ -466,16 +460,16 @@ public class Blogger {
      */
     public Cloneable getRecentPosts(String appkey, String blogid, String username, String password, int numberOfPosts) {
         ArrayList<HashMap<Object, Serializable>> arr = new ArrayList<HashMap<Object, Serializable>>(numberOfPosts);
-        Collection<EntryImpl> total;
+        Collection<EntryTo> total;
         Boolean blnError = false;
         int userId;
         HashMap<String, Serializable> s = new HashMap<String, Serializable>();
 
-        if (!StringUtil.lengthCheck(username, 3, 15)) {
+        if (!StringUtil.lengthCheck(username, 3, WebLogin.USERNAME_MAX_LENGTH)) {
             blnError = true;
         }
 
-        if (!StringUtil.lengthCheck(password, 5, 18)) {
+        if (!StringUtil.lengthCheck(password, 5, WebLogin.PASSWORD_MAX_LENGTH)) {
             blnError = true;
         }
 
@@ -488,12 +482,12 @@ public class Blogger {
 
         total = EntryDaoImpl.viewAll(username, true);
 
-        Iterator<EntryImpl> it = total.iterator();
+        Iterator<EntryTo> it = total.iterator();
 
         for (int i = 0; i < numberOfPosts; i++)
             if (it.hasNext()) {
                 HashMap<Object, Serializable> entry = new HashMap<Object, Serializable>();
-                EntryImpl e = it.next();
+                EntryTo e = it.next();
                 entry.put("link", "http://www.justjournal.com/users/" + e.getUserName() + "/entry/" + e.getId());
                 entry.put("permaLink", "http://www.justjournal.com/users/" + e.getUserName() + "/entry/" + e.getId());
                 entry.put("userid", Integer.toString(e.getUserId()));
@@ -528,7 +522,7 @@ public class Blogger {
         int userId;
         HashMap<Object, Serializable> s = new HashMap<Object, Serializable>();
         HashMap<Object, Serializable> entry = new HashMap<Object, Serializable>();
-        EntryImpl e;
+        EntryTo e;
 
         if (!StringUtil.lengthCheck(username, 3, 15)) {
             blnError = true;

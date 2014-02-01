@@ -493,6 +493,8 @@
               <option value="ProtectedField" />
               <option value="InstanceVariableOfConcreteClass" />
               <option value="MismatchedQueryAndUpdateOfStringBuilder" />
+              <option value="unchecked" />
+              <option value="UnusedParameters" />
             </list>
           </option>
         </inspection_tool>

@@ -30,6 +30,7 @@ import com.justjournal.WebLogin;
 import com.justjournal.db.CommentDao;
 import com.justjournal.db.EntryDaoImpl;
 import com.justjournal.db.EntryImpl;
+import com.justjournal.db.EntryTo;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -66,14 +67,14 @@ final public class EntryController {
      */
     @RequestMapping(value = "{username}/{id}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public EntryImpl getById(@PathVariable("username") String username, @PathVariable("id") int id) {
+    public EntryTo getById(@PathVariable("username") String username, @PathVariable("id") int id) {
         return EntryDaoImpl.viewSinglePublic(id);
     }
 
     @RequestMapping(value = "{username}", method = RequestMethod.GET, produces = "application/json")
     public
     @ResponseBody
-    Collection<EntryImpl> getEntries(@PathVariable("username") String username) {
+    Collection<EntryTo> getEntries(@PathVariable("username") String username) {
         return EntryDaoImpl.viewAll(username, false);
     }
 
@@ -121,7 +122,7 @@ final public class EntryController {
     @RequestMapping(method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
     public
     @ResponseBody
-    Map<String, String> put(@RequestBody EntryImpl entry, HttpSession session, HttpServletResponse response) {
+    Map<String, String> put(@RequestBody EntryTo entry, HttpSession session, HttpServletResponse response) {
         if (!WebLogin.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
@@ -130,7 +131,7 @@ final public class EntryController {
 
         // TODO: validate
         boolean result;
-        EntryImpl entryTo = EntryDaoImpl.viewSingle(entry.getId(), WebLogin.currentLoginId(session));
+        EntryTo entryTo = EntryDaoImpl.viewSingle(entry.getId(), WebLogin.currentLoginId(session));
         if (entryTo != null && entryTo.getId() > 0)
             result = EntryDaoImpl.update(entry);
         else

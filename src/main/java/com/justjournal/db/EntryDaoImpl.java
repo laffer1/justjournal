@@ -82,7 +82,7 @@ public final class EntryDaoImpl implements EntryDao {
      * @param et journal entry object to be added
      * @return true if no error occured.
      */
-    public static boolean add(final EntryImpl et) {
+    public static boolean add(final EntryTo et) {
         boolean noError = true;
         int records = 0;
         String allowComments = "Y";
@@ -122,7 +122,7 @@ public final class EntryDaoImpl implements EntryDao {
      * @param et journal entry that needs to be altered.
      * @return true if no error occured.
      */
-    public static boolean update(final EntryImpl et) {
+    public static boolean update(final EntryTo et) {
         boolean noError = true;
         int records = 0;
         String allowComments = "Y";
@@ -206,8 +206,8 @@ public final class EntryDaoImpl implements EntryDao {
      * @param entry Cayenne Data Object for an entry
      * @return EntryTo
      */
-    private static EntryImpl populateEntryTo(com.justjournal.model.Entry entry) {
-        EntryImpl et = new EntryImpl();
+    private static EntryTo populateEntryTo(com.justjournal.model.Entry entry) {
+        EntryTo et = new EntryImpl();
 
         if (entry != null) {
             com.justjournal.model.User user = entry.getEntryToUser();
@@ -272,7 +272,7 @@ public final class EntryDaoImpl implements EntryDao {
      * @return Entry Transfer Object
      */
     public static EntryTo viewSingle(final int entryId) {
-        EntryImpl et;
+        EntryTo et;
 
         try {
             ObjectContext dataContext = DataContext.getThreadObjectContext();
@@ -420,7 +420,7 @@ public final class EntryDaoImpl implements EntryDao {
 
         ObjectContext dataContext = DataContext.getThreadObjectContext();
 
-        EntryImpl et;
+        EntryTo et;
         final int PAGE_SIZE = 20;
 
         Expression exp;
@@ -469,7 +469,7 @@ public final class EntryDaoImpl implements EntryDao {
 
         ObjectContext dataContext = DataContext.getThreadObjectContext();
 
-        EntryImpl et;
+        EntryTo et;
         Expression exp;
         if (thisUser) {
             exp = Expression.fromString("entryToUser.username = $user");
@@ -516,7 +516,7 @@ public final class EntryDaoImpl implements EntryDao {
 
         ObjectContext dataContext = DataContext.getThreadObjectContext();
 
-        EntryImpl et;
+        EntryTo et;
         final int PAGE_SIZE = 15;
         Map<String, Object> map = new HashMap<String, Object>();
 
@@ -651,9 +651,9 @@ public final class EntryDaoImpl implements EntryDao {
     }
 
     @NotNull
-    public static Collection<EntryImpl> ViewCalendarYear(final int year,
-                                                         final String userName,
-                                                         final boolean thisUser)
+    public static Collection<EntryTo> ViewCalendarYear(final int year,
+                                                       final String userName,
+                                                       final boolean thisUser)
             throws Exception {
 
         DateTimeBean dtb = new DateTimeBean();
@@ -671,10 +671,10 @@ public final class EntryDaoImpl implements EntryDao {
     }
 
     @NotNull
-    public static Collection<EntryImpl> ViewCalendarMonth(final int year,
-                                                          final int month,
-                                                          final String userName,
-                                                          final boolean thisUser)
+    public static Collection<EntryTo> ViewCalendarMonth(final int year,
+                                                        final int month,
+                                                        final String userName,
+                                                        final boolean thisUser)
             throws Exception {
 
         DateTimeBean dtb = new DateTimeBean();
@@ -703,11 +703,11 @@ public final class EntryDaoImpl implements EntryDao {
      */
     @NotNull
     @SuppressWarnings("unchecked")
-    public static Collection<EntryImpl> ViewCalendarDay(final int year,
-                                                        final int month,
-                                                        final int day,
-                                                        final String userName,
-                                                        final boolean thisUser) {
+    public static Collection<EntryTo> ViewCalendarDay(final int year,
+                                                      final int month,
+                                                      final int day,
+                                                      final String userName,
+                                                      final boolean thisUser) {
 
         DateTime dtb = new DateTimeBean();
         dtb.setYear(year);
@@ -724,15 +724,15 @@ public final class EntryDaoImpl implements EntryDao {
     }
 
     @NotNull
-    public static Collection<EntryImpl> getEntriesByDateRange(Date startDate, Date endDate,
-                                                              final String userName,
-                                                              final boolean thisUser) {
+    public static Collection<EntryTo> getEntriesByDateRange(Date startDate, Date endDate,
+                                                            final String userName,
+                                                            final boolean thisUser) {
 
-        final ArrayList<EntryImpl> entries = new ArrayList<EntryImpl>();
+        final Collection<EntryTo> entries = new ArrayList<EntryTo>();
 
         ObjectContext dataContext = DataContext.getThreadObjectContext();
 
-        EntryImpl et;
+        EntryTo et;
         Expression exp;
         if (thisUser) {
             exp = Expression.fromString("entryToUser.username = $user and date < $ed and date > $sd");
@@ -742,7 +742,7 @@ public final class EntryDaoImpl implements EntryDao {
         }
 
         try {
-            HashMap<String, Object> map = new HashMap<String, Object>();
+            Map<String, Object> map = new HashMap<String, Object>();
             map.put("sd", startDate);
             map.put("ed", endDate);
             map.put("user", userName);
@@ -775,14 +775,14 @@ public final class EntryDaoImpl implements EntryDao {
     @SuppressWarnings("unchecked")
     public
     @NotNull
-    static Collection<EntryImpl> viewRecentUniqueUsers() {
+    static Collection<EntryTo> viewRecentUniqueUsers() {
 
         final int SIZE = 15;
-        final ArrayList<EntryImpl> entries = new ArrayList<EntryImpl>(SIZE);
+        final Collection<EntryTo> entries = new ArrayList<EntryTo>(SIZE);
 
         ObjectContext dataContext = DataContext.getThreadObjectContext();
 
-        EntryImpl et;
+        EntryTo et;
         Expression exp;
         exp = Expression.fromString("entryToSecurity=2");
         Map<String, Boolean> seenUser = new HashMap<String, Boolean>(20);
@@ -874,7 +874,7 @@ public final class EntryDaoImpl implements EntryDao {
             throw new IllegalArgumentException("Entry id must be greater than 0");
 
         boolean noError = true;
-        ArrayList<String> current = getTags(entryId);
+        Iterable<String> current = getTags(entryId);
         AbstractList<String> newTags = new ArrayList<String>();
         AbstractList<String> deadTags = new ArrayList<String>();
 

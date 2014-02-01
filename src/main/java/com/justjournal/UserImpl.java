@@ -43,7 +43,7 @@ import org.apache.log4j.Logger;
 import java.sql.ResultSet;
 
 /**
- * Represents a user's basic credentials including userId and userName.
+ * Represents a user's basic credentials including userId and username.
  *
  * @author Lucas Holt
  * @since 1.0
@@ -57,6 +57,7 @@ public final class UserImpl implements User {
     private String firstName = ""; // real name
     private int startYear = JJ_CREATED_YEAR;  // starting year for account
     private boolean allowSpider = false;
+    @NotNull
     private boolean privateJournal = false;  // journal viewable only by owner.
     private int styleId = 1;  // theme of journal?
     private String styleDoc = "";
@@ -66,20 +67,20 @@ public final class UserImpl implements User {
     private boolean showAvatar = false;
     private boolean pingServices = false;  // Technorati et al
     private String journalName = "";
-    private DateTime lastLogin;
+    private DateTime lastLogin = null;
     private String biography = "";
 
-    public UserImpl(@NotNull final String userName) throws Exception {
-        setUserName(userName);
+    public UserImpl(@NotNull final String username) throws Exception {
+        setUserName(username);
 
-        final UserTo ut = UserDao.view(userName);
+        final UserTo ut = UserDao.view(username);
 
         setUserId(ut.getId());
         setFirstName(ut.getFirstName());
         lastLogin = ut.getLastLogin();
 
         try {
-            final ResultSet RS = UserDao.getJournalPreferences(userName);
+            final ResultSet RS = UserDao.getJournalPreferences(username);
 
             if (RS.next()) {
                 this.styleId = RS.getInt("style");
@@ -185,7 +186,7 @@ public final class UserImpl implements User {
         }
     }
 
-    public UserImpl(final Integer userId) {
+    public UserImpl(@NotNull final Integer userId) {
         setUserId(userId);
     }
 
@@ -207,7 +208,7 @@ public final class UserImpl implements User {
      *
      * @param userName The username associated with this account.
      */
-    public void setUserName(final String userName) {
+    public void setUserName(@NotNull final String userName) {
         if (userName == null)
             throw new IllegalArgumentException("username can not be null.");
 
@@ -234,7 +235,7 @@ public final class UserImpl implements User {
      *
      * @param userId Integer user id where n >= 0
      */
-    public void setUserId(final Integer userId) {
+    public void setUserId(@NotNull final Integer userId) {
         if (userId == null)
             throw new IllegalArgumentException("user id can not be null.");
 
@@ -285,19 +286,19 @@ public final class UserImpl implements User {
     /**
      * Set the first name of the user.  Name length is limited to 20 characters.
      *
-     * @param firstName user's first name.
+     * @param firstname user's first name.
      */
-    public void setFirstName(final String firstName) {
-        if (firstName == null)
+    public void setFirstName(@NotNull final String firstname) {
+        if (firstname == null)
             throw new IllegalArgumentException("first name can not be null.");
 
-        if (firstName.length() > 20)
+        if (firstname.length() > 20)
             throw new IllegalArgumentException("first name can not be longer than 20 characters.");
 
-        if (firstName.length() < 2)
+        if (firstname.length() < 2)
             throw new IllegalArgumentException("first name must be at least 2 characters.");
 
-        this.firstName = firstName;
+        this.firstName = firstname;
     }
 
     public DateTime getLastLogin() {
@@ -333,7 +334,7 @@ public final class UserImpl implements User {
         return this.allowSpider;
     }
 
-    public boolean isSpiderAllowed(final boolean allowSpider) {
+    public boolean isSpiderAllowed(@NotNull final boolean allowSpider) {
         this.allowSpider = allowSpider;
         return allowSpider;
     }
@@ -342,7 +343,7 @@ public final class UserImpl implements User {
         return this.privateJournal;
     }
 
-    public boolean isPrivateJournal(final boolean privateJournal) {
+    public boolean isPrivateJournal(@NotNull final boolean privateJournal) {
         this.privateJournal = privateJournal;
         return privateJournal;
     }

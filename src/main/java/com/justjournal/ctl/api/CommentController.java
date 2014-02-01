@@ -34,14 +34,16 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.ctl.api;
 
+import com.justjournal.User;
 import com.justjournal.UserImpl;
 import com.justjournal.WebLogin;
 import com.justjournal.core.Settings;
 import com.justjournal.db.Comment;
 import com.justjournal.db.CommentDao;
 import com.justjournal.db.EntryDaoImpl;
-import com.justjournal.db.EntryImpl;
+import com.justjournal.db.EntryTo;
 import com.justjournal.utility.QueueMail;
+import com.sun.istack.internal.NotNull;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -60,7 +62,7 @@ final public class CommentController {
     private CommentDao commentDao = null;
 
     @Autowired
-    public void setCommentDao(CommentDao commentDao) {
+    public void setCommentDao(@NotNull CommentDao commentDao) {
         this.commentDao = commentDao;
     }
 
@@ -74,10 +76,10 @@ final public class CommentController {
     public
     @ResponseBody
     List<Comment> getComments(@RequestParam Integer entryId, HttpServletResponse response) throws Exception {
-        EntryImpl entry = EntryDaoImpl.viewSingle(entryId);
+        EntryTo entry = EntryDaoImpl.viewSingle(entryId);
 
         try {
-            UserImpl user = new UserImpl(entry.getUserName());
+            User user = new UserImpl(entry.getUserName());
             if (user.isPrivateJournal() ||
                     !entry.getAllowComments() ||
                     entry.getSecurityLevel() == 0) {
@@ -149,7 +151,7 @@ final public class CommentController {
             java.sql.Date now = new java.sql.Date(System.currentTimeMillis());
             comment.setDate(fmt.format(now));
 
-            EntryImpl et = EntryDaoImpl.viewSinglePublic(comment.getEid());
+            EntryTo et = EntryDaoImpl.viewSinglePublic(comment.getEid());
 
             if (!et.getAllowComments()) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -159,7 +161,7 @@ final public class CommentController {
             boolean result = commentDao.add(comment);
 
             try {
-                UserImpl pf = new UserImpl(et.getUserName());
+                User pf = new UserImpl(et.getUserName());
 
                 if (et.getEmailComments()) {
                     QueueMail mail = new QueueMail();

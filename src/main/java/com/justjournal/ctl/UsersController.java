@@ -1196,7 +1196,7 @@ public final class UsersController extends HttpServlet {
         // END: YEARS
 
         try {
-            Collection<EntryImpl> entries = EntryDaoImpl.ViewCalendarYear(year, uc.getBlogUser().getUserName(), uc.isAuthBlog());
+            Collection<EntryTo> entries = EntryDaoImpl.ViewCalendarYear(year, uc.getBlogUser().getUserName(), uc.isAuthBlog());
 
             if (entries == null || entries.size() == 0) {
                 sb.append("<p>Calendar data not available.</p>");
@@ -1239,7 +1239,7 @@ public final class UsersController extends HttpServlet {
         sb.append(endl);
 
         try {
-            Collection<EntryImpl> entries = EntryDaoImpl.ViewCalendarMonth(year, month, uc.getBlogUser().getUserName(), uc.isAuthBlog());
+            Collection<EntryTo> entries = EntryDaoImpl.ViewCalendarMonth(year, month, uc.getBlogUser().getUserName(), uc.isAuthBlog());
 
             if (entries.size() == 0) {
                 sb.append("<p>Calendar data not available.</p>");
@@ -1252,7 +1252,7 @@ public final class UsersController extends HttpServlet {
                 String curDate;
                 String lastDate = "";
 
-                for (EntryImpl entryTo : entries) {
+                for (EntryTo entryTo : entries) {
 
                     Date currentDate = entryTo.getDate();
                     curDate = formatmydate.format(currentDate);
@@ -1297,7 +1297,7 @@ public final class UsersController extends HttpServlet {
             int year = cal.get(Calendar.YEAR);
             int month = cal.get(Calendar.MONTH) + 1; // zero based
 
-            Collection<EntryImpl> entries = EntryDaoImpl.ViewCalendarMonth(year, month, uc.getBlogUser().getUserName(), uc.isAuthBlog());
+            Collection<EntryTo> entries = EntryDaoImpl.ViewCalendarMonth(year, month, uc.getBlogUser().getUserName(), uc.isAuthBlog());
 
             if (entries.size() == 0) {
                 sb.append("\t<!-- could not render calendar -->");
@@ -1996,7 +1996,7 @@ public final class UsersController extends HttpServlet {
          * Default constructor for User Context.  Creates a usable instance.
          *
          * @param currentBlogUser blog owner
-         * @param authUser logged in user
+         * @param authUser        logged in user
          */
         UserContext(final User currentBlogUser, final User authUser) {
             this.blogUser = currentBlogUser;

@@ -47,28 +47,28 @@ public class EntryDaoTests {
 
     @Test
     public void testViewPublic() {
-        Collection<EntryTo> entries = EntryDao.view(TEST_USER, false);
+        Collection<EntryTo> entries = EntryDaoImpl.view(TEST_USER, false);
         assertTrue(entries != null);
         assertTrue(entries.size() > 15);
     }
 
     @Test
     public void testViewThisUser() {
-        Collection<EntryTo> entries = EntryDao.view(TEST_USER, true);
+        Collection<EntryTo> entries = EntryDaoImpl.view(TEST_USER, true);
         assertTrue(entries != null);
         assertTrue(entries.size() > 15);
     }
 
     @Test
     public void testViewPublicNoSkip() {
-        Collection<EntryTo> entries = EntryDao.view(TEST_USER, false, 0);
+        Collection<EntryTo> entries = EntryDaoImpl.view(TEST_USER, false, 0);
         assertTrue(entries != null);
         assertTrue(entries.size() > 15);
     }
 
     @Test
     public void testViewThisUserNoSkip() {
-        Collection<EntryTo> entries = EntryDao.view(TEST_USER, true, 0);
+        Collection<EntryTo> entries = EntryDaoImpl.view(TEST_USER, true, 0);
         assertTrue(entries != null);
         assertTrue(entries.size() > 15);
     }
