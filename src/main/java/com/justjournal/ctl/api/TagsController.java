@@ -38,11 +38,18 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.Collection;
 
 /**
+ * Tags
  * @author Lucas Holt
  */
 @Controller
 @RequestMapping("/api/tags")
 final public class TagsController {
+
+    private TagDao tagDao = null;
+
+    public void setTagDao(TagDao tagDao) {
+        this.tagDao = tagDao;
+    }
 
     /**
      * Get the tag list for the whole site
@@ -54,7 +61,7 @@ final public class TagsController {
     public
     @ResponseBody
     Collection<Tag> getTags() {
-        return TagDao.list();
+        return tagDao.list();
     }
 
     /**
@@ -64,9 +71,9 @@ final public class TagsController {
      * @return tag list
      */
     @Cacheable(value = "tags", key = "id")
-    @RequestMapping("/api/tags/{id}")
+    @RequestMapping(value = "/api/tags/{id}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public Tag getById(@PathVariable Integer id) {
-        return TagDao.viewSingle(id);
+    public Tag getById(@PathVariable("id") Integer id) {
+        return tagDao.get(id);
     }
 }
