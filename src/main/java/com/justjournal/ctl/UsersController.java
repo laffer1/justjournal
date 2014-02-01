@@ -95,7 +95,7 @@ public class UsersController {
     }
 
     @RequestMapping(value = "{username}", method = RequestMethod.GET, produces = "text/html")
-    public String entries(@PathVariable("username") String username, @RequestParam int skip, Model model, HttpSession session, HttpServletResponse response) {
+    public String entries(@PathVariable("username") String username, @RequestParam(value = "skip", required = false) Integer skip, Model model, HttpSession session, HttpServletResponse response) {
         UserContext userContext = getUserContext(username, session);
         model.addAttribute("authenticatedUsername", WebLogin.currentLoginName(session));
         model.addAttribute("user", userContext.getBlogUser());
@@ -111,7 +111,7 @@ public class UsersController {
         model.addAttribute("archive", getArchive(userContext));
         model.addAttribute("taglist", getTagMini(userContext));
 
-        model.addAttribute("entries", getEntries(userContext, skip));
+        model.addAttribute("entries", getEntries(userContext, skip == null ? 0 : skip));
         return "users";
     }
 
@@ -186,7 +186,7 @@ public class UsersController {
     }
 
     @RequestMapping(value = "{username}/{year}", method = RequestMethod.GET, produces = "text/html")
-    public String calendarYear(@PathVariable("username") String username, @PathVariable int year, Model model, HttpSession session, HttpServletResponse response) {
+    public String calendarYear(@PathVariable("username") String username, @PathVariable("year") int year, Model model, HttpSession session, HttpServletResponse response) {
         UserContext userc = getUserContext(username, session);
         model.addAttribute("authenticatedUsername", WebLogin.currentLoginName(session));
         model.addAttribute("user", userc.getBlogUser());
