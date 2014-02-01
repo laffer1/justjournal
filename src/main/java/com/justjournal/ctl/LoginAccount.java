@@ -26,7 +26,7 @@
 
 package com.justjournal.ctl;
 
-import com.justjournal.User;
+import com.justjournal.UserImpl;
 import com.justjournal.WebError;
 import com.justjournal.WebLogin;
 import com.justjournal.db.EntryDao;
@@ -66,7 +66,7 @@ public final class LoginAccount extends JustJournalBaseServlet {
             String template = FileIO.ReadTextFile("/home/jj/docs/journal_template.inc");
             String loginMenu;
             StringBuilder content = new StringBuilder();
-            User user = new User(userName);
+            UserImpl user = new UserImpl(userName);
 
             content.append("\t\t<h2>Welcome back to Just Journal</h2>");
             content.append(endl);

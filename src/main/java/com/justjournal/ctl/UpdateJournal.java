@@ -34,7 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.ctl;
 
-import com.justjournal.User;
+import com.justjournal.UserImpl;
 import com.justjournal.WebError;
 import com.justjournal.WebLogin;
 import com.justjournal.core.Settings;
@@ -94,9 +94,9 @@ public final class UpdateJournal extends HttpServlet {
      */
     private void htmlOutput(final StringBuffer sb, final String userName, final int userID) {
         /* Initialize Preferences Object */
-        final User pf;
+        final UserImpl pf;
         try {
-            pf = new User(userName);
+            pf = new UserImpl(userName);
         } catch (Exception ex) {
             WebError.Display("Load Error",
                     "Preferences could not be loaded for user " + userName,
@@ -591,16 +591,16 @@ public final class UpdateJournal extends HttpServlet {
 
                     if (et.getSecurityLevel() == 2) {
                         /* Initialize Preferences Object */
-                        User pf = null;
+                        UserImpl pf = null;
                         try {
-                            pf = new User(userName);
+                            pf = new UserImpl(userName);
                         } catch (Exception ex) {
                             WebError.Display("Load Error",
                                     "Preferences could not be loaded for user " + userName,
                                     sb);
                         }
 
-                        if (!pf.isPrivateJournal() && pf.pingServices()) {
+                        if (!pf.isPrivateJournal() && pf.getPingServices()) {
                             log.debug("Ping weblogs");
                             /* WebLogs, Google, blo.gs */
                             final BasePing rp = new BasePing("http://rpc.weblogs.com/pingSiteForm");

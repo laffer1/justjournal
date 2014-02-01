@@ -26,10 +26,7 @@
 
 package com.justjournal.ctl;
 
-import com.justjournal.Cal;
-import com.justjournal.User;
-import com.justjournal.WebError;
-import com.justjournal.WebLogin;
+import com.justjournal.*;
 import com.justjournal.atom.AtomFeed;
 import com.justjournal.core.Settings;
 import com.justjournal.db.*;
@@ -255,7 +252,7 @@ public final class UsersController extends HttpServlet {
     @ResponseBody
     String atom(@PathVariable String username, HttpServletResponse response) {
         try {
-            User user = new User(username);
+            UserImpl user = new UserImpl(username);
 
             if (user.isPrivateJournal()) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -275,7 +272,7 @@ public final class UsersController extends HttpServlet {
     @ResponseBody
     String rss(@PathVariable String username, HttpServletResponse response) {
         try {
-            User user = new User(username);
+            UserImpl user = new UserImpl(username);
 
             if (user.isPrivateJournal()) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -295,7 +292,7 @@ public final class UsersController extends HttpServlet {
     @ResponseBody
     String rssPictures(@PathVariable String username, HttpServletResponse response) {
         try {
-            User user = new User(username);
+            UserImpl user = new UserImpl(username);
 
             if (user.isPrivateJournal()) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -312,15 +309,15 @@ public final class UsersController extends HttpServlet {
 
     @RequestMapping(value = "{user}/pdf", method = RequestMethod.GET, produces = "application/pdf")
     public void pdf(@PathVariable String username, HttpServletResponse response, HttpSession session) {
-        User authUser = null;
+        UserImpl authUser = null;
         try {
-            authUser = new User(WebLogin.currentLoginName(session));
+            authUser = new UserImpl(WebLogin.currentLoginName(session));
         } catch (Exception ignored) {
 
         }
 
         try {
-            User user = new User(username);
+            UserImpl user = new UserImpl(username);
             UserContext userc = new UserContext(user, authUser);
             if (!(userc.getBlogUser().isPrivateJournal()) || userc.isAuthBlog())
                 getPDF(response, userc);
@@ -334,15 +331,15 @@ public final class UsersController extends HttpServlet {
 
     @RequestMapping(value = "{user}/rtf", method = RequestMethod.GET, produces = "application/rtf")
     public void rtf(@PathVariable String username, HttpServletResponse response, HttpSession session) {
-        User authUser = null;
+        UserImpl authUser = null;
         try {
-            authUser = new User(WebLogin.currentLoginName(session));
+            authUser = new UserImpl(WebLogin.currentLoginName(session));
         } catch (Exception ignored) {
 
         }
 
         try {
-            User user = new User(username);
+            UserImpl user = new UserImpl(username);
             UserContext userc = new UserContext(user, authUser);
             if (!(userc.getBlogUser().isPrivateJournal()) || userc.isAuthBlog())
                 getRTF(response, userc);
@@ -432,15 +429,15 @@ public final class UsersController extends HttpServlet {
     @RequestMapping(value = "{username}/tag/{tag}", method = RequestMethod.GET, produces = "text/html")
     public String tag(@PathVariable String username, @PathVariable String tag, Model model, HttpSession session, HttpServletResponse response) {
 
-        User authUser = null;
+        UserImpl authUser = null;
         try {
-            authUser = new User(WebLogin.currentLoginName(session));
+            authUser = new UserImpl(WebLogin.currentLoginName(session));
         } catch (Exception ignored) {
 
         }
 
         try {
-            User user = new User(username);
+            UserImpl user = new UserImpl(username);
             UserContext userc = new UserContext(user, authUser);
 
             model.addAttribute("username", user);
@@ -459,15 +456,15 @@ public final class UsersController extends HttpServlet {
     }
 
     private UserContext getUserContext(String username, HttpSession session) {
-        User authUser = null;
+        UserImpl authUser = null;
         try {
-            authUser = new User(WebLogin.currentLoginName(session));
+            authUser = new UserImpl(WebLogin.currentLoginName(session));
         } catch (Exception ignored) {
 
         }
 
         try {
-            User user = new User(username);
+            UserImpl user = new UserImpl(username);
             return new UserContext(user, authUser);
         } catch (Exception e) {
             log.error(e);
@@ -982,7 +979,7 @@ public final class UsersController extends HttpServlet {
                 sb.append("<div class=\"ebody\">");
                 sb.append(endl);
 
-                final User p = new User(o.getUserName());
+                final UserImpl p = new UserImpl(o.getUserName());
                 if (p.showAvatar()) {
                     sb.append("<img alt=\"avatar\" style=\"float: right\" src=\"/image?id=");
                     sb.append(o.getUserId());
@@ -1577,7 +1574,7 @@ public final class UsersController extends HttpServlet {
      *
      * @param user
      */
-    private String getRSS(final User user) {
+    private String getRSS(final UserImpl user) {
         Rss rss = new Rss();
 
         final java.util.GregorianCalendar calendar = new java.util.GregorianCalendar();
@@ -1601,7 +1598,7 @@ public final class UsersController extends HttpServlet {
      *
      * @param user blog user
      */
-    private String getAtom(final User user) {
+    private String getAtom(final UserImpl user) {
 
         AtomFeed atom = new AtomFeed();
 
@@ -1624,7 +1621,7 @@ public final class UsersController extends HttpServlet {
      *
      * @param user blog user
      */
-    private String getPicturesRSS(final User user) {
+    private String getPicturesRSS(final UserImpl user) {
 
         final Rss rss = new Rss();
 
@@ -2001,18 +1998,18 @@ public final class UsersController extends HttpServlet {
      * Represent the blog user and authenticated user in one package along with the output buffer.
      */
     @SuppressWarnings({"InstanceVariableOfConcreteClass"})
-    private class UserContext {
+    static private class UserContext {
         private User blogUser;          // the blog owner
         private User authenticatedUser; // the logged in user
 
         /**
          * Default constructor for User Context.  Creates a usable instance.
          *
-         * @param blogUser blog owner
+         * @param currentBlogUser blog owner
          * @param authUser logged in user
          */
-        UserContext(final User blogUser, final User authUser) {
-            this.blogUser = blogUser;
+        UserContext(final User currentBlogUser, final User authUser) {
+            this.blogUser = currentBlogUser;
             this.authenticatedUser = authUser;
         }
 

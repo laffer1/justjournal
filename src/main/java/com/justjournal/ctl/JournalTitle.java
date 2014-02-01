@@ -34,7 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.ctl;
 
-import com.justjournal.User;
+import com.justjournal.UserImpl;
 import com.justjournal.WebError;
 import com.justjournal.db.SQLHelper;
 import com.justjournal.utility.FileIO;
@@ -115,7 +115,7 @@ public class JournalTitle extends JustJournalBaseServlet {
             String template = FileIO.ReadTextFile("/home/jj/docs/journal_template.inc");
             String loginMenu;
             StringBuilder content = new StringBuilder();
-            User user = new User(userName);
+            UserImpl user = new UserImpl(userName);
 
             content.append("\t\t<h2>Preferences</h2>");
             content.append(endl);

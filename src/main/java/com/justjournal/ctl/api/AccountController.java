@@ -27,6 +27,7 @@
 package com.justjournal.ctl.api;
 
 import com.justjournal.User;
+import com.justjournal.UserImpl;
 import com.justjournal.WebLogin;
 import com.justjournal.db.SQLHelper;
 import com.justjournal.db.UserDao;
@@ -36,7 +37,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
 import java.util.Map;
 
 /**
@@ -148,7 +148,7 @@ final public class AccountController {
     @ResponseBody
     public User getById(@PathVariable String id, HttpSession session, HttpServletResponse response) {
         try {
-            User user = new User(id);
+            UserImpl user = new UserImpl(id);
 
             if (user.isPrivateJournal()) {
                 if (

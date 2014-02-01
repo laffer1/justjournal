@@ -1,6 +1,6 @@
 package com.justjournal.ctl;
 
-import com.justjournal.User;
+import com.justjournal.UserImpl;
 import com.justjournal.WebError;
 import com.justjournal.utility.FileIO;
 import com.justjournal.utility.StringUtil;
@@ -21,9 +21,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 /**
- * User: laffer1
- * Date: Mar 11, 2007
- * Time: 4:56:26 PM
+ * User: laffer1 Date: Mar 11, 2007 Time: 4:56:26 PM
  */
 public class AddPicture extends JustJournalBaseServlet {
     private static final Logger log = Logger.getLogger(AddPicture.class.getName());
@@ -70,18 +68,17 @@ public class AddPicture extends JustJournalBaseServlet {
                 log.debug("Try to parse request");
                 items = upload.parseRequest(request);
 
-                for (Object item1 : items)
-                {
+                for (Object item1 : items) {
                     log.debug("inside for each loop");
                     FileItem item = (FileItem) item1;
 
                     if (item.getFieldName().equals("title")) {
-                          if (StringUtil.lengthCheck(item.getString(), 2, 150))
-                                title = item.getString();
-                          else {
-                              WebError.Display("Input Error", "Title must be 2 to 150 characters.", sb);
-                              return;
-                          }
+                        if (StringUtil.lengthCheck(item.getString(), 2, 150))
+                            title = item.getString();
+                        else {
+                            WebError.Display("Input Error", "Title must be 2 to 150 characters.", sb);
+                            return;
+                        }
                     } else {
                         if (!item.isFormField() && item.getFieldName().equals("pic"))
                             fi = item;
@@ -89,82 +86,81 @@ public class AddPicture extends JustJournalBaseServlet {
                 }
 
 
-                if (fi != null)
-                {
-                        // we're a file
-                        //String fieldName = item.getFieldName();
-                        //String fileName = item.getName();
-                        String contentType = fi.getContentType();
-                        //boolean isInMemory = item.isInMemory();
-                        long sizeInBytes = fi.getSize();
+                if (fi != null) {
+                    // we're a file
+                    //String fieldName = item.getFieldName();
+                    //String fileName = item.getName();
+                    String contentType = fi.getContentType();
+                    //boolean isInMemory = item.isInMemory();
+                    long sizeInBytes = fi.getSize();
 
-                        // must be large enough
-                        if (sizeInBytes > 500) {
-                            byte[] data = fi.get();
+                    // must be large enough
+                    if (sizeInBytes > 500) {
+                        byte[] data = fi.get();
 
-                            Context ctx;
-                            DataSource ds = null;
-                            Connection conn = null;
-                            PreparedStatement stmt = null; // create statement
+                        Context ctx;
+                        DataSource ds = null;
+                        Connection conn = null;
+                        PreparedStatement stmt = null; // create statement
 
+                        try {
+                            ctx = new InitialContext();
+                            ds = (DataSource) ctx.lookup("java:comp/env/jdbc/jjDB");
+                        } catch (Exception e) {
+                            log.error(e.getMessage());
+                            blnError = true;
+                            WebError.Display("Database", "Could not retrieve database resources.", sb);
+                        }
+
+                        if (!blnError) {
                             try {
-                                ctx = new InitialContext();
-                                ds = (DataSource) ctx.lookup("java:comp/env/jdbc/jjDB");
+                                conn = ds.getConnection();
+
+                                // do the create of the image
+                                stmt = conn.prepareStatement("INSERT INTO user_images (owner,title,modified,mimetype,image) VALUES(?,?,now(),?,?)");
+                                stmt.setInt(1, userID);
+                                stmt.setString(2, title);
+                                stmt.setString(3, contentType);
+                                stmt.setBytes(4, data);
+                                stmt.execute();
+                                RowsAffected = stmt.getUpdateCount();
+                                stmt.close();
+
+                                conn.close();
+
+                                if (log.isDebugEnabled())
+                                    log.debug("RowsAffected: " + RowsAffected);
                             } catch (Exception e) {
                                 log.error(e.getMessage());
-                                blnError = true;
-                                WebError.Display("Database", "Could not retrieve database resources.", sb);
-                            }
-
-                            if (!blnError) {
-                                try {
-                                    conn = ds.getConnection();
-
-                                    // do the create of the image
-                                    stmt = conn.prepareStatement("INSERT INTO user_images (owner,title,modified,mimetype,image) VALUES(?,?,now(),?,?)");
-                                    stmt.setInt(1, userID);
-                                    stmt.setString(2, title);
-                                    stmt.setString(3, contentType);
-                                    stmt.setBytes(4, data);
-                                    stmt.execute();
-                                    RowsAffected = stmt.getUpdateCount();
-                                    stmt.close();
-
-                                    conn.close();
-
-                                    if (log.isDebugEnabled())
-                                        log.debug("RowsAffected: " + RowsAffected);
-                                } catch (Exception e) {
-                                    log.error(e.getMessage());
-                                    throw new Exception("Error getting connect or executing it", e);
-                                } finally {
+                                throw new Exception("Error getting connect or executing it", e);
+                            } finally {
                                     /*
                                     * Close any JDBC instances here that weren't
                                     * explicitly closed during normal code path, so
                                     * that we don't 'leak' resources...
                                     */
 
-                                    try {
-                                        stmt.close();
-                                    } catch (SQLException sqlEx) {
-                                        // ignore -- as we can't do anything about it here
-                                        log.error(sqlEx.getMessage());
-                                    }
+                                try {
+                                    stmt.close();
+                                } catch (SQLException sqlEx) {
+                                    // ignore -- as we can't do anything about it here
+                                    log.error(sqlEx.getMessage());
+                                }
 
-                                    try {
-                                        conn.close();
-                                    } catch (SQLException sqlEx) {
-                                        // ignore -- as we can't do anything about it here
-                                        log.error(sqlEx.getMessage());
-                                    }
+                                try {
+                                    conn.close();
+                                } catch (SQLException sqlEx) {
+                                    // ignore -- as we can't do anything about it here
+                                    log.error(sqlEx.getMessage());
                                 }
                             }
-                        } else {
-                            log.error("File size is too small");
-                            WebError.Display("File", "File size is too small.", sb);
-                            blnError = true;
                         }
+                    } else {
+                        log.error("File size is too small");
+                        WebError.Display("File", "File size is too small.", sb);
+                        blnError = true;
                     }
+                }
             } catch (Exception e) {
                 blnError = true;
                 log.error(e.getMessage());
@@ -195,7 +191,7 @@ public class AddPicture extends JustJournalBaseServlet {
             String template = FileIO.ReadTextFile("/home/jj/docs/journal_template.inc");
             String loginMenu;
             StringBuilder content = new StringBuilder();
-            User user = new User(userName);
+            UserImpl user = new UserImpl(userName);
 
             content.append("\t\t<h2>Preferences</h2>");
             content.append(endl);

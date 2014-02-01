@@ -1,6 +1,6 @@
 package com.justjournal.ctl;
 
-import com.justjournal.User;
+import com.justjournal.UserImpl;
 import com.justjournal.WebError;
 import com.justjournal.utility.FileIO;
 import org.apache.log4j.Logger;
@@ -16,9 +16,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 /**
- * User: laffer1
- * Date: Mar 31, 2007
- * Time: 11:34:00 AM
+ * User: laffer1 Date: Mar 31, 2007 Time: 11:34:00 AM
  */
 public class DeletePicture extends JustJournalBaseServlet {
     private static final Logger log = Logger.getLogger(AddPicture.class.getName());
@@ -136,7 +134,7 @@ public class DeletePicture extends JustJournalBaseServlet {
             String template = FileIO.ReadTextFile("/home/jj/docs/journal_template.inc");
             String loginMenu;
             StringBuilder content = new StringBuilder();
-            User user = new User(userName);
+            UserImpl user = new UserImpl(userName);
 
             content.append("\t\t<h2>Preferences</h2>");
             content.append(endl);

@@ -1,6 +1,6 @@
 package com.justjournal.ctl;
 
-import com.justjournal.User;
+import com.justjournal.UserImpl;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,7 +48,7 @@ final public class Rsd {
                 throw new IllegalArgumentException("Missing required parameter \"blogID\"");
             }
 
-            User user = new User(blogID);
+            UserImpl user = new UserImpl(blogID);
 
             sb.append(XML_HEADER);
             sb.append(RSD_HEADER);

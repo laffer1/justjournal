@@ -34,7 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.ctl;
 
-import com.justjournal.User;
+import com.justjournal.UserImpl;
 import com.justjournal.WebError;
 import com.justjournal.WebLogin;
 import com.justjournal.db.*;
@@ -139,7 +139,7 @@ public class Interface extends HttpServlet {
                 getmenus = request.getParameter("getmenus");
 
                 try {
-                    User pf = new User(userName);
+                    UserImpl pf = new UserImpl(userName);
 
                     sb.append("name");
                     sb.append(endl);
@@ -357,9 +357,9 @@ public class Interface extends HttpServlet {
                 if (!blnError) {
 
                     /* Initialize Preferences Object */
-                    User pf;
+                    UserImpl pf;
                     try {
-                        pf = new User(userName);
+                        pf = new UserImpl(userName);
                     } catch (Exception ex) {
                         throw new ServletException(ex);
                     }

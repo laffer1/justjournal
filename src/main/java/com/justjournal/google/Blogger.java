@@ -34,7 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.google;
 
-import com.justjournal.User;
+import com.justjournal.UserImpl;
 import com.justjournal.WebLogin;
 import com.justjournal.db.DateTime;
 import com.justjournal.db.DateTimeBean;
@@ -103,7 +103,7 @@ public class Blogger {
 
         if (!blnError)
             try {
-                User user = new User(userId);
+                UserImpl user = new UserImpl(userId);
 
                 s.put("nickname", user.getUserName());
                 s.put("userid", userId);
@@ -157,7 +157,7 @@ public class Blogger {
 
         if (!blnError)
             try {
-                User user = new User(userId);
+                UserImpl user = new UserImpl(userId);
 
                 s.put("url", "http://www.justjournal.com/users/" + user.getUserName());
                 s.put("blogid", userId);
@@ -212,7 +212,7 @@ public class Blogger {
 
         if (!blnError)
             try {
-                User user = new User(userId);
+                UserImpl user = new UserImpl(userId);
                 et.setUserId(userId);
                 DateTime d = new DateTimeBean();
                 d.set(new java.util.Date());
@@ -439,24 +439,22 @@ public class Blogger {
      * Sample response:
      * <p/>
      * <?xml version="1.0" encoding="UTF-8"?> 2	<methodResponse> 3	  <params> 4	    <param><value><array><data><value>
-     * 5	      <struct> 6	        <member> 7	          <name>link</name> 8
-     * <value><string>http://typekeytest111.typepad.com/my_weblog/2005/07/one_more.html</string></value> 9
-     * </member> 10	        <member> 11	          <name>permaLink</name> 12
-     * <value><string>http://typekeytest111.typepad.com/my_weblog/2005/07/one_more.html</string></value> 13
-     * </member> 14	        <member> 15	          <name>userid</name> 16	          <value><string>28376</string></value>
-     * 17	        </member> 18	        <member> 19	          <name>mt_allow_pings</name> 20
-     * <value><int>0</int></value> 21	        </member> 22	        <member> 23	          <name>mt_allow_comments</name>
-     * 24	          <value><int>1</int></value> 25	        </member> 26	        <member> 27
-     * <name>description</name> 28	          <value><string/></value> 29	        </member> 30	        <member> 31
-     *    <name>mt_convert_breaks</name> 32	          <value><string>0</string></value> 33	        </member> 34
-     * <member> 35	          <name>postid</name> 36	          <value><string>5423957</string></value> 37
-     * </member> 38	        <member> 39	          <name>mt_excerpt</name> 40	          <value><string/></value> 41
-     *   </member> 42	        <member> 43	          <name>mt_keywords</name> 44	          <value><string/></value> 45
-     *      </member> 46	        <member> 47	          <name>title</name> 48	          <value><string>One
-     * more!</string></value> 49	        </member> 50	        <member> 51	          <name>mt_text_more</name> 52
-     *   <value><string/></value> 53	        </member> 54	        <member> 55	          <name>dateCreated</name> 56
-     *      <value><dateTime.iso8601>2005-07-02T02:37:04Z</dateTime.iso8601></value> 57	        </member> 58
-     * </struct></value></data></array></value> 59	    </param> 60	  </params> 61	</methodResponse>
+     * 5	      <struct> 6	        <member> 7	          <name>link</name> 8 <value><string>http://typekeytest111.typepad.com/my_weblog/2005/07/one_more.html</string></value>
+     * 9 </member> 10	        <member> 11	          <name>permaLink</name> 12 <value><string>http://typekeytest111.typepad.com/my_weblog/2005/07/one_more.html</string></value>
+     * 13 </member> 14	        <member> 15	          <name>userid</name> 16
+     * <value><string>28376</string></value> 17	        </member> 18	        <member> 19
+     * <name>mt_allow_pings</name> 20 <value><int>0</int></value> 21	        </member> 22	        <member> 23
+     * <name>mt_allow_comments</name> 24	          <value><int>1</int></value> 25	        </member> 26	        <member>
+     * 27 <name>description</name> 28	          <value><string/></value> 29	        </member> 30	        <member> 31
+     * <name>mt_convert_breaks</name> 32	          <value><string>0</string></value> 33	        </member> 34 <member>
+     * 35	          <name>postid</name> 36	          <value><string>5423957</string></value> 37 </member> 38
+     * <member> 39	          <name>mt_excerpt</name> 40	          <value><string/></value> 41 </member> 42
+     * <member> 43	          <name>mt_keywords</name> 44	          <value><string/></value> 45 </member> 46
+     * <member> 47	          <name>title</name> 48	          <value><string>One more!</string></value> 49
+     * </member> 50	        <member> 51	          <name>mt_text_more</name> 52 <value><string/></value> 53
+     * </member> 54	        <member> 55	          <name>dateCreated</name> 56 <value><dateTime.iso8601>2005-07-02T02:37:04Z</dateTime.iso8601></value>
+     * 57	        </member> 58 </struct></value></data></array></value> 59	    </param> 60	  </params>
+     * 61	</methodResponse>
      * <p/>
      * URI of example: http://www.sixapart.com/developers/xmlrpc/blogger_api/bloggergetrecentposts.html
      *

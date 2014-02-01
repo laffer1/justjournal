@@ -34,7 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.ctl.api;
 
-import com.justjournal.User;
+import com.justjournal.UserImpl;
 import com.justjournal.WebLogin;
 import com.justjournal.core.Settings;
 import com.justjournal.db.Comment;
@@ -77,7 +77,7 @@ final public class CommentController {
         EntryTo entry = EntryDao.viewSingle(entryId);
 
         try {
-            User user = new User(entry.getUserName());
+            UserImpl user = new UserImpl(entry.getUserName());
             if (user.isPrivateJournal() ||
                     !entry.getAllowComments() ||
                     entry.getSecurityLevel() == 0) {
@@ -159,7 +159,7 @@ final public class CommentController {
             boolean result = commentDao.add(comment);
 
             try {
-                User pf = new User(et.getUserName());
+                UserImpl pf = new UserImpl(et.getUserName());
 
                 if (et.getEmailComments()) {
                     QueueMail mail = new QueueMail();
