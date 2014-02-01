@@ -41,6 +41,7 @@ import com.lowagie.text.Font;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfWriter;
 import com.lowagie.text.rtf.RtfWriter2;
+import com.sun.istack.internal.NotNull;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -267,7 +268,7 @@ public final class UsersController extends HttpServlet {
         }
     }
 
-    @RequestMapping(value = "{user}/rss", method = RequestMethod.GET, produces = "application/rss+xml; charset=ISO-8859-1")
+    @RequestMapping(value = "{username}/rss", method = RequestMethod.GET, produces = "application/rss+xml; charset=ISO-8859-1")
     public
     @ResponseBody
     String rss(@PathVariable String username, HttpServletResponse response) {
@@ -287,7 +288,7 @@ public final class UsersController extends HttpServlet {
         }
     }
 
-    @RequestMapping(value = "{user}/rsspics", method = RequestMethod.GET, produces = "application/rss+xml; charset=ISO-8859-1")
+    @RequestMapping(value = "{username}/rsspics", method = RequestMethod.GET, produces = "application/rss+xml; charset=ISO-8859-1")
     public
     @ResponseBody
     String rssPictures(@PathVariable String username, HttpServletResponse response) {
@@ -307,7 +308,7 @@ public final class UsersController extends HttpServlet {
         }
     }
 
-    @RequestMapping(value = "{user}/pdf", method = RequestMethod.GET, produces = "application/pdf")
+    @RequestMapping(value = "{username}/pdf", method = RequestMethod.GET, produces = "application/pdf")
     public void pdf(@PathVariable String username, HttpServletResponse response, HttpSession session) {
         UserImpl authUser = null;
         try {
@@ -329,7 +330,7 @@ public final class UsersController extends HttpServlet {
         }
     }
 
-    @RequestMapping(value = "{user}/rtf", method = RequestMethod.GET, produces = "application/rtf")
+    @RequestMapping(value = "{username}/rtf", method = RequestMethod.GET, produces = "application/rtf")
     public void rtf(@PathVariable String username, HttpServletResponse response, HttpSession session) {
         UserImpl authUser = null;
         try {
@@ -539,13 +540,13 @@ public final class UsersController extends HttpServlet {
         document.add(new Paragraph(new Date().toString(), new Font(Font.HELVETICA, FONT_10_POINT)));
         document.add(Chunk.NEWLINE);
 
-        final Collection<EntryTo> entries;
+        final List<EntryTo> entries;
 
         // The blog owner should see all entries
         if (uc.isAuthBlog())
-            entries = EntryDao.viewAll(uc.getBlogUser().getUserName(), true);
+            entries = EntryDaoImpl.viewAll(uc.getBlogUser().getUserName(), true);
         else
-            entries = EntryDao.viewAll(uc.getBlogUser().getUserName(), false); // not logged in security
+            entries = EntryDaoImpl.viewAll(uc.getBlogUser().getUserName(), false); // not logged in security
 
         // Format the current time.
         final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm");
@@ -554,15 +555,10 @@ public final class UsersController extends HttpServlet {
         String lastDate = "";
         String curDate;
 
-        EntryTo o;
-        final Iterator itr = entries.iterator();
-
-        for (int i = 0, n = entries.size(); i < n; i++) {
-            o = (EntryTo) itr.next();
-
+        for (EntryTo o : entries) {
             // Parse the previous string back into a Date.
             final ParsePosition pos = new ParsePosition(0);
-            final java.util.Date currentDate = formatter.parse(o.getDate().toString(), pos);
+            final Date currentDate = formatter.parse(o.getDate().toString(), pos);
 
             curDate = formatmydate.format(currentDate);
 
@@ -599,7 +595,7 @@ public final class UsersController extends HttpServlet {
     }
 
     @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
-    private String getImageList(final UserContext uc) {
+    private String getImageList(@NotNull final UserContext uc) {
         StringBuilder sb = new StringBuilder();
         sb.append("<h2>Pictures</h2>");
         sb.append(endl);
@@ -690,13 +686,13 @@ public final class UsersController extends HttpServlet {
         } else {
             try {
                 if (uc.isAuthBlog()) {
-                    o = EntryDao.viewSingle(singleEntryId);
+                    o = EntryDaoImpl.viewSingle(singleEntryId);
 
 
                     if (log.isDebugEnabled())
                         log.debug("getSingleEntry: User is logged in.");
                 } else {
-                    o = EntryDao.viewSinglePublic(singleEntryId);
+                    o = EntryDaoImpl.viewSinglePublic(singleEntryId);
 
                     if (log.isDebugEnabled())
                         log.debug("getSingleEntry: User is not logged in.");
@@ -831,16 +827,16 @@ public final class UsersController extends HttpServlet {
 
     private String getEntries(final UserContext uc, final int skip) {
         StringBuffer sb = new StringBuffer();
-        final Collection entries;
+        final List<EntryTo> entries;
 
         try {
             if (uc.isAuthBlog()) {
-                entries = EntryDao.view(uc.getBlogUser().getUserName(), true, skip);  // should be true
+                entries = EntryDaoImpl.view(uc.getBlogUser().getUserName(), true, skip);  // should be true
 
                 if (log.isDebugEnabled())
                     log.debug("getEntries: User is logged in.");
             } else {
-                entries = EntryDao.view(uc.getBlogUser().getUserName(), false, skip);
+                entries = EntryDaoImpl.view(uc.getBlogUser().getUserName(), false, skip);
 
                 if (log.isDebugEnabled())
                     log.debug("getEntries: User is not logged in.");
@@ -858,16 +854,10 @@ public final class UsersController extends HttpServlet {
             if (log.isDebugEnabled())
                 log.debug("getEntries: Begin Iteration of records.");
 
-            /* Iterator */
-            EntryTo o;
-            final Iterator itr = entries.iterator();
-
-            for (int i = 0, n = entries.size(); i < n; i++) {
-                o = (EntryTo) itr.next();
-
+            for (EntryTo o : entries) {
                 // Parse the previous string back into a Date.
                 final ParsePosition pos = new ParsePosition(0);
-                final java.util.Date currentDate = formatter.parse(o.getDateTime().toString(), pos);
+                final Date currentDate = formatter.parse(o.getDateTime().toString(), pos);
 
                 curDate = formatmydate.format(currentDate);
 
@@ -931,9 +921,9 @@ public final class UsersController extends HttpServlet {
         final Collection entries;
 
         if (uc.getAuthenticatedUser() != null)
-            entries = EntryDao.viewFriends(uc.getBlogUser().getUserId(), uc.getAuthenticatedUser().getUserId());
+            entries = EntryDaoImpl.viewFriends(uc.getBlogUser().getUserId(), uc.getAuthenticatedUser().getUserId());
         else
-            entries = EntryDao.viewFriends(uc.getBlogUser().getUserId(), 0);
+            entries = EntryDaoImpl.viewFriends(uc.getBlogUser().getUserId(), 0);
 
         sb.append("<h2>Friends</h2>");
         sb.append(endl);
@@ -950,7 +940,7 @@ public final class UsersController extends HttpServlet {
             String curDate;
 
             /* Iterator */
-            EntryTo o;
+            EntryImpl o;
             final Iterator itr = entries.iterator();
 
             if (log.isDebugEnabled())
@@ -960,7 +950,7 @@ public final class UsersController extends HttpServlet {
                 sb.append("<p>No friends entries found</p>.");
 
             for (int i = 0, n = entries.size(); i < n; i++) {
-                o = (EntryTo) itr.next();
+                o = (EntryImpl) itr.next();
 
                 // Parse the previous string back into a Date.
                 final ParsePosition pos = new ParsePosition(0);
@@ -1206,7 +1196,7 @@ public final class UsersController extends HttpServlet {
         // END: YEARS
 
         try {
-            Collection<EntryTo> entries = EntryDao.ViewCalendarYear(year, uc.getBlogUser().getUserName(), uc.isAuthBlog());
+            Collection<EntryImpl> entries = EntryDaoImpl.ViewCalendarYear(year, uc.getBlogUser().getUserName(), uc.isAuthBlog());
 
             if (entries == null || entries.size() == 0) {
                 sb.append("<p>Calendar data not available.</p>");
@@ -1249,7 +1239,7 @@ public final class UsersController extends HttpServlet {
         sb.append(endl);
 
         try {
-            Collection<EntryTo> entries = EntryDao.ViewCalendarMonth(year, month, uc.getBlogUser().getUserName(), uc.isAuthBlog());
+            Collection<EntryImpl> entries = EntryDaoImpl.ViewCalendarMonth(year, month, uc.getBlogUser().getUserName(), uc.isAuthBlog());
 
             if (entries.size() == 0) {
                 sb.append("<p>Calendar data not available.</p>");
@@ -1262,7 +1252,7 @@ public final class UsersController extends HttpServlet {
                 String curDate;
                 String lastDate = "";
 
-                for (EntryTo entryTo : entries) {
+                for (EntryImpl entryTo : entries) {
 
                     Date currentDate = entryTo.getDate();
                     curDate = formatmydate.format(currentDate);
@@ -1307,7 +1297,7 @@ public final class UsersController extends HttpServlet {
             int year = cal.get(Calendar.YEAR);
             int month = cal.get(Calendar.MONTH) + 1; // zero based
 
-            Collection<EntryTo> entries = EntryDao.ViewCalendarMonth(year, month, uc.getBlogUser().getUserName(), uc.isAuthBlog());
+            Collection<EntryImpl> entries = EntryDaoImpl.ViewCalendarMonth(year, month, uc.getBlogUser().getUserName(), uc.isAuthBlog());
 
             if (entries.size() == 0) {
                 sb.append("\t<!-- could not render calendar -->");
@@ -1332,7 +1322,7 @@ public final class UsersController extends HttpServlet {
     private String getTagMini(final UserContext uc) {
         StringBuilder sb = new StringBuilder();
         Tag tag;
-        final ArrayList<Tag> tags = EntryDao.getUserTags(uc.getBlogUser().getUserId());
+        final ArrayList<Tag> tags = EntryDaoImpl.getUserTags(uc.getBlogUser().getUserId());
         int largest = 0;
         int smallest = 10;
         int cutSmall;
@@ -1413,13 +1403,13 @@ public final class UsersController extends HttpServlet {
         final int maxrecent = 5;
 
         try {
-            entries = EntryDao.view(uc.getBlogUser().getUserName(), uc.isAuthBlog(), 0);
+            entries = EntryDaoImpl.view(uc.getBlogUser().getUserName(), uc.isAuthBlog(), 0);
 
             if (log.isDebugEnabled())
                 log.debug("getUserRecentEntries: Begin Iteration of records.");
 
             /* Iterator */
-            EntryTo o;
+            EntryImpl o;
             final Iterator itr = entries.iterator();
 
             sb.append("\t<div class=\"menuentity\" id=\"userRecentEntries\">\n<strong style=\"text-transform: uppercase; letter-spacing: 2px; border: 0 none; border-bottom: 1px; border-style: dotted; border-color: #999999; margin-bottom: 5px; width: 100%; font-size: 10px;\">Recent Entries</strong>\n");
@@ -1431,7 +1421,7 @@ public final class UsersController extends HttpServlet {
                 n = maxrecent;
             }
             for (int i = 0; i < n; i++) {
-                o = (EntryTo) itr.next();
+                o = (EntryImpl) itr.next();
                 sb.append("\t\t\t<li><a href=\"/users/");
                 sb.append(uc.getBlogUser().getUserName());
                 sb.append("/entry/");
@@ -1477,7 +1467,7 @@ public final class UsersController extends HttpServlet {
         try {
 
             final Collection entries;
-            entries = EntryDao.ViewCalendarDay(year, month, day, uc.getBlogUser().getUserName(), uc.isAuthBlog());
+            entries = EntryDaoImpl.ViewCalendarDay(year, month, day, uc.getBlogUser().getUserName(), uc.isAuthBlog());
 
             if (entries == null || entries.size() == 0) {
                 sb.append("<p>Calendar data not available.</p>");
@@ -1490,11 +1480,11 @@ public final class UsersController extends HttpServlet {
                 String curDate;
 
                 /* Iterator */
-                EntryTo o;
+                EntryImpl o;
                 final Iterator itr = entries.iterator();
 
                 for (int i = 0, n = entries.size(); i < n; i++) {
-                    o = (EntryTo) itr.next();
+                    o = (EntryImpl) itr.next();
 
                     // Parse the previous string back into a Date.
                     final ParsePosition pos = new ParsePosition(0);
@@ -1548,7 +1538,7 @@ public final class UsersController extends HttpServlet {
             sb.append(i);
             sb.append(" (");
             try {
-                sb.append(EntryDao.calendarCount(i, uc.getBlogUser().getUserName()));
+                sb.append(EntryDaoImpl.calendarCount(i, uc.getBlogUser().getUserName()));
             } catch (Exception e) {
                 log.error("getArchive: could not fetch count for " + uc.getBlogUser().getUserName() + ": " + i + e.getMessage());
                 sb.append("0");
@@ -1589,7 +1579,7 @@ public final class UsersController extends HttpServlet {
         rss.setWebMaster("webmaster@justjournal.com (Lucas)");
         // RSS advisory board format
         rss.setManagingEditor(user.getEmailAddress() + " (" + user.getFirstName() + ")");
-        rss.populate(EntryDao.view(user.getUserName(), false));
+        rss.populate(EntryDaoImpl.view(user.getUserName(), false));
         return rss.toXml();
     }
 
@@ -1612,7 +1602,7 @@ public final class UsersController extends HttpServlet {
         atom.setTitle(user.getJournalName());
         atom.setId("http://www.justjournal.com/users/" + user.getUserName() + "/atom");
         atom.setSelfLink("/users/" + user.getUserName() + "/atom");
-        atom.populate(EntryDao.view(user.getUserName(), false));
+        atom.populate(EntryDaoImpl.view(user.getUserName(), false));
         return (atom.toXml());
     }
 
@@ -1648,12 +1638,12 @@ public final class UsersController extends HttpServlet {
 
         try {
             if (uc.isAuthBlog()) {
-                entries = EntryDao.viewAll(uc.getBlogUser().getUserName(), true);  // should be true
+                entries = EntryDaoImpl.viewAll(uc.getBlogUser().getUserName(), true);  // should be true
 
                 if (log.isDebugEnabled())
                     log.debug("getTags: User is logged in.");
             } else {
-                entries = EntryDao.viewAll(uc.getBlogUser().getUserName(), false);
+                entries = EntryDaoImpl.viewAll(uc.getBlogUser().getUserName(), false);
 
                 if (log.isDebugEnabled())
                     log.debug("getTags: User is not logged in.");
@@ -1670,11 +1660,11 @@ public final class UsersController extends HttpServlet {
                 log.debug("getTags: Begin Iteration of records.");
 
             /* Iterator */
-            EntryTo o;
+            EntryImpl o;
             final Iterator itr = entries.iterator();
 
             for (int i = 0, n = entries.size(); i < n; i++) {
-                o = (EntryTo) itr.next();
+                o = (EntryImpl) itr.next();
 
                 // Parse the previous string back into a Date.
                 final ParsePosition pos = new ParsePosition(0);

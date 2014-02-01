@@ -39,8 +39,8 @@ import com.justjournal.WebError;
 import com.justjournal.WebLogin;
 import com.justjournal.core.Settings;
 import com.justjournal.core.TrackbackOut;
-import com.justjournal.db.EntryDao;
-import com.justjournal.db.EntryTo;
+import com.justjournal.db.EntryDaoImpl;
+import com.justjournal.db.EntryImpl;
 import com.justjournal.restping.BasePing;
 import com.justjournal.restping.IceRocket;
 import com.justjournal.restping.TechnoratiPing;
@@ -379,7 +379,7 @@ public final class UpdateJournal extends HttpServlet {
         if (userID > 0) {
             // We authenticated OK.  Continue...
 
-            final EntryTo et = new EntryTo();
+            final EntryImpl et = new EntryImpl();
 
             // Get the user input
             final int security = Integer.valueOf(request.getParameter("security"));
@@ -531,7 +531,7 @@ public final class UpdateJournal extends HttpServlet {
 
                 // create entry
                 if (!blnError) {
-                    final boolean result = EntryDao.add(et);
+                    final boolean result = EntryDaoImpl.add(et);
 
                     if (!result) {
                         if (myclient == ClientType.web)
@@ -562,8 +562,8 @@ public final class UpdateJournal extends HttpServlet {
 
                         // lookup the tag id
                         if (t.size() > 0) {
-                            final EntryTo et2 = EntryDao.viewSingle(et);
-                            EntryDao.setTags(et2.getId(), t);
+                            final EntryImpl et2 = EntryDaoImpl.viewSingle(et);
+                            EntryDaoImpl.setTags(et2.getId(), t);
                         }
                     }
                 }
@@ -628,7 +628,7 @@ public final class UpdateJournal extends HttpServlet {
 
                             /* do trackback */
                             if (trackback.length() > 0) {
-                                final EntryTo et2 = EntryDao.viewSingle(et);
+                                final EntryImpl et2 = EntryDaoImpl.viewSingle(et);
                                 final TrackbackOut tbout = new TrackbackOut(trackback,
                                         settings.getBaseUri() + "users/" + userName + "/entry/" + et2.getId(),
                                         et.getSubject(), et.getBody(), pf.getJournalName());

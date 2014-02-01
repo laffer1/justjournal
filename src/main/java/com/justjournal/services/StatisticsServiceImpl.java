@@ -59,7 +59,7 @@ public class StatisticsServiceImpl implements StatisticsService {
             if (UserDao.view(username) == null) return null;
 
             userStatistics.setUsername(username);
-            userStatistics.setEntryCount(EntryDao.entryCount(username));
+            userStatistics.setEntryCount(EntryDaoImpl.entryCount(username));
             userStatistics.setCommentCount(commentDao.count(username));
 
             return userStatistics;

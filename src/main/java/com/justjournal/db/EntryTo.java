@@ -1,108 +1,46 @@
 /*
-Copyright (c) 2005, Lucas Holt
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification, are
-permitted provided that the following conditions are met:
-
-  Redistributions of source code must retain the above copyright notice, this list of
-  conditions and the following disclaimer.
-
-  Redistributions in binary form must reproduce the above copyright notice, this
-  list of conditions and the following disclaimer in the documentation and/or other
-  materials provided with the distribution.
-
-  Neither the name of the Just Journal nor the names of its contributors
-  may be used to endorse or promote products derived from this software without
-  specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
-CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
-INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
-MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
-CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
-GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
-BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
-OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
-TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
-OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright (c) 2014 Lucas Holt
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ */
 
 package com.justjournal.db;
 
-import com.fasterxml.jackson.annotation.*;
-import com.justjournal.utility.HTMLUtil;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.ArrayList;
 import java.util.Date;
 
 /**
- * Journal entry transfer object.  Contains one journal entry. Maps relationship between table "entry" and java.
- *
  * @author Lucas Holt
- * @version 1.0
- * @see EntryDao
  */
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class EntryTo {
-    @JsonProperty("id")
-    private int id;
-
-    @JsonProperty("locationId")
-    private int locationId = 0;
-
-    @JsonProperty("moodId")
-    private int moodId = 0;
-
-    @JsonProperty("commentCount")
-    private int commentCount;
-    private int userId;
-    private int securityLevel;
-
-    @JsonIgnore
-    private Date date = new Date();
-
-    private String subject;
-
-    @JsonProperty("body")
-    private String body;
-
-    private String music;
-    private String userName;
-    private String moodName;
-    private String locationName;
-
-    private boolean autoFormat = true;
-    private boolean allowComments = true;
-    private boolean emailComments = true;
-    private boolean draft = true;
-
-    private int attachImage = 0;
-    private int attachFile = 0;
-
-    @JsonIgnore
-    private ArrayList<String> tags = new ArrayList<String>();
-
-    @JsonCreator
-    public EntryTo() {
-
-    }
-
-
+public interface EntryTo {
     /**
      * Retrieves entry id as an int >0
      *
      * @return entry id
      */
-    public int getId() {
-        return id;
-    }
-
+    int getId();
 
     /**
      * Set the entry id to an int >0
@@ -110,25 +48,15 @@ public class EntryTo {
      * @param id entry id to set
      * @throws IllegalArgumentException id < 0
      */
-    public void setId(int id)
-            throws IllegalArgumentException {
-        if (id < 0)
-            throw new IllegalArgumentException("Illegal id: " +
-                    id);
-
-        this.id = id;
-    }
-
+    void setId(int id)
+            throws IllegalArgumentException;
 
     /**
      * Retrieve the current location id
      *
      * @return location id
      */
-    public int getLocationId() {
-        return locationId;
-    }
-
+    int getLocationId();
 
     /**
      * Set the location id to an int >0
@@ -136,22 +64,15 @@ public class EntryTo {
      * @param loc location id to set
      * @throws IllegalArgumentException < 0
      */
-    public void setLocationId(int loc)
-            throws IllegalArgumentException {
-        if (loc < 0)
-            throw new IllegalArgumentException("Illegal location id: " +
-                    loc);
-        locationId = loc;
-    }
+    void setLocationId(int loc)
+            throws IllegalArgumentException;
 
     /**
      * Retrieves the mood id
      *
      * @return mood id
      */
-    public int getMoodId() {
-        return moodId;
-    }
+    int getMoodId();
 
     /**
      * Sets the mood to an int > 0
@@ -159,78 +80,44 @@ public class EntryTo {
      * @param mood mood to set
      * @throws IllegalArgumentException < 0
      */
-    public void setMoodId(int mood)
-            throws IllegalArgumentException {
-        if (mood < 0)
-            throw new IllegalArgumentException("Illegal mood id: " +
-                    mood);
-        moodId = mood;
-    }
+    void setMoodId(int mood)
+            throws IllegalArgumentException;
 
     /**
      * Retrieve date
      *
      * @return current date
      */
-    public Date getDate() {
-        return date;
-    }
+    Date getDate();
 
-    public DateTime getDateTime() {
-        return new DateTimeBean(date);
-    }
+    DateTime getDateTime();
 
     /**
      * Set the date using a string in the form 2004-01-30 22:02
-     * <p/>
-     * TODO: create a parser to check the date more thoroughly.  DateTimeBean will throw an exception if the format is
-     * wrong though!
      *
      * @param date date in format YYYY-MM-DD hh:mm
      * @throws IllegalArgumentException null or len < 6
-     * @see DateTimeBean
+     * @see com.justjournal.db.DateTimeBean
      */
-    public void setDate(String date)
-            throws IllegalArgumentException {
-        if (date == null)
-            throw new IllegalArgumentException("Illegal date: null");
-
-        if (date.length() < 6)
-            throw new IllegalArgumentException("Illegal date: " +
-                    date);
-        DateTime newDate = new DateTimeBean();
-
-        try {
-            newDate.set(date);
-            this.date = newDate.toDate();
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Illegal date");
-        }
-    }
-
+    void setDate(String date)
+            throws IllegalArgumentException;
 
     /**
      * Set the date using a <code>DateTimeBean</code>
      *
      * @param dateTime DateTimeBean
-     * @see DateTimeBean
+     * @see com.justjournal.db.DateTimeBean
      */
-    public void setDate(DateTime dateTime) {
-        this.date = dateTime.toDate();
-    }
+    void setDate(DateTime dateTime);
 
-    public void setDate(Date date) {
-        this.date = date;
-    }
+    void setDate(Date date);
 
     /**
      * Retrieve the subject
      *
      * @return The subject of the entry
      */
-    public String getSubject() {
-        return subject;
-    }
+    String getSubject();
 
     /**
      * Set the subject.  If the subject is null or an empty string, it will be set as (no subject).
@@ -238,270 +125,67 @@ public class EntryTo {
      * @param subject subject to use
      * @throws IllegalArgumentException
      */
-    public void setSubject(String subject)
-            throws IllegalArgumentException {
-
-        if (subject == null || subject.length() == 0)
-            this.subject = "(no subject)";
-        else
-            this.subject = subject;
-    }
-
+    void setSubject(String subject)
+            throws IllegalArgumentException;
 
     /**
      * @return the body in text or html with or without autoformat
      */
-    public String getBody() {
-        return body;
-    }
+    String getBody();
 
     @JsonIgnore
-    public String getBodyWithLinks() {
-        return HTMLUtil.uriToLink(body);
-    }
+    String getBodyWithLinks();
 
     @JsonIgnore
-    public String getBodyWithoutHTML() {
-        return HTMLUtil.stripHTMLTags(body);
-    }
+    String getBodyWithoutHTML();
 
-    public void setBody(String body)
-            throws IllegalArgumentException {
-        if (body == null || body.length() < 2)
-            throw new IllegalArgumentException("Illegal body: " +
-                    body);
+    void setBody(String body)
+            throws IllegalArgumentException;
 
-        this.body = body;
-    }
+    String getMusic();
 
-    public String getMusic() {
-        return music;
-    }
+    void setMusic(String music);
 
-    public void setMusic(String music) {
-        if (music == null)
-            this.music = "";
-        else
-            this.music = music;
-    }
+    int getCommentCount();
 
-    public int getCommentCount() {
-        return commentCount;
-    }
+    void setCommentCount(int comment)
+            throws IllegalArgumentException;
 
-    public void setCommentCount(int comment)
-            throws IllegalArgumentException {
-        if (comment < 0)
-            throw new IllegalArgumentException("Illegal comment count: " +
-                    comment);
-        commentCount = comment;
-    }
+    int getUserId();
 
-    public int getUserId() {
-        return userId;
-    }
+    void setUserId(int uid)
+            throws IllegalArgumentException;
 
-    public void setUserId(int uid)
-            throws IllegalArgumentException {
-        if (uid < 0)
-            throw new IllegalArgumentException("Illegal user id: " +
-                    uid);
-        userId = uid;
-    }
+    int getSecurityLevel();
 
-    public int getSecurityLevel() {
-        return securityLevel;
-    }
+    void setSecurityLevel(int sec)
+            throws IllegalArgumentException;
 
-    public void setSecurityLevel(int sec)
-            throws IllegalArgumentException {
-        if (sec < 0)
-            throw new IllegalArgumentException("Illegal security level: " +
-                    sec);
-        securityLevel = sec;
-    }
+    String getUserName();
 
-    public String getUserName() {
-        return userName;
-    }
+    void setUserName(String user);
 
-    public void setUserName(String user) {
-        if (user == null)
-            throw new IllegalArgumentException("Illegal User Name");
+    String getLocationName();
 
-        userName = user;
-    }
+    void setLocationName(String loc);
 
-    public String getLocationName() {
-        return locationName;
-    }
+    String getMoodName();
 
-    public void setLocationName(String loc) {
-        if (loc == null)
-            throw new IllegalArgumentException("Illegal Location Name");
+    void setMoodName(String mood);
 
-        locationName = loc;
-    }
+    boolean getAllowComments();
 
-    public String getMoodName() {
-        return moodName;
-    }
+    void setAllowComments(boolean allowComments);
 
-    public void setMoodName(String mood) {
-        if (mood == null)
-            throw new IllegalArgumentException("Illegal Mood Name");
+    boolean getEmailComments();
 
-        moodName = mood;
-    }
+    void setEmailComments(boolean emailComments);
 
-    public boolean getAllowComments() {
-        return this.allowComments;
-    }
+    boolean getAutoFormat();
 
-    public void setAllowComments(boolean allowComments) {
-        this.allowComments = allowComments;
-    }
+    void setAutoFormat(boolean autoFormat);
 
-    public boolean getEmailComments() {
-        return this.emailComments;
-    }
+    ArrayList<String> getTags();
 
-    public void setEmailComments(boolean emailComments) {
-        this.emailComments = emailComments;
-    }
-
-    public boolean getAutoFormat() {
-        return this.autoFormat;
-    }
-
-    public void setAutoFormat(boolean autoFormat) {
-        this.autoFormat = autoFormat;
-    }
-
-    public ArrayList<String> getTags() {
-        return tags;
-    }
-
-    public void setTags(ArrayList<String> tag) {
-        this.tags = tag;
-    }
-
-    @Override
-    @JsonIgnore
-    public String toString() {
-        StringBuilder output = new StringBuilder();
-
-        output.append("entry id: ");
-        output.append(id);
-        output.append('\n');
-
-        output.append("location id: ");
-        output.append(locationId);
-        output.append('\n');
-
-        output.append("location name: ");
-        output.append(locationName);
-        output.append('\n');
-
-        output.append("mood id: ");
-        output.append(moodId);
-        output.append('\n');
-
-        output.append("mood name: ");
-        output.append(moodName);
-        output.append('\n');
-
-        output.append("comment count: ");
-        output.append(commentCount);
-        output.append('\n');
-
-        output.append("date: ");
-        output.append(date.toString());
-        output.append('\n');
-
-        output.append("subject: ");
-        output.append(subject);
-        output.append('\n');
-
-        output.append("body: ");
-        output.append(body);
-        output.append('\n');
-
-        output.append("music: ");
-        output.append(music);
-        output.append('\n');
-
-        output.append("security level: ");
-        output.append(securityLevel);
-        output.append('\n');
-
-        output.append("user id: ");
-        output.append(userId);
-        output.append('\n');
-
-        output.append("autoformat: ");
-        output.append(autoFormat);
-        output.append('\n');
-
-        output.append("allowComments: ");
-        output.append(allowComments);
-        output.append('\n');
-
-        output.append("emailComments: ");
-        output.append(emailComments);
-        output.append('\n');
-
-        return output.toString();
-    }
-
-    @JsonIgnore
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        final EntryTo entryTo = (EntryTo) o;
-
-        if (allowComments != entryTo.allowComments) return false;
-        if (autoFormat != entryTo.autoFormat) return false;
-        if (commentCount != entryTo.commentCount) return false;
-        if (emailComments != entryTo.emailComments) return false;
-        if (id != entryTo.id) return false;
-        if (locationId != entryTo.locationId) return false;
-        if (moodId != entryTo.moodId) return false;
-        if (securityLevel != entryTo.securityLevel) return false;
-        if (userId != entryTo.userId) return false;
-        if (!body.equals(entryTo.body)) return false;
-        if (!date.equals(entryTo.date)) return false;
-        if (locationName != null ? !locationName.equals(entryTo.locationName) : entryTo.locationName != null)
-            return false;
-        if (moodName != null ? !moodName.equals(entryTo.moodName) : entryTo.moodName != null) return false;
-        if (music != null ? !music.equals(entryTo.music) : entryTo.music != null) return false;
-        if (subject != null ? !subject.equals(entryTo.subject) : entryTo.subject != null) return false;
-        return !(userName != null ? !userName.equals(entryTo.userName) : entryTo.userName != null);
-    }
-
-    @JsonIgnore
-    @Override
-    public int hashCode() {
-        int result;
-        result = id;
-        result = 29 * result + locationId;
-        result = 29 * result + moodId;
-        result = 29 * result + commentCount;
-        result = 29 * result + userId;
-        result = 29 * result + securityLevel;
-        result = 29 * result + date.hashCode();
-        result = 29 * result + (subject != null ? subject.hashCode() : 0);
-        result = 29 * result + body.hashCode();
-        result = 29 * result + (music != null ? music.hashCode() : 0);
-        result = 29 * result + (userName != null ? userName.hashCode() : 0);
-        result = 29 * result + (moodName != null ? moodName.hashCode() : 0);
-        result = 29 * result + (locationName != null ? locationName.hashCode() : 0);
-        result = 29 * result + (autoFormat ? 1 : 0);
-        result = 29 * result + (allowComments ? 1 : 0);
-        result = 29 * result + (emailComments ? 1 : 0);
-        return result;
-    }
-
+    void setTags(ArrayList<String> tag);
 }

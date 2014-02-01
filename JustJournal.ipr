@@ -492,6 +492,7 @@
               <option value="SpringJavaAutowiringInspection" />
               <option value="ProtectedField" />
               <option value="InstanceVariableOfConcreteClass" />
+              <option value="MismatchedQueryAndUpdateOfStringBuilder" />
             </list>
           </option>
         </inspection_tool>

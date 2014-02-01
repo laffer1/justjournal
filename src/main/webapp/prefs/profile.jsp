@@ -1,17 +1,3 @@
-<%@ page import="com.justjournal.User" %>
-<%@ page import="com.justjournal.WebError" %>
-<%@ page import="com.justjournal.core.Statistics" %>
-<%@ page import="com.justjournal.db.*" %>
-<%@ page import="com.justjournal.search.BaseSearch" %>
-<%@ page import="com.justjournal.utility.StringUtil" %>
-<%@ page import="com.justjournal.utility.Xml" %>
-<%@ page import="sun.jdbc.rowset.CachedRowSet" %>
-<%@ page import="java.io.PrintWriter" %>
-<%@ page import="java.sql.*" %>
-<%@ page import="java.text.ParsePosition" %>
-<%@ page import="java.text.SimpleDateFormat" %>
-<%@ page import="java.util.Collection" %>
-<%@ page import="java.util.Iterator" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
@@ -21,9 +7,9 @@
     <title>JustJournal.com: Preferences: Account &amp; Profile</title>
     <link rel="stylesheet" type="text/css" href="../layout.css" media="all"/>
     <link rel="stylesheet" type="text/css" href="../font-normal.css" media="all"/>
-    <link rel="home" title="Home" href="../index.jsp"/>
-    <link rel="contents" title="Site Map" href="../sitemap.jsp"/>
-    <link rel="help" title="Technical Support" href="../support/index.jsp"/>
+    <link rel="home" title="Home" href="${pageContext.request.contextPath}/#/"/>
+    <link rel="contents" title="Site Map" href="${pageContext.request.contextPath}/#/sitemap"/>
+    <link rel="help" title="Technical Support" href="${pageContext.request.contextPath}/#/support"/>
 </head>
 
 <body>
@@ -37,7 +23,7 @@
         Integer userID = (Integer) session.getAttribute("auth.uid");
         int ival = 0;
         if (userID != null) {
-            ival = userID.intValue();
+            ival = userID;
         }
 
         if (ival > 0) {

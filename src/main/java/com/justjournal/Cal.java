@@ -34,7 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal;
 
-import com.justjournal.db.EntryTo;
+import com.justjournal.db.EntryImpl;
 import org.apache.log4j.Logger;
 
 import java.text.ParsePosition;
@@ -53,7 +53,7 @@ import java.util.Iterator;
 public final class Cal {
     private static final Logger log = Logger.getLogger(Cal.class);
 
-    private Collection<EntryTo> entries;
+    private Collection<EntryImpl> entries;
     private final ArrayList<CalMonth> Months = new ArrayList<CalMonth>(12);
     private final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
     private final SimpleDateFormat shortDate = new SimpleDateFormat("yyyy-MM-dd");
@@ -67,7 +67,7 @@ public final class Cal {
 
     private String baseUrl;
 
-    public Cal(final Collection<EntryTo> entries) {
+    public Cal(final Collection<EntryImpl> entries) {
         this.entries = entries;
         this.calculateEntryCounts();
     }
@@ -84,7 +84,7 @@ public final class Cal {
         int[] monthPostCt = null;
 
         try {
-            for (EntryTo entryTo : entries) {
+            for (EntryImpl entryTo : entries) {
                 final java.util.Date currentDate = entryTo.getDate();
 
                 calendarg.setTime(currentDate);

@@ -29,8 +29,8 @@ package com.justjournal.ctl;
 import com.justjournal.UserImpl;
 import com.justjournal.WebError;
 import com.justjournal.WebLogin;
-import com.justjournal.db.EntryDao;
-import com.justjournal.db.EntryTo;
+import com.justjournal.db.EntryDaoImpl;
+import com.justjournal.db.EntryImpl;
 import com.justjournal.utility.FileIO;
 import com.justjournal.utility.StringUtil;
 import com.justjournal.utility.Xml;
@@ -86,9 +86,9 @@ public final class LoginAccount extends JustJournalBaseServlet {
             content.append(endl);
 
             final Collection entries;
-            entries = EntryDao.viewFriends(user.getUserId(), user.getUserId());
+            entries = EntryDaoImpl.viewFriends(user.getUserId(), user.getUserId());
 
-            EntryTo o;
+            EntryImpl o;
             final Iterator itr = entries.iterator();
             if (entries.size() != 0) {
                 content.append("<h3>Recent Friends Entries</h3>");
@@ -96,7 +96,7 @@ public final class LoginAccount extends JustJournalBaseServlet {
                 content.append("<ul>");
                 content.append(endl);
                 for (int i = 0, n = entries.size(); i < n; i++) {
-                    o = (EntryTo) itr.next();
+                    o = (EntryImpl) itr.next();
                     content.append("<li><a href=\"users/");
                     content.append(o.getUserName());
                     content.append("\">");

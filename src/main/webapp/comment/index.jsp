@@ -32,7 +32,7 @@ $Id: index.jsp,v 1.5 2008/04/26 17:06:30 laffer1 Exp $
     CommentDao commentDao = new CommentDaoImpl();
     Collection comments = commentDao.list(eid);
 
-    EntryTo entry = EntryDao.viewSinglePublic(eid);
+    EntryImpl entry = EntryDaoImpl.viewSinglePublic(eid);
 
     UserImpl pf;
     try {

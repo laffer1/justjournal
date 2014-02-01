@@ -296,7 +296,7 @@ public class Interface extends HttpServlet {
             } else if (false) {
 
 
-                EntryTo et = new EntryTo();
+                EntryImpl et = new EntryImpl();
 
                 // Get the user input
                 int security = Integer.valueOf(request.getParameter("security"));
@@ -346,7 +346,7 @@ public class Interface extends HttpServlet {
 
                 // create header fields
                 if (!blnError) {
-                    EntryDao edao = new EntryDao();
+                    EntryDaoImpl edao = new EntryDaoImpl();
                     boolean result = edao.add(et);
 
                     if (!result)

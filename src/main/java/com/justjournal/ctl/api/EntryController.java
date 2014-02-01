@@ -28,8 +28,8 @@ package com.justjournal.ctl.api;
 
 import com.justjournal.WebLogin;
 import com.justjournal.db.CommentDao;
-import com.justjournal.db.EntryDao;
-import com.justjournal.db.EntryTo;
+import com.justjournal.db.EntryDaoImpl;
+import com.justjournal.db.EntryImpl;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -66,15 +66,15 @@ final public class EntryController {
      */
     @RequestMapping(value = "{username}/{id}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public EntryTo getById(@PathVariable("username") String username, @PathVariable("id") int id) {
-        return EntryDao.viewSinglePublic(id);
+    public EntryImpl getById(@PathVariable("username") String username, @PathVariable("id") int id) {
+        return EntryDaoImpl.viewSinglePublic(id);
     }
 
     @RequestMapping(value = "{username}", method = RequestMethod.GET, produces = "application/json")
     public
     @ResponseBody
-    Collection<EntryTo> getEntries(@PathVariable("username") String username) {
-        return EntryDao.viewAll(username, false);
+    Collection<EntryImpl> getEntries(@PathVariable("username") String username) {
+        return EntryDaoImpl.viewAll(username, false);
     }
 
     /**
@@ -89,7 +89,7 @@ final public class EntryController {
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json", headers = {"Accept=*/*", "content-type=application/json"})
     public
     @ResponseBody
-    Map<String, String> post(@RequestBody EntryTo entry, HttpSession session, HttpServletResponse response, Model model) {
+    Map<String, String> post(@RequestBody EntryImpl entry, HttpSession session, HttpServletResponse response, Model model) {
 
         if (!WebLogin.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -98,7 +98,7 @@ final public class EntryController {
         entry.setUserId(WebLogin.currentLoginId(session)); // can't trust the client with this
 
         // TODO: validate
-        boolean result = EntryDao.add(entry);
+        boolean result = EntryDaoImpl.add(entry);
 
         if (!result) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -121,7 +121,7 @@ final public class EntryController {
     @RequestMapping(method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
     public
     @ResponseBody
-    Map<String, String> put(@RequestBody EntryTo entry, HttpSession session, HttpServletResponse response) {
+    Map<String, String> put(@RequestBody EntryImpl entry, HttpSession session, HttpServletResponse response) {
         if (!WebLogin.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
@@ -130,11 +130,11 @@ final public class EntryController {
 
         // TODO: validate
         boolean result;
-        EntryTo entryTo = EntryDao.viewSingle(entry.getId(), WebLogin.currentLoginId(session));
+        EntryImpl entryTo = EntryDaoImpl.viewSingle(entry.getId(), WebLogin.currentLoginId(session));
         if (entryTo != null && entryTo.getId() > 0)
-            result = EntryDao.update(entry);
+            result = EntryDaoImpl.update(entry);
         else
-            result = EntryDao.add(entry);
+            result = EntryDaoImpl.add(entry);
 
         if (!result) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -166,7 +166,7 @@ final public class EntryController {
 
         try {
             boolean result2;
-            boolean result = EntryDao.delete(entryId, WebLogin.currentLoginId(session));
+            boolean result = EntryDaoImpl.delete(entryId, WebLogin.currentLoginId(session));
 
             if (!result) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

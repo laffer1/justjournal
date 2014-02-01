@@ -28,20 +28,17 @@ package com.justjournal.rss;
 
 import com.justjournal.db.EntryTo;
 import com.justjournal.db.SQLHelper;
-import com.justjournal.db.DateTime;
 import com.justjournal.utility.DateConvert;
-import com.justjournal.utility.Xml;
 import com.justjournal.utility.HTMLUtil;
+import com.justjournal.utility.Xml;
+import org.apache.log4j.Logger;
 
 import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import org.apache.log4j.Logger;
-
 /**
- * Create an RSS feed as a string.  This should be a valid XML document.
- * Implements RSS 2
+ * Create an RSS feed as a string.  This should be a valid XML document. Implements RSS 2
  *
  * @author Lucas Holt
  * @version $Id: Rss.java,v 1.13 2011/05/29 22:32:59 laffer1 Exp $
@@ -50,18 +47,18 @@ public final class Rss {
     private static final Logger log = Logger.getLogger(Rss.class);
     private final static int MAX_LENGTH = 15; // max size of RSS content
 
-    private String title;
-    private String link;
-    private String description;
-    private String language;
-    private String copyright;
-    private String webMaster;
-    private String managingEditor;
-    private String selfLink;
+    private String title = "";
+    private String link = "";
+    private String description = "";
+    private String language = "";
+    private String copyright = "";
+    private String webMaster = "";
+    private String managingEditor = "";
+    private String selfLink = "";
 
-    private Date newestEntryDate;
+    private Date newestEntryDate = new Date();
 
-    private ArrayList<RssItem> items = new ArrayList<RssItem>(MAX_LENGTH);
+    private List<RssItem> items = new ArrayList<RssItem>(MAX_LENGTH);
 
     public String getTitle() {
         return title;
@@ -150,8 +147,8 @@ public final class Rss {
                 item.setTitle(o.getSubject());
                 item.setLink("http://www.justjournal.com/users/" + o.getUserName());
                 // RSS feeds don't like &apos; and friends.  try to go unicode
-                String description = HTMLUtil.clean(o.getBody(), false);
-                item.setDescription(HTMLUtil.convertCharacterEntities(description));
+                String descUnicode = HTMLUtil.clean(o.getBody(), false);
+                item.setDescription(HTMLUtil.convertCharacterEntities(descUnicode));
                 item.setGuid("http://www.justjournal.com/users/" + o.getUserName() + "/entry/" + o.getId());
                 item.setPubDate(o.getDateTime().toPubDate());
 
@@ -211,6 +208,7 @@ public final class Rss {
 
     /**
      * Add RSS item
+     *
      * @param item rss item
      */
     public void add(RssItem item) {
@@ -344,6 +342,7 @@ public final class Rss {
 
     /**
      * Number of RSS items populated.
+     *
      * @return rss item count
      */
     public int size() {

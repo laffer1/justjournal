@@ -1,13 +1,14 @@
 <%@ page import="com.justjournal.User" %>
+<%@ page import="com.justjournal.UserImpl" %>
 <%@ page contentType="text/html; charset=iso-8859-1" language="java" %>
 <%
     Integer userID = (Integer) session.getAttribute("auth.uid");
     int ival = 0;
     if (userID != null) {
-        ival = userID.intValue();
+        ival = userID;
     }
 
-    User usr = new User((String) session.getAttribute("auth.user"));
+    User usr = new UserImpl((String) session.getAttribute("auth.user"));
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -18,9 +19,9 @@
     <title>JustJournal.com: Preferences: Journal Title</title>
     <link rel="stylesheet" type="text/css" href="../layout.css" media="all"/>
     <link rel="stylesheet" type="text/css" href="../font-normal.css" media="all"/>
-    <link rel="home" title="Home" href="../index.jsp"/>
-    <link rel="contents" title="Site Map" href="../sitemap.jsp"/>
-    <link rel="help" title="Technical Support" href="../support/index.jsp"/>
+    <link rel="home" title="Home" href="${pageContext.request.contextPath}/#/"/>
+    <link rel="contents" title="Site Map" href="${pageContext.request.contextPath}/#/sitemap"/>
+    <link rel="help" title="Technical Support" href="${pageContext.request.contextPath}/#/support"/>
 </head>
 
 <body>
@@ -58,7 +59,7 @@
     </div>
 
     <% } else { %>
-    <p>You must <a href="../login.jsp">login</a> before you can edit your preferences.</p>
+    <p>You must <a href="${pageContext.request.contextPath}/#/">login</a> before you can edit your preferences.</p>
     <% } %>
 
 </div>

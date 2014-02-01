@@ -50,7 +50,7 @@ public final class AtomFeed {
     private String authorName;
     private String userName;
 
-    private ArrayList<AtomEntry> items = new ArrayList<AtomEntry>(MAX_LENGTH);
+    private List<AtomEntry> items = new ArrayList<AtomEntry>(MAX_LENGTH);
 
     public void populate(Collection<EntryTo> entries) {
         AtomEntry item;
