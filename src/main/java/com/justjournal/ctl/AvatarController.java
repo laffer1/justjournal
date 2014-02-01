@@ -26,66 +26,50 @@
 
 package com.justjournal.ctl;
 
-import com.justjournal.WebLogin;
-import org.apache.commons.fileupload.DiskFileUpload;
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileUpload;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.sql.DataSource;
 import java.io.File;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.List;
 
 /**
  * @author Lucas Holt
  */
 @Controller
 @RequestMapping("/UploadAvatarSubmit")
-final public class AvatarController {
+public class AvatarController {
     private static final Logger log = Logger.getLogger(AvatarController.class);
 
     public ModelAndView processUpload(@RequestParam MultipartFile file, WebRequest webRequest, Model model) {
 
 
-          String orgFileName = file.getOriginalFilename();
-          String filePath = "data/input" + orgFileName;
-          ModelMap modelMap = new ModelMap();
-          File destinationFile = new File(filePath);
-          try {
-              file.transferTo(destinationFile);
-          } catch (IllegalStateException e) {
-              log.error(e);
-              modelMap.addAttribute("result", "File uploaded failed:" + orgFileName);
-              return new ModelAndView("results", modelMap);
-          } catch (IOException e) {
-              log.error(e);
-              modelMap.addAttribute("result", "File uploaded failed:" + orgFileName);
-              return new ModelAndView("results", modelMap);
-          }
+        String orgFileName = file.getOriginalFilename();
+        String filePath = "data/input" + orgFileName;
+        ModelMap modelMap = new ModelMap();
+        File destinationFile = new File(filePath);
+        try {
+            file.transferTo(destinationFile);
+        } catch (IllegalStateException e) {
+            log.error(e);
+            modelMap.addAttribute("result", "File uploaded failed:" + orgFileName);
+            return new ModelAndView("results", modelMap);
+        } catch (IOException e) {
+            log.error(e);
+            modelMap.addAttribute("result", "File uploaded failed:" + orgFileName);
+            return new ModelAndView("results", modelMap);
+        }
 
 
-          modelMap.addAttribute("result", "File uploaded " + orgFileName);
-          return new ModelAndView("results", modelMap);
-      }
+        modelMap.addAttribute("result", "File uploaded " + orgFileName);
+        return new ModelAndView("results", modelMap);
+    }
 
     /*
     @RequestMapping(method = RequestMethod.POST)

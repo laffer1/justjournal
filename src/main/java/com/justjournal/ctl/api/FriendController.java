@@ -46,7 +46,7 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/api/friend")
-final public class FriendController {
+public class FriendController {
     private static final Logger log = Logger.getLogger(FriendController.class);
 
     // TODO: refactor to return user objects?

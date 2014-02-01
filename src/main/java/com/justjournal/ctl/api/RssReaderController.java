@@ -45,7 +45,7 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/api/rssreader")
-final public class RssReaderController {
+public class RssReaderController {
     private static final Logger log = Logger.getLogger(RssReaderController.class);
     public static final int RSS_URL_MAX_LENGTH = 1024;
     public static final int RSS_URL_MIN_LENGTH = 10;

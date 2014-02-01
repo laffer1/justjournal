@@ -47,7 +47,7 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/api/biography")
-final public class BiographyController {
+public class BiographyController {
     private static final Logger log = Logger.getLogger(BiographyController.class);
     public static final int BIO_MAX_LENGTH = 150;
 

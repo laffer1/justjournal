@@ -44,7 +44,7 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/api/account")
-final public class AccountController {
+public class AccountController {
 
     private Map<String, String>
     changePassword(String passCurrent, String passNew, HttpSession session, HttpServletResponse response) {

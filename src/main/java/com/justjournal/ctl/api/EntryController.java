@@ -47,7 +47,7 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/api/entry")
-final public class EntryController {
+public class EntryController {
     private static final Logger log = Logger.getLogger(EntryController.class);
 
     private CommentDao commentDao = null;

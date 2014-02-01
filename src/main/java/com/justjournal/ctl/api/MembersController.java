@@ -43,7 +43,7 @@ import java.util.Collection;
  */
 @Controller
 @RequestMapping("/api/members")
-final public class MembersController {
+public class MembersController {
     private static final Logger log = Logger.getLogger(MembersController.class);
 
     /**

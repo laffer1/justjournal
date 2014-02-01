@@ -55,7 +55,7 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/api/comment")
-final public class CommentController {
+public class CommentController {
     private static final Logger log = Logger.getLogger(CommentController.class);
 
     private CommentDao commentDao = null;

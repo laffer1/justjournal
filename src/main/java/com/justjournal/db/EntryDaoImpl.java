@@ -45,7 +45,6 @@ import org.apache.cayenne.ObjectContext;
 import org.apache.cayenne.access.DataContext;
 import org.apache.cayenne.exp.Expression;
 import org.apache.cayenne.query.Ordering;
-import org.apache.cayenne.query.Query;
 import org.apache.cayenne.query.SelectQuery;
 import org.apache.cayenne.query.SortOrder;
 import org.apache.log4j.Logger;
@@ -431,18 +430,28 @@ public final class EntryDaoImpl implements EntryDao {
             exp = exp.expWithParameters(map);
             SelectQuery query = new SelectQuery(com.justjournal.model.Entry.class, exp);
             query.setPageSize(PAGE_SIZE);
+            query.setFetchLimit(PAGE_SIZE);
+            query.setFetchOffset(skip);
             List<Ordering> orderings = new ArrayList<Ordering>();
             orderings.add(new Ordering("date", SortOrder.DESCENDING));
             orderings.add(new Ordering("db:" + Entry.ID_PK_COLUMN, SortOrder.DESCENDING));
             query.addOrderings(orderings);
+
+            query.addPrefetch("EntryToUser");
+            query.addPrefetch("EntryToSecurity");
+            query.addPrefetch("EntryToLocation");
             List<Entry> entryList = dataContext.performQuery(query);
 
-            int x = 0;
+            /*int x = 0;
             for (int i = skip; i < entryList.size(); i++) {
                 et = populateEntryTo(entryList.get(i));
                 entries.add(et);
                 x++;
                 if (x == PAGE_SIZE) break;
+            } */
+            for (Entry e : entryList) {
+                et = populateEntryTo(e);
+                entries.add(et);
             }
         } catch (Exception e1) {
             log.error(e1);
@@ -522,7 +531,8 @@ public final class EntryDaoImpl implements EntryDao {
                 // Get the list of friends for this user id
                 Expression e = Expression.fromString("FriendsToUser = $uid");
                 e.expWithParameters(Collections.singletonMap("uid", userID));
-                Query fq = new SelectQuery(com.justjournal.model.Friends.class, e);
+                SelectQuery fq = new SelectQuery(com.justjournal.model.Friends.class, e);
+                fq.addPrefetch("FriendsToFriendUser");
                 List<com.justjournal.model.Friends> friends = dataContext.performQuery(fq);
 
                 for (com.justjournal.model.Friends f : friends) {

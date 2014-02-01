@@ -54,7 +54,7 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/api/link")
-final public class LinkController {
+public class LinkController {
     private static final Logger log = Logger.getLogger(LinkController.class.getName());
 
     @RequestMapping(method = RequestMethod.GET)

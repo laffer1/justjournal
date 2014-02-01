@@ -43,7 +43,7 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/api/signup")
-final public class SignUpController {
+public class SignUpController {
     private static final Logger log = Logger.getLogger(SignUpController.class);
 
     @RequestMapping(method = RequestMethod.POST, produces = "application/json")

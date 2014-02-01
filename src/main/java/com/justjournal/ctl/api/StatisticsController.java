@@ -50,7 +50,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 @Controller
 @RequestMapping("/api/statistics")
-final public class StatisticsController {
+public class StatisticsController {
     private static final Logger log = Logger.getLogger(StatisticsController.class);
 
     private StatisticsService statisticsService = null;

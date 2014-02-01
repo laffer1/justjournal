@@ -44,7 +44,7 @@ import java.util.Collection;
  */
 @Controller
 @RequestMapping("/api/tags")
-final public class TagsController {
+public class TagsController {
 
     private TagDao tagDao = null;
 

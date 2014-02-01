@@ -63,7 +63,7 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/api/favorite")
-final public class FavoriteController {
+public class FavoriteController {
     private static final Logger log = Logger.getLogger(FavoriteController.class.getName());
     public static final int MAX_FRIENDS_COUNT = 20;
     private EntryDao entryDao = null;
