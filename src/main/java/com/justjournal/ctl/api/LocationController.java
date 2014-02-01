@@ -30,6 +30,7 @@ import com.justjournal.db.LocationDao;
 import com.justjournal.db.LocationTo;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -42,6 +43,13 @@ import java.util.Collection;
 @Controller
 @RequestMapping("/api/location")
 public class LocationController {
+
+    @Cacheable(value = "location", key = "id")
+    @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public LocationTo getById(@PathVariable("id") Integer id) {
+        return LocationDao.get(id);
+    }
 
     @Cacheable("location")
     @RequestMapping(method = RequestMethod.GET, headers = "Accept=*/*", produces = "application/json")
