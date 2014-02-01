@@ -26,8 +26,83 @@
 
 package com.justjournal.db;
 
+import com.sun.istack.internal.NotNull;
+import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+
 /**
+ * Entry Data Access
+ *
  * @author Lucas Holt
  */
+@Component
 public interface EntryDao {
+    public EntryTo viewSingle(final EntryTo ets);
+
+    public EntryTo viewSinglePublic(final int entryId);
+
+    public boolean exists(final int entryId);
+
+    public EntryTo viewSingle(final int entryId);
+
+    public List<EntryTo> view(final String userName, final boolean thisUser);
+
+    public List<EntryTo> view(final String userName, final boolean thisUser, final int skip);
+
+    public List<EntryTo> viewAll(final String userName, final boolean thisUser);
+
+    public List<EntryTo> viewFriends(final int userID, final int aUserId);
+
+    public int calendarCount(final int year, final String userName)
+            throws Exception;
+
+    @NotNull
+    public int entryCount(final String userName) throws Exception;
+
+    public Collection<EntryTo> viewCalendarYear(final int year,
+                                                final String userName,
+                                                final boolean thisUser)
+            throws Exception;
+
+    @NotNull
+    public Collection<EntryTo> viewCalendarMonth(final int year,
+                                                 final int month,
+                                                 final String userName,
+                                                 final boolean thisUser)
+            throws Exception;
+
+    @NotNull
+    public Collection<EntryTo> viewCalendarDay(final int year,
+                                               final int month,
+                                               final int day,
+                                               final String userName,
+                                               final boolean thisUser);
+
+    @NotNull
+    public Collection<EntryTo> getEntriesByDateRange(Date startDate, Date endDate,
+                                                     final String userName,
+                                                     final boolean thisUser);
+
+    public
+    @NotNull
+    Collection<EntryTo> viewRecentUniqueUsers();
+
+    public
+    @NotNull
+    ArrayList<String> getTags(int entryId);
+
+    public boolean setTags(int entryId, Iterable tags);
+
+    public int getTagId(String tagname);
+
+    public
+    @NotNull
+    ArrayList<Tag> getUserTags(int userId);
+
+    @NotNull
+    public EntryTo viewSingle(final int entryId, final int userId);
 }

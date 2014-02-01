@@ -1001,7 +1001,7 @@ public final class EntryDaoImpl implements EntryDao {
         try {
             rs = SQLHelper.executeResultSet(sqlStatement);
             while (rs.next()) {
-                Tag t = new Tag(rs.getInt("id"), rs.getString("name"));
+                Tag t = new TagImpl(rs.getInt("id"), rs.getString("name"));
                 try {
                     rs2 = SQLHelper.executeResultSet("SELECT count(*) FROM tags, entry_tags, entry WHERE entry.uid='" + userId + "' AND tags.id='" + rs.getInt("id") + "' AND tags.id = entry_tags.tagid AND entry.id = entry_tags.entryid;");
                     if (rs2.next())

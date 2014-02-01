@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, 2011 Lucas Holt
+ * Copyright (c) 2014 Lucas Holt
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,166 +26,52 @@
 
 package com.justjournal.db;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.justjournal.utility.StringUtil;
 import org.springframework.stereotype.Component;
 
 /**
- * A tag is a form of metadata about a blog entry.  It is similar to a category.
- *
  * @author Lucas Holt
- * @version $Id: Tag.java,v 1.7 2012/06/23 18:15:31 laffer1 Exp $
- *          <p/>
- *          Date: Apr 25, 2008 Time: 5:13:16 PM
  */
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @Component
-public final class Tag {
-    /**
-     * Unique id to represent the global tag
-     */
-    @JsonProperty("id")
-    private int id;
-
-    /**
-     * common string representation for public consumption
-     */
-    @JsonProperty("name")
-    private String name;
-
-    @JsonProperty("count")
-    private int count;
-
-    // timestamp comes later
-
-    @JsonCreator
-    public Tag() {
-
-    }
-
-    @JsonIgnore
-    public Tag(int id, String name, int count) {
-        if (name == null || name.equalsIgnoreCase(""))
-            throw new IllegalArgumentException("Name must be set");
-        if (name.length() > 30)
-            throw new IllegalArgumentException("Name cannot be longer than 30 characters.");
-        if (!StringUtil.isAlpha(name))
-            throw new IllegalArgumentException("Name contains invalid characters.  Must be A-Za-z");
-        if (id < 1)
-            throw new IllegalArgumentException("Tag id must be > 0");
-
-        this.id = id;
-        this.name = name.toLowerCase();
-
-        this.count = count;
-    }
-
-    /**
-     * Create a Tag with a unique id and name
-     *
-     * @param id   unique identity
-     * @param name the user visible name
-     */
-    @JsonIgnore
-    public Tag(int id, String name) {
-        if (name == null || name.equalsIgnoreCase(""))
-            throw new IllegalArgumentException("Name must be set");
-        if (name.length() > 30)
-            throw new IllegalArgumentException("Name cannot be longer than 30 characters.");
-        if (!StringUtil.isAlpha(name))
-            throw new IllegalArgumentException("Name contains invalid characters.  Must be A-Za-z");
-        if (id < 1)
-            throw new IllegalArgumentException("Tag id must be > 0");
-
-        this.id = id;
-        this.name = name.toLowerCase();
-        count = 0; // default
-    }
-
-    /**
-     * Create a Tag with a name.
-     *
-     * @param name user visible name
-     */
-    @JsonIgnore
-    public Tag(String name) {
-        if (name == null || name.equalsIgnoreCase(""))
-            throw new IllegalArgumentException("Name must be set");
-        if (name.length() > 30)
-            throw new IllegalArgumentException("Name cannot be longer than 30 characters.");
-        if (!StringUtil.isAlpha(name))
-            throw new IllegalArgumentException("Name contains invalid characters.  Must be A-Za-z");
-
-        this.id = 0;
-        this.name = name.toLowerCase();
-        count = 0; // default
-    }
-
+public interface Tag {
     /**
      * Get the unique identifier
      *
      * @return tag id > 0
      */
-    public int getId() {
-        return id;
-    }
+    int getId();
 
     /**
      * Set the unique id for the tag
      *
      * @param id tag id > 0
      */
-    public void setId(int id) {
-        if (id < 1)
-            throw new IllegalArgumentException("Tag id must be > 0");
-        this.id = id;
-    }
-
+    void setId(int id);
 
     /**
      * The number of tags
      *
      * @return tag count
      */
-    public int getCount() {
-        return count;
-    }
+    int getCount();
 
     /**
      * Set the number of tag instances
      *
      * @param count number of tags
      */
-    public void setCount(int count) {
-        this.count = count;
-    }
+    void setCount(int count);
 
     /**
      * The common name for the tag which the user will see
      *
      * @return 30 char or less string
      */
-    public String getName() {
-        return name;
-    }
+    String getName();
 
     /**
      * Set the common name to display to the user
      *
      * @param name 30 character or less string with letters only.
      */
-    public void setName(String name) {
-        if (name == null || name.equalsIgnoreCase(""))
-            throw new IllegalArgumentException("Name must be set");
-        if (name.length() > 30)
-            throw new IllegalArgumentException("Name cannot be longer than 30 characters.");
-
-        if (!StringUtil.isAlpha(name))
-            throw new IllegalArgumentException("Name contains invalid characters.  Must be A-Za-z");
-
-        this.name = name.toLowerCase();
-    }
+    void setName(String name);
 }

@@ -37,6 +37,7 @@ import java.util.Collection;
 
 /**
  * Tag management
+ *
  * @author Lucas Holt
  */
 final public class TagDao {
@@ -45,6 +46,7 @@ final public class TagDao {
 
     /**
      * Get a single tag by id
+     *
      * @param id tag id
      * @return tag
      */
@@ -56,7 +58,7 @@ final public class TagDao {
 
             com.justjournal.model.Tags tagItem =
                     Cayenne.objectForPK(dataContext, com.justjournal.model.Tags.class, id);
-            tag = new Tag(id, tagItem.getName());
+            tag = new TagImpl(id, tagItem.getName());
             tag.setCount(tagItem.getTagsToEntryList().size());
         } catch (Exception e1) {
             log.error(e1);
@@ -67,6 +69,7 @@ final public class TagDao {
 
     /**
      * List all tags
+     *
      * @return tag collection
      */
     public static Collection<Tag> list() {
@@ -76,7 +79,7 @@ final public class TagDao {
             ResultSet rs = SQLHelper.executeResultSet("select tags.id, tags.name as name, count(*) as count from entry_tags, tags where tags.id=entry_tags.tagid GROUP by tags.name;");
 
             while (rs.next()) {
-                Tag tag = new Tag(rs.getInt(1), rs.getString(2));
+                Tag tag = new TagImpl(rs.getInt(1), rs.getString(2));
                 tag.setCount(rs.getInt(3));
                 tags.add(tag);
             }
