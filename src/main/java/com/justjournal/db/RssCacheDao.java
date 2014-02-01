@@ -35,6 +35,7 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.db;
 
 import org.apache.log4j.Logger;
+
 import java.sql.ResultSet;
 
 /**
@@ -133,13 +134,14 @@ public final class RssCacheDao {
 
     /**
      * Get a cached RSS feed by URL
+     *
      * @param uri Feed source
      * @return
      */
     public static RssCacheTo get(final String uri) {
 
         if (log.isDebugEnabled())
-            log.debug("Starting view()");
+            log.debug("Starting get()");
 
         ResultSet RS = null;
         DateTime dt = new DateTimeBean();

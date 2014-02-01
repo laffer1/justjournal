@@ -67,6 +67,7 @@ import java.util.regex.Pattern;
 public class Blogger {
 
     private static final Logger log = Logger.getLogger(Blogger.class);
+    private EntryDao entryDao = new EntryDaoImpl();
 
     /**
      * Fetch the users personal information including their username, userid, email address and name.
@@ -84,11 +85,11 @@ public class Blogger {
         HashMap<String, Serializable> s = new HashMap<String, Serializable>();
 
 
-        if (!StringUtil.lengthCheck(username, 3, 15)) {
+        if (!StringUtil.lengthCheck(username, 3, WebLogin.USERNAME_MAX_LENGTH)) {
             blnError = true;
         }
 
-        if (!StringUtil.lengthCheck(password, 5, 18)) {
+        if (!StringUtil.lengthCheck(password, 5, WebLogin.PASSWORD_MAX_LENGTH)) {
             blnError = true;
         }
 
@@ -247,7 +248,7 @@ public class Blogger {
                 et.setUserName(user.getUserName());
 
                 EntryDaoImpl.add(et);
-                et2 = EntryDaoImpl.viewSingle(et);
+                et2 = entryDao.viewSingle(et);
                 result = Integer.toString(et2.getId());
 
                 if (!user.isPrivateJournal()) {
@@ -395,7 +396,7 @@ public class Blogger {
             try {
                 /* we're just updating the content aka body as this is the
            only thing the protocol supports. */
-                EntryTo et2 = EntryDaoImpl.viewSingle(eid, userId);
+                EntryTo et2 = entryDao.viewSingle(eid, userId);
                 et2.setBody(StringUtil.replace(content, '\'', "\\\'"));
                 EntryDaoImpl.update(et2);
             } catch (Exception e) {
@@ -438,16 +439,15 @@ public class Blogger {
      * 9 </member> 10	        <member> 11	          <name>permaLink</name> 12 <value><string>http://typekeytest111.typepad.com/my_weblog/2005/07/one_more.html</string></value>
      * 13 </member> 14	        <member> 15	          <name>userid</name> 16 <value><string>28376</string></value> 17
      * </member> 18	        <member> 19 <name>mt_allow_pings</name> 20 <value><int>0</int></value> 21 </member> 22
-     *   <member> 23 <name>mt_allow_comments</name> 24	          <value><int>1</int></value> 25 </member> 26
-     * <member> 27 <name>description</name> 28	          <value><string/></value> 29 </member> 30	        <member> 31
+     * <member> 23 <name>mt_allow_comments</name> 24	          <value><int>1</int></value> 25 </member> 26 <member> 27
+     * <name>description</name> 28	          <value><string/></value> 29 </member> 30	        <member> 31
      * <name>mt_convert_breaks</name> 32	          <value><string>0</string></value> 33	        </member> 34 <member>
      * 35	          <name>postid</name> 36 <value><string>5423957</string></value> 37 </member> 38 <member> 39
-     * <name>mt_excerpt</name> 40 <value><string/></value> 41 </member> 42 <member> 43
-     * <name>mt_keywords</name> 44 <value><string/></value> 45 </member> 46 <member> 47	          <name>title</name> 48
-     *          <value><string>One more!</string></value> 49 </member> 50	        <member> 51
-     * <name>mt_text_more</name> 52 <value><string/></value> 53 </member> 54	        <member> 55
-     * <name>dateCreated</name> 56 <value><dateTime.iso8601>2005-07-02T02:37:04Z</dateTime.iso8601></value> 57
-     * </member> 58 </struct></value></data></array></value> 59	    </param> 60	  </params> 61	</methodResponse>
+     * <name>mt_excerpt</name> 40 <value><string/></value> 41 </member> 42 <member> 43 <name>mt_keywords</name> 44
+     * <value><string/></value> 45 </member> 46 <member> 47	          <name>title</name> 48 <value><string>One
+     * more!</string></value> 49 </member> 50	        <member> 51 <name>mt_text_more</name> 52 <value><string/></value>
+     * 53 </member> 54	        <member> 55 <name>dateCreated</name> 56 <value><dateTime.iso8601>2005-07-02T02:37:04Z</dateTime.iso8601></value>
+     * 57 </member> 58 </struct></value></data></array></value> 59	    </param> 60	  </params> 61	</methodResponse>
      * <p/>
      * URI of example: http://www.sixapart.com/developers/xmlrpc/blogger_api/bloggergetrecentposts.html
      *
@@ -480,7 +480,7 @@ public class Blogger {
             return s;
         }
 
-        total = EntryDaoImpl.viewAll(username, true);
+        total = entryDao.viewAll(username, true);
 
         Iterator<EntryTo> it = total.iterator();
 
@@ -539,7 +539,7 @@ public class Blogger {
             return s;
         }
 
-        e = EntryDaoImpl.viewSingle(Integer.parseInt(postid), userId);
+        e = entryDao.viewSingle(Integer.parseInt(postid), userId);
 
         entry.put("link", "http://www.justjournal.com/users/" + e.getUserName() + "/entry/" + e.getId());
         entry.put("permaLink", "http://www.justjournal.com/users/" + e.getUserName() + "/entry/" + e.getId());

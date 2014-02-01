@@ -39,6 +39,7 @@ import java.util.Collection;
 
 /**
  * Tags
+ *
  * @author Lucas Holt
  */
 @Controller
@@ -57,7 +58,7 @@ final public class TagsController {
      * @return tag list
      */
     @Cacheable("tags")
-    @RequestMapping(method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "", method = RequestMethod.GET, produces = "application/json")
     public
     @ResponseBody
     Collection<Tag> getTags() {

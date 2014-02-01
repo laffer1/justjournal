@@ -30,6 +30,12 @@ import com.justjournal.Util;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.util.Collection;
+
+import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 /**
  * @author Lucas Holt
  */
@@ -56,23 +62,33 @@ public class UserDaoTests {
     }
 
     @Test
-    public void testView() throws Exception {
-
+    public void testGet() throws Exception {
+        UserTo userTo = UserDao.get(16);
+        assertNotNull(userTo);
+        assertEquals("jjsite", userTo.getUserName());
+        assertEquals(16, userTo.getId());
     }
 
     @Test
-    public void testViewUserName() throws Exception {
-
+    public void testGetWithUserName() throws Exception {
+        UserTo userTo = UserDao.get("jjsite");
+        assertNotNull(userTo);
+        assertEquals("jjsite", userTo.getUserName());
+        assertEquals(16, userTo.getId());
     }
 
     @Test
     public void testMemberList() throws Exception {
-
+        Collection<UserTo> users = UserDao.memberList();
+        assertNotNull(users);
+        assertTrue(users.size() > 0);
     }
 
     @Test
     public void testNewUsers() throws Exception {
-
+        Collection<UserTo> users = UserDao.newUsers();
+        assertNotNull(users);
+        assertTrue(users.size() > 0);
     }
 
     @Test

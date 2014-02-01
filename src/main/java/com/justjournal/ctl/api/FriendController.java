@@ -78,7 +78,7 @@ final public class FriendController {
         }
 
         try {
-            UserTo friendUser = UserDao.view(friend);
+            UserTo friendUser = UserDao.get(friend);
 
             if (friendUser == null)
                 return java.util.Collections.singletonMap("error", "Could not find friend's username");

@@ -40,12 +40,11 @@ import com.justjournal.WebLogin;
 import com.justjournal.core.Settings;
 import com.justjournal.db.Comment;
 import com.justjournal.db.CommentDao;
-import com.justjournal.db.EntryDaoImpl;
+import com.justjournal.db.EntryDao;
 import com.justjournal.db.EntryTo;
 import com.justjournal.utility.QueueMail;
 import com.sun.istack.internal.NotNull;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -60,9 +59,13 @@ final public class CommentController {
     private static final Logger log = Logger.getLogger(CommentController.class);
 
     private CommentDao commentDao = null;
+    private EntryDao entryDao = null;
 
-    @Autowired
-    public void setCommentDao(@NotNull CommentDao commentDao) {
+    public void setEntryDao(@NotNull final EntryDao entryDao) {
+        this.entryDao = entryDao;
+    }
+
+    public void setCommentDao(@NotNull final CommentDao commentDao) {
         this.commentDao = commentDao;
     }
 
@@ -76,7 +79,7 @@ final public class CommentController {
     public
     @ResponseBody
     List<Comment> getComments(@RequestParam Integer entryId, HttpServletResponse response) throws Exception {
-        EntryTo entry = EntryDaoImpl.viewSingle(entryId);
+        EntryTo entry = entryDao.viewSingle(entryId);
 
         try {
             User user = new UserImpl(entry.getUserName());
@@ -151,7 +154,7 @@ final public class CommentController {
             java.sql.Date now = new java.sql.Date(System.currentTimeMillis());
             comment.setDate(fmt.format(now));
 
-            EntryTo et = EntryDaoImpl.viewSinglePublic(comment.getEid());
+            EntryTo et = entryDao.viewSinglePublic(comment.getEid());
 
             if (!et.getAllowComments()) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);

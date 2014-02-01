@@ -391,7 +391,7 @@ public final class EntryDaoImpl implements EntryDao {
 
 
     /**
-     * view retrieves journal entries from the database.
+     * get retrieves journal entries from the database.
      *
      * @param userName user who owns the entries.
      * @param thisUser is the owner the one accessing the data?
@@ -402,7 +402,7 @@ public final class EntryDaoImpl implements EntryDao {
     }
 
     /**
-     * view retrieves journal entries from the database.
+     * get retrieves journal entries from the database.
      *
      * @param userName user who owns the entries.
      * @param thisUser is the owner the one accessing the data?
@@ -502,7 +502,7 @@ public final class EntryDaoImpl implements EntryDao {
      */
     @SuppressWarnings("unchecked")
     public List<EntryTo> viewFriends(final int userID, final int aUserId)
-    throws IllegalArgumentException {
+            throws IllegalArgumentException {
 
         if (userID < 1)
             throw new IllegalArgumentException("userID must be greater than zero");
@@ -598,7 +598,7 @@ public final class EntryDaoImpl implements EntryDao {
      * @throws Exception Database exception
      */
     public int calendarCount(final int year, final String userName)
-    throws Exception {
+            throws Exception {
 
         String sqlStatement;
         ResultSet RS;
@@ -626,12 +626,14 @@ public final class EntryDaoImpl implements EntryDao {
      * @throws Exception data access
      */
     @NotNull
-    public int entryCount(final String userName) throws Exception {
+    public int entryCount(@NotNull final String userName) throws Exception {
         String sqlStatement;
         ResultSet RS;
         int count = 0;
 
-        sqlStatement = "SELECT count(*) " +
+        if (userName == null || userName.isEmpty()) return count;
+
+        sqlStatement = "SELECT count(*) as cnt" +
                 " FROM user As us, entry As eh " +
                 " WHERE us.username = '" + userName +
                 "' AND us.id = eh.uid;";
@@ -639,7 +641,7 @@ public final class EntryDaoImpl implements EntryDao {
         RS = SQLHelper.executeResultSet(sqlStatement);
 
         if (RS.next())
-            count = RS.getInt(1);
+            count = RS.getInt("cnt");
         RS.close();
 
         return count;
@@ -648,7 +650,7 @@ public final class EntryDaoImpl implements EntryDao {
     @NotNull
     public Collection<EntryTo> viewCalendarYear(final int year,
                                                 final String userName,
-                                                       final boolean thisUser)
+                                                final boolean thisUser)
             throws Exception {
 
         DateTimeBean dtb = new DateTimeBean();
@@ -668,8 +670,8 @@ public final class EntryDaoImpl implements EntryDao {
     @NotNull
     public Collection<EntryTo> viewCalendarMonth(final int year,
                                                  final int month,
-                                                        final String userName,
-                                                        final boolean thisUser)
+                                                 final String userName,
+                                                 final boolean thisUser)
             throws Exception {
 
         DateTimeBean dtb = new DateTimeBean();
@@ -700,9 +702,9 @@ public final class EntryDaoImpl implements EntryDao {
     @SuppressWarnings("unchecked")
     public Collection<EntryTo> viewCalendarDay(final int year,
                                                final int month,
-                                                      final int day,
-                                                      final String userName,
-                                                      final boolean thisUser) {
+                                               final int day,
+                                               final String userName,
+                                               final boolean thisUser) {
 
         DateTime dtb = new DateTimeBean();
         dtb.setYear(year);
@@ -721,7 +723,7 @@ public final class EntryDaoImpl implements EntryDao {
     @NotNull
     public Collection<EntryTo> getEntriesByDateRange(Date startDate, Date endDate,
                                                      final String userName,
-                                                            final boolean thisUser) {
+                                                     final boolean thisUser) {
 
         final Collection<EntryTo> entries = new ArrayList<EntryTo>();
 

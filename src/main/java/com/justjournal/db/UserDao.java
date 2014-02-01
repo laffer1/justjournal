@@ -34,12 +34,6 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.sql.ResultSet;
-import java.util.Collections;
-import java.util.List;
-
 import com.justjournal.model.User;
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
@@ -47,10 +41,15 @@ import org.apache.cayenne.Cayenne;
 import org.apache.cayenne.ObjectContext;
 import org.apache.cayenne.access.DataContext;
 import org.apache.cayenne.configuration.server.ServerRuntime;
-import org.apache.log4j.Logger;
-
 import org.apache.cayenne.exp.Expression;
 import org.apache.cayenne.query.SelectQuery;
+import org.apache.log4j.Logger;
+
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 
 /**
@@ -70,7 +69,7 @@ public final class UserDao {
      * @param user User Instance
      * @return True if successful, false otherwise.
      */
-    public static boolean add(UserTo user, String email) {
+    public static boolean add(UserTo user, CharSequence email) {
         if (user == null)
             throw new IllegalArgumentException("user is invalid");
 
@@ -181,8 +180,9 @@ public final class UserDao {
      * @param userId Unique User ID
      * @return user's info
      */
-    public @NotNull
-    static UserTo view(final int userId) {
+    public
+    @NotNull
+    static UserTo get(final int userId) {
         UserTo user = new UserTo();
 
         try {
@@ -224,16 +224,19 @@ public final class UserDao {
      * @return user's info
      */
     @SuppressWarnings("unchecked")
-    public @Nullable
-    static UserTo view(final String userName) {
+    public
+    @Nullable
+    static UserTo get(final String userName) {
         if (userName == null || userName.length() < 3)
             throw new IllegalArgumentException("userName is invalid");
 
         UserTo user = new UserTo();
 
         try {
-            log.debug("UserDao view() with " + userName);
+            log.debug("UserDao get() with " + userName);
             ObjectContext dataContext = DataContext.getThreadObjectContext();
+            assert (dataContext != null);
+
             Expression exp = Expression.fromString("db:username = $username");
             final SelectQuery query = new SelectQuery(com.justjournal.model.User.class, exp).queryWithParameters(Collections.singletonMap("username", userName));
             List<User> userList = dataContext.performQuery(query);
@@ -260,14 +263,16 @@ public final class UserDao {
         return user;
     }
 
-    public @Nullable static UserTo viewWithPassword(final String userName) {
+    public
+    @Nullable
+    static UserTo getWithPassword(final String userName) {
         if (userName == null || userName.length() < 3)
             throw new IllegalArgumentException("userName is invalid");
 
         UserTo user = new UserTo();
 
         try {
-            log.debug("UserDao viewWithPassword() with " + userName);
+            log.debug("UserDao getWithPassword() with " + userName);
             ObjectContext dataContext = DataContext.getThreadObjectContext();
             Expression exp = Expression.fromString("username = $username");
             final SelectQuery query =
@@ -304,8 +309,10 @@ public final class UserDao {
      *
      * @return All users of just journal.
      */
-    public @NotNull static Collection<UserTo> memberList() {
-        ArrayList<UserTo> users = new ArrayList<UserTo>(1024);
+    public
+    @NotNull
+    static Collection<UserTo> memberList() {
+        Collection<UserTo> users = new ArrayList<UserTo>();
         UserTo usr;
 
         try {
@@ -314,14 +321,18 @@ public final class UserDao {
             List<User> userList = dataContext.performQuery(query);
 
             for (User user : userList) {
-                usr = new UserTo();
-                usr.setId(Cayenne.intPKForObject(user));
-                usr.setUserName(user.getUsername());
-                usr.setName(user.getName());
-                usr.setSince(user.getSince());
-                usr.setLastName(user.getLastname());
-                usr.setPrivateJournal(user.getUserToUserPref().getOwnerViewOnly().equalsIgnoreCase("Y"));
-                users.add(usr);
+                try {
+                    usr = new UserTo();
+                    usr.setId(Cayenne.intPKForObject(user));
+                    usr.setUserName(user.getUsername());
+                    usr.setName(user.getName());
+                    usr.setSince(user.getSince());
+                    usr.setLastName(user.getLastname());
+                    usr.setPrivateJournal(user.getUserToUserPref().getOwnerViewOnly().equalsIgnoreCase("Y"));
+                    users.add(usr);
+                } catch (Exception e) {
+                    log.error(e);
+                }
             }
         } catch (Exception e1) {
             log.error(e1);
@@ -335,8 +346,10 @@ public final class UserDao {
      *
      * @return collection of UserTo's.
      */
-    public @NotNull static Collection<UserTo> newUsers() {
-        ArrayList<UserTo> users = new ArrayList<UserTo>(5);
+    public
+    @NotNull
+    static Collection<UserTo> newUsers() {
+        Collection<UserTo> users = new ArrayList<UserTo>();
         UserTo usr;
         final String sqlStatement = "SELECT id, username, name, since, lastname FROM user ORDER by id DESC Limit 0,5;";
 
@@ -361,8 +374,10 @@ public final class UserDao {
         return users;
     }
 
-    public @NotNull static Collection<String> friends(String username) {
-        ArrayList<String> friends = new ArrayList<String>();
+    public
+    @NotNull
+    static Collection<String> friends(String username) {
+        List<String> friends = new ArrayList<String>();
         final String sql = "SELECT friends.friendid as fif, (SELECT user.username from user WHERE user.id=fif) FROM friends, user WHERE user.username=\"" + username + "\" AND user.id=friends.id;";
 
         try {
@@ -380,8 +395,10 @@ public final class UserDao {
         return friends;
     }
 
-    public @NotNull static Collection<String> friendsof(String username) {
-        ArrayList<String> friends = new ArrayList<String>();
+    public
+    @NotNull
+    static Collection<String> friendsof(String username) {
+        Collection<String> friends = new ArrayList<String>();
         final String sql = "SELECT friends.id as fif, (SELECT user.username from user WHERE user.id=fif) FROM friends, user WHERE user.username=\"" + username + "\" AND user.id=friends.friendid;";
 
         try {
@@ -406,7 +423,7 @@ public final class UserDao {
      * @return Preferences in cached rowset.
      * @throws Exception SQL exception
      */
-    public static ResultSet getJournalPreferences(final String userName)
+    public static ResultSet getJournalPreferences(final CharSequence userName)
             throws Exception {
         ResultSet RS;
 
@@ -433,7 +450,7 @@ public final class UserDao {
     }
 
     /**
-     * Update the owner view only security feature.
+     * Update the owner get only security feature.
      *
      * @param userId    userid of blog owner
      * @param ownerOnly if the blog is private

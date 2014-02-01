@@ -36,6 +36,7 @@ package com.justjournal.db;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import org.springframework.stereotype.Component;
 
 /**
  * A Trackback ping
@@ -43,6 +44,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
  * @author Lucas Holt
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+@Component
 final public class TrackbackTo {
     /*
     id  int 10  unsigned auto  (trackback unit id)

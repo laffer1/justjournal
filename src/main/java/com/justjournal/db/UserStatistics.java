@@ -26,6 +26,8 @@
 
 package com.justjournal.db;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.stereotype.Component;
 
 /**
@@ -34,15 +36,20 @@ import org.springframework.stereotype.Component;
  * @author Lucas Holt
  */
 @Component
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.PUBLIC_ONLY)
 public interface UserStatistics {
+
+    @JsonProperty("entryCount")
     public int getEntryCount();
 
     public void setEntryCount(final int entryCount);
 
+    @JsonProperty("commentCount")
     public int getCommentCount();
 
     public void setCommentCount(final int commentCount);
 
+    @JsonProperty("username")
     public String getUsername();
 
     public void setUsername(final String username);

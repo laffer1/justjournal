@@ -26,11 +26,14 @@
 
 package com.justjournal.services;
 
+import com.justjournal.Util;
+import com.justjournal.db.CommentDaoImpl;
+import com.justjournal.db.EntryDaoImpl;
 import com.justjournal.db.Statistics;
 import com.justjournal.db.UserStatistics;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -45,11 +48,13 @@ import static org.junit.Assert.*;
 @ContextConfiguration("file:src/test/resources/mvc-dispatcher-servlet.xml")
 public class ServiceTests {
 
-    private StatisticsService statisticsService = null;
+    private static StatisticsService statisticsService = new StatisticsServiceImpl();
 
-    @Autowired
-    public void setStatisticsService(StatisticsService statisticsService) {
-        this.statisticsService = statisticsService;
+    @BeforeClass
+    public static void setup() throws Exception {
+        Util.setupDb();
+        statisticsService.setCommentDao(new CommentDaoImpl());
+        statisticsService.setEntryDao(new EntryDaoImpl());
     }
 
     @Test

@@ -48,18 +48,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Trackback and Post-IT Pings inbound
- * http://wellformedweb.org/story/9
+ * Trackback and Post-IT Pings inbound http://wellformedweb.org/story/9
  *
  * @author Lucas Holt
- * @version $Id: TrackbackPing.java,v 1.5 2009/05/16 03:13:12 laffer1 Exp $
- *          User: laffer1
- *          Date: Aug 10, 2006
- *          Time: 8:25:03 PM
+ * @version $Id: TrackbackPing.java,v 1.5 2009/05/16 03:13:12 laffer1 Exp $ User: laffer1 Date: Aug 10, 2006 Time:
+ *          8:25:03 PM
  */
 @Controller
 @RequestMapping("/trackback")
-final public class TrackbackPing {
+public class TrackbackPing {
 
     private static final Logger log = Logger.getLogger(TrackbackPing.class);
 
@@ -73,7 +70,8 @@ final public class TrackbackPing {
     private static final String END_MESSAGE = "</message>";
 
     @RequestMapping(method = RequestMethod.GET, produces = "text/xml")
-    public @ResponseBody
+    public
+    @ResponseBody
     String get(HttpServletRequest request, HttpServletResponse response) {
         StringBuilder sb = new StringBuilder();
 

@@ -40,7 +40,10 @@
 
     <context:component-scan base-package="com.justjournal"/>
 
-    <bean id="statisticsService" class="com.justjournal.services.StatisticsServiceImpl"/>
+    <bean id="statisticsService" class="com.justjournal.services.StatisticsServiceImpl">
+        <property name="commentDao" ref="commentDao"/>
+        <property name="entryDao" ref="entryDao"/>
+    </bean>
     <bean id="statisticsController" class="com.justjournal.ctl.api.StatisticsController">
         <property name="statisticsService" ref="statisticsService"/>
     </bean>
@@ -48,6 +51,21 @@
     <bean id="commentDao" class="com.justjournal.db.CommentDaoImpl"/>
     <bean id="entryDao" class="com.justjournal.db.EntryDaoImpl"/>
     <bean id="entryController" class="com.justjournal.ctl.api.EntryController">
+        <property name="entryDao" ref="entryDao"/>
+        <property name="commentDao" ref="commentDao"/>
+    </bean>
+
+    <bean id="commentController" class="com.justjournal.ctl.api.CommentController">
+        <property name="entryDao" ref="entryDao"/>
+        <property name="commentDao" ref="commentDao"/>
+    </bean>
+
+    <bean id="tagDao" class="com.justjournal.db.TagDaoImpl"/>
+    <bean id="tagsController" class="com.justjournal.ctl.api.TagsController">
+        <property name="tagDao" ref="tagDao"/>
+    </bean>
+
+    <bean id="usersController" class="com.justjournal.ctl.UsersController">
         <property name="entryDao" ref="entryDao"/>
         <property name="commentDao" ref="commentDao"/>
     </bean>

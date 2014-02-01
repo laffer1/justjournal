@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Lucas Holt
+ * Copyright (c) 2014 Lucas Holt
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,67 +26,27 @@
 
 package com.justjournal.db;
 
-import org.apache.cayenne.Cayenne;
-import org.apache.cayenne.ObjectContext;
-import org.apache.cayenne.access.DataContext;
-import org.apache.log4j.Logger;
+import org.springframework.stereotype.Component;
 
-import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- * Tag management
- *
  * @author Lucas Holt
  */
-final public class TagDao {
-
-    private static final Logger log = Logger.getLogger(TagDao.class);
-
+@Component
+public interface TagDao {
     /**
      * Get a single tag by id
      *
      * @param id tag id
      * @return tag
      */
-    public static Tag viewSingle(int id) {
-        Tag tag = null;
-
-        try {
-            ObjectContext dataContext = DataContext.getThreadObjectContext();
-
-            com.justjournal.model.Tags tagItem =
-                    Cayenne.objectForPK(dataContext, com.justjournal.model.Tags.class, id);
-            tag = new TagImpl(id, tagItem.getName());
-            tag.setCount(tagItem.getTagsToEntryList().size());
-        } catch (Exception e1) {
-            log.error(e1);
-        }
-
-        return tag;
-    }
+    Tag get(int id);
 
     /**
      * List all tags
      *
      * @return tag collection
      */
-    public static Collection<Tag> list() {
-        Collection<Tag> tags = new ArrayList<Tag>();
-        try {
-            // TODO: Convert to Cayenne
-            ResultSet rs = SQLHelper.executeResultSet("select tags.id, tags.name as name, count(*) as count from entry_tags, tags where tags.id=entry_tags.tagid GROUP by tags.name;");
-
-            while (rs.next()) {
-                Tag tag = new TagImpl(rs.getInt(1), rs.getString(2));
-                tag.setCount(rs.getInt(3));
-                tags.add(tag);
-            }
-            rs.close();
-        } catch (Exception ex) {
-            log.error(ex);
-        }
-        return tags;
-    }
+    Collection<Tag> list();
 }

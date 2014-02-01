@@ -89,7 +89,7 @@ final public class StatisticsController {
     @Cacheable(value = "userstatistics", key = "id")
     @RequestMapping(value = "{id}", method = RequestMethod.GET, headers = "Accept=*/*", produces = "application/json")
     @ResponseBody
-    public UserStatistics getById(@PathVariable String id, HttpServletResponse response) {
+    public UserStatistics getById(@PathVariable("id") String id, HttpServletResponse response) {
         try {
             if (id == null || id.equals("") || id.length() < 3) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

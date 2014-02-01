@@ -39,6 +39,7 @@ import com.justjournal.WebError;
 import com.justjournal.WebLogin;
 import com.justjournal.core.Settings;
 import com.justjournal.core.TrackbackOut;
+import com.justjournal.db.EntryDao;
 import com.justjournal.db.EntryDaoImpl;
 import com.justjournal.db.EntryImpl;
 import com.justjournal.db.EntryTo;
@@ -64,7 +65,7 @@ import java.util.regex.Pattern;
 /**
  * Adds journal entries to database.
  * <p/>
- * Optionally spell checks entries and returns the user to the edit view to make changes.
+ * Optionally spell checks entries and returns the user to the edit get to make changes.
  *
  * @author Lucas Holt
  * @version $Id: UpdateJournal.java,v 1.33 2012/07/04 18:49:20 laffer1 Exp $
@@ -312,6 +313,7 @@ public final class UpdateJournal extends HttpServlet {
 
         boolean blnError = false;
         final StringBuffer sb = new StringBuffer();
+        EntryDao entryDao = new EntryDaoImpl();
 
         // start session if one does not exist.
         final HttpSession session = request.getSession(true);
@@ -565,8 +567,8 @@ public final class UpdateJournal extends HttpServlet {
 
                         // lookup the tag id
                         if (t.size() > 0) {
-                            final EntryTo et2 = EntryDaoImpl.viewSingle(et);
-                            EntryDaoImpl.setTags(et2.getId(), t);
+                            final EntryTo et2 = entryDao.viewSingle(et);
+                            entryDao.setTags(et2.getId(), t);
                         }
                     }
                 }
@@ -631,7 +633,7 @@ public final class UpdateJournal extends HttpServlet {
 
                             /* do trackback */
                             if (trackback.length() > 0) {
-                                final EntryTo et2 = EntryDaoImpl.viewSingle(et);
+                                final EntryTo et2 = entryDao.viewSingle(et);
                                 final TrackbackOut tbout = new TrackbackOut(trackback,
                                         settings.getBaseUri() + "users/" + userName + "/entry/" + et2.getId(),
                                         et.getSubject(), et.getBody(), pf.getJournalName());

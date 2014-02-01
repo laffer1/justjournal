@@ -35,15 +35,17 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.db;
 
 import com.justjournal.utility.StringUtil;
+import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 
 /**
  * Manipulate trackback storage
  *
  * @author Lucas Holt
  */
+@Component
 public final class TrackbackDao {
 
     /**
@@ -127,9 +129,8 @@ public final class TrackbackDao {
     }
 
     /**
-     * Deletes trackbacks belonging to a specific entry id.
-     * used by the delete entry logic.  Not recommended for
-     * direct calls by Users.
+     * Deletes trackbacks belonging to a specific entry id. used by the delete entry logic.  Not recommended for direct
+     * calls by Users.
      *
      * @param entryId blog entry id
      * @return true on success, false on any error.

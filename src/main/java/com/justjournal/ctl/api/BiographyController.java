@@ -63,7 +63,7 @@ final public class BiographyController {
     public
     @ResponseBody
     Bio get(@RequestParam String username, HttpServletResponse response) {
-        UserTo user = UserDao.view(username);
+        UserTo user = UserDao.get(username);
         if (user == null) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return null;

@@ -73,7 +73,7 @@ public final class UserImpl implements User {
     public UserImpl(@NotNull final String username) throws Exception {
         setUserName(username);
 
-        final UserTo ut = UserDao.view(username);
+        final UserTo ut = UserDao.get(username);
 
         setUserId(ut.getId());
         setFirstName(ut.getFirstName());
@@ -133,7 +133,7 @@ public final class UserImpl implements User {
     public UserImpl(final int userId) throws Exception {
         setUserId(userId);
 
-        final UserTo ut = UserDao.view(userId);
+        final UserTo ut = UserDao.get(userId);
 
         setUserName(ut.getUserName());
         setFirstName(ut.getFirstName());

@@ -46,7 +46,7 @@ import java.util.Map;
 final public class SignUpController {
     private static final Logger log = Logger.getLogger(SignUpController.class);
 
-    @RequestMapping(method = RequestMethod.POST, produces="application/json")
+    @RequestMapping(method = RequestMethod.POST, produces = "application/json")
     public
     @ResponseBody
     Map<String, String> post(@RequestParam String email, @RequestBody UserTo user, HttpServletResponse response) {
@@ -87,7 +87,7 @@ final public class SignUpController {
                 return java.util.Collections.singletonMap("error", "Could not add user");
             }
 
-            user = UserDao.view(user.getUserName());
+            user = UserDao.get(user.getUserName());
 
             return java.util.Collections.singletonMap("id", Integer.toString(user.getId()));
         } catch (Exception e) {

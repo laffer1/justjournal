@@ -26,7 +26,9 @@
 
 package com.justjournal.db;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sun.istack.internal.NotNull;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -36,6 +38,7 @@ import java.util.Date;
  * @author Lucas Holt
  */
 @Component
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public interface EntryTo {
     /**
      * Retrieves entry id as an int >0
@@ -177,15 +180,17 @@ public interface EntryTo {
 
     boolean getAllowComments();
 
-    void setAllowComments(boolean allowComments);
+    void setAllowComments(@NotNull boolean allowComments);
 
+    @NotNull
     boolean getEmailComments();
 
-    void setEmailComments(boolean emailComments);
+    void setEmailComments(@NotNull boolean emailComments);
 
+    @NotNull
     boolean getAutoFormat();
 
-    void setAutoFormat(boolean autoFormat);
+    void setAutoFormat(@NotNull boolean autoFormat);
 
     ArrayList<String> getTags();
 

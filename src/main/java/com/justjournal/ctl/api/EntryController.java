@@ -27,10 +27,7 @@
 package com.justjournal.ctl.api;
 
 import com.justjournal.WebLogin;
-import com.justjournal.db.CommentDao;
-import com.justjournal.db.EntryDao;
-import com.justjournal.db.EntryDaoImpl;
-import com.justjournal.db.EntryTo;
+import com.justjournal.db.*;
 import org.apache.log4j.Logger;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Controller;
@@ -72,8 +69,13 @@ final public class EntryController {
      */
     @RequestMapping(value = "{username}/{id}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public EntryTo getById(@PathVariable("username") String username, @PathVariable("id") int id) {
-        return entryDao.viewSinglePublic(id);
+    public EntryTo getById(@PathVariable("username") String username, @PathVariable("id") int id, HttpServletResponse response) {
+        EntryTo entry = entryDao.viewSinglePublic(id);
+        if (entry.getUserName().equalsIgnoreCase(username))
+            return entry;
+
+        response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        return null;
     }
 
     @RequestMapping(value = "{username}", method = RequestMethod.GET, produces = "application/json")
@@ -95,7 +97,7 @@ final public class EntryController {
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json", headers = {"Accept=*/*", "content-type=application/json"})
     public
     @ResponseBody
-    Map<String, String> post(@RequestBody EntryTo entry, HttpSession session, HttpServletResponse response, Model model) {
+    Map<String, String> post(@RequestBody EntryImpl entry, HttpSession session, HttpServletResponse response, Model model) {
 
         if (!WebLogin.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);

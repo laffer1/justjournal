@@ -29,16 +29,26 @@ package com.justjournal.db;
 import com.justjournal.Util;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.util.Collection;
 
 import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * @author Lucas Holt
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@WebAppConfiguration
+@ContextConfiguration("file:src/test/resources/mvc-dispatcher-servlet.xml")
 public class EntryDaoTests {
     private final static String TEST_USER = "jjsite";
+    private EntryDao entryDao = new EntryDaoImpl();
+
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -47,28 +57,32 @@ public class EntryDaoTests {
 
     @Test
     public void testViewPublic() {
-        Collection<EntryTo> entries = EntryDaoImpl.view(TEST_USER, false);
+        assertNotNull(entryDao);
+        Collection<EntryTo> entries = entryDao.view(TEST_USER, false);
         assertTrue(entries != null);
         assertTrue(entries.size() > 15);
     }
 
     @Test
     public void testViewThisUser() {
-        Collection<EntryTo> entries = EntryDaoImpl.view(TEST_USER, true);
+        assertNotNull(entryDao);
+        Collection<EntryTo> entries = entryDao.view(TEST_USER, true);
         assertTrue(entries != null);
         assertTrue(entries.size() > 15);
     }
 
     @Test
     public void testViewPublicNoSkip() {
-        Collection<EntryTo> entries = EntryDaoImpl.view(TEST_USER, false, 0);
+        assertNotNull(entryDao);
+        Collection<EntryTo> entries = entryDao.view(TEST_USER, false, 0);
         assertTrue(entries != null);
         assertTrue(entries.size() > 15);
     }
 
     @Test
     public void testViewThisUserNoSkip() {
-        Collection<EntryTo> entries = EntryDaoImpl.view(TEST_USER, true, 0);
+        assertNotNull(entryDao);
+        Collection<EntryTo> entries = entryDao.view(TEST_USER, true, 0);
         assertTrue(entries != null);
         assertTrue(entries.size() > 15);
     }

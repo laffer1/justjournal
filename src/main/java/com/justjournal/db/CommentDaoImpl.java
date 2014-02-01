@@ -36,6 +36,7 @@ package com.justjournal.db;
 
 import com.justjournal.utility.StringUtil;
 import com.sun.istack.internal.NotNull;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
@@ -49,6 +50,7 @@ import java.util.List;
  */
 @Component
 public final class CommentDaoImpl implements CommentDao {
+    private static final Logger log = Logger.getLogger(CommentDaoImpl.class);
 
     /**
      * Add a comment on a journal entry
@@ -221,23 +223,21 @@ public final class CommentDaoImpl implements CommentDao {
      * @return number of comments
      * @throws Exception SQL
      */
-    public int count(final String userName) throws Exception {
+    public int count(@NotNull final String userName) throws Exception {
         String sqlStatement;
-        ResultSet RS;
-        int count = 0;
 
-        sqlStatement = "SELECT count(*) " +
+        if (userName == null || userName.isEmpty()) {
+            log.trace("CommentDaoImpl.count(): username is null or empty");
+            return 0;
+        }
+
+        sqlStatement = "SELECT count(*) as cnt" +
                 " FROM user As us, comments As com " +
                 " WHERE us.username = '" + userName +
                 "' AND us.id = com.uid;";
+        log.trace("CommentDaoImpl.count(): sql is " + sqlStatement);
 
-        RS = SQLHelper.executeResultSet(sqlStatement);
-
-        if (RS.next())
-            count = RS.getInt(1);
-        RS.close();
-
-        return count;
+        return SQLHelper.scalarInt(sqlStatement);
     }
 
 }

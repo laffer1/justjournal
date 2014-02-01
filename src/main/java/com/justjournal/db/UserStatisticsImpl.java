@@ -26,17 +26,25 @@
 
 package com.justjournal.db;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.stereotype.Component;
 
 /**
  * @author Lucas Holt
  */
 @Component
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class UserStatisticsImpl implements UserStatistics {
+    @JsonProperty("username")
     private String username = "";
+
+    @JsonProperty("entryCount")
     private int entryCount = 0;
+
+    @JsonProperty("commentCount")
     private int commentCount = 0;
 
     @JsonCreator

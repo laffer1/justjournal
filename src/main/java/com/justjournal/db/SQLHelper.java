@@ -292,6 +292,6 @@ public final class SQLHelper {
      * @return
      */
     public static int count(String tablename) {
-        return scalarInt("SELECT count(*) from " + tablename);
+        return scalarInt("SELECT count(*) as count FROM " + tablename);
     }
 }

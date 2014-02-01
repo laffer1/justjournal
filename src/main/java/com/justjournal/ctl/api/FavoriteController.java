@@ -34,7 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.ctl.api;
 
 import com.justjournal.WebLogin;
-import com.justjournal.db.EntryDaoImpl;
+import com.justjournal.db.EntryDao;
 import com.justjournal.db.EntryTo;
 import com.justjournal.db.SQLHelper;
 import org.apache.log4j.Logger;
@@ -66,6 +66,11 @@ import java.util.Map;
 final public class FavoriteController {
     private static final Logger log = Logger.getLogger(FavoriteController.class.getName());
     public static final int MAX_FRIENDS_COUNT = 20;
+    private EntryDao entryDao = null;
+
+    public void setEntryDao(final EntryDao entryDao) {
+        this.entryDao = entryDao;
+    }
 
     /**
      * Retrieve the collection of favorite entries
@@ -86,7 +91,7 @@ final public class FavoriteController {
 
             while (rs.next()) {
                 int eid = rs.getInt("entryid");
-                EntryTo et = EntryDaoImpl.viewSingle(eid);
+                EntryTo et = entryDao.viewSingle(eid);
                 entries.add(et);
             }
         } catch (Exception e) {

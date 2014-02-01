@@ -37,6 +37,7 @@ package com.justjournal.db;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.justjournal.WebLogin;
 import com.justjournal.utility.StringUtil;
 import org.springframework.stereotype.Component;
 
@@ -51,14 +52,14 @@ import org.springframework.stereotype.Component;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @Component
 public final class UserTo {
-    private int id;          // the user id imposed by mysql
-    private String userName;
-    private String name;     // first name
-    private String lastName;
-    private String password;
-    private String passwordSha1;
-    private int since;
-    private DateTime lastLogin;
+    private int id = 0;          // the user id imposed by mysql
+    private String userName = "";
+    private String name = "";     // first name
+    private String lastName = "";
+    private String password = "";
+    private String passwordSha1 = "";
+    private int since = 2003;
+    private DateTime lastLogin = null;
     private boolean privateJournal = false;
 
     @JsonCreator
@@ -162,8 +163,9 @@ public final class UserTo {
      * @param userName account name
      */
     public final void setUserName(final String userName) {
-        if (!StringUtil.lengthCheck(userName, 3, 15)) {
-            throw new IllegalArgumentException("Invalid userName");
+        // TODO: move username max length to this class
+        if (!StringUtil.lengthCheck(userName, 3, WebLogin.USERNAME_MAX_LENGTH)) {
+            throw new IllegalArgumentException("Invalid userName " + userName);
         }
         this.userName = userName.toLowerCase();
     }
@@ -206,7 +208,7 @@ public final class UserTo {
      */
     public final void setPassword(final String password) {
 
-        if (!StringUtil.lengthCheck(password, 5, 18)) {
+        if (!StringUtil.lengthCheck(password, 5, WebLogin.PASSWORD_MAX_LENGTH)) {
             throw new IllegalArgumentException("Invalid password");
         }
         this.password = password;

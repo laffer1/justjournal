@@ -37,28 +37,28 @@ package com.justjournal.db;
 import com.sun.istack.internal.NotNull;
 import org.apache.log4j.Logger;
 
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.sql.ResultSet;
-
 
 
 /**
  * Data access for User Link list
- * @see UserLinkTo
- * @version $Id: UserLinkDao.java,v 1.13 2012/06/23 18:15:31 laffer1 Exp $
+ *
  * @author Lucas Holt
+ * @version $Id: UserLinkDao.java,v 1.13 2012/06/23 18:15:31 laffer1 Exp $
+ * @see UserLinkTo
  */
 public final class UserLinkDao {
-    
-     private static final Logger log = Logger.getLogger(UserLinkDao.class.getName());
+
+    private static final Logger log = Logger.getLogger(UserLinkDao.class.getName());
 
     /**
      * Add a link to the user link list.
      *
      * @param link A new hyperlink to add.
-     * @see UserLinkTo
      * @return true if no error occured.
+     * @see UserLinkTo
      */
     public boolean add(final UserLinkTo link) {
 
@@ -71,9 +71,10 @@ public final class UserLinkDao {
 
     /**
      * Delete a link from the userlink list.
+     *
      * @param link user link to delete
-     * @see UserLinkTo
      * @return true on success
+     * @see UserLinkTo
      */
     public static boolean delete(final UserLinkTo link) {
         boolean noError = true;
@@ -84,7 +85,7 @@ public final class UserLinkDao {
         try {
             SQLHelper.executeNonQuery(sqlStmt);
         } catch (Exception e) {
-             log.error("UserLinkDao.delete():" + e.getMessage());
+            log.error("UserLinkDao.delete():" + e.getMessage());
             noError = false;
         }
 
@@ -93,11 +94,13 @@ public final class UserLinkDao {
 
     /**
      * Get a list of links
+     *
      * @param userId journal owner
+     * @return Collection of UserLinkTo's
      * @see UserLinkTo
-     * @return  Collection of UserLinkTo's
      */
-    public @NotNull
+    public
+    @NotNull
     static Collection<UserLinkTo> view(int userId) {
         ArrayList<UserLinkTo> links = new ArrayList<UserLinkTo>(10);
         final String sql = "SELECT * FROM user_link WHERE id='" + userId + "';";
@@ -111,9 +114,9 @@ public final class UserLinkDao {
 
             }
             rs.close();
-            
+
         } catch (Exception e) {
-             log.error("UserLinkDao.view():" + e.getMessage());
+            log.error("UserLinkDao.get():" + e.getMessage());
         }
 
         return links;

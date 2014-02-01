@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 @Controller
 @RequestMapping("/rsd")
-final public class Rsd {
+public class Rsd {
 
     private static final Logger log = Logger.getLogger(Rsd.class.getName());
     private static final String XML_HEADER =

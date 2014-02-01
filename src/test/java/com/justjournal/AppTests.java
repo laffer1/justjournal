@@ -67,6 +67,55 @@ public class AppTests {
     }
 
     @Test
+    public void users() throws Exception {
+        mockMvc.perform(get("/users/jjsite"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("users"));
+    }
+
+    @Test
+    public void usersFriends() throws Exception {
+        mockMvc.perform(get("/users/jjsite/friends"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("users"));
+    }
+
+    @Test
+    public void usersPictures() throws Exception {
+        mockMvc.perform(get("/users/jjsite/pictures"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("users"));
+    }
+
+    @Test
+    public void usersCalendar() throws Exception {
+        mockMvc.perform(get("/users/jjsite/calendar"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("users"));
+    }
+
+    @Test
+    public void usersCalendarYear() throws Exception {
+        mockMvc.perform(get("/users/jjsite/2003"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("users"));
+    }
+
+    @Test
+    public void usersCalendarMonth() throws Exception {
+        mockMvc.perform(get("/users/jjsite/2012/01"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("users"));
+    }
+
+    @Test
+    public void recentBlogs() throws Exception {
+        mockMvc.perform(get("/RecentBlogs"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith("application/rss+xml"));
+    }
+
+    @Test
     public void apiMembers() throws Exception {
         mockMvc.perform(get("/api/members"))
                 .andExpect(status().isOk());

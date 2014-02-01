@@ -26,8 +26,12 @@
 
 package com.justjournal.services;
 
+import com.justjournal.db.CommentDao;
+import com.justjournal.db.EntryDao;
 import com.justjournal.db.Statistics;
 import com.justjournal.db.UserStatistics;
+import com.sun.istack.internal.NotNull;
+import com.sun.istack.internal.Nullable;
 import org.springframework.stereotype.Service;
 
 /**
@@ -35,7 +39,15 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public interface StatisticsService {
-    public Statistics getStatistics() throws ServiceException;
+    public
+    @NotNull
+    Statistics getStatistics() throws ServiceException;
 
-    public UserStatistics getUserStatistics(String username) throws ServiceException;
+    public
+    @Nullable
+    UserStatistics getUserStatistics(String username) throws ServiceException;
+
+    public void setCommentDao(CommentDao commentDao);
+
+    public void setEntryDao(EntryDao entryDao);
 }

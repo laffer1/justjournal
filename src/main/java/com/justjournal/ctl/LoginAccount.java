@@ -29,8 +29,9 @@ package com.justjournal.ctl;
 import com.justjournal.UserImpl;
 import com.justjournal.WebError;
 import com.justjournal.WebLogin;
+import com.justjournal.db.EntryDao;
 import com.justjournal.db.EntryDaoImpl;
-import com.justjournal.db.EntryImpl;
+import com.justjournal.db.EntryTo;
 import com.justjournal.utility.FileIO;
 import com.justjournal.utility.StringUtil;
 import com.justjournal.utility.Xml;
@@ -60,8 +61,9 @@ public final class LoginAccount extends JustJournalBaseServlet {
     private static final String JJ_LOGIN_FAIL = "JJ.LOGIN.FAIL";
     //private static final String JJ_LOGIN_ERROR = "JJ.LOGIN.ERROR";  // server error
 
-    private void htmlOutput(StringBuffer sb, String userName) {
 
+    private void htmlOutput(StringBuffer sb, String userName) {
+        EntryDao entryDao = new EntryDaoImpl();
         try {
             String template = FileIO.ReadTextFile("/home/jj/docs/journal_template.inc");
             String loginMenu;
@@ -86,9 +88,9 @@ public final class LoginAccount extends JustJournalBaseServlet {
             content.append(endl);
 
             final Collection entries;
-            entries = EntryDaoImpl.viewFriends(user.getUserId(), user.getUserId());
+            entries = entryDao.viewFriends(user.getUserId(), user.getUserId());
 
-            EntryImpl o;
+            EntryTo o;
             final Iterator itr = entries.iterator();
             if (entries.size() != 0) {
                 content.append("<h3>Recent Friends Entries</h3>");
@@ -96,7 +98,7 @@ public final class LoginAccount extends JustJournalBaseServlet {
                 content.append("<ul>");
                 content.append(endl);
                 for (int i = 0, n = entries.size(); i < n; i++) {
-                    o = (EntryImpl) itr.next();
+                    o = (EntryTo) itr.next();
                     content.append("<li><a href=\"users/");
                     content.append(o.getUserName());
                     content.append("\">");
@@ -132,7 +134,6 @@ public final class LoginAccount extends JustJournalBaseServlet {
             sb.append(template);
         } catch (Exception e) {
             WebError.Display("Internal Error", "Error dislaying page. ", sb);
-            e.printStackTrace();
             log.error(e);
         }
     }
@@ -162,7 +163,7 @@ public final class LoginAccount extends JustJournalBaseServlet {
         }
 
 
-        if (!StringUtil.lengthCheck(userName, 3, 15)) {
+        if (!StringUtil.lengthCheck(userName, 3, WebLogin.USERNAME_MAX_LENGTH)) {
             blnError = true;
             if (webClient)
                 WebError.Display("Input Error",
@@ -172,7 +173,7 @@ public final class LoginAccount extends JustJournalBaseServlet {
                 sb.append(JJ_LOGIN_FAIL);
         }
 
-        if (passwordHash.compareTo("") == 0 && !StringUtil.lengthCheck(password, 5, 18)) {
+        if (passwordHash.compareTo("") == 0 && !StringUtil.lengthCheck(password, 5, WebLogin.PASSWORD_MAX_LENGTH)) {
             blnError = true;
             if (webClient)
                 WebError.Display("Input Error",

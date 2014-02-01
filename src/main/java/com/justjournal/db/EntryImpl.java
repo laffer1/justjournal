@@ -36,6 +36,7 @@ package com.justjournal.db;
 
 import com.fasterxml.jackson.annotation.*;
 import com.justjournal.utility.HTMLUtil;
+import com.sun.istack.internal.NotNull;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -46,13 +47,13 @@ import java.util.Date;
  *
  * @author Lucas Holt
  * @version 1.0
- * @see EntryDaoImpl
+ * @see EntryDao
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Component
 public class EntryImpl implements EntryTo {
-    @JsonProperty("id")
+    @JsonProperty("entryId")
     private int id = 0;
 
     @JsonProperty("locationId")
@@ -69,19 +70,32 @@ public class EntryImpl implements EntryTo {
     @JsonIgnore
     private Date date = new Date();
 
-    private String subject;
+    private String subject = "";
 
     @JsonProperty("body")
-    private String body;
+    private String body = "";
 
-    private String music;
-    private String userName;
-    private String moodName;
-    private String locationName;
+    @JsonProperty("music")
+    private String music = "";
 
+    @JsonProperty("userName")
+    private String userName = "";
+
+    @JsonProperty("moodName")
+    private String moodName = "";
+
+    @JsonProperty("locationName")
+    private String locationName = "";
+
+    @JsonProperty("autoFormat")
     private boolean autoFormat = true;
+
+    @JsonProperty("allowComments")
     private boolean allowComments = true;
+
+    @JsonProperty("emailComments")
     private boolean emailComments = true;
+
     private boolean draft = true;
 
     private int attachImage = 0;
@@ -97,9 +111,9 @@ public class EntryImpl implements EntryTo {
 
 
     /**
-     * Retrieves entry id as an int >0
+     * Retrieves entry entryId as an int >0
      *
-     * @return entry id
+     * @return entry entryId
      */
     @Override
     public int getId() {
@@ -108,26 +122,26 @@ public class EntryImpl implements EntryTo {
 
 
     /**
-     * Set the entry id to an int >0
+     * Set the entry entryId to an int >0
      *
-     * @param id entry id to set
-     * @throws IllegalArgumentException id < 0
+     * @param entryId entry entryId to set
+     * @throws IllegalArgumentException entryId < 0
      */
     @Override
-    public void setId(int id)
+    public void setId(int entryId)
             throws IllegalArgumentException {
-        if (id < 0)
-            throw new IllegalArgumentException("Illegal id: " +
-                    id);
+        if (entryId < 0)
+            throw new IllegalArgumentException("Illegal entryId: " +
+                    entryId);
 
-        this.id = id;
+        this.id = entryId;
     }
 
 
     /**
-     * Retrieve the current location id
+     * Retrieve the current location entryId
      *
-     * @return location id
+     * @return location entryId
      */
     @Override
     public int getLocationId() {
@@ -136,24 +150,24 @@ public class EntryImpl implements EntryTo {
 
 
     /**
-     * Set the location id to an int >0
+     * Set the location entryId to an int >0
      *
-     * @param loc location id to set
+     * @param loc location entryId to set
      * @throws IllegalArgumentException < 0
      */
     @Override
     public void setLocationId(int loc)
             throws IllegalArgumentException {
         if (loc < 0)
-            throw new IllegalArgumentException("Illegal location id: " +
+            throw new IllegalArgumentException("Illegal location entryId: " +
                     loc);
         locationId = loc;
     }
 
     /**
-     * Retrieves the mood id
+     * Retrieves the mood entryId
      *
-     * @return mood id
+     * @return mood entryId
      */
     @Override
     public int getMoodId() {
@@ -170,7 +184,7 @@ public class EntryImpl implements EntryTo {
     public void setMoodId(int mood)
             throws IllegalArgumentException {
         if (mood < 0)
-            throw new IllegalArgumentException("Illegal mood id: " +
+            throw new IllegalArgumentException("Illegal mood entryId: " +
                     mood);
         moodId = mood;
     }
@@ -237,9 +251,9 @@ public class EntryImpl implements EntryTo {
     }
 
     /**
-     * Retrieve the subject
+     * Retrieve the entrySubject
      *
-     * @return The subject of the entry
+     * @return The entrySubject of the entry
      */
     @Override
     public String getSubject() {
@@ -247,19 +261,19 @@ public class EntryImpl implements EntryTo {
     }
 
     /**
-     * Set the subject.  If the subject is null or an empty string, it will be set as (no subject).
+     * Set the entrySubject.  If the entrySubject is null or an empty string, it will be set as (no entrySubject).
      *
-     * @param subject subject to use
+     * @param entrySubject entrySubject to use
      * @throws IllegalArgumentException
      */
     @Override
-    public void setSubject(String subject)
+    public void setSubject(String entrySubject)
             throws IllegalArgumentException {
 
-        if (subject == null || subject.length() == 0)
+        if (entrySubject == null || entrySubject.length() == 0)
             this.subject = "(no subject)";
         else
-            this.subject = subject;
+            this.subject = entrySubject;
     }
 
 
@@ -329,7 +343,7 @@ public class EntryImpl implements EntryTo {
     public void setUserId(int uid)
             throws IllegalArgumentException {
         if (uid < 0)
-            throw new IllegalArgumentException("Illegal user id: " +
+            throw new IllegalArgumentException("Illegal user entryId: " +
                     uid);
         userId = uid;
     }
@@ -362,6 +376,7 @@ public class EntryImpl implements EntryTo {
     }
 
     @Override
+    @NotNull
     public String getLocationName() {
         return locationName;
     }
@@ -375,12 +390,13 @@ public class EntryImpl implements EntryTo {
     }
 
     @Override
+    @NotNull
     public String getMoodName() {
         return moodName;
     }
 
     @Override
-    public void setMoodName(String mood) {
+    public void setMoodName(@NotNull String mood) {
         if (mood == null)
             throw new IllegalArgumentException("Illegal Mood Name");
 
@@ -388,32 +404,36 @@ public class EntryImpl implements EntryTo {
     }
 
     @Override
+    @NotNull
     public boolean getAllowComments() {
-        return this.isAllowComments();
+        return allowComments;
     }
 
     @Override
-    public void setAllowComments(boolean allowComments) {
+    public void setAllowComments(@NotNull boolean allowComments) {
         this.allowComments = allowComments;
     }
 
     @Override
+    @NotNull
     public boolean getEmailComments() {
-        return this.isEmailComments();
+        return emailComments;
     }
 
     @Override
-    public void setEmailComments(boolean emailComments) {
+    @NotNull
+    public void setEmailComments(@NotNull boolean emailComments) {
         this.emailComments = emailComments;
     }
 
     @Override
+    @NotNull
     public boolean getAutoFormat() {
-        return this.isAutoFormat();
+        return autoFormat;
     }
 
     @Override
-    public void setAutoFormat(boolean autoFormat) {
+    public void setAutoFormat(@NotNull boolean autoFormat) {
         this.autoFormat = autoFormat;
     }
 
@@ -432,11 +452,11 @@ public class EntryImpl implements EntryTo {
     public String toString() {
         StringBuilder output = new StringBuilder();
 
-        output.append("entry id: ");
+        output.append("entry entryId: ");
         output.append(getId());
         output.append('\n');
 
-        output.append("location id: ");
+        output.append("location entryId: ");
         output.append(getLocationId());
         output.append('\n');
 
@@ -444,7 +464,7 @@ public class EntryImpl implements EntryTo {
         output.append(getLocationName());
         output.append('\n');
 
-        output.append("mood id: ");
+        output.append("mood entryId: ");
         output.append(getMoodId());
         output.append('\n');
 
@@ -460,7 +480,7 @@ public class EntryImpl implements EntryTo {
         output.append(getDate().toString());
         output.append('\n');
 
-        output.append("subject: ");
+        output.append("entrySubject: ");
         output.append(getSubject());
         output.append('\n');
 
@@ -476,20 +496,20 @@ public class EntryImpl implements EntryTo {
         output.append(getSecurityLevel());
         output.append('\n');
 
-        output.append("user id: ");
+        output.append("user entryId: ");
         output.append(getUserId());
         output.append('\n');
 
         output.append("autoformat: ");
-        output.append(isAutoFormat());
+        output.append(getAutoFormat());
         output.append('\n');
 
         output.append("allowComments: ");
-        output.append(isAllowComments());
+        output.append(getAllowComments());
         output.append('\n');
 
         output.append("emailComments: ");
-        output.append(isEmailComments());
+        output.append(getEmailComments());
         output.append('\n');
 
         return output.toString();
@@ -501,25 +521,19 @@ public class EntryImpl implements EntryTo {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        final EntryImpl entryTo = (EntryImpl) o;
+        final EntryTo entryTo = (EntryTo) o;
 
-        if (isAllowComments() != entryTo.isAllowComments()) return false;
-        if (isAutoFormat() != entryTo.isAutoFormat()) return false;
+        if (getAllowComments() != entryTo.getAllowComments()) return false;
+        if (getAutoFormat() != entryTo.getAutoFormat()) return false;
         if (getCommentCount() != entryTo.getCommentCount()) return false;
-        if (isEmailComments() != entryTo.isEmailComments()) return false;
+        if (getEmailComments() != entryTo.getEmailComments()) return false;
         if (getId() != entryTo.getId()) return false;
         if (getLocationId() != entryTo.getLocationId()) return false;
         if (getMoodId() != entryTo.getMoodId()) return false;
         if (getSecurityLevel() != entryTo.getSecurityLevel()) return false;
         if (getUserId() != entryTo.getUserId()) return false;
         if (!getBody().equals(entryTo.getBody())) return false;
-        if (!getDate().equals(entryTo.getDate())) return false;
-        if (getLocationName() != null ? !getLocationName().equals(entryTo.getLocationName()) : entryTo.getLocationName() != null)
-            return false;
-        if (getMoodName() != null ? !getMoodName().equals(entryTo.getMoodName()) : entryTo.getMoodName() != null)
-            return false;
-        if (getMusic() != null ? !getMusic().equals(entryTo.getMusic()) : entryTo.getMusic() != null) return false;
-        return !(getSubject() != null ? !getSubject().equals(entryTo.getSubject()) : entryTo.getSubject() != null) && !(getUserName() != null ? !getUserName().equals(entryTo.getUserName()) : entryTo.getUserName() != null);
+        return getDate().equals(entryTo.getDate()) && !(getLocationName() != null ? !getLocationName().equals(entryTo.getLocationName()) : entryTo.getLocationName() != null) && !(getMoodName() != null ? !getMoodName().equals(entryTo.getMoodName()) : entryTo.getMoodName() != null) && !(getMusic() != null ? !getMusic().equals(entryTo.getMusic()) : entryTo.getMusic() != null) && !(getSubject() != null ? !getSubject().equals(entryTo.getSubject()) : entryTo.getSubject() != null) && !(getUserName() != null ? !getUserName().equals(entryTo.getUserName()) : entryTo.getUserName() != null);
     }
 
     @JsonIgnore
@@ -539,21 +553,9 @@ public class EntryImpl implements EntryTo {
         result = 29 * result + (getUserName() != null ? getUserName().hashCode() : 0);
         result = 29 * result + (getMoodName() != null ? getMoodName().hashCode() : 0);
         result = 29 * result + (getLocationName() != null ? getLocationName().hashCode() : 0);
-        result = 29 * result + (isAutoFormat() ? 1 : 0);
-        result = 29 * result + (isAllowComments() ? 1 : 0);
-        result = 29 * result + (isEmailComments() ? 1 : 0);
+        result = 29 * result + (getAutoFormat() ? 1 : 0);
+        result = 29 * result + (getAllowComments() ? 1 : 0);
+        result = 29 * result + (getEmailComments() ? 1 : 0);
         return result;
-    }
-
-    public boolean isAllowComments() {
-        return allowComments;
-    }
-
-    public boolean isAutoFormat() {
-        return autoFormat;
-    }
-
-    public boolean isEmailComments() {
-        return emailComments;
     }
 }

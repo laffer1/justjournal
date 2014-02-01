@@ -30,7 +30,6 @@ import com.justjournal.db.*;
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -42,24 +41,34 @@ import org.springframework.stereotype.Service;
 public class StatisticsServiceImpl implements StatisticsService {
     private static final Logger log = Logger.getLogger(StatisticsServiceImpl.class);
 
-    private CommentDao commentDao = null;
+    private CommentDao commentDao;
+    private EntryDao entryDao;
 
-    @Autowired
     public void setCommentDao(CommentDao commentDao) {
         this.commentDao = commentDao;
     }
 
+    public void setEntryDao(EntryDao entryDao) {
+        this.entryDao = entryDao;
+    }
+
     @Override
     @Nullable
-    public UserStatistics getUserStatistics(String username) throws ServiceException {
+    public UserStatistics getUserStatistics(@NotNull String username) throws ServiceException {
+        if ((commentDao == null)) throw new AssertionError();
+        if ((entryDao == null)) throw new AssertionError();
+
         try {
             UserStatistics userStatistics = new UserStatisticsImpl();
 
             // check if user is valid
-            if (UserDao.view(username) == null) return null;
+            if (username == null || UserDao.get(username) == null) {
+                log.trace("getUserStatistics(): username not found: " + username);
+                return null;
+            }
 
             userStatistics.setUsername(username);
-            userStatistics.setEntryCount(EntryDaoImpl.entryCount(username));
+            userStatistics.setEntryCount(entryDao.entryCount(username));
             userStatistics.setCommentCount(commentDao.count(username));
 
             return userStatistics;

@@ -43,6 +43,7 @@ import java.util.Collection;
 
 /**
  * View Friends
+ *
  * @author Lucas Holt
  */
 public final class FriendsDao {
@@ -82,7 +83,7 @@ public final class FriendsDao {
         if (friend.getOwnerId() < 1 || friend.getUserName() == null || friend.getUserName().isEmpty())
             throw new IllegalArgumentException("owner id not found");
 
-        UserTo friendUser = UserDao.view(friend.getUserName());
+        UserTo friendUser = UserDao.get(friend.getUserName());
         if (friendUser == null)
             return false;
 
