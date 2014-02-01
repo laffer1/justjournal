@@ -32,6 +32,8 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 /**
+ * Manipulate and fetch comments
+ *
  * @author Lucas Holt
  */
 @Component

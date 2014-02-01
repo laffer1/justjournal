@@ -28,11 +28,10 @@ package com.justjournal.ctl.api;
 
 import com.justjournal.WebLogin;
 import com.justjournal.db.CommentDao;
+import com.justjournal.db.EntryDao;
 import com.justjournal.db.EntryDaoImpl;
-import com.justjournal.db.EntryImpl;
 import com.justjournal.db.EntryTo;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -45,6 +44,8 @@ import java.util.Collections;
 import java.util.Map;
 
 /**
+ * Entry Controller, for managing blog entries
+ *
  * @author Lucas Holt
  */
 @Controller
@@ -53,10 +54,14 @@ final public class EntryController {
     private static final Logger log = Logger.getLogger(EntryController.class);
 
     private CommentDao commentDao = null;
+    private EntryDao entryDao = null;
 
-    @Autowired
     public void setCommentDao(CommentDao commentDao) {
         this.commentDao = commentDao;
+    }
+
+    public void setEntryDao(EntryDao entryDao) {
+        this.entryDao = entryDao;
     }
 
     /**
@@ -68,14 +73,14 @@ final public class EntryController {
     @RequestMapping(value = "{username}/{id}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public EntryTo getById(@PathVariable("username") String username, @PathVariable("id") int id) {
-        return EntryDaoImpl.viewSinglePublic(id);
+        return entryDao.viewSinglePublic(id);
     }
 
     @RequestMapping(value = "{username}", method = RequestMethod.GET, produces = "application/json")
     public
     @ResponseBody
     Collection<EntryTo> getEntries(@PathVariable("username") String username) {
-        return EntryDaoImpl.viewAll(username, false);
+        return entryDao.viewAll(username, false);
     }
 
     /**
@@ -90,7 +95,7 @@ final public class EntryController {
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json", headers = {"Accept=*/*", "content-type=application/json"})
     public
     @ResponseBody
-    Map<String, String> post(@RequestBody EntryImpl entry, HttpSession session, HttpServletResponse response, Model model) {
+    Map<String, String> post(@RequestBody EntryTo entry, HttpSession session, HttpServletResponse response, Model model) {
 
         if (!WebLogin.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -113,7 +118,7 @@ final public class EntryController {
     /**
      * PUT generally allows for add or edit in REST.
      *
-     * @param entry
+     * @param entry    User's Blog entry
      * @param session  HttpSession
      * @param response HttpServletResponse
      * @return
@@ -131,7 +136,7 @@ final public class EntryController {
 
         // TODO: validate
         boolean result;
-        EntryTo entryTo = EntryDaoImpl.viewSingle(entry.getId(), WebLogin.currentLoginId(session));
+        EntryTo entryTo = entryDao.viewSingle(entry.getId(), WebLogin.currentLoginId(session));
         if (entryTo != null && entryTo.getId() > 0)
             result = EntryDaoImpl.update(entry);
         else

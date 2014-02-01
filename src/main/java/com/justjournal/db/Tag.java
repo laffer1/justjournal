@@ -31,6 +31,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.justjournal.utility.StringUtil;
+import org.springframework.stereotype.Component;
 
 /**
  * A tag is a form of metadata about a blog entry.  It is similar to a category.
@@ -41,6 +42,7 @@ import com.justjournal.utility.StringUtil;
  *          Date: Apr 25, 2008 Time: 5:13:16 PM
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+@Component
 public final class Tag {
     /**
      * Unique id to represent the global tag

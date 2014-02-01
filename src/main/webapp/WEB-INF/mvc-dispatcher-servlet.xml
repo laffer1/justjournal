@@ -45,6 +45,13 @@
         <property name="statisticsService" ref="statisticsService"/>
     </bean>
 
+    <bean id="commentDao" class="com.justjournal.db.CommentDaoImpl"/>
+    <bean id="entryDao" class="com.justjournal.db.EntryDaoImpl"/>
+    <bean id="entryController" class="com.justjournal.ctl.api.EntryController">
+        <property name="entryDao" ref="entryDao"/>
+        <property name="commentDao" ref="commentDao"/>
+    </bean>
+
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix" value="/WEB-INF/views/"/>
         <property name="suffix" value=".jsp"/>

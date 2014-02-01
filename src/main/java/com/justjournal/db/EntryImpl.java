@@ -36,6 +36,7 @@ package com.justjournal.db;
 
 import com.fasterxml.jackson.annotation.*;
 import com.justjournal.utility.HTMLUtil;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -49,6 +50,7 @@ import java.util.Date;
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Component
 public class EntryImpl implements EntryTo {
     @JsonProperty("id")
     private int id = 0;

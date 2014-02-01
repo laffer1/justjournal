@@ -27,6 +27,7 @@
 package com.justjournal.db;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -34,6 +35,7 @@ import java.util.Date;
 /**
  * @author Lucas Holt
  */
+@Component
 public interface EntryTo {
     /**
      * Retrieves entry id as an int >0

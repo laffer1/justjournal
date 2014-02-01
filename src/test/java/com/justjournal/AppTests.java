@@ -26,7 +26,6 @@
 
 package com.justjournal;
 
-import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,14 +46,12 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 @WebAppConfiguration
 @ContextConfiguration("file:src/test/resources/mvc-dispatcher-servlet.xml")
 public class AppTests {
-    private static final Logger log = Logger.getLogger(AppTests.class);
     private static final int STATUS_HTTP_400 = 400;
     private static final int STATUS_HTTP_403 = 403;
-    private MockMvc mockMvc = null;
-
     @SuppressWarnings({"SpringJavaAutowiringInspection", "ProtectedField"})
     @Autowired
     protected WebApplicationContext wac;
+    private MockMvc mockMvc = null;
 
     @Before
     public void setup() {

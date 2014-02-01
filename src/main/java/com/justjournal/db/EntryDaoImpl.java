@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2003-2008 Lucas Holt
+Copyright (c) 2003-2008, 2014 Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -58,15 +58,10 @@ import static java.util.Collections.singletonMap;
 
 
 /**
- * Provides access to journal entries in the data tier.  Several parts of this class could be optimized.  We are using
- * several database connects when only one is needed.
+ * Provides access to journal entries in the data tier.
  *
  * @author Lucas Holt
- * @version $Id: EntryDAO.java,v 1.33 2012/07/04 18:49:40 laffer1 Exp $
- * @see EntryImpl
- * @since 1.0 User: laffer1 Date: Sep 20, 2003 Time: 8:48:24 PM
- * <p/>
- * 1.1 Fixed a bug selecting older entries. 1.0 initial release
+ * @see EntryTo
  */
 @Component
 public final class EntryDaoImpl implements EntryDao {
@@ -191,7 +186,7 @@ public final class EntryDaoImpl implements EntryDao {
      * @return Entry Transfer Object
      */
     @NotNull
-    public static EntryTo viewSingle(final int entryId, final int userId) {
+    public EntryTo viewSingle(final int entryId, final int userId) {
         EntryTo et = viewSingle(entryId);
 
         if (et != null && et.getUserId() == userId)
@@ -206,7 +201,7 @@ public final class EntryDaoImpl implements EntryDao {
      * @param entry Cayenne Data Object for an entry
      * @return EntryTo
      */
-    private static EntryTo populateEntryTo(com.justjournal.model.Entry entry) {
+    private EntryTo populateEntryTo(com.justjournal.model.Entry entry) {
         EntryTo et = new EntryImpl();
 
         if (entry != null) {
@@ -252,7 +247,7 @@ public final class EntryDaoImpl implements EntryDao {
         return et;
     }
 
-    public static boolean exists(final int entryId) {
+    public boolean exists(final int entryId) {
         try {
             ObjectContext dataContext = DataContext.getThreadObjectContext();
 
@@ -271,7 +266,7 @@ public final class EntryDaoImpl implements EntryDao {
      * @param entryId unique id for an entry
      * @return Entry Transfer Object
      */
-    public static EntryTo viewSingle(final int entryId) {
+    public EntryTo viewSingle(final int entryId) {
         EntryTo et;
 
         try {
@@ -295,7 +290,7 @@ public final class EntryDaoImpl implements EntryDao {
      * @param entryId unique id for an entry
      * @return Entry Transfer Object
      */
-    public static EntryTo viewSinglePublic(final int entryId) {
+    public EntryTo viewSinglePublic(final int entryId) {
         EntryTo et = viewSingle(entryId);
         if (et.getSecurityLevel() == 2)
             return et;
@@ -303,7 +298,7 @@ public final class EntryDaoImpl implements EntryDao {
             return new EntryImpl();
     }
 
-    public static EntryTo viewSingle(final EntryTo ets) {
+    public EntryTo viewSingle(final EntryTo ets) {
         log.debug("viewSingle() starting with EntryTo input");
 
         final EntryTo et = new EntryImpl();
@@ -402,7 +397,7 @@ public final class EntryDaoImpl implements EntryDao {
      * @param thisUser is the owner the one accessing the data?
      * @return A <code>Collection</code> of entries.
      */
-    public static List<EntryTo> view(final String userName, final boolean thisUser) {
+    public List<EntryTo> view(final String userName, final boolean thisUser) {
         return view(userName, thisUser, 0); // don't skip any!
     }
 
@@ -415,7 +410,7 @@ public final class EntryDaoImpl implements EntryDao {
      * @return A <code>Collection</code> of entries.
      */
     @SuppressWarnings("unchecked")
-    public static List<EntryTo> view(final String userName, final boolean thisUser, final int skip) {
+    public List<EntryTo> view(final String userName, final boolean thisUser, final int skip) {
         final List<EntryTo> entries = new ArrayList<EntryTo>(MAX_ENTRIES);
 
         ObjectContext dataContext = DataContext.getThreadObjectContext();
@@ -464,7 +459,7 @@ public final class EntryDaoImpl implements EntryDao {
      * @return A <code>Collection</code> of entries.
      */
     @SuppressWarnings("unchecked")
-    public static List<EntryTo> viewAll(final String userName, final boolean thisUser) {
+    public List<EntryTo> viewAll(final String userName, final boolean thisUser) {
         final List<EntryTo> entries = new ArrayList<EntryTo>(MAX_ENTRIES);
 
         ObjectContext dataContext = DataContext.getThreadObjectContext();
@@ -506,8 +501,8 @@ public final class EntryDaoImpl implements EntryDao {
      * @throws IllegalArgumentException bad input
      */
     @SuppressWarnings("unchecked")
-    public static List<EntryTo> viewFriends(final int userID, final int aUserId)
-            throws IllegalArgumentException {
+    public List<EntryTo> viewFriends(final int userID, final int aUserId)
+    throws IllegalArgumentException {
 
         if (userID < 1)
             throw new IllegalArgumentException("userID must be greater than zero");
@@ -602,8 +597,8 @@ public final class EntryDaoImpl implements EntryDao {
      * @return integer count of entries.
      * @throws Exception Database exception
      */
-    public static int calendarCount(final int year, final String userName)
-            throws Exception {
+    public int calendarCount(final int year, final String userName)
+    throws Exception {
 
         String sqlStatement;
         ResultSet RS;
@@ -631,7 +626,7 @@ public final class EntryDaoImpl implements EntryDao {
      * @throws Exception data access
      */
     @NotNull
-    public static int entryCount(final String userName) throws Exception {
+    public int entryCount(final String userName) throws Exception {
         String sqlStatement;
         ResultSet RS;
         int count = 0;
@@ -651,8 +646,8 @@ public final class EntryDaoImpl implements EntryDao {
     }
 
     @NotNull
-    public static Collection<EntryTo> ViewCalendarYear(final int year,
-                                                       final String userName,
+    public Collection<EntryTo> viewCalendarYear(final int year,
+                                                final String userName,
                                                        final boolean thisUser)
             throws Exception {
 
@@ -671,8 +666,8 @@ public final class EntryDaoImpl implements EntryDao {
     }
 
     @NotNull
-    public static Collection<EntryTo> ViewCalendarMonth(final int year,
-                                                        final int month,
+    public Collection<EntryTo> viewCalendarMonth(final int year,
+                                                 final int month,
                                                         final String userName,
                                                         final boolean thisUser)
             throws Exception {
@@ -703,8 +698,8 @@ public final class EntryDaoImpl implements EntryDao {
      */
     @NotNull
     @SuppressWarnings("unchecked")
-    public static Collection<EntryTo> ViewCalendarDay(final int year,
-                                                      final int month,
+    public Collection<EntryTo> viewCalendarDay(final int year,
+                                               final int month,
                                                       final int day,
                                                       final String userName,
                                                       final boolean thisUser) {
@@ -724,8 +719,8 @@ public final class EntryDaoImpl implements EntryDao {
     }
 
     @NotNull
-    public static Collection<EntryTo> getEntriesByDateRange(Date startDate, Date endDate,
-                                                            final String userName,
+    public Collection<EntryTo> getEntriesByDateRange(Date startDate, Date endDate,
+                                                     final String userName,
                                                             final boolean thisUser) {
 
         final Collection<EntryTo> entries = new ArrayList<EntryTo>();
@@ -775,7 +770,7 @@ public final class EntryDaoImpl implements EntryDao {
     @SuppressWarnings("unchecked")
     public
     @NotNull
-    static Collection<EntryTo> viewRecentUniqueUsers() {
+    Collection<EntryTo> viewRecentUniqueUsers() {
 
         final int SIZE = 15;
         final Collection<EntryTo> entries = new ArrayList<EntryTo>(SIZE);
@@ -827,7 +822,7 @@ public final class EntryDaoImpl implements EntryDao {
      */
     public
     @NotNull
-    static ArrayList<String> getTags(int entryId) {
+    ArrayList<String> getTags(int entryId) {
         final ArrayList<String> tags = new ArrayList<String>();
 
         String sqlStatement;
@@ -868,7 +863,7 @@ public final class EntryDaoImpl implements EntryDao {
      * @param tags    An arralist of tags
      * @return true on success, false otherwise
      */
-    public static boolean setTags(int entryId, Iterable tags) {
+    public boolean setTags(int entryId, Iterable tags) {
 
         if (entryId < 1)
             throw new IllegalArgumentException("Entry id must be greater than 0");
@@ -946,7 +941,7 @@ public final class EntryDaoImpl implements EntryDao {
      * @param tagname The "name" of the tag
      * @return tag id
      */
-    public static int getTagId(String tagname) {
+    public int getTagId(String tagname) {
         int tagid = 0;
         String sqlStatement;
         ResultSet rs = null;
@@ -993,7 +988,7 @@ public final class EntryDaoImpl implements EntryDao {
      */
     public
     @NotNull
-    static ArrayList<Tag> getUserTags(int userId) {
+    ArrayList<Tag> getUserTags(int userId) {
         String sqlStatement;
         ResultSet rs = null;
         ResultSet rs2;

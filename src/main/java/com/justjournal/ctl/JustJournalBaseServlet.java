@@ -37,10 +37,9 @@ package com.justjournal.ctl;
 import com.justjournal.core.Settings;
 import com.justjournal.utility.ETag;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -49,28 +48,17 @@ import java.io.IOException;
 
 /**
  * Base servlet to do some of the repetative servlet initialization stuff.
- * 
- * Date: Sep 25, 2005
- * Time: 9:04:00 PM
+ * <p/>
+ * Date: Sep 25, 2005 Time: 9:04:00 PM
  *
  * @author Lucas Holt
  * @version $Id: JustJournalBaseServlet.java,v 1.17 2009/07/11 02:03:43 laffer1 Exp $
  * @since 1.0
-
  */
 public class JustJournalBaseServlet extends HttpServlet {
     protected static final char endl = '\n';  /* end of line character for output */
-    protected Settings set;  /* Global Just Journal web app settings */
-
-
-    /**
-     * Initializes the servlet.
-     */
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-        ServletContext ctx = config.getServletContext();
-        set = Settings.getSettings(ctx);
-    }
+    public static final int BUFFER_SIZE = 8192;
+    protected Settings set = new Settings();  /* Global Just Journal web app settings */
 
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -105,7 +93,7 @@ public class JustJournalBaseServlet extends HttpServlet {
         final HttpSession session = request.getSession(true);
 
         response.setContentType(contentType);
-        response.setBufferSize(8192);
+        response.setBufferSize(BUFFER_SIZE);
         response.setDateHeader("Expires", System.currentTimeMillis());
         response.setDateHeader("Last-Modified", System.currentTimeMillis());
         response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
@@ -116,7 +104,7 @@ public class JustJournalBaseServlet extends HttpServlet {
         /* create etag */
         ETag etag = new ETag(response);
         etag.writeFromString(sb.toString());
-        
+
         response.setContentLength(sb.length());
 
         if (head) {
@@ -139,11 +127,12 @@ public class JustJournalBaseServlet extends HttpServlet {
 
     /**
      * Get a string input parameter guaranteed not to be null
+     *
      * @param request Servlet Request
-     * @param input Name of the parameter
+     * @param input   Name of the parameter
      * @return Trimmed, Not null string from parameter
      */
-    protected String fixInput(HttpServletRequest request, String input) {
+    protected String fixInput(ServletRequest request, String input) {
         String fixed = request.getParameter(input);
 
         if (fixed == null)
@@ -152,10 +141,11 @@ public class JustJournalBaseServlet extends HttpServlet {
         return fixed.trim();
     }
 
-      /**
+    /**
      * Get a string header guaranteed not to be null
+     *
      * @param request Servlet Request
-     * @param input Name of the header
+     * @param input   Name of the header
      * @return Trimmed, Not null string from header
      */
     protected String fixHeaderInput(HttpServletRequest request, String input) {
