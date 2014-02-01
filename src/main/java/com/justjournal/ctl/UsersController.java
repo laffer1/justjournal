@@ -49,7 +49,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.awt.*;
@@ -68,7 +67,7 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("/users")
-public final class UsersController extends HttpServlet {
+public class UsersController {
     // constants
     private static final char endl = '\n';
 
@@ -80,8 +79,12 @@ public final class UsersController extends HttpServlet {
     @SuppressWarnings({"InstanceVariableOfConcreteClass"})
     private Settings settings = null;
     private CommentDao commentDao = null;
+    private EntryDao entryDao = null;
 
-    @Autowired
+    public void setEntryDao(EntryDao entryDao) {
+        this.entryDao = entryDao;
+    }
+
     public void setCommentDao(CommentDao commentDao) {
         this.commentDao = commentDao;
     }
@@ -92,7 +95,7 @@ public final class UsersController extends HttpServlet {
     }
 
     @RequestMapping(value = "{username}", method = RequestMethod.GET, produces = "text/html")
-    public String entries(@PathVariable String username, @RequestParam int skip, Model model, HttpSession session, HttpServletResponse response) {
+    public String entries(@PathVariable("username") String username, @RequestParam int skip, Model model, HttpSession session, HttpServletResponse response) {
         UserContext userContext = getUserContext(username, session);
         model.addAttribute("authenticatedUsername", WebLogin.currentLoginName(session));
         model.addAttribute("user", userContext.getBlogUser());
@@ -113,7 +116,7 @@ public final class UsersController extends HttpServlet {
     }
 
     @RequestMapping(value = "{username}/entry/{id}", method = RequestMethod.GET, produces = "text/html")
-    public String entry(@PathVariable String username, @PathVariable int id, Model model, HttpSession session, HttpServletResponse response) {
+    public String entry(@PathVariable("username") String username, @PathVariable("id") int id, Model model, HttpSession session, HttpServletResponse response) {
         UserContext userc = getUserContext(username, session);
         model.addAttribute("authenticatedUsername", WebLogin.currentLoginName(session));
         model.addAttribute("user", userc.getBlogUser());
@@ -135,7 +138,7 @@ public final class UsersController extends HttpServlet {
     }
 
     @RequestMapping(value = "{username}/friends", method = RequestMethod.GET, produces = "text/html")
-    public String friends(@PathVariable String username, Model model, HttpSession session, HttpServletResponse response) {
+    public String friends(@PathVariable("username") String username, Model model, HttpSession session, HttpServletResponse response) {
         UserContext userc = getUserContext(username, session);
         model.addAttribute("authenticatedUsername", WebLogin.currentLoginName(session));
         model.addAttribute("user", userc.getBlogUser());
@@ -157,7 +160,7 @@ public final class UsersController extends HttpServlet {
     }
 
     @RequestMapping(value = "{username}/calendar", method = RequestMethod.GET, produces = "text/html")
-    public String calendar(@PathVariable String username, Model model, HttpSession session, HttpServletResponse response) {
+    public String calendar(@PathVariable("username") String username, Model model, HttpSession session, HttpServletResponse response) {
         UserContext userc = getUserContext(username, session);
         model.addAttribute("authenticatedUsername", WebLogin.currentLoginName(session));
         model.addAttribute("user", userc.getBlogUser());
@@ -183,7 +186,7 @@ public final class UsersController extends HttpServlet {
     }
 
     @RequestMapping(value = "{username}/{year}", method = RequestMethod.GET, produces = "text/html")
-    public String calendarYear(@PathVariable String username, @PathVariable int year, Model model, HttpSession session, HttpServletResponse response) {
+    public String calendarYear(@PathVariable("username") String username, @PathVariable int year, Model model, HttpSession session, HttpServletResponse response) {
         UserContext userc = getUserContext(username, session);
         model.addAttribute("authenticatedUsername", WebLogin.currentLoginName(session));
         model.addAttribute("user", userc.getBlogUser());
@@ -205,7 +208,10 @@ public final class UsersController extends HttpServlet {
     }
 
     @RequestMapping(value = "{username}/{year}/{month}", method = RequestMethod.GET, produces = "text/html")
-    public String calendarMonth(@PathVariable String username, @PathVariable int year, @PathVariable int month, Model model, HttpSession session, HttpServletResponse response) {
+    public String calendarMonth(@PathVariable("username") String username,
+                                @PathVariable("year") int year,
+                                @PathVariable("month") int month,
+                                Model model, HttpSession session, HttpServletResponse response) {
         UserContext userc = getUserContext(username, session);
         model.addAttribute("authenticatedUsername", WebLogin.currentLoginName(session));
         model.addAttribute("user", userc.getBlogUser());
@@ -227,7 +233,10 @@ public final class UsersController extends HttpServlet {
     }
 
     @RequestMapping(value = "{username}/{year}/{month}/{day}", method = RequestMethod.GET, produces = "text/html")
-    public String calendarDay(@PathVariable String username, @PathVariable int year, @PathVariable int month, @PathVariable int day, Model model, HttpServletResponse response, HttpSession session) {
+    public String calendarDay(@PathVariable("username") String username,
+                              @PathVariable("year") int year,
+                              @PathVariable("month") int month,
+                              @PathVariable("day") int day, Model model, HttpServletResponse response, HttpSession session) {
         UserContext userc = getUserContext(username, session);
         model.addAttribute("authenticatedUsername", WebLogin.currentLoginName(session));
         model.addAttribute("user", userc.getBlogUser());
@@ -251,7 +260,7 @@ public final class UsersController extends HttpServlet {
     @RequestMapping(value = "{username}/atom", method = RequestMethod.GET, produces = "text/xml; charset=UTF-8")
     public
     @ResponseBody
-    String atom(@PathVariable String username, HttpServletResponse response) {
+    String atom(@PathVariable("username") String username, HttpServletResponse response) {
         try {
             UserImpl user = new UserImpl(username);
 
@@ -271,7 +280,7 @@ public final class UsersController extends HttpServlet {
     @RequestMapping(value = "{username}/rss", method = RequestMethod.GET, produces = "application/rss+xml; charset=ISO-8859-1")
     public
     @ResponseBody
-    String rss(@PathVariable String username, HttpServletResponse response) {
+    String rss(@PathVariable("username") String username, HttpServletResponse response) {
         try {
             UserImpl user = new UserImpl(username);
 
@@ -291,7 +300,7 @@ public final class UsersController extends HttpServlet {
     @RequestMapping(value = "{username}/rsspics", method = RequestMethod.GET, produces = "application/rss+xml; charset=ISO-8859-1")
     public
     @ResponseBody
-    String rssPictures(@PathVariable String username, HttpServletResponse response) {
+    String rssPictures(@PathVariable("username") String username, HttpServletResponse response) {
         try {
             UserImpl user = new UserImpl(username);
 
@@ -309,7 +318,7 @@ public final class UsersController extends HttpServlet {
     }
 
     @RequestMapping(value = "{username}/pdf", method = RequestMethod.GET, produces = "application/pdf")
-    public void pdf(@PathVariable String username, HttpServletResponse response, HttpSession session) {
+    public void pdf(@PathVariable("username") String username, HttpServletResponse response, HttpSession session) {
         UserImpl authUser = null;
         try {
             authUser = new UserImpl(WebLogin.currentLoginName(session));
@@ -331,7 +340,7 @@ public final class UsersController extends HttpServlet {
     }
 
     @RequestMapping(value = "{username}/rtf", method = RequestMethod.GET, produces = "application/rtf")
-    public void rtf(@PathVariable String username, HttpServletResponse response, HttpSession session) {
+    public void rtf(@PathVariable("username") String username, HttpServletResponse response, HttpSession session) {
         UserImpl authUser = null;
         try {
             authUser = new UserImpl(WebLogin.currentLoginName(session));
@@ -353,7 +362,7 @@ public final class UsersController extends HttpServlet {
     }
 
     @RequestMapping(value = "{username}/pictures", method = RequestMethod.GET, produces = "text/html")
-    public String pictures(@PathVariable String username, Model model, HttpSession session, HttpServletResponse response) {
+    public String pictures(@PathVariable("username") String username, Model model, HttpSession session, HttpServletResponse response) {
         UserContext userc = getUserContext(username, session);
         model.addAttribute("authenticatedUsername", WebLogin.currentLoginName(session));
         model.addAttribute("user", userc.getBlogUser());
@@ -375,7 +384,7 @@ public final class UsersController extends HttpServlet {
     }
 
     @RequestMapping(value = "{username}/search", method = RequestMethod.GET, produces = "text/html")
-    public String search(@PathVariable String username, @RequestParam String max, @RequestParam String bquery, Model model, HttpSession session, HttpServletResponse response) {
+    public String search(@PathVariable("username") String username, @RequestParam String max, @RequestParam String bquery, Model model, HttpSession session, HttpServletResponse response) {
         UserContext userc = getUserContext(username, session);
         model.addAttribute("authenticatedUsername", WebLogin.currentLoginName(session));
         model.addAttribute("user", userc.getBlogUser());
@@ -406,7 +415,7 @@ public final class UsersController extends HttpServlet {
     }
 
     @RequestMapping(value = "{username}/subscriptions", method = RequestMethod.GET, produces = "text/html")
-    public String subscriptions(@PathVariable String username, Model model, HttpSession session, HttpServletResponse response) {
+    public String subscriptions(@PathVariable("username") String username, Model model, HttpSession session, HttpServletResponse response) {
         UserContext userc = getUserContext(username, session);
         model.addAttribute("authenticatedUsername", WebLogin.currentLoginName(session));
         model.addAttribute("user", userc.getBlogUser());
@@ -428,7 +437,7 @@ public final class UsersController extends HttpServlet {
     }
 
     @RequestMapping(value = "{username}/tag/{tag}", method = RequestMethod.GET, produces = "text/html")
-    public String tag(@PathVariable String username, @PathVariable String tag, Model model, HttpSession session, HttpServletResponse response) {
+    public String tag(@PathVariable("username") String username, @PathVariable String tag, Model model, HttpSession session, HttpServletResponse response) {
 
         UserImpl authUser = null;
         try {
@@ -529,8 +538,8 @@ public final class UsersController extends HttpServlet {
         }
     }
 
-    private static void formatRTFPDF(final UserContext uc, final Document document)
-            throws Exception {
+    private void formatRTFPDF(final UserContext uc, final Document document)
+    throws Exception {
 
         document.open();
         document.add(new Paragraph(""));
@@ -542,11 +551,7 @@ public final class UsersController extends HttpServlet {
 
         final List<EntryTo> entries;
 
-        // The blog owner should see all entries
-        if (uc.isAuthBlog())
-            entries = EntryDaoImpl.viewAll(uc.getBlogUser().getUserName(), true);
-        else
-            entries = EntryDaoImpl.viewAll(uc.getBlogUser().getUserName(), false); // not logged in security
+        entries = entryDao.viewAll(uc.getBlogUser().getUserName(), uc.isAuthBlog());
 
         // Format the current time.
         final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm");
@@ -682,17 +687,17 @@ public final class UsersController extends HttpServlet {
         EntryTo o;
 
         if (singleEntryId < 1) {
-            WebError.Display("Invalid Entry Id", "The entry id was invalid for the journal entry you tried to view.", sb);
+            WebError.Display("Invalid Entry Id", "The entry id was invalid for the journal entry you tried to get.", sb);
         } else {
             try {
                 if (uc.isAuthBlog()) {
-                    o = EntryDaoImpl.viewSingle(singleEntryId);
+                    o = entryDao.viewSingle(singleEntryId);
 
 
                     if (log.isDebugEnabled())
                         log.debug("getSingleEntry: User is logged in.");
                 } else {
-                    o = EntryDaoImpl.viewSinglePublic(singleEntryId);
+                    o = entryDao.viewSinglePublic(singleEntryId);
 
                     if (log.isDebugEnabled())
                         log.debug("getSingleEntry: User is not logged in.");
@@ -831,12 +836,12 @@ public final class UsersController extends HttpServlet {
 
         try {
             if (uc.isAuthBlog()) {
-                entries = EntryDaoImpl.view(uc.getBlogUser().getUserName(), true, skip);  // should be true
+                entries = entryDao.view(uc.getBlogUser().getUserName(), true, skip);  // should be true
 
                 if (log.isDebugEnabled())
                     log.debug("getEntries: User is logged in.");
             } else {
-                entries = EntryDaoImpl.view(uc.getBlogUser().getUserName(), false, skip);
+                entries = entryDao.view(uc.getBlogUser().getUserName(), false, skip);
 
                 if (log.isDebugEnabled())
                     log.debug("getEntries: User is not logged in.");
@@ -921,9 +926,9 @@ public final class UsersController extends HttpServlet {
         final Collection entries;
 
         if (uc.getAuthenticatedUser() != null)
-            entries = EntryDaoImpl.viewFriends(uc.getBlogUser().getUserId(), uc.getAuthenticatedUser().getUserId());
+            entries = entryDao.viewFriends(uc.getBlogUser().getUserId(), uc.getAuthenticatedUser().getUserId());
         else
-            entries = EntryDaoImpl.viewFriends(uc.getBlogUser().getUserId(), 0);
+            entries = entryDao.viewFriends(uc.getBlogUser().getUserId(), 0);
 
         sb.append("<h2>Friends</h2>");
         sb.append(endl);
@@ -940,7 +945,7 @@ public final class UsersController extends HttpServlet {
             String curDate;
 
             /* Iterator */
-            EntryImpl o;
+            EntryTo o;
             final Iterator itr = entries.iterator();
 
             if (log.isDebugEnabled())
@@ -950,7 +955,7 @@ public final class UsersController extends HttpServlet {
                 sb.append("<p>No friends entries found</p>.");
 
             for (int i = 0, n = entries.size(); i < n; i++) {
-                o = (EntryImpl) itr.next();
+                o = (EntryTo) itr.next();
 
                 // Parse the previous string back into a Date.
                 final ParsePosition pos = new ParsePosition(0);
@@ -1196,7 +1201,7 @@ public final class UsersController extends HttpServlet {
         // END: YEARS
 
         try {
-            Collection<EntryTo> entries = EntryDaoImpl.ViewCalendarYear(year, uc.getBlogUser().getUserName(), uc.isAuthBlog());
+            Collection<EntryTo> entries = entryDao.viewCalendarYear(year, uc.getBlogUser().getUserName(), uc.isAuthBlog());
 
             if (entries == null || entries.size() == 0) {
                 sb.append("<p>Calendar data not available.</p>");
@@ -1239,7 +1244,7 @@ public final class UsersController extends HttpServlet {
         sb.append(endl);
 
         try {
-            Collection<EntryTo> entries = EntryDaoImpl.ViewCalendarMonth(year, month, uc.getBlogUser().getUserName(), uc.isAuthBlog());
+            Collection<EntryTo> entries = entryDao.viewCalendarMonth(year, month, uc.getBlogUser().getUserName(), uc.isAuthBlog());
 
             if (entries.size() == 0) {
                 sb.append("<p>Calendar data not available.</p>");
@@ -1297,7 +1302,7 @@ public final class UsersController extends HttpServlet {
             int year = cal.get(Calendar.YEAR);
             int month = cal.get(Calendar.MONTH) + 1; // zero based
 
-            Collection<EntryTo> entries = EntryDaoImpl.ViewCalendarMonth(year, month, uc.getBlogUser().getUserName(), uc.isAuthBlog());
+            Collection<EntryTo> entries = entryDao.viewCalendarMonth(year, month, uc.getBlogUser().getUserName(), uc.isAuthBlog());
 
             if (entries.size() == 0) {
                 sb.append("\t<!-- could not render calendar -->");
@@ -1322,7 +1327,7 @@ public final class UsersController extends HttpServlet {
     private String getTagMini(final UserContext uc) {
         StringBuilder sb = new StringBuilder();
         Tag tag;
-        final ArrayList<Tag> tags = EntryDaoImpl.getUserTags(uc.getBlogUser().getUserId());
+        final Iterable<Tag> tags = entryDao.getUserTags(uc.getBlogUser().getUserId());
         int largest = 0;
         int smallest = 10;
         int cutSmall;
@@ -1399,17 +1404,17 @@ public final class UsersController extends HttpServlet {
     @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
     private String getUserRecentEntries(final UserContext uc) {
         StringBuilder sb = new StringBuilder();
-        final Collection entries;
+        final Collection<EntryTo> entries;
         final int maxrecent = 5;
 
         try {
-            entries = EntryDaoImpl.view(uc.getBlogUser().getUserName(), uc.isAuthBlog(), 0);
+            entries = entryDao.view(uc.getBlogUser().getUserName(), uc.isAuthBlog(), 0);
 
             if (log.isDebugEnabled())
                 log.debug("getUserRecentEntries: Begin Iteration of records.");
 
             /* Iterator */
-            EntryImpl o;
+            EntryTo o;
             final Iterator itr = entries.iterator();
 
             sb.append("\t<div class=\"menuentity\" id=\"userRecentEntries\">\n<strong style=\"text-transform: uppercase; letter-spacing: 2px; border: 0 none; border-bottom: 1px; border-style: dotted; border-color: #999999; margin-bottom: 5px; width: 100%; font-size: 10px;\">Recent Entries</strong>\n");
@@ -1421,7 +1426,7 @@ public final class UsersController extends HttpServlet {
                 n = maxrecent;
             }
             for (int i = 0; i < n; i++) {
-                o = (EntryImpl) itr.next();
+                o = (EntryTo) itr.next();
                 sb.append("\t\t\t<li><a href=\"/users/");
                 sb.append(uc.getBlogUser().getUserName());
                 sb.append("/entry/");
@@ -1466,8 +1471,8 @@ public final class UsersController extends HttpServlet {
 
         try {
 
-            final Collection entries;
-            entries = EntryDaoImpl.ViewCalendarDay(year, month, day, uc.getBlogUser().getUserName(), uc.isAuthBlog());
+            final Collection<EntryTo> entries;
+            entries = entryDao.viewCalendarDay(year, month, day, uc.getBlogUser().getUserName(), uc.isAuthBlog());
 
             if (entries == null || entries.size() == 0) {
                 sb.append("<p>Calendar data not available.</p>");
@@ -1480,11 +1485,11 @@ public final class UsersController extends HttpServlet {
                 String curDate;
 
                 /* Iterator */
-                EntryImpl o;
+                EntryTo o;
                 final Iterator itr = entries.iterator();
 
                 for (int i = 0, n = entries.size(); i < n; i++) {
-                    o = (EntryImpl) itr.next();
+                    o = (EntryTo) itr.next();
 
                     // Parse the previous string back into a Date.
                     final ParsePosition pos = new ParsePosition(0);
@@ -1538,7 +1543,7 @@ public final class UsersController extends HttpServlet {
             sb.append(i);
             sb.append(" (");
             try {
-                sb.append(EntryDaoImpl.calendarCount(i, uc.getBlogUser().getUserName()));
+                sb.append(entryDao.calendarCount(i, uc.getBlogUser().getUserName()));
             } catch (Exception e) {
                 log.error("getArchive: could not fetch count for " + uc.getBlogUser().getUserName() + ": " + i + e.getMessage());
                 sb.append("0");
@@ -1579,7 +1584,7 @@ public final class UsersController extends HttpServlet {
         rss.setWebMaster("webmaster@justjournal.com (Lucas)");
         // RSS advisory board format
         rss.setManagingEditor(user.getEmailAddress() + " (" + user.getFirstName() + ")");
-        rss.populate(EntryDaoImpl.view(user.getUserName(), false));
+        rss.populate(entryDao.view(user.getUserName(), false));
         return rss.toXml();
     }
 
@@ -1602,7 +1607,7 @@ public final class UsersController extends HttpServlet {
         atom.setTitle(user.getJournalName());
         atom.setId("http://www.justjournal.com/users/" + user.getUserName() + "/atom");
         atom.setSelfLink("/users/" + user.getUserName() + "/atom");
-        atom.populate(EntryDaoImpl.view(user.getUserName(), false));
+        atom.populate(entryDao.view(user.getUserName(), false));
         return (atom.toXml());
     }
 
@@ -1638,12 +1643,12 @@ public final class UsersController extends HttpServlet {
 
         try {
             if (uc.isAuthBlog()) {
-                entries = EntryDaoImpl.viewAll(uc.getBlogUser().getUserName(), true);  // should be true
+                entries = entryDao.viewAll(uc.getBlogUser().getUserName(), true);  // should be true
 
                 if (log.isDebugEnabled())
                     log.debug("getTags: User is logged in.");
             } else {
-                entries = EntryDaoImpl.viewAll(uc.getBlogUser().getUserName(), false);
+                entries = entryDao.viewAll(uc.getBlogUser().getUserName(), false);
 
                 if (log.isDebugEnabled())
                     log.debug("getTags: User is not logged in.");
@@ -1660,11 +1665,11 @@ public final class UsersController extends HttpServlet {
                 log.debug("getTags: Begin Iteration of records.");
 
             /* Iterator */
-            EntryImpl o;
+            EntryTo o;
             final Iterator itr = entries.iterator();
 
             for (int i = 0, n = entries.size(); i < n; i++) {
-                o = (EntryImpl) itr.next();
+                o = (EntryTo) itr.next();
 
                 // Parse the previous string back into a Date.
                 final ParsePosition pos = new ParsePosition(0);
