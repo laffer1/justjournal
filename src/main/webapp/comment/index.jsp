@@ -1,5 +1,5 @@
 <%@ page contentType="text/html; charset=iso-8859-1" language="java"
-         import="com.justjournal.User, com.justjournal.WebError" %>
+         import="com.justjournal.UserImpl, com.justjournal.WebError" %>
 <%@ page import="com.justjournal.db.*" %>
 <%@ page import="com.justjournal.utility.StringUtil" %>
 <%@ page import="com.justjournal.utility.Xml" %>
@@ -16,15 +16,12 @@ $Id: index.jsp,v 1.5 2008/04/26 17:06:30 laffer1 Exp $
     boolean nopermission = false;
 
     try {
-        eid = new Integer(request.getParameter("id")).intValue();
+        eid = Integer.parseInt(request.getParameter("id"));
     } catch (NumberFormatException ex1) {
         eid = 0;
     }
 
     if (eid <= 0) {
-        //response.reset();
-        //response.sendError(500, "bad entry id");
-        //response.flushBuffer();
         PrintWriter out2 = response.getWriter();
         WebError.Display("Error", "Invalid entry id.", out2);
         return;
@@ -32,26 +29,23 @@ $Id: index.jsp,v 1.5 2008/04/26 17:06:30 laffer1 Exp $
 
     String aUser = (String) session.getAttribute("auth.user");
 
-    Collection comments = CommentDao.list(eid);
+    CommentDao commentDao = new CommentDaoImpl();
+    Collection comments = commentDao.list(eid);
 
-    EntryTo entry = EntryDAO.viewSingle(eid, true);
+    EntryTo entry = EntryDao.viewSinglePublic(eid);
 
-    User pf;
+    UserImpl pf;
     try {
-        pf = new User(entry.getUserName());
+        pf = new UserImpl(entry.getUserName());
     } catch (Exception e) {
         response.reset();
-        response.sendError(500, "Error loading entry owner preferences.");
+        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error loading entry owner preferences.");
         response.flushBuffer();
         return;
     }
 
-    /* Error retrieving user preferences. */
-    if (pf == null)
-        nopermission = true;
-
     /* Entry owner wants a private journal. */
-    if (pf != null && pf.isPrivateJournal())
+    if (pf.isPrivateJournal())
         nopermission = true;
 
     /* Entry owner doesn't want comments on this entry. */
@@ -63,12 +57,12 @@ $Id: index.jsp,v 1.5 2008/04/26 17:06:30 laffer1 Exp $
         nopermission = true;
 
     /* Strange error.  Entry is garbage */
-    if (entry.getUserId() == 0)
+    if (entry != null && entry.getUserId() == 0)
         nopermission = true;
 
     /* non-Entry owner is viewing a friends entry */
-    if ((aUser == null || !aUser.equalsIgnoreCase(entry.getUserName())) &&
-            entry.getSecurityLevel() == 1)
+    assert entry != null;
+    if ((aUser == null || !aUser.equalsIgnoreCase(entry.getUserName())) && entry.getSecurityLevel() == 1)
         nopermission = true;
 %>
 <?xml version="1.0" encoding="iso-8859-1"?>
@@ -79,15 +73,16 @@ $Id: index.jsp,v 1.5 2008/04/26 17:06:30 laffer1 Exp $
 
 <head>
     <title>
-        <% if (!(nopermission)) { %>
+        <% if (!(nopermission)) {
+        %>
         <%=entry.getUserName()%>: <%=entry.getSubject()%>
         <% } %>
     </title>
     <link rel="stylesheet" type="text/css" href="../layout.css" media="all"/>
     <link rel="stylesheet" type="text/css" href="../font-normal.css" media="all"/>
-    <link rel="home" title="Home" href="../index.jsp"/>
-    <link rel="contents" title="Site Map" href="../sitemap.jsp"/>
-    <link rel="help" title="Technical Support" href="../support/index.jsp"/>
+    <link rel="home" title="Home" href="${pageContext.request.contextPath}/"/>
+    <link rel="contents" title="Site Map" href="${pageContext.request.contextPath}/#/sitemap"/>
+    <link rel="help" title="Technical Support" href="${pageContext.request.contextPath}/#/support"/>
 </head>
 
 <body>
@@ -109,7 +104,7 @@ $Id: index.jsp,v 1.5 2008/04/26 17:06:30 laffer1 Exp $
                                                              title="<%=entry.getUserName()%>"><%=entry.getUserName()%>
     </a>
 
-        <% DateTime dte = entry.getDate(); %>
+        <% DateTime dte = entry.getDateTime(); %>
         wrote on <%=dte.toPubDate()%>
     </p>
 
@@ -121,9 +116,9 @@ $Id: index.jsp,v 1.5 2008/04/26 17:06:30 laffer1 Exp $
             String tmpBody = entry.getBodyWithLinks();
     %>
     <p>
-        <% if (tmpBody.indexOf("\n") > -1) { %>
+        <% if (tmpBody.contains("\n")) { %>
         <%=(StringUtil.replace(tmpBody, '\n', "<br />"))%>
-        <% } else if (entry.getBody().indexOf("\r") > -1) { %>
+        <% } else if (entry.getBody().contains("\r")) { %>
         <%=(StringUtil.replace(tmpBody, '\r', "<br />"))%>
         <% } else {
             // we do not have any "new lines" but it might be
