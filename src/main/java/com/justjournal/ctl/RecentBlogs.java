@@ -26,6 +26,7 @@
 package com.justjournal.ctl;
 
 import com.justjournal.core.Settings;
+import com.justjournal.db.EntryDao;
 import com.justjournal.db.EntryDaoImpl;
 import com.justjournal.rss.Rss;
 import org.apache.log4j.Logger;
@@ -48,7 +49,7 @@ import java.util.Date;
  */
 @Controller
 @RequestMapping("/RecentBlogs")
-final public class RecentBlogs {
+public class RecentBlogs {
     private static final Logger log = Logger.getLogger(RecentBlogs.class);
 
     @Cacheable("recentblogs")
@@ -57,6 +58,7 @@ final public class RecentBlogs {
     @ResponseBody
     String get(HttpServletResponse response) {
         Settings set = new Settings();
+        EntryDao entryDao = new EntryDaoImpl();
 
         response.setContentType("application/rss+xml;charset=UTF-8");
         response.setDateHeader("Expires", System.currentTimeMillis() + 1000 * 60);
@@ -79,7 +81,7 @@ final public class RecentBlogs {
             rss.setWebMaster(set.getSiteAdminEmail() + " (" + set.getSiteAdmin() + ")");
             rss.setManagingEditor(set.getSiteAdminEmail() + " (" + set.getSiteAdmin() + ")");
             rss.setSelfLink(set.getBaseUri() + "RecentBlogs");
-            rss.populate(EntryDaoImpl.viewRecentUniqueUsers());
+            rss.populate(entryDao.viewRecentUniqueUsers());
 
             Date d = rss.getNewestEntryDate();
 
