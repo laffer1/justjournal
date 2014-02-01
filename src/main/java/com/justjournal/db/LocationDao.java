@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2005, Lucas Holt
+Copyright (c) 2004, 2005, 2014 Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -34,6 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
+import com.sun.istack.internal.NotNull;
 import org.apache.cayenne.Cayenne;
 import org.apache.cayenne.ObjectContext;
 import org.apache.cayenne.access.DataContext;
@@ -50,14 +51,34 @@ import java.util.List;
 /**
  * View all locations
  *
- * @author Lucas Holt User: laffer1 Date: Jan 9, 2004 Time: 1:54:42 PM
+ * @author Lucas Holt
  */
 public final class LocationDao {
     private static final Logger log = Logger.getLogger(LocationDao.class.getName());
 
+    @NotNull
+    public static LocationTo get(int id) {
+        LocationTo locationTo = new LocationTo();
+
+        try {
+            ObjectContext dataContext = DataContext.getThreadObjectContext();
+
+            com.justjournal.model.Location item =
+                    Cayenne.objectForPK(dataContext, com.justjournal.model.Location.class, id);
+
+            locationTo.setId(id);
+            locationTo.setName(item.getTitle());
+        } catch (Exception e1) {
+            log.error(e1);
+        }
+
+        return locationTo;
+    }
+
+
     public static Collection<LocationTo> view() {
         ObjectContext dataContext = DataContext.getThreadObjectContext();
-        ArrayList<LocationTo> locations = new ArrayList<LocationTo>();
+        List<LocationTo> locations = new ArrayList<LocationTo>();
 
         try {
             SelectQuery query = new SelectQuery(com.justjournal.model.Location.class);
