@@ -53,12 +53,12 @@ import java.util.Collection;
  */
 @Controller
 @RequestMapping("/api/mood")
-final public class MoodController {
+public class MoodController {
 
     @Cacheable(value = "mood", key = "id")
-    @RequestMapping("/api/mood/{id}")
+    @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public MoodTo getById(@PathVariable Integer id) {
+    public MoodTo getById(@PathVariable("id") Integer id) {
         return MoodDao.get(id);
     }
 
