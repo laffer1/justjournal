@@ -36,6 +36,8 @@ package com.justjournal.db;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.stereotype.Component;
 
 /**
  * Security Transfer Object
@@ -43,9 +45,10 @@ import com.fasterxml.jackson.annotation.JsonCreator;
  * @author Lucas Holt
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+@Component
 public final class SecurityTo {
-    private int id;
-    private String name;
+    private int id = 0;
+    private String name = "";
 
     @JsonCreator
     public SecurityTo() {
@@ -53,8 +56,8 @@ public final class SecurityTo {
     }
 
     public SecurityTo(int id, String name) {
-        this.id = id;
-        this.name = name;
+        this.setId(id);
+        this.setName(name);
     }
 
     public final int getId() {
@@ -73,6 +76,7 @@ public final class SecurityTo {
         this.name = name;
     }
 
+    @JsonIgnore
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;
@@ -80,14 +84,15 @@ public final class SecurityTo {
 
         final SecurityTo that = (SecurityTo) o;
 
-        return id == that.id && name.equals(that.name);
+        return getId() == that.getId() && getName().equals(that.getName());
     }
 
+    @JsonIgnore
     @Override
     public final int hashCode() {
         int result;
-        result = id;
-        result = 29 * result + name.hashCode();
+        result = getId();
+        result = 29 * result + getName().hashCode();
         return result;
     }
 }

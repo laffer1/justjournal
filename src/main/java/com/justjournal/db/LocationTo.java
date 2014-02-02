@@ -28,12 +28,15 @@ package com.justjournal.db;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.stereotype.Component;
 
 /**
  * Location
  * @author Lucas Holt
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+@Component
 public final class LocationTo {
     private int id;
     private String name;
@@ -64,6 +67,7 @@ public final class LocationTo {
         this.name = name;
     }
 
+    @JsonIgnore
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;
@@ -74,6 +78,7 @@ public final class LocationTo {
         return id == that.id && name.equals(that.name);
     }
 
+    @JsonIgnore
     @Override
     public final int hashCode() {
         int result;
