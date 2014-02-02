@@ -28,6 +28,8 @@ package com.justjournal.db;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.stereotype.Component;
 
 /**
  * Friend
@@ -35,17 +37,19 @@ import com.fasterxml.jackson.annotation.JsonCreator;
  * @author Lucas Holt
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+@Component
 public final class FriendTo {
-    private int id;
-    private String userName;
-    private int ownerId;
-    private String ownerUserName;
+    private int id = 0;
+    private String userName = "";
+    private int ownerId = 0;
+    private String ownerUserName = "";
 
     @JsonCreator
     public FriendTo() {
 
     }
 
+    @JsonIgnore
     public FriendTo(int id, String userName, int ownerId, String ownerUserName) {
         this.setId(id);
         this.userName = userName;
@@ -85,12 +89,14 @@ public final class FriendTo {
         this.ownerUserName = ownerUserName;
     }
 
+    @JsonIgnore
     @Override
     public String toString() {
         return Integer.toString(getId()) + "," + userName + ","
                 + ownerId + "," + ownerUserName;
     }
 
+    @JsonIgnore
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -101,6 +107,7 @@ public final class FriendTo {
         return getId() == friendTo.getId() && ownerId == friendTo.ownerId && ownerUserName.equals(friendTo.ownerUserName) && userName.equals(friendTo.userName);
     }
 
+    @JsonIgnore
     @Override
     public int hashCode() {
         int result;

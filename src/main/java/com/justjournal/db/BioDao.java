@@ -54,7 +54,7 @@ public final class BioDao {
             ObjectContext dataContext = DataContext.getThreadObjectContext();
             com.justjournal.model.UserBio bio = dataContext.newObject(com.justjournal.model.UserBio.class);
 
-              bio.setContent(bioTo.getBio());
+            bio.setContent(bioTo.getBio());
 
             dataContext.commitChanges();
         } catch (CayenneRuntimeException ce) {
@@ -62,7 +62,7 @@ public final class BioDao {
             return true;
         }
 
-       return false;
+        return false;
     }
 
     public boolean update(Bio bioTo) {
@@ -97,19 +97,19 @@ public final class BioDao {
 
     @NotNull
     public Bio get(int userId) {
-        Bio bioto = new BioTo();
+        Bio bioTo = new BioTo();
 
         try {
             ObjectContext dataContext = DataContext.getThreadObjectContext();
 
             com.justjournal.model.UserBio bio =
                     Cayenne.objectForPK(dataContext, com.justjournal.model.UserBio.class, userId);
-            bioto.setUserId(userId);
-            bioto.setBio(bio.getContent());
+            bioTo.setUserId(userId);
+            bioTo.setBio(bio.getContent());
         } catch (Exception e1) {
             log.error(e1);
         }
 
-        return bioto;
+        return bioTo;
     }
 }
