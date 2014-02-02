@@ -318,7 +318,7 @@ public final class UserDao {
         try {
             ObjectContext dataContext = DataContext.getThreadObjectContext();
             final SelectQuery query = new SelectQuery(com.justjournal.model.User.class);
-            query.addPrefetch("UserToUserPref");
+            // query.addPrefetch("UserToUserPref");
             List<User> userList = dataContext.performQuery(query);
 
             for (User user : userList) {
