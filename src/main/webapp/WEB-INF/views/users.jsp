@@ -47,7 +47,7 @@
         <a href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>/calendar">Calendar</a><br/>
         <a href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>/friends">Friends</a><br/>
         <a href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>/pictures">Pictures</a><br/>
-        <a href="${pageContext.request.contextPath}profile.jsp?user=<c:out value="${user.userName}"/>">Profile</a><br/>
+        <a href="${pageContext.request.contextPath}/#/profile/<c:out value="${user.userName}"/>">Profile</a><br/>
     </p>
 
     <p id="mgen">
