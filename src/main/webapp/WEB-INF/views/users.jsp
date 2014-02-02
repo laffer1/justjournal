@@ -80,15 +80,15 @@
         </form>
     </div>
 
-    <c:out value="${calendarMini}"/>
+    <c:out escapeXml="false" value="${calendarMini}"/>
 
-    <c:out value="${recentEntries}"/>
+    <c:out escapeXml="false" value="${recentEntries}"/>
 
-    <c:out value="${links}"/>
+    <c:out escapeXml="false" value="${links}"/>
 
-    <c:out value="${archive}"/>
+    <c:out escapeXml="false" value="${archive}"/>
 
-    <c:out value="${taglist}"/>
+    <c:out escapeXml="false" value="${taglist}"/>
 </div>
 <!-- Menu: End -->
 
@@ -103,14 +103,14 @@
         </p>
     </c:if>
 
-    <c:out value="${entries}"/>
-    <c:out value="${entry}"/>
-    <c:out value="${friends}"/>
-    <c:out value="${pictures}"/>
-    <c:out value="${search}"/>
-    <c:out value="${subscriptions}"/>
-    <c:out value="${tags}"/>
-    <c:out value="${calendar}"/>
+    <c:out escapeXml="false" value="${entries}"/>
+    <c:out escapeXml="false" value="${entry}"/>
+    <c:out escapeXml="false" value="${friends}"/>
+    <c:out escapeXml="false" value="${pictures}"/>
+    <c:out escapeXml="false" value="${search}"/>
+    <c:out escapeXml="false" value="${subscriptions}"/>
+    <c:out escapeXml="false" value="${tags}"/>
+    <c:out escapeXml="false" value="${calendar}"/>
 
     <c:if test="${startYear} != null && ${startYear > 2002}">
         <p>The calendar lists months with journal entries.</p>
