@@ -9,12 +9,12 @@
 
     <p>user: <a href="users/{{ username }}">{{ username }}</a> ({{ account.userId }})
         <br>name: {{ account.firstName }}
-        <br>my journal: {{ JournalName }}
+        <br>my journal: {{ account.journalName }}
     </p>
 
     <h3>Biography</h3>
 
-    <p ng-bind-html-unsafe="{{ Biography }}"></p>
+    <p data-ng-bind-html="{{ biography.bio }}"></p>
 
     <h3><a ng-href="users/{{ username }}/friends">Friends</a></h3>
 
@@ -27,7 +27,7 @@
 
     <h3>Statistics</h3>
 
-    <p>Blog entries posted: {{ stats.EntryCount }}</p>
+    <p>Blog entries posted: {{ stats.entryCount }}</p>
 
-    <p>Comments posted on blogs: {{ stats.CommentCount }}</p>
+    <p>Comments posted on blogs: {{ stats.commentCount }}</p>
 </div>
