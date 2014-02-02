@@ -15,7 +15,8 @@
     "angular-bootstrap": "0.4.0",
     "jquery": "1.10.2",
     "jquery-ui": "1.10.3",
-    "jquery.validation": "1.11.1"
+      "jquery.validation": "1.11.1",
+      "lightbox2": "~2.6"
   },
   "homepage": "https://github.com/laffer1/justjournal",
   "authors": [
