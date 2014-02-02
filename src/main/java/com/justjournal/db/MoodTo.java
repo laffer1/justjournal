@@ -28,6 +28,8 @@ package com.justjournal.db;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.stereotype.Component;
 
 /**
  * Represents a mood
@@ -35,10 +37,11 @@ import com.fasterxml.jackson.annotation.JsonCreator;
  * @author Lucas Holt
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+@Component
 public final class MoodTo {
-    private int id;
-    private int parent;  // parent mood
-    private String name;
+    private int id = 0;
+    private int parent = 0;  // parent mood
+    private String name = "";
 
     @JsonCreator
     public MoodTo() {
@@ -80,6 +83,7 @@ public final class MoodTo {
         this.name = name;
     }
 
+    @JsonIgnore
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -90,6 +94,7 @@ public final class MoodTo {
         return id == moodTo.id && parent == moodTo.parent && name.equals(moodTo.name);
     }
 
+    @JsonIgnore
     @Override
     public int hashCode() {
         int result;
@@ -99,6 +104,7 @@ public final class MoodTo {
         return result;
     }
 
+    @JsonIgnore
     @Override
     public String toString() {
         return "id: " + id + ", parent: " + parent + ", name: " + name;
