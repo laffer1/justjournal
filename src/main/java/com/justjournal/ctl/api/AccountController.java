@@ -144,11 +144,11 @@ public class AccountController {
         }
     }
 
-    @RequestMapping("/api/account/{id}")
+    @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public User getById(@PathVariable String id, HttpSession session, HttpServletResponse response) {
+    public User getById(@PathVariable("id") String id, HttpSession session, HttpServletResponse response) {
         try {
-            UserImpl user = new UserImpl(id);
+            User user = new UserImpl(id);
 
             if (user.isPrivateJournal()) {
                 if (
