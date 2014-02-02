@@ -51,8 +51,8 @@
     </p>
 
     <p id="mgen">
-        <a href="${pageContext.request.contextPath}#/entry">Update Journal</a><br/>
-        <a href="${pageContext.request.contextPath}">Login</a>
+        <a href="${pageContext.request.contextPath}/#/entry">Update Journal</a><br/>
+        <a href="${pageContext.request.contextPath}/#/">Login</a>
     </p>
 
     <p id="mrssreader">
