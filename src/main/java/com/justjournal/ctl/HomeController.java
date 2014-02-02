@@ -36,16 +36,22 @@ import javax.servlet.http.HttpSession;
 
 /**
  * Main homepage / index
+ *
  * @author Lucas Holt
  */
 @Controller
 @RequestMapping("/")
 final public class HomeController {
 
-    @RequestMapping(method= RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET)
     public String home(Model model, HttpSession session) {
         model.addAttribute("username", WebLogin.currentLoginName(session));
         return "index";
+    }
+
+    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+    public String logout(Model model, HttpSession session) {
+        return "logout";
     }
 }
 

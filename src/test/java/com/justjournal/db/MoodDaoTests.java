@@ -48,7 +48,14 @@ public class MoodDaoTests {
 
     @Test
     public void list() {
-        Collection<MoodTo> list = MoodDao.view();
+        Collection<MoodTo> list = MoodDao.list();
+        assertNotNull(list);
+        assertTrue(list.size() > 100);
+    }
+
+    @Test
+    public void listByRelationship() {
+        Collection<MoodTo> list = MoodDao.listByRelationship();
         assertNotNull(list);
         assertTrue(list.size() > 100);
     }

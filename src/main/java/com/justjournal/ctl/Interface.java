@@ -195,7 +195,7 @@ public class Interface extends HttpServlet {
                     if (moodStart != null) {
                         MoodDao mdao = new MoodDao();
                         // TODO: add start at x number command!
-                        Collection moods = mdao.view();
+                        Collection moods = mdao.list();
 
                         /* Iterator */
                         MoodTo o;

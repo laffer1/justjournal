@@ -72,7 +72,7 @@ public class MoodController {
     public
     @ResponseBody
     Collection<MoodTo> getMoodList() {
-        return MoodDao.viewByRelationship();
+        return MoodDao.listByRelationship();
     }
 
 }

@@ -82,8 +82,8 @@ public final class MoodDao {
      * @return Collection of MoodTo objects.
      */
     @NotNull
-    public static Collection<MoodTo> view() {
-        ArrayList<MoodTo> moods = new ArrayList<MoodTo>(125);
+    public static Collection<MoodTo> list() {
+        Collection<MoodTo> moods = new ArrayList<MoodTo>(125);
         MoodTo mood;
         final String sqlStatement = "CALL listmoodsbytitle()";
 
@@ -105,8 +105,8 @@ public final class MoodDao {
     }
 
     @NotNull
-    public static Collection<MoodTo> viewByRelationship() {
-        ArrayList<MoodTo> moods = new ArrayList<MoodTo>(125);
+    public static Collection<MoodTo> listByRelationship() {
+        Collection<MoodTo> moods = new ArrayList<MoodTo>(125);
         MoodTo mood;
         final String sqlStatement = "CALL listmoods()";
 
