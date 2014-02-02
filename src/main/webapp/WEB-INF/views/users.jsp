@@ -18,8 +18,10 @@
     <script type="text/javascript" src="${pageContext.request.contextPath}/components/jquery/jquery.min.js"></script>
     <script type="text/javascript"
             src="${pageContext.request.contextPath}/components/jquery-ui/ui/minified/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/js/lightbox.js"></script>
-    <link rel="stylesheet" type="text/css" media="screen" href="${pageContext.request.contextPath}/lightbox.css">
+    <script type="text/javascript"
+            src="${pageContext.request.contextPath}/components/lightbox2/js/lightbox-2.6.min.js"></script>
+    <link rel="stylesheet" type="text/css" media="screen"
+          href="${pageContext.request.contextPath}/components/lightbox2/css/lightbox.css">
     <c:if test="${user.spiderAllowed == true}">
         <meta name="robots" content="noindex, nofollow, noarchive">
         <meta name="googlebot" content="nosnippet">
