@@ -52,7 +52,12 @@
 
     <p id="mgen">
         <a href="${pageContext.request.contextPath}/#/entry">Update Journal</a><br/>
-        <a href="${pageContext.request.contextPath}/#/">Login</a>
+        <c:if test="${authenticatedUsername == null}">
+            <a href="${pageContext.request.contextPath}/#/">Login</a>
+        </c:if>
+        <c:if test="${authenticatedUsername != null}">
+            <a href="${pageContext.request.contextPath}/logout">Log Out</a>
+        </c:if>
     </p>
 
     <p id="mrssreader">
