@@ -132,6 +132,7 @@
 <script type="text/javascript" src="scripts/controllers/tech.js"></script>
 
 <script type="text/javascript" src="scripts/services/AccountService.js"></script>
+<script type="text/javascript" src="scripts/services/BiographyService.js"></script>
 <script type="text/javascript" src="scripts/services/EntryService.js"></script>
 <script type="text/javascript" src="scripts/services/FriendService.js"></script>
 <script type="text/javascript" src="scripts/services/LocationService.js"></script>
