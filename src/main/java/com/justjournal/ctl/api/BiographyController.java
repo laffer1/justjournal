@@ -59,10 +59,10 @@ public class BiographyController {
     }
 
     @Cacheable(value = "biography", key = "username")
-    @RequestMapping(method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "{username}", method = RequestMethod.GET, produces = "application/json")
     public
     @ResponseBody
-    Bio get(@RequestParam String username, HttpServletResponse response) {
+    Bio get(@PathVariable("username") String username, HttpServletResponse response) {
         UserTo user = UserDao.get(username);
         if (user == null) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);

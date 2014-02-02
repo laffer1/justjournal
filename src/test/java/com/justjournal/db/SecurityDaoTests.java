@@ -24,38 +24,40 @@
  * SUCH DAMAGE.
  */
 
-package com.justjournal.ctl.api;
+package com.justjournal.db;
 
-import com.justjournal.db.LocationDao;
-import com.justjournal.db.LocationTo;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import com.justjournal.Util;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.util.Collection;
+
+import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * @author Lucas Holt
  */
-@Controller
-@RequestMapping("/api/location")
-public class LocationController {
-
-    @Cacheable(value = "location", key = "id")
-    @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = "application/json")
-    @ResponseBody
-    public LocationTo getById(@PathVariable("id") Integer id) {
-        return LocationDao.get(id);
+public class SecurityDaoTests {
+    @BeforeClass
+    public static void setup() throws Exception {
+        Util.setupDb();
     }
 
-    @Cacheable("location")
-    @RequestMapping(method = RequestMethod.GET, headers = "Accept=*/*", produces = "application/json")
-    public
-    @ResponseBody
-    Collection<LocationTo> getLocationList() {
-        return LocationDao.list();
+    @Test
+    public void list() {
+        Collection<SecurityTo> list = SecurityDao.list();
+        assertNotNull(list);
+        assertTrue(list.size() > 0);
+        assertEquals(3, list.size());
+    }
+
+    @Test
+    public void get() {
+        SecurityTo securityTo = SecurityDao.get(1);
+        assertNotNull(securityTo);
+        assertEquals(1, securityTo.getId());
+        assertNotNull(securityTo.getName());
     }
 }

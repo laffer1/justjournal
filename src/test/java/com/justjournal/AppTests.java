@@ -132,7 +132,43 @@ public class AppTests {
     @Test
     public void apiLocation() throws Exception {
         mockMvc.perform(get("/api/location"))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith("application/json;charset=UTF-8"));
+    }
+
+    @Test
+    public void apiLocationWithId() throws Exception {
+        mockMvc.perform(get("/api/location/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith("application/json;charset=UTF-8"));
+    }
+
+    @Test
+    public void apiMood() throws Exception {
+        mockMvc.perform(get("/api/mood"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith("application/json;charset=UTF-8"));
+    }
+
+    @Test
+    public void apiMoodWithId() throws Exception {
+        mockMvc.perform(get("/api/mood/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith("application/json;charset=UTF-8"));
+    }
+
+    @Test
+    public void apiSecurity() throws Exception {
+        mockMvc.perform(get("/api/security"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith("application/json;charset=UTF-8"));
+    }
+
+    @Test
+    public void apiSecurityWithId() throws Exception {
+        mockMvc.perform(get("/api/security/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith("application/json;charset=UTF-8"));
     }
 
     @Test

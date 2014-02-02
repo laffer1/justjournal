@@ -76,9 +76,9 @@ public final class LocationDao {
     }
 
 
-    public static Collection<LocationTo> view() {
+    public static Collection<LocationTo> list() {
         ObjectContext dataContext = DataContext.getThreadObjectContext();
-        List<LocationTo> locations = new ArrayList<LocationTo>();
+        Collection<LocationTo> locations = new ArrayList<LocationTo>();
 
         try {
             SelectQuery query = new SelectQuery(com.justjournal.model.Location.class);
