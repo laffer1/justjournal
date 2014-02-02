@@ -42,6 +42,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
+@SuppressWarnings("ClassWithTooManyMethods")
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration("file:src/test/resources/mvc-dispatcher-servlet.xml")
@@ -69,6 +70,13 @@ public class AppTests {
     @Test
     public void users() throws Exception {
         mockMvc.perform(get("/users/jjsite"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("users"));
+    }
+
+    @Test
+    public void usersSingleEntry() throws Exception {
+        mockMvc.perform(get("/users/laffer1/entry/33626"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("users"));
     }

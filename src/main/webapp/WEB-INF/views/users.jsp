@@ -4,8 +4,9 @@
 
 <head>
     <title><c:out value="${user.journalName}"/></title>
-    <link rel="stylesheet" type="text/css" href="../../styles/users.css">
-    <link rel="stylesheet" type="text/css" media="screen" href="../../styles/<c:out value="${user.styleId}"/>.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/styles/users.css">
+    <link rel="stylesheet" type="text/css" media="screen"
+          href="${pageContext.request.contextPath}/styles/<c:out value="${user.styleId}"/>.css">
     <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
     <link rel="alternate" type="application/rss+xml" title="RSS"
           href="http://www.justjournal.com/users/<c:out value="${user.userName}"/>/rss">
@@ -13,11 +14,12 @@
           href="http://www.justjournal.com/users/<c:out value="${user.userName}"/>/atom">
     <link rel="EditURI" type="application/rsd+xml" title="RSD"
           href="http://www.justjournal.com/rsd?blogID=<c:out value="${user.userName}"/>">
-    <script type="text/javascript" src="../../js/switchcontent.js"></script>
-    <script type="text/javascript" src="../../components/jquery/jquery.min.js"></script>
-    <script type="text/javascript" src="../../components/jquery-ui/ui/minified/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="../../js/lightbox.js"></script>
-    <link rel="stylesheet" type="text/css" media="screen" href="../../lightbox.css">
+    <script type="text/javascript" src="${pageContext.request.contextPath}/js/switchcontent.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/components/jquery/jquery.min.js"></script>
+    <script type="text/javascript"
+            src="${pageContext.request.contextPath}/components/jquery-ui/ui/minified/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/js/lightbox.js"></script>
+    <link rel="stylesheet" type="text/css" media="screen" href="${pageContext.request.contextPath}/lightbox.css">
     <c:if test="${user.spiderAllowed == true}">
         <meta name="robots" content="noindex, nofollow, noarchive">
         <meta name="googlebot" content="nosnippet">
@@ -112,8 +114,8 @@
     <c:out escapeXml="false" value="${tags}"/>
     <c:out escapeXml="false" value="${calendar}"/>
 
-    <c:if test="${startYear} != null && ${startYear > 2002}">
-        <p>The calendar lists months with journal entries.</p>
+    <c:if test="${startYear} != null">
+    <p>The calendar lists months with journal entries.</p>
 
         <p>
             <c:forEach begin="${startYear}" end="${currentYear}" var="yr">
