@@ -39,7 +39,7 @@
 <!-- Menu: Begin -->
 <div id="menu">
     <c:if test="${user.showAvatar == true}">
-        <img alt="avatar" src="${pageContext.request.contextPath}image?id=<c:out value="${user.userId}"/>">
+        <img alt="avatar" src="${pageContext.request.contextPath}/image?id=<c:out value="${user.userId}"/>">
     </c:if>
 
     <p id="muser">
