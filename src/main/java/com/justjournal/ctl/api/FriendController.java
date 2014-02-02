@@ -57,7 +57,7 @@ public class FriendController {
      * @return List of usernames as strings
      */
     @Cacheable(value = "friends", key = "id")
-    @RequestMapping(value = "{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public Collection<String> getById(@PathVariable("id") String id, HttpServletResponse response) {
         try {
