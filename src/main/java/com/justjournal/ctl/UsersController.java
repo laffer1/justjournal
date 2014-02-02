@@ -331,9 +331,9 @@ public class UsersController {
         try {
             UserImpl user = new UserImpl(username);
             UserContext userc = new UserContext(user, authUser);
-            if (!(userc.getBlogUser().isPrivateJournal()) || userc.isAuthBlog())
+            if (!(userc.getBlogUser().isPrivateJournal()) || userc.isAuthBlog()) {
                 getPDF(response, userc);
-            else
+            } else
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         } catch (Exception e) {
             log.error(e);
@@ -486,12 +486,15 @@ public class UsersController {
 
     private void getPDF(final HttpServletResponse response, final UserContext uc) {
         try {
+            response.reset();
+
             final Document document = new Document();
             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
             PdfWriter.getInstance(document, baos);
             formatRTFPDF(uc, document);
             document.close();
 
+            response.setContentType("application/pdf");
             response.setHeader("Expires", "0");
             response.setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
             response.setHeader("Pragma", "public");
@@ -520,6 +523,7 @@ public class UsersController {
             formatRTFPDF(uc, document);
             document.close();
 
+            response.setContentType("application/rtf");
             response.setHeader("Expires", "0");
             response.setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
             response.setHeader("Pragma", "public");

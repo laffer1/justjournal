@@ -57,9 +57,9 @@ public class FriendController {
      * @return List of usernames as strings
      */
     @Cacheable(value = "friends", key = "id")
-    @RequestMapping("/api/friend/{id}")
+    @RequestMapping(value = "{id}", method = RequestMethod.GET)
     @ResponseBody
-    public Collection<String> getById(@PathVariable String id, HttpServletResponse response) {
+    public Collection<String> getById(@PathVariable("id") String id, HttpServletResponse response) {
         try {
             return UserDao.friends(id);
         } catch (Exception e) {
