@@ -68,14 +68,12 @@ import java.util.List;
 @Controller
 @RequestMapping("/users")
 public class UsersController {
-    // constants
-    private static final char endl = '\n';
-
-    private static final Logger log = Logger.getLogger(UsersController.class);
-    private static final long serialVersionUID = 1191172806869579057L;
     public static final int SEARCH_MAX_LENGTH = 20;
     public static final float FONT_10_POINT = 10.0F;
-
+    // constants
+    private static final char endl = '\n';
+    private static final Logger log = Logger.getLogger(UsersController.class);
+    private static final long serialVersionUID = 1191172806869579057L;
     @SuppressWarnings({"InstanceVariableOfConcreteClass"})
     private Settings settings = null;
     private CommentDao commentDao = null;
@@ -164,25 +162,26 @@ public class UsersController {
 
     @RequestMapping(value = "{username}/calendar", method = RequestMethod.GET, produces = "text/html")
     public String calendar(@PathVariable("username") String username, Model model, HttpSession session, HttpServletResponse response) {
-        UserContext userc = getUserContext(username, session);
-        model.addAttribute("authenticatedUsername", WebLogin.currentLoginName(session));
-        model.addAttribute("user", userc.getBlogUser());
 
-        if (userc.getBlogUser().isPrivateJournal() && !userc.isAuthBlog()) {
+        UserContext userContext = getUserContext(username, session);
+        model.addAttribute("authenticatedUsername", WebLogin.currentLoginName(session));
+        model.addAttribute("user", userContext.getBlogUser());
+
+        if (userContext.getBlogUser().isPrivateJournal() && !userContext.isAuthBlog()) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return "";
         }
 
-        model.addAttribute("calendarMini", getCalendarMini(userc));
-        model.addAttribute("recentEntries", getUserRecentEntries(userc));
-        model.addAttribute("links", getUserLinks(userc));
-        model.addAttribute("archive", getArchive(userc));
-        model.addAttribute("taglist", getTagMini(userc));
+        model.addAttribute("calendarMini", getCalendarMini(userContext));
+        model.addAttribute("recentEntries", getUserRecentEntries(userContext));
+        model.addAttribute("links", getUserLinks(userContext));
+        model.addAttribute("archive", getArchive(userContext));
+        model.addAttribute("taglist", getTagMini(userContext));
 
-        final java.util.Calendar cal = new GregorianCalendar();
+        final java.util.Calendar cal = Calendar.getInstance();
         int year = cal.get(java.util.Calendar.YEAR);
 
-        model.addAttribute("startYear", userc.getBlogUser().getStartYear());
+        model.addAttribute("startYear", userContext.getBlogUser().getStartYear());
         model.addAttribute("currentYear", year);
 
         return "users";
@@ -542,7 +541,7 @@ public class UsersController {
     }
 
     private void formatRTFPDF(final UserContext uc, final Document document)
-    throws Exception {
+            throws Exception {
 
         document.open();
         document.add(new Paragraph(""));
