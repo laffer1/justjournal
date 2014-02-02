@@ -200,6 +200,7 @@ public final class EntryDaoImpl implements EntryDao {
      * @param entry Cayenne Data Object for an entry
      * @return EntryTo
      */
+    @NotNull
     private EntryTo populateEntryTo(com.justjournal.model.Entry entry) {
         EntryTo et = new EntryImpl();
 
@@ -265,6 +266,7 @@ public final class EntryDaoImpl implements EntryDao {
      * @param entryId unique id for an entry
      * @return Entry Transfer Object
      */
+    @NotNull
     public EntryTo viewSingle(final int entryId) {
         EntryTo et;
 
@@ -274,7 +276,6 @@ public final class EntryDaoImpl implements EntryDao {
             com.justjournal.model.Entry entry =
                     Cayenne.objectForPK(dataContext, com.justjournal.model.Entry.class, entryId);
             et = populateEntryTo(entry);
-
         } catch (Exception e1) {
             et = new EntryImpl();
             log.error(e1);
@@ -289,6 +290,7 @@ public final class EntryDaoImpl implements EntryDao {
      * @param entryId unique id for an entry
      * @return Entry Transfer Object
      */
+    @NotNull
     public EntryTo viewSinglePublic(final int entryId) {
         EntryTo et = viewSingle(entryId);
         if (et.getSecurityLevel() == 2)

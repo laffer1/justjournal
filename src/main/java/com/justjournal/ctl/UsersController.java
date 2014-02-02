@@ -116,23 +116,26 @@ public class UsersController {
     }
 
     @RequestMapping(value = "{username}/entry/{id}", method = RequestMethod.GET, produces = "text/html")
-    public String entry(@PathVariable("username") String username, @PathVariable("id") int id, Model model, HttpSession session, HttpServletResponse response) {
-        UserContext userc = getUserContext(username, session);
-        model.addAttribute("authenticatedUsername", WebLogin.currentLoginName(session));
-        model.addAttribute("user", userc.getBlogUser());
+    public String entry(@PathVariable("username") String username,
+                        @PathVariable("id") int id,
+                        Model model, HttpSession session, HttpServletResponse response) {
 
-        if (userc.getBlogUser().isPrivateJournal() && !userc.isAuthBlog()) {
+        UserContext userContext = getUserContext(username, session);
+        model.addAttribute("authenticatedUsername", WebLogin.currentLoginName(session));
+        model.addAttribute("user", userContext.getBlogUser());
+
+        if (userContext.getBlogUser().isPrivateJournal() && !userContext.isAuthBlog()) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return "";
         }
 
-        model.addAttribute("calendarMini", getCalendarMini(userc));
-        model.addAttribute("recentEntries", getUserRecentEntries(userc));
-        model.addAttribute("links", getUserLinks(userc));
-        model.addAttribute("archive", getArchive(userc));
-        model.addAttribute("taglist", getTagMini(userc));
+        model.addAttribute("calendarMini", getCalendarMini(userContext));
+        model.addAttribute("recentEntries", getUserRecentEntries(userContext));
+        model.addAttribute("links", getUserLinks(userContext));
+        model.addAttribute("archive", getArchive(userContext));
+        model.addAttribute("taglist", getTagMini(userContext));
 
-        model.addAttribute("entry", getSingleEntry(id, userc));
+        model.addAttribute("entry", getSingleEntry(id, userContext));
 
         return "users";
     }
@@ -691,49 +694,34 @@ public class UsersController {
         } else {
             try {
                 if (uc.isAuthBlog()) {
-                    o = entryDao.viewSingle(singleEntryId);
+                    o = entryDao.viewSingle(singleEntryId, uc.authenticatedUser.getUserId());
 
-
-                    if (log.isDebugEnabled())
-                        log.debug("getSingleEntry: User is logged in.");
+                    log.debug("getSingleEntry: User is logged in.");
                 } else {
                     o = entryDao.viewSinglePublic(singleEntryId);
-
-                    if (log.isDebugEnabled())
-                        log.debug("getSingleEntry: User is not logged in.");
+                    log.debug("getSingleEntry: User is not logged in.");
                 }
 
-                // Format the current time.
-                final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-                final SimpleDateFormat formatmydate = new SimpleDateFormat("EEE, d MMM yyyy");
-                String curDate;
-
-                if (log.isDebugEnabled())
-                    log.debug("getSingleEntry: Begin reading record.");
-
+                log.trace("getSingleEntry: Begin reading record.");
 
                 if (o != null && o.getId() > 0) {
+                    final SimpleDateFormat formatmydate = new SimpleDateFormat("EEE, d MMM yyyy");
 
-                    // Parse the previous string back into a Date.
-                    final ParsePosition pos = new ParsePosition(0);
-                    final java.util.Date currentDate = formatter.parse(o.getDate().toString(), pos);
-
-                    curDate = formatmydate.format(currentDate);
+                    String curDate = formatmydate.format(o.getDate());
 
                     sb.append("<h2>");
                     sb.append(curDate);
                     sb.append("</h2>");
                     sb.append(endl);
 
-                    sb.append(formatEntry(uc, o, currentDate, true));
+                    sb.append(formatEntry(uc, o, o.getDate(), true));
                 }
             } catch (Exception e1) {
+                log.error("getSingleEntry: " + e1.getMessage() + '\n' + e1.toString());
+
                 WebError.Display("Error",
                         "Unable to retrieve journal entry from data store.",
                         sb);
-
-                if (log.isDebugEnabled())
-                    log.debug("getSingleEntry: Exception is " + e1.getMessage() + '\n' + e1.toString());
             }
         }
         return sb.toString();
