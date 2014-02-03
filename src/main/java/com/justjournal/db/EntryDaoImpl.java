@@ -530,7 +530,7 @@ public final class EntryDaoImpl implements EntryDao {
                 Expression e = Expression.fromString("FriendsToUser = $uid");
                 e.expWithParameters(Collections.singletonMap("uid", userID));
                 SelectQuery fq = new SelectQuery(com.justjournal.model.Friends.class, e);
-                //fq.addPrefetch("FriendsToFriendUser");
+                fq.addPrefetch("FriendsToFriendUser");
                 List<com.justjournal.model.Friends> friends = dataContext.performQuery(fq);
                 log.trace("Friend count: " + friends.size() + ", for user " + userID);
 
