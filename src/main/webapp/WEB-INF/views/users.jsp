@@ -4,9 +4,17 @@
 
 <head>
     <title><c:out value="${user.journalName}"/></title>
+    <c:if test="${user.spiderAllowed == true}">
+        <meta name="robots" content="noindex, nofollow, noarchive">
+        <meta name="googlebot" content="nosnippet">
+    </c:if>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/bootstrap.min.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/bootstrap-theme.min.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/styles/users.css">
-    <link rel="stylesheet" type="text/css" media="screen"
-          href="${pageContext.request.contextPath}/styles/<c:out value="${user.styleId}"/>.css">
+    <!-- TODO: write new themes <link rel="stylesheet" type="text/css" media="screen" href="${pageContext.request.contextPath}/styles/<c:out value="${user.styleId}"/>.css">
+          -->
     <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
     <link rel="alternate" type="application/rss+xml" title="RSS"
           href="http://www.justjournal.com/users/<c:out value="${user.userName}"/>/rss">
@@ -22,121 +30,164 @@
             src="${pageContext.request.contextPath}/components/lightbox2/js/lightbox-2.6.min.js"></script>
     <link rel="stylesheet" type="text/css" media="screen"
           href="${pageContext.request.contextPath}/components/lightbox2/css/lightbox.css">
-    <c:if test="${user.spiderAllowed == true}">
-        <meta name="robots" content="noindex, nofollow, noarchive">
-        <meta name="googlebot" content="nosnippet">
-    </c:if>
+
+    <script type="text/javascript" src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
 </head>
 
 <body>
 
-<!-- Header: Begin -->
-<div id="header">
-    <h1><c:out value="${user.journalName}"/></h1>
-</div>
-<!-- Header: End -->
+<div class="container">
 
-<!-- Menu: Begin -->
-<div id="menu">
-    <c:if test="${user.showAvatar == true}">
-        <img alt="avatar" src="${pageContext.request.contextPath}/image?id=<c:out value="${user.userId}"/>">
-    </c:if>
+    <header>
+        <div class="row">
+            <div class="navbar navbar-default navbar-fixed-top navbar-inverse" role="navigation">
+                <div class="container-fluid">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse"
+                                data-target=".navbar-collapse">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="${pageContext.request.contextPath}/#/">JustJournal</a>
+                    </div>
+                    <div class="navbar-collapse collapse">
+                        <ul class="nav navbar-nav">
+                            <li <c:if test="${entries} != null">class="active"</c:if>>
+                                <a href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>"><i
+                                        class="fa fa-home"></i> Home</a>
+                            </li>
+                            <li <c:if test="${calendar} != null">class="active"</c:if>>
+                                <a href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>/calendar"><i
+                                        class="fa fa-calendar"></i> Calendar</a>
+                            </li>
+                            <li <c:if test="${friends} != null">class="active"</c:if>>
+                                <a href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>/friends"><i
+                                        class="fa fa-group"></i> Friends</a>
+                            </li>
+                            <li <c:if test="${pictures} != null">class="active"</c:if>>
+                                <a href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>/pictures"><i
+                                        class="fa fa-picture-o"></i> Pictures</a>
+                            </li>
+                            <li <c:if test="${subscriptions} != null">class="active"</c:if>>
+                                <a href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>/subscriptions"><i
+                                        class="fa fa-rss"></i> RSS
+                                    Reader</a></li>
 
-    <p id="muser">
-        <a href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>">Journal Entries</a><br/>
-        <a href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>/calendar">Calendar</a><br/>
-        <a href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>/friends">Friends</a><br/>
-        <a href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>/pictures">Pictures</a><br/>
-        <a href="${pageContext.request.contextPath}/#/profile/<c:out value="${user.userName}"/>">Profile</a><br/>
-    </p>
-
-    <p id="mgen">
-        <a href="${pageContext.request.contextPath}/#/entry">Update Journal</a><br/>
-        <c:if test="${authenticatedUsername == null}">
-            <a href="${pageContext.request.contextPath}/#/">Login</a>
-        </c:if>
-        <c:if test="${authenticatedUsername != null}">
-            <a href="${pageContext.request.contextPath}/logout">Log Out</a>
-        </c:if>
-    </p>
-
-    <p id="mrssreader">
-        <a href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>/subscriptions">RSS
-            Reader</a><br/>
-    </p>
-
-    <div id="mformats"><strong
-            style="text-transform: uppercase; letter-spacing: 2px; border: 0 dotted #999999;border-bottom-width: 1px;margin-bottom: 10px; width: 100%; font-size: 10px;">Formats</strong><br/>
-
-        <p><a rel="alternate" href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>/rss"><i
-                class="fa fa-rss"></i> RSS</a><br/>
-            <a rel="alternate" href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>/atom"><i
-                    class="fa fa-rss"></i>
-                ATOM</a><br/>
-            <img src="${pageContext.request.contextPath}/images/icon_pdf.gif" alt="PDF"/><a
-                    href="http://www.justjournal.com/users/<c:out value="${user.userName}"/>/pdf">PDF</a><br/>
-            <img src="${pageContext.request.contextPath}/images/icon_rtf.gif" alt="RTF"/><a
-                    href="http://www.justjournal.com/users/<c:out value="${user.userName}"/>/rtf">RTF</a><br/>
-        </p>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Formats <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    <li><a rel="alternate"
+                                           href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>/rss"><i
+                                            class="fa fa-rss"></i> RSS</a></li>
+                                    <li><a rel="alternate"
+                                           href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>/atom"><i
+                                            class="fa fa-rss"></i>
+                                        ATOM</a></li>
+                                    <li>
+                                        <a href="http://www.justjournal.com/users/<c:out value="${user.userName}"/>/pdf"><i
+                                                class="fa fa-download"></i> PDF</a>
+                                    </li>
+                                    <li>
+                                        <a href="http://www.justjournal.com/users/<c:out value="${user.userName}"/>/rtf"><i
+                                                class="fa fa-download"></i> RTF</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <form class="navbar-form navbar-left" role="search" method="get"
+                                      action="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>/search">
+                                    <div class="form-group">
+                                        <input type="search" name="bquery" id="bquery" class="form-control input-sm"
+                                               placeholder="Search">
+                                    </div>
+                                    <button type="submit" class="btn btn-default btn-sm"><i class="fa fa-search"></i>
+                                        Search
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li><a href="${pageContext.request.contextPath}/#/entry"><i
+                                    class="glyphicon glyphicon-pencil"></i> New Entry</a></li>
+                            <li>
+                                <a href="${pageContext.request.contextPath}/#/profile/<c:out value="${user.userName}"/>"><i
+                                        class="fa fa-user"></i> Profile</a>
+                            </li>
+                            <c:if test="${authenticatedUsername == null}">
+                                <li><a href="${pageContext.request.contextPath}/#/"><i class="fa-sign-in"></i> Login</a>
+                                </li>
+                            </c:if>
+                            <c:if test="${authenticatedUsername != null}">
+                                <li><a href="${pageContext.request.contextPath}/logout"><i class="fa-sign-out"></i> Log
+                                    Out</a></li>
+                            </c:if>
+                        </ul>
+                    </div>
+                    <!--/.nav-collapse -->
+                </div>
+            </div>
     </div>
-    <div id="msearchbox"><strong
-            style="text-transform: uppercase; letter-spacing: 2px; border: 0 dotted #999999;border-bottom-width: 1px;margin-bottom: 5px; width: 100%; font-size: 10px;">Search</strong>
+    </header>
 
-        <form id="msearch" action="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>/search"
-              method="get">
-            <p><input type="search" name="bquery" id="bquery" style="width: 90px;" placeholder="Search"><br>
-                <input type="submit" name="search" id="searchbtn" value="Search Blog"></p>
-        </form>
+    <div class="row">
+        <div id="menu" class="col-xs-6 col-md-4">
+            <c:if test="${user.showAvatar == true}">
+                <img class="img-rounded img-responsive" alt="avatar"
+                     src="${pageContext.request.contextPath}/image?id=<c:out value="${user.userId}"/>">
+            </c:if>
+
+            <c:out escapeXml="false" value="${calendarMini}"/>
+
+            <c:out escapeXml="false" value="${recentEntries}"/>
+
+            <c:out escapeXml="false" value="${links}"/>
+
+            <c:out escapeXml="false" value="${archive}"/>
+
+            <c:out escapeXml="false" value="${taglist}"/>
+        </div>
+
+        <div id="content" class="col-xs-12 col-md-8">
+            <div class="page-header">
+                <h1><c:out value="${user.journalName}"/></h1>
+            </div>
+
+            <c:if test="${authenticatedUsername != null}">
+                <p>You are logged in as <a
+                        href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>"><img
+                        src="${pageContext.request.contextPath}/images/userclass_16.png"
+                        alt="user"> <c:out value="${user.userName}"/></a>
+                </p>
+            </c:if>
+
+            <c:out escapeXml="false" value="${entries}"/>
+            <c:out escapeXml="false" value="${entry}"/>
+            <c:out escapeXml="false" value="${friends}"/>
+            <c:out escapeXml="false" value="${pictures}"/>
+            <c:out escapeXml="false" value="${search}"/>
+            <c:out escapeXml="false" value="${subscriptions}"/>
+            <c:out escapeXml="false" value="${tags}"/>
+            <c:out escapeXml="false" value="${calendar}"/>
+
+            <c:if test="${startYear} != null">
+                <p>The calendar lists months with journal entries.</p>
+
+                <p>
+                    <c:forEach begin="${startYear}" end="${currentYear}" var="yr">
+                        <a href="../<c:out value="${yr}"/>"><c:out value="${yr}"/></a>
+                    </c:forEach>
+                </p>
+            </c:if>
+        </div>
     </div>
-
-    <c:out escapeXml="false" value="${calendarMini}"/>
-
-    <c:out escapeXml="false" value="${recentEntries}"/>
-
-    <c:out escapeXml="false" value="${links}"/>
-
-    <c:out escapeXml="false" value="${archive}"/>
-
-    <c:out escapeXml="false" value="${taglist}"/>
 </div>
-<!-- Menu: End -->
-
-
-<!-- Content: Begin -->
-<div id="content">
-    <c:if test="${authenticatedUsername != null}">
-        <p>You are logged in as <a
-                href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>"><img
-                src="${pageContext.request.contextPath}/images/userclass_16.png"
-                alt="user"> <c:out value="${user.userName}"/></a>
-        </p>
-    </c:if>
-
-    <c:out escapeXml="false" value="${entries}"/>
-    <c:out escapeXml="false" value="${entry}"/>
-    <c:out escapeXml="false" value="${friends}"/>
-    <c:out escapeXml="false" value="${pictures}"/>
-    <c:out escapeXml="false" value="${search}"/>
-    <c:out escapeXml="false" value="${subscriptions}"/>
-    <c:out escapeXml="false" value="${tags}"/>
-    <c:out escapeXml="false" value="${calendar}"/>
-
-    <c:if test="${startYear} != null">
-    <p>The calendar lists months with journal entries.</p>
-
-        <p>
-            <c:forEach begin="${startYear}" end="${currentYear}" var="yr">
-                <a href="../${yr}">${yr}</a>
-            </c:forEach>
-        </p>
-    </c:if>
-</div>
-
-<!-- Footer: Begin -->
-<div id="footer">
-    <a href="${pageContext.request.contextPath}" title="JustJournal.com: Online Journals">JustJournal.com</a>
-</div>
-<!-- Footer: End -->
 
 </body>
 
