@@ -120,11 +120,12 @@
                                         class="fa fa-user"></i> Profile</a>
                             </li>
                             <c:if test="${authenticatedUsername == null}">
-                                <li><a href="${pageContext.request.contextPath}/#/"><i class="fa-sign-in"></i> Login</a>
+                                <li><a href="${pageContext.request.contextPath}/#/"><i class="fa fa-sign-in"></i> Login</a>
                                 </li>
                             </c:if>
                             <c:if test="${authenticatedUsername != null}">
-                                <li><a href="${pageContext.request.contextPath}/logout"><i class="fa-sign-out"></i> Log
+                                <li><a href="${pageContext.request.contextPath}/logout"><i class="fa fa-sign-out"></i>
+                                    Log
                                     Out</a></li>
                             </c:if>
                             <li>&nbsp;</li>
