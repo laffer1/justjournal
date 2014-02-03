@@ -56,10 +56,17 @@ public class EntryDaoTests {
     }
 
     @Test
+    public void viewFriends() {
+        Collection<EntryTo> list = entryDao.viewFriends(1, 0);
+        assertNotNull(list);
+        assertTrue(list.size() > 0);
+    }
+
+    @Test
     public void testViewPublic() {
         assertNotNull(entryDao);
         Collection<EntryTo> entries = entryDao.view(TEST_USER, false);
-        assertTrue(entries != null);
+        assertNotNull(entries);
         assertTrue(entries.size() > 15);
     }
 
@@ -67,7 +74,7 @@ public class EntryDaoTests {
     public void testViewThisUser() {
         assertNotNull(entryDao);
         Collection<EntryTo> entries = entryDao.view(TEST_USER, true);
-        assertTrue(entries != null);
+        assertNotNull(entries);
         assertTrue(entries.size() > 15);
     }
 
@@ -75,7 +82,7 @@ public class EntryDaoTests {
     public void testViewPublicNoSkip() {
         assertNotNull(entryDao);
         Collection<EntryTo> entries = entryDao.view(TEST_USER, false, 0);
-        assertTrue(entries != null);
+        assertNotNull(entries);
         assertTrue(entries.size() > 15);
     }
 
@@ -83,7 +90,7 @@ public class EntryDaoTests {
     public void testViewThisUserNoSkip() {
         assertNotNull(entryDao);
         Collection<EntryTo> entries = entryDao.view(TEST_USER, true, 0);
-        assertTrue(entries != null);
+        assertNotNull(entries);
         assertTrue(entries.size() > 15);
     }
 }

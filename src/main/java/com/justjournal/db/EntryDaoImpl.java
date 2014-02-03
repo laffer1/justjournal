@@ -530,13 +530,15 @@ public final class EntryDaoImpl implements EntryDao {
                 Expression e = Expression.fromString("FriendsToUser = $uid");
                 e.expWithParameters(Collections.singletonMap("uid", userID));
                 SelectQuery fq = new SelectQuery(com.justjournal.model.Friends.class, e);
-                fq.addPrefetch("FriendsToFriendUser");
+                //fq.addPrefetch("FriendsToFriendUser");
                 List<com.justjournal.model.Friends> friends = dataContext.performQuery(fq);
+                log.trace("Friend count: " + friends.size() + ", for user " + userID);
 
                 for (com.justjournal.model.Friends f : friends) {
                     // check if the friend has a reverse relationship friends.id = friends.friendid
                     com.justjournal.model.User user_friendid = f.getFriendsToFriendUser();
                     List<Friends> f2list = user_friendid.getUserToFriends(); // Friend's list of friends
+                    log.trace("Friends list of friends contains " + f2list.size());
                     for (Friends f2 : f2list) {
                         if (f2.getFriendsToFriendUser().getUsername().equals(
                                 Cayenne.objectForPK(dataContext, com.justjournal.model.User.class, userID).getUsername())) {
@@ -547,13 +549,13 @@ public final class EntryDaoImpl implements EntryDao {
             } catch (CayenneRuntimeException ce) {
                 log.error(ce);
             }
-            exp = Expression.fromString("entryToUser.userToFriends = $id and (entryToSecurity=2 or (entryToSecurity=1 and entryToUser.FriendUserToFriends = $friends))");
+            exp = Expression.fromString("entryToUser.userToFriends.friendsToUser = $id and (entryToSecurity=2 or (entryToSecurity=1 and entryToUser.FriendUserToFriends = $friends))");
             map.put("friends", myFriends);
-        } else if (aUserId >= 0)
+        } else //if (aUserId >= 0)
             // no user logged in or another user's friends page.. just spit out public entries.
-            exp = Expression.fromString("entryToUser=$id and entryToUser.userToFriends.id = $id and entryToSecurity=2");
-        else
-            throw new IllegalArgumentException("aUserId must be greater than -1");
+            exp = Expression.fromString("entryToUser=$id and entryToUser.userToFriends.friendsToUser = $id and entryToSecurity=2");
+        //else
+        //    throw new IllegalArgumentException("aUserId must be greater than -1");
 
         try {
             map.put("id", userID);
