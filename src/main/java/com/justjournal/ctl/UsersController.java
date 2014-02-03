@@ -179,7 +179,7 @@ public class UsersController {
         model.addAttribute("taglist", getTagMini(userContext));
 
         final java.util.Calendar cal = Calendar.getInstance();
-        int year = cal.get(java.util.Calendar.YEAR);
+        Integer year = cal.get(java.util.Calendar.YEAR);
 
         model.addAttribute("startYear", userContext.getBlogUser().getStartYear());
         model.addAttribute("currentYear", year);
@@ -845,7 +845,7 @@ public class UsersController {
             String lastDate = "";
             String curDate;
 
-            jumpmenu(skip, 20, entries.size() > 19, skip > 0, uc);
+            sb.append(jumpmenu(skip, 20, entries.size() > 19, skip > 0, uc));
 
             if (log.isDebugEnabled())
                 log.debug("getEntries: Begin Iteration of records.");
@@ -868,7 +868,7 @@ public class UsersController {
                 sb.append(formatEntry(uc, o, currentDate, false));
             }
 
-            jumpmenu(skip, 20, entries.size() > 19, skip > 0, uc);
+            sb.append(jumpmenu(skip, 20, entries.size() > 19, skip > 0, uc));
 
         } catch (Exception e1) {
             WebError.Display("Error",
@@ -881,28 +881,22 @@ public class UsersController {
         return sb.toString();
     }
 
-    @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
     private String jumpmenu(final int skip, final int offset, final boolean back, final boolean forward, final UserContext uc) {
         StringBuilder sb = new StringBuilder();
-        sb.append("\t\t<p>");
 
-        if (back) {
-            sb.append(" Go: <a href=\"/users/");
-            sb.append(uc.getBlogUser().getUserName());
-            sb.append("?skip=");
-            sb.append((skip + offset));
-            sb.append("\">older entries</a> ");
-        }
+        sb.append("<ul class=\"pager\">");
+        sb.append("<li class=\"previous " + (back ? "" : "disabled") + "\"><a href=\"/users");
+        sb.append(uc.getBlogUser().getUserName());
+        sb.append("?skip=");
+        sb.append((skip + offset));
+        sb.append("\">&larr; Older</a></li>");
+        sb.append("<li class=\"next " + (forward ? "" : "disabled") + "\"><a href=\"/users");
+        sb.append(uc.getBlogUser().getUserName());
+        sb.append("?skip=");
+        sb.append((skip - offset));
+        sb.append("\">Newer &rarr;</a></li>");
+        sb.append("</ul>");
 
-        if (forward) {
-            sb.append(" or <a href=\"/users/");
-            sb.append(uc.getBlogUser().getUserName());
-            sb.append("?skip=");
-            sb.append((skip - offset));
-            sb.append("\">forward</a>");
-        }
-        sb.append("</p>");
-        sb.append(endl);
         return sb.toString();
     }
 
@@ -939,8 +933,7 @@ public class UsersController {
             EntryTo o;
             final Iterator itr = entries.iterator();
 
-            if (log.isDebugEnabled())
-                log.debug("getFriends: Number of entries " + entries.size());
+            log.trace("getFriends: Number of entries " + entries.size());
 
             if (entries.isEmpty())
                 sb.append("<p>No friends entries found</p>.");
@@ -965,7 +958,7 @@ public class UsersController {
                 sb.append("<div class=\"ebody\">");
                 sb.append(endl);
 
-                final UserImpl p = new UserImpl(o.getUserName());
+                final User p = new UserImpl(o.getUserName());
                 if (p.showAvatar()) {
                     sb.append("<img alt=\"avatar\" style=\"float: right\" src=\"/image?id=");
                     sb.append(o.getUserId());
@@ -1706,7 +1699,7 @@ public class UsersController {
         sb.append(endl);
 
         if (single) {
-            sb.append("\t\t\t<h3>");
+            sb.append("<article><h3>");
             sb.append("<span class=\"time\">");
             sb.append(formatmytime.format(currentDate));
             sb.append("</span> - <span class=\"subject\"><a name=\"#e");
@@ -1738,7 +1731,7 @@ public class UsersController {
             sb.append("\" />\n");
             sb.append("</rdf:RDF>\n");
         } else {
-            sb.append("\t\t\t<h3>");
+            sb.append("<article><h3>");
             sb.append("<span class=\"time\">");
             sb.append(formatmytime.format(currentDate));
             sb.append("</span> - <span class=\"subject\">");
@@ -1974,7 +1967,7 @@ public class UsersController {
             }
         }
 
-        sb.append("\t\t</div>");
+        sb.append("\t\t</div></article>");
         sb.append(endl);
 
         return sb.toString();

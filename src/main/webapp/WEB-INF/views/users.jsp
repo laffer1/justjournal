@@ -16,21 +16,20 @@
     <!-- TODO: write new themes <link rel="stylesheet" type="text/css" media="screen" href="${pageContext.request.contextPath}/styles/<c:out value="${user.styleId}"/>.css">
           -->
     <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" media="screen"
+          href="${pageContext.request.contextPath}/components/lightbox2/css/lightbox.css">
     <link rel="alternate" type="application/rss+xml" title="RSS"
           href="http://www.justjournal.com/users/<c:out value="${user.userName}"/>/rss">
     <link rel="alternate" type="application/atom+xml" title="Atom"
           href="http://www.justjournal.com/users/<c:out value="${user.userName}"/>/atom">
     <link rel="EditURI" type="application/rsd+xml" title="RSD"
           href="http://www.justjournal.com/rsd?blogID=<c:out value="${user.userName}"/>">
-    <script type="text/javascript" src="${pageContext.request.contextPath}/js/switchcontent.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/js/switchcontent.js" defer></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/components/jquery/jquery.min.js"></script>
     <script type="text/javascript"
             src="${pageContext.request.contextPath}/components/jquery-ui/ui/minified/jquery-ui.min.js"></script>
     <script type="text/javascript"
-            src="${pageContext.request.contextPath}/components/lightbox2/js/lightbox-2.6.min.js"></script>
-    <link rel="stylesheet" type="text/css" media="screen"
-          href="${pageContext.request.contextPath}/components/lightbox2/css/lightbox.css">
-
+            src="${pageContext.request.contextPath}/components/lightbox2/js/lightbox-2.6.min.js" defer></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -128,6 +127,7 @@
                                 <li><a href="${pageContext.request.contextPath}/logout"><i class="fa-sign-out"></i> Log
                                     Out</a></li>
                             </c:if>
+                            <li>&nbsp;</li>
                         </ul>
                     </div>
                     <!--/.nav-collapse -->
@@ -137,10 +137,12 @@
     </header>
 
     <div class="row">
-        <div id="menu" class="col-xs-6 col-md-4">
+        <section>
+            <div id="menu" class="col-xs-6 col-md-4">
             <c:if test="${user.showAvatar == true}">
-                <img class="img-rounded img-responsive" alt="avatar"
-                     src="${pageContext.request.contextPath}/image?id=<c:out value="${user.userId}"/>">
+                <p><img class="img-rounded img-responsive" alt="avatar"
+                        src="${pageContext.request.contextPath}/image?id=<c:out value="${user.userId}"/>">
+                </p>
             </c:if>
 
             <c:out escapeXml="false" value="${calendarMini}"/>
@@ -153,8 +155,10 @@
 
             <c:out escapeXml="false" value="${taglist}"/>
         </div>
+        </section>
 
-        <div id="content" class="col-xs-12 col-md-8">
+        <section>
+            <div id="content" class="col-xs-12 col-md-8">
             <div class="page-header">
                 <h1><c:out value="${user.journalName}"/></h1>
             </div>
@@ -176,7 +180,7 @@
             <c:out escapeXml="false" value="${tags}"/>
             <c:out escapeXml="false" value="${calendar}"/>
 
-            <c:if test="${startYear} != null">
+                <c:if test="${currentYear > 0}">
                 <p>The calendar lists months with journal entries.</p>
 
                 <p>
@@ -186,6 +190,7 @@
                 </p>
             </c:if>
         </div>
+        </section>
     </div>
 </div>
 
