@@ -439,7 +439,9 @@ public class UsersController {
     }
 
     @RequestMapping(value = "{username}/tag/{tag}", method = RequestMethod.GET, produces = "text/html")
-    public String tag(@PathVariable("username") String username, @PathVariable String tag, Model model, HttpSession session, HttpServletResponse response) {
+    public String tag(@PathVariable("username") String username,
+                      @PathVariable("tag") String tag,
+                      Model model, HttpSession session, HttpServletResponse response) {
 
         UserImpl authUser = null;
         try {
