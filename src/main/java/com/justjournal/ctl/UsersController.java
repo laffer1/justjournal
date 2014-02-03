@@ -887,12 +887,12 @@ public class UsersController {
         StringBuilder sb = new StringBuilder();
 
         sb.append("<ul class=\"pager\">");
-        sb.append("<li class=\"previous " + (back ? "" : "disabled") + "\"><a href=\"/users");
+        sb.append("<li class=\"previous " + (back ? "" : "disabled") + "\"><a href=\"/users/");
         sb.append(uc.getBlogUser().getUserName());
         sb.append("?skip=");
         sb.append((skip + offset));
         sb.append("\">&larr; Older</a></li>");
-        sb.append("<li class=\"next " + (forward ? "" : "disabled") + "\"><a href=\"/users");
+        sb.append("<li class=\"next " + (forward ? "" : "disabled") + "\"><a href=\"/users/");
         sb.append(uc.getBlogUser().getUserName());
         sb.append("?skip=");
         sb.append((skip - offset));
