@@ -58,24 +58,24 @@
                     </div>
                     <div class="navbar-collapse collapse">
                         <ul class="nav navbar-nav">
-                            <li <c:if test="${entries} != null">class="active"</c:if>>
-                                <a href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>"><i
+                            <li <c:if test="${entries != null}">class="active"</c:if>>
+                            <a href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>"><i
                                         class="fa fa-home"></i> Home</a>
                             </li>
-                            <li <c:if test="${calendar} != null">class="active"</c:if>>
-                                <a href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>/calendar"><i
+                            <li <c:if test="${calendar != null}">class="active"</c:if>>
+                            <a href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>/calendar"><i
                                         class="fa fa-calendar"></i> Calendar</a>
                             </li>
-                            <li <c:if test="${friends} != null">class="active"</c:if>>
-                                <a href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>/friends"><i
+                            <li <c:if test="${friends != null}">class="active"</c:if>>
+                            <a href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>/friends"><i
                                         class="fa fa-group"></i> Friends</a>
                             </li>
-                            <li <c:if test="${pictures} != null">class="active"</c:if>>
-                                <a href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>/pictures"><i
+                            <li <c:if test="${pictures != null}">class="active"</c:if>>
+                            <a href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>/pictures"><i
                                         class="fa fa-picture-o"></i> Pictures</a>
                             </li>
-                            <li <c:if test="${subscriptions} != null">class="active"</c:if>>
-                                <a href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>/subscriptions"><i
+                            <li <c:if test="${subscriptions != null}">class="active"</c:if>>
+                            <a href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>/subscriptions"><i
                                         class="fa fa-rss"></i> RSS
                                     Reader</a></li>
 
