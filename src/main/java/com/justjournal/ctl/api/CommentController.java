@@ -71,14 +71,14 @@ public class CommentController {
 
     @RequestMapping("/api/comment/{id}")
     @ResponseBody
-    public Comment getById(@PathVariable Integer id) {
+    public Comment getById(@PathVariable("id") Integer id) {
         return commentDao.get(id);
     }
 
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public
     @ResponseBody
-    List<Comment> getComments(@RequestParam Integer entryId, HttpServletResponse response) throws Exception {
+    List<Comment> getComments(@RequestParam("entryId") Integer entryId, HttpServletResponse response) throws Exception {
         EntryTo entry = entryDao.viewSingle(entryId);
 
         try {
