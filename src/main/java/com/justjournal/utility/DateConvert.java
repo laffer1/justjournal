@@ -63,7 +63,7 @@ public final class DateConvert {
 
     public
     @NotNull
-    static String encode822(Date data) {
+    static String encode822(final Date data) {
         SimpleDateFormat df822 = getDateFormat822();
         df822.setTimeZone(TimeZone.getTimeZone("GMT"));
         return df822.format(data);
@@ -71,11 +71,66 @@ public final class DateConvert {
 
     public
     @NotNull
-    static String encode822(Date data, TimeZone tz) {
+    static String encode822(final Date data, final TimeZone tz) {
         SimpleDateFormat df822 = getDateFormat822();
 
         df822.setTimeZone(tz);
         return df822.format(data);
+    }
+
+    /*
+    I was working on an Atom (http://www.w3.org/2005/Atom) parser and discovered that I
+    could not parse dates in the format defined by RFC 3339 using the  SimpleDateFormat
+    class. The  reason was the ':' in the time  zone. This code strips out the colon if
+    it's there and tries four different formats on the resulting string depending on if
+    it has a  time zone, or if it has a  fractional second part.  There is a probably a
+    better way  to do this, and a more proper way.  But this is a really small addition
+    to a  codebase  (You don't  need a jar, just throw  this  function in  some  static
+    Utility class if you have one).
+
+    Feel free to use this in your code, but I'd appreciate it if you keep this note  in
+    the code if you distribute it.  Thanks!
+
+    For  people  who might  be  googling: The date  format  parsed  by  this  goes  by:
+    atomDateConstruct,  xsd:dateTime,  RFC3339  and  is compatable with: ISO.8601.1988,
+    W3C.NOTE-datetime-19980827  and  W3C.REC-xmlschema-2-20041028   (that  I  know  of)
+
+
+    Copyright 2007, Chad Okere (ceothrow1 at gmail dotcom)
+    OMG NO WARRENTY EXPRESSED OR IMPLIED!!!1
+    */
+    public static Date decode3339(String input) throws java.text.ParseException, IndexOutOfBoundsException {
+        Date d;
+
+        //if there is no time zone, we don't need to do any special parsing.
+        if (input.endsWith("Z")) {
+            try {
+                SimpleDateFormat s = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");//spec for RFC3339
+                d = s.parse(input);
+            } catch (java.text.ParseException pe) {//try again with optional decimals
+                SimpleDateFormat s = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'");//spec for RFC3339 (with fractional seconds)
+                s.setLenient(true);
+                d = s.parse(input);
+            }
+            return d;
+        }
+
+        //step one, split off the timezone.
+        String firstpart = input.substring(0, input.lastIndexOf('-'));
+        String secondpart = input.substring(input.lastIndexOf('-'));
+
+        //step two, remove the colon from the timezone offset
+        secondpart = secondpart.substring(0, secondpart.indexOf(':')) + secondpart.substring(secondpart.indexOf(':') + 1);
+        input = firstpart + secondpart;
+        SimpleDateFormat s = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");//spec for RFC3339
+        try {
+            d = s.parse(input);
+        } catch (java.text.ParseException pe) {//try again with optional decimals
+            s = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSSZ");//spec for RFC3339 (with fractional seconds)
+            s.setLenient(true);
+            d = s.parse(input);
+        }
+        return d;
     }
 
     public
@@ -88,14 +143,14 @@ public final class DateConvert {
 
     public
     @NotNull
-    static String encode3339(Date data) {
+    static String encode3339(final Date data) {
         SimpleDateFormat df3339 = getDateFormat3339();
         df3339.setTimeZone(TimeZone.getTimeZone("UTC"));
         return df3339.format(data);
     }
 
     @NotNull
-    public static Date decode8601(String input) throws java.text.ParseException {
+    public static Date decode8601(final String input) throws java.text.ParseException {
         SimpleDateFormat df8601 = getDateFormat8601();
         String date = input;
         if (date.endsWith("Z")) {
@@ -114,7 +169,7 @@ public final class DateConvert {
     }
 
     @NotNull
-    public static String encode8601(Date data) {
+    public static String encode8601(final Date data) {
         SimpleDateFormat df8601 = getDateFormat8601();
         df8601.setTimeZone(TimeZone.getTimeZone("UTC"));
         String s = df8601.format(data);
