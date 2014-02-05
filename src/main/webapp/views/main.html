@@ -21,7 +21,8 @@
                     <div class="col-sm-4">
                         <input type="text" name="username" id="iusername" size="18" maxlength="15"
                                class="form-control input-sm"
-                               placeholder="Username" data-ng-model="username">
+                               placeholder="Username" data-ng-model="username"
+                               required autofocus>
                     </div>
                 </div>
 
@@ -30,7 +31,7 @@
 
                     <div class="col-sm-4">
                         <input type="password" name="password" id="ipassword" size="18" class="form-control input-sm"
-                               placeholder="Password" data-ng-model="password">
+                               placeholder="Password" data-ng-model="password" required>
                     </div>
                 </div>
 
@@ -56,7 +57,7 @@
                     <div class="col-sm-4">
                         <input class="form-control input-sm"
                                type="text" name="fname" id="fname" data-ng-model="create.name"
-                               maxlength="50" size="25" placeholder="First Name">
+                               maxlength="50" size="25" placeholder="First Name" required>
                     </div>
                 </div>
 
@@ -77,7 +78,7 @@
                         <input
                                 type="text" name="email" id="email" class="form-control input-sm"
                                 data-ng-model="email"
-                                maxlength="100" size="25" placeholder="E-mail">
+                                maxlength="100" size="25" placeholder="E-mail" required>
                     </div>
                 </div>
 
@@ -88,7 +89,7 @@
                         <input
                                 type="text" name="username" id="username" class="form-control input-sm"
                                 data-ng-model="create.userName"
-                                maxlength="15" size="15">
+                                maxlength="15" size="15" required>
                     </div>
                 </div>
 
@@ -99,7 +100,7 @@
                         <input
                                 type="text" name="password" id="password" class="form-control input-sm"
                                 data-ng-model="create.password"
-                                maxlength="18" size="18">
+                                maxlength="18" size="18" required>
                     </div>
                 </div>
                 <div class="form-group">
@@ -107,7 +108,7 @@
 
                     <div class="col-sm-4">
                         <input class="form-control input-sm"
-                               type="text" name="password2" id="password2" maxlength="18" size="18">
+                               type="text" name="password2" id="password2" maxlength="18" size="18" required>
                     </div>
                 </div>
             </fieldset>
