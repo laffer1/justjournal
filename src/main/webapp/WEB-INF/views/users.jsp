@@ -59,25 +59,29 @@
                     <div class="navbar-collapse collapse">
                         <ul class="nav navbar-nav">
                             <li <c:if test="${entries != null}">class="active"</c:if>>
-                            <a href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>"><i
-                                        class="fa fa-home"></i> Home</a>
+                                <a title="Home"
+                                   href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>"><i
+                                        class="fa fa-home"></i></a>
                             </li>
                             <li <c:if test="${calendar != null}">class="active"</c:if>>
-                            <a href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>/calendar"><i
-                                        class="fa fa-calendar"></i> Calendar</a>
+                                <a title="Calendar"
+                                   href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>/calendar"><i
+                                        class="fa fa-calendar"></i></a>
                             </li>
                             <li <c:if test="${friends != null}">class="active"</c:if>>
-                            <a href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>/friends"><i
-                                        class="fa fa-group"></i> Friends</a>
+                                <a title="Friends"
+                                   href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>/friends"><i
+                                        class="fa fa-group"></i></a>
                             </li>
                             <li <c:if test="${pictures != null}">class="active"</c:if>>
-                            <a href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>/pictures"><i
-                                        class="fa fa-picture-o"></i> Pictures</a>
+                                <a title="Photos"
+                                   href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>/pictures"><i
+                                        class="fa fa-picture-o"></i></a>
                             </li>
                             <li <c:if test="${subscriptions != null}">class="active"</c:if>>
-                            <a href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>/subscriptions"><i
-                                        class="fa fa-rss"></i> RSS
-                                    Reader</a></li>
+                                <a title="Feed Reader"
+                                   href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>/subscriptions"><i
+                                        class="fa fa-rss"></i>r</a></li>
 
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Formats <b class="caret"></b></a>
@@ -102,95 +106,105 @@
                             <li>
                                 <form class="navbar-form navbar-left" role="search" method="get"
                                       action="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>/search">
+                                    <input type="hidden" name="max" value="20">
+
                                     <div class="form-group">
-                                        <input type="search" name="bquery" id="bquery" class="form-control input-sm"
+                                        <input type="search" name="bquery" id="bquery"
+                                               class="form-control input-sm search-query"
                                                placeholder="Search">
                                     </div>
-                                    <button type="submit" class="btn btn-default btn-sm"><i class="fa fa-search"></i>
-                                        Search
-                                    </button>
                                 </form>
                             </li>
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
-                            <li><a href="${pageContext.request.contextPath}/#/entry"><i
-                                    class="glyphicon glyphicon-pencil"></i> New Entry</a></li>
+                            <li><a href="${pageContext.request.contextPath}/#/entry" title="New Entry"><i
+                                    class="fa fa-pencil-square-o"></i> New Entry</a></li>
                             <li>
                                 <a href="${pageContext.request.contextPath}/#/profile/<c:out value="${user.userName}"/>"><i
                                         class="fa fa-user"></i> Profile</a>
                             </li>
-                            <c:if test="${authenticatedUsername == null}">
-                                <li><a href="${pageContext.request.contextPath}/#/"><i class="fa fa-sign-in"></i> Login</a>
-                                </li>
-                            </c:if>
-                            <c:if test="${authenticatedUsername != null}">
-                                <li><a href="${pageContext.request.contextPath}/logout"><i class="fa fa-sign-out"></i>
-                                    Log
-                                    Out</a></li>
-                            </c:if>
+
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown2" title="Login & Settings"><i
+                                        class="fa fa-cog"></i> <b
+                                        class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    <c:if test="${authenticatedUsername == null}">
+                                        <li><a href="${pageContext.request.contextPath}/#/"><i
+                                                class="fa fa-sign-in"></i> Login</a>
+                                        </li>
+                                    </c:if>
+                                    <c:if test="${authenticatedUsername != null}">
+                                        <li><a href="${pageContext.request.contextPath}/logout"><i
+                                                class="fa fa-sign-out"></i>
+                                            Log
+                                            Out</a></li>
+                                    </c:if>
+                                </ul>
+                            </li>
                             <li>&nbsp;</li>
                         </ul>
                     </div>
                     <!--/.nav-collapse -->
                 </div>
             </div>
-    </div>
+        </div>
     </header>
 
     <div class="row">
         <section>
             <div id="menu" class="col-xs-6 col-md-4">
-            <c:if test="${user.showAvatar == true}">
-                <p><img class="img-rounded img-responsive" alt="avatar"
-                        src="${pageContext.request.contextPath}/image?id=<c:out value="${user.userId}"/>">
-                </p>
-            </c:if>
+                <c:if test="${user.showAvatar == true}">
+                    <p><img class="img-rounded img-responsive" alt="avatar"
+                            src="${pageContext.request.contextPath}/image?id=<c:out value="${user.userId}"/>">
+                    </p>
+                </c:if>
 
-            <c:out escapeXml="false" value="${calendarMini}"/>
+                <c:out escapeXml="false" value="${calendarMini}"/>
 
-            <c:out escapeXml="false" value="${recentEntries}"/>
+                <c:out escapeXml="false" value="${recentEntries}"/>
 
-            <c:out escapeXml="false" value="${links}"/>
+                <c:out escapeXml="false" value="${links}"/>
 
-            <c:out escapeXml="false" value="${archive}"/>
+                <c:out escapeXml="false" value="${archive}"/>
 
-            <c:out escapeXml="false" value="${taglist}"/>
-        </div>
+                <c:out escapeXml="false" value="${taglist}"/>
+            </div>
         </section>
 
         <section>
             <div id="content" class="col-xs-12 col-md-8">
-            <div class="page-header">
-                <h1><c:out value="${user.journalName}"/></h1>
-            </div>
+                <div class="page-header">
+                    <h1><c:out value="${user.journalName}"/></h1>
+                </div>
 
-            <c:if test="${authenticatedUsername != null}">
-                <p>You are logged in as <a
-                        href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>"><img
-                        src="${pageContext.request.contextPath}/images/userclass_16.png"
-                        alt="user"> <c:out value="${user.userName}"/></a>
-                </p>
-            </c:if>
+                <c:if test="${authenticatedUsername != null}">
+                    <p>You are logged in as <a
+                            href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>"><img
+                            src="${pageContext.request.contextPath}/images/userclass_16.png"
+                            alt="user"> <c:out value="${user.userName}"/></a>
+                    </p>
+                </c:if>
 
-            <c:out escapeXml="false" value="${entries}"/>
-            <c:out escapeXml="false" value="${entry}"/>
-            <c:out escapeXml="false" value="${friends}"/>
-            <c:out escapeXml="false" value="${pictures}"/>
-            <c:out escapeXml="false" value="${search}"/>
-            <c:out escapeXml="false" value="${subscriptions}"/>
-            <c:out escapeXml="false" value="${tags}"/>
-            <c:out escapeXml="false" value="${calendar}"/>
+                <c:out escapeXml="false" value="${entries}"/>
+                <c:out escapeXml="false" value="${entry}"/>
+                <c:out escapeXml="false" value="${friends}"/>
+                <c:out escapeXml="false" value="${pictures}"/>
+                <c:out escapeXml="false" value="${search}"/>
+                <c:out escapeXml="false" value="${subscriptions}"/>
+                <c:out escapeXml="false" value="${tags}"/>
+                <c:out escapeXml="false" value="${calendar}"/>
 
                 <c:if test="${currentYear > 0}">
-                <p>The calendar lists months with journal entries.</p>
+                    <p>The calendar lists months with journal entries.</p>
 
-                <p>
-                    <c:forEach begin="${startYear}" end="${currentYear}" var="yr">
-                        <a href="../<c:out value="${yr}"/>"><c:out value="${yr}"/></a>
-                    </c:forEach>
-                </p>
-            </c:if>
-        </div>
+                    <p>
+                        <c:forEach begin="${startYear}" end="${currentYear}" var="yr">
+                            <a href="../<c:out value="${yr}"/>"><c:out value="${yr}"/></a>
+                        </c:forEach>
+                    </p>
+                </c:if>
+            </div>
         </section>
     </div>
 </div>

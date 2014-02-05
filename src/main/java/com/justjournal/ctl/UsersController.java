@@ -43,6 +43,7 @@ import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfWriter;
 import com.lowagie.text.rtf.RtfWriter2;
 import com.sun.istack.internal.NotNull;
+import com.sun.istack.internal.Nullable;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -392,7 +393,10 @@ public class UsersController {
     }
 
     @RequestMapping(value = "{username}/search", method = RequestMethod.GET, produces = "text/html")
-    public String search(@PathVariable("username") String username, @RequestParam String max, @RequestParam String bquery, Model model, HttpSession session, HttpServletResponse response) {
+    public String search(@PathVariable("username") String username,
+                         @RequestParam("max") @Nullable String max,
+                         @RequestParam("bquery") String bquery,
+                         Model model, HttpSession session, HttpServletResponse response) {
         UserContext userc = getUserContext(username, session);
         model.addAttribute("authenticatedUsername", WebLogin.currentLoginName(session));
         model.addAttribute("user", userc.getBlogUser());
