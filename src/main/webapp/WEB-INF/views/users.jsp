@@ -118,7 +118,7 @@
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
                             <li><a href="${pageContext.request.contextPath}/#/entry" title="New Entry"><i
-                                    class="fa fa-pencil-square-o"></i> New Entry</a></li>
+                                    class="fa fa-pencil-square"></i> New Entry</a></li>
                             <li>
                                 <a href="${pageContext.request.contextPath}/#/profile/<c:out value="${user.userName}"/>"><i
                                         class="fa fa-user"></i> Profile</a>
