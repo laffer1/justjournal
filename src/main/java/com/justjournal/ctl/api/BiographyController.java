@@ -59,7 +59,7 @@ public class BiographyController {
     }
 
     @Cacheable(value = "biography", key = "username")
-    @RequestMapping(value = "{username}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "{username}", method = RequestMethod.GET, headers = "Accept=*/*", produces = "application/json")
     public
     @ResponseBody
     Bio get(@PathVariable("username") String username, HttpServletResponse response) {

@@ -33,6 +33,7 @@ import com.justjournal.db.*;
 import com.justjournal.rss.CachedHeadlineBean;
 import com.justjournal.rss.Rss;
 import com.justjournal.search.BaseSearch;
+import com.justjournal.services.EntryService;
 import com.justjournal.utility.HTMLUtil;
 import com.justjournal.utility.StringUtil;
 import com.justjournal.utility.Xml;
@@ -78,6 +79,11 @@ public class UsersController {
     private Settings settings = null;
     private CommentDao commentDao = null;
     private EntryDao entryDao = null;
+    private EntryService entryService = null;
+
+    public void setEntryService(EntryService entryService) {
+        this.entryService = entryService;
+    }
 
     public void setEntryDao(EntryDao entryDao) {
         this.entryDao = entryDao;
@@ -912,11 +918,12 @@ public class UsersController {
         StringBuffer sb = new StringBuffer();
         final Collection entries;
 
-        if (uc.getAuthenticatedUser() != null)
+  /*      if (uc.getAuthenticatedUser() != null)
             entries = entryDao.viewFriends(uc.getBlogUser().getUserId(), uc.getAuthenticatedUser().getUserId());
         else
             entries = entryDao.viewFriends(uc.getBlogUser().getUserId(), 0);
-
+    */
+        entries = entryService.getFriendsEntries(uc.getBlogUser().getUserName());
         sb.append("<h2>Friends</h2>");
         sb.append(endl);
 
