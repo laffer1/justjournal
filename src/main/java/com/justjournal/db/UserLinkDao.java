@@ -35,11 +35,18 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.db;
 
 import com.sun.istack.internal.NotNull;
+import com.sun.istack.internal.Nullable;
+import org.apache.cayenne.Cayenne;
+import org.apache.cayenne.ObjectContext;
+import org.apache.cayenne.access.DataContext;
+import org.apache.cayenne.exp.Expression;
+import org.apache.cayenne.query.Ordering;
+import org.apache.cayenne.query.SelectQuery;
+import org.apache.cayenne.query.SortOrder;
 import org.apache.log4j.Logger;
 
 import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.*;
 
 
 /**
@@ -52,22 +59,6 @@ import java.util.Collection;
 public final class UserLinkDao {
 
     private static final Logger log = Logger.getLogger(UserLinkDao.class.getName());
-
-    /**
-     * Add a link to the user link list.
-     *
-     * @param link A new hyperlink to add.
-     * @return true if no error occured.
-     * @see UserLinkTo
-     */
-    public boolean add(final UserLinkTo link) {
-
-        final String sqlStmt = "Insert into user_link (linkid,id,title,uri) VALUES('"
-                + link.getId() + "','" + link.getUserId() + "','" + link.getTitle() + "','"
-                + link.getUri() + "');";
-
-        return BaseDao.add(sqlStmt);
-    }
 
     /**
      * Delete a link from the userlink list.
@@ -101,6 +92,7 @@ public final class UserLinkDao {
      */
     public
     @NotNull
+    @Deprecated
     static Collection<UserLinkTo> view(int userId) {
         ArrayList<UserLinkTo> links = new ArrayList<UserLinkTo>(10);
         final String sql = "SELECT * FROM user_link WHERE id='" + userId + "';";
@@ -122,4 +114,77 @@ public final class UserLinkDao {
         return links;
     }
 
+    public
+    @Nullable
+    static UserLinkTo get(int linkId) {
+        UserLinkTo link = null;
+
+        try {
+            ObjectContext dataContext = DataContext.getThreadObjectContext();
+
+            com.justjournal.model.UserLink linkItem =
+                    Cayenne.objectForPK(dataContext, com.justjournal.model.UserLink.class, linkId);
+            link = new UserLinkTo();
+            link.setId(linkId);
+            link.setTitle(linkItem.getTitle());
+            link.setUri(linkItem.getUri());
+            link.setUserId(Cayenne.intPKForObject(linkItem.getUserLinkToUser()));
+        } catch (Exception e1) {
+            log.error(e1);
+        }
+
+        return link;
+    }
+
+    public
+    @Nullable
+    static List<UserLinkTo> list(String username) {
+
+        List<UserLinkTo> userLinkToList = new ArrayList<UserLinkTo>();
+        ObjectContext dataContext = DataContext.getThreadObjectContext();
+
+        UserLinkTo userLinkTo;
+        Expression exp = Expression.fromString("userLinkToUser.username = $user");
+
+        try {
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("user", username);
+            exp = exp.expWithParameters(map);
+            SelectQuery query = new SelectQuery(com.justjournal.model.UserLink.class, exp);
+            List<Ordering> orderings = new ArrayList<Ordering>();
+            orderings.add(new Ordering("title", SortOrder.ASCENDING_INSENSITIVE));
+            query.addOrderings(orderings);
+            @SuppressWarnings("unchecked")
+            List<com.justjournal.model.UserLink> list = dataContext.performQuery(query);
+
+            for (com.justjournal.model.UserLink linkItem : list) {
+                userLinkTo = new UserLinkTo();
+                userLinkTo.setId(Cayenne.intPKForObject(linkItem));
+                userLinkTo.setTitle(linkItem.getTitle());
+                userLinkTo.setUri(linkItem.getUri());
+                userLinkTo.setUserId(Cayenne.intPKForObject(linkItem.getUserLinkToUser()));
+                userLinkToList.add(userLinkTo);
+            }
+        } catch (Exception e1) {
+            log.error(e1);
+        }
+
+        return userLinkToList;
+    }
+
+    /**
+     * Add a link to the user link list.
+     *
+     * @param link A new hyperlink to add.
+     * @return true if no error occured.
+     * @see UserLinkTo
+     */
+    public boolean add(final UserLinkTo link) {
+
+        final String sqlStmt = "Insert into user_link (linkid,id,title,uri) VALUES('"
+                + link.getId() + "','" + link.getUserId() + "','" + link.getTitle() + "','"
+                + link.getUri() + "');";
+
+        return BaseDao.add(sqlStmt);
+    }
 }

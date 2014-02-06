@@ -38,11 +38,9 @@ import com.justjournal.WebLogin;
 import com.justjournal.db.UserLinkDao;
 import com.justjournal.db.UserLinkTo;
 import org.apache.log4j.Logger;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -50,6 +48,7 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
+ * User Links that appear in their blog
  * @author Lucas Holt
  */
 @Controller
@@ -57,12 +56,17 @@ import java.util.Map;
 public class LinkController {
     private static final Logger log = Logger.getLogger(LinkController.class.getName());
 
-    @RequestMapping(method = RequestMethod.GET)
-    public
+    @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    Collection<UserLinkTo> getLink(HttpSession session) {
+    public UserLinkTo getById(@PathVariable("id") Integer id) {
+        return UserLinkDao.get(id);
+    }
 
-        return UserLinkDao.view(WebLogin.currentLoginId(session));
+    @Cacheable(value = "userlink", key = "username")
+    @RequestMapping(value = "user/{username}", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public Collection<UserLinkTo> getByUser(@PathVariable("username") String username) {
+        return UserLinkDao.list(username);
     }
 
     @RequestMapping(method = RequestMethod.PUT)

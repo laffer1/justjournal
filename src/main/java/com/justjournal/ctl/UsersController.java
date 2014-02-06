@@ -1380,11 +1380,11 @@ public class UsersController {
         Collection links = UserLinkDao.view(uc.getBlogUser().getUserId());
 
         if (!links.isEmpty()) {
-            sb.append("\t<div class=\"menuentity\" id=\"userlinks\" style=\"padding-top: 10px;\">\n\t\t<strong style=\"text-transform: uppercase; letter-spacing: 2px; border: 0 none; border-bottom: 1px; border-style: dotted; border-color: #999999; margin-bottom: 5px; width: 100%; font-size: 10px;\"><i class=\"fa fa-external-link-square\"></i> Links</strong>\n\t\t<ul style=\"padding-left: 0; margin-left: 0;\">\n");
+            sb.append("\t<div class=\"menuentity\" id=\"userlinks\" style=\"padding-top: 10px;\">\n\t\t<strong style=\"text-transform: uppercase; letter-spacing: 2px; border: 0 none; border-bottom: 1px; border-style: dotted; border-color: #999999; margin-bottom: 5px; width: 100%; font-size: 10px;\"><i class=\"fa fa-external-link-square\"></i> Links</strong>\n\t\t<ul class=\"list-group\">\n");
             final Iterator itr = links.iterator();
             for (int i = 0, n = links.size(); i < n; i++) {
                 link = (UserLinkTo) itr.next();
-                sb.append("\t\t\t<li><a href=\"").append(link.getUri()).append("\" title=\"").append(link.getTitle()).append("\">").append(link.getTitle()).append("</a></li>");
+                sb.append("\t\t\t<li class=\"list-group-item\"><a href=\"").append(link.getUri()).append("\" title=\"").append(link.getTitle()).append("\">").append(link.getTitle()).append("</a></li>");
                 sb.append(endl);
             }
             sb.append("\t\t</ul>\n\t</div>");
@@ -1415,7 +1415,7 @@ public class UsersController {
             final Iterator itr = entries.iterator();
 
             sb.append("\t<div class=\"menuentity\" id=\"userRecentEntries\">\n<strong style=\"text-transform: uppercase; letter-spacing: 2px; border: 0 none; border-bottom: 1px; border-style: dotted; border-color: #999999; margin-bottom: 5px; width: 100%; font-size: 10px;\">Recent Entries</strong>\n");
-            sb.append("\t\t<ul style=\"padding-left: 0; margin-left: 0;\">");
+            sb.append("\t\t<ul class=\"list-group\">");
             sb.append(endl);
 
             int n = entries.size();
@@ -1424,7 +1424,7 @@ public class UsersController {
             }
             for (int i = 0; i < n; i++) {
                 o = (EntryTo) itr.next();
-                sb.append("\t\t\t<li><a href=\"/users/");
+                sb.append("\t\t\t<li class=\"list-group-item\"><a href=\"/users/");
                 sb.append(uc.getBlogUser().getUserName());
                 sb.append("/entry/");
                 sb.append(o.getId());
@@ -1528,11 +1528,11 @@ public class UsersController {
         StringBuffer sb = new StringBuffer();
 
         // BEGIN: YEARS
-        sb.append("\t<div class=\"menuentity\" id=\"archive\" style=\"padding-top: 10px;\"><strong style=\"text-transform: uppercase; letter-spacing: 2px; border: 0 none; border-bottom: 1px; border-style: dotted; border-color: #999999; margin-bottom: 5px; width: 100%; font-size: 10px;\">Archive</strong><ul style=\"padding-left: 0; margin-left: 0;\">");
+        sb.append("\t<div class=\"menuentity\" id=\"archive\" style=\"padding-top: 10px;\"><strong style=\"text-transform: uppercase; letter-spacing: 2px; border: 0 none; border-bottom: 1px; border-style: dotted; border-color: #999999; margin-bottom: 5px; width: 100%; font-size: 10px;\">Archive</strong><ul class=\"list-group\">");
 
         for (int i = yearNow; i >= uc.getBlogUser().getStartYear(); i--) {
 
-            sb.append("<li><a href=\"/users/");
+            sb.append("<li class=\"list-group-item\"><a href=\"/users/");
             sb.append(uc.getBlogUser().getUserName());
             sb.append('/');
             sb.append(i);
