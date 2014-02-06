@@ -55,8 +55,7 @@
                             <span class="icon-bar"></span>
                         </button>
                         <a class="navbar-brand" href="${pageContext.request.contextPath}/#/" title="JustJournal">
-                            <img class="img-circle" src="${pageContext.request.contextPath}/images/jj_icon_flower.png"
-                                 width="32" height="32" alt="JustJournal">
+                            JustJournal
                         </a>
                     </div>
                     <div class="navbar-collapse collapse">
@@ -122,7 +121,7 @@
                             </li>
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
-                            <li><a href="${pageContext.request.contextPath}/#/entry" title="New Entry"><i
+                            <li><a href="${pageContext.request.contextPath}/update.jsp" title="New Entry"><i
                                     class="fa fa-pencil-square"></i> New Entry</a></li>
                             <li>
                                 <a href="${pageContext.request.contextPath}/#/profile/<c:out value="${user.userName}"/>"><i
@@ -130,7 +129,7 @@
                             </li>
 
                             <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown2" title="Login & Settings"><i
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="Login & Settings"><i
                                         class="fa fa-cog"></i> <b
                                         class="caret"></b></a>
                                 <ul class="dropdown-menu">
@@ -158,14 +157,12 @@
 
     <div class="row">
         <section>
-            <div id="menu" class="col-xs-6 col-md-4">
+            <div id="menu" class="col-xs-6 col-md-3">
                 <c:if test="${user.showAvatar == true}">
                     <p><img class="img-rounded img-responsive" alt="avatar"
                             src="${pageContext.request.contextPath}/image?id=<c:out value="${user.userId}"/>">
                     </p>
                 </c:if>
-
-                <c:out escapeXml="false" value="${calendarMini}"/>
 
                 <c:out escapeXml="false" value="${recentEntries}"/>
 
@@ -174,12 +171,14 @@
                 <c:out escapeXml="false" value="${archive}"/>
 
                 <c:out escapeXml="false" value="${taglist}"/>
+
+                <c:out escapeXml="false" value="${calendarMini}"/>
             </div>
         </section>
 
         <section>
-            <div id="content" class="col-xs-12 col-md-8">
-                <div class="page-header">
+            <div id="content" class="col-xs-12 col-md-8 col-md-offset-1">
+            <div class="page-header">
                     <h1><c:out value="${user.journalName}"/></h1>
                 </div>
 
