@@ -63,8 +63,10 @@
                                    href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>"><i
                                         class="fa fa-home"></i></a>
                             </li>
-                            <li <c:if test="${calendar != null}">class="active"</c:if>>
-                                <a title="Calendar"
+                            <li
+                                    <c:if test="${calendar != null}">class="active"</c:if>
+                                    <c:if test="${startYear > 2002}">class="active"</c:if>>
+                            <a title="Calendar"
                                    href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>/calendar"><i
                                         class="fa fa-calendar"></i></a>
                             </li>
