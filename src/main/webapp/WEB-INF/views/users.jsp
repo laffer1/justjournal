@@ -54,7 +54,10 @@
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                         </button>
-                        <a class="navbar-brand" href="${pageContext.request.contextPath}/#/">JustJournal</a>
+                        <a class="navbar-brand" href="${pageContext.request.contextPath}/#/" title="JustJournal">
+                            <img class="img-circle" src="${pageContext.request.contextPath}/images/jj_icon_flower.png"
+                                 width="32" height="32" alt="JustJournal">
+                        </a>
                     </div>
                     <div class="navbar-collapse collapse">
                         <ul class="nav navbar-nav">
