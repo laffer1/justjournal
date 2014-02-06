@@ -74,6 +74,11 @@ public class LinkController {
     @ResponseBody
     Map<String, String> create(@RequestBody UserLinkTo link, HttpSession session, HttpServletResponse response) {
 
+        if (!WebLogin.isAuthenticated(session)) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
+        }
+
         try {
             UserLinkDao dao = new UserLinkDao();
 
