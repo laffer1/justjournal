@@ -35,15 +35,14 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal;
 
 import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import java.beans.Introspector;
 
 final public class UtilityContextListener implements ServletContextListener {
-
-    private static Logger log = Logger.getLogger(UtilityContextListener.class);
+    private org.slf4j.Logger log = LoggerFactory.getLogger(UtilityContextListener.class);
 
     public void contextInitialized(final ServletContextEvent sce) {
         log.info("Context Initialized");
@@ -56,7 +55,7 @@ final public class UtilityContextListener implements ServletContextListener {
                 Integer.toHexString(getClass().getClassLoader().hashCode()) + "]");
         try {
             for (java.util.Enumeration e = java.sql.DriverManager.getDrivers();
-                 e.hasMoreElements();) {
+                 e.hasMoreElements(); ) {
                 final java.sql.Driver driver = (java.sql.Driver) e.nextElement();
                 if (driver.getClass().getClassLoader() ==
                         getClass().getClassLoader()) {
@@ -66,8 +65,7 @@ final public class UtilityContextListener implements ServletContextListener {
                     log.info(driver.getClass().getName() + " not unloaded.");
             }
         } catch (Throwable e) {
-            log.error("Failed to cleanup ClassLoader for webapp");
-            e.printStackTrace();
+            log.error("Failed to cleanup ClassLoader for webapp. " + e.getMessage());
         }
 
         // unload log4j

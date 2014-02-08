@@ -35,6 +35,8 @@ import org.apache.cayenne.ObjectContext;
 import org.apache.cayenne.access.DataContext;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.query.SelectQuery;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.mail.*;
 import javax.mail.internet.AddressException;
@@ -51,12 +53,14 @@ import java.util.Properties;
  */
 public class MailSender extends Thread {
 
+    private Logger log = LoggerFactory.getLogger(MailSender.class);
     public boolean process = true;
 
     @Override
     @SuppressWarnings("unchecked")
     public void run() {
-        System.out.println("MailSender: Init");
+        log.trace("MailSender: Init");
+
         try {
             Settings set = new Settings();
             Properties props = new Properties();
@@ -67,7 +71,7 @@ public class MailSender extends Thread {
             props.put("mail.smtp.port", set.getMailPort());
             Session s = Session.getInstance(props, new ForcedAuthenticator());
 
-            System.out.println("MailSender: " + set.getMailUser() + "@" +
+            log.trace("MailSender: " + set.getMailUser() + "@" +
                     set.getMailHost() + ":" + set.getMailPort());
 
             while (process) {
@@ -82,7 +86,7 @@ public class MailSender extends Thread {
                     SelectQuery query = new SelectQuery(com.justjournal.model.QueueMail.class);
                     java.util.List<com.justjournal.model.QueueMail> items = dataContext.performQuery(query);
 
-                    System.out.println("MailSender: Recordset loaded.");
+                    log.trace("MailSender: Recordset loaded.");
 
                     for (com.justjournal.model.QueueMail item : items) {
                         boolean sentok = true;
@@ -107,10 +111,10 @@ public class MailSender extends Thread {
                             //Transport.send(message);
                         } catch (AddressException e) {
                             sentok = false;
-                            System.out.println("MailSender: Invalid address. " + e.getMessage());
+                            log.error("MailSender: Invalid address. " + e.getMessage());
                         } catch (javax.mail.MessagingException me) {
                             sentok = false;
-                            System.out.println("MailSender: Send failed." + me.getMessage() + " : " + me.toString());
+                            log.error("MailSender: Send failed." + me.getMessage() + " : " + me.toString());
                         }
 
                         if (sentok) {
@@ -124,14 +128,14 @@ public class MailSender extends Thread {
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 } catch (Exception e) {
-                    System.out.println("MailSender: Exception - " + e.getMessage());
+                    log.error("MailSender: Exception - " + e.getMessage());
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
 
-        System.out.println("MailSender: Quit");
+        log.trace("MailSender: Quit");
     }
 
     class ForcedAuthenticator extends Authenticator {

@@ -26,7 +26,7 @@ package com.justjournal.utility;
   a pointer to or a copy of the original.
 \*---------------------------------------------------------------------------*/
 
-import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.tidy.Tidy;
 
 import java.io.ByteArrayInputStream;
@@ -52,7 +52,7 @@ public final class HTMLUtil {
      * Resource bundle containing the character entity code mappings.
      */
     private static final String BUNDLE_NAME = "com.justjournal.utility.HTMLUtil";
-    private static final Logger log = Logger.getLogger(HTMLUtil.class);
+    private static org.slf4j.Logger log = LoggerFactory.getLogger(HTMLUtil.class);
 
     /*----------------------------------------------------------------------*\
                             Private Data Items
@@ -137,7 +137,7 @@ public final class HTMLUtil {
                 // Should not happen unless I've screwed up the pattern.
                 // Throw a runtime error.
 
-                assert (false);
+                throw new RuntimeException(ex);
             }
         }
 
@@ -161,8 +161,7 @@ public final class HTMLUtil {
             preMatch = s.substring(0, matcher.start(1) - 1);
             postMatch = s.substring(matcher.end(1) + 1);
 
-            if (preMatch != null)
-                buf.append(preMatch);
+            buf.append(preMatch);
 
             if (match.charAt(0) == '#') {
                 if (match.length() == 1)
@@ -201,9 +200,6 @@ public final class HTMLUtil {
                     buf.append("&").append(match).append(";");
                 }
             }
-
-            if (postMatch == null)
-                break;
 
             s = postMatch;
             matcher.reset(s);
@@ -349,7 +345,7 @@ public final class HTMLUtil {
             output = baos.toString();
         }
         catch (Exception e) {
-            log.error(e);
+            log.error(e.getMessage());
             output = input;  // if an error occurs, use the original input
         }
 

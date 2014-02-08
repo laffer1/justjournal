@@ -27,19 +27,17 @@
 package com.justjournal;
 
 import com.justjournal.db.UserDao;
-import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.ResultSet;
 
 /**
- * Loads and stores preferences for a just journal user
- * given their username.
+ * Loads and stores preferences for a just journal user given their username.
  * <p/>
  * This class almost fits the bean concept now.
  * <p/>
- * private journal field was added 1/2004.  If this option is set,
- * the user does not want anyone to read their journal.  To read the
- * journal, the user must login.  Public access is denied.
+ * private journal field was added 1/2004.  If this option is set, the user does not want anyone to read their journal.
+ * To read the journal, the user must login.  Public access is denied.
  *
  * @author Lucas Holt
  * @version $Id: Preferences.java,v 1.11 2012/07/04 18:49:20 laffer1 Exp $
@@ -47,7 +45,7 @@ import java.sql.ResultSet;
  */
 
 public final class Preferences {
-    private static final Logger log = Logger.getLogger(Preferences.class);
+    private org.slf4j.Logger log = LoggerFactory.getLogger(Preferences.class);
 
     /* Users real name */
     private String name = "";   // real name!

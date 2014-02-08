@@ -38,7 +38,7 @@ import com.justjournal.db.DateTime;
 import com.justjournal.db.UserDao;
 import com.justjournal.db.UserTo;
 import com.sun.istack.internal.NotNull;
-import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.ResultSet;
 
@@ -50,7 +50,8 @@ import java.sql.ResultSet;
  */
 public final class UserImpl implements User {
     public static final int JJ_CREATED_YEAR = 2003;
-    private static final Logger log = Logger.getLogger(UserImpl.class);
+    private org.slf4j.Logger log = LoggerFactory.getLogger(UserImpl.class);
+
     private String userName = "*";
     private int userId = 0;
     private int type = 0;

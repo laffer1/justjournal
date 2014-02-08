@@ -35,12 +35,12 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.utility;
 
-import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletResponse;
+import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.math.BigInteger;
 
 /**
  * ETag HTTP Header implmentation.  Hashes input to generate a unique ETag.
@@ -52,11 +52,11 @@ import java.math.BigInteger;
  * @version $Id: ETag.java,v 1.1 2009/05/30 18:22:21 laffer1 Exp $
  */
 public class ETag {
-    private static final Logger log = Logger.getLogger(ETag.class);    
+    private org.slf4j.Logger log = LoggerFactory.getLogger(ETag.class);
     protected HttpServletResponse response;
 
-    public ETag(HttpServletResponse response) {
-        this.response = response;
+    public ETag(HttpServletResponse httpResponse) {
+        this.response = httpResponse;
     }
 
     public void writeFromString(String input) {
@@ -81,7 +81,7 @@ public class ETag {
         if (hash != null) {
             if (hash.length() == 31) {
                 hash = "0" + hash;     // keep padding like other langs do
-}
+            }
             response.setHeader("ETag", '"' + hash + '"');
         } else {
             throw new IllegalArgumentException("Hash value must be set for ETag");

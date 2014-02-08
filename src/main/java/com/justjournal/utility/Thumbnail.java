@@ -3,7 +3,7 @@ package com.justjournal.utility;
 import com.sun.image.codec.jpeg.JPEGCodec;
 import com.sun.image.codec.jpeg.JPEGEncodeParam;
 import com.sun.image.codec.jpeg.JPEGImageEncoder;
-import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -29,7 +29,7 @@ public class Thumbnail {
     private int thumbWidth;  /* Suggested thumbnail max width */
     private int thumbHeight; /* Suggested thumbnail max height */
 
-    private static final Logger log = Logger.getLogger(Thumbnail.class);
+    private org.slf4j.Logger log = LoggerFactory.getLogger(Thumbnail.class);
 
     /**
      * Create Thumbnail with default quality 75, width & height 100

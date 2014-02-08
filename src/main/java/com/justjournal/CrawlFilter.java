@@ -1,6 +1,15 @@
 package com.justjournal;
 
+import com.gargoylesoftware.htmlunit.BrowserVersion;
+import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
@@ -8,24 +17,36 @@ import java.net.URLDecoder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletResponse;
-
-import com.gargoylesoftware.htmlunit.BrowserVersion;
-import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-
 public final class CrawlFilter implements Filter {
+    private Logger log = LoggerFactory.getLogger(CrawlFilter.class);
 
     private FilterConfig filterConfig = null;
 
+    private static String rewriteQueryString(String queryString) throws UnsupportedEncodingException {
+        StringBuilder queryStringSb = new StringBuilder(queryString);
+        int i = queryStringSb.indexOf("&_escaped_fragment_");
+        if (i != -1) {
+            StringBuilder tmpSb = new StringBuilder(queryStringSb.substring(0, i));
+            tmpSb.append("#!");
+            tmpSb.append(URLDecoder.decode(queryStringSb.substring(i + 20, queryStringSb.length()), "UTF-8"));
+            queryStringSb = tmpSb;
+        }
+
+        i = queryStringSb.indexOf("_escaped_fragment_");
+        if (i != -1) {
+            StringBuilder tmpSb = new StringBuilder(queryStringSb.substring(0, i));
+            tmpSb.append("#!");
+            tmpSb.append(URLDecoder.decode(queryStringSb.substring(i + 19, queryStringSb.length()), "UTF-8"));
+            queryStringSb = tmpSb;
+        }
+        if (queryStringSb.indexOf("#!") != 0) {
+            queryStringSb.insert(0, '?');
+        }
+        queryString = queryStringSb.toString();
+
+
+        return queryString;
+    }
 
     /**
      * Initializes the filter configuration
@@ -82,11 +103,10 @@ public final class CrawlFilter implements Filter {
             try {
                 chain.doFilter(request, response);
             } catch (ServletException e) {
-                e.printStackTrace();
+                log.error(e.getMessage());
             }
         }
     }
-
 
     public void doFilterOld(ServletRequest request, ServletResponse response,
                             FilterChain chain) throws IOException, ServletException {
@@ -152,12 +172,10 @@ public final class CrawlFilter implements Filter {
                                   */
                 chain.doFilter(request, response);
             } catch (ServletException e) {
-                System.err.println("Servlet exception caught: " + e);
-                e.printStackTrace();
+                log.error(e.getMessage());
             }
         }
     }
-
 
     /**
      * Destroys the filter configuration
@@ -165,31 +183,5 @@ public final class CrawlFilter implements Filter {
     @Override
     public void destroy() {
         this.filterConfig = null;
-    }
-
-    private static String rewriteQueryString(String queryString) throws UnsupportedEncodingException {
-        StringBuilder queryStringSb = new StringBuilder(queryString);
-        int i = queryStringSb.indexOf("&_escaped_fragment_");
-        if (i != -1) {
-            StringBuilder tmpSb = new StringBuilder(queryStringSb.substring(0, i));
-            tmpSb.append("#!");
-            tmpSb.append(URLDecoder.decode(queryStringSb.substring(i + 20, queryStringSb.length()), "UTF-8"));
-            queryStringSb = tmpSb;
-        }
-
-        i = queryStringSb.indexOf("_escaped_fragment_");
-        if (i != -1) {
-            StringBuilder tmpSb = new StringBuilder(queryStringSb.substring(0, i));
-            tmpSb.append("#!");
-            tmpSb.append(URLDecoder.decode(queryStringSb.substring(i + 19, queryStringSb.length()), "UTF-8"));
-            queryStringSb = tmpSb;
-        }
-        if (queryStringSb.indexOf("#!") != 0) {
-            queryStringSb.insert(0, '?');
-        }
-        queryString = queryStringSb.toString();
-
-
-        return queryString;
     }
 }
