@@ -62,7 +62,7 @@ angular.module('wwwApp').controller('EntryCtrl', ['$scope', '$routeParams', '$lo
                 if (typeof $routeParams.entryId !== 'undefined') {
                     EntryService.update($scope.entry, function success() {
                                 alert('Blog Entry Updated');
-                                $location.path('/users/' + $scope.login.username);
+                                window.location.href = ('users/' + $scope.login.username);
                             },
                             function fail(response) {
                                 if (typeof(response.data.ModelState) !== 'undefined') {
@@ -81,7 +81,7 @@ angular.module('wwwApp').controller('EntryCtrl', ['$scope', '$routeParams', '$lo
 
                 EntryService.save($scope.entry, function success() {
                             alert('Blog Entry Posted');
-                            $location.path('/users/' + $scope.login.username);
+                            window.location.href = ('users/' + $scope.login.username);
                         },
                         function fail(response) {
                             if (typeof(response.data.ModelState) !== 'undefined') {

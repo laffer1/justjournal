@@ -1,6 +1,6 @@
 package com.justjournal.atom;
 
-import com.justjournal.db.EntryTo;
+import com.justjournal.db.model.EntryTo;
 import com.justjournal.utility.DateConvert;
 import com.justjournal.utility.Xml;
 

@@ -26,27 +26,12 @@
 
 package com.justjournal.db;
 
-import org.springframework.stereotype.Component;
-
-import java.util.Collection;
+import com.justjournal.db.model.Tag;
+import org.springframework.data.repository.CrudRepository;
 
 /**
+ * Tag Dao
  * @author Lucas Holt
  */
-@Component
-public interface TagDao {
-    /**
-     * Get a single tag by id
-     *
-     * @param id tag id
-     * @return tag
-     */
-    Tag get(int id);
-
-    /**
-     * List all tags
-     *
-     * @return tag collection
-     */
-    Collection<Tag> list();
+public interface TagDao extends CrudRepository<Tag, Integer> {
 }

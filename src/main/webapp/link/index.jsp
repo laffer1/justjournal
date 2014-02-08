@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <%@ page contentType="text/html; charset=iso-8859-1" language="java" %>
 <%@ page import="com.justjournal.db.UserLinkDao" %>
-<%@ page import="com.justjournal.db.UserLinkTo" %>
+<%@ page import="com.justjournal.db.model.UserLinkTo" %>
 <%@ page import="java.util.Collection" %>
 <%@ page import="java.util.Iterator" %>
 <%

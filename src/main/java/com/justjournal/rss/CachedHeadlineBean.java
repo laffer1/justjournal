@@ -34,9 +34,9 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.rss;
 
-import com.justjournal.db.DateTime;
+import com.justjournal.db.model.DateTime;
 import com.justjournal.db.RssCacheDao;
-import com.justjournal.db.RssCacheTo;
+import com.justjournal.db.model.RssCache;
 import com.justjournal.utility.StringUtil;
 import org.apache.log4j.Logger;
 
@@ -71,7 +71,7 @@ public final class CachedHeadlineBean
         if (log.isDebugEnabled())
             log.debug("Starting getRssDocument()");
 
-        RssCacheTo rss;
+        RssCache rss;
         InputStreamReader ir;
         StringBuilder sbx = new StringBuilder();
         BufferedReader buff;
@@ -129,7 +129,7 @@ public final class CachedHeadlineBean
         } else {
             if (log.isDebugEnabled())
                 log.debug("Fetch uri: " + uri);
-            rss = new RssCacheTo();
+            rss = new RssCache();
             //Open the file for reading:
             u = new URL(uri);
             ir = new InputStreamReader(u.openStream(), "UTF-8");

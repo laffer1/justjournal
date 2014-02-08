@@ -26,7 +26,7 @@
 
 package com.justjournal.rss;
 
-import com.justjournal.db.EntryTo;
+import com.justjournal.db.model.EntryTo;
 import com.justjournal.db.SQLHelper;
 import com.justjournal.utility.DateConvert;
 import com.justjournal.utility.HTMLUtil;

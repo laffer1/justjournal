@@ -34,68 +34,14 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
-import com.justjournal.model.EntrySecurity;
-import com.sun.istack.internal.NotNull;
-import org.apache.cayenne.Cayenne;
-import org.apache.cayenne.ObjectContext;
-import org.apache.cayenne.access.DataContext;
-import org.apache.cayenne.query.SelectQuery;
-import org.apache.log4j.Logger;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import com.justjournal.db.model.Security;
+import org.springframework.data.repository.CrudRepository;
 
 
 /**
  * Entry Security
  */
-public final class SecurityDao {
 
-    private static final Logger log = Logger.getLogger(SecurityDao.class);
 
-    @NotNull
-    public static SecurityTo get(int id) {
-        SecurityTo securityTo = new SecurityTo();
-
-        try {
-            ObjectContext dataContext = DataContext.getThreadObjectContext();
-
-            com.justjournal.model.EntrySecurity item =
-                    Cayenne.objectForPK(dataContext, EntrySecurity.class, id);
-
-            securityTo.setId(id);
-            securityTo.setName(item.getTitle());
-        } catch (Exception e1) {
-            log.error(e1);
-        }
-
-        return securityTo;
-    }
-
-    @NotNull
-    public static Collection<SecurityTo> list() {
-        Collection<SecurityTo> security = new ArrayList<SecurityTo>(4);
-        SecurityTo sec;
-
-        try {
-            ObjectContext dataContext = DataContext.getThreadObjectContext();
-
-            final SelectQuery query = new SelectQuery(EntrySecurity.class);
-            List<EntrySecurity> securityList = dataContext.performQuery(query);
-
-            for (EntrySecurity entrySecurity : securityList) {
-                sec = new SecurityTo();
-
-                sec.setId(Cayenne.intPKForObject(entrySecurity));
-                sec.setName(entrySecurity.getTitle());
-
-                security.add(sec);
-            }
-        } catch (Exception e) {
-            log.error(e);
-        }
-
-        return security;
-    }
+public interface SecurityDao extends CrudRepository<Security, Integer> {
 }

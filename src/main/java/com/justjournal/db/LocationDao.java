@@ -34,70 +34,8 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
-import com.sun.istack.internal.NotNull;
-import org.apache.cayenne.Cayenne;
-import org.apache.cayenne.ObjectContext;
-import org.apache.cayenne.access.DataContext;
-import org.apache.cayenne.query.Ordering;
-import org.apache.cayenne.query.SelectQuery;
-import org.apache.cayenne.query.SortOrder;
-import org.apache.log4j.Logger;
+import com.justjournal.db.model.Location;
+import org.springframework.data.repository.CrudRepository;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-
-/**
- * View all locations
- *
- * @author Lucas Holt
- */
-public final class LocationDao {
-    private static final Logger log = Logger.getLogger(LocationDao.class.getName());
-
-    @NotNull
-    public static LocationTo get(int id) {
-        LocationTo locationTo = new LocationTo();
-
-        try {
-            ObjectContext dataContext = DataContext.getThreadObjectContext();
-
-            com.justjournal.model.Location item =
-                    Cayenne.objectForPK(dataContext, com.justjournal.model.Location.class, id);
-
-            locationTo.setId(id);
-            locationTo.setName(item.getTitle());
-        } catch (Exception e1) {
-            log.error(e1);
-        }
-
-        return locationTo;
-    }
-
-
-    public static Collection<LocationTo> list() {
-        ObjectContext dataContext = DataContext.getThreadObjectContext();
-        Collection<LocationTo> locations = new ArrayList<LocationTo>();
-
-        try {
-            SelectQuery query = new SelectQuery(com.justjournal.model.Location.class);
-            List<Ordering> orderings = new ArrayList<Ordering>();
-            orderings.add(new Ordering("title", SortOrder.ASCENDING));
-            query.addOrderings(orderings);
-            List<com.justjournal.model.Location> locationList = dataContext.performQuery(query);
-
-            for (com.justjournal.model.Location location : locationList) {
-                LocationTo loc = new LocationTo();
-                loc.setId(Cayenne.intPKForObject(location));
-                loc.setName(location.getTitle());
-                locations.add(loc);
-            }
-        } catch (Exception e1) {
-            log.error(e1);
-        }
-
-        return locations;
-    }
-
+public interface LocationDao extends CrudRepository<Location, Integer> {
 }

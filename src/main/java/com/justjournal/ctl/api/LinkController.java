@@ -36,7 +36,7 @@ package com.justjournal.ctl.api;
 
 import com.justjournal.WebLogin;
 import com.justjournal.db.UserLinkDao;
-import com.justjournal.db.UserLinkTo;
+import com.justjournal.db.model.UserLinkTo;
 import org.apache.log4j.Logger;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Controller;

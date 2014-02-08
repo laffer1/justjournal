@@ -26,7 +26,8 @@
 
 package com.justjournal.db;
 
-import com.sun.istack.internal.NotNull;
+import com.justjournal.db.model.Comment;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -37,22 +38,7 @@ import java.util.List;
  * @author Lucas Holt
  */
 @Component
-public interface CommentDao {
-    public boolean add(final Comment comment);
+public interface CommentDao extends CrudRepository<Comment, Integer> {
 
-    public boolean update(final Comment comment);
-
-    public boolean delete(final int commentId, final int userId);
-
-    public boolean deleteByEntry(final int entryId);
-
-    public
-    @NotNull
-    Comment get(final int commentId);
-
-    public
-    @NotNull
-    List<Comment> list(final int entryId);
-
-    public int count(final String userName) throws Exception;
+    List<Comment> findByEntryId(int entryId);
 }

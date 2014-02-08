@@ -52,6 +52,7 @@ import java.sql.*;
  * @version $Id: SQLHelper.java,v 1.9 2009/07/11 02:03:43 laffer1 Exp $
  * @since 1.0
  */
+@Deprecated
 public final class SQLHelper {
     private static final Logger log = Logger.getLogger(SQLHelper.class);
     private static Context ctx = null;

@@ -35,7 +35,7 @@ package com.justjournal.ctl.api;
 
 import com.justjournal.WebLogin;
 import com.justjournal.db.EntryDao;
-import com.justjournal.db.EntryTo;
+import com.justjournal.db.model.EntryTo;
 import com.justjournal.db.SQLHelper;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;

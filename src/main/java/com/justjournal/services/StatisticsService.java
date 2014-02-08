@@ -28,8 +28,8 @@ package com.justjournal.services;
 
 import com.justjournal.db.CommentDao;
 import com.justjournal.db.EntryDao;
-import com.justjournal.db.Statistics;
-import com.justjournal.db.UserStatistics;
+import com.justjournal.db.model.Statistics;
+import com.justjournal.db.model.UserStatistics;
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 import org.springframework.stereotype.Service;

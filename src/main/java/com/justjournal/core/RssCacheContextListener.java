@@ -26,9 +26,9 @@
 
 package com.justjournal.core;
 
+import com.justjournal.db.model.RssCache;
 import com.justjournal.utility.StringUtil;
 import com.justjournal.db.RssCacheDao;
-import com.justjournal.db.RssCacheTo;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -93,7 +93,7 @@ final public class RssCacheContextListener extends Thread {
             throws Exception {
 
         URL u;
-        RssCacheTo rss;
+        RssCache rss;
         InputStreamReader ir;
         StringBuilder sbx = new StringBuilder();
         BufferedReader buff;

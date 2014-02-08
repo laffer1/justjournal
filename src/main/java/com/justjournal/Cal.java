@@ -34,7 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal;
 
-import com.justjournal.db.EntryTo;
+import com.justjournal.db.model.EntryTo;
 import org.apache.log4j.Logger;
 
 import java.lang.reflect.Array;

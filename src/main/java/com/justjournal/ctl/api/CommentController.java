@@ -38,13 +38,13 @@ import com.justjournal.User;
 import com.justjournal.UserImpl;
 import com.justjournal.WebLogin;
 import com.justjournal.core.Settings;
-import com.justjournal.db.Comment;
+import com.justjournal.db.model.Comment;
 import com.justjournal.db.CommentDao;
 import com.justjournal.db.EntryDao;
-import com.justjournal.db.EntryTo;
+import com.justjournal.db.model.EntryTo;
 import com.justjournal.utility.QueueMail;
 import com.sun.istack.internal.NotNull;
-import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -56,7 +56,7 @@ import java.util.Map;
 @Controller
 @RequestMapping("/api/comment")
 public class CommentController {
-    private static final Logger log = Logger.getLogger(CommentController.class);
+    private org.slf4j.Logger log = LoggerFactory.getLogger(CommentController.class);
 
     private CommentDao commentDao = null;
     private EntryDao entryDao = null;

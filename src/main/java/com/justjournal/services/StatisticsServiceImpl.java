@@ -27,6 +27,10 @@
 package com.justjournal.services;
 
 import com.justjournal.db.*;
+import com.justjournal.db.model.Statistics;
+import com.justjournal.db.model.StatisticsImpl;
+import com.justjournal.db.model.UserStatistics;
+import com.justjournal.db.model.UserStatisticsImpl;
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 import org.apache.log4j.Logger;

@@ -26,7 +26,7 @@
 
 package com.justjournal;
 
-import com.justjournal.db.DateTime;
+import com.justjournal.db.model.DateTime;
 
 /**
  * @author Lucas Holt

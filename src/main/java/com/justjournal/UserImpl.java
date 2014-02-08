@@ -34,9 +34,9 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal;
 
-import com.justjournal.db.DateTime;
+import com.justjournal.db.model.DateTime;
 import com.justjournal.db.UserDao;
-import com.justjournal.db.UserTo;
+import com.justjournal.db.model.UserTo;
 import com.sun.istack.internal.NotNull;
 import org.slf4j.LoggerFactory;
 

@@ -38,6 +38,7 @@ import com.justjournal.User;
 import com.justjournal.UserImpl;
 import com.justjournal.WebLogin;
 import com.justjournal.db.*;
+import com.justjournal.db.model.*;
 import com.justjournal.restping.BasePing;
 import com.justjournal.restping.IceRocket;
 import com.justjournal.restping.TechnoratiPing;

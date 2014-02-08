@@ -35,7 +35,8 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.ctl.api;
 
 import com.justjournal.db.MoodDao;
-import com.justjournal.db.MoodTo;
+import com.justjournal.db.model.Mood;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -55,11 +56,14 @@ import java.util.Collection;
 @RequestMapping("/api/mood")
 public class MoodController {
 
+    @Autowired
+    private MoodDao moodDao;
+
     @Cacheable(value = "mood", key = "id")
     @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public MoodTo getById(@PathVariable("id") Integer id) {
-        return MoodDao.get(id);
+    public Mood getById(@PathVariable("id") Integer id) {
+        return moodDao.findOne(id);
     }
 
     /**
@@ -71,8 +75,8 @@ public class MoodController {
     @RequestMapping(method = RequestMethod.GET, headers = "Accept=*/*", produces = "application/json")
     public
     @ResponseBody
-    Collection<MoodTo> getMoodList() {
-        return MoodDao.listByRelationship();
+    Iterable<Mood> getMoodList() {
+        return moodDao.findAll();
     }
 
 }

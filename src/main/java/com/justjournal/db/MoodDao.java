@@ -34,96 +34,15 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.db;
 
-import com.sun.istack.internal.NotNull;
-import org.apache.cayenne.Cayenne;
-import org.apache.cayenne.ObjectContext;
-import org.apache.cayenne.access.DataContext;
-import org.apache.log4j.Logger;
-
-import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.Collection;
+import com.justjournal.db.model.Location;
+import com.justjournal.db.model.Mood;
+import org.springframework.data.repository.CrudRepository;
 
 
 /**
  * Retrieve and acquire mood's for use with journal entries.
  *
  * @author Lucas Holt
- * @version 1.0 Date: Jan 9, 2004 Time: 1:55:20 PM
- * @since 1.0
  */
-public final class MoodDao {
-
-    private static final Logger log = Logger.getLogger(MoodDao.class);
-
-    @NotNull
-    public static MoodTo get(int id) {
-        MoodTo mood = new MoodTo();
-
-        try {
-            ObjectContext dataContext = DataContext.getThreadObjectContext();
-
-            com.justjournal.model.Mood item =
-                    Cayenne.objectForPK(dataContext, com.justjournal.model.Mood.class, id);
-
-            mood.setId(id);
-            mood.setName(item.getTitle());
-            mood.setParent(item.getParentmood());
-        } catch (Exception e1) {
-            log.error(e1);
-        }
-
-        return mood;
-    }
-
-    /**
-     * Retrieve the moods from the data store including the title, id and parent moods.
-     *
-     * @return Collection of MoodTo objects.
-     */
-    @NotNull
-    public static Collection<MoodTo> list() {
-        Collection<MoodTo> moods = new ArrayList<MoodTo>(125);
-        MoodTo mood;
-        final String sqlStatement = "CALL listmoodsbytitle()";
-
-        try {
-            final ResultSet RS = SQLHelper.executeResultSet(sqlStatement);
-
-            while (RS.next()) {
-                mood = new MoodTo();
-                mood.setId(RS.getInt("id"));
-                mood.setParent(RS.getInt("parentmood"));
-                mood.setName(RS.getString("title"));
-                moods.add(mood);
-            }
-        } catch (Exception e1) {
-            log.error(e1);
-        }
-
-        return moods;
-    }
-
-    @NotNull
-    public static Collection<MoodTo> listByRelationship() {
-        Collection<MoodTo> moods = new ArrayList<MoodTo>(125);
-        MoodTo mood;
-        final String sqlStatement = "CALL listmoods()";
-
-        try {
-            final ResultSet RS = SQLHelper.executeResultSet(sqlStatement);
-
-            while (RS.next()) {
-                mood = new MoodTo();
-                mood.setId(RS.getInt("id"));
-                mood.setParent(RS.getInt("parentmood"));
-                mood.setName(RS.getString("title"));
-                moods.add(mood);
-            }
-        } catch (Exception e1) {
-            log.error(e1);
-        }
-
-        return moods;
-    }
+public interface MoodDao extends CrudRepository<Mood, Integer> {
 }

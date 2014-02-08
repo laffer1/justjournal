@@ -28,7 +28,7 @@ package com.justjournal.services;
 
 import com.justjournal.db.CommentDao;
 import com.justjournal.db.EntryDao;
-import com.justjournal.db.EntryTo;
+import com.justjournal.db.model.EntryTo;
 import com.justjournal.db.UserDao;
 import org.springframework.stereotype.Service;
 

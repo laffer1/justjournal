@@ -36,6 +36,7 @@ import org.apache.cayenne.exp.Expression;
 import org.apache.cayenne.query.Query;
 import org.apache.cayenne.query.SelectQuery;
 import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
@@ -54,7 +55,7 @@ import java.util.regex.Pattern;
  * @author Lucas Holt
  */
 public final class WebLogin {
-    private static final Logger log = Logger.getLogger(WebLogin.class);
+    private static org.slf4j.Logger log = LoggerFactory.getLogger(WebLogin.class);
 
     protected static final String LOGIN_ATTRNAME = "auth.user";
     protected static final String LOGIN_ATTRID = "auth.uid";

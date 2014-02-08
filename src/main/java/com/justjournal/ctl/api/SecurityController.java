@@ -27,15 +27,14 @@
 package com.justjournal.ctl.api;
 
 import com.justjournal.db.SecurityDao;
-import com.justjournal.db.SecurityTo;
+import com.justjournal.db.model.Security;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.util.Collection;
 
 /**
  * @author Lucas Holt
@@ -44,20 +43,22 @@ import java.util.Collection;
 @RequestMapping("/api/security")
 public class SecurityController {
 
+    @Autowired
+    private SecurityDao securityDao;
+
     @Cacheable(value = "security", key = "id")
     @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public SecurityTo getById(@PathVariable("id") Integer id) {
-        return SecurityDao.get(id);
+    public Security getById(@PathVariable("id") Integer id) {
+        return securityDao.findOne(id);
     }
-
 
     @Cacheable("security")
     @RequestMapping(method = RequestMethod.GET, headers = "Accept=*/*", produces = "application/json")
     public
     @ResponseBody
-    Collection<SecurityTo> getSecurityList() {
-        return SecurityDao.list();
+    Iterable<Security> getSecurityList() {
+        return securityDao.findAll();
     }
 
 }

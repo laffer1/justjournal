@@ -28,6 +28,8 @@ package com.justjournal.ctl.api;
 
 import com.justjournal.WebLogin;
 import com.justjournal.db.*;
+import com.justjournal.db.model.EntryImpl;
+import com.justjournal.db.model.EntryTo;
 import org.apache.log4j.Logger;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Controller;

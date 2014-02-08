@@ -6,6 +6,10 @@
 <%@ page import="java.io.PrintWriter" %>
 <%@ page import="java.util.Collection" %>
 <%@ page import="java.util.Iterator" %>
+<%@ page import="com.justjournal.db.model.Comment" %>
+<%@ page import="com.justjournal.db.model.EntryImpl" %>
+<%@ page import="com.justjournal.db.model.EmoticonTo" %>
+<%@ page import="com.justjournal.db.model.DateTime" %>
 <%--
 Displays user comments on a particular journal entry.
 
@@ -177,11 +181,11 @@ $Id: index.jsp,v 1.5 2008/04/26 17:06:30 laffer1 Exp $
     </div>
 
     <%
-        CommentTo o;
+        Comment o;
         final Iterator itr = comments.iterator();
 
         for (int i = 0, n = comments.size(); i < n; i++) {
-            o = (CommentTo) itr.next();
+            o = (Comment) itr.next();
 
     %>
     <div class="comment">

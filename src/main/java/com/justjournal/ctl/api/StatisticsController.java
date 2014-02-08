@@ -26,9 +26,9 @@
 
 package com.justjournal.ctl.api;
 
-import com.justjournal.db.Statistics;
-import com.justjournal.db.UserStatistics;
-import com.justjournal.db.UserStatisticsImpl;
+import com.justjournal.db.model.Statistics;
+import com.justjournal.db.model.UserStatistics;
+import com.justjournal.db.model.UserStatisticsImpl;
 import com.justjournal.services.ServiceException;
 import com.justjournal.services.StatisticsService;
 import com.sun.istack.internal.NotNull;

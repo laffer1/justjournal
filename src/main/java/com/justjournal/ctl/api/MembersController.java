@@ -27,7 +27,7 @@
 package com.justjournal.ctl.api;
 
 import com.justjournal.db.UserDao;
-import com.justjournal.db.UserTo;
+import com.justjournal.db.model.UserTo;
 import org.apache.log4j.Logger;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Controller;

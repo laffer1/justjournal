@@ -38,6 +38,9 @@ import com.justjournal.UserImpl;
 import com.justjournal.WebError;
 import com.justjournal.WebLogin;
 import com.justjournal.db.*;
+import com.justjournal.db.model.EntryImpl;
+import com.justjournal.db.model.FriendTo;
+import com.justjournal.db.model.Mood;
 import com.justjournal.utility.StringUtil;
 
 import javax.servlet.ServletConfig;
@@ -198,13 +201,13 @@ public class Interface extends HttpServlet {
                         Collection moods = mdao.list();
 
                         /* Iterator */
-                        MoodTo o;
+                        Mood o;
                         final Iterator itr = moods.iterator();
                         int i;
                         int n;
 
                         for (i = 0, n = moods.size(); i < n; i++) {
-                            o = (MoodTo) itr.next();
+                            o = (Mood) itr.next();
 
                             sb.append("mood_");
                             sb.append(i + 1);

@@ -35,8 +35,8 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.ctl;
 
 import com.justjournal.db.TrackbackDao;
-import com.justjournal.db.TrackbackTo;
-import com.justjournal.db.TrackbackType;
+import com.justjournal.db.model.TrackbackTo;
+import com.justjournal.db.model.TrackbackType;
 import com.justjournal.utility.ServletUtilities;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;

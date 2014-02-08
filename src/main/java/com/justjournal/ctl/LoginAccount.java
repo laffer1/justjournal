@@ -31,7 +31,7 @@ import com.justjournal.WebError;
 import com.justjournal.WebLogin;
 import com.justjournal.db.EntryDao;
 import com.justjournal.db.EntryDaoImpl;
-import com.justjournal.db.EntryTo;
+import com.justjournal.db.model.EntryTo;
 import com.justjournal.utility.FileIO;
 import com.justjournal.utility.StringUtil;
 import com.justjournal.utility.Xml;

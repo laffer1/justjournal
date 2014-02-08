@@ -27,9 +27,12 @@
 package com.justjournal.ctl.api;
 
 import com.justjournal.WebLogin;
-import com.justjournal.db.*;
+import com.justjournal.db.UserBioDao;
+import com.justjournal.db.UserDao;
+import com.justjournal.db.model.UserTo;
+import com.justjournal.db.model.Bio;
 import com.justjournal.utility.StringUtil;
-import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -48,13 +51,12 @@ import java.util.Map;
 @Controller
 @RequestMapping("/api/biography")
 public class BiographyController {
-    private static final Logger log = Logger.getLogger(BiographyController.class);
     public static final int BIO_MAX_LENGTH = 150;
-
-    private BioDao bioDao = null;
+    private org.slf4j.Logger log = LoggerFactory.getLogger(BiographyController.class);
+    private UserBioDao bioDao = null;
 
     @Autowired
-    public void setBioDao(BioDao bioDao) {
+    public void setBioDao(UserBioDao bioDao) {
         this.bioDao = bioDao;
     }
 
@@ -68,7 +70,7 @@ public class BiographyController {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return null;
         }
-        return bioDao.get(user.getId());
+        return bioDao.findByUserId(user.getId());
     }
 
     // TODO: API is bad for caching.
@@ -87,19 +89,17 @@ public class BiographyController {
 
         try {
             if (userID > 0) {
-                Bio biography = new BioTo();
-                biography.setUserId(userID);
+                Bio biography = bioDao.findByUserId(userID);
                 biography.setBio(bio);
-                if (bioDao.update(biography))
-                    return java.util.Collections.singletonMap("status", "success");
+                bioDao.save(biography);
 
+                return java.util.Collections.singletonMap("status", "success");
             } else {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 return java.util.Collections.singletonMap("error", "Authentication Error");
-
             }
         } catch (Exception e3) {
-            log.error(e3);
+            log.error(e3.getMessage());
         }
 
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

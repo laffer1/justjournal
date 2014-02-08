@@ -31,7 +31,9 @@ import com.justjournal.UserImpl;
 import com.justjournal.WebLogin;
 import com.justjournal.db.SQLHelper;
 import com.justjournal.db.UserDao;
-import com.justjournal.db.UserTo;
+import com.justjournal.db.model.UserTo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,6 +47,8 @@ import java.util.Map;
 @Controller
 @RequestMapping("/api/account")
 public class AccountController {
+
+    private Logger log = LoggerFactory.getLogger(AccountController.class);
 
     private Map<String, String>
     changePassword(String passCurrent, String passNew, HttpSession session, HttpServletResponse response) {
@@ -121,6 +125,7 @@ public class AccountController {
             SQLHelper.executeNonQuery("DELETE FROM user_pref WHERE id=" + userID + ";");
             SQLHelper.executeNonQuery("DELETE FROM user_style WHERE id=" + userID + ";");
         } catch (Exception e) {
+            log.error(e.getMessage());
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return java.util.Collections.singletonMap("error", "Error deleting account");
         }
@@ -160,6 +165,7 @@ public class AccountController {
 
             return user;
         } catch (Exception e) {
+            log.error(e.getMessage());
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return null;
         }
