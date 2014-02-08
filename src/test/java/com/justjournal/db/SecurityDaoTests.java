@@ -27,6 +27,7 @@
 package com.justjournal.db;
 
 import com.justjournal.Util;
+import com.justjournal.db.model.Security;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -47,7 +48,7 @@ public class SecurityDaoTests {
 
     @Test
     public void list() {
-        Collection<SecurityTo> list = SecurityDao.list();
+        Collection<Security> list = SecurityDao.list();
         assertNotNull(list);
         assertTrue(list.size() > 0);
         assertEquals(3, list.size());
@@ -55,7 +56,7 @@ public class SecurityDaoTests {
 
     @Test
     public void get() {
-        SecurityTo securityTo = SecurityDao.get(1);
+        Security securityTo = SecurityDao.get(1);
         assertNotNull(securityTo);
         assertEquals(1, securityTo.getId());
         assertNotNull(securityTo.getName());

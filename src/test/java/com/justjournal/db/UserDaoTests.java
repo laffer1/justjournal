@@ -27,6 +27,7 @@
 package com.justjournal.db;
 
 import com.justjournal.Util;
+import com.justjournal.db.model.UserTo;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

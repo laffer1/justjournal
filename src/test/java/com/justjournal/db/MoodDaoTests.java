@@ -27,6 +27,7 @@
 package com.justjournal.db;
 
 import com.justjournal.Util;
+import com.justjournal.db.model.Mood;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -48,21 +49,21 @@ public class MoodDaoTests {
 
     @Test
     public void list() {
-        Collection<MoodTo> list = MoodDao.list();
+        Collection<Mood> list = MoodDao.list();
         assertNotNull(list);
         assertTrue(list.size() > 100);
     }
 
     @Test
     public void listByRelationship() {
-        Collection<MoodTo> list = MoodDao.listByRelationship();
+        Collection<Mood> list = MoodDao.listByRelationship();
         assertNotNull(list);
         assertTrue(list.size() > 100);
     }
 
     @Test
     public void get() {
-        MoodTo moodTo = MoodDao.get(1);
+        Mood moodTo = MoodDao.get(1);
         assertNotNull(moodTo);
         assertEquals(1, moodTo.getId());
         assertNotNull(moodTo.getName());
