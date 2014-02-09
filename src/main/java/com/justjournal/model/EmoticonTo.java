@@ -32,7 +32,7 @@ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
 
-package com.justjournal.db.model;
+package com.justjournal.model;
 
 /**
  * Emoticon resource data transfer object.  Basic properites including the filename, height, width, mood and theme ids.

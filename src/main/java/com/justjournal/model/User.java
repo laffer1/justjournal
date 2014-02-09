@@ -32,16 +32,17 @@ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
 
-package com.justjournal.db.model;
+package com.justjournal.model;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.justjournal.WebLogin;
 import com.justjournal.utility.StringUtil;
 import com.sun.istack.internal.NotNull;
 
 import javax.persistence.*;
+import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -57,8 +58,9 @@ import java.util.Set;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @Entity
 @Table(name = "user")
-public final class UserTo {
+public class User implements Serializable {
 
+    private static final long serialVersionUID = -7545141063644043241L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id = 0;
@@ -74,22 +76,26 @@ public final class UserTo {
     @Column(name = "lastname", length = 20, nullable = true)
     private String lastName = "";
 
+    @Basic(fetch = FetchType.LAZY)
     @NotNull
     @Column(name = "password", length = 40, nullable = false)
     private String password = "";
 
+    @Basic(fetch = FetchType.LAZY)
     @NotNull
     @Column(name = "since", nullable = false)
     private Integer since = 2003;
 
+    @Basic(fetch = FetchType.LAZY)
     @Column(name = "lastlogin", nullable = true)
     private Date lastLogin = null;
 
+    @Basic(fetch = FetchType.LAZY)
     @NotNull
     @Column(name = "modified", nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date modified;
+    private Timestamp modified;
 
+    @Basic(fetch = FetchType.LAZY)
     @NotNull
     @Column(name = "type", nullable = false)
     private Integer type;
@@ -97,17 +103,79 @@ public final class UserTo {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private Set<EntryTo> entries = new HashSet<EntryTo>();
 
-    @OneToOne(mappedBy="id")
-    private Bio bio;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    private Set<Comment> comments = new HashSet<Comment>();
 
-    @OneToOne(mappedBy="id")
-    private UserContactTo userContactTo;
+    @OneToOne(mappedBy = "user")
+    private UserBio bio;
 
-    @OneToOne(mappedBy="id")
+    @OneToOne(mappedBy = "user")
+    private UserContact userContactTo;
+
+    @OneToOne(mappedBy = "user")
     private UserPref userPref;
 
+    @OneToOne(mappedBy = "user")
+    private UserLocation userLocation;
+
     @JsonCreator
-    public UserTo() {
+    public User() {
+    }
+
+    public UserLocation getUserLocation() {
+        return userLocation;
+    }
+
+    public void setUserLocation(final UserLocation userLocation) {
+        this.userLocation = userLocation;
+    }
+
+    public Set<EntryTo> getEntries() {
+        return entries;
+    }
+
+    public void setEntries(final Set<EntryTo> entries) {
+        this.entries = entries;
+    }
+
+    public Set<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(final Set<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public UserBio getBio() {
+        return bio;
+    }
+
+    public void setBio(final UserBio bio) {
+        this.bio = bio;
+    }
+
+    public UserContact getUserContactTo() {
+        return userContactTo;
+    }
+
+    public void setUserContactTo(final UserContact userContactTo) {
+        this.userContactTo = userContactTo;
+    }
+
+    public UserPref getUserPref() {
+        return userPref;
+    }
+
+    public void setUserPref(final UserPref userPref) {
+        this.userPref = userPref;
+    }
+
+    public void setSince(final Integer since) {
+        this.since = since;
+    }
+
+    public void setType(final Integer type) {
+        this.type = type;
     }
 
     /**
@@ -117,11 +185,23 @@ public final class UserTo {
         return name;
     }
 
+    /**
+     * Set the first name of the user.
+     *
+     * @param name User's first name
+     */
+    public final void setName(final String name) {
+        if (!StringUtil.lengthCheck(name, 2, 20)) {
+            throw new IllegalArgumentException("Invalid name. Must be 2-20 characters");
+        }
+        this.name = name;
+    }
+
     public Date getModified() {
         return modified;
     }
 
-    public void setModified(final Date modified) {
+    public void setModified(Timestamp modified) {
         this.modified = modified;
     }
 
@@ -204,19 +284,6 @@ public final class UserTo {
         return this.getName();
     }
 
-    /**
-     * Set the first name of the user.
-     *
-     * @param name User's first name
-     */
-    public final void setName(final String name) {
-        if (!StringUtil.lengthCheck(name, 2, 20)) {
-            throw new IllegalArgumentException("Invalid name. Must be 2-20 characters");
-        }
-        this.name = name;
-    }
-
-
     public final String getPassword() {
         return this.password;
     }
@@ -235,41 +302,5 @@ public final class UserTo {
 
     public final void setSince(final int since) {
         this.since = since;
-    }
-
-    /**
-     * A string representation of the user in the form field: value, nextfield: value ...
-     * <p/>
-     * Password fields are not returned by this method.
-     *
-     * @return Representation of some fields for debuging.
-     */
-    @JsonIgnore
-    @Override
-    public final String toString() {
-
-        return "id: " + getId() + ", userName: " + userName + ", name: " + getName() + ", lastname: " + lastName + ", since: " + since + ", lastLogin:" + lastLogin;
-    }
-
-    @JsonIgnore
-    @Override
-    public final boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        final UserTo userTo = (UserTo) o;
-
-        return getId() == userTo.getId() && !(getName() != null ? !getName().equals(userTo.getName()) : userTo.getName() != null) && !(getPassword() != null ? !getPassword().equals(userTo.getPassword()) : userTo.getPassword() != null) && userName.equals(userTo.userName);
-    }
-
-    @JsonIgnore
-    @Override
-    public final int hashCode() {
-        int result;
-        result = getId();
-        result = 29 * result + userName.hashCode();
-        result = 29 * result + (getName() != null ? getName().hashCode() : 0);
-        result = 29 * result + (getPassword() != null ? getPassword().hashCode() : 0);
-        return result;
     }
 }

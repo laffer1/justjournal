@@ -24,54 +24,54 @@
  * SUCH DAMAGE.
  */
 
-package com.justjournal.db.model;
+package com.justjournal.model;
 
-import org.springframework.stereotype.Component;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.sun.istack.internal.NotNull;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.sql.Timestamp;
 
 /**
  * @author Lucas Holt
  */
-@Component
-public interface Tag {
-    /**
-     * Get the unique identifier
-     *
-     * @return tag id > 0
-     */
-    int getId();
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+@Entity
+@Table(name = "user_location")
+public class UserLocation implements Serializable {
+    private static final long serialVersionUID = -5429965410191859512L;
 
-    /**
-     * Set the unique id for the tag
-     *
-     * @param id tag id > 0
-     */
-    void setId(int id);
+    @Id
+    @GeneratedValue
+    private int id;
 
-    /**
-     * The number of tags
-     *
-     * @return tag count
-     */
-    int getCount();
+    @Column
+    private String city;
 
-    /**
-     * Set the number of tag instances
-     *
-     * @param count number of tags
-     */
-    void setCount(int count);
+    @Column
+    private String zip;
 
-    /**
-     * The common name for the tag which the user will see
-     *
-     * @return 30 char or less string
-     */
-    String getName();
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    /**
-     * Set the common name to display to the user
-     *
-     * @param name 30 character or less string with letters only.
-     */
-    void setName(String name);
+    @ManyToOne
+    @JoinColumn(name = "state")
+    private State state;
+
+    @ManyToOne
+    @JoinColumn(name = "country")
+    private Country country;
+
+    @Basic(fetch = FetchType.LAZY)
+    @NotNull
+    @Column(name = "modified", nullable = false)
+    private Timestamp modified;
+
+    @JsonCreator
+    public UserLocation() {
+
+    }
 }

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2006, 2007  Lucas Holt
+Copyright (c) 2005, Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -32,47 +32,62 @@ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
 
-package com.justjournal.db.model;
-
-import java.util.Date;
+package com.justjournal.model;
 
 /**
- * An interface for just journal's sql friendly dates.
- *
- * @author Lucas Holt
+ * User: laffer1 Date: Mar 19, 2005 Time: 9:19:40 PM
  */
-public interface DateTime {
-    int getDay();
+public final class RssSubscription {
+    private int id;
+    private String uri;
+    private int subscriptionId;
 
-    void setDay(int day);
+    public final int getId() {
+        return this.id;
+    }
 
-    int getMonth();
+    public final void setId(final int id) {
+        this.id = id;
+    }
 
-    void setMonth(int month);
+    public final int getSubscriptionId() {
+        return this.subscriptionId;
+    }
 
-    int getYear();
+    public final void setSubscriptionId(final int subscriptionId) {
+        this.subscriptionId = subscriptionId;
+    }
 
-    void setYear(int year);
+    public final String getUri() {
+        return this.uri;
+    }
 
-    int getHour();
+    public final void setUri(final String uri) {
+        this.uri = uri;
+    }
 
-    void setHour(int hour);
+    public final String toString() {
+        return Integer.toString(id) + "," + uri + "," +
+                Integer.toString(subscriptionId);
+    }
 
-    int getMinutes();
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-    void setMinutes(int minutes);
+        final RssSubscription that = (RssSubscription) o;
 
-    void set(String mysqlDate)
-            throws java.text.ParseException;
+        if (id != that.id) return false;
+        if (!uri.equals(that.uri)) return false;
+        if (subscriptionId != that.subscriptionId) return false;
 
-    void set(java.util.Date date);
+        return true;
+    }
 
-    Date toDate();
-
-    String toPubDate();
-
-    String toRFC3339();
-
-    @Override
-    String toString();
+    public final int hashCode() {
+        int result;
+        result = id;
+        result = 29 * result + uri.hashCode() * subscriptionId;
+        return result;
+    }
 }

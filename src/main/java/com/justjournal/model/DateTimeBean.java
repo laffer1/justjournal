@@ -32,7 +32,7 @@ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
 
-package com.justjournal.db.model;
+package com.justjournal.model;
 
 import com.justjournal.utility.DateConvert;
 import org.apache.log4j.Logger;
@@ -43,8 +43,8 @@ import java.util.Date;
 import java.util.TimeZone;
 
 /**
- * Represent a date in just journal.  Allows the conversion of dates between
- * java Date objects and MySQL representations of dates.
+ * Represent a date in just journal.  Allows the conversion of dates between java Date objects and MySQL representations
+ * of dates.
  * <p/>
  * TODO: implement time zones completely.  Add items to interface.
  *
@@ -71,8 +71,9 @@ public final class DateTimeBean implements DateTime {
         this.set(date);
     }
 
-    /***
+    /**
      * Add to a date using fields just like Calendar
+     *
      * @param field
      * @param count
      */
@@ -211,8 +212,7 @@ public final class DateTimeBean implements DateTime {
     }
 
     /**
-     * Get the date represented by this instance with the time zone
-     * set.
+     * Get the date represented by this instance with the time zone set.
      *
      * @return java Date with tz
      */

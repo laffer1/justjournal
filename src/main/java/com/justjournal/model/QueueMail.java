@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004, 2014 Lucas Holt
+ * Copyright (c) 2014 Lucas Holt
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,61 +24,85 @@
  * SUCH DAMAGE.
  */
 
-package com.justjournal.db.model;
-
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.springframework.stereotype.Component;
+package com.justjournal.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
- * Represents a mood
- *
  * @author Lucas Holt
  */
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @Entity
-@Table(name="mood")
-public final class Mood {
+@Table(name = "queue_mail")
+public class QueueMail implements Serializable {
+
+    private static final long serialVersionUID = -243775616584090923L;
 
     @Id
     @GeneratedValue
-    private int id = 0;
+    private int id;
 
-    @Column(name="parentmood")
-    private int parent = 0;  // parent mood
+    @Column(length = 100)
+    private String to;
 
-    @Column(length=30, nullable = false, name="title", unique = true)
-    private String name = "";
+    @Column(length = 100)
+    private String from;
 
-    @JsonCreator
-    public Mood() {
+    @Column(length = 100)
+    private String subject;
 
-    }
+    @Column
+    @Lob
+    private String body;
+
+    @Column(length = 150)
+    private String purpose;
 
     public int getId() {
-        return this.id;
+        return id;
     }
 
     public void setId(final int id) {
         this.id = id;
     }
 
-    public int getParent() {
-        return this.parent;
+    public String getTo() {
+        return to;
     }
 
-    public void setParent(final int parent) {
-        this.parent = parent;
+    public void setTo(final String to) {
+        this.to = to;
     }
 
-    public String getName() {
-        return this.name;
+    public String getFrom() {
+        return from;
     }
 
-    public void setName(final String name) {
-        this.name = name;
+    public void setFrom(final String from) {
+        this.from = from;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(final String subject) {
+        this.subject = subject;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(final String body) {
+        this.body = body;
+    }
+
+    public String getPurpose() {
+        return purpose;
+    }
+
+    public void setPurpose(final String purpose) {
+        this.purpose = purpose;
     }
 }

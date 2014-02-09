@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014 Lucas Holt
+ * Copyright (c) 2004, 2005, 2014 Lucas Holt
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,46 +24,48 @@
  * SUCH DAMAGE.
  */
 
-package com.justjournal.db.model;
+package com.justjournal.model;
 
-import org.springframework.stereotype.Component;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
+
+import javax.persistence.*;
 
 /**
- * Track the number of users, entry and comment statistics, and other information.
+ * Location
  *
  * @author Lucas Holt
  */
-@Component
-public interface Statistics {
-    public int getComments();
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+@Entity
+@Table(name = "location")
+public final class Location {
 
-    public void setComments(final int comments);
+    @Id
+    @GeneratedValue
+    private int id;
 
-    public int getEntries();
+    @Column(length = 15, nullable = false, name = "title", unique = true)
+    private String title;
 
-    public void setEntries(final int entries);
+    @JsonCreator
+    public Location() {
 
-    public int getFriendsEntries();
+    }
 
-    public void setFriendsEntries(final int friendsEntries);
+    public final int getId() {
+        return this.id;
+    }
 
-    public int getPrivateEntries();
+    public final void setId(int id) {
+        this.id = id;
+    }
 
-    public void setPrivateEntries(final int privateEntries);
+    public final String getTitle() {
+        return this.title;
+    }
 
-    public int getStyles();
-
-    public void setStyles(final int styles);
-
-    public int getTags();
-
-    public void setTags(final int tags);
-
-    public int getUsers();
-
-    public void setUsers(final int users);
-
-    public int getPublicEntries();
-
-    public void setPublicEntries(final int publicEntries);
+    public final void setTitle(String name) {
+        this.title = name;
+    }
 }

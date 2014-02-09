@@ -32,7 +32,7 @@ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
 
-package com.justjournal.db.model;
+package com.justjournal.model;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -45,7 +45,7 @@ import org.springframework.stereotype.Component;
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @Component
-final public class TrackbackTo {
+final public class Trackback {
     /*
     id  int 10  unsigned auto  (trackback unit id)
     eid (entry it refers to)
@@ -68,12 +68,12 @@ final public class TrackbackTo {
     private TrackbackType type;
 
     @JsonCreator
-    public TrackbackTo() {
+    public Trackback() {
 
     }
 
-    public TrackbackTo(int id, int entryId, DateTime date, String subject, String body, String authorEmail, String authorName,
-                       String blogName, String url, TrackbackType type) {
+    public Trackback(int id, int entryId, DateTime date, String subject, String body, String authorEmail, String authorName,
+                     String blogName, String url, TrackbackType type) {
 
         this.id = id;
         this.entryId = entryId;
@@ -209,7 +209,7 @@ final public class TrackbackTo {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        TrackbackTo that = (TrackbackTo) o;
+        Trackback that = (Trackback) o;
 
         if (entryId != that.entryId) return false;
         if (id != that.id) return false;

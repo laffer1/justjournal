@@ -32,25 +32,45 @@ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
 
-package com.justjournal.db.model;
+package com.justjournal.model;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 
+import javax.persistence.*;
+import java.io.Serializable;
+
 /**
  * Blog Link List
+ *
  * @author Lucas Holt
- * @version $Id: UserLinkTo.java,v 1.6 2008/09/02 00:52:22 laffer1 Exp $
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-public final class UserLinkTo {
+@Entity
+@Table(name = "user_link")
+public class UserLink implements Serializable {
+    private static final long serialVersionUID = 6356304916167520610L;
+    @Id
+    @GeneratedValue
     private int id;
-    private int userId;
+
+    @Column(name = "title")
     private String title;
+
+    @Column(name = "uri")
     private String uri;
+
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @JsonCreator
+    public UserLink() {
+    }
 
     /**
      * Retrieve unique identifier for link
+     *
      * @return int > 0
      */
     public final int getId() {
@@ -70,26 +90,8 @@ public final class UserLinkTo {
     }
 
     /**
-     * Retrieve owner of link
-     * @return user id
-     */
-    public final int getUserId() {
-        return userId;
-    }
-
-    /**
-     * Set the owner of the link
-     * @param userId   > 0
-     */
-    public final void setUserId(int userId) {
-        if (userId > 0)
-            this.userId = userId;
-        else
-            throw new IllegalArgumentException("userId must be greater than zero");
-    }
-
-    /**
      * Retrieve the link title
+     *
      * @return title
      */
     public final String getTitle() {
@@ -98,6 +100,7 @@ public final class UserLinkTo {
 
     /**
      * Set the link title so that it can be displayed instead of just the hyperlink itself.
+     *
      * @param title ascii text
      */
     public final void setTitle(String title) {
@@ -109,6 +112,7 @@ public final class UserLinkTo {
 
     /**
      * Retrieve the address of the link which should be a complete URI
+     *
      * @return uri string
      */
     public final String getUri() {
@@ -117,6 +121,7 @@ public final class UserLinkTo {
 
     /**
      * Set the Uniform resource identifier as a string
+     *
      * @param uri a valid uri
      */
     public final void setUri(String uri) {
@@ -124,44 +129,5 @@ public final class UserLinkTo {
             this.uri = uri;
         else
             throw new IllegalArgumentException("uri cannot be null");
-    }
-
-    public final boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        final UserLinkTo that = (UserLinkTo) o;
-
-        return userId == that.userId && id == that.id && title.equals(that.title) && uri.equals(that.uri);
-
-    }
-
-    public final int hashCode() {
-        int result;
-        result = userId;
-        result = 29 * result + id;
-        result = 29 * result + title.hashCode();
-        result = 29 * result + uri.hashCode();
-        return result;
-    }
-
-    /**
-     * Get a string representation of UserLink
-     * @return comma seperated list of important components
-     */
-    public final String toString() {
-        return id + "," + userId + "," + title + "," + uri;
-    }
-
-    public UserLinkTo(int id, int userId, String title, String uri) {
-        /* calls so we execute checks and throw exceptions as needed */
-        setId(id);
-        setUserId(userId);
-        setTitle(title);
-        setUri(uri);
-    }
-
-    @JsonCreator
-    public UserLinkTo() {
     }
 }

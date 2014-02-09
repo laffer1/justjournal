@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2005, Lucas Holt
+Copyright (c) 2005, 2014 Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -32,64 +32,50 @@ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
 
-package com.justjournal.db.model;
+package com.justjournal.model;
+
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
+
+import javax.persistence.*;
+import java.io.Serializable;
 
 /**
- * User: laffer1
- * Date: Mar 19, 2005
- * Time: 9:19:40 PM
+ * Security Transfer Object
+ *
+ * @author Lucas Holt
  */
-public final class RssSubscriptionsTO {
-    private int id;
-    private String uri;
-    private int subscriptionId;
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+@Entity
+@Table(name = "entry_security")
+public class Security implements Serializable {
+
+    private static final long serialVersionUID = -3247158592308509915L;
+    @Id
+    @GeneratedValue
+    private int id = 0;
+
+    @Column(length = 7, nullable = false, name = "title", unique = true)
+    private String name = "";
+
+    @JsonCreator
+    public Security() {
+
+    }
 
     public final int getId() {
         return this.id;
     }
 
-    public final void setId(final int id) {
+    public final void setId(int id) {
         this.id = id;
     }
 
-    public final int getSubscriptionId() {
-        return this.subscriptionId;
+    public final String getName() {
+        return this.name;
     }
 
-    public final void setSubscriptionId(final int subscriptionId) {
-        this.subscriptionId = subscriptionId;
-    }
-
-    public final String getUri() {
-        return this.uri;
-    }
-
-    public final void setUri(final String uri) {
-        this.uri = uri;
-    }
-
-    public final String toString() {
-        return Integer.toString(id) + "," + uri + "," +
-                Integer.toString(subscriptionId);
-    }
-
-    public final boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        final RssSubscriptionsTO that = (RssSubscriptionsTO) o;
-
-        if (id != that.id) return false;
-        if (!uri.equals(that.uri)) return false;
-        if (subscriptionId != that.subscriptionId) return false;
-
-        return true;
-    }
-
-    public final int hashCode() {
-        int result;
-        result = id;
-        result = 29 * result + uri.hashCode() * subscriptionId;
-        return result;
+    public final void setName(String name) {
+        this.name = name;
     }
 }

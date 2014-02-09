@@ -24,41 +24,50 @@
  * SUCH DAMAGE.
  */
 
-package com.justjournal.db.model;
+package com.justjournal.model;
 
 import com.sun.istack.internal.NotNull;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.io.Serializable;
+import java.sql.Timestamp;
 
 /**
  * @author Lucas Holt
  */
 @Entity
 @Table(name = "user_pref")
-public class UserPref {
+public class UserPref implements Serializable {
+
+    private static final long serialVersionUID = -4301597963273403598L;
 
     @Id
     private int id;
 
-    @Column(name = "allow_spider", nullable = false, length = 1)
-    private String allowSpider;
+    @Column(name = "allow_spider")
+    @Enumerated(EnumType.STRING)
+    private PrefBool allowSpider;
 
     private int style;
 
     @Column(name = "owner_view_only", nullable = false, length = 1)
-    private String ownerViewOnly;
+    @Enumerated(EnumType.STRING)
+    private PrefBool ownerViewOnly;
 
     @Column(name = "journal_name", length = 150, nullable = true)
     private String journalName;
 
     @Column(name = "ping_services", nullable = false, length = 1)
-    private String pingServices;
+    @Enumerated(EnumType.STRING)
+    private PrefBool pingServices;
 
     @NotNull
     @Column(name = "modified", nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date modified;
+    private Timestamp modified;
+
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     public int getId() {
         return id;
@@ -68,11 +77,11 @@ public class UserPref {
         this.id = id;
     }
 
-    public String getAllowSpider() {
+    public PrefBool getAllowSpider() {
         return allowSpider;
     }
 
-    public void setAllowSpider(final String allowSpider) {
+    public void setAllowSpider(final PrefBool allowSpider) {
         this.allowSpider = allowSpider;
     }
 
@@ -84,11 +93,11 @@ public class UserPref {
         this.style = style;
     }
 
-    public String getOwnerViewOnly() {
+    public PrefBool getOwnerViewOnly() {
         return ownerViewOnly;
     }
 
-    public void setOwnerViewOnly(final String ownerViewOnly) {
+    public void setOwnerViewOnly(final PrefBool ownerViewOnly) {
         this.ownerViewOnly = ownerViewOnly;
     }
 
@@ -100,19 +109,19 @@ public class UserPref {
         this.journalName = journalName;
     }
 
-    public String getPingServices() {
+    public PrefBool getPingServices() {
         return pingServices;
     }
 
-    public void setPingServices(final String pingServices) {
+    public void setPingServices(final PrefBool pingServices) {
         this.pingServices = pingServices;
     }
 
-    public Date getModified() {
+    public Timestamp getModified() {
         return modified;
     }
 
-    public void setModified(final Date modified) {
+    public void setModified(final Timestamp modified) {
         this.modified = modified;
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004, 2005, 2014 Lucas Holt
+ * Copyright (c) 2014 Lucas Holt
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,97 +24,91 @@
  * SUCH DAMAGE.
  */
 
-package com.justjournal.db.model;
+package com.justjournal.model;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.stereotype.Component;
 
+import java.io.Serializable;
+
 /**
- * Friend
- *
  * @author Lucas Holt
  */
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @Component
-public final class FriendTo {
-    private int id = 0;
-    private String userName = "";
-    private int ownerId = 0;
-    private String ownerUserName = "";
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+public class UserStatistics implements Serializable {
+    @JsonProperty("username")
+    private String username = "";
+
+    @JsonProperty("entryCount")
+    private int entryCount = 0;
+
+    @JsonProperty("commentCount")
+    private int commentCount = 0;
 
     @JsonCreator
-    public FriendTo() {
+    public UserStatistics() {
 
     }
 
-    @JsonIgnore
-    public FriendTo(int id, String userName, int ownerId, String ownerUserName) {
-        this.setId(id);
-        this.userName = userName;
-        this.ownerId = ownerId;
-        this.ownerUserName = ownerUserName;
+    public int getEntryCount() {
+        return entryCount;
     }
 
-    public int getId() {
-        return this.id;
+    public void setEntryCount(final int entryCount) {
+        this.entryCount = entryCount;
     }
 
-    public void setId(final int id) {
-        this.id = id;
+    public int getCommentCount() {
+        return commentCount;
     }
 
-    public String getUserName() {
-        return this.userName;
+    public void setCommentCount(final int commentCount) {
+        this.commentCount = commentCount;
     }
 
-    public void setUserName(final String userName) {
-        this.userName = userName;
+    public String getUsername() {
+        return username;
     }
 
-    public int getOwnerId() {
-        return this.ownerId;
-    }
-
-    public void setOwnerId(final int ownerId) {
-        this.ownerId = ownerId;
-    }
-
-    public String getOwnerUserName() {
-        return this.ownerUserName;
-    }
-
-    public void setOwnerUserName(final String ownerUserName) {
-        this.ownerUserName = ownerUserName;
+    public void setUsername(final String username) {
+        this.username = username;
     }
 
     @JsonIgnore
     @Override
     public String toString() {
-        return Integer.toString(getId()) + "," + userName + ","
-                + ownerId + "," + ownerUserName;
+        return "UserStatisticsImpl{" +
+                "username='" + username + '\'' +
+                ", entryCount=" + entryCount +
+                ", commentCount=" + commentCount +
+                '}';
     }
 
     @JsonIgnore
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        final FriendTo friendTo = (FriendTo) o;
+        final UserStatistics that = (UserStatistics) o;
 
-        return getId() == friendTo.getId() && ownerId == friendTo.ownerId && ownerUserName.equals(friendTo.ownerUserName) && userName.equals(friendTo.userName);
+        if (commentCount != that.commentCount) return false;
+        if (entryCount != that.entryCount) return false;
+        if (!username.equals(that.username)) return false;
+
+        return true;
     }
 
     @JsonIgnore
     @Override
     public int hashCode() {
-        int result;
-        result = getId();
-        result = 29 * result + userName.hashCode();
-        result = 29 * result + ownerId;
-        result = 29 * result + ownerUserName.hashCode();
+        int result = username.hashCode();
+        result = 31 * result + entryCount;
+        result = 31 * result + commentCount;
         return result;
     }
 }

@@ -24,39 +24,57 @@
  * SUCH DAMAGE.
  */
 
-package com.justjournal.db.model;
+package com.justjournal.model;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
+
+import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * User contact information including IM accounts, email and homepage
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-public final class UserContactTo {
+@Entity
+@Table(name = "user_contact")
+public class UserContact implements Serializable {
+    private static final long serialVersionUID = 1152818084136626047L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int id;
+
+    @Column
     private String email;
+
+    @Column
     private String icq;
+
+    @Column
     private String aim;
+
+    @Column
     private String yahoo;
+
+    @Column
     private String msn;
+
+    @Column
     private String phone;
+
+    @Column(name = "hp_title")
     private String hpTitle;
+
+    @Column(name = "hp_uri")
     private String hpUri;
 
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @JsonCreator
-    public UserContactTo() {
+    public UserContact() {
 
-    }
-
-    public UserContactTo(String email, String icq, String aim, String yahoo, String msn, String phone, String hpTitle, String hpUri) {
-        this.email = email;
-        this.icq = icq;
-        this.aim = aim;
-        this.yahoo = yahoo;
-        this.msn = msn;
-        this.phone = phone;
-        this.hpTitle = hpTitle;
-        this.hpUri = hpUri;
     }
 
     public final String getEmail() {
@@ -123,28 +141,19 @@ public final class UserContactTo {
         this.hpUri = hpUri;
     }
 
-    @Override
-    public final boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        final UserContactTo that = (UserContactTo) o;
-
-        return !(aim != null ? !aim.equals(that.aim) : that.aim != null) && email.equals(that.email) && !(hpTitle != null ? !hpTitle.equals(that.hpTitle) : that.hpTitle != null) && !(hpUri != null ? !hpUri.equals(that.hpUri) : that.hpUri != null) && !(icq != null ? !icq.equals(that.icq) : that.icq != null) && !(msn != null ? !msn.equals(that.msn) : that.msn != null) && !(phone != null ? !phone.equals(that.phone) : that.phone != null) && !(yahoo != null ? !yahoo.equals(that.yahoo) : that.yahoo != null);
+    public int getId() {
+        return id;
     }
 
-    @Override
-    public final int hashCode() {
-        int result;
-        result = email.hashCode();
-        result = 29 * result + (icq != null ? icq.hashCode() : 0);
-        result = 29 * result + (aim != null ? aim.hashCode() : 0);
-        result = 29 * result + (yahoo != null ? yahoo.hashCode() : 0);
-        result = 29 * result + (msn != null ? msn.hashCode() : 0);
-        result = 29 * result + (phone != null ? phone.hashCode() : 0);
-        result = 29 * result + (hpTitle != null ? hpTitle.hashCode() : 0);
-        result = 29 * result + (hpUri != null ? hpUri.hashCode() : 0);
-        return result;
+    public void setId(final int id) {
+        this.id = id;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(final User user) {
+        this.user = user;
+    }
 }

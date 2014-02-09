@@ -24,7 +24,7 @@
  * SUCH DAMAGE.
  */
 
-package com.justjournal.db.model;
+package com.justjournal.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import org.springframework.stereotype.Component;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004, 2005, 2014 Lucas Holt
+ * Copyright (c) 2014 Lucas Holt
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,48 +24,11 @@
  * SUCH DAMAGE.
  */
 
-package com.justjournal.db.model;
-
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonCreator;
-
-import javax.persistence.*;
+package com.justjournal.model;
 
 /**
- * Location
- *
  * @author Lucas Holt
  */
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-@Entity
-@Table(name = "location")
-public final class Location {
-
-    @Id
-    @GeneratedValue
-    private int id;
-
-    @Column(length=15, nullable = false, name="title", unique = true)
-    private String title;
-
-    @JsonCreator
-    public Location() {
-
-    }
-
-    public final int getId() {
-        return this.id;
-    }
-
-    public final void setId(int id) {
-        this.id = id;
-    }
-
-    public final String getTitle() {
-        return this.title;
-    }
-
-    public final void setTitle(String name) {
-        this.title = name;
-    }
+public enum PrefBool {
+    Y, N
 }

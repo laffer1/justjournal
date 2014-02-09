@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2008 Lucas Holt
+Copyright (c) 2005, Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -32,14 +32,60 @@ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
 
-package com.justjournal.db.model;
+package com.justjournal.model;
+
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
+
+import javax.persistence.*;
+import java.io.Serializable;
 
 /**
- * Type of trackback entry:  trackback, post-it or pingback
- * http://wellformedweb.org/story/9
- *
- * @author Lucas Holt
+ * Biography
  */
-public enum TrackbackType {
-    trackback, pingback, postit
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+@Entity
+@Table(name = "user_bio")
+public class UserBio implements Serializable {
+
+    private static final long serialVersionUID = 3877987531776135807L;
+    @Id
+    @GeneratedValue
+    private int id = 0;
+
+    @Column(length = 65535, nullable = false, name = "content", columnDefinition = "TEXT")
+    private String bio = "";
+
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @JsonCreator
+    public UserBio() {
+
+    }
+
+    public String getBio() {
+        return this.bio;
+    }
+
+    public void setBio(String bioText) {
+        this.bio = bioText;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(final int id) {
+        this.id = id;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(final User user) {
+        this.user = user;
+    }
 }

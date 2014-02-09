@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2005, 2014 Lucas Holt
+Copyright (c) 2005, Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -32,48 +32,81 @@ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
 
-package com.justjournal.db.model;
+package com.justjournal.model;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 import javax.persistence.*;
+import java.util.Date;
 
 /**
- * Security Transfer Object
+ * Rss file record.
  *
  * @author Lucas Holt
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @Entity
-@Table(name = "entry_security")
-public final class Security {
+@Table(name = "rss_cache")
+public final class RssCache {
 
     @Id
     @GeneratedValue
-    private int id = 0;
+    private int id;
 
-    @Column(length = 7, nullable = false, name = "title", unique = true)
-    private String name = "";
+    private int interval;
+
+    @Column(name = "last_updated")
+    private Date lastUpdated;
+
+    //TODO: mark as tinytext
+    @Column(name = "uri", nullable = false)
+    private String uri;
+
+    @Column(name = "context", nullable = false, length = 65535, columnDefinition = "TEXT")
+    private String content;
 
     @JsonCreator
-    public Security() {
-
+    public RssCache() {
     }
 
-    public final int getId() {
-        return this.id;
+    public int getId() {
+        return id;
     }
 
-    public final void setId(int id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public final String getName() {
-        return this.name;
+    public int getInterval() {
+        return interval;
     }
 
-    public final void setName(String name) {
-        this.name = name;
+    public void setInterval(int interval) {
+        this.interval = interval;
+    }
+
+    public Date getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(Date lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+
+    public String getUri() {
+        return uri;
+    }
+
+    public void setUri(String uri) {
+        this.uri = uri;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 }

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2005, Lucas Holt
+Copyright (c) 2006, 2007  Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -32,57 +32,47 @@ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
 
-package com.justjournal.db.model;
+package com.justjournal.model;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonCreator;
-
-import javax.persistence.*;
+import java.util.Date;
 
 /**
- * Biography
+ * An interface for just journal's sql friendly dates.
+ *
+ * @author Lucas Holt
  */
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-@Entity
-@Table(name = "user_bio")
-public final class Bio {
+public interface DateTime {
+    int getDay();
 
-    @Id
-    @GeneratedValue
-    private int id = 0;
+    void setDay(int day);
 
-    @Column(name = "user_id")
-    private int userId = 0;
+    int getMonth();
 
-    @Column(length = 65535, nullable = false, name = "content", columnDefinition = "TEXT")
-    private String bio = "";
+    void setMonth(int month);
 
-    @JsonCreator
-    public Bio() {
+    int getYear();
 
-    }
+    void setYear(int year);
 
-    public int getUserId() {
-        return this.userId;
-    }
+    int getHour();
 
-    public void setUserId(int uid) {
-        this.userId = uid;
-    }
+    void setHour(int hour);
 
-    public String getBio() {
-        return this.bio;
-    }
+    int getMinutes();
 
-    public void setBio(String bioText) {
-        this.bio = bioText;
-    }
+    void setMinutes(int minutes);
 
-    public int getId() {
-        return id;
-    }
+    void set(String mysqlDate)
+            throws java.text.ParseException;
 
-    public void setId(final int id) {
-        this.id = id;
-    }
+    void set(java.util.Date date);
+
+    Date toDate();
+
+    String toPubDate();
+
+    String toRFC3339();
+
+    @Override
+    String toString();
 }
