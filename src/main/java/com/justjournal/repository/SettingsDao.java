@@ -24,21 +24,15 @@
  * SUCH DAMAGE.
  */
 
-package com.justjournal.db;
+package com.justjournal.repository;
 
-import com.justjournal.db.model.Comment;
+import com.justjournal.model.Settings;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 /**
- * Manipulate and fetch comments
- *
  * @author Lucas Holt
  */
-@Component
-public interface CommentDao extends CrudRepository<Comment, Integer> {
+public interface SettingsDao extends CrudRepository<Settings, Integer> {
 
-    List<Comment> findByEntryId(int entryId);
+    public Settings findByName(String name);
 }

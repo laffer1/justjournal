@@ -24,14 +24,15 @@
  * SUCH DAMAGE.
  */
 
-package com.justjournal.db;
+package com.justjournal.repository;
 
-import com.justjournal.db.model.Tag;
+import com.justjournal.model.Entry;
 import org.springframework.data.repository.CrudRepository;
 
 /**
- * Tag Dao
+ * Entry Data Access
+ *
  * @author Lucas Holt
  */
-public interface TagDao extends CrudRepository<Tag, Integer> {
+public interface EntryRepository extends CrudRepository<Entry, Integer> {
 }

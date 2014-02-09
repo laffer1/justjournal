@@ -32,16 +32,12 @@ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
 
-package com.justjournal.db;
+package com.justjournal.repository;
 
-import com.justjournal.db.model.Security;
+import com.justjournal.model.EmoticonTo;
 import org.springframework.data.repository.CrudRepository;
 
+public interface EmoticonDao extends CrudRepository<EmoticonTo, Integer> {
 
-/**
- * Entry Security
- */
-
-
-public interface SecurityDao extends CrudRepository<Security, Integer> {
+    public EmoticonTo findByThemeIdAndMoodId(int themeId, int moodId);
 }

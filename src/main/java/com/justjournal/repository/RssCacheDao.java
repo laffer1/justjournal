@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2005, Lucas Holt
+Copyright (c) 2005-2007, Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -32,10 +32,14 @@ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
 
-package com.justjournal.db;
+package com.justjournal.repository;
 
-import com.justjournal.db.model.RssSubscriptionsTO;
+import com.justjournal.model.RssCache;
 import org.springframework.data.repository.CrudRepository;
 
-public interface RssSubscriptionsDAO extends CrudRepository<RssSubscriptionsTO, Integer> {
+import java.util.List;
+
+public interface RssCacheDao extends CrudRepository<RssCache, Integer> {
+
+    List<RssCache> findByUri(String uri);
 }

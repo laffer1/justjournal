@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2005, Lucas Holt
+Copyright (c) 2005, 2008 Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -32,16 +32,16 @@ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
 
-package com.justjournal.db;
+package com.justjournal.repository;
 
-import com.justjournal.db.model.EmoticonTo;
-import com.sun.istack.internal.NotNull;
+import com.justjournal.model.UserBio;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Component;
 
-import java.sql.ResultSet;
+/**
+ * Manage biography for users
+ */
 
-public interface EmoticonDao extends CrudRepository<EmoticonTo, Integer> {
+public interface UserBioDao extends CrudRepository<UserBio, Integer> {
 
-    EmoticonTo findByThemeIdAndMoodId(int themeId, int moodId);
+    UserBio findByUserId(int userId);
 }

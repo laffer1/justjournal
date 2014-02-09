@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2005, 2008 Lucas Holt
+Copyright (c) 2005-2006, Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -32,16 +32,20 @@ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
 
-package com.justjournal.db;
+package com.justjournal.repository;
 
-import com.justjournal.db.model.Bio;
+import com.justjournal.model.User;
 import org.springframework.data.repository.CrudRepository;
 
+
 /**
- * Manage biography for users
+ * Access account information for a specific user or all users of Just Journal.
+ *
+ * @author Lucas Holt
  */
+public interface UserRepository extends CrudRepository<User, Integer> {
 
-public interface UserBioDao extends CrudRepository<Bio, Integer> {
+    public User findByUsername(String username);
 
-    Bio findByUserId(int userId);
+    public User findByUsernameAndPassword(String username, String password);
 }

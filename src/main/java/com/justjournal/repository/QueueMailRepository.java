@@ -24,16 +24,13 @@
  * SUCH DAMAGE.
  */
 
-package com.justjournal.db;
+package com.justjournal.repository;
 
-import com.justjournal.db.model.EntryTo;
+import com.justjournal.model.QueueMail;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Component;
 
 /**
- * Entry Data Access
- *
  * @author Lucas Holt
  */
-public interface EntryDao extends CrudRepository<EntryTo, Integer> {
+public interface QueueMailRepository extends CrudRepository<QueueMail, Integer> {
 }

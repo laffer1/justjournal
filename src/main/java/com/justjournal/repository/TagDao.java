@@ -24,33 +24,15 @@
  * SUCH DAMAGE.
  */
 
-package com.justjournal.db.model;
+package com.justjournal.repository;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import org.springframework.stereotype.Component;
+import com.justjournal.model.Tag;
+import org.springframework.data.repository.CrudRepository;
 
 /**
- * Per user blog statistics
+ * Tag Dao
  *
  * @author Lucas Holt
  */
-@Component
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.PUBLIC_ONLY)
-public interface UserStatistics {
-
-    @JsonProperty("entryCount")
-    public int getEntryCount();
-
-    public void setEntryCount(final int entryCount);
-
-    @JsonProperty("commentCount")
-    public int getCommentCount();
-
-    public void setCommentCount(final int commentCount);
-
-    @JsonProperty("username")
-    public String getUsername();
-
-    public void setUsername(final String username);
+public interface TagDao extends CrudRepository<Tag, Integer> {
 }

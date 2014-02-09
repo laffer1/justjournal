@@ -32,17 +32,10 @@ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
 
-package com.justjournal.db;
+package com.justjournal.repository;
 
-import com.justjournal.db.model.FriendTo;
+import com.justjournal.model.RssSubscription;
 import org.springframework.data.repository.CrudRepository;
 
-
-/**
- * Friend Dao
- *
- * @author Lucas Holt
- */
-public interface FriendsDao extends CrudRepository<FriendTo, Integer> {
-
+public interface RssSubscriptionsDAO extends CrudRepository<RssSubscription, Integer> {
 }

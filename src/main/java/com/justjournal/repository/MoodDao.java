@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2008 Lucas Holt
+Copyright (c) 2005, Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -32,15 +32,16 @@ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
 
-package com.justjournal.db;
+package com.justjournal.repository;
 
-import com.justjournal.db.model.TrackbackTo;
+import com.justjournal.model.Mood;
 import org.springframework.data.repository.CrudRepository;
 
+
 /**
- * Manipulate trackback storage
+ * Retrieve and acquire mood's for use with journal entries.
  *
  * @author Lucas Holt
  */
-public interface TrackbackDao extends CrudRepository<TrackbackTo, Integer> {
+public interface MoodDao extends CrudRepository<Mood, Integer> {
 }

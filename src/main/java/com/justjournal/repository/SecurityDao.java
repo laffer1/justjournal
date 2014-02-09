@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2005-2006, Lucas Holt
+Copyright (c) 2005, Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -32,18 +32,16 @@ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
 
-package com.justjournal.db;
+package com.justjournal.repository;
 
-import com.justjournal.db.model.UserTo;
+import com.justjournal.model.Security;
 import org.springframework.data.repository.CrudRepository;
 
 
 /**
- * Access account information for a specific user or all users of Just Journal.
- *
- * @author Lucas Holt
+ * Entry Security
  */
-public interface UserDao extends CrudRepository<UserTo, Integer> {
 
 
+public interface SecurityDao extends CrudRepository<Security, Integer> {
 }

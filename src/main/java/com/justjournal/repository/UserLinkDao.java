@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2004, 2005, 2014 Lucas Holt
+Copyright (c) 2005, 2006, 2008 Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -32,10 +32,16 @@ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
 
-package com.justjournal.db;
+package com.justjournal.repository;
 
-import com.justjournal.db.model.Location;
+import com.justjournal.model.UserLink;
 import org.springframework.data.repository.CrudRepository;
 
-public interface LocationDao extends CrudRepository<Location, Integer> {
+
+/**
+ * Data access for User Link list
+ *
+ * @author Lucas Holt
+ */
+public interface UserLinkDao extends CrudRepository<UserLink, Integer> {
 }
