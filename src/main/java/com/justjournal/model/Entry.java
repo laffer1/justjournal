@@ -37,7 +37,7 @@ package com.justjournal.model;
 import com.fasterxml.jackson.annotation.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -53,27 +53,38 @@ import java.util.Set;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name = "entry")
-public class Entry {
+public class Entry implements Serializable {
+    private static final long serialVersionUID = 6558001750470601772L;
     @Id
     @GeneratedValue
     private int id = 0;
-
-    @JsonProperty("locationId")
-    private int locationId = 0;
-
-    @JsonProperty("moodId")
-    private int moodId = 0;
-
-    @JsonProperty("commentCount")
-    private int commentCount = 0;
-    private int userId = 0;
-    private int securityLevel = 0;
 
     @JsonIgnore
     @Column(name = "date")
     @Temporal(value = TemporalType.DATE)
     private Date date = new Date();
 
+    @JsonProperty("locationId")
+    @OneToMany
+    @JoinColumn(name = "location_id")
+    private Location location;
+
+    @JsonProperty("mood")
+    @ManyToOne
+    @JoinColumn(name = "mood_id")
+    private Mood mood;
+
+    @JsonProperty("user")
+    @ManyToOne
+    @JoinColumn(name = "uid")
+    private User user;
+
+    @JsonProperty("security")
+    @ManyToOne
+    @JoinColumn(name = "security_id")
+    private Security security;
+
+    @JsonProperty("subject")
     @Column(name = "subject", length = 255)
     private String subject = "";
 
@@ -83,39 +94,178 @@ public class Entry {
     private String body = "";
 
     @JsonProperty("music")
+    @Column(name = "music", length = 125)
     private String music = "";
 
-    @JsonProperty("userName")
-    private String userName = "";
-
-    @JsonProperty("moodName")
-    private String moodName = "";
-
-    @JsonProperty("locationName")
-    private String locationName = "";
-
     @JsonProperty("autoFormat")
-    private boolean autoFormat = true;
+    @Column(name = "autoformat", nullable = false, length = 1)
+    @Enumerated(EnumType.STRING)
+    private PrefBool autoFormat;
 
     @JsonProperty("allowComments")
-    private boolean allowComments = true;
+    @Column(name = "allow_comments", nullable = false, length = 1)
+    @Enumerated(EnumType.STRING)
+    private PrefBool allowComments;
 
     @JsonProperty("emailComments")
-    private boolean emailComments = true;
+    @Column(name = "email_comments", nullable = false, length = 1)
+    @Enumerated(EnumType.STRING)
+    private PrefBool emailComments;
 
-    private boolean draft = true;
+    @Column(name = "draft", nullable = false, length = 1)
+    @Enumerated(EnumType.STRING)
+    private PrefBool draft;
 
-    private int attachImage = 0;
-    private int attachFile = 0;
+    // TODO: implement
+    transient private int attachImage = 0;
+    transient private int attachFile = 0;
 
-    @JsonIgnore
-    private ArrayList<String> tags = new ArrayList<String>();
+    @JsonProperty("tags")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "entry")
+    private Set<Tag> tags = new HashSet<Tag>();
 
+    @JsonProperty("comments")
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "entry")
     private Set<Comment> comments = new HashSet<Comment>();
 
     @JsonCreator
     public Entry() {
 
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(final int id) {
+        this.id = id;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(final Date date) {
+        this.date = date;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(final Location location) {
+        this.location = location;
+    }
+
+    public Mood getMood() {
+        return mood;
+    }
+
+    public void setMood(final Mood mood) {
+        this.mood = mood;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(final User user) {
+        this.user = user;
+    }
+
+    public Security getSecurity() {
+        return security;
+    }
+
+    public void setSecurity(final Security security) {
+        this.security = security;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(final String subject) {
+        this.subject = subject;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(final String body) {
+        this.body = body;
+    }
+
+    public String getMusic() {
+        return music;
+    }
+
+    public void setMusic(final String music) {
+        this.music = music;
+    }
+
+    public PrefBool getAutoFormat() {
+        return autoFormat;
+    }
+
+    public void setAutoFormat(final PrefBool autoFormat) {
+        this.autoFormat = autoFormat;
+    }
+
+    public PrefBool getAllowComments() {
+        return allowComments;
+    }
+
+    public void setAllowComments(final PrefBool allowComments) {
+        this.allowComments = allowComments;
+    }
+
+    public PrefBool getEmailComments() {
+        return emailComments;
+    }
+
+    public void setEmailComments(final PrefBool emailComments) {
+        this.emailComments = emailComments;
+    }
+
+    public PrefBool getDraft() {
+        return draft;
+    }
+
+    public void setDraft(final PrefBool draft) {
+        this.draft = draft;
+    }
+
+    public int getAttachImage() {
+        return attachImage;
+    }
+
+    public void setAttachImage(final int attachImage) {
+        this.attachImage = attachImage;
+    }
+
+    public int getAttachFile() {
+        return attachFile;
+    }
+
+    public void setAttachFile(final int attachFile) {
+        this.attachFile = attachFile;
+    }
+
+    public Set<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(final Set<Tag> tags) {
+        this.tags = tags;
+    }
+
+    public Set<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(final Set<Comment> comments) {
+        this.comments = comments;
     }
 }
