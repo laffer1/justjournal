@@ -26,24 +26,18 @@
 
 package com.justjournal;
 
+import com.justjournal.repository.UserRepository;
 import com.justjournal.utility.StringUtil;
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
-import org.apache.cayenne.Cayenne;
-import org.apache.cayenne.ObjectContext;
-import org.apache.cayenne.access.DataContext;
-import org.apache.cayenne.exp.Expression;
-import org.apache.cayenne.query.Query;
-import org.apache.cayenne.query.SelectQuery;
-import org.apache.log4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -54,27 +48,32 @@ import java.util.regex.Pattern;
  *
  * @author Lucas Holt
  */
-public final class WebLogin {
-    private static org.slf4j.Logger log = LoggerFactory.getLogger(WebLogin.class);
-
-    protected static final String LOGIN_ATTRNAME = "auth.user";
-    protected static final String LOGIN_ATTRID = "auth.uid";
-
+@Component
+public class WebLogin {
     public static final int USERNAME_MAX_LENGTH = 15;
     public static final int PASSWORD_MAX_LENGTH = 18;
     public static final int SHA1_HASH_LENGTH = 40;
     public static final int BAD_USER_ID = 0;
+    protected static final String LOGIN_ATTRNAME = "auth.user";
+    protected static final String LOGIN_ATTRID = "auth.uid";
+    private static org.slf4j.Logger log = LoggerFactory.getLogger(WebLogin.class);
+    @Autowired
+    private UserRepository userRepository;
 
     public static boolean isAuthenticated(HttpSession session) {
         String username = (String) session.getAttribute("auth.user");
         return username != null && !username.isEmpty();
     }
 
-    public @Nullable static String currentLoginName(HttpSession session) {
+    public
+    @Nullable
+    static String currentLoginName(HttpSession session) {
         return (String) session.getAttribute(LOGIN_ATTRNAME);
     }
 
-    public @NotNull static int currentLoginId(HttpSession session) {
+    public
+    @NotNull
+    static int currentLoginId(HttpSession session) {
         int aUserID = 0;
         Integer userIDasi = (Integer) session.getAttribute(LOGIN_ATTRID);
 
@@ -104,6 +103,36 @@ public final class WebLogin {
         return m.matches(); // valid on true
     }
 
+    private
+    @NotNull
+    static String convertToHex(byte[] data) {
+        StringBuilder buf = new StringBuilder();
+        for (final byte aData : data) {
+            int halfByte = (aData >>> 4) & 0x0F;
+            int twoHalves = 0;
+            do {
+                if ((0 <= halfByte) && (halfByte <= 9))
+                    buf.append((char) ('0' + halfByte));
+                else
+                    buf.append((char) ('a' + (halfByte - 10)));
+                halfByte = aData & 0x0F;
+            } while (twoHalves++ < 1);   // TODO: wtf?
+        }
+        return buf.toString();
+    }
+
+    public
+    @NotNull
+    static String SHA1(String text)
+            throws NoSuchAlgorithmException, UnsupportedEncodingException {
+        MessageDigest md = MessageDigest.getInstance("SHA-1");
+        byte[] sha1hash;
+
+        md.update(text.getBytes("iso-8859-1"), 0, text.length());
+        sha1hash = md.digest();
+        return convertToHex(sha1hash);
+    }
+
     /**
      * Authenticate the user using clear text username and password.
      *
@@ -111,7 +140,7 @@ public final class WebLogin {
      * @param password Clear text password
      * @return userid of the user who logged in or 0 if the login failed.
      */
-    public static int validate(final String userName, final String password) {
+    public int validate(final String userName, final String password) {
         // the password is SHA1 encrypted in the sql server
 
         if (!StringUtil.lengthCheck(userName, 3, USERNAME_MAX_LENGTH))
@@ -134,46 +163,20 @@ public final class WebLogin {
         return BAD_USER_ID;
     }
 
-    private static int lookupUserId(final String userName, final String passwordHash) {
+    private int lookupUserId(final String userName, final String passwordHash) {
         com.justjournal.model.User user = lookupUser(userName, passwordHash);
         if (user == null) return BAD_USER_ID;
-        return Cayenne.intPKForObject(user);
+        return user.getId();
     }
-
-    private @Nullable static com.justjournal.model.User lookupUser(final String userName, final String passwordHash) {
-        ObjectContext dataContext = DataContext.getThreadObjectContext();
-
-        Expression exp;
-        exp = Expression.fromString("username = $user");
-
-        try {
-            HashMap<String, Object> map = new HashMap<String, Object>();
-            map.put("user", userName);
-            map.put("pass", passwordHash);
-            exp = exp.expWithParameters(map);
-            Query query = new SelectQuery(com.justjournal.model.User.class, exp);
-
-            List<com.justjournal.model.User> userList = dataContext.performQuery(query);
-
-            if (userList.isEmpty())
-                return null;
-
-            return userList.get(0);
-        } catch (Exception e) {
-            log.error("lookupUser(): " + e.getMessage());
-        }
-
-        return null;
-    }
-
 
     /**
      * Validate credentials using SHA1 hash algorithm
+     *
      * @param userName username
      * @param password password (hashed)
-     * @return  > 0 on success
+     * @return > 0 on success
      */
-    public static int validateSHA1(final String userName, final String password) {
+    public int validateSHA1(final String userName, final String password) {
         // the password is SHA1 encrypted in the sql server
 
         if (!StringUtil.lengthCheck(userName, 3, USERNAME_MAX_LENGTH))
@@ -193,23 +196,19 @@ public final class WebLogin {
         return BAD_USER_ID;
     }
 
-    // TODO: throw exception on error?
-    public static void setLastLogin(final int id) {
+    public void setLastLogin(final int id) {
         /* verify its a real login */
         if (id < 1)
             return;
 
         try {
-            ObjectContext dataContext = DataContext.getThreadObjectContext();
-
-            com.justjournal.model.User user = Cayenne.objectForPK(dataContext, com.justjournal.model.User.class, id);
-            user.setLastlogin(new java.util.Date());
-            dataContext.commitChanges();
+            com.justjournal.model.User user = userRepository.findOne(id);
+            user.setLastLogin(new java.util.Date());
+            userRepository.save(user);
         } catch (Exception e) {
             log.error("setLastLogin(): " + e.getMessage());
         }
     }
-
 
     /**
      * Change the password for an account given the username, old and new passwords.
@@ -219,9 +218,9 @@ public final class WebLogin {
      * @param newPass  new password
      * @return true if the password change worked.
      */
-    public static boolean changePass(final String userName,
-                                     final String password,
-                                     final String newPass) {
+    public boolean changePass(final String userName,
+                              final String password,
+                              final String newPass) {
 
         int uid;
 
@@ -231,7 +230,7 @@ public final class WebLogin {
             if (uid > BAD_USER_ID && isPassword(newPass)) {
                 com.justjournal.model.User user = lookupUser(userName, password);
                 user.setPassword(SHA1(newPass));
-                user.getObjectContext().commitChanges();
+                userRepository.save(user);
 
                 return true;
             }
@@ -242,29 +241,10 @@ public final class WebLogin {
         return false;
     }
 
-    private @NotNull static String convertToHex(byte[] data) {
-        StringBuilder buf = new StringBuilder();
-        for (final byte aData : data) {
-            int halfByte = (aData >>> 4) & 0x0F;
-            int twoHalves = 0;
-            do {
-                if ((0 <= halfByte) && (halfByte <= 9))
-                    buf.append((char) ('0' + halfByte));
-                else
-                    buf.append((char) ('a' + (halfByte - 10)));
-                halfByte = aData & 0x0F;
-            } while (twoHalves++ < 1);   // TODO: wtf?
-        }
-        return buf.toString();
-    }
+    private
+    @Nullable
+    com.justjournal.model.User lookupUser(final String userName, final String passwordHash) {
 
-    public @NotNull static String SHA1(String text)
-            throws NoSuchAlgorithmException, UnsupportedEncodingException {
-        MessageDigest md = MessageDigest.getInstance("SHA-1");
-        byte[] sha1hash;
-
-        md.update(text.getBytes("iso-8859-1"), 0, text.length());
-        sha1hash = md.digest();
-        return convertToHex(sha1hash);
+        return userRepository.findByUsernameAndPassword(userName, passwordHash);
     }
 }

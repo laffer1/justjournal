@@ -34,8 +34,6 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.utility;
 
-import com.justjournal.db.SQLHelper;
-
 /**
  * Represent an email message in the queue
  *

@@ -31,12 +31,12 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.utility;
 
 import com.justjournal.core.Settings;
-import org.apache.cayenne.ObjectContext;
-import org.apache.cayenne.access.DataContext;
-import org.apache.cayenne.configuration.server.ServerRuntime;
-import org.apache.cayenne.query.SelectQuery;
+import com.justjournal.model.QueueMail;
+import com.justjournal.repository.QueueMailRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.mail.*;
 import javax.mail.internet.AddressException;
@@ -51,10 +51,13 @@ import java.util.Properties;
  * @author Lucas Holt
  * @version $Id: MailSender.java,v 1.8 2009/03/16 22:10:31 laffer1 Exp $
  */
+@Component
 public class MailSender extends Thread {
 
-    private Logger log = LoggerFactory.getLogger(MailSender.class);
     public boolean process = true;
+    private Logger log = LoggerFactory.getLogger(MailSender.class);
+    @Autowired
+    private QueueMailRepository queueMailRepository;
 
     @Override
     @SuppressWarnings("unchecked")
@@ -76,15 +79,7 @@ public class MailSender extends Thread {
 
             while (process) {
                 try {
-                    ObjectContext dataContext = DataContext.getThreadObjectContext();
-                    if (dataContext == null) {
-                        ServerRuntime cayenneRuntime = new ServerRuntime("cayenne-JustJournalDomain.xml");
-                        dataContext = cayenneRuntime.getContext();
-                        DataContext.bindThreadObjectContext(dataContext);
-                    }
-
-                    SelectQuery query = new SelectQuery(com.justjournal.model.QueueMail.class);
-                    java.util.List<com.justjournal.model.QueueMail> items = dataContext.performQuery(query);
+                    Iterable<QueueMail> items = queueMailRepository.findAll();
 
                     log.trace("MailSender: Recordset loaded.");
 
@@ -118,8 +113,7 @@ public class MailSender extends Thread {
                         }
 
                         if (sentok) {
-                            dataContext.deleteObjects(item);
-                            dataContext.commitChanges();
+                            queueMailRepository.delete(item.getId());
                         }
 
                         yield();  // be nice to others... we are in a servlet container...

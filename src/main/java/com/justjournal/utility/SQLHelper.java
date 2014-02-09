@@ -32,7 +32,7 @@ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
 
-package com.justjournal.db;
+package com.justjournal.utility;
 
 import com.sun.rowset.CachedRowSetImpl;
 import org.apache.log4j.Logger;
