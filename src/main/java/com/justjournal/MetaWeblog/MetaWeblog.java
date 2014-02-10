@@ -44,6 +44,8 @@ import com.justjournal.restping.IceRocket;
 import com.justjournal.restping.TechnoratiPing;
 import com.justjournal.utility.StringUtil;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 import java.util.*;
@@ -59,9 +61,16 @@ import java.util.*;
  *          TODO: Implement the media method
  */
 @SuppressWarnings({"UnusedParameters"})
+@Component
 public class MetaWeblog {
     private static final Logger log = Logger.getLogger(MetaWeblog.class);
-    private EntryRepository entryDao = new EntryDaoImpl();
+
+    @Autowired
+    private EntryRepository entryRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private WebLogin webLogin;
 
     /**
      * Fetch the users personal information including their username, userid, email address and name.
@@ -87,13 +96,13 @@ public class MetaWeblog {
             blnError = true;
         }
 
-        userId = WebLogin.validate(username, password);
+        userId = webLogin.validate(username, password);
         if (userId < 1)
             blnError = true;
 
         if (!blnError)
             try {
-                User user = new UserImpl(userId);
+                User user = userRepository.findOne(userId);
 
                 s.put("nickname", user.getUserName());
                 s.put("userid", userId);
@@ -141,13 +150,13 @@ public class MetaWeblog {
             blnError = true;
         }
 
-        userId = WebLogin.validate(username, password);
+        userId = webLogin.validate(username, password);
         if (userId < 1)
             blnError = true;
 
         if (!blnError)
             try {
-                User user = new UserImpl(userId);
+                User user = userRepository.findOne(userId);
 
                 s.put("url", "http://www.justjournal.com/users/" + user.getUserName());
                 s.put("blogid", userId);

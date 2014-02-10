@@ -34,7 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal;
 
-import com.justjournal.model.EntryTo;
+import com.justjournal.model.Entry;
 import org.apache.log4j.Logger;
 
 import java.lang.reflect.Array;
@@ -53,24 +53,19 @@ import java.util.List;
  * @see CalMonth
  */
 public final class Cal {
-    private static final Logger log = Logger.getLogger(Cal.class);
     public static final int MONTHS_IN_YEAR = 12;
-
-    private Collection<EntryTo> entries;
     private final List<CalMonth> Months = new ArrayList<CalMonth>(MONTHS_IN_YEAR);
-    private final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+    private static final Logger log = Logger.getLogger(Cal.class);
     private final SimpleDateFormat shortDate = new SimpleDateFormat("yyyy-MM-dd");
-
     private final String[] days = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
     private final String[] daysSmall = {"S", "M", "T", "W", "R", "F", "S"};
-
     private final String[] months = {"January", "February", "March", "April",
             "May", "June", "July", "August", "September",
             "October", "November", "December"};
-
+    private Collection<Entry> entries;
     private String baseUrl = null;
 
-    public Cal(final Collection<EntryTo> entries) {
+    public Cal(final Collection<Entry> entries) {
         this.entries = entries;
         this.calculateEntryCounts();
     }
@@ -87,7 +82,7 @@ public final class Cal {
         int[] monthPostCt = null;
 
         try {
-            for (EntryTo entryTo : entries) {
+            for (Entry entryTo : entries) {
                 final java.util.Date currentDate = entryTo.getDate();
 
                 calendarg.setTime(currentDate);

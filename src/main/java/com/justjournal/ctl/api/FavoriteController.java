@@ -35,7 +35,7 @@ package com.justjournal.ctl.api;
 
 import com.justjournal.WebLogin;
 import com.justjournal.repository.EntryRepository;
-import com.justjournal.model.EntryTo;
+import com.justjournal.model.Entry;
 import com.justjournal.utility.SQLHelper;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
@@ -81,8 +81,8 @@ public class FavoriteController {
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public
     @ResponseBody
-    Collection<EntryTo> getFavorites(HttpSession session, HttpServletResponse response) {
-        Collection<EntryTo> entries = new ArrayList<EntryTo>(MAX_FRIENDS_COUNT);
+    Collection<Entry> getFavorites(HttpSession session, HttpServletResponse response) {
+        Collection<Entry> entries = new ArrayList<Entry>(MAX_FRIENDS_COUNT);
 
         try {
 
@@ -91,7 +91,7 @@ public class FavoriteController {
 
             while (rs.next()) {
                 int eid = rs.getInt("entryid");
-                EntryTo et = entryDao.viewSingle(eid);
+                Entry et = entryDao.findOne(eid);
                 entries.add(et);
             }
         } catch (Exception e) {
@@ -104,7 +104,7 @@ public class FavoriteController {
     @RequestMapping(method = RequestMethod.PUT)
     public
     @ResponseBody
-    Map<String, String> create(@RequestBody EntryTo favorite, HttpSession session, HttpServletResponse response) {
+    Map<String, String> create(@RequestBody Entry favorite, HttpSession session, HttpServletResponse response) {
 
         try {
             String sql = "call addfavorite( " + WebLogin.currentLoginId(session) + "," + favorite.getId() + ");";
@@ -125,7 +125,7 @@ public class FavoriteController {
     @RequestMapping(method = RequestMethod.DELETE)
     public
     @ResponseBody
-    Map<String, String> delete(@RequestBody EntryTo favorite, HttpSession session, HttpServletResponse response) throws Exception {
+    Map<String, String> delete(@RequestBody Entry favorite, HttpSession session, HttpServletResponse response) throws Exception {
         if (!WebLogin.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");

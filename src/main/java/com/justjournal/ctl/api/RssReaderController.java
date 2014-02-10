@@ -30,6 +30,7 @@ import com.justjournal.WebLogin;
 import com.justjournal.model.RssSubscription;
 import com.justjournal.repository.RssSubscriptionsDAO;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,9 +47,11 @@ import java.util.Map;
 @Controller
 @RequestMapping("/api/rssreader")
 public class RssReaderController {
-    private static final Logger log = Logger.getLogger(RssReaderController.class);
     public static final int RSS_URL_MAX_LENGTH = 1024;
     public static final int RSS_URL_MIN_LENGTH = 10;
+    private static final Logger log = Logger.getLogger(RssReaderController.class);
+    @Autowired
+    private RssSubscriptionsDAO rssSubscriptionsDAO;
 
     @RequestMapping(method = RequestMethod.PUT)
     public
@@ -57,7 +60,6 @@ public class RssReaderController {
 
         try {
             RssSubscription to = new RssSubscription();
-            boolean result;
 
             if (uri == null || uri.length() < RSS_URL_MIN_LENGTH || uri.length() > RSS_URL_MAX_LENGTH) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -65,12 +67,8 @@ public class RssReaderController {
             }
             to.setId(WebLogin.currentLoginId(session));
             to.setUri(uri);
-            result = RssSubscriptionsDAO.add(to);
+            rssSubscriptionsDAO.save(to);
 
-            if (!result) {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                return java.util.Collections.singletonMap("error", "Error adding link.");
-            }
             return java.util.Collections.singletonMap("id", ""); // XXX
         } catch (Exception e) {
             log.error(e);
@@ -93,11 +91,8 @@ public class RssReaderController {
             to.setId(WebLogin.currentLoginId(session));
             to.setSubscriptionId(subId);
 
-            if (RssSubscriptionsDAO.delete(to)) {
-                return java.util.Collections.singletonMap("id", Integer.toString(subId));
-            }
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return java.util.Collections.singletonMap("error", "Error deleting the subscription.");
+            rssSubscriptionsDAO.delete(to);
+            return java.util.Collections.singletonMap("id", Integer.toString(subId));
         }
 
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

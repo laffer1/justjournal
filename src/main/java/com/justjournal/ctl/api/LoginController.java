@@ -32,6 +32,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.justjournal.WebLogin;
 import com.justjournal.core.Login;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -58,6 +59,8 @@ public class LoginController {
     private static final String JJ_LOGIN_NONE = "JJ.LOGIN.NONE";
 
     private static final Logger log = Logger.getLogger(LoginController.class);
+    @Autowired
+    private WebLogin webLogin;
 
     // Response format
     @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
@@ -127,7 +130,7 @@ public class LoginController {
                 session = request.getSession(true); // reset
             }
 
-            int userID = WebLogin.validate(login.getUsername(), login.getPassword());
+            int userID = webLogin.validate(login.getUsername(), login.getPassword());
             if (userID > WebLogin.BAD_USER_ID) {
                 log.debug("LoginController.post(): Username is " + login.getUsername());
                 session.setAttribute("auth.uid", userID);

@@ -36,6 +36,7 @@ package com.justjournal.model;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.justjournal.WebLogin;
 import com.justjournal.utility.StringUtil;
 import com.sun.istack.internal.NotNull;
@@ -76,6 +77,7 @@ public class User implements Serializable {
     @Column(name = "lastname", length = 20, nullable = true)
     private String lastName = "";
 
+    @JsonIgnore // don't show password in output
     @Basic(fetch = FetchType.LAZY)
     @NotNull
     @Column(name = "password", length = 40, nullable = false)

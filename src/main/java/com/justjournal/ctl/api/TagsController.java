@@ -35,8 +35,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.Collection;
-
 /**
  * Tags
  *
@@ -61,8 +59,8 @@ public class TagsController {
     @RequestMapping(value = "", method = RequestMethod.GET, produces = "application/json")
     public
     @ResponseBody
-    Collection<Tag> getTags() {
-        return tagDao.list();
+    Iterable<Tag> getTags() {
+        return tagDao.findAll();
     }
 
     /**
@@ -75,6 +73,6 @@ public class TagsController {
     @RequestMapping(value = "/api/tags/{id}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public Tag getById(@PathVariable("id") Integer id) {
-        return tagDao.get(id);
+        return tagDao.findOne(id);
     }
 }

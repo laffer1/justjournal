@@ -27,11 +27,13 @@
 package com.justjournal.ctl.api;
 
 import com.justjournal.WebLogin;
-import com.justjournal.repository.*;
 import com.justjournal.model.Friend;
 import com.justjournal.model.User;
+import com.justjournal.repository.FriendsDao;
+import com.justjournal.repository.UserRepository;
 import com.justjournal.utility.SQLHelper;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Controller;
@@ -39,6 +41,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
@@ -52,6 +55,12 @@ import java.util.Map;
 public class FriendController {
     private static final Logger log = Logger.getLogger(FriendController.class);
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private FriendsDao friendsDao;
+
     // TODO: refactor to return user objects?
 
     /**
@@ -62,9 +71,15 @@ public class FriendController {
     @Cacheable(value = "friends", key = "id")
     @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public Collection<String> getById(@PathVariable("id") String id, HttpServletResponse response) {
+    public Collection<User> getById(@PathVariable("id") String id, HttpServletResponse response) {
         try {
-            return UserRepository.friends(id);
+            ArrayList<User> friends = new ArrayList<User>();
+
+            User user = userRepository.findByUsername(id);
+            for (Friend friend : user.getFriends()) {
+                friends.add(friend.getFriend());
+            }
+            return friends;
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return null;
@@ -81,7 +96,7 @@ public class FriendController {
         }
 
         try {
-            User friendUser = UserRepository.get(friend);
+            User friendUser = userRepository.findByUsername(friend);
 
             if (friendUser == null)
                 return java.util.Collections.singletonMap("error", "Could not find friend's username");
@@ -112,10 +127,14 @@ public class FriendController {
             return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
         }
 
-        friend.setOwnerId(WebLogin.currentLoginId(session));
+        try {
+            User user = userRepository.findOne(WebLogin.currentLoginId(session));
+            friend.setUser(user);
 
-        if (FriendsDao.delete(friend)) {
+            friendsDao.delete(friend);
             return java.util.Collections.singletonMap("status", "success");
+        } catch (Exception e) {
+            log.error(e.getMessage());
         }
 
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

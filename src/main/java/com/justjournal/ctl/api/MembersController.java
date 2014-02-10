@@ -26,9 +26,11 @@
 
 package com.justjournal.ctl.api;
 
-import com.justjournal.repository.UserRepository;
+import com.justjournal.model.PrefBool;
 import com.justjournal.model.User;
+import com.justjournal.repository.UserRepository;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,6 +48,9 @@ import java.util.Collection;
 public class MembersController {
     private static final Logger log = Logger.getLogger(MembersController.class);
 
+    @Autowired
+    private UserRepository userRepository;
+
     /**
      * All moods usable by blogs
      *
@@ -56,12 +61,12 @@ public class MembersController {
     public
     @ResponseBody
     Collection<User> list() {
-        Collection<User> members = UserRepository.memberList();
+        Iterable<User> members = userRepository.findAll();
         Collection<User> publicMembers = new ArrayList<User>();
 
         for (User member : members) {
             try {
-                if (!member.getPrivateJournal()) {
+                if (member.getUserPref().getOwnerViewOnly() == PrefBool.N) {
                     publicMembers.add(member);
                 }
             } catch (Exception e) {
