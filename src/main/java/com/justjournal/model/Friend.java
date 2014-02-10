@@ -28,8 +28,14 @@ package com.justjournal.model;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.stereotype.Component;
+
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import java.io.Serializable;
 
 /**
  * Friend
@@ -38,83 +44,49 @@ import org.springframework.stereotype.Component;
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @Component
-public final class Friend {
-    private int id = 0;
-    private String userName = "";
-    private int ownerId = 0;
-    private String ownerUserName = "";
+public class Friend implements Serializable {
+    private static final long serialVersionUID = 7855723158129346426L;
+
+    @Id
+    @GeneratedValue
+    private int pk;
+
+    @JsonProperty("user")
+    @ManyToOne
+    @JoinColumn(name = "id")
+    private User user;
+
+    @JsonProperty("friend")
+    @ManyToOne
+    @JoinColumn(name = "friendid")
+    private User friend;
 
     @JsonCreator
     public Friend() {
 
     }
 
-    @JsonIgnore
-    public Friend(int id, String userName, int ownerId, String ownerUserName) {
-        this.setId(id);
-        this.userName = userName;
-        this.ownerId = ownerId;
-        this.ownerUserName = ownerUserName;
+    public int getPk() {
+        return pk;
     }
 
-    public int getId() {
-        return this.id;
+    public void setPk(final int pk) {
+        this.pk = pk;
     }
 
-    public void setId(final int id) {
-        this.id = id;
+    public User getUser() {
+        return user;
     }
 
-    public String getUserName() {
-        return this.userName;
+    public void setUser(final User user) {
+        this.user = user;
     }
 
-    public void setUserName(final String userName) {
-        this.userName = userName;
+    public User getFriend() {
+        return friend;
     }
 
-    public int getOwnerId() {
-        return this.ownerId;
-    }
-
-    public void setOwnerId(final int ownerId) {
-        this.ownerId = ownerId;
-    }
-
-    public String getOwnerUserName() {
-        return this.ownerUserName;
-    }
-
-    public void setOwnerUserName(final String ownerUserName) {
-        this.ownerUserName = ownerUserName;
-    }
-
-    @JsonIgnore
-    @Override
-    public String toString() {
-        return Integer.toString(getId()) + "," + userName + ","
-                + ownerId + "," + ownerUserName;
-    }
-
-    @JsonIgnore
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        final Friend friendTo = (Friend) o;
-
-        return getId() == friendTo.getId() && ownerId == friendTo.ownerId && ownerUserName.equals(friendTo.ownerUserName) && userName.equals(friendTo.userName);
-    }
-
-    @JsonIgnore
-    @Override
-    public int hashCode() {
-        int result;
-        result = getId();
-        result = 29 * result + userName.hashCode();
-        result = 29 * result + ownerId;
-        result = 29 * result + ownerUserName.hashCode();
-        return result;
+    public void setFriend(final User friend) {
+        this.friend = friend;
     }
 }

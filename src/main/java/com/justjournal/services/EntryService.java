@@ -26,9 +26,9 @@
 
 package com.justjournal.services;
 
+import com.justjournal.model.Entry;
 import com.justjournal.repository.CommentDao;
 import com.justjournal.repository.EntryRepository;
-import com.justjournal.model.EntryTo;
 import com.justjournal.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -40,7 +40,7 @@ import java.util.List;
 @Service
 public interface EntryService {
 
-    public List<EntryTo> getFriendsEntries(String username);
+    public List<Entry> getFriendsEntries(String username);
 
     public void setCommentDao(CommentDao commentDao);
 

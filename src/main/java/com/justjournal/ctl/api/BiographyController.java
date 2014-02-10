@@ -61,6 +61,7 @@ public class BiographyController {
         this.bioDao = bioDao;
     }
 
+    @Autowired
     public void setUserDao(final UserRepository userDao) {
         this.userDao = userDao;
     }

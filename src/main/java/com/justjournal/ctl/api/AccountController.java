@@ -26,13 +26,14 @@
 
 package com.justjournal.ctl.api;
 
-import com.justjournal.UserImpl;
 import com.justjournal.WebLogin;
+import com.justjournal.model.PrefBool;
 import com.justjournal.model.User;
 import com.justjournal.repository.UserRepository;
 import com.justjournal.utility.SQLHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,11 +50,11 @@ public class AccountController {
 
     private Logger log = LoggerFactory.getLogger(AccountController.class);
 
+    @Autowired
     private UserRepository userDao;
 
-    public void setUserDao(final UserRepository userDao) {
-        this.userDao = userDao;
-    }
+    @Autowired
+    private WebLogin webLogin;
 
     private Map<String, String>
     changePassword(String passCurrent, String passNew, HttpSession session, HttpServletResponse response) {
@@ -77,7 +78,7 @@ public class AccountController {
         }
 
         // TODO: Refactor change pass
-        boolean result = WebLogin.changePass(WebLogin.currentLoginName(session), passCurrent, passNew);
+        boolean result = webLogin.changePass(WebLogin.currentLoginName(session), passCurrent, passNew);
 
         if (!result) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -149,13 +150,13 @@ public class AccountController {
         }
     }
 
-    @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "{username}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public com.justjournal.User getById(@PathVariable("id") String id, HttpSession session, HttpServletResponse response) {
+    public User getByUsername(@PathVariable("username") String username, HttpSession session, HttpServletResponse response) {
         try {
-            com.justjournal.User user = new UserImpl(id);
+            User user = userDao.findByUsername(username);
 
-            if (user.isPrivateJournal()) {
+            if (user.getUserPref().getOwnerViewOnly() == PrefBool.Y) {
                 if (
                         !WebLogin.isAuthenticated(session) || user.getUserName().equals(WebLogin.currentLoginName(session))) {
                     response.setStatus(HttpServletResponse.SC_FORBIDDEN);

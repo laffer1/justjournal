@@ -34,8 +34,6 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.ctl.api;
 
-import com.justjournal.User;
-import com.justjournal.UserImpl;
 import com.justjournal.WebLogin;
 import com.justjournal.model.Comment;
 import com.justjournal.model.Entry;
@@ -81,8 +79,7 @@ public class CommentController {
         Entry entry = entryDao.findOne(entryId);
 
         try {
-            User user = new UserImpl(entry.getUser().getUserName());
-            if (user.isPrivateJournal() ||
+            if (entry.getUser().getUserPref().getOwnerViewOnly() == PrefBool.Y ||
                     entry.getAllowComments() == PrefBool.N ||
                     entry.getSecurity().getId() == 0) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);

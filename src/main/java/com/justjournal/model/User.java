@@ -101,10 +101,13 @@ public class User implements Serializable {
     private Integer type;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private Set<EntryTo> entries = new HashSet<EntryTo>();
+    private Set<Entry> entries = new HashSet<Entry>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private Set<Comment> comments = new HashSet<Comment>();
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    private Set<Friend> friends = new HashSet<Friend>();
 
     @OneToOne(mappedBy = "user")
     private UserBio bio;
@@ -130,11 +133,11 @@ public class User implements Serializable {
         this.userLocation = userLocation;
     }
 
-    public Set<EntryTo> getEntries() {
+    public Set<Entry> getEntries() {
         return entries;
     }
 
-    public void setEntries(final Set<EntryTo> entries) {
+    public void setEntries(final Set<Entry> entries) {
         this.entries = entries;
     }
 
@@ -302,5 +305,13 @@ public class User implements Serializable {
 
     public final void setSince(final int since) {
         this.since = since;
+    }
+
+    public Set<Friend> getFriends() {
+        return friends;
+    }
+
+    public void setFriends(final Set<Friend> friends) {
+        this.friends = friends;
     }
 }
