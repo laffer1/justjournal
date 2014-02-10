@@ -35,9 +35,11 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.ctl.api;
 
 import com.justjournal.WebLogin;
-import com.justjournal.db.UserLinkDao;
-import com.justjournal.db.model.UserLinkTo;
+import com.justjournal.model.UserLink;
+import com.justjournal.repository.UserLinkDao;
+import com.justjournal.repository.UserRepository;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -49,6 +51,7 @@ import java.util.Map;
 
 /**
  * User Links that appear in their blog
+ *
  * @author Lucas Holt
  */
 @Controller
@@ -56,23 +59,29 @@ import java.util.Map;
 public class LinkController {
     private static final Logger log = Logger.getLogger(LinkController.class.getName());
 
+    @Autowired
+    private UserLinkDao userLinkDao;
+
+    @Autowired
+    private UserRepository userRepository;
+
     @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public UserLinkTo getById(@PathVariable("id") Integer id) {
-        return UserLinkDao.get(id);
+    public UserLink getById(@PathVariable("id") Integer id) {
+        return userLinkDao.findOne(id);
     }
 
     @Cacheable(value = "userlink", key = "username")
     @RequestMapping(value = "user/{username}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public Collection<UserLinkTo> getByUser(@PathVariable("username") String username) {
-        return UserLinkDao.list(username);
+    public Collection<UserLink> getByUser(@PathVariable("username") String username) {
+        return userLinkDao.findByUsername(username);
     }
 
     @RequestMapping(method = RequestMethod.PUT)
     public
     @ResponseBody
-    Map<String, String> create(@RequestBody UserLinkTo link, HttpSession session, HttpServletResponse response) {
+    Map<String, String> create(@RequestBody UserLink link, HttpSession session, HttpServletResponse response) {
 
         if (!WebLogin.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -80,12 +89,8 @@ public class LinkController {
         }
 
         try {
-            UserLinkDao dao = new UserLinkDao();
-
-            if (!dao.add(link)) {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                return java.util.Collections.singletonMap("error", "Error adding link.");
-            }
+            link.setUser(userRepository.findOne(WebLogin.currentLoginId(session)));
+            userLinkDao.save(link);
             return java.util.Collections.singletonMap("id", ""); // XXX
         } catch (Exception e) {
             log.error(e);
@@ -107,15 +112,12 @@ public class LinkController {
 
         if (linkId > 0) {
             /* valid link id */
-            UserLinkTo link = new UserLinkTo();
-            link.setUserId(WebLogin.currentLoginId(session));
-            link.setId(linkId);
+            UserLink link = userLinkDao.findOne(linkId);
+            if (link.getUser().getId() == WebLogin.currentLoginId(session)) {
+                userLinkDao.delete(linkId);
 
-            if (UserLinkDao.delete(link)) {
                 return java.util.Collections.singletonMap("id", Integer.toString(linkId));
             }
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return java.util.Collections.singletonMap("error", "Error deleting your link.");
         }
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         return java.util.Collections.singletonMap("error", "Error deleting your link. Bad link id.");

@@ -26,7 +26,7 @@
 
 package com.justjournal.ctl;
 
-import com.justjournal.db.SQLHelper;
+import com.justjournal.utility.SQLHelper;
 import com.justjournal.utility.ServletUtilities;
 import org.apache.log4j.Logger;
 

@@ -26,8 +26,8 @@
 
 package com.justjournal.ctl.api;
 
-import com.justjournal.db.model.Location;
-import com.justjournal.db.LocationDao;
+import com.justjournal.model.Location;
+import com.justjournal.repository.LocationDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Controller;
@@ -35,8 +35,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.util.Collection;
 
 /**
  * @author Lucas Holt

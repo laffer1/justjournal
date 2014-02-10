@@ -26,9 +26,8 @@
 
 package com.justjournal.ctl.api;
 
-import com.justjournal.db.model.Statistics;
-import com.justjournal.db.model.UserStatistics;
-import com.justjournal.db.model.UserStatisticsImpl;
+import com.justjournal.model.Statistics;
+import com.justjournal.model.UserStatistics;
 import com.justjournal.services.ServiceException;
 import com.justjournal.services.StatisticsService;
 import com.sun.istack.internal.NotNull;
@@ -93,7 +92,7 @@ public class StatisticsController {
         try {
             if (id == null || id.equals("") || id.length() < 3) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                return new UserStatisticsImpl();
+                return new UserStatistics();
             }
 
             UserStatistics us = statisticsService.getUserStatistics(id);
@@ -104,7 +103,7 @@ public class StatisticsController {
         } catch (ServiceException e) {
             log.warn("User Statistics error: (" + id + "), " + e.getMessage());
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            return new UserStatisticsImpl();
+            return new UserStatistics();
         }
     }
 }

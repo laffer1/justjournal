@@ -37,16 +37,19 @@ package com.justjournal.google;
 import com.justjournal.User;
 import com.justjournal.UserImpl;
 import com.justjournal.WebLogin;
-import com.justjournal.db.*;
-import com.justjournal.db.model.DateTime;
-import com.justjournal.db.model.DateTimeBean;
-import com.justjournal.db.model.EntryImpl;
-import com.justjournal.db.model.EntryTo;
+import com.justjournal.model.PrefBool;
+import com.justjournal.repository.*;
+import com.justjournal.model.DateTime;
+import com.justjournal.model.DateTimeBean;
+import com.justjournal.model.Entry;
 import com.justjournal.restping.BasePing;
 import com.justjournal.restping.IceRocket;
 import com.justjournal.restping.TechnoratiPing;
+import com.justjournal.utility.DateConvert;
 import com.justjournal.utility.StringUtil;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 import java.util.*;
@@ -54,8 +57,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * User: laffer1 Date: Dec 3, 2007 Time: 4:21:42 PM $Id: Blogger.java,v 1.19 2011/06/12 06:24:38 laffer1 Exp $
- * <p/>
  * A blogger 1 compatible interface exposed by XML-RPC
  * <p/>
  * http://www.blogger.com/developers/api/1_docs/
@@ -68,10 +69,28 @@ import java.util.regex.Pattern;
  * or archive index template of a given blog.
  */
 @SuppressWarnings({"UnusedParameters"})
+@Component
 public class Blogger {
 
     private static final Logger log = Logger.getLogger(Blogger.class);
-    private EntryDao entryDao = new EntryDaoImpl();
+
+    @Autowired
+    private EntryRepository entryRepository;
+
+    @Autowired
+    private WebLogin webLogin;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private MoodDao moodDao;
+
+    @Autowired
+    private LocationDao locationDao;
+
+    @Autowired
+    private SecurityDao securityDao;
 
     /**
      * Fetch the users personal information including their username, userid, email address and name.
@@ -97,7 +116,7 @@ public class Blogger {
             blnError = true;
         }
 
-        userId = WebLogin.validate(username, password);
+        userId = webLogin.validate(username, password);
         if (userId < 1)
             blnError = true;
 
@@ -151,7 +170,7 @@ public class Blogger {
             blnError = true;
         }
 
-        userId = WebLogin.validate(username, password);
+        userId = webLogin.validate(username, password);
         if (userId < 1)
             blnError = true;
 
@@ -194,8 +213,8 @@ public class Blogger {
         String result = "";
         int userId;
         boolean blnError = false;
-        final EntryTo et = new EntryImpl();
-        EntryTo et2;
+        final Entry et = new Entry();
+        Entry et2;
         HashMap<String, Serializable> s = new HashMap<String, Serializable>();
 
         if (!StringUtil.lengthCheck(username, 3, WebLogin.USERNAME_MAX_LENGTH)) {
@@ -206,17 +225,15 @@ public class Blogger {
             blnError = true;
         }
 
-        userId = WebLogin.validate(username, password);
+        userId = webLogin.validate(username, password);
         if (userId < 1)
             blnError = true;
 
         if (!blnError)
             try {
-                User user = new UserImpl(userId);
-                et.setUserId(userId);
-                DateTime d = new DateTimeBean();
-                d.set(new java.util.Date());
-                et.setDate(d);
+                com.justjournal.model.User user = userRepository.findOne(userId);
+                et.setUser(user);
+                et.setDate(new java.util.Date());
 
                 /* Allow html style title tag to set subject, used by many clients */
                 String subject;
@@ -242,24 +259,23 @@ public class Blogger {
                     music = "";
                 et.setMusic(StringUtil.replace(music, '\'', "\\\'"));
 
-                et.setSecurityLevel(2);   // public
-                et.setLocationId(0); // not specified
-                et.setMoodId(12);    // not specified
-                et.setAutoFormat(true);
-                et.setAllowComments(true);
-                et.setEmailComments(true);
-                et.setUserId(userId);
-                et.setUserName(user.getUserName());
+                et.setSecurity(securityDao.findOne(2));   // public
+                et.setLocation(locationDao.findOne(0)); // not specified
+                et.setMood(moodDao.findOne(12));    // not specified
+                et.setAutoFormat(PrefBool.Y);
+                et.setAllowComments(PrefBool.Y);
+                et.setEmailComments(PrefBool.Y);
+                et.setUser(userRepository.findOne(userId));
 
-                EntryDaoImpl.add(et);
-                et2 = entryDao.viewSingle(et);
+                entryRepository.save(et);
+                et2 = entryRepository.findOne(et.getId()); // TODO: this is wrong.
                 result = Integer.toString(et2.getId());
 
-                if (!user.isPrivateJournal()) {
+                if (user.getUserPref().getOwnerViewOnly() == PrefBool.N) {
                     log.debug("Ping weblogs");
                     /* WebLogs, Google, blo.gs */
                     BasePing rp = new BasePing("http://rpc.weblogs.com/pingSiteForm");
-                    rp.setName(user.getJournalName());
+                    rp.setName(user.getUserPref().getJournalName());
                     rp.setUri("http://www.justjournal.com/" + "users/" + user.getUserName());
                     rp.setChangesURL("http://www.justjournal.com" + "/users/" + user.getUserName() + "/rss");
                     rp.ping();
@@ -270,13 +286,13 @@ public class Blogger {
 
                     /* Technorati */
                     TechnoratiPing rpt = new TechnoratiPing();
-                    rpt.setName(user.getJournalName());
+                    rpt.setName(user.getUserPref().getJournalName());
                     rpt.setUri("http://www.justjournal.com/" + "users/" + user.getUserName());
                     rpt.ping();
 
                     /* IceRocket */
                     IceRocket ice = new IceRocket();
-                    ice.setName(user.getJournalName());
+                    ice.setName(user.getUserPref().getJournalName());
                     ice.setUri("http://www.justjournal.com/" + "users/" + user.getUserName());
                     ice.ping();
                 }
@@ -325,7 +341,7 @@ public class Blogger {
             blnError = true;
         }
 
-        userId = WebLogin.validate(username, password);
+        userId = webLogin.validate(username, password);
         if (userId < 1)
             blnError = true;
 
@@ -337,7 +353,9 @@ public class Blogger {
 
         if (!blnError && eid > 0) {
             try {
-                EntryDaoImpl.delete(eid, userId);
+                Entry entry = entryRepository.findOne(eid);
+                if (entry.getUser().getId() == userId)
+                    entryRepository.delete(eid);
             } catch (Exception e) {
                 blnError = true;
                 log.debug(e.getMessage());
@@ -386,7 +404,7 @@ public class Blogger {
             blnError = true;
         }
 
-        userId = WebLogin.validate(username, password);
+        userId = webLogin.validate(username, password);
         if (userId < 1)
             blnError = true;
 
@@ -400,9 +418,12 @@ public class Blogger {
             try {
                 /* we're just updating the content aka body as this is the
            only thing the protocol supports. */
-                EntryTo et2 = entryDao.viewSingle(eid, userId);
-                et2.setBody(StringUtil.replace(content, '\'', "\\\'"));
-                EntryDaoImpl.update(et2);
+                Entry et2 = entryRepository.findOne(eid);
+                if (userId == et2.getUser().getId()) {
+                    et2.setBody(StringUtil.replace(content, '\'', "\\\'"));
+                    entryRepository.save(et2);
+                }
+                else blnError = true;
             } catch (Exception e) {
                 blnError = true;
                 log.debug(e.getMessage());
@@ -464,7 +485,7 @@ public class Blogger {
      */
     public Cloneable getRecentPosts(String appkey, String blogid, String username, String password, int numberOfPosts) {
         ArrayList<HashMap<Object, Serializable>> arr = new ArrayList<HashMap<Object, Serializable>>(numberOfPosts);
-        Collection<EntryTo> total;
+        Collection<Entry> total;
         Boolean blnError = false;
         int userId;
         HashMap<String, Serializable> s = new HashMap<String, Serializable>();
@@ -477,35 +498,35 @@ public class Blogger {
             blnError = true;
         }
 
-        userId = WebLogin.validate(username, password);
+        userId = webLogin.validate(username, password);
         if (blnError || userId < 1) {
             s.put("faultCode", 4);
             s.put("faultString", "User authentication failed: " + username);
             return s;
         }
 
-        total = entryDao.viewAll(username, true);
+        total = entryRepository.findByUsername(username);
 
-        Iterator<EntryTo> it = total.iterator();
+        Iterator<Entry> it = total.iterator();
 
         for (int i = 0; i < numberOfPosts; i++)
             if (it.hasNext()) {
                 HashMap<Object, Serializable> entry = new HashMap<Object, Serializable>();
-                EntryTo e = it.next();
-                entry.put("link", "http://www.justjournal.com/users/" + e.getUserName() + "/entry/" + e.getId());
-                entry.put("permaLink", "http://www.justjournal.com/users/" + e.getUserName() + "/entry/" + e.getId());
-                entry.put("userid", Integer.toString(e.getUserId()));
+                Entry e = it.next();
+                entry.put("link", "http://www.justjournal.com/users/" + username + "/entry/" + e.getId());
+                entry.put("permaLink", "http://www.justjournal.com/users/" + username + "/entry/" + e.getId());
+                entry.put("userid", Integer.toString(e.getUser().getId()));
                 entry.put("mt_allow_pings", 0);     /* TODO: on or off? */
                 entry.put("mt_allow_comments", 1);  /* TODO: on or off? */
-                entry.put("description", e.getBodyWithoutHTML());  /* TODO: change format? */
-                entry.put("content", e.getBodyWithoutHTML());  /* TODO: change format? */
+                entry.put("description", e.getBody());  /* TODO: change format? no html */
+                entry.put("content", e.getBody());  /* TODO: change format? no html */
                 entry.put("mt_convert_breaks", 0);                 /* TODO: research what these are... */
                 entry.put("postid", Integer.toString(e.getId()));
-                entry.put("mt_excerpt", e.getBodyWithoutHTML());
+                entry.put("mt_excerpt", e.getBody());
                 entry.put("mt_keywords", "");
                 entry.put("title", e.getSubject());
                 entry.put("mt_text_more", "");
-                entry.put("dateCreated", e.getDate()); /* TODO: needs to be iso8601 */
+                entry.put("dateCreated", DateConvert.encode8601(e.getDate()));
                 arr.add(entry);
             }
 
@@ -526,7 +547,7 @@ public class Blogger {
         int userId;
         HashMap<Object, Serializable> s = new HashMap<Object, Serializable>();
         HashMap<Object, Serializable> entry = new HashMap<Object, Serializable>();
-        EntryTo e;
+        Entry e;
 
         if (!StringUtil.lengthCheck(username, 3, 15)) {
             blnError = true;
@@ -536,29 +557,34 @@ public class Blogger {
             blnError = true;
         }
 
-        userId = WebLogin.validate(username, password);
+        userId = webLogin.validate(username, password);
         if (blnError || userId < 1) {
             s.put("faultCode", 4);
             s.put("faultString", "User authentication failed: " + username);
             return s;
         }
 
-        e = entryDao.viewSingle(Integer.parseInt(postid), userId);
+        e = entryRepository.findOne(Integer.parseInt(postid));
+        if (userId != e.getUser().getId()) {
+            s.put("faultCode", 4);
+                       s.put("faultString", "User authentication failed: " + username);
+                       return s;
+        }
 
-        entry.put("link", "http://www.justjournal.com/users/" + e.getUserName() + "/entry/" + e.getId());
-        entry.put("permaLink", "http://www.justjournal.com/users/" + e.getUserName() + "/entry/" + e.getId());
-        entry.put("userid", Integer.toString(e.getUserId()));
+        entry.put("link", "http://www.justjournal.com/users/" + e.getUser().getUserName() + "/entry/" + e.getId());
+        entry.put("permaLink", "http://www.justjournal.com/users/" + e.getUser().getUserName() + "/entry/" + e.getId());
+        entry.put("userid", Integer.toString(userId));
         entry.put("mt_allow_pings", 0);     /* TODO: on or off? */
         entry.put("mt_allow_comments", 1);  /* TODO: on or off? */
-        entry.put("description", e.getBodyWithoutHTML());  /* TODO: change format? */
-        entry.put("content", e.getBodyWithoutHTML());  /* TODO: change format? */
+        entry.put("description", e.getBody());  /* TODO: change format?  what about html */
+        entry.put("content", e.getBody());  /* TODO: change format? */
         entry.put("mt_convert_breaks", 0);                 /* TODO: research what these are... */
         entry.put("postid", Integer.toString(e.getId()));
-        entry.put("mt_excerpt", e.getBodyWithoutHTML());
+        entry.put("mt_excerpt", e.getBody());
         entry.put("mt_keywords", "");
         entry.put("title", e.getSubject());
         entry.put("mt_text_more", "");
-        entry.put("dateCreated", e.getDate()); /* TODO: needs to be iso8601 */
+        entry.put("dateCreated", DateConvert.encode8601(e.getDate()));
 
         return entry;
     }

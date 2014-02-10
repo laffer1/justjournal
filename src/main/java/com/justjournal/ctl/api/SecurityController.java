@@ -26,8 +26,8 @@
 
 package com.justjournal.ctl.api;
 
-import com.justjournal.db.SecurityDao;
-import com.justjournal.db.model.Security;
+import com.justjournal.repository.SecurityDao;
+import com.justjournal.model.Security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Controller;

@@ -26,8 +26,8 @@
 
 package com.justjournal.ctl.api;
 
-import com.justjournal.db.UserDao;
-import com.justjournal.db.model.UserTo;
+import com.justjournal.repository.UserRepository;
+import com.justjournal.model.User;
 import org.apache.log4j.Logger;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Controller;
@@ -55,11 +55,11 @@ public class MembersController {
     @RequestMapping(method = RequestMethod.GET, headers = "Accept=*/*", produces = "application/json")
     public
     @ResponseBody
-    Collection<UserTo> list() {
-        Collection<UserTo> members = UserDao.memberList();
-        Collection<UserTo> publicMembers = new ArrayList<UserTo>();
+    Collection<User> list() {
+        Collection<User> members = UserRepository.memberList();
+        Collection<User> publicMembers = new ArrayList<User>();
 
-        for (UserTo member : members) {
+        for (User member : members) {
             try {
                 if (!member.getPrivateJournal()) {
                     publicMembers.add(member);

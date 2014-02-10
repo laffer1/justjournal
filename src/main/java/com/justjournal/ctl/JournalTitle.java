@@ -36,7 +36,7 @@ package com.justjournal.ctl;
 
 import com.justjournal.UserImpl;
 import com.justjournal.WebError;
-import com.justjournal.db.SQLHelper;
+import com.justjournal.utility.SQLHelper;
 import com.justjournal.utility.FileIO;
 import com.justjournal.utility.StringUtil;
 import org.apache.log4j.Logger;

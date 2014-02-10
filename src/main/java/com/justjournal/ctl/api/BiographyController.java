@@ -27,10 +27,10 @@
 package com.justjournal.ctl.api;
 
 import com.justjournal.WebLogin;
-import com.justjournal.db.UserBioDao;
-import com.justjournal.db.UserDao;
-import com.justjournal.db.model.UserTo;
-import com.justjournal.db.model.Bio;
+import com.justjournal.repository.UserBioDao;
+import com.justjournal.repository.UserRepository;
+import com.justjournal.model.User;
+import com.justjournal.model.UserBio;
 import com.justjournal.utility.StringUtil;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,18 +54,23 @@ public class BiographyController {
     public static final int BIO_MAX_LENGTH = 150;
     private org.slf4j.Logger log = LoggerFactory.getLogger(BiographyController.class);
     private UserBioDao bioDao = null;
+    private UserRepository userDao;
 
     @Autowired
     public void setBioDao(UserBioDao bioDao) {
         this.bioDao = bioDao;
     }
 
+    public void setUserDao(final UserRepository userDao) {
+        this.userDao = userDao;
+    }
+
     @Cacheable(value = "biography", key = "username")
     @RequestMapping(value = "{username}", method = RequestMethod.GET, headers = "Accept=*/*", produces = "application/json")
     public
     @ResponseBody
-    Bio get(@PathVariable("username") String username, HttpServletResponse response) {
-        UserTo user = UserDao.get(username);
+    UserBio get(@PathVariable("username") String username, HttpServletResponse response) {
+        User user = userDao.findByUsername(username);
         if (user == null) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return null;
@@ -89,7 +94,7 @@ public class BiographyController {
 
         try {
             if (userID > 0) {
-                Bio biography = bioDao.findByUserId(userID);
+                UserBio biography = bioDao.findByUserId(userID);
                 biography.setBio(bio);
                 bioDao.save(biography);
 

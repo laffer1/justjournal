@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <%@ page contentType="text/html; charset=iso-8859-1" language="java" %>
-<%@ page import="com.justjournal.db.*" %>
+<%@ page import="com.justjournal.repository.*" %>
 <%@ page import="com.justjournal.search.BaseSearch" %>
 <%@ page import="com.justjournal.utility.Xml" %>
 <%@ page import="java.sql.*" %>
 <%@ page import="java.text.ParsePosition" %>
 <%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="com.justjournal.utility.SQLHelper" %>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>Just Journal: Search</title>

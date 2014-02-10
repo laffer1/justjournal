@@ -26,12 +26,11 @@
 
 package com.justjournal.ctl.api;
 
-import com.justjournal.User;
 import com.justjournal.UserImpl;
 import com.justjournal.WebLogin;
-import com.justjournal.db.SQLHelper;
-import com.justjournal.db.UserDao;
-import com.justjournal.db.model.UserTo;
+import com.justjournal.model.User;
+import com.justjournal.repository.UserRepository;
+import com.justjournal.utility.SQLHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -49,6 +48,12 @@ import java.util.Map;
 public class AccountController {
 
     private Logger log = LoggerFactory.getLogger(AccountController.class);
+
+    private UserRepository userDao;
+
+    public void setUserDao(final UserRepository userDao) {
+        this.userDao = userDao;
+    }
 
     private Map<String, String>
     changePassword(String passCurrent, String passNew, HttpSession session, HttpServletResponse response) {
@@ -81,15 +86,10 @@ public class AccountController {
         return java.util.Collections.singletonMap("status", "Password Changed.");
     }
 
-    private Map<String, String> updateUser(UserTo user, HttpSession session, HttpServletResponse response) {
+    private Map<String, String> updateUser(User user, HttpSession session, HttpServletResponse response) {
         if (WebLogin.currentLoginId(session) == user.getId() && WebLogin.currentLoginName(session).equals(user.getUserName())) {
 
-            boolean result = UserDao.update(user);
-
-            if (!result) {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                return java.util.Collections.singletonMap("error", "Could not edit account.");
-            }
+            userDao.save(user);
             return java.util.Collections.singletonMap("id", Integer.toString(user.getId()));
         }
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -135,7 +135,7 @@ public class AccountController {
     @RequestMapping(method = RequestMethod.POST, produces = "application/json")
     public
     @ResponseBody
-    Map<String, String> post(@RequestParam String type, @RequestParam String passCurrent, @RequestParam String passNew, @RequestBody UserTo user, HttpSession session, HttpServletResponse response) {
+    Map<String, String> post(@RequestParam String type, @RequestParam String passCurrent, @RequestParam String passNew, @RequestBody User user, HttpSession session, HttpServletResponse response) {
 
         if (!WebLogin.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -151,9 +151,9 @@ public class AccountController {
 
     @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public User getById(@PathVariable("id") String id, HttpSession session, HttpServletResponse response) {
+    public com.justjournal.User getById(@PathVariable("id") String id, HttpSession session, HttpServletResponse response) {
         try {
-            User user = new UserImpl(id);
+            com.justjournal.User user = new UserImpl(id);
 
             if (user.isPrivateJournal()) {
                 if (

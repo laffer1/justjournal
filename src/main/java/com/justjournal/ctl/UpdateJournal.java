@@ -39,10 +39,8 @@ import com.justjournal.WebError;
 import com.justjournal.WebLogin;
 import com.justjournal.core.Settings;
 import com.justjournal.core.TrackbackOut;
-import com.justjournal.db.EntryDao;
-import com.justjournal.db.EntryDaoImpl;
-import com.justjournal.db.model.EntryImpl;
-import com.justjournal.db.model.EntryTo;
+import com.justjournal.model.*;
+import com.justjournal.repository.*;
 import com.justjournal.restping.BasePing;
 import com.justjournal.restping.IceRocket;
 import com.justjournal.restping.TechnoratiPing;
@@ -50,12 +48,15 @@ import com.justjournal.utility.HTMLUtil;
 import com.justjournal.utility.Spelling;
 import com.justjournal.utility.StringUtil;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.StringTokenizer;
@@ -76,19 +77,46 @@ import java.util.regex.Pattern;
  * 1.4 Changed default behavior for allow comments flag.  Assumes the user will uncheck a box to disable comments.  auto
  * formatting was changed in a similar manner for usability.
  */
-public final class UpdateJournal extends HttpServlet {
+@Component
+public class UpdateJournal extends HttpServlet {
 
+    public static final int DEFAULT_BUFFER_SIZE = 8192;
     private static final char endl = '\n';
     private static final Logger log = Logger.getLogger(UpdateJournal.class);
-    public static final int DEFAULT_BUFFER_SIZE = 8192;
     private static final long serialVersionUID = -6905389941955230503L;
     @SuppressWarnings({"InstanceVariableOfConcreteClass"})
     private Settings settings = new Settings();  // global jj settings
+    @Autowired
+    private EntryRepository entryRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private SecurityDao securityRepository;
+    @Autowired
+    private LocationDao locationDao;
+    @Autowired
+    private MoodDao moodDao;
+    @Autowired
+    private WebLogin webLogin;
 
-    enum ClientType {
-        web, mobile, dashboard, desktop
+    /**
+     * Determine the type of client
+     *
+     * @param ua     user agent
+     * @param client client param
+     * @return ClientType
+     */
+    private static ClientType detectClient(final String ua, final String client) {
+        if (ua != null && ua.contains("JustJournal")) {
+            return ClientType.desktop;
+        } else if (client != null && client.contains("dash")) {
+            return ClientType.dashboard;
+        } else if (client != null && client.contains("mobile")) {
+            return ClientType.mobile;
+        } else {
+            return ClientType.web;
+        }
     }
-
 
     /**
      * Print out the webpage for HTML friendly clients.
@@ -283,25 +311,6 @@ public final class UpdateJournal extends HttpServlet {
     }
 
     /**
-     * Determine the type of client
-     *
-     * @param ua     user agent
-     * @param client client param
-     * @return ClientType
-     */
-    private static ClientType detectClient(final String ua, final String client) {
-        if (ua != null && ua.contains("JustJournal")) {
-            return ClientType.desktop;
-        } else if (client != null && client.contains("dash")) {
-            return ClientType.dashboard;
-        } else if (client != null && client.contains("mobile")) {
-            return ClientType.mobile;
-        } else {
-            return ClientType.web;
-        }
-    }
-
-    /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      *
      * @param request  servlet request
@@ -313,7 +322,6 @@ public final class UpdateJournal extends HttpServlet {
 
         boolean blnError = false;
         final StringBuffer sb = new StringBuffer();
-        EntryDao entryDao = new EntryDaoImpl();
 
         // start session if one does not exist.
         final HttpSession session = request.getSession(true);
@@ -361,7 +369,7 @@ public final class UpdateJournal extends HttpServlet {
                 if (userName != null)
                     userName = userName.toLowerCase();
                 final String password = request.getParameter("pass");
-                userID = WebLogin.validate(userName, password);
+                userID = webLogin.validate(userName, password);
 
                 String keepLogin = request.getParameter("keeplogin");
                 if (keepLogin == null)
@@ -369,7 +377,7 @@ public final class UpdateJournal extends HttpServlet {
                 if (keepLogin.compareTo("checked") == 0) {
                     session.setAttribute("auth.uid", userID);
                     session.setAttribute("auth.user", userName);
-                    WebLogin.setLastLogin(userID);
+                    webLogin.setLastLogin(userID);
                 }
             } catch (Exception e3) {
                 if (myclient == ClientType.web)
@@ -384,7 +392,8 @@ public final class UpdateJournal extends HttpServlet {
         if (userID > 0) {
             // We authenticated OK.  Continue...
 
-            final EntryImpl et = new EntryImpl();
+            User user = userRepository.findOne(userID);
+            Entry et = new Entry();
 
             // Get the user input
             final int security = Integer.valueOf(request.getParameter("security"));
@@ -452,19 +461,23 @@ public final class UpdateJournal extends HttpServlet {
             subject = StringUtil.replace(subject, '\'', "\\\'");
 
             try {
-                et.setUserId(userID);
-                et.setDate(date + " " + time);
+                et.setUser(user);
+                DateTime dtb = new DateTimeBean();
+                dtb.set(date + " " + time);
+                et.setDate(dtb.toDate());
                 et.setSubject(subject);
                 et.setMusic(StringUtil.replace(music, '\'', "\\\'"));
-                et.setSecurityLevel(security);
-                et.setLocationId(location);
-                et.setMoodId(mood);
+
+                et.setSecurity(securityRepository.findOne(security));
+
+                et.setLocation(locationDao.findOne(location));
+                et.setMood(moodDao.findOne(mood));
 
                 // the check box says disable auto format
                 if ((aformat.equals("checked")) || myclient == ClientType.dashboard || myclient == ClientType.mobile)
-                    et.setAutoFormat(true);
+                    et.setAutoFormat(PrefBool.Y);
                 else {
-                    et.setAutoFormat(false);
+                    et.setAutoFormat(PrefBool.N);
                     // probably HTML, run jtidy on it
                     body = HTMLUtil.clean(body, false);
                 }
@@ -476,15 +489,15 @@ public final class UpdateJournal extends HttpServlet {
 
                 // disable comments
                 if ((allowcomment.equals("checked")) || myclient == ClientType.dashboard || myclient == ClientType.mobile)
-                    et.setAllowComments(true);
+                    et.setAllowComments(PrefBool.Y);
                 else
-                    et.setAllowComments(false);
+                    et.setAllowComments(PrefBool.N);
 
                 // disable email notifications
                 if ((emailcomment.equals("checked")) || myclient == ClientType.dashboard || myclient == ClientType.mobile)
-                    et.setEmailComments(true);
+                    et.setEmailComments(PrefBool.Y);
                 else
-                    et.setEmailComments(false);
+                    et.setEmailComments(PrefBool.N);
 
 
             } catch (IllegalArgumentException e1) {
@@ -494,6 +507,12 @@ public final class UpdateJournal extends HttpServlet {
                     sb.append("JJ.JOURNAL.UPDATE.FAIL");
 
                 blnError = true;
+            } catch (ParseException e) {
+                log.error(e.getMessage());
+                if (myclient == ClientType.web)
+                    WebError.Display("Input Error", "Date Parse failure", sb);
+                else
+                    sb.append("JJ.JOURNAL.UPDATE.FAIL");
             }
 
             final String isSpellCheck = request.getParameter("spellcheck");
@@ -505,11 +524,11 @@ public final class UpdateJournal extends HttpServlet {
                 session.setAttribute("spell.check", "true");
                 session.setAttribute("spell.body", et.getBody());
                 session.setAttribute("spell.music", et.getMusic());
-                session.setAttribute("spell.location", et.getLocationId());
+                session.setAttribute("spell.location", et.getLocation());
                 session.setAttribute("spell.subject", et.getSubject());
                 session.setAttribute("spell.date", et.getDate());
-                session.setAttribute("spell.security", et.getSecurityLevel());
-                session.setAttribute("spell.mood", et.getMoodId());
+                session.setAttribute("spell.security", et.getSecurity());
+                session.setAttribute("spell.mood", et.getMood());
                 session.setAttribute("spell.tags", tags);
                 session.setAttribute("spell.trackback", trackback);
 
@@ -536,15 +555,15 @@ public final class UpdateJournal extends HttpServlet {
 
                 // create entry
                 if (!blnError) {
-                    final boolean result = EntryDaoImpl.add(et);
+                    entryRepository.save(et);
 
-                    if (!result) {
+                  /*  if (!result) {
                         if (myclient == ClientType.web)
                             WebError.Display("Error", "Error adding the journal entry", sb);
                         else
                             sb.append("JJ.JOURNAL.UPDATE.FAIL");
                         blnError = true;
-                    }
+                    }*/
                 }
 
                 // add tags
@@ -567,8 +586,9 @@ public final class UpdateJournal extends HttpServlet {
 
                         // lookup the tag id
                         if (t.size() > 0) {
-                            final EntryTo et2 = entryDao.viewSingle(et);
-                            entryDao.setTags(et2.getId(), t);
+                            // TODO: is this right?
+                            Entry et2 = entryRepository.findOne(et.getId());
+                            //    entryDao.setTags(et2.getId(), t);
                         }
                     }
                 }
@@ -594,7 +614,7 @@ public final class UpdateJournal extends HttpServlet {
                     } else
                         sb.append("JJ.JOURNAL.UPDATE.OK");
 
-                    if (et.getSecurityLevel() == 2) {
+                    if (et.getSecurity().getId() == 2) {
                         /* Initialize Preferences Object */
                         UserImpl pf = null;
                         try {
@@ -633,7 +653,7 @@ public final class UpdateJournal extends HttpServlet {
 
                             /* do trackback */
                             if (trackback.length() > 0) {
-                                final EntryTo et2 = entryDao.viewSingle(et);
+                                final Entry et2 = entryRepository.findOne(et.getId());
                                 final TrackbackOut tbout = new TrackbackOut(trackback,
                                         settings.getBaseUri() + "users/" + userName + "/entry/" + et2.getId(),
                                         et.getSubject(), et.getBody(), pf.getJournalName());
@@ -693,6 +713,10 @@ public final class UpdateJournal extends HttpServlet {
      */
     public String getServletInfo() {
         return "add a journal entry";
+    }
+
+    enum ClientType {
+        web, mobile, dashboard, desktop
     }
 
 }

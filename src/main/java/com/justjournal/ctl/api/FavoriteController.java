@@ -34,9 +34,9 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.ctl.api;
 
 import com.justjournal.WebLogin;
-import com.justjournal.db.EntryDao;
-import com.justjournal.db.model.EntryTo;
-import com.justjournal.db.SQLHelper;
+import com.justjournal.repository.EntryRepository;
+import com.justjournal.model.EntryTo;
+import com.justjournal.utility.SQLHelper;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -66,9 +66,9 @@ import java.util.Map;
 public class FavoriteController {
     private static final Logger log = Logger.getLogger(FavoriteController.class.getName());
     public static final int MAX_FRIENDS_COUNT = 20;
-    private EntryDao entryDao = null;
+    private EntryRepository entryDao = null;
 
-    public void setEntryDao(final EntryDao entryDao) {
+    public void setEntryDao(final EntryRepository entryDao) {
         this.entryDao = entryDao;
     }
 

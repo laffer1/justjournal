@@ -1,6 +1,6 @@
 package com.justjournal.atom;
 
-import com.justjournal.db.model.EntryTo;
+import com.justjournal.model.Entry;
 import com.justjournal.utility.DateConvert;
 import com.justjournal.utility.Xml;
 
@@ -52,24 +52,24 @@ public final class AtomFeed {
 
     private List<AtomEntry> items = new ArrayList<AtomEntry>(MAX_LENGTH);
 
-    public void populate(Collection<EntryTo> entries) {
+    public void populate(Collection<Entry> entries) {
         AtomEntry item;
 
         // TODO: this sucks... need to make this reusable
         try {
-            EntryTo o;
-            Iterator<EntryTo> itr = entries.iterator();
+            Entry o;
+            Iterator<Entry> itr = entries.iterator();
 
             for (int x = 0, n = entries.size(); x < n && x < MAX_LENGTH; x++) {
                 o = itr.next();
                 item = new AtomEntry();
-                item.setId("urn:jj:justjournal.com:atom1:" + o.getUserName()
+                item.setId("urn:jj:justjournal.com:atom1:" + o.getUser().getUserName()
                         + ":" + o.getId());
                 item.setTitle(o.getSubject());
                 item.setContent(o.getBody());
-                item.setLink("http://www.justjournal.com/users/" + o.getUserName() + "/entry/" + o.getId());
-                item.setPublished(o.getDateTime().toRFC3339());
-                item.setUpdated(o.getDateTime().toRFC3339());
+                item.setLink("http://www.justjournal.com/users/" + o.getUser().getUserName() + "/entry/" + o.getId());
+                item.setPublished(DateConvert.encode3339(o.getDate()));
+                item.setUpdated(DateConvert.encode3339(o.getDate()));
                 Add(item);
             }
         } catch (Exception ignored) {

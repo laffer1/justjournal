@@ -30,6 +30,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * Location
@@ -39,14 +40,15 @@ import javax.persistence.*;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @Entity
 @Table(name = "location")
-public final class Location {
+public class Location implements Serializable {
 
+    private static final long serialVersionUID = 4847945847367026222L;
     @Id
     @GeneratedValue
     private int id;
 
     @Column(length = 15, nullable = false, name = "title", unique = true)
-    private String title;
+    private String title = "";
 
     @JsonCreator
     public Location() {

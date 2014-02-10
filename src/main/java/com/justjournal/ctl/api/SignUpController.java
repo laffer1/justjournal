@@ -28,28 +28,34 @@ package com.justjournal.ctl.api;
 
 import com.justjournal.WebLogin;
 import com.justjournal.core.Settings;
-import com.justjournal.db.UserDao;
-import com.justjournal.db.model.UserTo;
+import com.justjournal.model.*;
+import com.justjournal.repository.UserRepository;
 import com.justjournal.utility.StringUtil;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 import java.util.Map;
 
 /**
  * @author Lucas Holt
  */
+@Transactional
 @Controller
 @RequestMapping("/api/signup")
 public class SignUpController {
     private static final Logger log = Logger.getLogger(SignUpController.class);
 
+    @Autowired
+    private UserRepository userRepository;
+
     @RequestMapping(method = RequestMethod.POST, produces = "application/json")
     public
     @ResponseBody
-    Map<String, String> post(@RequestParam String email, @RequestBody UserTo user, HttpServletResponse response) {
+    Map<String, String> post(@RequestParam String email, @RequestBody User user, HttpServletResponse response) {
 
         Settings settings = new Settings();
 
@@ -77,17 +83,27 @@ public class SignUpController {
         return newUser(user, email, response);
     }
 
-    private Map<String, String> newUser(UserTo user, String email, HttpServletResponse response) {
+    private Map<String, String> newUser(User user, String email, HttpServletResponse response) {
 
         try {
-            boolean result = UserDao.add(user, email.toLowerCase());
+            UserPref userPref = new UserPref();
+            userPref.setAllowSpider(PrefBool.Y);
+            userPref.setOwnerViewOnly(PrefBool.N);
+            userPref.setPingServices(PrefBool.Y);
+            userPref.setJournalName(user.getName() + "\'s Journal");
+            user.setUserPref(userPref);
 
-            if (!result) {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                return java.util.Collections.singletonMap("error", "Could not add user");
-            }
+            UserContact userContact = new UserContact();
+            userContact.setEmail(email);
+            user.setUserContactTo(userContact);
 
-            user = UserDao.get(user.getUserName());
+            UserBio userBio = new UserBio();
+            userBio.setBio("");
+            user.setBio(userBio);
+
+            userRepository.save(user);
+
+            user = userRepository.findByUsername(user.getUserName());
 
             return java.util.Collections.singletonMap("id", Integer.toString(user.getId()));
         } catch (Exception e) {

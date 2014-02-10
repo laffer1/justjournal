@@ -27,9 +27,9 @@
 package com.justjournal.rss;
 
 import com.justjournal.Util;
-import com.justjournal.db.EntryDao;
-import com.justjournal.db.EntryDaoImpl;
-import com.justjournal.db.model.EntryTo;
+import com.justjournal.repository.EntryRepository;
+import com.justjournal.repository.EntryDaoImpl;
+import com.justjournal.model.EntryTo;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,7 +48,7 @@ import static org.junit.Assert.assertTrue;
 @ContextConfiguration("file:src/test/resources/mvc-dispatcher-servlet.xml")
 public class RssTests {
     private final static String TEST_USER = "jjsite";
-    private EntryDao entryDao = new EntryDaoImpl();
+    private EntryRepository entryDao = new EntryDaoImpl();
 
     @BeforeClass
     public static void setup() throws Exception {

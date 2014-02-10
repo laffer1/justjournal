@@ -26,11 +26,11 @@
 
 package com.justjournal.services;
 
-import com.justjournal.db.*;
-import com.justjournal.db.model.Statistics;
-import com.justjournal.db.model.StatisticsImpl;
-import com.justjournal.db.model.UserStatistics;
-import com.justjournal.db.model.UserStatisticsImpl;
+import com.justjournal.repository.*;
+import com.justjournal.model.Statistics;
+import com.justjournal.model.StatisticsImpl;
+import com.justjournal.model.UserStatistics;
+import com.justjournal.utility.SQLHelper;
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 import org.apache.log4j.Logger;
@@ -46,13 +46,13 @@ public class StatisticsServiceImpl implements StatisticsService {
     private static final Logger log = Logger.getLogger(StatisticsServiceImpl.class);
 
     private CommentDao commentDao;
-    private EntryDao entryDao;
+    private EntryRepository entryDao;
 
     public void setCommentDao(CommentDao commentDao) {
         this.commentDao = commentDao;
     }
 
-    public void setEntryDao(EntryDao entryDao) {
+    public void setEntryDao(EntryRepository entryDao) {
         this.entryDao = entryDao;
     }
 
@@ -63,10 +63,10 @@ public class StatisticsServiceImpl implements StatisticsService {
         if ((entryDao == null)) throw new AssertionError();
 
         try {
-            UserStatistics userStatistics = new UserStatisticsImpl();
+            UserStatistics userStatistics = new UserStatistics();
 
             // check if user is valid
-            if (username == null || UserDao.get(username) == null) {
+            if (username == null || UserRepository.get(username) == null) {
                 log.trace("getUserStatistics(): username not found: " + username);
                 return null;
             }

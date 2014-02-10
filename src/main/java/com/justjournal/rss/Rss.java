@@ -26,8 +26,9 @@
 
 package com.justjournal.rss;
 
-import com.justjournal.db.model.EntryTo;
-import com.justjournal.db.SQLHelper;
+import com.justjournal.model.DateTimeBean;
+import com.justjournal.model.Entry;
+import com.justjournal.utility.SQLHelper;
 import com.justjournal.utility.DateConvert;
 import com.justjournal.utility.HTMLUtil;
 import com.justjournal.utility.Xml;
@@ -130,27 +131,27 @@ public final class Rss {
 
     // Methods
 
-    public void populate(Collection<EntryTo> entries) {
+    public void populate(Collection<Entry> entries) {
 
         RssItem item;
 
         // TODO: this sucks... need to make this reusable
         try {
 
-            EntryTo o;
-            Iterator<EntryTo> itr = entries.iterator();
+            Entry o;
+            Iterator<Entry> itr = entries.iterator();
 
             for (int x = 0, n = entries.size(); x < n && x < MAX_LENGTH; x++) {
                 o = itr.next();
                 item = new RssItem();
                 item.setTruncateFields(false);
                 item.setTitle(o.getSubject());
-                item.setLink("http://www.justjournal.com/users/" + o.getUserName());
+                item.setLink("http://www.justjournal.com/users/" + o.getUser().getUserName());
                 // RSS feeds don't like &apos; and friends.  try to go unicode
                 String descUnicode = HTMLUtil.clean(o.getBody(), false);
                 item.setDescription(HTMLUtil.convertCharacterEntities(descUnicode));
-                item.setGuid("http://www.justjournal.com/users/" + o.getUserName() + "/entry/" + o.getId());
-                item.setPubDate(o.getDateTime().toPubDate());
+                item.setGuid("http://www.justjournal.com/users/" + o.getUser().getUserName() + "/entry/" + o.getId());
+                item.setPubDate(new DateTimeBean(o.getDate()).toPubDate());
 
                 Date date = o.getDate();
                 if (newestEntryDate == null || date.compareTo(newestEntryDate) > 0)
@@ -359,18 +360,4 @@ public final class Rss {
 
         return formatmydate.format(current);
     }
-
-    public void recycle() {
-        title = "";
-        link = "";
-        description = "";
-        language = "en-us";
-        copyright = "";
-        webMaster = "";
-        managingEditor = "";
-        selfLink = "";
-
-        items.clear();
-    }
-
 }

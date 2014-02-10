@@ -26,10 +26,10 @@
 
 package com.justjournal.services;
 
-import com.justjournal.db.CommentDao;
-import com.justjournal.db.EntryDao;
-import com.justjournal.db.model.EntryTo;
-import com.justjournal.db.UserDao;
+import com.justjournal.repository.CommentDao;
+import com.justjournal.repository.EntryRepository;
+import com.justjournal.model.EntryTo;
+import com.justjournal.repository.UserRepository;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
@@ -44,8 +44,8 @@ public class EntryServiceImpl implements EntryService {
     private static final Logger log = Logger.getLogger(EntryServiceImpl.class);
 
     private CommentDao commentDao;
-    private EntryDao entryDao;
-    private UserDao userDao;
+    private EntryRepository entryDao;
+    private UserRepository userDao;
 
     /**
      * Get Friend public blog entries. TODO: Eventually, we'll want security and performance taken into account.
@@ -86,12 +86,12 @@ public class EntryServiceImpl implements EntryService {
     }
 
     @Override
-    public void setEntryDao(EntryDao entryDao) {
+    public void setEntryDao(EntryRepository entryDao) {
         this.entryDao = entryDao;
     }
 
     @Override
-    public void setUserDao(final UserDao userDao) {
+    public void setUserDao(final UserRepository userDao) {
         this.userDao = userDao;
     }
 }

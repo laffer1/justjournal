@@ -27,9 +27,9 @@
 package com.justjournal.ctl.api;
 
 import com.justjournal.WebLogin;
-import com.justjournal.db.*;
-import com.justjournal.db.model.EntryImpl;
-import com.justjournal.db.model.EntryTo;
+import com.justjournal.repository.*;
+import com.justjournal.model.Entry;
+import com.justjournal.model.EntryTo;
 import org.apache.log4j.Logger;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Controller;
@@ -53,13 +53,13 @@ public class EntryController {
     private static final Logger log = Logger.getLogger(EntryController.class);
 
     private CommentDao commentDao = null;
-    private EntryDao entryDao = null;
+    private EntryRepository entryDao = null;
 
     public void setCommentDao(CommentDao commentDao) {
         this.commentDao = commentDao;
     }
 
-    public void setEntryDao(EntryDao entryDao) {
+    public void setEntryDao(EntryRepository entryDao) {
         this.entryDao = entryDao;
     }
 
@@ -99,7 +99,7 @@ public class EntryController {
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json", headers = {"Accept=*/*", "content-type=application/json"})
     public
     @ResponseBody
-    Map<String, String> post(@RequestBody EntryImpl entry, HttpSession session, HttpServletResponse response, Model model) {
+    Map<String, String> post(@RequestBody Entry entry, HttpSession session, HttpServletResponse response, Model model) {
 
         if (!WebLogin.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);

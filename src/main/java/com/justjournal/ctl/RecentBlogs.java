@@ -26,10 +26,11 @@
 package com.justjournal.ctl;
 
 import com.justjournal.core.Settings;
-import com.justjournal.db.EntryDao;
-import com.justjournal.db.EntryDaoImpl;
+import com.justjournal.repository.EntryRepository;
+import com.justjournal.repository.EntryDaoImpl;
 import com.justjournal.rss.Rss;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -52,13 +53,15 @@ import java.util.Date;
 public class RecentBlogs {
     private static final Logger log = Logger.getLogger(RecentBlogs.class);
 
+    @Autowired
+    private EntryRepository entryRepository;
+
     @Cacheable("recentblogs")
     @RequestMapping(method = RequestMethod.GET, produces = "application/rss+xml")
     public
     @ResponseBody
     String get(HttpServletResponse response) {
         Settings set = new Settings();
-        EntryDao entryDao = new EntryDaoImpl();
 
         response.setContentType("application/rss+xml;charset=UTF-8");
         response.setDateHeader("Expires", System.currentTimeMillis() + 1000 * 60);

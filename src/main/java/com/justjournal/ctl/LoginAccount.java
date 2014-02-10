@@ -29,19 +29,15 @@ package com.justjournal.ctl;
 import com.justjournal.UserImpl;
 import com.justjournal.WebError;
 import com.justjournal.WebLogin;
-import com.justjournal.db.EntryDao;
-import com.justjournal.db.EntryDaoImpl;
-import com.justjournal.db.model.EntryTo;
 import com.justjournal.utility.FileIO;
 import com.justjournal.utility.StringUtil;
-import com.justjournal.utility.Xml;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.Collection;
-import java.util.Iterator;
 
 /**
  * Login account servlet.
@@ -55,15 +51,17 @@ import java.util.Iterator;
  *         Mon Sep 19 2005 1.3 added JJ.LOGIN.FAIL and JJ.LOGIN.OK for desktop clients.
  *         <p/>
  */
-public final class LoginAccount extends JustJournalBaseServlet {
+@Component
+public class LoginAccount extends JustJournalBaseServlet {
     private static final Logger log = Logger.getLogger(LoginAccount.class);
     private static final String JJ_LOGIN_OK = "JJ.LOGIN.OK";
     private static final String JJ_LOGIN_FAIL = "JJ.LOGIN.FAIL";
     //private static final String JJ_LOGIN_ERROR = "JJ.LOGIN.ERROR";  // server error
 
+    @Autowired
+    private WebLogin webLogin;
 
     private void htmlOutput(StringBuffer sb, String userName) {
-        EntryDao entryDao = new EntryDaoImpl();
         try {
             String template = FileIO.ReadTextFile("/home/jj/docs/journal_template.inc");
             String loginMenu;
@@ -78,7 +76,7 @@ public final class LoginAccount extends JustJournalBaseServlet {
                 content.append(user.getLastLogin());
                 content.append("</p>");
             }
-            WebLogin.setLastLogin(user.getUserId());
+            webLogin.setLastLogin(user.getUserId());
             content.append(endl);
             content.append("\t<p style=\"padding-left: 10px;\"><a href=\"/update.jsp\">Post a journal entry</a></p>");
             content.append(endl);
@@ -86,32 +84,6 @@ public final class LoginAccount extends JustJournalBaseServlet {
             content.append(endl);
             content.append("\t<p style=\"padding-left: 10px;\"><img src=\"/images/userclass_16.png\" alt=\"user\" /> <a href=\"/users/").append(userName).append("/friends\">Read your friends entries</a>.</p>");
             content.append(endl);
-
-            final Collection entries;
-            entries = entryDao.viewFriends(user.getUserId(), user.getUserId());
-
-            EntryTo o;
-            final Iterator itr = entries.iterator();
-            if (entries.size() != 0) {
-                content.append("<h3>Recent Friends Entries</h3>");
-                content.append(endl);
-                content.append("<ul>");
-                content.append(endl);
-                for (int i = 0, n = entries.size(); i < n; i++) {
-                    o = (EntryTo) itr.next();
-                    content.append("<li><a href=\"users/");
-                    content.append(o.getUserName());
-                    content.append("\">");
-                    content.append(o.getUserName());
-                    content.append("</a>");
-                    content.append(" - ");
-                    content.append(Xml.cleanString(o.getSubject()));
-                    content.append("</li>");
-                    content.append(endl);
-                }
-                content.append("</ul>");
-                content.append(endl);
-            }
 
             // User is logged in.. give them the option to log out.
             loginMenu = ("\t\t<a href=\"/prefs/index.jsp\">Preferences</a><br />");
@@ -192,24 +164,24 @@ public final class LoginAccount extends JustJournalBaseServlet {
                     if (log.isDebugEnabled())
                         log.debug("Using SHA1 pass=" + passwordHash);
 
-                    userID = WebLogin.validateSHA1(userName, passwordHash);
+                    userID = webLogin.validateSHA1(userName, passwordHash);
                 } else {
                     if (log.isDebugEnabled())
                         log.debug("Using clear pass=" + password);
 
-                    userID = WebLogin.validate(userName, password);
+                    userID = webLogin.validate(userName, password);
                 }
 
                 if (userID > 0) {
                     if (!webClient) {
                         sb.append(JJ_LOGIN_OK);
-                        WebLogin.setLastLogin(userID);
+                        webLogin.setLastLogin(userID);
                     } else if (mobile.compareTo("yes") == 0) {
 
                         session.setAttribute("auth.uid", userID);
                         session.setAttribute("auth.user", userName);
 
-                        WebLogin.setLastLogin(userID);
+                        webLogin.setLastLogin(userID);
                         response.setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY);
                         response.setHeader("Location", set.getBaseUri() + "mob/update.jsp");
                         sb = new StringBuffer();

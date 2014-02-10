@@ -27,8 +27,8 @@
 package com.justjournal.ctl.api;
 
 import com.justjournal.WebLogin;
-import com.justjournal.db.RssSubscriptionsDAO;
-import com.justjournal.db.model.RssSubscriptionsTO;
+import com.justjournal.model.RssSubscription;
+import com.justjournal.repository.RssSubscriptionsDAO;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -56,7 +56,7 @@ public class RssReaderController {
     Map<String, String> create(@RequestBody String uri, HttpSession session, HttpServletResponse response) {
 
         try {
-            RssSubscriptionsTO to = new RssSubscriptionsTO();
+            RssSubscription to = new RssSubscription();
             boolean result;
 
             if (uri == null || uri.length() < RSS_URL_MIN_LENGTH || uri.length() > RSS_URL_MAX_LENGTH) {
@@ -89,7 +89,7 @@ public class RssReaderController {
         }
 
         if (subId > 0) {
-            RssSubscriptionsTO to = new RssSubscriptionsTO();
+            RssSubscription to = new RssSubscription();
             to.setId(WebLogin.currentLoginId(session));
             to.setSubscriptionId(subId);
 

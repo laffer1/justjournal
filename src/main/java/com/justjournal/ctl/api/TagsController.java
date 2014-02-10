@@ -26,8 +26,8 @@
 
 package com.justjournal.ctl.api;
 
-import com.justjournal.db.model.Tag;
-import com.justjournal.db.TagDao;
+import com.justjournal.model.Tag;
+import com.justjournal.repository.TagDao;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;

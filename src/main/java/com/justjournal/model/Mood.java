@@ -30,6 +30,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * Represents a mood
@@ -39,8 +40,9 @@ import javax.persistence.*;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @Entity
 @Table(name = "mood")
-public final class Mood {
+public class Mood implements Serializable {
 
+    private static final long serialVersionUID = 6121574687739275660L;
     @Id
     @GeneratedValue
     private int id = 0;

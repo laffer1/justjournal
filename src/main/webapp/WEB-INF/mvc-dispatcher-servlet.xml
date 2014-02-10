@@ -46,7 +46,7 @@
 
     <!-- SPRING - JPA -->
        <jpa:repositories
-               base-package="com.justjournal.db" />
+               base-package="com.justjournal.repository" />
 
        <bean class="org.springframework.orm.jpa.JpaTransactionManager"
              id="transactionManager">
@@ -64,7 +64,7 @@
        <bean id="entityManagerFactory"
              class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
            <property name="dataSource" ref="mainDataSource" />
-           <property name="packagesToScan" value="com.justjournal.db.model"/>
+           <property name="packagesToScan" value="com.justjournal.model"/>
            <property name="jpaVendorAdapter">
                <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
                    <property name="generateDdl" value="true" />
@@ -83,10 +83,10 @@
            </property>
        </bean>
 
-    <bean id="commentDao" class="com.justjournal.db.CommentDaoImpl"/>
-    <bean id="entryDao" class="com.justjournal.db.EntryDaoImpl"/>
-    <bean id="tagDao" class="com.justjournal.db.TagDaoImpl"/>
-    <bean id="userDao" class="com.justjournal.db.UserDao"/>
+    <bean id="commentDao" class="com.justjournal.repository.CommentDaoImpl"/>
+    <bean id="entryDao" class="com.justjournal.repository.EntryDaoImpl"/>
+    <bean id="tagDao" class="com.justjournal.repository.TagDaoImpl"/>
+    <bean id="userDao" class="com.justjournal.repository.UserRepository"/>
 
     <bean id="entryService" class="com.justjournal.services.EntryServiceImpl">
         <property name="commentDao" ref="commentDao"/>

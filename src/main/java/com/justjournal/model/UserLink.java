@@ -130,4 +130,12 @@ public class UserLink implements Serializable {
         else
             throw new IllegalArgumentException("uri cannot be null");
     }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(final User user) {
+        this.user = user;
+    }
 }

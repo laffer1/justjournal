@@ -27,10 +27,10 @@
 package com.justjournal.services;
 
 import com.justjournal.Util;
-import com.justjournal.db.CommentDaoImpl;
-import com.justjournal.db.EntryDaoImpl;
-import com.justjournal.db.model.Statistics;
-import com.justjournal.db.model.UserStatistics;
+import com.justjournal.repository.CommentDaoImpl;
+import com.justjournal.repository.EntryDaoImpl;
+import com.justjournal.model.Statistics;
+import com.justjournal.model.UserStatistics;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;

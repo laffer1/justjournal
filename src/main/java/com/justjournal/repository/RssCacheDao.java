@@ -41,5 +41,5 @@ import java.util.List;
 
 public interface RssCacheDao extends CrudRepository<RssCache, Integer> {
 
-    List<RssCache> findByUri(String uri);
+    RssCache findByUri(String uri);
 }

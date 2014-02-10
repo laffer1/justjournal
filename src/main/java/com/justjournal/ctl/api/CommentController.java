@@ -37,12 +37,11 @@ package com.justjournal.ctl.api;
 import com.justjournal.User;
 import com.justjournal.UserImpl;
 import com.justjournal.WebLogin;
-import com.justjournal.core.Settings;
-import com.justjournal.db.model.Comment;
-import com.justjournal.db.CommentDao;
-import com.justjournal.db.EntryDao;
-import com.justjournal.db.model.EntryTo;
-import com.justjournal.utility.QueueMail;
+import com.justjournal.model.Comment;
+import com.justjournal.model.Entry;
+import com.justjournal.model.PrefBool;
+import com.justjournal.repository.CommentDao;
+import com.justjournal.repository.EntryRepository;
 import com.sun.istack.internal.NotNull;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -59,9 +58,9 @@ public class CommentController {
     private org.slf4j.Logger log = LoggerFactory.getLogger(CommentController.class);
 
     private CommentDao commentDao = null;
-    private EntryDao entryDao = null;
+    private EntryRepository entryDao = null;
 
-    public void setEntryDao(@NotNull final EntryDao entryDao) {
+    public void setEntryDao(@NotNull final EntryRepository entryDao) {
         this.entryDao = entryDao;
     }
 
@@ -72,20 +71,20 @@ public class CommentController {
     @RequestMapping("/api/comment/{id}")
     @ResponseBody
     public Comment getById(@PathVariable("id") Integer id) {
-        return commentDao.get(id);
+        return commentDao.findOne(id);
     }
 
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public
     @ResponseBody
     List<Comment> getComments(@RequestParam("entryId") Integer entryId, HttpServletResponse response) throws Exception {
-        EntryTo entry = entryDao.viewSingle(entryId);
+        Entry entry = entryDao.findOne(entryId);
 
         try {
-            User user = new UserImpl(entry.getUserName());
+            User user = new UserImpl(entry.getUser().getUserName());
             if (user.isPrivateJournal() ||
-                    !entry.getAllowComments() ||
-                    entry.getSecurityLevel() == 0) {
+                    entry.getAllowComments() == PrefBool.N ||
+                    entry.getSecurity().getId() == 0) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             }
         } catch (Exception e) {
@@ -93,13 +92,13 @@ public class CommentController {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
 
-        return commentDao.list(entryId);
+        return commentDao.findByEntryId(entryId);
     }
 
-    @RequestMapping(method = RequestMethod.DELETE)
+    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
     public
     @ResponseBody
-    Map<String, String> delete(@RequestBody Comment comment, HttpSession session, HttpServletResponse response) throws Exception {
+    Map<String, String> delete(@PathVariable("id") int id, HttpSession session, HttpServletResponse response) throws Exception {
 
         if (!WebLogin.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -107,12 +106,10 @@ public class CommentController {
         }
 
         try {
-            boolean result = commentDao.delete(comment.getId(), WebLogin.currentLoginId(session));
+            Comment comment = commentDao.findOne(id);
+            if (comment.getUserId() == WebLogin.currentLoginId(session))
+                commentDao.delete(id);
 
-            if (!result) {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                return java.util.Collections.singletonMap("error", "Error deleting your comment.");
-            }
             return java.util.Collections.singletonMap("id", Integer.toString(comment.getId()));
         } catch (Exception e) {
             log.error(e.getMessage());
@@ -120,7 +117,7 @@ public class CommentController {
             return java.util.Collections.singletonMap("error", "Could not delete the comment.");
         }
     }
-
+  /*    TODO: finish once DAO is working
     @RequestMapping(method = RequestMethod.POST, produces = "application/json")
     public
     @ResponseBody
@@ -203,5 +200,6 @@ public class CommentController {
             return java.util.Collections.singletonMap("error", "Error adding comment");
         }
     }
+    */
 
 }

@@ -30,6 +30,11 @@ import com.justjournal.Util;
 import com.justjournal.model.Security;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.util.Collection;
 
@@ -40,7 +45,13 @@ import static org.junit.Assert.assertNotNull;
 /**
  * @author Lucas Holt
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@WebAppConfiguration
+@ContextConfiguration("file:src/test/resources/mvc-dispatcher-servlet.xml")
 public class SecurityDaoTests {
+    @Autowired
+    private SecurityDao securityDao;
+
     @BeforeClass
     public static void setup() throws Exception {
         Util.setupDb();
@@ -48,15 +59,14 @@ public class SecurityDaoTests {
 
     @Test
     public void list() {
-        Collection<Security> list = SecurityDao.list();
+        Iterable<Security> list = securityDao.findAll();
         assertNotNull(list);
-        assertTrue(list.size() > 0);
-        assertEquals(3, list.size());
+        assertTrue(securityDao.count() > 0);
     }
 
     @Test
     public void get() {
-        Security securityTo = SecurityDao.get(1);
+        Security securityTo = securityDao.findOne(1);
         assertNotNull(securityTo);
         assertEquals(1, securityTo.getId());
         assertNotNull(securityTo.getName());

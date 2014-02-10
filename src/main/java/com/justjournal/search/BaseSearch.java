@@ -34,11 +34,9 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.search;
 
-import com.justjournal.db.SQLHelper;
-import org.apache.log4j.Category;
+import com.justjournal.utility.SQLHelper;
 import org.apache.log4j.Logger;
 
-import javax.sql.rowset.CachedRowSet;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;

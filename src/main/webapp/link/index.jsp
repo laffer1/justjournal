@@ -2,8 +2,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <%@ page contentType="text/html; charset=iso-8859-1" language="java" %>
-<%@ page import="com.justjournal.db.UserLinkDao" %>
-<%@ page import="com.justjournal.db.model.UserLinkTo" %>
+<%@ page import="com.justjournal.repository.UserLinkDao" %>
+<%@ page import="com.justjournal.model.UserLink" %>
 <%@ page import="java.util.Collection" %>
 <%@ page import="java.util.Iterator" %>
 <%
@@ -49,14 +49,14 @@
 
         <tbody style="font: 8pt Verdana, Arial, sans-serif;">
         <%
-            Collection<UserLinkTo> links;
+            Collection<UserLink> links;
             links = UserLinkDao.view(ival);
 
-            UserLinkTo o;
+            UserLink o;
             Iterator itr = links.iterator();
 
             for (int i = 0, n = links.size(); i < n; i++) {
-                o = (UserLinkTo) itr.next();
+                o = (UserLink) itr.next();
 
                 if (i % 2 == 0) { %>
         <tr style="background: white;">

@@ -37,8 +37,8 @@ package com.justjournal.metaweblog;
 import com.justjournal.User;
 import com.justjournal.UserImpl;
 import com.justjournal.WebLogin;
-import com.justjournal.db.*;
-import com.justjournal.db.model.*;
+import com.justjournal.repository.*;
+import com.justjournal.model.*;
 import com.justjournal.restping.BasePing;
 import com.justjournal.restping.IceRocket;
 import com.justjournal.restping.TechnoratiPing;
@@ -61,7 +61,7 @@ import java.util.*;
 @SuppressWarnings({"UnusedParameters"})
 public class MetaWeblog {
     private static final Logger log = Logger.getLogger(MetaWeblog.class);
-    private EntryDao entryDao = new EntryDaoImpl();
+    private EntryRepository entryDao = new EntryDaoImpl();
 
     /**
      * Fetch the users personal information including their username, userid, email address and name.
@@ -183,7 +183,7 @@ public class MetaWeblog {
         String result = "";
         int userId;
         boolean blnError = false;
-        final EntryTo et = new EntryImpl();
+        final EntryTo et = new Entry();
         EntryTo et2;
         HashMap<String, Serializable> s = new HashMap<String, Serializable>();
 

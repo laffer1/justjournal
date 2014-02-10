@@ -1,15 +1,15 @@
 <%@ page contentType="text/html; charset=iso-8859-1" language="java"
          import="com.justjournal.UserImpl, com.justjournal.WebError" %>
-<%@ page import="com.justjournal.db.*" %>
+<%@ page import="com.justjournal.repository.*" %>
 <%@ page import="com.justjournal.utility.StringUtil" %>
 <%@ page import="com.justjournal.utility.Xml" %>
 <%@ page import="java.io.PrintWriter" %>
 <%@ page import="java.util.Collection" %>
 <%@ page import="java.util.Iterator" %>
-<%@ page import="com.justjournal.db.model.Comment" %>
-<%@ page import="com.justjournal.db.model.EntryImpl" %>
-<%@ page import="com.justjournal.db.model.EmoticonTo" %>
-<%@ page import="com.justjournal.db.model.DateTime" %>
+<%@ page import="com.justjournal.model.Comment" %>
+<%@ page import="com.justjournal.model.Entry" %>
+<%@ page import="com.justjournal.model.EmoticonTo" %>
+<%@ page import="com.justjournal.model.DateTime" %>
 <%--
 Displays user comments on a particular journal entry.
 
@@ -36,7 +36,7 @@ $Id: index.jsp,v 1.5 2008/04/26 17:06:30 laffer1 Exp $
     CommentDao commentDao = new CommentDaoImpl();
     Collection comments = commentDao.list(eid);
 
-    EntryImpl entry = EntryDaoImpl.viewSinglePublic(eid);
+    Entry entry = EntryDaoImpl.viewSinglePublic(eid);
 
     UserImpl pf;
     try {

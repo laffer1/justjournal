@@ -34,11 +34,12 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.ctl;
 
-import com.justjournal.db.TrackbackDao;
-import com.justjournal.db.model.TrackbackTo;
-import com.justjournal.db.model.TrackbackType;
+import com.justjournal.repository.TrackbackDao;
+import com.justjournal.model.Trackback;
+import com.justjournal.model.TrackbackType;
 import com.justjournal.utility.ServletUtilities;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -69,6 +70,9 @@ public class TrackbackPing {
     private static final String MESSAGE = "<message>";
     private static final String END_MESSAGE = "</message>";
 
+    @Autowired
+    private TrackbackDao trackbackDao;
+
     @RequestMapping(method = RequestMethod.GET, produces = "text/xml")
     public
     @ResponseBody
@@ -96,9 +100,9 @@ public class TrackbackPing {
 
             // todo ... validate trackback.
             // TODO: add pingback support which looks xmlrpc-ish
-            TrackbackDao tbdao = new TrackbackDao();
 
-            TrackbackTo tb = new TrackbackTo();
+
+            Trackback tb = new Trackback();
             if (title != null && title.length() > 0)  // trackback
                 tb.setSubject(title);
             else if (name != null && name.length() > 0) {// post it
@@ -127,7 +131,7 @@ public class TrackbackPing {
             java.sql.Date now = new java.sql.Date(System.currentTimeMillis());
             tb.setDate(fmt.format(now));
 
-            tbdao.add(tb);
+            trackbackDao.save(tb);
 
             sb.append(XML_HEADER);
             sb.append(RESPONSE);

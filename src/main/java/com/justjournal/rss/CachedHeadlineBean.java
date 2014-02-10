@@ -34,9 +34,9 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.rss;
 
-import com.justjournal.db.model.DateTime;
-import com.justjournal.db.RssCacheDao;
-import com.justjournal.db.model.RssCache;
+import com.justjournal.model.DateTime;
+import com.justjournal.repository.RssCacheDao;
+import com.justjournal.model.RssCache;
 import com.justjournal.utility.StringUtil;
 import org.apache.log4j.Logger;
 

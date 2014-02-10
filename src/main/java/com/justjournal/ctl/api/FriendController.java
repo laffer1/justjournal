@@ -27,9 +27,10 @@
 package com.justjournal.ctl.api;
 
 import com.justjournal.WebLogin;
-import com.justjournal.db.*;
-import com.justjournal.db.model.FriendTo;
-import com.justjournal.db.model.UserTo;
+import com.justjournal.repository.*;
+import com.justjournal.model.Friend;
+import com.justjournal.model.User;
+import com.justjournal.utility.SQLHelper;
 import org.apache.log4j.Logger;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -63,7 +64,7 @@ public class FriendController {
     @ResponseBody
     public Collection<String> getById(@PathVariable("id") String id, HttpServletResponse response) {
         try {
-            return UserDao.friends(id);
+            return UserRepository.friends(id);
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return null;
@@ -80,7 +81,7 @@ public class FriendController {
         }
 
         try {
-            UserTo friendUser = UserDao.get(friend);
+            User friendUser = UserRepository.get(friend);
 
             if (friendUser == null)
                 return java.util.Collections.singletonMap("error", "Could not find friend's username");
@@ -103,7 +104,7 @@ public class FriendController {
     @RequestMapping(method = RequestMethod.DELETE)
     public
     @ResponseBody
-    Map<String, String> delete(@RequestBody FriendTo friend, HttpSession session, HttpServletResponse response) throws Exception {
+    Map<String, String> delete(@RequestBody Friend friend, HttpSession session, HttpServletResponse response) throws Exception {
 
 
         if (!WebLogin.isAuthenticated(session)) {

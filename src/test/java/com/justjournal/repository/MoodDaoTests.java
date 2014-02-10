@@ -30,8 +30,11 @@ import com.justjournal.Util;
 import com.justjournal.model.Mood;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.util.Collection;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
@@ -41,7 +44,13 @@ import static org.junit.Assert.assertNotNull;
 /**
  * @author Lucas Holt
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@WebAppConfiguration
+@ContextConfiguration("file:src/test/resources/mvc-dispatcher-servlet.xml")
 public class MoodDaoTests {
+    @Autowired
+    private MoodDao moodDao;
+
     @BeforeClass
     public static void setup() throws Exception {
         Util.setupDb();
@@ -49,21 +58,14 @@ public class MoodDaoTests {
 
     @Test
     public void list() {
-        Collection<Mood> list = MoodDao.list();
+        Iterable<Mood> list = moodDao.findAll();
         assertNotNull(list);
-        assertTrue(list.size() > 100);
-    }
-
-    @Test
-    public void listByRelationship() {
-        Collection<Mood> list = MoodDao.listByRelationship();
-        assertNotNull(list);
-        assertTrue(list.size() > 100);
+        assertTrue(moodDao.count() > 100);
     }
 
     @Test
     public void get() {
-        Mood moodTo = MoodDao.get(1);
+        Mood moodTo = moodDao.findOne(1);
         assertNotNull(moodTo);
         assertEquals(1, moodTo.getId());
         assertNotNull(moodTo.getName());

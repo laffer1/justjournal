@@ -37,6 +37,8 @@ package com.justjournal.repository;
 import com.justjournal.model.UserLink;
 import org.springframework.data.repository.CrudRepository;
 
+import java.util.List;
+
 
 /**
  * Data access for User Link list
@@ -44,4 +46,5 @@ import org.springframework.data.repository.CrudRepository;
  * @author Lucas Holt
  */
 public interface UserLinkDao extends CrudRepository<UserLink, Integer> {
+    public List<UserLink> findByUsername(String username);
 }

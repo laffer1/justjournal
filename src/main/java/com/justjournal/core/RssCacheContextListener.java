@@ -26,26 +26,32 @@
 
 package com.justjournal.core;
 
-import com.justjournal.db.model.RssCache;
+import com.justjournal.model.RssCache;
+import com.justjournal.repository.RssCacheDao;
 import com.justjournal.utility.StringUtil;
-import com.justjournal.db.RssCacheDao;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.io.InputStreamReader;
-import java.io.BufferedReader;
-import java.net.URL;
 
 /**
  * Update the RSS cache
  *
  * @author Lucas Holt
  */
-final public class RssCacheContextListener extends Thread {
+@Component
+public class RssCacheContextListener extends Thread {
+
+    @Autowired
+    private RssCacheDao rssCacheDao;
 
     public void run() {
         System.out.println("RssCache: Init");
@@ -98,7 +104,7 @@ final public class RssCacheContextListener extends Thread {
         StringBuilder sbx = new StringBuilder();
         BufferedReader buff;
 
-        rss = RssCacheDao.get(uri);
+        rss = rssCacheDao.findByUri(uri);
 
         if (rss != null && rss.getUri() != null && rss.getUri().length() > 10) {
 
@@ -118,7 +124,7 @@ final public class RssCacheContextListener extends Thread {
 
             if (rss.getContent().startsWith("<html") || rss.getContent().startsWith("<!DOCTYPE HTML"))
                 rss.setContent(""); // it's an html page.. bad
-            RssCacheDao.update(rss);
+            rssCacheDao.save(rss);
 
         }
     }

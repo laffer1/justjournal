@@ -29,13 +29,14 @@ package com.justjournal.ctl;
 import com.justjournal.*;
 import com.justjournal.atom.AtomFeed;
 import com.justjournal.core.Settings;
-import com.justjournal.db.*;
-import com.justjournal.db.model.*;
+import com.justjournal.repository.*;
+import com.justjournal.model.*;
 import com.justjournal.rss.CachedHeadlineBean;
 import com.justjournal.rss.Rss;
 import com.justjournal.search.BaseSearch;
 import com.justjournal.services.EntryService;
 import com.justjournal.utility.HTMLUtil;
+import com.justjournal.utility.SQLHelper;
 import com.justjournal.utility.StringUtil;
 import com.justjournal.utility.Xml;
 import com.lowagie.text.*;
@@ -80,14 +81,17 @@ public class UsersController {
     @SuppressWarnings({"InstanceVariableOfConcreteClass"})
     private Settings settings = null;
     private CommentDao commentDao = null;
-    private EntryDao entryDao = null;
+    private EntryRepository entryDao = null;
     private EntryService entryService = null;
+
+    @Autowired
+    private UserRepository userRepository;
 
     public void setEntryService(EntryService entryService) {
         this.entryService = entryService;
     }
 
-    public void setEntryDao(EntryDao entryDao) {
+    public void setEntryDao(EntryRepository entryDao) {
         this.entryDao = entryDao;
     }
 
@@ -106,7 +110,7 @@ public class UsersController {
         model.addAttribute("authenticatedUsername", WebLogin.currentLoginName(session));
         model.addAttribute("user", userContext.getBlogUser());
 
-        if (userContext.getBlogUser().isPrivateJournal() && !userContext.isAuthBlog()) {
+        if (userContext.getBlogUser().getUserPref().getOwnerViewOnly() == PrefBool.Y && !userContext.isAuthBlog()) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return "";
         }
@@ -130,7 +134,7 @@ public class UsersController {
         model.addAttribute("authenticatedUsername", WebLogin.currentLoginName(session));
         model.addAttribute("user", userContext.getBlogUser());
 
-        if (userContext.getBlogUser().isPrivateJournal() && !userContext.isAuthBlog()) {
+        if (userContext.getBlogUser().getUserPref().getOwnerViewOnly() == PrefBool.Y && !userContext.isAuthBlog()) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return "";
         }
@@ -152,7 +156,7 @@ public class UsersController {
         model.addAttribute("authenticatedUsername", WebLogin.currentLoginName(session));
         model.addAttribute("user", userc.getBlogUser());
 
-        if (userc.getBlogUser().isPrivateJournal() && !userc.isAuthBlog()) {
+        if (userc.getBlogUser().getUserPref().getOwnerViewOnly() == PrefBool.Y && !userc.isAuthBlog()) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return "";
         }
@@ -175,7 +179,7 @@ public class UsersController {
         model.addAttribute("authenticatedUsername", WebLogin.currentLoginName(session));
         model.addAttribute("user", userContext.getBlogUser());
 
-        if (userContext.getBlogUser().isPrivateJournal() && !userContext.isAuthBlog()) {
+        if (userContext.getBlogUser().getUserPref().getOwnerViewOnly() == PrefBool.Y && !userContext.isAuthBlog()) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return "";
         }
@@ -189,7 +193,7 @@ public class UsersController {
         final java.util.Calendar cal = Calendar.getInstance();
         Integer year = cal.get(java.util.Calendar.YEAR);
 
-        model.addAttribute("startYear", userContext.getBlogUser().getStartYear());
+        model.addAttribute("startYear", userContext.getBlogUser().getSince());
         model.addAttribute("currentYear", year);
 
         return "users";
@@ -201,7 +205,7 @@ public class UsersController {
         model.addAttribute("authenticatedUsername", WebLogin.currentLoginName(session));
         model.addAttribute("user", userc.getBlogUser());
 
-        if (userc.getBlogUser().isPrivateJournal() && !userc.isAuthBlog()) {
+        if (userc.getBlogUser().getUserPref().getOwnerViewOnly() == PrefBool.Y && !userc.isAuthBlog()) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return "";
         }
@@ -226,7 +230,7 @@ public class UsersController {
         model.addAttribute("authenticatedUsername", WebLogin.currentLoginName(session));
         model.addAttribute("user", userc.getBlogUser());
 
-        if (userc.getBlogUser().isPrivateJournal() && !userc.isAuthBlog()) {
+        if (userc.getBlogUser().getUserPref().getOwnerViewOnly() == PrefBool.Y && !userc.isAuthBlog()) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return "";
         }
@@ -251,7 +255,7 @@ public class UsersController {
         model.addAttribute("authenticatedUsername", WebLogin.currentLoginName(session));
         model.addAttribute("user", userc.getBlogUser());
 
-        if (userc.getBlogUser().isPrivateJournal() && !userc.isAuthBlog()) {
+        if (userc.getBlogUser().getUserPref().getOwnerViewOnly() == PrefBool.Y && !userc.isAuthBlog()) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return "";
         }
@@ -272,9 +276,9 @@ public class UsersController {
     @ResponseBody
     String atom(@PathVariable("username") String username, HttpServletResponse response) {
         try {
-            UserImpl user = new UserImpl(username);
+            User user = userRepository.findByUsername(username);
 
-            if (user.isPrivateJournal()) {
+            if (user.getUserPref().getOwnerViewOnly() == PrefBool.Y) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 return "";
             }
@@ -292,9 +296,9 @@ public class UsersController {
     @ResponseBody
     String rss(@PathVariable("username") String username, HttpServletResponse response) {
         try {
-            UserImpl user = new UserImpl(username);
+            User user = userRepository.findByUsername(username);
 
-            if (user.isPrivateJournal()) {
+            if (user.getUserPref().getOwnerViewOnly() == PrefBool.Y) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 return "";
             }
@@ -312,9 +316,9 @@ public class UsersController {
     @ResponseBody
     String rssPictures(@PathVariable("username") String username, HttpServletResponse response) {
         try {
-            UserImpl user = new UserImpl(username);
+            User user = userRepository.findByUsername(username);
 
-            if (user.isPrivateJournal()) {
+            if (user.getUserPref().getOwnerViewOnly() == PrefBool.Y) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 return "";
             }
@@ -329,17 +333,17 @@ public class UsersController {
 
     @RequestMapping(value = "{username}/pdf", method = RequestMethod.GET, produces = "application/pdf")
     public void pdf(@PathVariable("username") String username, HttpServletResponse response, HttpSession session) {
-        UserImpl authUser = null;
+        User authUser = null;
         try {
-            authUser = new UserImpl(WebLogin.currentLoginName(session));
+            authUser = userRepository.findByUsername(WebLogin.currentLoginName(session));
         } catch (Exception ignored) {
 
         }
 
         try {
-            UserImpl user = new UserImpl(username);
+            User user =  userRepository.findByUsername(username);
             UserContext userc = new UserContext(user, authUser);
-            if (!(userc.getBlogUser().isPrivateJournal()) || userc.isAuthBlog()) {
+            if (user.getUserPref().getOwnerViewOnly() == PrefBool.N || userc.isAuthBlog()) {
                 getPDF(response, userc);
             } else
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -351,17 +355,17 @@ public class UsersController {
 
     @RequestMapping(value = "{username}/rtf", method = RequestMethod.GET, produces = "application/rtf")
     public void rtf(@PathVariable("username") String username, HttpServletResponse response, HttpSession session) {
-        UserImpl authUser = null;
+        User authUser = null;
         try {
-            authUser = new UserImpl(WebLogin.currentLoginName(session));
+            authUser = userRepository.findByUsername(WebLogin.currentLoginName(session));
         } catch (Exception ignored) {
 
         }
 
         try {
-            UserImpl user = new UserImpl(username);
+            User user = userRepository.findByUsername(username);
             UserContext userc = new UserContext(user, authUser);
-            if (!(userc.getBlogUser().isPrivateJournal()) || userc.isAuthBlog())
+            if (user.getUserPref().getOwnerViewOnly() == PrefBool.N || userc.isAuthBlog())
                 getRTF(response, userc);
             else
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -377,7 +381,7 @@ public class UsersController {
         model.addAttribute("authenticatedUsername", WebLogin.currentLoginName(session));
         model.addAttribute("user", userc.getBlogUser());
 
-        if (userc.getBlogUser().isPrivateJournal() && !userc.isAuthBlog()) {
+        if (userc.getBlogUser().getUserPref().getOwnerViewOnly() == PrefBool.Y && !userc.isAuthBlog()) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return "";
         }
@@ -402,7 +406,7 @@ public class UsersController {
         model.addAttribute("authenticatedUsername", WebLogin.currentLoginName(session));
         model.addAttribute("user", userc.getBlogUser());
 
-        if (userc.getBlogUser().isPrivateJournal() && !userc.isAuthBlog()) {
+        if (userc.getBlogUser().getUserPref().getOwnerViewOnly() == PrefBool.Y && !userc.isAuthBlog()) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return "";
         }
@@ -433,7 +437,7 @@ public class UsersController {
         model.addAttribute("authenticatedUsername", WebLogin.currentLoginName(session));
         model.addAttribute("user", userc.getBlogUser());
 
-        if (userc.getBlogUser().isPrivateJournal() && !userc.isAuthBlog()) {
+        if (userc.getBlogUser().getUserPref().getOwnerViewOnly() == PrefBool.Y && !userc.isAuthBlog()) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return "";
         }
@@ -454,21 +458,21 @@ public class UsersController {
                       @PathVariable("tag") String tag,
                       Model model, HttpSession session, HttpServletResponse response) {
 
-        UserImpl authUser = null;
+        User authUser = null;
         try {
-            authUser = new UserImpl(WebLogin.currentLoginName(session));
+            authUser = userRepository.findByUsername(WebLogin.currentLoginName(session));
         } catch (Exception ignored) {
 
         }
 
         try {
-            UserImpl user = new UserImpl(username);
+            User user = userRepository.findByUsername(username);
             UserContext userc = new UserContext(user, authUser);
 
             model.addAttribute("username", user);
             model.addAttribute("authenticatedUsername", WebLogin.currentLoginName(session));
 
-            if (!(userc.getBlogUser().isPrivateJournal()) || userc.isAuthBlog())
+            if (userc.getBlogUser().getUserPref().getOwnerViewOnly() == PrefBool.N || userc.isAuthBlog())
                 model.addAttribute("tags", getTags(userc, tag));
             else
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -481,15 +485,15 @@ public class UsersController {
     }
 
     private UserContext getUserContext(String username, HttpSession session) {
-        UserImpl authUser = null;
+        User authUser = null;
         try {
-            authUser = new UserImpl(WebLogin.currentLoginName(session));
+            authUser = userRepository.findByUsername(WebLogin.currentLoginName(session));
         } catch (Exception ignored) {
 
         }
 
         try {
-            UserImpl user = new UserImpl(username);
+            User user = userRepository.findByUsername(username);
             return new UserContext(user, authUser);
         } catch (Exception e) {
             log.error(e);
@@ -562,13 +566,13 @@ public class UsersController {
 
         document.open();
         document.add(new Paragraph(""));
-        Chunk chunk = new Chunk(uc.getBlogUser().getJournalName());
+        Chunk chunk = new Chunk(uc.getBlogUser().getUserPref().getJournalName());
         chunk.setTextRenderMode(PdfContentByte.TEXT_RENDER_MODE_STROKE, 0.4f, new Color(0x00, 0x00, 0xFF));
         document.add(chunk);
         document.add(new Paragraph(new Date().toString(), new Font(Font.HELVETICA, FONT_10_POINT)));
         document.add(Chunk.NEWLINE);
 
-        final List<EntryTo> entries;
+        final List<Entry> entries;
 
         entries = entryDao.viewAll(uc.getBlogUser().getUserName(), uc.isAuthBlog());
 
@@ -579,7 +583,7 @@ public class UsersController {
         String lastDate = "";
         String curDate;
 
-        for (EntryTo o : entries) {
+        for (Entry o : entries) {
             // Parse the previous string back into a Date.
             final ParsePosition pos = new ParsePosition(0);
             final Date currentDate = formatter.parse(o.getDate().toString(), pos);
@@ -628,7 +632,7 @@ public class UsersController {
 
         ResultSet rs = null;
         String imageTitle;
-        final String sqlStmt = "SELECT id, title FROM user_images WHERE owner='" + uc.getBlogUser().getUserId() + "' ORDER BY title;";
+        final String sqlStmt = "SELECT id, title FROM user_images WHERE owner='" + uc.getBlogUser().getId() + "' ORDER BY title;";
 
         try {
             rs = SQLHelper.executeResultSet(sqlStmt);
@@ -681,13 +685,13 @@ public class UsersController {
         final CachedHeadlineBean hb = new CachedHeadlineBean();
 
         try {
-            final Collection<RssSubscriptionsTO> rssfeeds = RssSubscriptionsDAO.view(uc.getBlogUser().getUserId());
+            final Collection<RssSubscription> rssfeeds = RssSubscriptionsDAO.view(uc.getBlogUser().getId());
 
             /* Iterator */
-            RssSubscriptionsTO o;
+            RssSubscription o;
             final Iterator itr = rssfeeds.iterator();
             for (int i = 0, n = rssfeeds.size(); i < n; i++) {
-                o = (RssSubscriptionsTO) itr.next();
+                o = (RssSubscription) itr.next();
 
                 sb.append(hb.parse(o.getUri()));
                 sb.append(endl);
@@ -703,14 +707,14 @@ public class UsersController {
     private String getSingleEntry(final int singleEntryId, final UserContext uc) {
 
         StringBuffer sb = new StringBuffer();
-        EntryTo o;
+        Entry o;
 
         if (singleEntryId < 1) {
             WebError.Display("Invalid Entry Id", "The entry id was invalid for the journal entry you tried to get.", sb);
         } else {
             try {
                 if (uc.isAuthBlog()) {
-                    o = entryDao.viewSingle(singleEntryId, uc.authenticatedUser.getUserId());
+                    o = entryDao.viewSingle(singleEntryId, uc.authenticatedUser.getId());
 
                     log.debug("getSingleEntry: User is logged in.");
                 } else {
@@ -836,7 +840,7 @@ public class UsersController {
 
     private String getEntries(final UserContext uc, final int skip) {
         StringBuffer sb = new StringBuffer();
-        final List<EntryTo> entries;
+        final List<Entry> entries;
 
         try {
             if (uc.isAuthBlog()) {
@@ -863,7 +867,7 @@ public class UsersController {
             if (log.isDebugEnabled())
                 log.debug("getEntries: Begin Iteration of records.");
 
-            for (EntryTo o : entries) {
+            for (Entry o : entries) {
                 // Parse the previous string back into a Date.
                 final ParsePosition pos = new ParsePosition(0);
                 final Date currentDate = formatter.parse(o.getDateTime().toString(), pos);
@@ -944,7 +948,7 @@ public class UsersController {
             String curDate;
 
             /* Iterator */
-            EntryTo o;
+            Entry o;
             final Iterator itr = entries.iterator();
 
             log.trace("getFriends: Number of entries " + entries.size());
@@ -953,7 +957,7 @@ public class UsersController {
                 sb.append("<p>No friends entries found</p>.");
 
             for (int i = 0, n = entries.size(); i < n; i++) {
-                o = (EntryTo) itr.next();
+                o = (Entry) itr.next();
 
                 // Parse the previous string back into a Date.
                 final ParsePosition pos = new ParsePosition(0);
@@ -1179,7 +1183,7 @@ public class UsersController {
         // BEGIN: YEARS
         sb.append("<p>");
 
-        for (int i = yearNow; i >= uc.getBlogUser().getStartYear(); i--) {
+        for (int i = yearNow; i >= uc.getBlogUser().getSince(); i--) {
 
             sb.append("<a href=\"/users/");
             sb.append(uc.getBlogUser().getUserName());
@@ -1199,7 +1203,7 @@ public class UsersController {
         // END: YEARS
 
         try {
-            Collection<EntryTo> entries = entryDao.viewCalendarYear(year, uc.getBlogUser().getUserName(), uc.isAuthBlog());
+            Collection<Entry> entries = entryDao.viewCalendarYear(year, uc.getBlogUser().getUserName(), uc.isAuthBlog());
 
             if (entries == null || entries.size() == 0) {
                 sb.append("<p>Calendar data not available.</p>");
@@ -1242,7 +1246,7 @@ public class UsersController {
         sb.append(endl);
 
         try {
-            Collection<EntryTo> entries = entryDao.viewCalendarMonth(year, month, uc.getBlogUser().getUserName(), uc.isAuthBlog());
+            Collection<Entry> entries = entryDao.viewCalendarMonth(year, month, uc.getBlogUser().getUserName(), uc.isAuthBlog());
 
             if (entries.size() == 0) {
                 sb.append("<p>Calendar data not available.</p>");
@@ -1255,9 +1259,9 @@ public class UsersController {
                 String curDate;
                 String lastDate = "";
 
-                for (EntryTo entryTo : entries) {
+                for (Entry Entry : entries) {
 
-                    Date currentDate = entryTo.getDate();
+                    Date currentDate = Entry.getDate();
                     curDate = formatmydate.format(currentDate);
 
                     if (curDate.compareTo(lastDate) != 0) {
@@ -1274,7 +1278,7 @@ public class UsersController {
                     if (month < 10)
                         sb.append('0');
 
-                    sb.append(month).append('/').append(curDate).append("\">").append(entryTo.getSubject()).append("</a></span></p> ");
+                    sb.append(month).append('/').append(curDate).append("\">").append(Entry.getSubject()).append("</a></span></p> ");
                     sb.append(endl);
                 }
             }
@@ -1300,7 +1304,7 @@ public class UsersController {
             int year = cal.get(Calendar.YEAR);
             int month = cal.get(Calendar.MONTH) + 1; // zero based
 
-            Collection<EntryTo> entries = entryDao.viewCalendarMonth(year, month, uc.getBlogUser().getUserName(), uc.isAuthBlog());
+            Collection<Entry> entries = entryDao.viewCalendarMonth(year, month, uc.getBlogUser().getUserName(), uc.isAuthBlog());
 
             if (entries.size() == 0) {
                 sb.append("\t<!-- could not render calendar -->");
@@ -1377,14 +1381,14 @@ public class UsersController {
     private String getUserLinks(final UserContext uc) {
         log.debug("getUserLinks(): Init and load collection");
         StringBuilder sb = new StringBuilder();
-        UserLinkTo link;
-        Collection links = UserLinkDao.view(uc.getBlogUser().getUserId());
+        UserLink link;
+        Collection links = UserLinkDao.view(uc.getBlogUser().getId());
 
         if (!links.isEmpty()) {
             sb.append("\t<div class=\"menuentity\" id=\"userlinks\" style=\"padding-top: 10px;\">\n\t\t<strong style=\"text-transform: uppercase; letter-spacing: 2px; border: 0 none; border-bottom: 1px; border-style: dotted; border-color: #999999; margin-bottom: 5px; width: 100%; font-size: 10px;\"><i class=\"fa fa-external-link-square\"></i> Links</strong>\n\t\t<ul class=\"list-group\">\n");
             final Iterator itr = links.iterator();
             for (int i = 0, n = links.size(); i < n; i++) {
-                link = (UserLinkTo) itr.next();
+                link = (UserLink) itr.next();
                 sb.append("\t\t\t<li class=\"list-group-item\"><a href=\"").append(link.getUri()).append("\" title=\"").append(link.getTitle()).append("\">").append(link.getTitle()).append("</a></li>");
                 sb.append(endl);
             }
@@ -1402,7 +1406,7 @@ public class UsersController {
     @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
     private String getUserRecentEntries(final UserContext uc) {
         StringBuilder sb = new StringBuilder();
-        final Collection<EntryTo> entries;
+        final Collection<Entry> entries;
         final int maxrecent = 5;
 
         try {
@@ -1412,7 +1416,7 @@ public class UsersController {
                 log.debug("getUserRecentEntries: Begin Iteration of records.");
 
             /* Iterator */
-            EntryTo o;
+            Entry o;
             final Iterator itr = entries.iterator();
 
             sb.append("\t<div class=\"menuentity\" id=\"userRecentEntries\">\n<strong style=\"text-transform: uppercase; letter-spacing: 2px; border: 0 none; border-bottom: 1px; border-style: dotted; border-color: #999999; margin-bottom: 5px; width: 100%; font-size: 10px;\">Recent Entries</strong>\n");
@@ -1424,7 +1428,7 @@ public class UsersController {
                 n = maxrecent;
             }
             for (int i = 0; i < n; i++) {
-                o = (EntryTo) itr.next();
+                o = (Entry) itr.next();
                 sb.append("\t\t\t<li class=\"list-group-item\"><a href=\"/users/");
                 sb.append(uc.getBlogUser().getUserName());
                 sb.append("/entry/");
@@ -1469,7 +1473,7 @@ public class UsersController {
 
         try {
 
-            final Collection<EntryTo> entries;
+            final Collection<Entry> entries;
             entries = entryDao.viewCalendarDay(year, month, day, uc.getBlogUser().getUserName(), uc.isAuthBlog());
 
             if (entries == null || entries.size() == 0) {
@@ -1483,11 +1487,11 @@ public class UsersController {
                 String curDate;
 
                 /* Iterator */
-                EntryTo o;
+                Entry o;
                 final Iterator itr = entries.iterator();
 
                 for (int i = 0, n = entries.size(); i < n; i++) {
-                    o = (EntryTo) itr.next();
+                    o = (Entry) itr.next();
 
                     // Parse the previous string back into a Date.
                     final ParsePosition pos = new ParsePosition(0);
@@ -1531,7 +1535,7 @@ public class UsersController {
         // BEGIN: YEARS
         sb.append("\t<div class=\"menuentity\" id=\"archive\" style=\"padding-top: 10px;\"><strong style=\"text-transform: uppercase; letter-spacing: 2px; border: 0 none; border-bottom: 1px; border-style: dotted; border-color: #999999; margin-bottom: 5px; width: 100%; font-size: 10px;\">Archive</strong><ul class=\"list-group\">");
 
-        for (int i = yearNow; i >= uc.getBlogUser().getStartYear(); i--) {
+        for (int i = yearNow; i >= uc.getBlogUser().getSince(); i--) {
 
             sb.append("<li class=\"list-group-item\"><a href=\"/users/");
             sb.append(uc.getBlogUser().getUserName());
@@ -1567,7 +1571,7 @@ public class UsersController {
      *
      * @param user
      */
-    private String getRSS(final UserImpl user) {
+    private String getRSS(final User user) {
         Rss rss = new Rss();
 
         final java.util.GregorianCalendar calendar = new java.util.GregorianCalendar();
@@ -1581,7 +1585,7 @@ public class UsersController {
         rss.setCopyright("Copyright " + calendar.get(Calendar.YEAR) + ' ' + user.getFirstName());
         rss.setWebMaster("webmaster@justjournal.com (Lucas)");
         // RSS advisory board format
-        rss.setManagingEditor(user.getEmailAddress() + " (" + user.getFirstName() + ")");
+        rss.setManagingEditor(user.getUserContactTo().getEmail() + " (" + user.getFirstName() + ")");
         rss.populate(entryDao.view(user.getUserName(), false));
         return rss.toXml();
     }
@@ -1591,7 +1595,7 @@ public class UsersController {
      *
      * @param user blog user
      */
-    private String getAtom(final UserImpl user) {
+    private String getAtom(final User user) {
 
         AtomFeed atom = new AtomFeed();
 
@@ -1602,7 +1606,7 @@ public class UsersController {
         atom.setAlternateLink("http://www.justjournal.com/users/" + user.getUserName());
         atom.setAuthorName(user.getFirstName());
         atom.setUpdated(calendarg.toString());
-        atom.setTitle(user.getJournalName());
+        atom.setTitle(user.getUserPref().getJournalName());
         atom.setId("http://www.justjournal.com/users/" + user.getUserName() + "/atom");
         atom.setSelfLink("/users/" + user.getUserName() + "/atom");
         atom.populate(entryDao.view(user.getUserName(), false));
@@ -1614,7 +1618,7 @@ public class UsersController {
      *
      * @param user blog user
      */
-    private String getPicturesRSS(final UserImpl user) {
+    private String getPicturesRSS(final User user) {
 
         final Rss rss = new Rss();
 
@@ -1629,8 +1633,8 @@ public class UsersController {
         rss.setCopyright("Copyright " + calendarg.get(Calendar.YEAR) + ' ' + user.getFirstName());
         rss.setWebMaster("webmaster@justjournal.com (Luke)");
         // RSS advisory board format
-        rss.setManagingEditor(user.getEmailAddress() + " (" + user.getFirstName() + ")");
-        rss.populateImageList(user.getUserId(), user.getUserName());
+        rss.setManagingEditor(user.getUserContactTo().getEmail() + " (" + user.getFirstName() + ")");
+        rss.populateImageList(user.getId(), user.getUserName());
         return (rss.toXml());
     }
 
@@ -1641,15 +1645,9 @@ public class UsersController {
 
         try {
             if (uc.isAuthBlog()) {
-                entries = entryDao.viewAll(uc.getBlogUser().getUserName(), true);  // should be true
-
-                if (log.isDebugEnabled())
-                    log.debug("getTags: User is logged in.");
+                entries = entryDao.findByUsername(uc.getBlogUser().getUserName());
             } else {
                 entries = entryDao.viewAll(uc.getBlogUser().getUserName(), false);
-
-                if (log.isDebugEnabled())
-                    log.debug("getTags: User is not logged in.");
             }
 
             // Format the current time.
@@ -1663,11 +1661,11 @@ public class UsersController {
                 log.debug("getTags: Begin Iteration of records.");
 
             /* Iterator */
-            EntryTo o;
+            Entry o;
             final Iterator itr = entries.iterator();
 
             for (int i = 0, n = entries.size(); i < n; i++) {
-                o = (EntryTo) itr.next();
+                o = (Entry) itr.next();
 
                 // Parse the previous string back into a Date.
                 final ParsePosition pos = new ParsePosition(0);
@@ -1705,7 +1703,7 @@ public class UsersController {
      * @param single      Single blog entries are formatted differently
      * @return HTML formatted entry
      */
-    protected String formatEntry(final UserContext uc, final EntryTo o, final Date currentDate, boolean single) {
+    protected String formatEntry(final UserContext uc, final Entry o, final Date currentDate, boolean single) {
         final StringBuilder sb = new StringBuilder();
         final SimpleDateFormat formatmytime = new SimpleDateFormat("h:mm a");
 
@@ -1929,10 +1927,10 @@ public class UsersController {
         sb.append(endl);
 
         if (single) {
-            List<Comment> comments = commentDao.list(o.getId());
+            List<Comment> comments = commentDao.findByEntryId(o.getId());
 
             sb.append("<div class=\"commentcount\">");
-            sb.append(o.getCommentCount());
+            sb.append(comments.size());
             sb.append(" comments</div>\n");
 
             sb.append("<div class=\"rightflt\">");
