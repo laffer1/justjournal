@@ -26,9 +26,11 @@
 
 package com.justjournal.services;
 
+import com.justjournal.model.Entry;
+import com.justjournal.model.Friend;
+import com.justjournal.model.User;
 import com.justjournal.repository.CommentDao;
 import com.justjournal.repository.EntryRepository;
-import com.justjournal.model.EntryTo;
 import com.justjournal.repository.UserRepository;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
@@ -54,18 +56,24 @@ public class EntryServiceImpl implements EntryService {
      * @return
      */
     @Override
-    public List<EntryTo> getFriendsEntries(String username) {
-        Collection<String> friends = userDao.friends(username);
+    public List<Entry> getFriendsEntries(String username) {
+        User user = userDao.findByUsername(username);
+        Set<Friend> friends = user.getFriends();
 
-        List<EntryTo> list = new ArrayList<EntryTo>();
+        ;
+        List<Entry> list = new ArrayList<Entry>();
 
-        for (String friend : friends) {
-            Collection<EntryTo> fe = entryDao.view(friend, false);
-            list.addAll(fe);
+        for (Friend friend : friends) {
+            // TODO: limit record count
+            Collection<Entry> fe = friend.getFriend().getEntries();
+            for (Entry entry : fe) {
+                if (entry.getSecurity().getId() == 2)
+                    list.add(entry);
+            }
         }
 
-        Collections.sort(list, new Comparator<EntryTo>() {
-            public int compare(EntryTo m1, EntryTo m2) {
+        Collections.sort(list, new Comparator<Entry>() {
+            public int compare(Entry m1, Entry m2) {
                 return m1.getDate().compareTo(m2.getDate());
             }
         });
