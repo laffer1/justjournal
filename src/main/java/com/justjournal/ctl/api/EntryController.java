@@ -27,10 +27,15 @@
 package com.justjournal.ctl.api;
 
 import com.justjournal.WebLogin;
-import com.justjournal.repository.*;
+import com.justjournal.model.Comment;
 import com.justjournal.model.Entry;
-import com.justjournal.model.EntryTo;
+import com.justjournal.model.User;
+import com.justjournal.repository.CommentDao;
+import com.justjournal.repository.EntryRepository;
+import com.justjournal.repository.SecurityDao;
+import com.justjournal.repository.UserRepository;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -54,6 +59,10 @@ public class EntryController {
 
     private CommentDao commentDao = null;
     private EntryRepository entryDao = null;
+    @Autowired
+    private SecurityDao securityDao;
+    @Autowired
+    private UserRepository userRepository;
 
     public void setCommentDao(CommentDao commentDao) {
         this.commentDao = commentDao;
@@ -71,9 +80,9 @@ public class EntryController {
      */
     @RequestMapping(value = "{username}/{id}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public EntryTo getById(@PathVariable("username") String username, @PathVariable("id") int id, HttpServletResponse response) {
-        EntryTo entry = entryDao.viewSinglePublic(id);
-        if (entry.getUserName().equalsIgnoreCase(username))
+    public Entry getById(@PathVariable("username") String username, @PathVariable("id") int id, HttpServletResponse response) {
+        Entry entry = entryDao.findOne(id);
+        if (entry.getUser().getUserName().equalsIgnoreCase(username) && entry.getSecurity().getId() == 2) // public
             return entry;
 
         response.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -83,8 +92,8 @@ public class EntryController {
     @RequestMapping(value = "{username}", method = RequestMethod.GET, produces = "application/json")
     public
     @ResponseBody
-    Collection<EntryTo> getEntries(@PathVariable("username") String username) {
-        return entryDao.viewAll(username, false);
+    Collection<Entry> getEntries(@PathVariable("username") String username) {
+        return entryDao.findByUsernameAndSecurity(username, securityDao.findOne(2));
     }
 
     /**
@@ -105,15 +114,12 @@ public class EntryController {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
         }
-        entry.setUserId(WebLogin.currentLoginId(session)); // can't trust the client with this
+        User user = userRepository.findOne(WebLogin.currentLoginId(session));
+        entry.setUser(user);
 
         // TODO: validate
-        boolean result = EntryDaoImpl.add(entry);
+        entryDao.save(entry);
 
-        if (!result) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return java.util.Collections.singletonMap("error", "Could not add the entry.");
-        }
         model.addAttribute("status", "ok");
         // return java.util.Collections.singletonMap("id", Integer.toString(entry.getId()));
         return java.util.Collections.singletonMap("status", "OK");
@@ -131,25 +137,25 @@ public class EntryController {
     @RequestMapping(method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
     public
     @ResponseBody
-    Map<String, String> put(@RequestBody EntryTo entry, HttpSession session, HttpServletResponse response) {
+    Map<String, String> put(@RequestBody Entry entry, HttpSession session, HttpServletResponse response) {
         if (!WebLogin.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
         }
-        entry.setUserId(WebLogin.currentLoginId(session)); // can't trust the client with this
+        User user = userRepository.findOne(WebLogin.currentLoginId(session));
+        entry.setUser(user);
+
 
         // TODO: validate
         boolean result;
-        EntryTo entryTo = entryDao.viewSingle(entry.getId(), WebLogin.currentLoginId(session));
-        if (entryTo != null && entryTo.getId() > 0)
-            result = EntryDaoImpl.update(entry);
-        else
-            result = EntryDaoImpl.add(entry);
+        Entry entryTo = entryDao.findOne(entry.getId());
 
-        if (!result) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return java.util.Collections.singletonMap("error", "Could not add/edit entry.");
-        }
+        if (entryTo != null && entryTo.getId() > 0 && entryTo.getUser().getId() == user.getId()) {
+            entry.setId(entryTo.getId());
+            entryDao.save(entry);
+        } else
+            entryDao.save(entry);
+
         return java.util.Collections.singletonMap("id", Integer.toString(entry.getId()));
     }
 
@@ -175,18 +181,16 @@ public class EntryController {
             return Collections.singletonMap("error", "The entry id was invalid.");
 
         try {
-            boolean result2;
-            boolean result = EntryDaoImpl.delete(entryId, WebLogin.currentLoginId(session));
+            User user = userRepository.findOne(WebLogin.currentLoginId(session));
+            Entry entry = entryDao.findOne(entryId);
 
-            if (!result) {
+            if (user.getId() == entry.getUser().getId()) {
+                Iterable<Comment> comments = entry.getComments();
+                commentDao.delete(comments);
+                entryDao.delete(entryId);
+            } else {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 return java.util.Collections.singletonMap("error", "Could not delete entry.");
-            }
-
-            result2 = commentDao.deleteByEntry(entryId);
-            if (!result2) {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                return java.util.Collections.singletonMap("error", "Could not delete comments associated with entry.");
             }
 
             return java.util.Collections.singletonMap("id", Integer.toString(entryId));
