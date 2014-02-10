@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Lucas Holt
+ * Copyright (c) 2014 Lucas Holt
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,10 +24,10 @@
  * SUCH DAMAGE.
  */
 
-package com.justjournal.db;
+package com.justjournal.repository;
 
 import com.justjournal.Util;
-import com.justjournal.db.model.UserTo;
+import com.justjournal.model.Security;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -40,75 +40,25 @@ import static org.junit.Assert.assertNotNull;
 /**
  * @author Lucas Holt
  */
-public class UserDaoTests {
-
+public class SecurityDaoTests {
     @BeforeClass
     public static void setup() throws Exception {
         Util.setupDb();
     }
 
     @Test
-    public void testAdd() throws Exception {
-
+    public void list() {
+        Collection<Security> list = SecurityDao.list();
+        assertNotNull(list);
+        assertTrue(list.size() > 0);
+        assertEquals(3, list.size());
     }
 
     @Test
-    public void testUpdate() throws Exception {
-
-    }
-
-    @Test
-    public void testDelete() throws Exception {
-
-    }
-
-    @Test
-    public void testGet() throws Exception {
-        UserTo userTo = UserDao.get(16);
-        assertNotNull(userTo);
-        assertEquals("jjsite", userTo.getUserName());
-        assertEquals(16, userTo.getId());
-    }
-
-    @Test
-    public void testGetWithUserName() throws Exception {
-        UserTo userTo = UserDao.get("jjsite");
-        assertNotNull(userTo);
-        assertEquals("jjsite", userTo.getUserName());
-        assertEquals(16, userTo.getId());
-    }
-
-    @Test
-    public void testMemberList() throws Exception {
-        Collection<UserTo> users = UserDao.memberList();
-        assertNotNull(users);
-        assertTrue(users.size() > 0);
-    }
-
-    @Test
-    public void testNewUsers() throws Exception {
-        Collection<UserTo> users = UserDao.newUsers();
-        assertNotNull(users);
-        assertTrue(users.size() > 0);
-    }
-
-    @Test
-    public void testFriends() throws Exception {
-
-    }
-
-    @Test
-    public void testFriendsof() throws Exception {
-
-    }
-
-    @Test
-    public void testGetJournalPreferences() throws Exception {
-
-    }
-
-    @Test
-    public void testUpdateSecurity() throws Exception {
-
+    public void get() {
+        Security securityTo = SecurityDao.get(1);
+        assertNotNull(securityTo);
+        assertEquals(1, securityTo.getId());
+        assertNotNull(securityTo.getName());
     }
 }

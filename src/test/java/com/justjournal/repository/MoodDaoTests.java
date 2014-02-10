@@ -24,10 +24,10 @@
  * SUCH DAMAGE.
  */
 
-package com.justjournal.db;
+package com.justjournal.repository;
 
 import com.justjournal.Util;
-import com.justjournal.db.model.Security;
+import com.justjournal.model.Mood;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -37,10 +37,11 @@ import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+
 /**
  * @author Lucas Holt
  */
-public class SecurityDaoTests {
+public class MoodDaoTests {
     @BeforeClass
     public static void setup() throws Exception {
         Util.setupDb();
@@ -48,17 +49,23 @@ public class SecurityDaoTests {
 
     @Test
     public void list() {
-        Collection<Security> list = SecurityDao.list();
+        Collection<Mood> list = MoodDao.list();
         assertNotNull(list);
-        assertTrue(list.size() > 0);
-        assertEquals(3, list.size());
+        assertTrue(list.size() > 100);
+    }
+
+    @Test
+    public void listByRelationship() {
+        Collection<Mood> list = MoodDao.listByRelationship();
+        assertNotNull(list);
+        assertTrue(list.size() > 100);
     }
 
     @Test
     public void get() {
-        Security securityTo = SecurityDao.get(1);
-        assertNotNull(securityTo);
-        assertEquals(1, securityTo.getId());
-        assertNotNull(securityTo.getName());
+        Mood moodTo = MoodDao.get(1);
+        assertNotNull(moodTo);
+        assertEquals(1, moodTo.getId());
+        assertNotNull(moodTo.getName());
     }
 }

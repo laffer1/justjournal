@@ -1,7 +1,7 @@
-package com.justjournal.db;
+package com.justjournal.repository;
 
 import com.justjournal.Util;
-import com.justjournal.db.model.Location;
+import com.justjournal.model.Location;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
