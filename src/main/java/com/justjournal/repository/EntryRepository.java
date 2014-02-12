@@ -44,4 +44,6 @@ public interface EntryRepository extends CrudRepository<Entry, Integer> {
     public List<Entry> findByUsernameAndSecurity(String username, Security security);
 
     public List<Entry> findByUsernameOrderByDateDesc(String user);
+
+    public Iterable<Entry> findBySecurityOrderByDateDesc(Security security);
 }

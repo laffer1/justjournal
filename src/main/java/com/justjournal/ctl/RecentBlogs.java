@@ -26,8 +26,10 @@
 package com.justjournal.ctl;
 
 import com.justjournal.core.Settings;
+import com.justjournal.model.Entry;
+import com.justjournal.model.Security;
 import com.justjournal.repository.EntryRepository;
-import com.justjournal.repository.EntryDaoImpl;
+import com.justjournal.repository.SecurityDao;
 import com.justjournal.rss.Rss;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +43,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Display recent blog entries in RSS format.
@@ -55,6 +59,8 @@ public class RecentBlogs {
 
     @Autowired
     private EntryRepository entryRepository;
+    @Autowired
+    private SecurityDao securityDao;
 
     @Cacheable("recentblogs")
     @RequestMapping(method = RequestMethod.GET, produces = "application/rss+xml")
@@ -84,7 +90,21 @@ public class RecentBlogs {
             rss.setWebMaster(set.getSiteAdminEmail() + " (" + set.getSiteAdmin() + ")");
             rss.setManagingEditor(set.getSiteAdminEmail() + " (" + set.getSiteAdmin() + ")");
             rss.setSelfLink(set.getBaseUri() + "RecentBlogs");
-            rss.populate(entryDao.viewRecentUniqueUsers());
+
+
+            Security security = securityDao.findOne(2); // public
+            Iterable<Entry> entries = entryRepository.findBySecurityOrderByDateDesc(security);
+            Map<String, Entry> map = new HashMap<String, Entry>();
+            int count = 0;
+            for (Entry e : entries) {
+                if (count == 15) break;
+                if (map.containsKey(e.getUser().getUserName())) continue;
+
+                map.put(e.getUser().getUserName(), e);
+                count++;
+            }
+
+            rss.populate(map.values());
 
             Date d = rss.getNewestEntryDate();
 
