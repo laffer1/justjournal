@@ -26,15 +26,11 @@
 
 package com.justjournal.core;
 
-import org.apache.cayenne.CayenneRuntimeException;
-import org.apache.cayenne.ObjectContext;
-import org.apache.cayenne.access.DataContext;
-import org.apache.cayenne.configuration.server.ServerRuntime;
-import org.apache.cayenne.query.SelectQuery;
+import com.justjournal.repository.SettingsDao;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 
 /**
  * Global settings for the site.  Any changes here will effect the entire site.  User preferences are separate and any
@@ -44,8 +40,11 @@ import java.util.List;
  * @author Lucas Holt
  */
 @Component
+@Deprecated
 public class Settings {
     private static Logger log = Logger.getLogger(Settings.class.getName());
+    @Autowired
+    private SettingsDao settingsDao;
 
     /* paths */
     private String baseUri = "http://localhost:8080/";
@@ -90,9 +89,9 @@ public class Settings {
             String name;
             String value;
 
-            for (com.justjournal.model.Settings set : list()) {
+            for (com.justjournal.model.Settings set : settingsDao.findAll()) {
                 value = set.getValue();
-                name = set.getKeyName();
+                name = set.getName();
 
                 if (name == null) {
                     log.warn("setting.name is null");
@@ -160,22 +159,6 @@ public class Settings {
         } catch (Exception e) {
             log.error(e);
         }
-    }
-
-    @SuppressWarnings("unchecked")
-    public List<com.justjournal.model.Settings> list() throws CayenneRuntimeException {
-        ObjectContext dataContext;
-        try {
-            dataContext = DataContext.getThreadObjectContext();
-        } catch (Exception e) {
-            ServerRuntime cayenneRuntime = new ServerRuntime("cayenne-JustJournalDomain.xml");
-            dataContext = cayenneRuntime.getContext();
-
-            DataContext.bindThreadObjectContext(dataContext);
-            log.debug(e);
-        }
-        final SelectQuery query = new SelectQuery(com.justjournal.model.Settings.class);
-        return dataContext.performQuery(query);
     }
 
     public String getBaseUri() {

@@ -1,7 +1,9 @@
 package com.justjournal.ctl;
 
-import com.justjournal.UserImpl;
+import com.justjournal.model.User;
+import com.justjournal.repository.UserRepository;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -35,6 +37,9 @@ public class Rsd {
     private static final String RSD_FOOTER =
             "</rsd>\n";
 
+    @Autowired
+    private UserRepository userRepository;
+
     @RequestMapping(method = RequestMethod.GET, produces = "application/rsd+xml")
     public
     @ResponseBody
@@ -48,7 +53,7 @@ public class Rsd {
                 throw new IllegalArgumentException("Missing required parameter \"blogID\"");
             }
 
-            UserImpl user = new UserImpl(blogID);
+            User user = userRepository.findByUsername(blogID);
 
             sb.append(XML_HEADER);
             sb.append(RSD_HEADER);
