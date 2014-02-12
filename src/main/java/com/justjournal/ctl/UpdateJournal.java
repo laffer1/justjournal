@@ -34,7 +34,6 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.ctl;
 
-import com.justjournal.UserImpl;
 import com.justjournal.WebError;
 import com.justjournal.WebLogin;
 import com.justjournal.core.Settings;
@@ -127,16 +126,7 @@ public class UpdateJournal extends HttpServlet {
      */
     private void htmlOutput(final StringBuffer sb, final String userName, final int userID) {
         /* Initialize Preferences Object */
-        final UserImpl pf;
-        try {
-            pf = new UserImpl(userName);
-        } catch (Exception ex) {
-            WebError.Display("Load Error",
-                    "Preferences could not be loaded for user " + userName,
-                    sb);
-
-            return;  // no more processing required
-        }
+        final User pf = userRepository.findByUsername(userName);
 
         // Begin HTML document.
         // IE hates this.
@@ -156,34 +146,14 @@ public class UpdateJournal extends HttpServlet {
         sb.append("<head>");
         sb.append(endl);
         sb.append("\t<title>");
-        sb.append(pf.getJournalName());
+        sb.append(pf.getUserPref().getJournalName());
         sb.append("</title>");
         sb.append(endl);
 
-        /* User's custom style URL.. i.e. uri to css doc outside domain */
-        if (!pf.getStyleUrl().equals("") && pf.getStyleUrl() != null) {
-            sb.append("\t<link rel=\"stylesheet\" type=\"text/css\" media=\"screen\" href=\"");
-            sb.append(pf.getStyleUrl());
-            sb.append("\" />");
-            sb.append(endl);
-        } else {
-            /* use our template system instead */
-            sb.append("\t<link rel=\"stylesheet\" type=\"text/css\" media=\"screen\" href=\"/styles/").append(pf.getStyleId()).append(".css\" />");
-            sb.append(endl);
-        }
+        /* use our template system instead */
+        sb.append("\t<link rel=\"stylesheet\" type=\"text/css\" media=\"screen\" href=\"/styles/").append(pf.getUserPref().getStyle()).append(".css\" />");
+        sb.append(endl);
 
-        /* Optional style sheet overrides! */
-        if (!pf.getStyleDoc().equals("") && pf.getStyleDoc() != null) {
-            sb.append("<style type=\"text/css\" media=\"screen\">");
-            sb.append(endl);
-            sb.append("<!--");
-            sb.append(endl);
-            sb.append(pf.getStyleDoc());
-            sb.append("-->");
-            sb.append(endl);
-            sb.append("</style>");
-            sb.append(endl);
-        }
         /* End overrides */
         sb.append("</head>\n");
 
@@ -195,7 +165,7 @@ public class UpdateJournal extends HttpServlet {
         sb.append("\t\t<div id=\"header\">");
         sb.append(endl);
         sb.append("\t\t<h1>");
-        sb.append(pf.getJournalName());
+        sb.append(pf.getUserPref().getJournalName());
         sb.append("</h1>");
         sb.append(endl);
         sb.append("\t</div>");
@@ -616,20 +586,13 @@ public class UpdateJournal extends HttpServlet {
 
                     if (et.getSecurity().getId() == 2) {
                         /* Initialize Preferences Object */
-                        UserImpl pf = null;
-                        try {
-                            pf = new UserImpl(userName);
-                        } catch (Exception ex) {
-                            WebError.Display("Load Error",
-                                    "Preferences could not be loaded for user " + userName,
-                                    sb);
-                        }
+                        User pf = userRepository.findByUsername(userName);
 
-                        if (pf != null && !pf.isPrivateJournal() && pf.getPingServices()) {
+                        if (pf != null && pf.getUserPref().getOwnerViewOnly() == PrefBool.N && pf.getUserPref().getPingServices() == PrefBool.Y) {
                             log.debug("Ping weblogs");
                             /* WebLogs, Google, blo.gs */
                             final BasePing rp = new BasePing("http://rpc.weblogs.com/pingSiteForm");
-                            rp.setName(pf.getJournalName());
+                            rp.setName(pf.getUserPref().getJournalName());
                             rp.setUri(settings.getBaseUri() + "users/" + userName);
                             rp.setChangesURL(settings.getBaseUri() + "/users/" + userName + "/rss");
                             rp.ping();
@@ -640,13 +603,13 @@ public class UpdateJournal extends HttpServlet {
 
                             /* Technorati */
                             final TechnoratiPing rpt = new TechnoratiPing();
-                            rpt.setName(pf.getJournalName());
+                            rpt.setName(pf.getUserPref().getJournalName());
                             rpt.setUri(settings.getBaseUri() + "users/" + userName);
                             rpt.ping();
 
                             /* IceRocket */
                             final IceRocket ice = new IceRocket();
-                            ice.setName(pf.getJournalName());
+                            ice.setName(pf.getUserPref().getJournalName());
                             ice.setUri(settings.getBaseUri() + "users/" + userName);
                             ice.ping();
 
@@ -656,7 +619,7 @@ public class UpdateJournal extends HttpServlet {
                                 final Entry et2 = entryRepository.findOne(et.getId());
                                 final TrackbackOut tbout = new TrackbackOut(trackback,
                                         settings.getBaseUri() + "users/" + userName + "/entry/" + et2.getId(),
-                                        et.getSubject(), et.getBody(), pf.getJournalName());
+                                        et.getSubject(), et.getBody(), pf.getUserPref().getJournalName());
                                 tbout.ping();
                             }
                         }
