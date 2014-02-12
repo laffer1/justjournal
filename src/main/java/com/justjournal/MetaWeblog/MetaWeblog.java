@@ -34,14 +34,13 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.metaweblog;
 
-import com.justjournal.User;
-import com.justjournal.UserImpl;
 import com.justjournal.WebLogin;
-import com.justjournal.repository.*;
 import com.justjournal.model.*;
+import com.justjournal.repository.*;
 import com.justjournal.restping.BasePing;
 import com.justjournal.restping.IceRocket;
 import com.justjournal.restping.TechnoratiPing;
+import com.justjournal.utility.HTMLUtil;
 import com.justjournal.utility.StringUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,6 +70,16 @@ public class MetaWeblog {
     private UserRepository userRepository;
     @Autowired
     private WebLogin webLogin;
+    @Autowired
+    private SecurityDao securityDao;
+    @Autowired
+    private LocationDao locationDao;
+    @Autowired
+    private MoodDao moodDao;
+    @Autowired
+    private TagDao tagDao;
+    @Autowired
+    private EntryTagsRepository entryTagsRepository;
 
     /**
      * Fetch the users personal information including their username, userid, email address and name.
@@ -107,7 +116,7 @@ public class MetaWeblog {
                 s.put("nickname", user.getUserName());
                 s.put("userid", userId);
                 s.put("url", "http://www.justjournal.com/users/" + user.getUserName());
-                s.put("email", user.getEmailAddress());
+                s.put("email", user.getUserContactTo().getEmail());
                 s.put("firstname", user.getFirstName());
             } catch (Exception e) {
                 blnError = true;
@@ -160,7 +169,7 @@ public class MetaWeblog {
 
                 s.put("url", "http://www.justjournal.com/users/" + user.getUserName());
                 s.put("blogid", userId);
-                s.put("blogName", user.getJournalName());
+                s.put("blogName", user.getUserPref().getJournalName());
             } catch (Exception e) {
                 blnError = true;
                 log.debug(e.getMessage());
@@ -192,8 +201,8 @@ public class MetaWeblog {
         String result = "";
         int userId;
         boolean blnError = false;
-        final EntryTo et = new Entry();
-        EntryTo et2;
+        final Entry et = new Entry();
+        Entry et2;
         HashMap<String, Serializable> s = new HashMap<String, Serializable>();
 
         if (!StringUtil.lengthCheck(username, 3, WebLogin.USERNAME_MAX_LENGTH)) {
@@ -204,40 +213,37 @@ public class MetaWeblog {
             blnError = true;
         }
 
-        userId = WebLogin.validate(username, password);
+        userId = webLogin.validate(username, password);
         if (userId < 1)
             blnError = true;
 
         if (!blnError)
             try {
-                User user = new UserImpl(userId);
-                et.setUserId(userId);
-                DateTime d = new DateTimeBean();
-                d.set(new java.util.Date());
-                et.setDate(d);
+                User user = userRepository.findOne(userId);
+                et.setUser(user);
+                et.setDate(new java.util.Date());
                 et.setSubject((String) content.get("title"));
                 //   et.setSubject(StringUtil.replace(request.getParameter("subject"), '\'', "\\\'"));
                 et.setBody(StringUtil.replace((String) content.get("description"), '\'', "\\\'"));
                 //et.setMusic(StringUtil.replace(music, '\'', "\\\'"));
                 et.setMusic("");
-                et.setSecurityLevel(2);   // public
-                et.setLocationId(0); // not specified
-                et.setMoodId(12);    // not specified
-                et.setAutoFormat(false);
-                et.setAllowComments(true);
-                et.setEmailComments(true);
-                et.setUserName(user.getUserName());
+                et.setSecurity(securityDao.findOne(2));   // public
+                et.setLocation(locationDao.findOne(0)); // not specified
+                et.setMood(moodDao.findOne(12));    // not specified
+                et.setAutoFormat(PrefBool.N);
+                et.setAllowComments(PrefBool.Y);
+                et.setEmailComments(PrefBool.Y);
 
-                EntryDaoImpl.add(et);
-                et2 = entryDao.viewSingle(et);
-                result = Integer.toString(et2.getId());
+                entryRepository.save(et);
+                // et2 = entryDao.viewSingle(et);
+                result = Integer.toString(et.getId());
                 log.debug("Result is: " + result);
 
-                if (!user.isPrivateJournal()) {
+                if (user.getUserPref().getOwnerViewOnly() == PrefBool.N) {
                     log.debug("Ping weblogs");
                     /* WebLogs, Google, blo.gs */
                     BasePing rp = new BasePing("http://rpc.weblogs.com/pingSiteForm");
-                    rp.setName(user.getJournalName());
+                    rp.setName(user.getUserPref().getJournalName());
                     rp.setUri("http://www.justjournal.com/" + "users/" + user.getUserName());
                     rp.setChangesURL("http://www.justjournal.com" + "/users/" + user.getUserName() + "/rss");
                     rp.ping();
@@ -248,13 +254,13 @@ public class MetaWeblog {
 
                     /* Technorati */
                     TechnoratiPing rpt = new TechnoratiPing();
-                    rpt.setName(user.getJournalName());
+                    rpt.setName(user.getUserPref().getJournalName());
                     rpt.setUri("http://www.justjournal.com/" + "users/" + user.getUserName());
                     rpt.ping();
 
                     /* IceRocket */
                     IceRocket ice = new IceRocket();
-                    ice.setName(user.getJournalName());
+                    ice.setName(user.getUserPref().getJournalName());
                     ice.setUri("http://www.justjournal.com/" + "users/" + user.getUserName());
                     ice.ping();
                 }
@@ -303,7 +309,7 @@ public class MetaWeblog {
             blnError = true;
         }
 
-        userId = WebLogin.validate(username, password);
+        userId = webLogin.validate(username, password);
         if (userId < 1)
             blnError = true;
 
@@ -315,7 +321,9 @@ public class MetaWeblog {
 
         if (!blnError && eid > 0) {
             try {
-                EntryDaoImpl.delete(eid, userId);
+                Entry entry = entryRepository.findOne(eid);
+                if (entry.getUser().getId() == userId)
+                    entryRepository.delete(eid);
             } catch (Exception e) {
                 blnError = true;
                 log.debug(e.getMessage());
@@ -363,7 +371,7 @@ public class MetaWeblog {
             blnError = true;
         }
 
-        userId = WebLogin.validate(username, password);
+        userId = webLogin.validate(username, password);
         if (userId < 1)
             blnError = true;
 
@@ -377,15 +385,24 @@ public class MetaWeblog {
             try {
                 /* we're just updating the content aka body as this is the
            only thing the protocol supports. */
-                EntryTo et2 = entryDao.viewSingle(eid, userId);
-                et2.setSubject((String) content.get("title"));
-                et2.setBody(StringUtil.replace((String) content.get("description"), '\'', "\\\'"));
+                Entry et2 = entryRepository.findOne(eid);
+                if (et2.getUser().getId() == userId) {
+                    et2.setSubject((String) content.get("title"));
+                    et2.setBody(StringUtil.replace((String) content.get("description"), '\'', "\\\'"));
                 /* TODO: add date edit support */
-                EntryDaoImpl.update(et2);
-                String tag[] = (String[]) content.get("categories");
-                Collection<String> tags = new ArrayList<String>(tag.length);
-                tags.addAll(Arrays.asList(tag));
-                entryDao.setTags(eid, tags);
+                    entryRepository.save(et2);
+
+                    String tags[] = (String[]) content.get("categories");
+                    for (String tag : tags) {
+                        Tag tag1 = tagDao.findByName(tag);
+
+                        EntryTags entryTags = new EntryTags();
+                        entryTags.setTag(tag1);
+                        entryTags.setEntry(et2);
+
+                        entryTagsRepository.save(entryTags);
+                    }
+                }
             } catch (Exception e) {
                 blnError = true;
                 log.debug(e.getMessage());
@@ -426,16 +443,15 @@ public class MetaWeblog {
      * 9 </member> 10	        <member> 11	          <name>permaLink</name> 12 <value><string>http://typekeytest111.typepad.com/my_weblog/2005/07/one_more.html</string></value>
      * 13 </member> 14	        <member> 15	          <name>userid</name> 16 <value><string>28376</string></value> 17
      * </member> 18	        <member> 19 <name>mt_allow_pings</name> 20 <value><int>0</int></value> 21 </member> 22
-     *   <member> 23 <name>mt_allow_comments</name> 24	          <value><int>1</int></value> 25 </member> 26
-     * <member> 27 <name>description</name> 28	          <value><string/></value> 29 </member> 30	        <member> 31
+     * <member> 23 <name>mt_allow_comments</name> 24	          <value><int>1</int></value> 25 </member> 26 <member> 27
+     * <name>description</name> 28	          <value><string/></value> 29 </member> 30	        <member> 31
      * <name>mt_convert_breaks</name> 32	          <value><string>0</string></value> 33	        </member> 34 <member>
      * 35	          <name>postid</name> 36 <value><string>5423957</string></value> 37 </member> 38 <member> 39
-     * <name>mt_excerpt</name> 40 <value><string/></value> 41 </member> 42 <member> 43
-     * <name>mt_keywords</name> 44 <value><string/></value> 45 </member> 46 <member> 47	          <name>title</name> 48
-     *          <value><string>One more!</string></value> 49 </member> 50	        <member> 51
-     * <name>mt_text_more</name> 52 <value><string/></value> 53 </member> 54	        <member> 55
-     * <name>dateCreated</name> 56 <value><dateTime.iso8601>2005-07-02T02:37:04Z</dateTime.iso8601></value> 57
-     * </member> 58 </struct></value></data></array></value> 59	    </param> 60	  </params> 61	</methodResponse>
+     * <name>mt_excerpt</name> 40 <value><string/></value> 41 </member> 42 <member> 43 <name>mt_keywords</name> 44
+     * <value><string/></value> 45 </member> 46 <member> 47	          <name>title</name> 48 <value><string>One
+     * more!</string></value> 49 </member> 50	        <member> 51 <name>mt_text_more</name> 52 <value><string/></value>
+     * 53 </member> 54	        <member> 55 <name>dateCreated</name> 56 <value><dateTime.iso8601>2005-07-02T02:37:04Z</dateTime.iso8601></value>
+     * 57 </member> 58 </struct></value></data></array></value> 59	    </param> 60	  </params> 61	</methodResponse>
      * <p/>
      * URI of example: http://www.sixapart.com/developers/xmlrpc/blogger_api/bloggergetrecentposts.html
      *
@@ -447,7 +463,7 @@ public class MetaWeblog {
      */
     public Cloneable getRecentPosts(String blogid, String username, String password, int numberOfPosts) {
         ArrayList<HashMap<Object, Serializable>> arr = new ArrayList<HashMap<Object, Serializable>>(numberOfPosts);
-        Collection<EntryTo> total;
+        Collection<Entry> total;
         Boolean blnError = false;
         int userId;
         HashMap<String, Serializable> s = new HashMap<String, Serializable>();
@@ -460,37 +476,41 @@ public class MetaWeblog {
             blnError = true;
         }
 
-        userId = WebLogin.validate(username, password);
+        userId = webLogin.validate(username, password);
         if (blnError || userId < 1) {
             s.put("faultCode", 4);
             s.put("faultString", "User authentication failed: " + username);
             return s;
         }
 
-        total = entryDao.viewAll(username, true);
+        total = entryRepository.findByUsername(username);
 
-        Iterator<EntryTo> it = total.iterator();
+        Iterator<Entry> it = total.iterator();
 
         for (int i = 0; i < numberOfPosts; i++)
             if (it.hasNext()) {
                 HashMap<Object, Serializable> entry = new HashMap<Object, Serializable>();
-                EntryTo e = it.next();
-                entry.put("link", "http://www.justjournal.com/users/" + e.getUserName() + "/entry/" + e.getId());
-                entry.put("permaLink", "http://www.justjournal.com/users/" + e.getUserName() + "/entry/" + e.getId());
-                entry.put("userid", Integer.toString(e.getUserId()));
+                Entry e = it.next();
+                entry.put("link", "http://www.justjournal.com/users/" + e.getUser().getUserName() + "/entry/" + e.getId());
+                entry.put("permaLink", "http://www.justjournal.com/users/" + e.getUser().getUserName() + "/entry/" + e.getId());
+                entry.put("userid", Integer.toString(e.getUser().getId()));
                 entry.put("mt_allow_pings", 0);     /* TODO: on or off? */
                 entry.put("mt_allow_comments", 1);  /* TODO: on or off? */
-                entry.put("description", e.getBodyWithoutHTML());  /* TODO: change format? */
-                entry.put("content", e.getBodyWithoutHTML());  /* TODO: change format? */
+
+                entry.put("description", HTMLUtil.textFromHTML(e.getBody()));  /* TODO: change format? */
+                entry.put("content", HTMLUtil.textFromHTML(e.getBody()));  /* TODO: change format? */
                 entry.put("mt_convert_breaks", 0);                 /* TODO: research what these are... */
                 entry.put("postid", Integer.toString(e.getId()));
-                entry.put("mt_excerpt", e.getBodyWithoutHTML());
+                entry.put("mt_excerpt", HTMLUtil.textFromHTML(e.getBody()));
                 entry.put("mt_keywords", "");
                 entry.put("title", e.getSubject());
                 entry.put("mt_text_more", "");
                 entry.put("dateCreated", e.getDate()); /* TODO: needs to be iso8601 */
-                AbstractCollection<String> tags = entryDao.getTags(e.getId());
-                String str[] = (String[]) tags.toArray(new String[tags.size()]);
+                Collection<String> list = new ArrayList<String>();
+                for (Tag tag : e.getTags()) {
+                    list.add(tag.getName());
+                }
+                String str[] = (String[]) list.toArray(new String[list.size()]);
                 entry.put("categories", str); // according to microsoft it's a string array
                 arr.add(entry);
             }
@@ -511,7 +531,7 @@ public class MetaWeblog {
         int userId;
         HashMap<Object, Serializable> s = new HashMap<Object, Serializable>();
         HashMap<Object, Serializable> entry = new HashMap<Object, Serializable>();
-        EntryTo e;
+        Entry e;
 
         if (!StringUtil.lengthCheck(username, 3, WebLogin.USERNAME_MAX_LENGTH)) {
             blnError = true;
@@ -521,31 +541,39 @@ public class MetaWeblog {
             blnError = true;
         }
 
-        userId = WebLogin.validate(username, password);
+        userId = webLogin.validate(username, password);
         if (blnError || userId < 1) {
             s.put("faultCode", 4);
             s.put("faultString", "User authentication failed: " + username);
             return s;
         }
 
-        e = entryDao.viewSingle(Integer.parseInt(postid), userId);
+        e = entryRepository.findOne(Integer.parseInt(postid));
+        if (e.getUser().getId() != userId) {
+            s.put("faultCode", 4);
+            s.put("faultString", "User authentication failed: " + username);
+            return s;
+        }
 
-        entry.put("link", "http://www.justjournal.com/users/" + e.getUserName() + "/entry/" + e.getId());
-        entry.put("permaLink", "http://www.justjournal.com/users/" + e.getUserName() + "/entry/" + e.getId());
-        entry.put("userid", Integer.toString(e.getUserId()));
+        entry.put("link", "http://www.justjournal.com/users/" + e.getUser().getUserName() + "/entry/" + e.getId());
+        entry.put("permaLink", "http://www.justjournal.com/users/" + e.getUser().getUserName() + "/entry/" + e.getId());
+        entry.put("userid", Integer.toString(e.getUser().getId()));
         entry.put("mt_allow_pings", 0);     /* TODO: on or off? */
         entry.put("mt_allow_comments", 1);  /* TODO: on or off? */
-        entry.put("description", e.getBodyWithoutHTML());  /* TODO: change format? */
-        entry.put("content", e.getBodyWithoutHTML());  /* TODO: change format? */
+        entry.put("description", HTMLUtil.textFromHTML(e.getBody()));  /* TODO: change format? */
+        entry.put("content", HTMLUtil.textFromHTML(e.getBody()));  /* TODO: change format? */
         entry.put("mt_convert_breaks", 0);                 /* TODO: research what these are... */
         entry.put("postid", Integer.toString(e.getId()));
-        entry.put("mt_excerpt", e.getBodyWithoutHTML());
+        entry.put("mt_excerpt", HTMLUtil.textFromHTML(e.getBody()));
         entry.put("mt_keywords", "");
         entry.put("title", e.getSubject());
         entry.put("mt_text_more", "");
         entry.put("dateCreated", e.getDate()); /* TODO: needs to be iso8601 */
-        AbstractCollection<String> tags = entryDao.getTags(e.getId());
-        String str[] = (String[]) tags.toArray(new String[tags.size()]);
+        Collection<String> list = new ArrayList<String>();
+        for (Tag tag : e.getTags()) {
+            list.add(tag.getName());
+        }
+        String str[] = (String[]) list.toArray(new String[list.size()]);
         entry.put("categories", str); // according to microsoft it's a string array
 
         return entry;
@@ -556,7 +584,7 @@ public class MetaWeblog {
         Boolean blnError = false;
         HashMap<Object, Serializable> s = new HashMap<Object, Serializable>();
         ArrayList<HashMap<Object, Serializable>> arr = new ArrayList<HashMap<Object, Serializable>>();
-        List<Tag> tags;
+        Map<String, Tag> tags = new HashMap<String, Tag>();
 
         if (!StringUtil.lengthCheck(username, 3, WebLogin.USERNAME_MAX_LENGTH)) {
             blnError = true;
@@ -566,16 +594,22 @@ public class MetaWeblog {
             blnError = true;
         }
 
-        userId = WebLogin.validate(username, password);
+        userId = webLogin.validate(username, password);
         if (blnError || userId < 1) {
             s.put("faultCode", 4);
             s.put("faultString", "User authentication failed: " + username);
             return s;
         }
 
-        tags = entryDao.getUserTags(userId);
+        // TODO: insanely slow. Refactor
+        List<Entry> entries = entryRepository.findByUsername(username);
+        for (Entry entry : entries) {
+            for (Tag tag : entry.getTags())
+            if (!tags.containsKey(tag.getName()))
+               tags.put(tag.getName(), tag);
+        }
 
-        for (Tag curtag : tags) {
+        for (Tag curtag : tags.values()) {
             HashMap<Object, Serializable> entry = new HashMap<Object, Serializable>();
             entry.put("description", curtag.getName());
             entry.put("title", curtag.getName());
