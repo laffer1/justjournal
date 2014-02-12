@@ -35,4 +35,5 @@ import org.springframework.data.repository.CrudRepository;
  * @author Lucas Holt
  */
 public interface TagDao extends CrudRepository<Tag, Integer> {
+    public Tag findByName(String name);
 }
