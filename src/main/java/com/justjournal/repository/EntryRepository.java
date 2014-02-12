@@ -28,7 +28,6 @@ package com.justjournal.repository;
 
 import com.justjournal.model.Entry;
 import com.justjournal.model.Security;
-import com.justjournal.model.Settings;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
@@ -43,4 +42,6 @@ public interface EntryRepository extends CrudRepository<Entry, Integer> {
     public List<Entry> findByUsername(String username);
 
     public List<Entry> findByUsernameAndSecurity(String username, Security security);
+
+    public List<Entry> findByUsernameOrderByDateDesc(String user);
 }
