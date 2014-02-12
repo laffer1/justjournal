@@ -1075,9 +1075,9 @@ public class UsersController {
                 sb.append(endl);
 
                 sb.append("<p>tags:");
-                for (final String s : o.getTags()) {
+                for (final Tag s : o.getTags()) {
                     sb.append(" ");
-                    sb.append(s);
+                    sb.append(s.getName());
                 }
                 sb.append("</p>");
                 sb.append(endl);
@@ -1089,7 +1089,7 @@ public class UsersController {
                 sb.append("<tr>");
                 sb.append(endl);
 
-                if (uc.getAuthenticatedUser() != null && uc.getAuthenticatedUser().getUserId() == o.getUserId()) {
+                if (uc.getAuthenticatedUser() != null && uc.getAuthenticatedUser().getId() ==  o.getUser().getId()) {
                     sb.append("<td width=\"30\"><a title=\"Edit Entry\" href=\"/#/entry/").append(o.getId());
                     sb.append("\"><i class=\"fa fa-pencil-square-o\"></i></a></td>");
                     sb.append(endl);
@@ -1110,7 +1110,7 @@ public class UsersController {
                     sb.append(endl);
                 }
 
-                sb.append("<td><div style=\"float: right\"><a href=\"/users/").append(o.getUserName()).append("/entry/");
+                sb.append("<td><div style=\"float: right\"><a href=\"/users/").append(o.getUser().getUserName()).append("/entry/");
                 sb.append(o.getId());
                 sb.append("\" title=\"Link to this entry\">link</a> ");
                 sb.append('(');
