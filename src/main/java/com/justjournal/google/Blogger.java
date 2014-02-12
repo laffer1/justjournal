@@ -34,18 +34,16 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.google;
 
-import com.justjournal.User;
-import com.justjournal.UserImpl;
 import com.justjournal.WebLogin;
-import com.justjournal.model.PrefBool;
-import com.justjournal.repository.*;
-import com.justjournal.model.DateTime;
-import com.justjournal.model.DateTimeBean;
 import com.justjournal.model.Entry;
+import com.justjournal.model.PrefBool;
+import com.justjournal.model.User;
+import com.justjournal.repository.*;
 import com.justjournal.restping.BasePing;
 import com.justjournal.restping.IceRocket;
 import com.justjournal.restping.TechnoratiPing;
 import com.justjournal.utility.DateConvert;
+import com.justjournal.utility.HTMLUtil;
 import com.justjournal.utility.StringUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -122,12 +120,12 @@ public class Blogger {
 
         if (!blnError)
             try {
-                User user = new UserImpl(userId);
+                User user = userRepository.findOne(userId);
 
                 s.put("nickname", user.getUserName());
                 s.put("userid", userId);
                 s.put("url", "http://www.justjournal.com/users/" + user.getUserName());
-                s.put("email", user.getEmailAddress());
+                s.put("email", user.getUserContactTo().getEmail());
                 s.put("firstname", user.getFirstName());
             } catch (Exception e) {
                 blnError = true;
@@ -176,11 +174,11 @@ public class Blogger {
 
         if (!blnError)
             try {
-                User user = new UserImpl(userId);
+                User user = userRepository.findOne(userId);
 
                 s.put("url", "http://www.justjournal.com/users/" + user.getUserName());
                 s.put("blogid", userId);
-                s.put("blogName", user.getJournalName());
+                s.put("blogName", user.getUserPref().getJournalName());
             } catch (Exception e) {
                 blnError = true;
                 log.debug(e.getMessage());
@@ -518,11 +516,11 @@ public class Blogger {
                 entry.put("userid", Integer.toString(e.getUser().getId()));
                 entry.put("mt_allow_pings", 0);     /* TODO: on or off? */
                 entry.put("mt_allow_comments", 1);  /* TODO: on or off? */
-                entry.put("description", e.getBody());  /* TODO: change format? no html */
-                entry.put("content", e.getBody());  /* TODO: change format? no html */
+                entry.put("description", HTMLUtil.textFromHTML(e.getBody()));  /* TODO: change format? no html */
+                entry.put("content", HTMLUtil.textFromHTML(e.getBody()));  /* TODO: change format? no html */
                 entry.put("mt_convert_breaks", 0);                 /* TODO: research what these are... */
                 entry.put("postid", Integer.toString(e.getId()));
-                entry.put("mt_excerpt", e.getBody());
+                entry.put("mt_excerpt", HTMLUtil.textFromHTML(e.getBody()));
                 entry.put("mt_keywords", "");
                 entry.put("title", e.getSubject());
                 entry.put("mt_text_more", "");
@@ -576,11 +574,11 @@ public class Blogger {
         entry.put("userid", Integer.toString(userId));
         entry.put("mt_allow_pings", 0);     /* TODO: on or off? */
         entry.put("mt_allow_comments", 1);  /* TODO: on or off? */
-        entry.put("description", e.getBody());  /* TODO: change format?  what about html */
-        entry.put("content", e.getBody());  /* TODO: change format? */
+        entry.put("description", HTMLUtil.textFromHTML(e.getBody()));  /* TODO: change format? */
+        entry.put("content", HTMLUtil.textFromHTML(e.getBody()));  /* TODO: change format? */
         entry.put("mt_convert_breaks", 0);                 /* TODO: research what these are... */
         entry.put("postid", Integer.toString(e.getId()));
-        entry.put("mt_excerpt", e.getBody());
+        entry.put("mt_excerpt", HTMLUtil.textFromHTML(e.getBody()));
         entry.put("mt_keywords", "");
         entry.put("title", e.getSubject());
         entry.put("mt_text_more", "");
