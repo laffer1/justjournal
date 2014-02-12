@@ -1,9 +1,12 @@
 package com.justjournal.ctl;
 
-import com.justjournal.UserImpl;
 import com.justjournal.WebError;
+import com.justjournal.model.User;
+import com.justjournal.repository.UserRepository;
 import com.justjournal.utility.FileIO;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -18,8 +21,11 @@ import java.sql.SQLException;
 /**
  * User: laffer1 Date: Mar 31, 2007 Time: 11:34:00 AM
  */
+@Component
 public class DeletePicture extends JustJournalBaseServlet {
     private static final Logger log = Logger.getLogger(AddPicture.class.getName());
+    @Autowired
+    private UserRepository userRepository;
 
     protected void execute(HttpServletRequest request, HttpServletResponse response, HttpSession session, StringBuffer sb) {
         boolean blnError = false;
@@ -74,7 +80,7 @@ public class DeletePicture extends JustJournalBaseServlet {
                 conn = ds.getConnection();
 
                 // do the create of the image
-                stmt = conn.prepareStatement("DELETE from user_images where id=? and owner=?;");
+                stmt = conn.prepareStatement("DELETE FROM user_images WHERE id=? AND owner=?;");
                 stmt.setInt(1, picID.intValue());
                 stmt.setInt(2, userID);
                 stmt.execute();
@@ -134,7 +140,7 @@ public class DeletePicture extends JustJournalBaseServlet {
             String template = FileIO.ReadTextFile("/home/jj/docs/journal_template.inc");
             String loginMenu;
             StringBuilder content = new StringBuilder();
-            UserImpl user = new UserImpl(userName);
+            User user = userRepository.findByUsername(userName);
 
             content.append("\t\t<h2>Preferences</h2>");
             content.append(endl);
@@ -152,16 +158,11 @@ public class DeletePicture extends JustJournalBaseServlet {
 
             loginMenu += ("\t\t<a href=\"/logout.jsp\">Log Out</a>");
 
-            template = template.replaceAll("\\$JOURNAL_TITLE\\$", user.getJournalName());
+            template = template.replaceAll("\\$JOURNAL_TITLE\\$", user.getUserPref().getJournalName());
             template = template.replaceAll("\\$USER\\$", userName);
-            template = template.replaceAll("\\$USER_STYLESHEET\\$", user.getStyleId() + ".css");
-            template = template.replaceAll("\\$USER_STYLESHEET_ADD\\$", user.getStyleDoc());
-            if (user.showAvatar()) {
-                String av = "\t\t<img alt=\"avatar\" src=\"/image?id="
-                        + user.getUserId() + "\"/>";
-                template = template.replaceAll("\\$USER_AVATAR\\$", av);
-            } else
-                template = template.replaceAll("\\$USER_AVATAR\\$", "");
+            template = template.replaceAll("\\$USER_STYLESHEET\\$", user.getUserPref().getStyle() + ".css");
+            template = template.replaceAll("\\$USER_STYLESHEET_ADD\\$", "");
+            template = template.replaceAll("\\$USER_AVATAR\\$", "");
             template = template.replaceAll("\\$RECENT_ENTRIES\\$", "");
             template = template.replaceAll("\\$LOGIN_MENU\\$", loginMenu);
             template = template.replaceAll("\\$CONTENT\\$", content.toString());

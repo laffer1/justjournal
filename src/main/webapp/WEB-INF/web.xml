@@ -16,16 +16,6 @@
     </resource-ref>
 
     <filter>
-        <filter-name>cayenne-JustJournalDomain</filter-name>
-        <filter-class>org.apache.cayenne.configuration.web.CayenneFilter</filter-class>
-    </filter>
-
-    <filter-mapping>
-        <filter-name>cayenne-JustJournalDomain</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-
-    <filter>
         <filter-name>Crawl</filter-name>
         <filter-class>com.justjournal.CrawlFilter</filter-class>
     </filter>
@@ -151,20 +141,6 @@
     </servlet>
 
     <servlet>
-        <display-name>Select Style Sheet Base Template</display-name>
-        <servlet-name>SelectStyleSheet</servlet-name>
-        <servlet-class>com.justjournal.ctl.SelectStyleSheet</servlet-class>
-        <load-on-startup>3</load-on-startup>
-    </servlet>
-
-    <servlet>
-        <display-name>Update Style Sheet Override</display-name>
-        <servlet-name>UpdateStyleSheetOverride</servlet-name>
-        <servlet-class>com.justjournal.ctl.UpdateStyleSheetOverride</servlet-class>
-        <load-on-startup>3</load-on-startup>
-    </servlet>
-
-    <servlet>
         <display-name>Photo Album Image</display-name>
         <servlet-name>AlbumImage</servlet-name>
         <servlet-class>com.justjournal.ctl.AlbumImage</servlet-class>
@@ -185,13 +161,6 @@
         <load-on-startup>3</load-on-startup>
     </servlet>
 
-    <servlet>
-        <display-name>Journal Title</display-name>
-        <servlet-name>JournalTitle</servlet-name>
-        <servlet-class>com.justjournal.ctl.JournalTitle</servlet-class>
-        <load-on-startup>3</load-on-startup>
-    </servlet>
-
     <servlet-mapping>
         <servlet-name>image</servlet-name>
         <url-pattern>/image</url-pattern>
@@ -208,18 +177,8 @@
     </servlet-mapping>
 
     <servlet-mapping>
-        <servlet-name>UpdateStyleSheetOverride</servlet-name>
-        <url-pattern>/prefs/UpdateStyleSheetOverride</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
         <servlet-name>loginAccount</servlet-name>
         <url-pattern>/loginAccount</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>SelectStyleSheet</servlet-name>
-        <url-pattern>/SelectStyleSheet</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>
@@ -235,11 +194,6 @@
     <servlet-mapping>
         <servlet-name>DeletePicture</servlet-name>
         <url-pattern>/prefs/DeletePicture</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>JournalTitle</servlet-name>
-        <url-pattern>/prefs/JournalTitle</url-pattern>
     </servlet-mapping>
 
     <welcome-file-list>

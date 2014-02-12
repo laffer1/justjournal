@@ -35,10 +35,14 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.rss;
 
 import com.justjournal.model.DateTime;
-import com.justjournal.repository.RssCacheDao;
+import com.justjournal.model.DateTimeBean;
 import com.justjournal.model.RssCache;
+import com.justjournal.repository.RssCacheDao;
+import com.justjournal.repository.UserRepository;
 import com.justjournal.utility.StringUtil;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -60,10 +64,16 @@ import java.net.URL;
  *          1.1 optimized code
  *          1.0 Initial release
  */
+@Component
 public final class CachedHeadlineBean
         extends HeadlineBean {
 
     private static final Logger log = Logger.getLogger(CachedHeadlineBean.class);
+
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private RssCacheDao rssCacheDao;
 
     protected void getRssDocument(final String uri)
             throws Exception {
@@ -77,13 +87,13 @@ public final class CachedHeadlineBean
         BufferedReader buff;
         final java.util.GregorianCalendar calendarg = new java.util.GregorianCalendar();
 
-        rss = RssCacheDao.get(uri);
+        rss = rssCacheDao.findByUri(uri);
 
         if (rss != null && rss.getUri() != null && rss.getUri().length() > 10) {
             if (log.isDebugEnabled())
                 log.debug("Record found with uri: " + uri);
 
-            DateTime dt = rss.getLastUpdated();
+            DateTime dt = new DateTimeBean(rss.getLastUpdated());
 
             if (dt.getDay() != calendarg.get(java.util.Calendar.DATE)) {
                 if (log.isDebugEnabled())
@@ -101,7 +111,7 @@ public final class CachedHeadlineBean
                 // sun can't make their own rss feeds complaint
                 if (rss.getContent().startsWith("<rss"))
                     rss.setContent("<?xml version=\"1.0\"?>\n" + rss.getContent());
-                RssCacheDao.update(rss);
+                rssCacheDao.save(rss);
             } else if (rss.getContent() == null ||
                     rss.getContent() != null && rss.getContent().equals("")) {
                 // empty rss record in database.  error?
@@ -120,7 +130,7 @@ public final class CachedHeadlineBean
                 // sun can't make their own rss feeds complaint
                 if (rss.getContent().startsWith("<rss"))
                     rss.setContent("<?xml version=\"1.0\"?>\n" + rss.getContent());
-                RssCacheDao.update(rss);
+                rssCacheDao.save(rss);
             } else {
                 if (log.isDebugEnabled())
                     log.debug("Hit end.. no date change.");
@@ -148,7 +158,7 @@ public final class CachedHeadlineBean
                 // sun can't make their own rss feeds complaint
                 if (rss.getContent().startsWith("<rss"))
                     rss.setContent("<?xml version=\"1.0\"?>\n" + rss.getContent());
-                RssCacheDao.add(rss);
+                rssCacheDao.save(rss);
             } catch (java.lang.NullPointerException n) {
                 if (log.isDebugEnabled())
                     log.debug("Null pointer exception creating/adding rss cache object to db.");

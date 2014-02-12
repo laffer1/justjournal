@@ -26,9 +26,10 @@
 
 package com.justjournal.ctl;
 
-import com.justjournal.UserImpl;
 import com.justjournal.WebError;
 import com.justjournal.WebLogin;
+import com.justjournal.model.User;
+import com.justjournal.repository.UserRepository;
 import com.justjournal.utility.FileIO;
 import com.justjournal.utility.StringUtil;
 import org.apache.log4j.Logger;
@@ -60,13 +61,15 @@ public class LoginAccount extends JustJournalBaseServlet {
 
     @Autowired
     private WebLogin webLogin;
+    @Autowired
+    private UserRepository userRepository;
 
     private void htmlOutput(StringBuffer sb, String userName) {
         try {
             String template = FileIO.ReadTextFile("/home/jj/docs/journal_template.inc");
             String loginMenu;
             StringBuilder content = new StringBuilder();
-            UserImpl user = new UserImpl(userName);
+            User user = userRepository.findByUsername(userName);
 
             content.append("\t\t<h2>Welcome back to Just Journal</h2>");
             content.append(endl);
@@ -76,7 +79,7 @@ public class LoginAccount extends JustJournalBaseServlet {
                 content.append(user.getLastLogin());
                 content.append("</p>");
             }
-            webLogin.setLastLogin(user.getUserId());
+            webLogin.setLastLogin(user.getId());
             content.append(endl);
             content.append("\t<p style=\"padding-left: 10px;\"><a href=\"/update.jsp\">Post a journal entry</a></p>");
             content.append(endl);
@@ -90,16 +93,11 @@ public class LoginAccount extends JustJournalBaseServlet {
 
             loginMenu += ("\t\t<a href=\"/logout.jsp\">Log Out</a>");
 
-            template = template.replaceAll("\\$JOURNAL_TITLE\\$", user.getJournalName());
+            template = template.replaceAll("\\$JOURNAL_TITLE\\$", user.getUserPref().getJournalName());
             template = template.replaceAll("\\$USER\\$", userName);
-            template = template.replaceAll("\\$USER_STYLESHEET\\$", user.getStyleId() + ".css");
-            template = template.replaceAll("\\$USER_STYLESHEET_ADD\\$", user.getStyleDoc());
-            if (user.showAvatar()) {
-                String av = "\t\t<img alt=\"avatar\" src=\"/image?id="
-                        + user.getUserId() + "\"/>";
-                template = template.replaceAll("\\$USER_AVATAR\\$", av);
-            } else
-                template = template.replaceAll("\\$USER_AVATAR\\$", "");
+            template = template.replaceAll("\\$USER_STYLESHEET\\$", user.getUserPref().getStyle() + ".css");
+            template = template.replaceAll("\\$USER_STYLESHEET_ADD\\$", "");
+            template = template.replaceAll("\\$USER_AVATAR\\$", "");
             template = template.replaceAll("\\$RECENT_ENTRIES\\$", "");
             template = template.replaceAll("\\$LOGIN_MENU\\$", loginMenu);
             template = template.replaceAll("\\$CONTENT\\$", content.toString());
