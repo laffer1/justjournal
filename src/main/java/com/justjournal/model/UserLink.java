@@ -60,7 +60,7 @@ public class UserLink implements Serializable {
     @Column(name = "uri")
     private String uri;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 

@@ -111,6 +111,10 @@ public class User implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private Set<Friend> friends = new HashSet<Friend>();
 
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    private Set<UserLink> links = new HashSet<UserLink>();
+
     @OneToOne(mappedBy = "user")
     private UserBio bio;
 
@@ -315,5 +319,13 @@ public class User implements Serializable {
 
     public void setFriends(final Set<Friend> friends) {
         this.friends = friends;
+    }
+
+    public Set<UserLink> getLinks() {
+        return links;
+    }
+
+    public void setLinks(final Set<UserLink> links) {
+        this.links = links;
     }
 }
