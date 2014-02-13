@@ -37,9 +37,7 @@ package com.justjournal.repository;
 import com.justjournal.model.RssCache;
 import org.springframework.data.repository.CrudRepository;
 
-import java.util.List;
-
 public interface RssCacheDao extends CrudRepository<RssCache, Integer> {
 
-    RssCache findByUri(String uri);
+    public RssCache findByUri(String uri);
 }
