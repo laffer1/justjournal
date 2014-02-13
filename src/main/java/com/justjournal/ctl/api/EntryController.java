@@ -37,6 +37,8 @@ import com.justjournal.repository.UserRepository;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -93,7 +95,17 @@ public class EntryController {
     public
     @ResponseBody
     Collection<Entry> getEntries(@PathVariable("username") String username) {
-        return entryDao.findByUsernameAndSecurity(username, securityDao.findOne(2));
+        User user = userRepository.findByUsername(username);
+        return entryDao.findByUserAndSecurityOrderByDateDesc(user, securityDao.findOne(2));
+    }
+
+    @RequestMapping(value = "{username}", method = RequestMethod.GET, produces = "application/json")
+    public
+    @ResponseBody
+    Collection<Entry> getEntries(@PathVariable("username") String username, @RequestParam("size") int size, @RequestParam("page") int page) {
+        Pageable pageable = new PageRequest(page, size);
+        User user = userRepository.findByUsername(username);
+        return entryDao.findByUserAndSecurityOrderByDateDesc(user, securityDao.findOne(2), pageable);
     }
 
     /**
