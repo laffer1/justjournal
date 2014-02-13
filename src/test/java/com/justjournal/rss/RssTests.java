@@ -27,12 +27,13 @@
 package com.justjournal.rss;
 
 import com.justjournal.Util;
+import com.justjournal.model.Entry;
 import com.justjournal.repository.EntryRepository;
-import com.justjournal.repository.EntryDaoImpl;
-import com.justjournal.model.EntryTo;
+import com.justjournal.repository.SecurityDao;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -48,7 +49,10 @@ import static org.junit.Assert.assertTrue;
 @ContextConfiguration("file:src/test/resources/mvc-dispatcher-servlet.xml")
 public class RssTests {
     private final static String TEST_USER = "jjsite";
-    private EntryRepository entryDao = new EntryDaoImpl();
+    @Autowired
+    private EntryRepository entryDao;
+    @Autowired
+    private SecurityDao securityDao;
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -61,7 +65,7 @@ public class RssTests {
 
         final java.util.GregorianCalendar calendar = new java.util.GregorianCalendar();
         calendar.setTime(new java.util.Date());
-        Collection<EntryTo> entries = entryDao.view(TEST_USER, false);
+        Collection<Entry> entries = entryDao.findByUsernameAndSecurity(TEST_USER, securityDao.findOne(2));
         assertTrue(entries.size() > 0);
         rss.populate(entries);
 

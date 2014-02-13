@@ -29,6 +29,7 @@ package com.justjournal.repository;
 import com.justjournal.model.Entry;
 import com.justjournal.model.Security;
 import com.justjournal.model.User;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -51,9 +52,9 @@ public interface EntryRepository extends CrudRepository<Entry, Integer> {
 
     public List<Entry> findByUserAndSecurityOrderByDateDesc(User user, Security security);
 
-    public List<Entry> findByUserAndSecurityOrderByDateDesc(User user, Security security, Pageable pageable);
+    public Page<Entry> findByUserAndSecurityOrderByDateDesc(User user, Security security, Pageable pageable);
 
-    public List<Entry> findByUserOrderByDateDesc(User user, Pageable pageable);
+    public Page<Entry> findByUserOrderByDateDesc(User user, Pageable pageable);
 
     public Iterable<Entry> findBySecurityOrderByDateDesc(Security security);
 
@@ -76,5 +77,11 @@ public interface EntryRepository extends CrudRepository<Entry, Integer> {
 
     @Query("SELECT eh FROM user us, entry eh WHERE us.username = :username AND YEAR(eh.date) = :yr AND MONTH(eh.date) = :month AND us.id = eh.uid and eh.security = :security")
     public List<Entry> findByUsernameAndYearAndMonthAndSecurity(@Param("username") String username, @Param("yr") int year, @Param("month") int month, Security security);
+
+    @Query("SELECT eh FROM user us, entry eh WHERE us.username = :username AND YEAR(eh.date) = :yr AND MONTH(eh.date) = :month AND DAY(eh.date) = :day AND us.id = eh.uid and eh.security = :security")
+    public List<Entry> findByUsernameAndYearAndMonthAndDay(@Param("username") String username, @Param("yr") int year, @Param("month") int month, @Param("day") int day);
+
+    @Query("SELECT eh FROM user us, entry eh WHERE us.username = :username AND YEAR(eh.date) = :yr AND MONTH(eh.date) = :month AND DAY(eh.date) = :day AND us.id = eh.uid and eh.security = :security")
+    public List<Entry> findByUsernameAndYearAndMonthAndDayAndSecurity(@Param("username") String username, @Param("yr") int year, @Param("month") int month, @Param("day") int day, Security security);
 
 }

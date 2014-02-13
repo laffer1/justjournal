@@ -26,9 +26,6 @@
 
 package com.justjournal.services;
 
-import com.justjournal.Util;
-import com.justjournal.repository.CommentDaoImpl;
-import com.justjournal.repository.EntryDaoImpl;
 import com.justjournal.model.Statistics;
 import com.justjournal.model.UserStatistics;
 import org.junit.BeforeClass;
@@ -48,13 +45,15 @@ import static org.junit.Assert.*;
 @ContextConfiguration("file:src/test/resources/mvc-dispatcher-servlet.xml")
 public class ServiceTests {
 
-    private static StatisticsService statisticsService = new StatisticsServiceImpl();
+    private static StatisticsService statisticsService;
+
+    public void setStatisticsService(StatisticsService statisticsService1) {
+        this.statisticsService = statisticsService1;
+    }
 
     @BeforeClass
     public static void setup() throws Exception {
-        Util.setupDb();
-        statisticsService.setCommentDao(new CommentDaoImpl());
-        statisticsService.setEntryDao(new EntryDaoImpl());
+        statisticsService = new StatisticsServiceImpl();
     }
 
     @Test

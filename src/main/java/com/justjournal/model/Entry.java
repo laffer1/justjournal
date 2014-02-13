@@ -65,7 +65,7 @@ public class Entry implements Serializable {
     private Date date = new Date();
 
     @JsonProperty("locationId")
-    @OneToMany
+    @ManyToOne
     @JoinColumn(name = "location_id")
     private Location location;
 

@@ -50,6 +50,7 @@ import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
@@ -858,7 +859,7 @@ public class UsersController implements Serializable {
 
     private String getEntries(final UserContext uc, final int skip) {
         StringBuffer sb = new StringBuffer();
-        final List<Entry> entries;
+        Page<Entry> entries;
 
         Pageable page = new PageRequest(skip / 20 + 1, 20);
         try {
@@ -881,7 +882,7 @@ public class UsersController implements Serializable {
             String lastDate = "";
             String curDate;
 
-            sb.append(jumpmenu(skip, 20, entries.size() > 19, skip > 0, uc));
+            sb.append(jumpmenu(skip, 20, entries.getTotalElements() > 19, skip > 0, uc));
 
             if (log.isDebugEnabled())
                 log.debug("getEntries: Begin Iteration of records.");
@@ -904,7 +905,7 @@ public class UsersController implements Serializable {
                 sb.append(formatEntry(uc, o, currentDate, false));
             }
 
-            sb.append(jumpmenu(skip, 20, entries.size() > 19, skip > 0, uc));
+            sb.append(jumpmenu(skip, 20, entries.getTotalElements() > 19, skip > 0, uc));
 
         } catch (Exception e1) {
             WebError.Display("Error",
@@ -1441,14 +1442,23 @@ public class UsersController implements Serializable {
     @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
     private String getUserRecentEntries(final UserContext uc) {
         StringBuilder sb = new StringBuilder();
-        final Collection<Entry> entries;
+        Page<Entry> entries;
         final int maxrecent = 5;
 
         try {
-            entries = entryDao.view(uc.getBlogUser().getUserName(), uc.isAuthBlog(), 0);
+            Pageable page = new PageRequest(1, 20);
 
-            if (log.isDebugEnabled())
-                log.debug("getUserRecentEntries: Begin Iteration of records.");
+            if (uc.isAuthBlog()) {
+                entries = entryDao.findByUserOrderByDateDesc(uc.getBlogUser(), page);
+
+                if (log.isDebugEnabled())
+                    log.debug("getEntries: User is logged in.");
+            } else {
+                entries = entryDao.findByUserAndSecurityOrderByDateDesc(uc.getBlogUser(), securityDao.findOne(2), page);
+
+                if (log.isDebugEnabled())
+                    log.debug("getEntries: User is not logged in.");
+            }
 
             /* Iterator */
             Entry o;
@@ -1458,7 +1468,8 @@ public class UsersController implements Serializable {
             sb.append("\t\t<ul class=\"list-group\">");
             sb.append(endl);
 
-            int n = entries.size();
+
+            int n = entries.getNumberOfElements();
             if (maxrecent < n) {
                 n = maxrecent;
             }
@@ -1487,7 +1498,7 @@ public class UsersController implements Serializable {
     }
 
     /**
-     * Generates all of the HTML to display journal entires for a particular day specified in the url.
+     * Generates all of the HTML to display journal entries for a particular day specified in the url.
      *
      * @param year  the year to display
      * @param month the month we want to look at
@@ -1509,7 +1520,10 @@ public class UsersController implements Serializable {
         try {
 
             final Collection<Entry> entries;
-            entries = entryDao.viewCalendarDay(year, month, day, uc.getBlogUser().getUserName(), uc.isAuthBlog());
+            if (uc.isAuthBlog())
+                entries = entryDao.findByUsernameAndYearAndMonthAndDay(uc.getBlogUser().getUserName(), year, month, day);
+            else
+                entries = entryDao.findByUsernameAndYearAndMonthAndDayAndSecurity(uc.getBlogUser().getUserName(), year, month, day, securityDao.findOne(2));
 
             if (entries == null || entries.size() == 0) {
                 sb.append("<p>Calendar data not available.</p>");

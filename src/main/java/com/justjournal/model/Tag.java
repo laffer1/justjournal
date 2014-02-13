@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014 Lucas Holt
+ * Copyright (c) 2008, 2011 Lucas Holt
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,52 +26,89 @@
 
 package com.justjournal.model;
 
-import org.springframework.stereotype.Component;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.justjournal.utility.StringUtil;
+
+import javax.persistence.*;
 
 /**
+ * A tag is a form of metadata about a blog entry.  It is similar to a category.
+ *
  * @author Lucas Holt
+ * @version $Id: Tag.java,v 1.7 2012/06/23 18:15:31 laffer1 Exp $
+ *          <p/>
+ *          Date: Apr 25, 2008 Time: 5:13:16 PM
  */
-@Component
-public interface Tag {
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+@Entity
+@Table(name = "tags")
+public class Tag {
+    /**
+     * Unique id to represent the global tag
+     */
+    @JsonProperty("id")
+    @Id
+    @GeneratedValue
+    private int id;
+
+    /**
+     * common string representation for public consumption
+     */
+    @JsonProperty("name")
+    @Column(name = "name", nullable = false, length = 30)
+    private String name;
+
+    @JsonCreator
+    public Tag() {
+
+    }
+
+
     /**
      * Get the unique identifier
      *
      * @return tag id > 0
      */
-    int getId();
+    public int getId() {
+        return id;
+    }
 
     /**
      * Set the unique id for the tag
      *
      * @param id tag id > 0
      */
-    void setId(int id);
-
-    /**
-     * The number of tags
-     *
-     * @return tag count
-     */
-    int getCount();
-
-    /**
-     * Set the number of tag instances
-     *
-     * @param count number of tags
-     */
-    void setCount(int count);
+    public void setId(int id) {
+        if (id < 1)
+            throw new IllegalArgumentException("Tag id must be > 0");
+        this.id = id;
+    }
 
     /**
      * The common name for the tag which the user will see
      *
      * @return 30 char or less string
      */
-    String getName();
+    public String getName() {
+        return name;
+    }
 
     /**
      * Set the common name to display to the user
      *
      * @param name 30 character or less string with letters only.
      */
-    void setName(String name);
+    public void setName(String name) {
+        if (name == null || name.equalsIgnoreCase(""))
+            throw new IllegalArgumentException("Name must be set");
+        if (name.length() > 30)
+            throw new IllegalArgumentException("Name cannot be longer than 30 characters.");
+
+        if (!StringUtil.isAlpha(name))
+            throw new IllegalArgumentException("Name contains invalid characters.  Must be A-Za-z");
+
+        this.name = name.toLowerCase();
+    }
 }
