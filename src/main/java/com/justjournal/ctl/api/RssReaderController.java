@@ -28,17 +28,18 @@ package com.justjournal.ctl.api;
 
 import com.justjournal.WebLogin;
 import com.justjournal.model.RssSubscription;
+import com.justjournal.model.User;
 import com.justjournal.repository.RssSubscriptionsDAO;
+import com.justjournal.repository.UserRepository;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -52,6 +53,22 @@ public class RssReaderController {
     private static final Logger log = Logger.getLogger(RssReaderController.class);
     @Autowired
     private RssSubscriptionsDAO rssSubscriptionsDAO;
+    @Autowired
+    private UserRepository userRepository;
+
+    @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public RssSubscription getById(@PathVariable("id") Integer id) {
+        return rssSubscriptionsDAO.findOne(id);
+    }
+
+    @Cacheable(value = "rsssubscription", key = "username")
+    @RequestMapping(value = "user/{username}", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public Collection<RssSubscription> getByUser(@PathVariable("username") String username) {
+        User user = userRepository.findByUsername(username);
+        return rssSubscriptionsDAO.findByUser(user);
+    }
 
     @RequestMapping(method = RequestMethod.PUT)
     public
@@ -65,7 +82,8 @@ public class RssReaderController {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 return java.util.Collections.singletonMap("error", "Error adding link.");
             }
-            to.setId(WebLogin.currentLoginId(session));
+            User user = userRepository.findOne(WebLogin.currentLoginId(session));
+            to.setUser(user);
             to.setUri(uri);
             rssSubscriptionsDAO.save(to);
 
@@ -87,12 +105,13 @@ public class RssReaderController {
         }
 
         if (subId > 0) {
-            RssSubscription to = new RssSubscription();
-            to.setId(WebLogin.currentLoginId(session));
-            to.setSubscriptionId(subId);
+            User user = userRepository.findOne(WebLogin.currentLoginId(session));
+            RssSubscription to = rssSubscriptionsDAO.findOne(subId);
 
-            rssSubscriptionsDAO.delete(to);
-            return java.util.Collections.singletonMap("id", Integer.toString(subId));
+            if (user.getId() == to.getUser().getId()) {
+                rssSubscriptionsDAO.delete(to);
+                return java.util.Collections.singletonMap("id", Integer.toString(subId));
+            }
         }
 
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

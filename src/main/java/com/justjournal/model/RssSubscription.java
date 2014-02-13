@@ -34,20 +34,35 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.model;
 
+import javax.persistence.*;
+import java.io.Serializable;
+
 /**
  * User: laffer1 Date: Mar 19, 2005 Time: 9:19:40 PM
  */
-public final class RssSubscription {
-    private int id;
+@Entity
+@Table(name = "rss_subscriptions")
+public class RssSubscription implements Serializable {
+
+    private static final long serialVersionUID = -5641819117393997020L;
+
+    @ManyToOne
+    @JoinColumn(name = "id")
+    private User user;
+
+    @Column(name = "uri", length = 255, nullable = false)
     private String uri;
+
+    @Id
+    @GeneratedValue
     private int subscriptionId;
 
-    public final int getId() {
-        return this.id;
+    public User getUser() {
+        return user;
     }
 
-    public final void setId(final int id) {
-        this.id = id;
+    public void setUser(final User user) {
+        this.user = user;
     }
 
     public final int getSubscriptionId() {
@@ -64,30 +79,5 @@ public final class RssSubscription {
 
     public final void setUri(final String uri) {
         this.uri = uri;
-    }
-
-    public final String toString() {
-        return Integer.toString(id) + "," + uri + "," +
-                Integer.toString(subscriptionId);
-    }
-
-    public final boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        final RssSubscription that = (RssSubscription) o;
-
-        if (id != that.id) return false;
-        if (!uri.equals(that.uri)) return false;
-        if (subscriptionId != that.subscriptionId) return false;
-
-        return true;
-    }
-
-    public final int hashCode() {
-        int result;
-        result = id;
-        result = 29 * result + uri.hashCode() * subscriptionId;
-        return result;
     }
 }
