@@ -47,9 +47,9 @@ import org.springframework.data.repository.query.Param;
  */
 public interface UserRepository extends CrudRepository<User, Integer> {
 
-    @Query("SELECT u FROM User u WHERE LOWER(u.userName) = LOWER(:userName)")
-    public User findByUsername(String username);
+    @Query("SELECT u FROM User u WHERE LOWER(u.username) = LOWER(:username)")
+    public User findByUsername(@Param("username") String username);
 
-    @Query("SELECT u FROM User u WHERE LOWER(u.userName) = LOWER(:userName) and u.password = :password")
+    @Query("SELECT u FROM User u WHERE LOWER(u.username) = LOWER(:username) and u.password = :password")
     public User findByUsernameAndPassword(@Param("username") String username, @Param("password") String password);
 }
