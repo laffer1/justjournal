@@ -41,7 +41,5 @@ import org.springframework.data.repository.CrudRepository;
 /**
  * Entry Security
  */
-
-
 public interface SecurityDao extends CrudRepository<Security, Integer> {
 }

@@ -35,7 +35,9 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.repository;
 
 import com.justjournal.model.UserLink;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -46,5 +48,7 @@ import java.util.List;
  * @author Lucas Holt
  */
 public interface UserLinkDao extends CrudRepository<UserLink, Integer> {
-    public List<UserLink> findByUsername(String username);
+
+    @Query("select ul from user_link ul, user u where ul.user_id = u.id and LOWER(u.userName) = LOWER(:userName)")
+    public List<UserLink> findByUsername(@Param("username") String username);
 }

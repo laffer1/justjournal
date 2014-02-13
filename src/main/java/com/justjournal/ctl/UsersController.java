@@ -1222,7 +1222,12 @@ public class UsersController implements Serializable {
         // END: YEARS
 
         try {
-            Collection<Entry> entries = entryDao.viewCalendarYear(year, uc.getBlogUser().getUserName(), uc.isAuthBlog());
+
+            Collection<Entry> entries;
+            if (uc.isAuthBlog())
+                entries = entryDao.findByUsernameAndYear(uc.getBlogUser().getUserName(), year);
+            else
+                entries = entryDao.findByUsernameAndYearAndSecurity(uc.getBlogUser().getUserName(), year, securityDao.findOne(2));
 
             if (entries == null || entries.size() == 0) {
                 sb.append("<p>Calendar data not available.</p>");
@@ -1265,7 +1270,11 @@ public class UsersController implements Serializable {
         sb.append(endl);
 
         try {
-            Collection<Entry> entries = entryDao.viewCalendarMonth(year, month, uc.getBlogUser().getUserName(), uc.isAuthBlog());
+            Collection<Entry> entries;
+            if (uc.isAuthBlog())
+                entries = entryDao.findByUsernameAndYearAndMonth(uc.getBlogUser().getUserName(), year, month);
+            else
+                entries = entryDao.findByUsernameAndYearAndMonthAndSecurity(uc.getBlogUser().getUserName(), year, month, securityDao.findOne(2));
 
             if (entries.size() == 0) {
                 sb.append("<p>Calendar data not available.</p>");
@@ -1323,7 +1332,12 @@ public class UsersController implements Serializable {
             int year = cal.get(Calendar.YEAR);
             int month = cal.get(Calendar.MONTH) + 1; // zero based
 
-            Collection<Entry> entries = entryDao.viewCalendarMonth(year, month, uc.getBlogUser().getUserName(), uc.isAuthBlog());
+            Collection<Entry> entries;
+            if (uc.isAuthBlog())
+                entries = entryDao.findByUsernameAndYearAndMonth(uc.getBlogUser().getUserName(), year, month);
+            else
+                entries = entryDao.findByUsernameAndYearAndMonthAndSecurity(uc.getBlogUser().getUserName(), year, month, securityDao.findOne(2));
+
 
             if (entries.size() == 0) {
                 sb.append("\t<!-- could not render calendar -->");

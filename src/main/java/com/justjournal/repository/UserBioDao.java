@@ -43,5 +43,5 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface UserBioDao extends CrudRepository<UserBio, Integer> {
 
-    UserBio findByUserId(int userId);
+    public UserBio findByUserId(int userId);
 }

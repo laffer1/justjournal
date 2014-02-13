@@ -27,7 +27,9 @@
 package com.justjournal.repository;
 
 import com.justjournal.model.Tag;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 
 /**
  * Tag Dao
@@ -35,5 +37,6 @@ import org.springframework.data.repository.CrudRepository;
  * @author Lucas Holt
  */
 public interface TagDao extends CrudRepository<Tag, Integer> {
-    public Tag findByName(String name);
+    @Query("SELECT t FROM tag t WHERE LOWER(t.name) = LOWER(:name)")
+    public Tag findByName(@Param("name") String name);
 }
