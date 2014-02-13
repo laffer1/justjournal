@@ -26,10 +26,7 @@
 
 package com.justjournal.services;
 
-import com.justjournal.model.Entry;
-import com.justjournal.model.Friend;
-import com.justjournal.model.Tag;
-import com.justjournal.model.User;
+import com.justjournal.model.*;
 import com.justjournal.repository.CommentDao;
 import com.justjournal.repository.EntryRepository;
 import com.justjournal.repository.UserRepository;
@@ -60,9 +57,8 @@ public class EntryServiceImpl implements EntryService {
     @Override
     public List<Entry> getFriendsEntries(String username) {
         User user = userDao.findByUsername(username);
-        Set<Friend> friends = user.getFriends();
+        List<Friend> friends = user.getFriends();
 
-        ;
         List<Entry> list = new ArrayList<Entry>();
 
         for (Friend friend : friends) {
@@ -98,9 +94,9 @@ public class EntryServiceImpl implements EntryService {
         // TODO: insanely slow. Refactor
         List<Entry> entries = entryDao.findByUsername(username);
         for (Entry entry : entries) {
-            for (Tag tag : entry.getTags())
-                if (!tags.containsKey(tag.getName()))
-                    tags.put(tag.getName(), tag);
+            for (EntryTag entryTag : entry.getTags())
+                if (!tags.containsKey(entryTag.getTag().getName()))
+                    tags.put(entryTag.getTag().getName(), entryTag.getTag());
         }
 
         return tags.values();

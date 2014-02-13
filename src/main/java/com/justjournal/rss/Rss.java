@@ -28,9 +28,9 @@ package com.justjournal.rss;
 
 import com.justjournal.model.DateTimeBean;
 import com.justjournal.model.Entry;
-import com.justjournal.utility.SQLHelper;
 import com.justjournal.utility.DateConvert;
 import com.justjournal.utility.HTMLUtil;
+import com.justjournal.utility.SQLHelper;
 import com.justjournal.utility.Xml;
 import org.apache.log4j.Logger;
 
@@ -146,11 +146,11 @@ public final class Rss {
                 item = new RssItem();
                 item.setTruncateFields(false);
                 item.setTitle(o.getSubject());
-                item.setLink("http://www.justjournal.com/users/" + o.getUser().getUserName());
+                item.setLink("http://www.justjournal.com/users/" + o.getUser().getUsername());
                 // RSS feeds don't like &apos; and friends.  try to go unicode
                 String descUnicode = HTMLUtil.clean(o.getBody(), false);
                 item.setDescription(HTMLUtil.convertCharacterEntities(descUnicode));
-                item.setGuid("http://www.justjournal.com/users/" + o.getUser().getUserName() + "/entry/" + o.getId());
+                item.setGuid("http://www.justjournal.com/users/" + o.getUser().getUsername() + "/entry/" + o.getId());
                 item.setPubDate(new DateTimeBean(o.getDate()).toPubDate());
 
                 Date date = o.getDate();

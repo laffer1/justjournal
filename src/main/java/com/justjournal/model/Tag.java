@@ -60,6 +60,11 @@ public class Tag {
     @Column(name = "name", nullable = false, length = 30)
     private String name;
 
+    @JsonProperty("count")
+    @Transient
+    private int count;
+
+
     @JsonCreator
     public Tag() {
 
@@ -84,6 +89,25 @@ public class Tag {
         if (id < 1)
             throw new IllegalArgumentException("Tag id must be > 0");
         this.id = id;
+    }
+
+
+    /**
+     * The number of tags
+     *
+     * @return tag count
+     */
+    public int getCount() {
+        return count;
+    }
+
+    /**
+     * Set the number of tag instances
+     *
+     * @param count number of tags
+     */
+    public void setCount(int count) {
+        this.count = count;
     }
 
     /**

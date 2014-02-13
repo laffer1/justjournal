@@ -98,9 +98,9 @@ public class RecentBlogs {
             int count = 0;
             for (Entry e : entries) {
                 if (count == 15) break;
-                if (map.containsKey(e.getUser().getUserName())) continue;
+                if (map.containsKey(e.getUser().getUsername())) continue;
 
-                map.put(e.getUser().getUserName(), e);
+                map.put(e.getUser().getUsername(), e);
                 count++;
             }
 

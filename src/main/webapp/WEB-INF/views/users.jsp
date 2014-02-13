@@ -19,11 +19,11 @@
     <link rel="stylesheet" type="text/css" media="screen"
           href="${pageContext.request.contextPath}/components/lightbox2/css/lightbox.css">
     <link rel="alternate" type="application/rss+xml" title="RSS"
-          href="http://www.justjournal.com/users/<c:out value="${user.userName}"/>/rss">
+          href="http://www.justjournal.com/users/<c:out value="${user.username}"/>/rss">
     <link rel="alternate" type="application/atom+xml" title="Atom"
-          href="http://www.justjournal.com/users/<c:out value="${user.userName}"/>/atom">
+          href="http://www.justjournal.com/users/<c:out value="${user.username}"/>/atom">
     <link rel="EditURI" type="application/rsd+xml" title="RSD"
-          href="http://www.justjournal.com/rsd?blogID=<c:out value="${user.userName}"/>">
+          href="http://www.justjournal.com/rsd?blogID=<c:out value="${user.username}"/>">
     <script type="text/javascript" src="${pageContext.request.contextPath}/js/switchcontent.js" defer></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/components/jquery/jquery.min.js"></script>
     <script type="text/javascript"
@@ -62,54 +62,54 @@
                         <ul class="nav navbar-nav">
                             <li <c:if test="${entries != null}">class="active"</c:if>>
                                 <a title="Home"
-                                   href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>"><i
+                                   href="${pageContext.request.contextPath}/users/<c:out value="${user.username}"/>"><i
                                         class="fa fa-home"></i></a>
                             </li>
                             <li
                                     <c:if test="${calendar != null}">class="active"</c:if>
                                     <c:if test="${startYear > 2002}">class="active"</c:if>>
-                            <a title="Calendar"
-                                   href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>/calendar"><i
+                                <a title="Calendar"
+                                   href="${pageContext.request.contextPath}/users/<c:out value="${user.username}"/>/calendar"><i
                                         class="fa fa-calendar"></i></a>
                             </li>
                             <li <c:if test="${friends != null}">class="active"</c:if>>
                                 <a title="Friends"
-                                   href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>/friends"><i
+                                   href="${pageContext.request.contextPath}/users/<c:out value="${user.username}"/>/friends"><i
                                         class="fa fa-group"></i></a>
                             </li>
                             <li <c:if test="${pictures != null}">class="active"</c:if>>
                                 <a title="Photos"
-                                   href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>/pictures"><i
+                                   href="${pageContext.request.contextPath}/users/<c:out value="${user.username}"/>/pictures"><i
                                         class="fa fa-picture-o"></i></a>
                             </li>
                             <li <c:if test="${subscriptions != null}">class="active"</c:if>>
                                 <a title="Feed Reader"
-                                   href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>/subscriptions"><i
+                                   href="${pageContext.request.contextPath}/users/<c:out value="${user.username}"/>/subscriptions"><i
                                         class="fa fa-rss"></i>r</a></li>
 
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Formats <b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     <li><a rel="alternate"
-                                           href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>/rss"><i
+                                           href="${pageContext.request.contextPath}/users/<c:out value="${user.username}"/>/rss"><i
                                             class="fa fa-rss"></i> RSS</a></li>
                                     <li><a rel="alternate"
-                                           href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>/atom"><i
+                                           href="${pageContext.request.contextPath}/users/<c:out value="${user.username}"/>/atom"><i
                                             class="fa fa-rss"></i>
                                         ATOM</a></li>
                                     <li>
-                                        <a href="http://www.justjournal.com/users/<c:out value="${user.userName}"/>/pdf"><i
+                                        <a href="http://www.justjournal.com/users/<c:out value="${user.username}"/>/pdf"><i
                                                 class="fa fa-download"></i> PDF</a>
                                     </li>
                                     <li>
-                                        <a href="http://www.justjournal.com/users/<c:out value="${user.userName}"/>/rtf"><i
+                                        <a href="http://www.justjournal.com/users/<c:out value="${user.username}"/>/rtf"><i
                                                 class="fa fa-download"></i> RTF</a>
                                     </li>
                                 </ul>
                             </li>
                             <li>
                                 <form class="navbar-form navbar-left" role="search" method="get"
-                                      action="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>/search">
+                                      action="${pageContext.request.contextPath}/users/<c:out value="${user.username}"/>/search">
                                     <input type="hidden" name="max" value="20">
 
                                     <div class="form-group">
@@ -124,7 +124,7 @@
                             <li><a href="${pageContext.request.contextPath}/update.jsp" title="New Entry"><i
                                     class="fa fa-pencil-square"></i> New Entry</a></li>
                             <li>
-                                <a href="${pageContext.request.contextPath}/#/profile/<c:out value="${user.userName}"/>"><i
+                                <a href="${pageContext.request.contextPath}/#/profile/<c:out value="${user.username}"/>"><i
                                         class="fa fa-user"></i> Profile</a>
                             </li>
 
@@ -178,15 +178,15 @@
 
         <section>
             <div id="content" class="col-xs-12 col-md-8 col-md-offset-1">
-            <div class="page-header">
+                <div class="page-header">
                     <h1><c:out value="${user.journalName}"/></h1>
                 </div>
 
                 <c:if test="${authenticatedUsername != null}">
                     <p>You are logged in as <a
-                            href="${pageContext.request.contextPath}/users/<c:out value="${user.userName}"/>"><img
+                            href="${pageContext.request.contextPath}/users/<c:out value="${user.username}"/>"><img
                             src="${pageContext.request.contextPath}/images/userclass_16.png"
-                            alt="user"> <c:out value="${user.userName}"/></a>
+                            alt="user"> <c:out value="${user.username}"/></a>
                     </p>
                 </c:if>
 

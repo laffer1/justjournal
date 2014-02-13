@@ -85,7 +85,7 @@ public class EntryController {
     @ResponseBody
     public Entry getById(@PathVariable("username") String username, @PathVariable("id") int id, HttpServletResponse response) {
         Entry entry = entryDao.findOne(id);
-        if (entry.getUser().getUserName().equalsIgnoreCase(username) && entry.getSecurity().getId() == 2) // public
+        if (entry.getUser().getUsername().equalsIgnoreCase(username) && entry.getSecurity().getId() == 2) // public
             return entry;
 
         response.setStatus(HttpServletResponse.SC_NOT_FOUND);

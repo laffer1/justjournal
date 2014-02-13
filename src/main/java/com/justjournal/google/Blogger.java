@@ -122,9 +122,9 @@ public class Blogger {
             try {
                 User user = userRepository.findOne(userId);
 
-                s.put("nickname", user.getUserName());
+                s.put("nickname", user.getUsername());
                 s.put("userid", userId);
-                s.put("url", "http://www.justjournal.com/users/" + user.getUserName());
+                s.put("url", "http://www.justjournal.com/users/" + user.getUsername());
                 s.put("email", user.getUserContactTo().getEmail());
                 s.put("firstname", user.getFirstName());
             } catch (Exception e) {
@@ -176,7 +176,7 @@ public class Blogger {
             try {
                 User user = userRepository.findOne(userId);
 
-                s.put("url", "http://www.justjournal.com/users/" + user.getUserName());
+                s.put("url", "http://www.justjournal.com/users/" + user.getUsername());
                 s.put("blogid", userId);
                 s.put("blogName", user.getUserPref().getJournalName());
             } catch (Exception e) {
@@ -274,8 +274,8 @@ public class Blogger {
                     /* WebLogs, Google, blo.gs */
                     BasePing rp = new BasePing("http://rpc.weblogs.com/pingSiteForm");
                     rp.setName(user.getUserPref().getJournalName());
-                    rp.setUri("http://www.justjournal.com/" + "users/" + user.getUserName());
-                    rp.setChangesURL("http://www.justjournal.com" + "/users/" + user.getUserName() + "/rss");
+                    rp.setUri("http://www.justjournal.com/" + "users/" + user.getUsername());
+                    rp.setChangesURL("http://www.justjournal.com" + "/users/" + user.getUsername() + "/rss");
                     rp.ping();
                     rp.setPingUri("http://blogsearch.google.com/ping");
                     rp.ping();
@@ -285,13 +285,13 @@ public class Blogger {
                     /* Technorati */
                     TechnoratiPing rpt = new TechnoratiPing();
                     rpt.setName(user.getUserPref().getJournalName());
-                    rpt.setUri("http://www.justjournal.com/" + "users/" + user.getUserName());
+                    rpt.setUri("http://www.justjournal.com/" + "users/" + user.getUsername());
                     rpt.ping();
 
                     /* IceRocket */
                     IceRocket ice = new IceRocket();
                     ice.setName(user.getUserPref().getJournalName());
-                    ice.setUri("http://www.justjournal.com/" + "users/" + user.getUserName());
+                    ice.setUri("http://www.justjournal.com/" + "users/" + user.getUsername());
                     ice.ping();
                 }
 
@@ -420,8 +420,7 @@ public class Blogger {
                 if (userId == et2.getUser().getId()) {
                     et2.setBody(StringUtil.replace(content, '\'', "\\\'"));
                     entryRepository.save(et2);
-                }
-                else blnError = true;
+                } else blnError = true;
             } catch (Exception e) {
                 blnError = true;
                 log.debug(e.getMessage());
@@ -565,12 +564,12 @@ public class Blogger {
         e = entryRepository.findOne(Integer.parseInt(postid));
         if (userId != e.getUser().getId()) {
             s.put("faultCode", 4);
-                       s.put("faultString", "User authentication failed: " + username);
-                       return s;
+            s.put("faultString", "User authentication failed: " + username);
+            return s;
         }
 
-        entry.put("link", "http://www.justjournal.com/users/" + e.getUser().getUserName() + "/entry/" + e.getId());
-        entry.put("permaLink", "http://www.justjournal.com/users/" + e.getUser().getUserName() + "/entry/" + e.getId());
+        entry.put("link", "http://www.justjournal.com/users/" + e.getUser().getUsername() + "/entry/" + e.getId());
+        entry.put("permaLink", "http://www.justjournal.com/users/" + e.getUser().getUsername() + "/entry/" + e.getId());
         entry.put("userid", Integer.toString(userId));
         entry.put("mt_allow_pings", 0);     /* TODO: on or off? */
         entry.put("mt_allow_comments", 1);  /* TODO: on or off? */

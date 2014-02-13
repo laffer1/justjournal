@@ -63,11 +63,11 @@ public final class AtomFeed {
             for (int x = 0, n = entries.size(); x < n && x < MAX_LENGTH; x++) {
                 o = itr.next();
                 item = new AtomEntry();
-                item.setId("urn:jj:justjournal.com:atom1:" + o.getUser().getUserName()
+                item.setId("urn:jj:justjournal.com:atom1:" + o.getUser().getUsername()
                         + ":" + o.getId());
                 item.setTitle(o.getSubject());
                 item.setContent(o.getBody());
-                item.setLink("http://www.justjournal.com/users/" + o.getUser().getUserName() + "/entry/" + o.getId());
+                item.setLink("http://www.justjournal.com/users/" + o.getUser().getUsername() + "/entry/" + o.getId());
                 item.setPublished(DateConvert.encode3339(o.getDate()));
                 item.setUpdated(DateConvert.encode3339(o.getDate()));
                 Add(item);

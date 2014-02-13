@@ -47,8 +47,8 @@ import java.util.List;
  *
  * @author Lucas Holt
  */
-public interface UserLinkDao extends CrudRepository<UserLink, Integer> {
+public interface UserLinkRepository extends CrudRepository<UserLink, Integer> {
 
-    @Query("select ul from user_link ul, user u where ul.user_id = u.id and LOWER(u.userName) = LOWER(:userName)")
+    @Query("select ul from UserLink ul, User u where ul.user = u and LOWER(u.username) = LOWER(:username)")
     public List<UserLink> findByUsername(@Param("username") String username);
 }

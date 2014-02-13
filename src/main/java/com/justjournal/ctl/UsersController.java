@@ -529,7 +529,7 @@ public class UsersController implements Serializable {
             response.setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
             response.setHeader("Pragma", "public");
             // RFC 1806
-            response.setHeader("Content-Disposition", "attachment; filename=" + uc.getBlogUser().getUserName() + ".pdf");
+            response.setHeader("Content-Disposition", "attachment; filename=" + uc.getBlogUser().getUsername() + ".pdf");
             response.setContentLength(baos.size()); /* required by IE */
             final ServletOutputStream out = response.getOutputStream();
             baos.writeTo(out);
@@ -558,7 +558,7 @@ public class UsersController implements Serializable {
             response.setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
             response.setHeader("Pragma", "public");
             // RFC 1806
-            response.setHeader("Content-Disposition", "attachment; filename=" + uc.getBlogUser().getUserName() + ".rtf");
+            response.setHeader("Content-Disposition", "attachment; filename=" + uc.getBlogUser().getUsername() + ".rtf");
             response.setContentLength(baos.size()); /* required by IE */
             final ServletOutputStream out = response.getOutputStream();
             baos.writeTo(out);
@@ -588,9 +588,9 @@ public class UsersController implements Serializable {
         final List<Entry> entries;
 
         if (uc.isAuthBlog())
-            entries = entryDao.findByUsername(uc.getBlogUser().getUserName());
+            entries = entryDao.findByUsername(uc.getBlogUser().getUsername());
         else
-            entries = entryDao.findByUsernameAndSecurity(uc.getBlogUser().getUserName(), securityDao.findOne(2));
+            entries = entryDao.findByUsernameAndSecurity(uc.getBlogUser().getUsername(), securityDao.findOne(2));
 
         // Format the current time.
         final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm");
@@ -682,7 +682,7 @@ public class UsersController implements Serializable {
         sb.append("</ul>\n");
         sb.append("<p>Subscribe to pictures ");
         sb.append("<a href=\"/users/");
-        sb.append(uc.getBlogUser().getUserName());
+        sb.append(uc.getBlogUser().getUsername());
         sb.append("/rsspics\">feed</a>.</p>");
 
         return sb.toString();
@@ -773,9 +773,9 @@ public class UsersController implements Serializable {
         String sql;
 
         if (uc.isAuthBlog())
-            sql = "SELECT entry.subject AS subject, entry.body AS body, entry.date AS date, entry.id AS id, user.username AS username from entry, user, user_pref WHERE entry.uid = user.id AND entry.uid=user_pref.id AND user.username='" + uc.getBlogUser().getUserName() + "' AND ";
+            sql = "SELECT entry.subject AS subject, entry.body AS body, entry.date AS date, entry.id AS id, user.username AS username from entry, user, user_pref WHERE entry.uid = user.id AND entry.uid=user_pref.id AND user.username='" + uc.getBlogUser().getUsername() + "' AND ";
         else
-            sql = "SELECT entry.subject AS subject, entry.body AS body, entry.date AS date, entry.id AS id, user.username AS username from entry, user, user_pref WHERE entry.uid = user.id AND entry.uid=user_pref.id AND user_pref.owner_view_only = 'N' AND entry.security=2 AND user.username='" + uc.getBlogUser().getUserName() + "' AND ";
+            sql = "SELECT entry.subject AS subject, entry.body AS body, entry.date AS date, entry.id AS id, user.username AS username from entry, user, user_pref WHERE entry.uid = user.id AND entry.uid=user_pref.id AND user_pref.owner_view_only = 'N' AND entry.security=2 AND user.username='" + uc.getBlogUser().getUsername() + "' AND ";
 
         if (bquery != null && bquery.length() > 0) {
             try {
@@ -923,12 +923,12 @@ public class UsersController implements Serializable {
 
         sb.append("<ul class=\"pager\">");
         sb.append("<li class=\"previous " + (back ? "" : "disabled") + "\"><a href=\"/users/");
-        sb.append(uc.getBlogUser().getUserName());
+        sb.append(uc.getBlogUser().getUsername());
         sb.append("?skip=");
         sb.append((skip + offset));
         sb.append("\">&larr; Older</a></li>");
         sb.append("<li class=\"next " + (forward ? "" : "disabled") + "\"><a href=\"/users/");
-        sb.append(uc.getBlogUser().getUserName());
+        sb.append(uc.getBlogUser().getUsername());
         sb.append("?skip=");
         sb.append((skip - offset));
         sb.append("\">Newer &rarr;</a></li>");
@@ -952,7 +952,7 @@ public class UsersController implements Serializable {
         else
             entries = entryDao.viewFriends(uc.getBlogUser().getUserId(), 0);
     */
-        entries = entryService.getFriendsEntries(uc.getBlogUser().getUserName());
+        entries = entryService.getFriendsEntries(uc.getBlogUser().getUsername());
         sb.append("<h2>Friends</h2>");
         sb.append(endl);
 
@@ -1006,11 +1006,11 @@ public class UsersController implements Serializable {
 
                 sb.append("<h3>");
                 sb.append("<a href=\"/users/");
-                sb.append(o.getUser().getUserName());
+                sb.append(o.getUser().getUsername());
                 sb.append("\" title=\"");
-                sb.append(o.getUser().getUserName());
+                sb.append(o.getUser().getUsername());
                 sb.append("\">");
-                sb.append(o.getUser().getUserName());
+                sb.append(o.getUser().getUsername());
                 sb.append("</a> ");
 
                 sb.append("<span class=\"time\">");
@@ -1095,9 +1095,9 @@ public class UsersController implements Serializable {
                 sb.append(endl);
 
                 sb.append("<p>tags:");
-                for (final Tag s : o.getTags()) {
+                for (final EntryTag s : o.getTags()) {
                     sb.append(" ");
-                    sb.append(s.getName());
+                    sb.append(s.getTag().getName());
                 }
                 sb.append("</p>");
                 sb.append(endl);
@@ -1130,7 +1130,7 @@ public class UsersController implements Serializable {
                     sb.append(endl);
                 }
 
-                sb.append("<td><div style=\"float: right\"><a href=\"/users/").append(o.getUser().getUserName()).append("/entry/");
+                sb.append("<td><div style=\"float: right\"><a href=\"/users/").append(o.getUser().getUsername()).append("/entry/");
                 sb.append(o.getId());
                 sb.append("\" title=\"Link to this entry\">link</a> ");
                 sb.append('(');
@@ -1206,7 +1206,7 @@ public class UsersController implements Serializable {
         for (int i = yearNow; i >= uc.getBlogUser().getSince(); i--) {
 
             sb.append("<a href=\"/users/");
-            sb.append(uc.getBlogUser().getUserName());
+            sb.append(uc.getBlogUser().getUsername());
             sb.append('/');
             sb.append(i);
             sb.append("\">");
@@ -1226,9 +1226,9 @@ public class UsersController implements Serializable {
 
             Collection<Entry> entries;
             if (uc.isAuthBlog())
-                entries = entryDao.findByUsernameAndYear(uc.getBlogUser().getUserName(), year);
+                entries = entryDao.findByUsernameAndYear(uc.getBlogUser().getUsername(), year);
             else
-                entries = entryDao.findByUsernameAndYearAndSecurity(uc.getBlogUser().getUserName(), year, securityDao.findOne(2));
+                entries = entryDao.findByUsernameAndYearAndSecurity(uc.getBlogUser().getUsername(), year, securityDao.findOne(2));
 
             if (entries == null || entries.size() == 0) {
                 sb.append("<p>Calendar data not available.</p>");
@@ -1273,9 +1273,9 @@ public class UsersController implements Serializable {
         try {
             Collection<Entry> entries;
             if (uc.isAuthBlog())
-                entries = entryDao.findByUsernameAndYearAndMonth(uc.getBlogUser().getUserName(), year, month);
+                entries = entryDao.findByUsernameAndYearAndMonth(uc.getBlogUser().getUsername(), year, month);
             else
-                entries = entryDao.findByUsernameAndYearAndMonthAndSecurity(uc.getBlogUser().getUserName(), year, month, securityDao.findOne(2));
+                entries = entryDao.findByUsernameAndYearAndMonthAndSecurity(uc.getBlogUser().getUsername(), year, month, securityDao.findOne(2));
 
             if (entries.size() == 0) {
                 sb.append("<p>Calendar data not available.</p>");
@@ -1335,9 +1335,9 @@ public class UsersController implements Serializable {
 
             Collection<Entry> entries;
             if (uc.isAuthBlog())
-                entries = entryDao.findByUsernameAndYearAndMonth(uc.getBlogUser().getUserName(), year, month);
+                entries = entryDao.findByUsernameAndYearAndMonth(uc.getBlogUser().getUsername(), year, month);
             else
-                entries = entryDao.findByUsernameAndYearAndMonthAndSecurity(uc.getBlogUser().getUserName(), year, month, securityDao.findOne(2));
+                entries = entryDao.findByUsernameAndYearAndMonthAndSecurity(uc.getBlogUser().getUsername(), year, month, securityDao.findOne(2));
 
 
             if (entries.size() == 0) {
@@ -1345,7 +1345,7 @@ public class UsersController implements Serializable {
                 sb.append(endl);
             } else {
                 final Cal mycal = new Cal(entries);
-                mycal.setBaseUrl("/users/" + uc.getBlogUser().getUserName() + '/');
+                mycal.setBaseUrl("/users/" + uc.getBlogUser().getUsername() + '/');
                 sb.append(mycal.renderMini());
             }
         } catch (Exception ex) {
@@ -1364,7 +1364,7 @@ public class UsersController implements Serializable {
         StringBuilder sb = new StringBuilder();
         Tag tag;
         uc.getBlogUser().getEntries();
-        final Collection<Tag> tags = entryService.getEntryTags(uc.getBlogUser().getUserName());
+        final Collection<Tag> tags = entryService.getEntryTags(uc.getBlogUser().getUsername());
 
         int largest = 0;
         int smallest = 10;
@@ -1387,7 +1387,7 @@ public class UsersController implements Serializable {
         for (final Tag tag1 : tags) {
             tag = tag1;
             sb.append("<a href=\"/users/");
-            sb.append(uc.getBlogUser().getUserName());
+            sb.append(uc.getBlogUser().getUsername());
             sb.append("/tag/");
             sb.append(tag.getName());
             sb.append("\" class=\"");
@@ -1476,7 +1476,7 @@ public class UsersController implements Serializable {
             for (int i = 0; i < n; i++) {
                 o = (Entry) itr.next();
                 sb.append("\t\t\t<li class=\"list-group-item\"><a href=\"/users/");
-                sb.append(uc.getBlogUser().getUserName());
+                sb.append(uc.getBlogUser().getUsername());
                 sb.append("/entry/");
                 sb.append(o.getId());
                 sb.append("\" title=\"");
@@ -1521,9 +1521,9 @@ public class UsersController implements Serializable {
 
             final Collection<Entry> entries;
             if (uc.isAuthBlog())
-                entries = entryDao.findByUsernameAndYearAndMonthAndDay(uc.getBlogUser().getUserName(), year, month, day);
+                entries = entryDao.findByUsernameAndYearAndMonthAndDay(uc.getBlogUser().getUsername(), year, month, day);
             else
-                entries = entryDao.findByUsernameAndYearAndMonthAndDayAndSecurity(uc.getBlogUser().getUserName(), year, month, day, securityDao.findOne(2));
+                entries = entryDao.findByUsernameAndYearAndMonthAndDayAndSecurity(uc.getBlogUser().getUsername(), year, month, day, securityDao.findOne(2));
 
             if (entries == null || entries.size() == 0) {
                 sb.append("<p>Calendar data not available.</p>");
@@ -1587,16 +1587,16 @@ public class UsersController implements Serializable {
         for (int i = yearNow; i >= uc.getBlogUser().getSince(); i--) {
 
             sb.append("<li class=\"list-group-item\"><a href=\"/users/");
-            sb.append(uc.getBlogUser().getUserName());
+            sb.append(uc.getBlogUser().getUsername());
             sb.append('/');
             sb.append(i);
             sb.append("\">");
             sb.append(i);
             sb.append(" (");
             try {
-                sb.append(entryDao.calendarCount(i, uc.getBlogUser().getUserName()));
+                sb.append(entryDao.calendarCount(i, uc.getBlogUser().getUsername()));
             } catch (Exception e) {
-                log.error("getArchive: could not fetch count for " + uc.getBlogUser().getUserName() + ": " + i + e.getMessage());
+                log.error("getArchive: could not fetch count for " + uc.getBlogUser().getUsername() + ": " + i + e.getMessage());
                 sb.append("0");
             }
             sb.append(")</a></li> ");
@@ -1626,16 +1626,16 @@ public class UsersController implements Serializable {
         final java.util.GregorianCalendar calendar = new java.util.GregorianCalendar();
         calendar.setTime(new java.util.Date());
 
-        rss.setTitle(user.getUserName());
-        rss.setLink("http://www.justjournal.com/users/" + user.getUserName());
-        rss.setSelfLink("http://www.justjournal.com/users/" + user.getUserName() + "/rss");
-        rss.setDescription("Just Journal for " + user.getUserName());
+        rss.setTitle(user.getUsername());
+        rss.setLink("http://www.justjournal.com/users/" + user.getUsername());
+        rss.setSelfLink("http://www.justjournal.com/users/" + user.getUsername() + "/rss");
+        rss.setDescription("Just Journal for " + user.getUsername());
         rss.setLanguage("en-us");
         rss.setCopyright("Copyright " + calendar.get(Calendar.YEAR) + ' ' + user.getFirstName());
         rss.setWebMaster("webmaster@justjournal.com (Lucas)");
         // RSS advisory board format
         rss.setManagingEditor(user.getUserContactTo().getEmail() + " (" + user.getFirstName() + ")");
-        rss.populate(entryDao.findByUsernameAndSecurity(user.getUserName(), securityDao.findOne(2)));
+        rss.populate(entryDao.findByUsernameAndSecurity(user.getUsername(), securityDao.findOne(2)));
         return rss.toXml();
     }
 
@@ -1651,14 +1651,14 @@ public class UsersController implements Serializable {
         final java.util.GregorianCalendar calendarg = new java.util.GregorianCalendar();
         calendarg.setTime(new java.util.Date());
 
-        atom.setUserName(user.getUserName());
-        atom.setAlternateLink("http://www.justjournal.com/users/" + user.getUserName());
+        atom.setUserName(user.getUsername());
+        atom.setAlternateLink("http://www.justjournal.com/users/" + user.getUsername());
         atom.setAuthorName(user.getFirstName());
         atom.setUpdated(calendarg.toString());
         atom.setTitle(user.getUserPref().getJournalName());
-        atom.setId("http://www.justjournal.com/users/" + user.getUserName() + "/atom");
-        atom.setSelfLink("/users/" + user.getUserName() + "/atom");
-        atom.populate(entryDao.findByUsernameAndSecurity(user.getUserName(), securityDao.findOne(2)));
+        atom.setId("http://www.justjournal.com/users/" + user.getUsername() + "/atom");
+        atom.setSelfLink("/users/" + user.getUsername() + "/atom");
+        atom.populate(entryDao.findByUsernameAndSecurity(user.getUsername(), securityDao.findOne(2)));
         return (atom.toXml());
     }
 
@@ -1674,16 +1674,16 @@ public class UsersController implements Serializable {
         final java.util.GregorianCalendar calendarg = new java.util.GregorianCalendar();
         calendarg.setTime(new java.util.Date());
 
-        rss.setTitle(user.getUserName() + "\'s pictures");
-        rss.setLink("http://www.justjournal.com/users/" + user.getUserName() + "/pictures");
-        rss.setSelfLink("http://www.justjournal.com/users/" + user.getUserName() + "/pictures/rss");
-        rss.setDescription("Just Journal Pictures for " + user.getUserName());
+        rss.setTitle(user.getUsername() + "\'s pictures");
+        rss.setLink("http://www.justjournal.com/users/" + user.getUsername() + "/pictures");
+        rss.setSelfLink("http://www.justjournal.com/users/" + user.getUsername() + "/pictures/rss");
+        rss.setDescription("Just Journal Pictures for " + user.getUsername());
         rss.setLanguage("en-us");
         rss.setCopyright("Copyright " + calendarg.get(Calendar.YEAR) + ' ' + user.getFirstName());
         rss.setWebMaster("webmaster@justjournal.com (Luke)");
         // RSS advisory board format
         rss.setManagingEditor(user.getUserContactTo().getEmail() + " (" + user.getFirstName() + ")");
-        rss.populateImageList(user.getId(), user.getUserName());
+        rss.populateImageList(user.getId(), user.getUsername());
         return (rss.toXml());
     }
 
@@ -1694,9 +1694,9 @@ public class UsersController implements Serializable {
 
         try {
             if (uc.isAuthBlog()) {
-                entries = entryDao.findByUsername(uc.getBlogUser().getUserName());
+                entries = entryDao.findByUsername(uc.getBlogUser().getUsername());
             } else {
-                entries = entryDao.findByUsernameAndSecurity(uc.getBlogUser().getUserName(), securityDao.findOne(2));
+                entries = entryDao.findByUsernameAndSecurity(uc.getBlogUser().getUsername(), securityDao.findOne(2));
             }
 
             // Format the current time.
@@ -1775,12 +1775,12 @@ public class UsersController implements Serializable {
             sb.append("xmlns:trackback=\"http://madskills.com/public/xml/rss/module/trackback/\">\n");
             sb.append("\t<rdf:Description ");
             sb.append("rdf:about=\"");
-            sb.append("http://www.justjournal.com/users/").append(o.getUser().getUserName()).append("/entry/");
+            sb.append("http://www.justjournal.com/users/").append(o.getUser().getUsername()).append("/entry/");
             sb.append(o.getId());
             sb.append("#e");
             sb.append(o.getId());
             sb.append("\" dc:identifier=\"");
-            sb.append("http://www.justjournal.com/users/").append(o.getUser().getUserName()).append("/entry/");
+            sb.append("http://www.justjournal.com/users/").append(o.getUser().getUsername()).append("/entry/");
             sb.append(o.getId());
             sb.append("#e");
             sb.append(o.getId());
@@ -1796,7 +1796,7 @@ public class UsersController implements Serializable {
             sb.append("<span class=\"time\">");
             sb.append(formatmytime.format(currentDate));
             sb.append("</span> - <span class=\"subject\">");
-            sb.append("<a href=\"/users/").append(o.getUser().getUserName()).append("/entry/");
+            sb.append("<a href=\"/users/").append(o.getUser().getUsername()).append("/entry/");
             sb.append(o.getId());
             sb.append("\" rel=\"bookmark\" title=\"");
             sb.append(Xml.cleanString(o.getSubject()));
@@ -1886,17 +1886,17 @@ public class UsersController implements Serializable {
         sb.append("\t\t\t</p>");
         sb.append(endl);
 
-        Collection<Tag> ob = o.getTags();
+        Collection<EntryTag> ob = o.getTags();
         if (ob.size() > 0) {
             sb.append("<p>tags:");
-            for (final Tag tag : ob) {
+            for (final EntryTag tag : ob) {
                 sb.append(" ");
                 sb.append("<a href=\"/users/");
-                sb.append(uc.getBlogUser().getUserName());
+                sb.append(uc.getBlogUser().getUsername());
                 sb.append("/tag/");
-                sb.append(tag.getName());
+                sb.append(tag.getTag().getName());
                 sb.append("\">");
-                sb.append(tag.getName());
+                sb.append(tag.getTag().getName());
                 sb.append("</a>");
             }
             sb.append("</p>");
@@ -1930,7 +1930,7 @@ public class UsersController implements Serializable {
         if (single) {
             sb.append("<td><div align=\"right\">");
             if (o.getSecurity().getId() == 2) {
-                sb.append("<iframe src=\"https://www.facebook.com/plugins/like.php?href=http://www.justjournal.com/users/").append(o.getUser().getUserName()).append("/entry/");
+                sb.append("<iframe src=\"https://www.facebook.com/plugins/like.php?href=http://www.justjournal.com/users/").append(o.getUser().getUsername()).append("/entry/");
                 sb.append(o.getId());
                 sb.append("\" scrolling=\"no\" frameborder=\"0\" style=\"border:none; width:450px; height:80px\"></iframe>");
 
@@ -1939,7 +1939,7 @@ public class UsersController implements Serializable {
 
         } else {
 
-            sb.append("<td><div style=\"float: right\"><a href=\"/users/").append(o.getUser().getUserName()).append("/entry/");
+            sb.append("<td><div style=\"float: right\"><a href=\"/users/").append(o.getUser().getUsername()).append("/entry/");
             sb.append(o.getId());
             sb.append("\" title=\"Link to this entry\"><i class=\"fa fa-external-link\"></i></a> ");
 
@@ -1994,19 +1994,19 @@ public class UsersController implements Serializable {
                 sb.append("</span></h3>\n");
                 sb.append("<img src=\"../images/userclass_16.png\" alt=\"user\"/>");
                 sb.append("<a href=\"../users/");
-                sb.append(co.getUserName());
+                sb.append(co.getUser().getUsername());
                 sb.append("\" title=\"");
-                sb.append(co.getUserName());
+                sb.append(co.getUser().getUsername());
                 sb.append("\">");
-                sb.append(co.getUserName());
+                sb.append(co.getUser().getUsername());
                 sb.append("</a>\n");
 
                 sb.append("<br/><span class=\"time\">");
-                sb.append(co.getDate().toPubDate());
+                sb.append(new DateTimeBean(co.getDate()).toPubDate());
                 sb.append("</span>\n");
 
 
-                if (uc.getAuthenticatedUser().getUserName().equalsIgnoreCase(co.getUserName())) {
+                if (uc.getAuthenticatedUser().getUsername().equalsIgnoreCase(co.getUser().getUsername())) {
                     sb.append("<br/><span class=\"actions\">\n");
                     sb.append("<a href=\"edit.h?commentId=");
                     sb.append(co.getId());
@@ -2079,7 +2079,7 @@ public class UsersController implements Serializable {
          */
         public boolean isAuthBlog() {
             return authenticatedUser != null && blogUser != null
-                    && authenticatedUser.getUserName().compareTo(blogUser.getUserName()) == 0;
+                    && authenticatedUser.getUsername().compareTo(blogUser.getUsername()) == 0;
         }
     }
 }

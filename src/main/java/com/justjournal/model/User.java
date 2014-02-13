@@ -44,9 +44,7 @@ import com.sun.istack.internal.NotNull;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Represents a user most basic properties.
@@ -68,7 +66,7 @@ public class User implements Serializable {
 
     @NotNull
     @Column(name = "username", length = 15, nullable = false)
-    private String userName = "";
+    private String username = "";
 
     @NotNull
     @Column(name = "name", length = 20, nullable = false)
@@ -106,11 +104,10 @@ public class User implements Serializable {
     private Set<Entry> entries = new HashSet<Entry>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private Set<Comment> comments = new HashSet<Comment>();
+    private List<Comment> comments = new ArrayList<Comment>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private Set<Friend> friends = new HashSet<Friend>();
-
+    private List<Friend> friends = new ArrayList<Friend>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private Set<UserLink> links = new HashSet<UserLink>();
@@ -147,11 +144,11 @@ public class User implements Serializable {
         this.entries = entries;
     }
 
-    public Set<Comment> getComments() {
+    public List<Comment> getComments() {
         return comments;
     }
 
-    public void setComments(final Set<Comment> comments) {
+    public void setComments(final List<Comment> comments) {
         this.comments = comments;
     }
 
@@ -267,21 +264,21 @@ public class User implements Serializable {
      *
      * @return username
      */
-    public final String getUserName() {
-        return this.userName;
+    public final String getUsername() {
+        return this.username;
     }
 
     /**
      * Set the user name.
      *
-     * @param userName account name
+     * @param username account name
      */
-    public final void setUserName(final String userName) {
+    public final void setUsername(final String username) {
         // TODO: move username max length to this class
-        if (!StringUtil.lengthCheck(userName, 3, WebLogin.USERNAME_MAX_LENGTH)) {
-            throw new IllegalArgumentException("Invalid userName " + userName);
+        if (!StringUtil.lengthCheck(username, 3, WebLogin.USERNAME_MAX_LENGTH)) {
+            throw new IllegalArgumentException("Invalid username " + username);
         }
-        this.userName = userName.toLowerCase();
+        this.username = username.toLowerCase();
     }
 
     /**
@@ -313,11 +310,11 @@ public class User implements Serializable {
         this.since = since;
     }
 
-    public Set<Friend> getFriends() {
+    public List<Friend> getFriends() {
         return friends;
     }
 
-    public void setFriends(final Set<Friend> friends) {
+    public void setFriends(final List<Friend> friends) {
         this.friends = friends;
     }
 

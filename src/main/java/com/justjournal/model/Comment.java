@@ -29,9 +29,12 @@ package com.justjournal.model;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.justjournal.utility.HTMLUtil;
-import com.sun.istack.internal.NotNull;
-import org.springframework.stereotype.Component;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * A comment
@@ -39,17 +42,38 @@ import org.springframework.stereotype.Component;
  * @author Lucas Holt
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-@Component
-public final class Comment {
+@Entity
+@Table(name = "comments")
+public final class Comment implements Serializable {
 
+    private static final long serialVersionUID = 3594701186407268256L;
+    @Id
+    @GeneratedValue
     private int id = 0;
-    private int eid = 0;
-    private int userId = 0;
 
-    private DateTime date = new DateTimeBean();
+    @JsonProperty("entry")
+    @ManyToOne
+    @JoinColumn(name = "eid")
+    private Entry entry;
+
+    @JsonProperty("user")
+    @ManyToOne
+    @JoinColumn(name = "uid")
+    private User user;
+
+    @JsonIgnore
+    @Column(name = "date")
+    @Temporal(value = TemporalType.DATE)
+    private Date date = new Date();
+
+    @JsonProperty("subject")
+    @Column(name = "subject", length = 150)
     private String subject = "";
+
+    @JsonProperty("body")
+    @Column(name = "body")
+    @Lob
     private String body = "";
-    private String userName = "";
 
     @JsonCreator
     public Comment() {
@@ -69,39 +93,12 @@ public final class Comment {
         this.id = commentId;
     }
 
-    public int getEid() {
-        return eid;
-    }
 
-    public void setEid(int entryId)
-            throws IllegalArgumentException {
-        if (entryId < 0)
-            throw new IllegalArgumentException("Illegal entryId: " +
-                    entryId);
-
-        this.eid = entryId;
-    }
-
-    public DateTime getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(String commentDate)
-            throws IllegalArgumentException {
-        if (commentDate.length() < 6)
-            throw new IllegalArgumentException("Illegal commentDate: " +
-                    commentDate);
-        DateTime newDate = new DateTimeBean();
-
-        try {
-            newDate.set(commentDate);
-            this.setDate(newDate);
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Illegal commentDate");
-        }
-    }
-
-    public void setDate(DateTime dateTime) {
+    public void setDate(Date dateTime) {
         this.date = dateTime;
     }
 
@@ -122,16 +119,6 @@ public final class Comment {
         return body;
     }
 
-    @JsonIgnore
-    public String getBodyWithLinks() {
-        return HTMLUtil.uriToLink(getBody());
-    }
-
-    @JsonIgnore
-    public String getBodyWithoutHTML() {
-        return HTMLUtil.stripHTMLTags(getBody());
-    }
-
     public void setBody(String bodyText)
             throws IllegalArgumentException {
         if (bodyText.length() < 2)
@@ -141,58 +128,31 @@ public final class Comment {
         this.body = bodyText;
     }
 
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int uid)
-            throws IllegalArgumentException {
-        if (uid < 0)
-            throw new IllegalArgumentException("Illegal user commentId: " +
-                    uid);
-        userId = uid;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String user) {
-        userName = user;
+    @JsonIgnore
+    @Transient
+    public String getBodyWithLinks() {
+        return HTMLUtil.uriToLink(getBody());
     }
 
     @JsonIgnore
-    @NotNull
-    @Override
-    public final String toString() {
-
-        return "comment commentId: " + getId() + '\n' + "entry commentId: " + getEid() + '\n'
-                + "commentDate: " + getDate() + '\n' + "subjectText: " + getSubject() + '\n'
-                + "bodyText: " + getBody() + '\n' + "user commentId: " + getUserId() + '\n';
+    @Transient
+    public String getBodyWithoutHTML() {
+        return HTMLUtil.stripHTMLTags(getBody());
     }
 
-    @JsonIgnore
-    @Override
-    public final boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        final Comment commentTo = (Comment) o;
-
-        return getEid() == commentTo.getEid() && getId() == commentTo.getId() && getUserId() == commentTo.getUserId() && getBody().equals(commentTo.getBody()) && getDate().equals(commentTo.getDate()) && !(getSubject() != null ? !getSubject().equals(commentTo.getSubject()) : commentTo.getSubject() != null) && getUserName().equals(commentTo.getUserName());
+    public Entry getEntry() {
+        return entry;
     }
 
-    @JsonIgnore
-    @Override
-    public final int hashCode() {
-        int result;
-        result = getId();
-        result = 29 * result + getEid();
-        result = 29 * result + getUserId();
-        result = 29 * result + getDate().hashCode();
-        result = 29 * result + (getSubject() != null ? getSubject().hashCode() : 0);
-        result = 29 * result + getBody().hashCode();
-        result = 29 * result + getUserName().hashCode();
-        return result;
+    public void setEntry(final Entry entry) {
+        this.entry = entry;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(final User user) {
+        this.user = user;
+    }
 }

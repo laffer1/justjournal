@@ -68,7 +68,7 @@ public class SignUpController {
             throw new IllegalArgumentException("Invalid email address");
         }
 
-        if (!WebLogin.isUserName(user.getUserName())) {
+        if (!WebLogin.isUserName(user.getUsername())) {
 
             throw new IllegalArgumentException(
                     "Username must be letters and numbers only");
@@ -103,7 +103,7 @@ public class SignUpController {
 
             userRepository.save(user);
 
-            user = userRepository.findByUsername(user.getUserName());
+            user = userRepository.findByUsername(user.getUsername());
 
             return java.util.Collections.singletonMap("id", Integer.toString(user.getId()));
         } catch (Exception e) {

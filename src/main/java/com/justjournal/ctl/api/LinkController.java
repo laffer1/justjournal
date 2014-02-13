@@ -36,7 +36,7 @@ package com.justjournal.ctl.api;
 
 import com.justjournal.WebLogin;
 import com.justjournal.model.UserLink;
-import com.justjournal.repository.UserLinkDao;
+import com.justjournal.repository.UserLinkRepository;
 import com.justjournal.repository.UserRepository;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +60,7 @@ public class LinkController {
     private static final Logger log = Logger.getLogger(LinkController.class.getName());
 
     @Autowired
-    private UserLinkDao userLinkDao;
+    private UserLinkRepository userLinkDao;
 
     @Autowired
     private UserRepository userRepository;

@@ -26,11 +26,11 @@
 
 package com.justjournal.repository;
 
-import com.justjournal.model.EntryTags;
+import com.justjournal.model.EntryTag;
 import org.springframework.data.repository.CrudRepository;
 
 /**
  * @author Lucas Holt
  */
-public interface EntryTagsRepository extends CrudRepository<EntryTags, Integer> {
+public interface EntryTagsRepository extends CrudRepository<EntryTag, Integer> {
 }

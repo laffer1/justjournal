@@ -40,6 +40,7 @@ import com.justjournal.repository.*;
 import com.justjournal.restping.BasePing;
 import com.justjournal.restping.IceRocket;
 import com.justjournal.restping.TechnoratiPing;
+import com.justjournal.services.EntryService;
 import com.justjournal.utility.HTMLUtil;
 import com.justjournal.utility.StringUtil;
 import org.apache.log4j.Logger;
@@ -81,6 +82,12 @@ public class MetaWeblog {
     @Autowired
     private EntryTagsRepository entryTagsRepository;
 
+    private EntryService entryService = null;
+
+    public void setEntryService(EntryService entryService) {
+        this.entryService = entryService;
+    }
+
     /**
      * Fetch the users personal information including their username, userid, email address and name.
      * <p/>
@@ -113,9 +120,9 @@ public class MetaWeblog {
             try {
                 User user = userRepository.findOne(userId);
 
-                s.put("nickname", user.getUserName());
+                s.put("nickname", user.getUsername());
                 s.put("userid", userId);
-                s.put("url", "http://www.justjournal.com/users/" + user.getUserName());
+                s.put("url", "http://www.justjournal.com/users/" + user.getUsername());
                 s.put("email", user.getUserContactTo().getEmail());
                 s.put("firstname", user.getFirstName());
             } catch (Exception e) {
@@ -167,7 +174,7 @@ public class MetaWeblog {
             try {
                 User user = userRepository.findOne(userId);
 
-                s.put("url", "http://www.justjournal.com/users/" + user.getUserName());
+                s.put("url", "http://www.justjournal.com/users/" + user.getUsername());
                 s.put("blogid", userId);
                 s.put("blogName", user.getUserPref().getJournalName());
             } catch (Exception e) {
@@ -244,8 +251,8 @@ public class MetaWeblog {
                     /* WebLogs, Google, blo.gs */
                     BasePing rp = new BasePing("http://rpc.weblogs.com/pingSiteForm");
                     rp.setName(user.getUserPref().getJournalName());
-                    rp.setUri("http://www.justjournal.com/" + "users/" + user.getUserName());
-                    rp.setChangesURL("http://www.justjournal.com" + "/users/" + user.getUserName() + "/rss");
+                    rp.setUri("http://www.justjournal.com/" + "users/" + user.getUsername());
+                    rp.setChangesURL("http://www.justjournal.com" + "/users/" + user.getUsername() + "/rss");
                     rp.ping();
                     rp.setPingUri("http://blogsearch.google.com/ping");
                     rp.ping();
@@ -255,13 +262,13 @@ public class MetaWeblog {
                     /* Technorati */
                     TechnoratiPing rpt = new TechnoratiPing();
                     rpt.setName(user.getUserPref().getJournalName());
-                    rpt.setUri("http://www.justjournal.com/" + "users/" + user.getUserName());
+                    rpt.setUri("http://www.justjournal.com/" + "users/" + user.getUsername());
                     rpt.ping();
 
                     /* IceRocket */
                     IceRocket ice = new IceRocket();
                     ice.setName(user.getUserPref().getJournalName());
-                    ice.setUri("http://www.justjournal.com/" + "users/" + user.getUserName());
+                    ice.setUri("http://www.justjournal.com/" + "users/" + user.getUsername());
                     ice.ping();
                 }
 
@@ -396,7 +403,7 @@ public class MetaWeblog {
                     for (String tag : tags) {
                         Tag tag1 = tagDao.findByName(tag);
 
-                        EntryTags entryTags = new EntryTags();
+                        EntryTag entryTags = new EntryTag();
                         entryTags.setTag(tag1);
                         entryTags.setEntry(et2);
 
@@ -491,8 +498,8 @@ public class MetaWeblog {
             if (it.hasNext()) {
                 HashMap<Object, Serializable> entry = new HashMap<Object, Serializable>();
                 Entry e = it.next();
-                entry.put("link", "http://www.justjournal.com/users/" + e.getUser().getUserName() + "/entry/" + e.getId());
-                entry.put("permaLink", "http://www.justjournal.com/users/" + e.getUser().getUserName() + "/entry/" + e.getId());
+                entry.put("link", "http://www.justjournal.com/users/" + e.getUser().getUsername() + "/entry/" + e.getId());
+                entry.put("permaLink", "http://www.justjournal.com/users/" + e.getUser().getUsername() + "/entry/" + e.getId());
                 entry.put("userid", Integer.toString(e.getUser().getId()));
                 entry.put("mt_allow_pings", 0);     /* TODO: on or off? */
                 entry.put("mt_allow_comments", 1);  /* TODO: on or off? */
@@ -507,8 +514,8 @@ public class MetaWeblog {
                 entry.put("mt_text_more", "");
                 entry.put("dateCreated", e.getDate()); /* TODO: needs to be iso8601 */
                 Collection<String> list = new ArrayList<String>();
-                for (Tag tag : e.getTags()) {
-                    list.add(tag.getName());
+                for (EntryTag tag : e.getTags()) {
+                    list.add(tag.getTag().getName());
                 }
                 String str[] = (String[]) list.toArray(new String[list.size()]);
                 entry.put("categories", str); // according to microsoft it's a string array
@@ -555,8 +562,8 @@ public class MetaWeblog {
             return s;
         }
 
-        entry.put("link", "http://www.justjournal.com/users/" + e.getUser().getUserName() + "/entry/" + e.getId());
-        entry.put("permaLink", "http://www.justjournal.com/users/" + e.getUser().getUserName() + "/entry/" + e.getId());
+        entry.put("link", "http://www.justjournal.com/users/" + e.getUser().getUsername() + "/entry/" + e.getId());
+        entry.put("permaLink", "http://www.justjournal.com/users/" + e.getUser().getUsername() + "/entry/" + e.getId());
         entry.put("userid", Integer.toString(e.getUser().getId()));
         entry.put("mt_allow_pings", 0);     /* TODO: on or off? */
         entry.put("mt_allow_comments", 1);  /* TODO: on or off? */
@@ -570,8 +577,8 @@ public class MetaWeblog {
         entry.put("mt_text_more", "");
         entry.put("dateCreated", e.getDate()); /* TODO: needs to be iso8601 */
         Collection<String> list = new ArrayList<String>();
-        for (Tag tag : e.getTags()) {
-            list.add(tag.getName());
+        for (EntryTag entryTag : e.getTags()) {
+            list.add(entryTag.getTag().getName());
         }
         String str[] = (String[]) list.toArray(new String[list.size()]);
         entry.put("categories", str); // according to microsoft it's a string array
@@ -601,15 +608,7 @@ public class MetaWeblog {
             return s;
         }
 
-        // TODO: insanely slow. Refactor
-        List<Entry> entries = entryRepository.findByUsername(username);
-        for (Entry entry : entries) {
-            for (Tag tag : entry.getTags())
-            if (!tags.containsKey(tag.getName()))
-               tags.put(tag.getName(), tag);
-        }
-
-        for (Tag curtag : tags.values()) {
+        for (Tag curtag : entryService.getEntryTags(username)) {
             HashMap<Object, Serializable> entry = new HashMap<Object, Serializable>();
             entry.put("description", curtag.getName());
             entry.put("title", curtag.getName());

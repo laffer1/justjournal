@@ -104,7 +104,7 @@ public class CommentController {
 
         try {
             Comment comment = commentDao.findOne(id);
-            if (comment.getUserId() == WebLogin.currentLoginId(session))
+            if (comment.getUser().getId() == WebLogin.currentLoginId(session))
                 commentDao.delete(id);
 
             return java.util.Collections.singletonMap("id", Integer.toString(comment.getId()));
@@ -158,13 +158,13 @@ public class CommentController {
             boolean result = commentDao.add(comment);
 
             try {
-                User pf = new UserImpl(et.getUserName());
+                User pf = new UserImpl(et.getUsername());
 
                 if (et.getEmailComments()) {
                     QueueMail mail = new QueueMail();
                     mail.setFromAddress(settings.getMailFrom());
                     mail.setToAddress(pf.getEmailAddress());
-                    mail.setBody(comment.getUserName() + " said: \n"
+                    mail.setBody(comment.getUsername() + " said: \n"
                             + "Subject: " + comment.getSubject() + "\n"
                             + comment.getBody() + "\n\nIn response to:\n"
                             + "http://www.justjournal.com/comment/index.jsp?id="

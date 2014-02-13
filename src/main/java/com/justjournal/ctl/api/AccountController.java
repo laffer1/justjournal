@@ -88,7 +88,7 @@ public class AccountController {
     }
 
     private Map<String, String> updateUser(User user, HttpSession session, HttpServletResponse response) {
-        if (WebLogin.currentLoginId(session) == user.getId() && WebLogin.currentLoginName(session).equals(user.getUserName())) {
+        if (WebLogin.currentLoginId(session) == user.getId() && WebLogin.currentLoginName(session).equals(user.getUsername())) {
 
             userDao.save(user);
             return java.util.Collections.singletonMap("id", Integer.toString(user.getId()));
@@ -158,7 +158,7 @@ public class AccountController {
 
             if (user.getUserPref().getOwnerViewOnly() == PrefBool.Y) {
                 if (
-                        !WebLogin.isAuthenticated(session) || user.getUserName().equals(WebLogin.currentLoginName(session))) {
+                        !WebLogin.isAuthenticated(session) || user.getUsername().equals(WebLogin.currentLoginName(session))) {
                     response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                     return null;
                 }

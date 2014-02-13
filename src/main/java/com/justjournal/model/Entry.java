@@ -122,7 +122,7 @@ public class Entry implements Serializable {
 
     @JsonProperty("tags")
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "entry")
-    private Set<Tag> tags = new HashSet<Tag>();
+    private Set<EntryTag> tags = new HashSet<EntryTag>();
 
     @JsonProperty("comments")
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "entry")
@@ -253,11 +253,11 @@ public class Entry implements Serializable {
         this.attachFile = attachFile;
     }
 
-    public Set<Tag> getTags() {
+    public Set<EntryTag> getTags() {
         return tags;
     }
 
-    public void setTags(final Set<Tag> tags) {
+    public void setTags(final Set<EntryTag> tags) {
         this.tags = tags;
     }
 

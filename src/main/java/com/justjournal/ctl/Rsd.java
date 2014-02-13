@@ -61,15 +61,15 @@ public class Rsd {
             sb.append("\t<engineName>JustJournal</engineName>\n");
             sb.append("\t<engineLink>http://www.justjournal.com</engineLink>\n");
             sb.append("\t<homePageLink>http://www.justjournal.com/users/");
-            sb.append(user.getUserName()); // yeah we already know this but it's for output and thus safer.
+            sb.append(user.getUsername()); // yeah we already know this but it's for output and thus safer.
             sb.append("</homePageLink>\n");
             // APIS we support.
             sb.append("\t<apis>\n");
             sb.append("\t\t<api name=\"Blogger\" preferred=\"false\" apiLink=\"http://www.justjournal.com/xml-rpc\" blogID=\"");
-            sb.append(user.getUserName());
+            sb.append(user.getUsername());
             sb.append("\" />\n");
             sb.append("\t\t<api name=\"MetaWeblog\" preferred=\"true\" apiLink=\"http://www.justjournal.com/xml-rpc\" blogID=\"");
-            sb.append(user.getUserName());
+            sb.append(user.getUsername());
             sb.append("\" />\n");
             sb.append("\t</apis>\n");
             sb.append("</service>\n");

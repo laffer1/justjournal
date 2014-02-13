@@ -2,8 +2,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <%@ page contentType="text/html; charset=iso-8859-1" language="java" %>
-<%@ page import="com.justjournal.repository.UserLinkDao" %>
 <%@ page import="com.justjournal.model.UserLink" %>
+<%@ page import="com.justjournal.repository.UserLinkRepository" %>
 <%@ page import="java.util.Collection" %>
 <%@ page import="java.util.Iterator" %>
 <%
@@ -50,7 +50,7 @@
         <tbody style="font: 8pt Verdana, Arial, sans-serif;">
         <%
             Collection<UserLink> links;
-            links = UserLinkDao.view(ival);
+            links = UserLinkRepository.view(ival);
 
             UserLink o;
             Iterator itr = links.iterator();

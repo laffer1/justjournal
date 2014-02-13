@@ -38,7 +38,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "entry_tags")
-public class EntryTags {
+public class EntryTag {
     @Id
     @GeneratedValue
     private int id;
@@ -54,7 +54,7 @@ public class EntryTags {
     private Tag tag;
 
     @JsonCreator
-    public EntryTags() {
+    public EntryTag() {
     }
 
     public Entry getEntry() {
