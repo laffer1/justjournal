@@ -35,7 +35,11 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.repository;
 
 import com.justjournal.model.RssSubscription;
+import com.justjournal.model.User;
 import org.springframework.data.repository.CrudRepository;
 
+import java.util.List;
+
 public interface RssSubscriptionsDAO extends CrudRepository<RssSubscription, Integer> {
+    public List<RssSubscription> findByUser(User user);
 }

@@ -28,6 +28,8 @@ package com.justjournal.repository;
 
 import com.justjournal.model.Entry;
 import com.justjournal.model.Security;
+import com.justjournal.model.User;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
@@ -43,7 +45,9 @@ public interface EntryRepository extends CrudRepository<Entry, Integer> {
 
     public List<Entry> findByUsernameAndSecurity(String username, Security security);
 
-    public List<Entry> findByUsernameOrderByDateDesc(String user);
+    public List<Entry> findByUserAndSecurityOrderByDateDesc(User user, Security security, Pageable pageable);
+
+    public List<Entry> findByUserOrderByDateDesc(User user, Pageable pageable);
 
     public Iterable<Entry> findBySecurityOrderByDateDesc(Security security);
 }

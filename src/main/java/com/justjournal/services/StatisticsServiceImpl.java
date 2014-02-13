@@ -26,14 +26,18 @@
 
 package com.justjournal.services;
 
-import com.justjournal.repository.*;
 import com.justjournal.model.Statistics;
 import com.justjournal.model.StatisticsImpl;
+import com.justjournal.model.User;
 import com.justjournal.model.UserStatistics;
+import com.justjournal.repository.CommentDao;
+import com.justjournal.repository.EntryRepository;
+import com.justjournal.repository.UserRepository;
 import com.justjournal.utility.SQLHelper;
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -47,6 +51,9 @@ public class StatisticsServiceImpl implements StatisticsService {
 
     private CommentDao commentDao;
     private EntryRepository entryDao;
+
+    @Autowired
+    private UserRepository userRepository;
 
     public void setCommentDao(CommentDao commentDao) {
         this.commentDao = commentDao;
@@ -65,15 +72,14 @@ public class StatisticsServiceImpl implements StatisticsService {
         try {
             UserStatistics userStatistics = new UserStatistics();
 
-            // check if user is valid
-            if (username == null || UserRepository.get(username) == null) {
-                log.trace("getUserStatistics(): username not found: " + username);
+            if (username == null) {
                 return null;
             }
+            User user = userRepository.findByUsername(username);
 
             userStatistics.setUsername(username);
-            userStatistics.setEntryCount(entryDao.entryCount(username));
-            userStatistics.setCommentCount(commentDao.count(username));
+            userStatistics.setEntryCount(user.getEntries().size()); // TODO: slow
+            userStatistics.setCommentCount(user.getComments().size()); // TODO: slow!!!!
 
             return userStatistics;
         } catch (Exception e) {

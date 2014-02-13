@@ -26,11 +26,13 @@
 
 package com.justjournal.ctl;
 
-import com.justjournal.*;
+import com.justjournal.Cal;
+import com.justjournal.WebError;
+import com.justjournal.WebLogin;
 import com.justjournal.atom.AtomFeed;
 import com.justjournal.core.Settings;
-import com.justjournal.repository.*;
 import com.justjournal.model.*;
+import com.justjournal.repository.*;
 import com.justjournal.rss.CachedHeadlineBean;
 import com.justjournal.rss.Rss;
 import com.justjournal.search.BaseSearch;
@@ -48,6 +50,8 @@ import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -58,6 +62,7 @@ import javax.servlet.http.HttpSession;
 import java.awt.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.sql.ResultSet;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
@@ -71,21 +76,28 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("/users")
-public class UsersController {
+public class UsersController implements Serializable {
     public static final int SEARCH_MAX_LENGTH = 20;
     public static final float FONT_10_POINT = 10.0F;
     // constants
     private static final char endl = '\n';
     private static final Logger log = Logger.getLogger(UsersController.class);
     private static final long serialVersionUID = 1191172806869579057L;
+
     @SuppressWarnings({"InstanceVariableOfConcreteClass"})
     private Settings settings = null;
     private CommentDao commentDao = null;
     private EntryRepository entryDao = null;
     private EntryService entryService = null;
+    @Autowired
+    private EmoticonDao emoticonDao;
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private SecurityDao securityDao;
+    @Autowired
+    private RssSubscriptionsDAO rssSubscriptionsDAO;
 
     public void setEntryService(EntryService entryService) {
         this.entryService = entryService;
@@ -574,7 +586,10 @@ public class UsersController {
 
         final List<Entry> entries;
 
-        entries = entryDao.viewAll(uc.getBlogUser().getUserName(), uc.isAuthBlog());
+        if (uc.isAuthBlog())
+            entries = entryDao.findByUsername(uc.getBlogUser().getUserName());
+        else
+            entries = entryDao.findByUsernameAndSecurity(uc.getBlogUser().getUserName(), securityDao.findOne(2));
 
         // Format the current time.
         final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm");
@@ -605,16 +620,16 @@ public class UsersController {
             document.add(new Paragraph(HTMLUtil.textFromHTML(o.getBody()), new Font(Font.TIMES_ROMAN, 11.0F)));
             document.add(Chunk.NEWLINE);
 
-            if (o.getSecurityLevel() == 0)
+            if (o.getSecurity().getId() == 0)
                 document.add(new Paragraph("Security: " + "Private", new Font(Font.HELVETICA, 10.0F)));
-            else if (o.getSecurityLevel() == 1)
+            else if (o.getSecurity().getId() == 1)
                 document.add(new Paragraph("Security: " + "Friends", new Font(Font.HELVETICA, 10.0F)));
             else
                 document.add(new Paragraph("Security: " + "Public", new Font(Font.HELVETICA, 10.0F)));
 
-            document.add(new Chunk("Location: " + o.getLocationName()));
+            document.add(new Chunk("Location: " + o.getLocation().getTitle()));
             document.add(Chunk.NEWLINE);
-            document.add(new Chunk("Mood: " + o.getMoodName()));
+            document.add(new Chunk("Mood: " + o.getMood().getName()));
             document.add(Chunk.NEWLINE);
             document.add(new Chunk("Music: " + o.getMusic()));
             document.add(Chunk.NEWLINE);
@@ -685,7 +700,7 @@ public class UsersController {
         final CachedHeadlineBean hb = new CachedHeadlineBean();
 
         try {
-            final Collection<RssSubscription> rssfeeds = RssSubscriptionsDAO.view(uc.getBlogUser().getId());
+            final Collection<RssSubscription> rssfeeds = rssSubscriptionsDAO.findByUser(uc.getBlogUser());
 
             /* Iterator */
             RssSubscription o;
@@ -713,12 +728,15 @@ public class UsersController {
             WebError.Display("Invalid Entry Id", "The entry id was invalid for the journal entry you tried to get.", sb);
         } else {
             try {
+                o = entryDao.findOne(singleEntryId);
                 if (uc.isAuthBlog()) {
-                    o = entryDao.viewSingle(singleEntryId, uc.authenticatedUser.getId());
+                    if (o.getUser().getId() != uc.authenticatedUser.getId())
+                        o = null;
 
                     log.debug("getSingleEntry: User is logged in.");
                 } else {
-                    o = entryDao.viewSinglePublic(singleEntryId);
+                    if (o.getSecurity().getId() != 2)
+                        o = null;
                     log.debug("getSingleEntry: User is not logged in.");
                 }
 
@@ -842,14 +860,15 @@ public class UsersController {
         StringBuffer sb = new StringBuffer();
         final List<Entry> entries;
 
+        Pageable page = new PageRequest(skip / 20 + 1, 20);
         try {
             if (uc.isAuthBlog()) {
-                entries = entryDao.view(uc.getBlogUser().getUserName(), true, skip);  // should be true
+                entries = entryDao.findByUserOrderByDateDesc(uc.getBlogUser(), page);
 
                 if (log.isDebugEnabled())
                     log.debug("getEntries: User is logged in.");
             } else {
-                entries = entryDao.view(uc.getBlogUser().getUserName(), false, skip);
+                entries = entryDao.findByUserAndSecurityOrderByDateDesc(uc.getBlogUser(), securityDao.findOne(2), page);
 
                 if (log.isDebugEnabled())
                     log.debug("getEntries: User is not logged in.");
@@ -870,7 +889,7 @@ public class UsersController {
             for (Entry o : entries) {
                 // Parse the previous string back into a Date.
                 final ParsePosition pos = new ParsePosition(0);
-                final Date currentDate = formatter.parse(o.getDateTime().toString(), pos);
+                final Date currentDate = formatter.parse(new DateTimeBean(o.getDate()).toString(), pos); // TODO: seems inefficient
 
                 curDate = formatmydate.format(currentDate);
 
@@ -961,7 +980,7 @@ public class UsersController {
 
                 // Parse the previous string back into a Date.
                 final ParsePosition pos = new ParsePosition(0);
-                final java.util.Date currentDate = formatter.parse(o.getDateTime().toString(), pos);
+                final java.util.Date currentDate = formatter.parse(new DateTimeBean(o.getDate()).toString(), pos);
 
                 curDate = formatmydate.format(currentDate);
 
@@ -976,21 +995,21 @@ public class UsersController {
                 sb.append("<div class=\"ebody\">");
                 sb.append(endl);
 
-                final User p = new UserImpl(o.getUserName());
-                if (p.showAvatar()) {
-                    sb.append("<img alt=\"avatar\" style=\"float: right\" src=\"/image?id=");
-                    sb.append(o.getUserId());
-                    sb.append("\"/>");
+                // final User p = o.getUser();
+                //  if (p.showAvatar()) {   TODO: avatar?
+                sb.append("<img alt=\"avatar\" style=\"float: right\" src=\"/image?id=");
+                sb.append(o.getUser().getId());
+                sb.append("\"/>");
                     sb.append(endl);
-                }
+                //  }
 
                 sb.append("<h3>");
                 sb.append("<a href=\"/users/");
-                sb.append(o.getUserName());
+                sb.append(o.getUser().getUserName());
                 sb.append("\" title=\"");
-                sb.append(o.getUserName());
+                sb.append(o.getUser().getUserName());
                 sb.append("\">");
-                sb.append(o.getUserName());
+                sb.append(o.getUser().getUserName());
                 sb.append("</a> ");
 
                 sb.append("<span class=\"time\">");
@@ -1004,16 +1023,16 @@ public class UsersController {
                 sb.append(endl);
 
                 // Keep this synced with getEntries()
-                if (o.getAutoFormat()) {
+                if (o.getAutoFormat() == PrefBool.Y) {
                     sb.append("<p>");
-                    if (o.getBodyWithLinks().contains("\n"))
-                        sb.append(StringUtil.replace(o.getBodyWithLinks(), '\n', "<br />"));
+                    if (o.getBody().contains("\n"))
+                        sb.append(StringUtil.replace(o.getBody(), '\n', "<br />"));
                     else if (o.getBody().contains("\r"))
-                        sb.append(StringUtil.replace(o.getBodyWithLinks(), '\r', "<br />"));
+                        sb.append(StringUtil.replace(o.getBody(), '\r', "<br />"));
                     else
                         // we do not have any "new lines" but it might be
                         // one long line.
-                        sb.append(o.getBodyWithLinks());
+                        sb.append(o.getBody());
 
                     sb.append("</p>");
                 } else {
@@ -1026,13 +1045,13 @@ public class UsersController {
 
                 sb.append("<p>");
 
-                if (o.getSecurityLevel() == 0) {
+                if (o.getSecurity().getId() == 0) {
                     sb.append("<span class=\"security\">security: ");
                     sb.append("<img src=\"/img/icon_private.gif\" alt=\"private\" /> ");
                     sb.append("private");
                     sb.append("</span><br />");
                     sb.append(endl);
-                } else if (o.getSecurityLevel() == 1) {
+                } else if (o.getSecurity().getId() == 1) {
                     sb.append("<span class=\"security\">security: ");
                     sb.append("<img src=\"/img/icon_protected.gif\" alt=\"friends\" /> ");
                     sb.append("friends");
@@ -1040,15 +1059,15 @@ public class UsersController {
                     sb.append(endl);
                 }
 
-                if (o.getLocationId() > 0) {
+                if (o.getLocation().getId() > 0) {
                     sb.append("<span class=\"location\">location: ");
-                    sb.append(o.getLocationName());
+                    sb.append(o.getLocation().getTitle());
                     sb.append("</span><br />");
                     sb.append(endl);
                 }
 
-                if (o.getMoodName().length() > 0 && o.getMoodId() != 12) {
-                    final EmoticonTo emoto = EmoticonDao.get(1, o.getMoodId());
+                if (o.getMood().getName().length() > 0 && o.getMood().getId() != 12) {
+                    final EmoticonTo emoto = emoticonDao.findByThemeIdAndMoodId(1, o.getMood().getId());
 
                     sb.append("<span class=\"mood\">mood: <img src=\"/images/emoticons/1/");
                     sb.append(emoto.getFileName());
@@ -1057,17 +1076,17 @@ public class UsersController {
                     sb.append("\" height=\"");
                     sb.append(emoto.getHeight());
                     sb.append("\" alt=\"");
-                    sb.append(o.getMoodName());
+                    sb.append(o.getMood().getName());
                     sb.append("\" /> ");
-                    sb.append(o.getMoodName());
-                    sb.append("</span><br />");
+                    sb.append(o.getMood().getName());
+                    sb.append("</span><br>");
                     sb.append(endl);
                 }
 
                 if (o.getMusic().length() > 0) {
                     sb.append("<span class=\"music\">music: ");
                     sb.append(Xml.cleanString(o.getMusic()));
-                    sb.append("</span><br />");
+                    sb.append("</span><br>");
                     sb.append(endl);
                 }
 
@@ -1115,7 +1134,7 @@ public class UsersController {
                 sb.append("\" title=\"Link to this entry\">link</a> ");
                 sb.append('(');
 
-                switch (o.getCommentCount()) {
+                switch (o.getComments().size()) {
                     case 0:
                         break;
                     case 1:
@@ -1127,7 +1146,7 @@ public class UsersController {
                         sb.append("<a href=\"/comment/index.jsp?id=");
                         sb.append(o.getId());
                         sb.append("\" title=\"View Comments\">");
-                        sb.append(o.getCommentCount());
+                        sb.append(o.getComments().size());
                         sb.append(" comments</a> | ");
                 }
 
@@ -1329,7 +1348,9 @@ public class UsersController {
     private String getTagMini(final UserContext uc) {
         StringBuilder sb = new StringBuilder();
         Tag tag;
-        final Iterable<Tag> tags = entryDao.getUserTags(uc.getBlogUser().getUserId());
+        uc.getBlogUser().getEntries();
+        final Collection<Tag> tags = entryService.getEntryTags(uc.getBlogUser().getUserName());
+
         int largest = 0;
         int smallest = 10;
         int cutSmall;
@@ -1382,7 +1403,7 @@ public class UsersController {
         log.debug("getUserLinks(): Init and load collection");
         StringBuilder sb = new StringBuilder();
         UserLink link;
-        Collection links = UserLinkDao.view(uc.getBlogUser().getId());
+        Set<UserLink> links = uc.getBlogUser().getLinks();
 
         if (!links.isEmpty()) {
             sb.append("\t<div class=\"menuentity\" id=\"userlinks\" style=\"padding-top: 10px;\">\n\t\t<strong style=\"text-transform: uppercase; letter-spacing: 2px; border: 0 none; border-bottom: 1px; border-style: dotted; border-color: #999999; margin-bottom: 5px; width: 100%; font-size: 10px;\"><i class=\"fa fa-external-link-square\"></i> Links</strong>\n\t\t<ul class=\"list-group\">\n");
@@ -1495,7 +1516,7 @@ public class UsersController {
 
                     // Parse the previous string back into a Date.
                     final ParsePosition pos = new ParsePosition(0);
-                    final java.util.Date currentDate = formatter.parse(o.getDateTime().toString(), pos);
+                    final java.util.Date currentDate = formatter.parse(new DateTimeBean(o.getDate()).toString(), pos);
 
                     curDate = formatmydate.format(currentDate);
 
@@ -1586,7 +1607,7 @@ public class UsersController {
         rss.setWebMaster("webmaster@justjournal.com (Lucas)");
         // RSS advisory board format
         rss.setManagingEditor(user.getUserContactTo().getEmail() + " (" + user.getFirstName() + ")");
-        rss.populate(entryDao.view(user.getUserName(), false));
+        rss.populate(entryDao.findByUsernameAndSecurity(user.getUserName(), securityDao.findOne(2)));
         return rss.toXml();
     }
 
@@ -1609,7 +1630,7 @@ public class UsersController {
         atom.setTitle(user.getUserPref().getJournalName());
         atom.setId("http://www.justjournal.com/users/" + user.getUserName() + "/atom");
         atom.setSelfLink("/users/" + user.getUserName() + "/atom");
-        atom.populate(entryDao.view(user.getUserName(), false));
+        atom.populate(entryDao.findByUsernameAndSecurity(user.getUserName(), securityDao.findOne(2)));
         return (atom.toXml());
     }
 
@@ -1647,7 +1668,7 @@ public class UsersController {
             if (uc.isAuthBlog()) {
                 entries = entryDao.findByUsername(uc.getBlogUser().getUserName());
             } else {
-                entries = entryDao.viewAll(uc.getBlogUser().getUserName(), false);
+                entries = entryDao.findByUsernameAndSecurity(uc.getBlogUser().getUserName(), securityDao.findOne(2));
             }
 
             // Format the current time.
@@ -1669,7 +1690,7 @@ public class UsersController {
 
                 // Parse the previous string back into a Date.
                 final ParsePosition pos = new ParsePosition(0);
-                final java.util.Date currentDate = formatter.parse(o.getDateTime().toString(), pos);
+                final java.util.Date currentDate = formatter.parse(new DateTimeBean(o.getDate()).toString(), pos);
 
                 curDate = formatmydate.format(currentDate);
 
@@ -1726,12 +1747,12 @@ public class UsersController {
             sb.append("xmlns:trackback=\"http://madskills.com/public/xml/rss/module/trackback/\">\n");
             sb.append("\t<rdf:Description ");
             sb.append("rdf:about=\"");
-            sb.append("http://www.justjournal.com/users/").append(o.getUserName()).append("/entry/");
+            sb.append("http://www.justjournal.com/users/").append(o.getUser().getUserName()).append("/entry/");
             sb.append(o.getId());
             sb.append("#e");
             sb.append(o.getId());
             sb.append("\" dc:identifier=\"");
-            sb.append("http://www.justjournal.com/users/").append(o.getUserName()).append("/entry/");
+            sb.append("http://www.justjournal.com/users/").append(o.getUser().getUserName()).append("/entry/");
             sb.append(o.getId());
             sb.append("#e");
             sb.append(o.getId());
@@ -1747,7 +1768,7 @@ public class UsersController {
             sb.append("<span class=\"time\">");
             sb.append(formatmytime.format(currentDate));
             sb.append("</span> - <span class=\"subject\">");
-            sb.append("<a href=\"/users/").append(o.getUserName()).append("/entry/");
+            sb.append("<a href=\"/users/").append(o.getUser().getUserName()).append("/entry/");
             sb.append(o.getId());
             sb.append("\" rel=\"bookmark\" title=\"");
             sb.append(Xml.cleanString(o.getSubject()));
@@ -1766,17 +1787,17 @@ public class UsersController {
            converted to br's.  If someone used html, we don't want autoformat!
            We handle Windows/UNIX with the \n case and Mac OS Classic with \r
          */
-        if (o.getAutoFormat()) {
+        if (o.getAutoFormat() == PrefBool.Y) {
 
             sb.append("\t\t\t\t<p>");
-            if (o.getBodyWithLinks().contains("\n"))
-                sb.append(StringUtil.replace(o.getBodyWithLinks(), '\n', "<br />"));
+            if (o.getBody().contains("\n"))
+                sb.append(StringUtil.replace(o.getBody(), '\n', "<br>"));
             else if (o.getBody().contains("\r"))
-                sb.append(StringUtil.replace(o.getBodyWithLinks(), '\r', "<br />"));
+                sb.append(StringUtil.replace(o.getBody(), '\r', "<br>"));
             else
                 // we do not have any "new lines" but it might be
                 // one long line.
-                sb.append(o.getBodyWithLinks());
+                sb.append(o.getBody());
 
             sb.append("</p>");
         } else {
@@ -1789,13 +1810,13 @@ public class UsersController {
 
         sb.append("\t\t\t<p>");
 
-        if (o.getSecurityLevel() == 0) {
+        if (o.getSecurity().getId() == 0) {
             sb.append("<span class=\"security\">security: ");
             sb.append("<img src=\"/img/icon_private.gif\" alt=\"private\" /> ");
             sb.append("private");
             sb.append("</span><br />");
             sb.append(endl);
-        } else if (o.getSecurityLevel() == 1) {
+        } else if (o.getSecurity().getId() == 1) {
             sb.append("\t\t\t<span class=\"security\">security: ");
             sb.append("<img src=\"/img/icon_protected.gif\" alt=\"friends\" /> ");
             sb.append("friends");
@@ -1803,15 +1824,15 @@ public class UsersController {
             sb.append(endl);
         }
 
-        if (o.getLocationId() > 0) {
+        if (o.getLocation().getId() > 0) {
             sb.append("\t\t\t<span class=\"location\">location: ");
-            sb.append(o.getLocationName());
+            sb.append(o.getLocation().getTitle());
             sb.append("</span><br />");
             sb.append(endl);
         }
 
-        if (o.getMoodName().length() > 0 && o.getMoodId() != 12) {
-            final EmoticonTo emoto = EmoticonDao.get(1, o.getMoodId());
+        if (o.getMood().getName().length() > 0 && o.getMood().getId() != 12) {
+            final EmoticonTo emoto = emoticonDao.findByThemeIdAndMoodId(1, o.getMood().getId());
 
             sb.append("\t\t\t<span class=\"mood\">mood: <img src=\"/images/emoticons/1/");
             sb.append(emoto.getFileName());
@@ -1820,9 +1841,9 @@ public class UsersController {
             sb.append("\" height=\"");
             sb.append(emoto.getHeight());
             sb.append("\" alt=\"");
-            sb.append(o.getMoodName());
+            sb.append(o.getMood().getName());
             sb.append("\" /> ");
-            sb.append(o.getMoodName());
+            sb.append(o.getMood().getName());
             sb.append("</span><br />");
             sb.append(endl);
         }
@@ -1837,17 +1858,17 @@ public class UsersController {
         sb.append("\t\t\t</p>");
         sb.append(endl);
 
-        Collection<String> ob = o.getTags();
+        Collection<Tag> ob = o.getTags();
         if (ob.size() > 0) {
             sb.append("<p>tags:");
-            for (final String tagname : ob) {
+            for (final Tag tag : ob) {
                 sb.append(" ");
                 sb.append("<a href=\"/users/");
                 sb.append(uc.getBlogUser().getUserName());
                 sb.append("/tag/");
-                sb.append(tagname);
+                sb.append(tag.getName());
                 sb.append("\">");
-                sb.append(tagname);
+                sb.append(tag.getName());
                 sb.append("</a>");
             }
             sb.append("</p>");
@@ -1880,8 +1901,8 @@ public class UsersController {
 
         if (single) {
             sb.append("<td><div align=\"right\">");
-            if (o.getSecurityLevel() == 2) {
-                sb.append("<iframe src=\"https://www.facebook.com/plugins/like.php?href=http://www.justjournal.com/users/").append(o.getUserName()).append("/entry/");
+            if (o.getSecurity().getId() == 2) {
+                sb.append("<iframe src=\"https://www.facebook.com/plugins/like.php?href=http://www.justjournal.com/users/").append(o.getUser().getUserName()).append("/entry/");
                 sb.append(o.getId());
                 sb.append("\" scrolling=\"no\" frameborder=\"0\" style=\"border:none; width:450px; height:80px\"></iframe>");
 
@@ -1890,13 +1911,14 @@ public class UsersController {
 
         } else {
 
-            sb.append("<td><div style=\"float: right\"><a href=\"/users/").append(o.getUserName()).append("/entry/");
+            sb.append("<td><div style=\"float: right\"><a href=\"/users/").append(o.getUser().getUserName()).append("/entry/");
             sb.append(o.getId());
             sb.append("\" title=\"Link to this entry\"><i class=\"fa fa-external-link\"></i></a> ");
 
             sb.append('(');
 
-            switch (o.getCommentCount()) {
+            int commentCount = o.getComments().size();
+            switch (commentCount) {
                 case 0:
                     break;
                 case 1:
@@ -1908,7 +1930,7 @@ public class UsersController {
                     sb.append("<a href=\"/comment/index.jsp?id=");
                     sb.append(o.getId());
                     sb.append("\" title=\"View Comments\">");
-                    sb.append(o.getCommentCount());
+                    sb.append(commentCount);
                     sb.append(" comments</a> | ");
             }
 

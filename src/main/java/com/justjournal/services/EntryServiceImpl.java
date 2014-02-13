@@ -28,6 +28,7 @@ package com.justjournal.services;
 
 import com.justjournal.model.Entry;
 import com.justjournal.model.Friend;
+import com.justjournal.model.Tag;
 import com.justjournal.model.User;
 import com.justjournal.repository.CommentDao;
 import com.justjournal.repository.EntryRepository;
@@ -35,6 +36,7 @@ import com.justjournal.repository.UserRepository;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -86,6 +88,22 @@ public class EntryServiceImpl implements EntryService {
             start = end - 20;
 
         return list.subList(start, end);
+    }
+
+    public Collection<Tag> getEntryTags(String username) {
+        HashMap<Object, Serializable> s = new HashMap<Object, Serializable>();
+
+        Map<String, Tag> tags = new HashMap<String, Tag>();
+
+        // TODO: insanely slow. Refactor
+        List<Entry> entries = entryDao.findByUsername(username);
+        for (Entry entry : entries) {
+            for (Tag tag : entry.getTags())
+                if (!tags.containsKey(tag.getName()))
+                    tags.put(tag.getName(), tag);
+        }
+
+        return tags.values();
     }
 
     @Override
