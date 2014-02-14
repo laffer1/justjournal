@@ -24,48 +24,63 @@
  * SUCH DAMAGE.
  */
 
-package com.justjournal.repository;
+package com.justjournal.model;
 
-import com.justjournal.Util;
-import com.justjournal.model.Country;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * @author Lucas Holt
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@WebAppConfiguration
-@ContextConfiguration("file:src/test/resources/mvc-dispatcher-servlet.xml")
-public class CountryRepositoryTests {
-    @Autowired
-    private CountryRepository countryRepository;
+@Entity
+@Table(name = "mood_themes")
+public class MoodTheme implements Serializable {
+    private static final long serialVersionUID = -3177089710241240593L;
 
-    @BeforeClass
-    public static void setup() throws Exception {
-        Util.setupDb();
+    @Id
+    @GeneratedValue
+    @Column(name = "id")
+    private int id;
+
+    @ManyToOne
+    @JoinColumn(name = "owner")
+    private User user;
+
+    @Column(name = "is_public", length = 2)
+    private String isPublic;
+
+    @Column(name = "des", length = 100)
+    private String description;
+
+    public int getId() {
+        return id;
     }
 
-    @Test
-    public void list() throws Exception {
-        Iterable<Country> list = countryRepository.findAll();
-        assertNotNull(list);
-        assertEquals(239, countryRepository.count());
+    public void setId(final int id) {
+        this.id = id;
     }
 
-    @Test
-    public void get() {
-        Country country = countryRepository.findOne(1);
-        assertNotNull(country);
-        assertEquals(1, country.getId());
-        assertNotNull(country.getTitle());
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(final User user) {
+        this.user = user;
+    }
+
+    public String getIsPublic() {
+        return isPublic;
+    }
+
+    public void setIsPublic(final String isPublic) {
+        this.isPublic = isPublic;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(final String description) {
+        this.description = description;
     }
 }

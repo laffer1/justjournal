@@ -36,7 +36,9 @@ package com.justjournal.model;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
-import org.springframework.stereotype.Component;
+
+import javax.persistence.*;
+import java.util.Date;
 
 /**
  * A Trackback ping
@@ -44,8 +46,9 @@ import org.springframework.stereotype.Component;
  * @author Lucas Holt
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-@Component
-final public class Trackback {
+@Entity
+@Table(name = "trackback")
+public class Trackback {
     /*
     id  int 10  unsigned auto  (trackback unit id)
     eid (entry it refers to)
@@ -56,9 +59,13 @@ final public class Trackback {
     name  (author name)
     type  (trackback, pingback, post-it)
     */
+    @Id
+    @GeneratedValue
+    @Column(name = "id")
     private int id;
+    // TODO: finish
     private int entryId;
-    private DateTime date;
+    private Date date;
     private String subject;
     private String body;
     private String authorEmail;
@@ -70,21 +77,6 @@ final public class Trackback {
     @JsonCreator
     public Trackback() {
 
-    }
-
-    public Trackback(int id, int entryId, DateTime date, String subject, String body, String authorEmail, String authorName,
-                     String blogName, String url, TrackbackType type) {
-
-        this.id = id;
-        this.entryId = entryId;
-        this.date = date;
-        this.subject = subject;
-        this.body = body;
-        this.authorEmail = authorEmail;
-        this.authorName = authorName;
-        this.blogName = blogName;
-        this.url = url;
-        this.type = type;
     }
 
     public String getUrl() {
@@ -120,25 +112,11 @@ final public class Trackback {
         this.entryId = entryId;
     }
 
-    public DateTime getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(String date) throws IllegalArgumentException {
-        if (date.length() < 6)
-            throw new IllegalArgumentException("Illegal date: " +
-                    date);
-        DateTime newDate = new DateTimeBean();
-
-        try {
-            newDate.set(date);
-            this.date = newDate;
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Illegal date");
-        }
-    }
-
-    public void setDate(DateTime date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
@@ -203,33 +181,6 @@ final public class Trackback {
 
     public void setType(TrackbackType type) {
         this.type = type;
-    }
-
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Trackback that = (Trackback) o;
-
-        if (entryId != that.entryId) return false;
-        if (id != that.id) return false;
-        if (authorEmail != null ? !authorEmail.equals(that.authorEmail) : that.authorEmail != null) return false;
-        if (authorName != null ? !authorName.equals(that.authorName) : that.authorName != null) return false;
-        if (body != null ? !body.equals(that.body) : that.body != null) return false;
-        return !(date != null ? !date.equals(that.date) : that.date != null) && !(subject != null ? !subject.equals(that.subject) : that.subject != null) && type == that.type;
-    }
-
-    public int hashCode() {
-        int result;
-        result = id;
-        result = 31 * result + entryId;
-        result = 31 * result + (date != null ? date.hashCode() : 0);
-        result = 31 * result + (subject != null ? subject.hashCode() : 0);
-        result = 31 * result + (body != null ? body.hashCode() : 0);
-        result = 31 * result + (authorEmail != null ? authorEmail.hashCode() : 0);
-        result = 31 * result + (authorName != null ? authorName.hashCode() : 0);
-        result = 31 * result + (type != null ? type.hashCode() : 0);
-        return result;
     }
 
 }

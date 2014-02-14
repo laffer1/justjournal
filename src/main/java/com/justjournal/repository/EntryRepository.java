@@ -48,11 +48,12 @@ public interface EntryRepository extends CrudRepository<Entry, Integer> {
     @Query("select e from Entry e, User u where e.user = u and LOWER(u.username) = LOWER(:username)")
     public List<Entry> findByUsername(@Param("username") String username);
 
-    public List<Entry> findByUsernameAndSecurity(String username, Security security);
+    @Query("select e from Entry e, User u where e.user = u and LOWER(u.username) = LOWER(:username) and e.security = :security")
+    public List<Entry> findByUsernameAndSecurity(@Param("username") String username, @Param("security") Security security);
 
-    public List<Entry> findByUserAndSecurityOrderByDateDesc(User user, Security security);
+    public List<Entry> findByUserAndSecurityOrderByDateDesc(@Param("user") User user, @Param("security") Security security);
 
-    public Page<Entry> findByUserAndSecurityOrderByDateDesc(User user, Security security, Pageable pageable);
+    public Page<Entry> findByUserAndSecurityOrderByDateDesc(@Param("user") User user, @Param("security") Security security, Pageable pageable);
 
     public Page<Entry> findByUserOrderByDateDesc(User user, Pageable pageable);
 
@@ -67,21 +68,33 @@ public interface EntryRepository extends CrudRepository<Entry, Integer> {
     public Long calendarCount(@Param("yr") int year, @Param("username") String username);
 
     @Query("SELECT eh FROM User us, Entry eh WHERE LOWER(us.username) = LOWER(:username) AND YEAR(eh.date) = :yr AND us = eh.user and eh.security = :security")
-    public List<Entry> findByUsernameAndYearAndSecurity(@Param("username") String username, @Param("yr") int year, Security security);
+    public List<Entry> findByUsernameAndYearAndSecurity(@Param("username") String username, @Param("yr") int year, @Param("security") Security security);
 
     @Query("SELECT eh FROM User us, Entry eh WHERE LOWER(us.username) = LOWER(:username) AND YEAR(eh.date) = :yr AND us = eh.user")
     public List<Entry> findByUsernameAndYear(@Param("username") String username, @Param("yr") int year);
 
     @Query("SELECT eh FROM User us, Entry eh WHERE LOWER(us.username) = LOWER(:username) AND YEAR(eh.date) = :yr AND MONTH(eh.date) = :month AND us = eh.user")
-    public List<Entry> findByUsernameAndYearAndMonth(@Param("username") String username, @Param("yr") int year, @Param("month") int month);
+    public List<Entry> findByUsernameAndYearAndMonth(@Param("username") String username,
+                                                     @Param("yr") int year,
+                                                     @Param("month") int month);
 
-    @Query("SELECT eh FROM User us, Entry eh WHERE LOWER(u.username) = LOWER(:username) AND YEAR(eh.date) = :yr AND MONTH(eh.date) = :month AND us = eh.user and eh.security = :security")
-    public List<Entry> findByUsernameAndYearAndMonthAndSecurity(@Param("username") String username, @Param("yr") int year, @Param("month") int month, Security security);
+    @Query("SELECT eh FROM User us, Entry eh WHERE LOWER(us.username) = LOWER(:username) AND YEAR(eh.date) = :yr AND MONTH(eh.date) = :month AND us = eh.user and eh.security = :security")
+    public List<Entry> findByUsernameAndYearAndMonthAndSecurity(@Param("username") String username,
+                                                                @Param("yr") int year,
+                                                                @Param("month") int month,
+                                                                @Param("security") Security security);
 
     @Query("SELECT eh FROM User us, Entry eh WHERE LOWER(us.username) = LOWER(:username) AND YEAR(eh.date) = :yr AND MONTH(eh.date) = :month AND DAY(eh.date) = :day AND us = eh.user and eh.security = :security")
-    public List<Entry> findByUsernameAndYearAndMonthAndDay(@Param("username") String username, @Param("yr") int year, @Param("month") int month, @Param("day") int day);
+    public List<Entry> findByUsernameAndYearAndMonthAndDay(@Param("username") String username,
+                                                           @Param("yr") int year,
+                                                           @Param("month") int month,
+                                                           @Param("day") int day);
 
     @Query("SELECT eh FROM User us, Entry eh WHERE LOWER(us.username) = LOWER(:username) AND YEAR(eh.date) = :yr AND MONTH(eh.date) = :month AND DAY(eh.date) = :day AND us = eh.user and eh.security = :security")
-    public List<Entry> findByUsernameAndYearAndMonthAndDayAndSecurity(@Param("username") String username, @Param("yr") int year, @Param("month") int month, @Param("day") int day, Security security);
+    public List<Entry> findByUsernameAndYearAndMonthAndDayAndSecurity(@Param("username") String username,
+                                                                      @Param("yr") int year,
+                                                                      @Param("month") int month,
+                                                                      @Param("day") int day,
+                                                                      @Param("security") Security security);
 
 }

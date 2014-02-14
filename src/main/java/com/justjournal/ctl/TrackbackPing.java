@@ -34,9 +34,9 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.ctl;
 
-import com.justjournal.repository.TrackbackDao;
 import com.justjournal.model.Trackback;
 import com.justjournal.model.TrackbackType;
+import com.justjournal.repository.TrackbackDao;
 import com.justjournal.utility.ServletUtilities;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -127,9 +127,8 @@ public class TrackbackPing {
 
             tb.setEntryId(postId);
 
-            java.text.SimpleDateFormat fmt = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             java.sql.Date now = new java.sql.Date(System.currentTimeMillis());
-            tb.setDate(fmt.format(now));
+            tb.setDate(now);
 
             trackbackDao.save(tb);
 

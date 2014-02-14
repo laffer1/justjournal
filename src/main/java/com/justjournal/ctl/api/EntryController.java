@@ -100,13 +100,41 @@ public class EntryController {
         return entryDao.findByUserAndSecurityOrderByDateDesc(user, securityDao.findOne(2));
     }
 
-    @RequestMapping(value = "{username}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "{username}/size/{size}/page/{page}", method = RequestMethod.GET, produces = "application/json")
     public
     @ResponseBody
-    Page<Entry> getEntries(@PathVariable("username") String username, @RequestParam("size") int size, @RequestParam("page") int page) {
+    Page<Entry> getEntries(@PathVariable("username") String username, @PathVariable("size") int size, @PathVariable("page") int page) {
         Pageable pageable = new PageRequest(page, size);
         User user = userRepository.findByUsername(username);
         return entryDao.findByUserAndSecurityOrderByDateDesc(user, securityDao.findOne(2), pageable);
+    }
+
+    public static Logger getLog() {
+        return log;
+    }
+
+    public CommentDao getCommentDao() {
+        return commentDao;
+    }
+
+    public EntryRepository getEntryDao() {
+        return entryDao;
+    }
+
+    public SecurityDao getSecurityDao() {
+        return securityDao;
+    }
+
+    public void setSecurityDao(final SecurityDao securityDao) {
+        this.securityDao = securityDao;
+    }
+
+    public UserRepository getUserRepository() {
+        return userRepository;
+    }
+
+    public void setUserRepository(final UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     /**

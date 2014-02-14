@@ -49,19 +49,19 @@ public class Country implements Serializable {
     @GeneratedValue
     private int id;
 
-    @Column(name = "title", length = 80)
+    @Column(name = "title", length = 80, nullable = false)
     private String title;
 
-    @Column(name = "iso", length = 2)
+    @Column(name = "iso", length = 2, nullable = false)
     private String iso;
 
-    @Column(name = "iso3", length = 3)
+    @Column(name = "iso3", length = 3, nullable = true)
     private String iso3;
 
-    @Column(name = "num_code")
-    private int numCode;
+    @Column(name = "numcode", nullable = true)
+    private Integer numCode;
 
-    @Column(name = "iso_title", length = 50)
+    @Column(name = "iso_title", length = 50, nullable = false)
     private String isoTitle;
 
     @OneToMany(mappedBy = "country")

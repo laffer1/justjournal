@@ -1,15 +1,16 @@
 <%@ page contentType="text/html; charset=iso-8859-1" language="java"
          import="com.justjournal.UserImpl, com.justjournal.WebError" %>
-<%@ page import="com.justjournal.repository.*" %>
+<%@ page import="com.justjournal.model.Comment" %>
+<%@ page import="com.justjournal.model.DateTime" %>
+<%@ page import="com.justjournal.model.Entry" %>
+<%@ page import="com.justjournal.model.MoodThemeData" %>
+<%@ page import="com.justjournal.repository.CommentDao" %>
+<%@ page import="com.justjournal.repository.MoodThemeDataRepository" %>
 <%@ page import="com.justjournal.utility.StringUtil" %>
 <%@ page import="com.justjournal.utility.Xml" %>
 <%@ page import="java.io.PrintWriter" %>
 <%@ page import="java.util.Collection" %>
 <%@ page import="java.util.Iterator" %>
-<%@ page import="com.justjournal.model.Comment" %>
-<%@ page import="com.justjournal.model.Entry" %>
-<%@ page import="com.justjournal.model.EmoticonTo" %>
-<%@ page import="com.justjournal.model.DateTime" %>
 <%--
 Displays user comments on a particular journal entry.
 
@@ -155,7 +156,7 @@ $Id: index.jsp,v 1.5 2008/04/26 17:06:30 laffer1 Exp $
         <% } %>
 
         <% if (entry.getMoodName().length() > 0 && entry.getMoodId() != 12) { %>
-        <% final EmoticonTo emoto = EmoticonDao.get(1, entry.getMoodId()); %>
+        <% final MoodThemeData emoto = MoodThemeDataRepository.get(1, entry.getMoodId()); %>
     <span class="mood">mood: <img src="../images/emoticons/1/<%=emoto.getFileName()%>"
                                   width="<%=emoto.getWidth()%>"
                                   height="<%=emoto.getHeight()%>"

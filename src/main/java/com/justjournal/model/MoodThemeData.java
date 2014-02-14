@@ -34,30 +34,47 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
+import javax.persistence.*;
+import java.io.Serializable;
+
 /**
- * Emoticon resource data transfer object.  Basic properites including the filename, height, width, mood and theme ids.
+ * Emoticon resource data transfer object.  Basic properties including the filename, height, width, mood and theme ids.
  *
  * @author Lucas Holt
  * @version 1.0
  * @since 1.0 User: laffer1 Date: Sep 22, 2003 Time: 11:01:45 PM
  */
-public final class EmoticonTo {
+@Entity
+@Table(name = "mood_theme_data")
+public class MoodThemeData implements Serializable {
+    private static final long serialVersionUID = 8664963658480263224L;
+
+    @Id
+    @GeneratedValue
+    private int id;
+
+    @Column(name = "picurl", length = 100)
     private String filename;
-    private int moodId;
-    private int moodTheme;
+
+    @ManyToOne
+    @JoinColumn(name = "moodid")
+    private Mood mood;
+
+    @ManyToOne
+    @JoinColumn(name = "moodthemeid")
+    private MoodTheme theme;
+
+    @Column(name = "width")
     private int width;
+
+    @Column(name = "height")
     private int height;
 
-    public EmoticonTo() {
+    @JsonCreator
+    public MoodThemeData() {
 
-    }
-
-    public EmoticonTo(String filename, int moodId, int moodTheme, int width, int height) {
-        this.filename = filename;
-        this.moodId = moodId;
-        this.moodTheme = moodTheme;
-        this.width = width;
-        this.height = height;
     }
 
     public final String getFileName() {
@@ -68,20 +85,12 @@ public final class EmoticonTo {
         filename = value;
     }
 
-    public final int getMoodId() {
-        return moodId;
+    public final MoodTheme getTheme() {
+        return theme;
     }
 
-    public final void setMoodId(int value) {
-        moodId = value;
-    }
-
-    public final int getMoodTheme() {
-        return moodTheme;
-    }
-
-    public final void setMoodTheme(int value) {
-        moodTheme = value;
+    public final void setTheme(MoodTheme value) {
+        theme = value;
     }
 
     public final int getWidth() {
@@ -100,49 +109,19 @@ public final class EmoticonTo {
         height = value;
     }
 
-    public final String toString() {
-        StringBuilder output = new StringBuilder();
-
-        output.append("mood id: ");
-        output.append(moodId);
-        output.append('\n');
-
-        output.append("theme id: ");
-        output.append(moodTheme);
-        output.append('\n');
-
-        output.append("filename: ");
-        output.append(filename);
-        output.append('\n');
-
-        output.append("width: ");
-        output.append(width);
-        output.append('\n');
-
-        output.append("height: ");
-        output.append(height);
-        output.append('\n');
-
-        return output.toString();
+    public String getFilename() {
+        return filename;
     }
 
-    public final boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        final EmoticonTo that = (EmoticonTo) o;
-
-        return height == that.height && moodId == that.moodId && moodTheme == that.moodTheme && width == that.width && filename.equals(that.filename);
-
+    public void setFilename(final String filename) {
+        this.filename = filename;
     }
 
-    public final int hashCode() {
-        int result;
-        result = filename.hashCode();
-        result = 29 * result + moodId;
-        result = 29 * result + moodTheme;
-        result = 29 * result + width;
-        result = 29 * result + height;
-        return result;
+    public Mood getMood() {
+        return mood;
+    }
+
+    public void setMood(final Mood mood) {
+        this.mood = mood;
     }
 }

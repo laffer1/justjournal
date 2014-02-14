@@ -91,7 +91,7 @@ public class UsersController implements Serializable {
     private EntryRepository entryDao = null;
     private EntryService entryService = null;
     @Autowired
-    private EmoticonDao emoticonDao;
+    private MoodThemeDataRepository emoticonDao;
 
     @Autowired
     private UserRepository userRepository;
@@ -354,7 +354,7 @@ public class UsersController implements Serializable {
         }
 
         try {
-            User user =  userRepository.findByUsername(username);
+            User user = userRepository.findByUsername(username);
             UserContext userc = new UserContext(user, authUser);
             if (user.getUserPref().getOwnerViewOnly() == PrefBool.N || userc.isAuthBlog()) {
                 getPDF(response, userc);
@@ -1001,7 +1001,7 @@ public class UsersController implements Serializable {
                 sb.append("<img alt=\"avatar\" style=\"float: right\" src=\"/image?id=");
                 sb.append(o.getUser().getId());
                 sb.append("\"/>");
-                    sb.append(endl);
+                sb.append(endl);
                 //  }
 
                 sb.append("<h3>");
@@ -1068,7 +1068,7 @@ public class UsersController implements Serializable {
                 }
 
                 if (o.getMood().getName().length() > 0 && o.getMood().getId() != 12) {
-                    final EmoticonTo emoto = emoticonDao.findByThemeIdAndMoodId(1, o.getMood().getId());
+                    final MoodThemeData emoto = emoticonDao.findByThemeIdAndMoodId(1, o.getMood().getId());
 
                     sb.append("<span class=\"mood\">mood: <img src=\"/images/emoticons/1/");
                     sb.append(emoto.getFileName());
@@ -1109,7 +1109,7 @@ public class UsersController implements Serializable {
                 sb.append("<tr>");
                 sb.append(endl);
 
-                if (uc.getAuthenticatedUser() != null && uc.getAuthenticatedUser().getId() ==  o.getUser().getId()) {
+                if (uc.getAuthenticatedUser() != null && uc.getAuthenticatedUser().getId() == o.getUser().getId()) {
                     sb.append("<td width=\"30\"><a title=\"Edit Entry\" href=\"/#/entry/").append(o.getId());
                     sb.append("\"><i class=\"fa fa-pencil-square-o\"></i></a></td>");
                     sb.append(endl);
@@ -1860,7 +1860,7 @@ public class UsersController implements Serializable {
         }
 
         if (o.getMood().getName().length() > 0 && o.getMood().getId() != 12) {
-            final EmoticonTo emoto = emoticonDao.findByThemeIdAndMoodId(1, o.getMood().getId());
+            final MoodThemeData emoto = emoticonDao.findByThemeIdAndMoodId(1, o.getMood().getId());
 
             sb.append("\t\t\t<span class=\"mood\">mood: <img src=\"/images/emoticons/1/");
             sb.append(emoto.getFileName());

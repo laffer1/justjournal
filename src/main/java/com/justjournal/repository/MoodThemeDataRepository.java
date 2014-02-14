@@ -34,10 +34,10 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.repository;
 
-import com.justjournal.model.EmoticonTo;
+import com.justjournal.model.MoodThemeData;
 import org.springframework.data.repository.CrudRepository;
 
-public interface EmoticonDao extends CrudRepository<EmoticonTo, Integer> {
+public interface MoodThemeDataRepository extends CrudRepository<MoodThemeData, Integer> {
 
-    public EmoticonTo findByThemeIdAndMoodId(int themeId, int moodId);
+    public MoodThemeData findByThemeIdAndMoodId(int themeId, int moodId);
 }
