@@ -31,82 +31,66 @@
        xmlns:cache="http://www.springframework.org/schema/cache"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:jpa="http://www.springframework.org/schema/data/jpa"
-       xmlns:util="http://www.springframework.org/schema/util"
        xmlns:mvc="http://www.springframework.org/schema/mvc"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd
         http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa-1.0.xsd
-        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.2.xsd
+
         http://www.springframework.org/schema/mvc
         http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
     <context:component-scan base-package="com.justjournal"/>
 
     <!-- SPRING - JPA -->
-       <jpa:repositories
-               base-package="com.justjournal.repository" />
+    <jpa:repositories
+            base-package="com.justjournal.repository"/>
 
-       <bean class="org.springframework.orm.jpa.JpaTransactionManager"
-             id="transactionManager">
-           <property name="entityManagerFactory"
-                     ref="entityManagerFactory" />
-           <property name="jpaDialect">
-               <bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
-           </property>
-       </bean>
+    <bean class="org.springframework.orm.jpa.JpaTransactionManager"
+          id="transactionManager">
+        <property name="entityManagerFactory"
+                  ref="entityManagerFactory"/>
+        <property name="jpaDialect">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect"/>
+        </property>
+    </bean>
 
     <bean id="mainDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
-      <property name="jndiName" value="java:comp/env/jdbc/jjDB"/>
+        <property name="jndiName" value="java:comp/env/jdbc/jjDB"/>
     </bean>
 
-       <bean id="entityManagerFactory"
-             class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-           <property name="dataSource" ref="mainDataSource" />
-           <property name="packagesToScan" value="com.justjournal.model"/>
-           <property name="jpaVendorAdapter">
-               <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-                   <property name="generateDdl" value="true" />
-                   <property name="showSql" value="false"/>
-                   <property name="databasePlatform" value="org.hibernate.dialect.MySQLDialect"/>
-                   <property name="database" value="MYSQL"/>
-               </bean>
-           </property>
-           <property name="jpaProperties">
-               <value>
-                   hibernate.cache.use_second_level_cache = true
-                   hibernate.cache.region.factory_class = org.hibernate.cache.ehcache.EhCacheRegionFactory
-                   hibernate.cache.use_query_cache = true
-                   hibernate.generate_statistics = true
-               </value>
-           </property>
-       </bean>
-
-    <bean id="commentDao" class="com.justjournal.repository.CommentDaoImpl"/>
-    <bean id="entryDao" class="com.justjournal.repository.EntryDaoImpl"/>
-    <bean id="tagDao" class="com.justjournal.repository.TagDaoImpl"/>
-    <bean id="userDao" class="com.justjournal.repository.UserRepository"/>
-
-    <bean id="entryService" class="com.justjournal.services.EntryServiceImpl">
-        <property name="commentDao" ref="commentDao"/>
-        <property name="entryDao" ref="entryDao"/>
-        <property name="userDao" ref="userDao"/>
+    <bean id="entityManagerFactory"
+          class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource" ref="mainDataSource"/>
+        <property name="packagesToScan" value="com.justjournal.model"/>
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+                <property name="generateDdl" value="true"/>
+                <property name="showSql" value="false"/>
+                <property name="databasePlatform" value="org.hibernate.dialect.MySQLDialect"/>
+                <property name="database" value="MYSQL"/>
+            </bean>
+        </property>
+        <property name="jpaProperties">
+            <value>
+                hibernate.cache.use_second_level_cache = true
+                hibernate.cache.region.factory_class = org.hibernate.cache.ehcache.EhCacheRegionFactory
+                hibernate.cache.use_query_cache = true
+                hibernate.generate_statistics = true
+            </value>
+        </property>
     </bean>
+
+    <bean id="entryService" class="com.justjournal.services.EntryServiceImpl"/>
 
     <bean id="entryController" class="com.justjournal.ctl.api.EntryController">
-        <property name="entryDao" ref="entryDao"/>
-        <property name="commentDao" ref="commentDao"/>
     </bean>
 
     <bean id="statisticsService" class="com.justjournal.services.StatisticsServiceImpl">
-        <property name="commentDao" ref="commentDao"/>
-        <property name="entryDao" ref="entryDao"/>
     </bean>
 
     <bean id="commentController" class="com.justjournal.ctl.api.CommentController">
-        <property name="entryDao" ref="entryDao"/>
-        <property name="commentDao" ref="commentDao"/>
     </bean>
 
     <bean id="statisticsController" class="com.justjournal.ctl.api.StatisticsController">
@@ -118,8 +102,6 @@
     </bean>
 
     <bean id="usersController" class="com.justjournal.ctl.UsersController">
-        <property name="entryDao" ref="entryDao"/>
-        <property name="commentDao" ref="commentDao"/>
         <property name="entryService" ref="entryService"/>
     </bean>
 

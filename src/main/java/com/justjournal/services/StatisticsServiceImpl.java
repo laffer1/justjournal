@@ -30,7 +30,6 @@ import com.justjournal.model.Statistics;
 import com.justjournal.model.StatisticsImpl;
 import com.justjournal.model.User;
 import com.justjournal.model.UserStatistics;
-import com.justjournal.repository.CommentDao;
 import com.justjournal.repository.EntryRepository;
 import com.justjournal.repository.UserRepository;
 import com.justjournal.utility.SQLHelper;
@@ -40,34 +39,28 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 /**
  * Provide Statistics Services for Just Journal
  *
  * @author Lucas Holt
  */
 @Service
+@Transactional
 public class StatisticsServiceImpl implements StatisticsService {
     private static final Logger log = Logger.getLogger(StatisticsServiceImpl.class);
 
-    private CommentDao commentDao;
-    private EntryRepository entryDao;
+    @Autowired
+    private EntryRepository entryRepository;
 
     @Autowired
     private UserRepository userRepository;
 
-    public void setCommentDao(CommentDao commentDao) {
-        this.commentDao = commentDao;
-    }
-
-    public void setEntryDao(EntryRepository entryDao) {
-        this.entryDao = entryDao;
-    }
-
     @Override
     @Nullable
     public UserStatistics getUserStatistics(@NotNull String username) throws ServiceException {
-        if ((commentDao == null)) throw new AssertionError();
-        if ((entryDao == null)) throw new AssertionError();
+        if ((entryRepository == null)) throw new AssertionError();
 
         try {
             UserStatistics userStatistics = new UserStatistics();

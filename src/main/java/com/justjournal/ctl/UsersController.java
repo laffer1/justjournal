@@ -87,7 +87,7 @@ public class UsersController implements Serializable {
 
     @SuppressWarnings({"InstanceVariableOfConcreteClass"})
     private Settings settings = null;
-    private CommentDao commentDao = null;
+    private CommentRepository commentDao = null;
     private EntryRepository entryDao = null;
     private EntryService entryService = null;
     @Autowired
@@ -108,7 +108,7 @@ public class UsersController implements Serializable {
         this.entryDao = entryDao;
     }
 
-    public void setCommentDao(CommentDao commentDao) {
+    public void setCommentDao(CommentRepository commentDao) {
         this.commentDao = commentDao;
     }
 
@@ -1634,7 +1634,7 @@ public class UsersController implements Serializable {
         rss.setCopyright("Copyright " + calendar.get(Calendar.YEAR) + ' ' + user.getFirstName());
         rss.setWebMaster("webmaster@justjournal.com (Lucas)");
         // RSS advisory board format
-        rss.setManagingEditor(user.getUserContactTo().getEmail() + " (" + user.getFirstName() + ")");
+        rss.setManagingEditor(user.getUserContact().getEmail() + " (" + user.getFirstName() + ")");
         rss.populate(entryDao.findByUsernameAndSecurity(user.getUsername(), securityDao.findOne(2)));
         return rss.toXml();
     }
@@ -1682,7 +1682,7 @@ public class UsersController implements Serializable {
         rss.setCopyright("Copyright " + calendarg.get(Calendar.YEAR) + ' ' + user.getFirstName());
         rss.setWebMaster("webmaster@justjournal.com (Luke)");
         // RSS advisory board format
-        rss.setManagingEditor(user.getUserContactTo().getEmail() + " (" + user.getFirstName() + ")");
+        rss.setManagingEditor(user.getUserContact().getEmail() + " (" + user.getFirstName() + ")");
         rss.populateImageList(user.getId(), user.getUsername());
         return (rss.toXml());
     }

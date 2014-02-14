@@ -95,7 +95,7 @@ public class SignUpController {
 
             UserContact userContact = new UserContact();
             userContact.setEmail(email);
-            user.setUserContactTo(userContact);
+            user.setUserContact(userContact);
 
             UserBio userBio = new UserBio();
             userBio.setBio("");

@@ -26,19 +26,45 @@
 
 package com.justjournal.repository;
 
-import com.justjournal.model.Comment;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Component;
+import com.justjournal.Util;
+import com.justjournal.model.Entry;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 
-import java.util.List;
+import static org.junit.Assert.*;
 
 /**
- * Manipulate and fetch comments
- *
  * @author Lucas Holt
  */
-@Component
-public interface CommentDao extends CrudRepository<Comment, Integer> {
+@RunWith(SpringJUnit4ClassRunner.class)
+@WebAppConfiguration
+@ContextConfiguration("file:src/test/resources/mvc-dispatcher-servlet.xml")
+public class EntryRepositoryTests {
+    @Autowired
+    EntryRepository entryRepository;
 
-    public List<Comment> findByEntryId(int entryId);
+    @BeforeClass
+    public static void setup() throws Exception {
+        Util.setupDb();
+    }
+
+    @Test
+    public void list() throws Exception {
+        Iterable<Entry> list = entryRepository.findAll();
+        assertNotNull(list);
+        assertTrue(entryRepository.count() > 0);
+    }
+
+    @Test
+    public void get() {
+        Entry entry = entryRepository.findOne(2);
+        assertNotNull(entry);
+        assertEquals(2, entry.getId());
+        assertNotNull(entry.getSubject());
+    }
 }

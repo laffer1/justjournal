@@ -24,24 +24,47 @@
  * SUCH DAMAGE.
  */
 
-package com.justjournal.services;
+package com.justjournal.repository;
 
-import com.justjournal.model.Statistics;
-import com.justjournal.model.UserStatistics;
-import com.sun.istack.internal.NotNull;
-import com.sun.istack.internal.Nullable;
-import org.springframework.stereotype.Service;
+import com.justjournal.Util;
+import com.justjournal.model.Comment;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
+
+import static org.junit.Assert.*;
 
 /**
  * @author Lucas Holt
  */
-@Service
-public interface StatisticsService {
-    public
-    @NotNull
-    Statistics getStatistics() throws ServiceException;
+@RunWith(SpringJUnit4ClassRunner.class)
+@WebAppConfiguration
+@ContextConfiguration("file:src/test/resources/mvc-dispatcher-servlet.xml")
+public class CommentRepositoryTests {
 
-    public
-    @Nullable
-    UserStatistics getUserStatistics(String username) throws ServiceException;
+    @Autowired
+    private CommentRepository commentRepository;
+
+    @BeforeClass
+    public static void setup() throws Exception {
+        Util.setupDb();
+    }
+
+    @Test
+    public void list() throws Exception {
+        Iterable<Comment> list = commentRepository.findAll();
+        assertNotNull(list);
+        assertTrue(commentRepository.count() > 0);
+    }
+
+    @Test
+    public void getById() {
+        Comment comment = commentRepository.findOne(1);
+        assertNotNull(comment);
+        assertEquals(1, comment.getId());
+    }
 }

@@ -70,6 +70,7 @@ public final class Comment implements Serializable {
     @Column(name = "subject", length = 150)
     private String subject = "";
 
+    @Basic(fetch = FetchType.LAZY)
     @JsonProperty("body")
     @Column(name = "body")
     @Lob

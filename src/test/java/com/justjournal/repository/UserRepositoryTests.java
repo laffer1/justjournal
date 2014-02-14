@@ -27,7 +27,7 @@
 package com.justjournal.repository;
 
 import com.justjournal.Util;
-import com.justjournal.model.State;
+import com.justjournal.model.User;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,8 +36,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 /**
  * @author Lucas Holt
@@ -45,9 +44,9 @@ import static org.junit.Assert.assertNotNull;
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration("file:src/test/resources/mvc-dispatcher-servlet.xml")
-public class StateRepositoryTests {
+public class UserRepositoryTests {
     @Autowired
-    private StateRepository stateRepository;
+    private UserRepository userRepository;
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -56,8 +55,39 @@ public class StateRepositoryTests {
 
     @Test
     public void list() throws Exception {
-        Iterable<State> list = stateRepository.findAll();
+        Iterable<User> list = userRepository.findAll();
         assertNotNull(list);
-        assertEquals(0, stateRepository.count());
+        assertTrue(userRepository.count() > 0);
+    }
+
+    @Test
+    public void getById() throws Exception {
+        User user = userRepository.findOne(1);
+        assertNotNull(user);
+        assertEquals(1, user.getId());
+    }
+
+    @Test
+    public void getByUsername() throws Exception {
+        User user = userRepository.findByUsername("jjsite");
+        assertNotNull(user);
+        assertEquals(16, user.getId());
+    }
+
+    @Test
+    public void getByUsernameInvalid() throws Exception {
+        User user = userRepository.findByUsername("iamnotareal");
+        assertNull(user);
+    }
+
+    @Test
+    public void getByUserAndPasswordInvalid() {
+        User user = userRepository.findByUsernameAndPassword("jjsite", "wrongpassword");
+        assertNull(user);
+    }
+
+    @Test
+    public void exists() {
+        assertTrue(userRepository.exists(1));
     }
 }

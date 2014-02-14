@@ -100,27 +100,35 @@ public class User implements Serializable {
     @Column(name = "type", nullable = false)
     private Integer type;
 
+    @Basic(fetch = FetchType.LAZY)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private Set<Entry> entries = new HashSet<Entry>();
 
+    @Basic(fetch = FetchType.LAZY)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private List<Comment> comments = new ArrayList<Comment>();
 
+    @Basic(fetch = FetchType.LAZY)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private List<Friend> friends = new ArrayList<Friend>();
 
+    @Basic(fetch = FetchType.LAZY)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private Set<UserLink> links = new HashSet<UserLink>();
 
+    @Basic(fetch = FetchType.LAZY)
     @OneToOne(mappedBy = "user")
     private UserBio bio;
 
+    @Basic(fetch = FetchType.LAZY)
     @OneToOne(mappedBy = "user")
-    private UserContact userContactTo;
+    private UserContact userContact;
 
+    @Basic(fetch = FetchType.LAZY)
     @OneToOne(mappedBy = "user")
     private UserPref userPref;
 
+    @Basic(fetch = FetchType.LAZY)
     @OneToOne(mappedBy = "user")
     private UserLocation userLocation;
 
@@ -160,12 +168,12 @@ public class User implements Serializable {
         this.bio = bio;
     }
 
-    public UserContact getUserContactTo() {
-        return userContactTo;
+    public UserContact getUserContact() {
+        return userContact;
     }
 
-    public void setUserContactTo(final UserContact userContactTo) {
-        this.userContactTo = userContactTo;
+    public void setUserContact(final UserContact userContact) {
+        this.userContact = userContact;
     }
 
     public UserPref getUserPref() {

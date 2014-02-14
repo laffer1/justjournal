@@ -27,7 +27,7 @@
 package com.justjournal.services;
 
 import com.justjournal.model.*;
-import com.justjournal.repository.CommentDao;
+import com.justjournal.repository.CommentRepository;
 import com.justjournal.repository.EntryRepository;
 import com.justjournal.repository.UserRepository;
 import org.apache.log4j.Logger;
@@ -44,7 +44,7 @@ public class EntryServiceImpl implements EntryService {
 
     private static final Logger log = Logger.getLogger(EntryServiceImpl.class);
 
-    private CommentDao commentDao;
+    private CommentRepository commentDao;
     private EntryRepository entryDao;
     private UserRepository userDao;
 
@@ -103,7 +103,7 @@ public class EntryServiceImpl implements EntryService {
     }
 
     @Override
-    public void setCommentDao(CommentDao commentDao) {
+    public void setCommentDao(CommentRepository commentDao) {
         this.commentDao = commentDao;
     }
 

@@ -30,7 +30,7 @@ import com.justjournal.WebLogin;
 import com.justjournal.model.Comment;
 import com.justjournal.model.Entry;
 import com.justjournal.model.User;
-import com.justjournal.repository.CommentDao;
+import com.justjournal.repository.CommentRepository;
 import com.justjournal.repository.EntryRepository;
 import com.justjournal.repository.SecurityDao;
 import com.justjournal.repository.UserRepository;
@@ -60,14 +60,14 @@ import java.util.Map;
 public class EntryController {
     private static final Logger log = Logger.getLogger(EntryController.class);
 
-    private CommentDao commentDao = null;
+    private CommentRepository commentDao = null;
     private EntryRepository entryDao = null;
     @Autowired
     private SecurityDao securityDao;
     @Autowired
     private UserRepository userRepository;
 
-    public void setCommentDao(CommentDao commentDao) {
+    public void setCommentDao(CommentRepository commentDao) {
         this.commentDao = commentDao;
     }
 
@@ -113,7 +113,7 @@ public class EntryController {
         return log;
     }
 
-    public CommentDao getCommentDao() {
+    public CommentRepository getCommentDao() {
         return commentDao;
     }
 

@@ -38,7 +38,7 @@ import com.justjournal.WebLogin;
 import com.justjournal.model.Comment;
 import com.justjournal.model.Entry;
 import com.justjournal.model.PrefBool;
-import com.justjournal.repository.CommentDao;
+import com.justjournal.repository.CommentRepository;
 import com.justjournal.repository.EntryRepository;
 import com.sun.istack.internal.NotNull;
 import org.slf4j.LoggerFactory;
@@ -55,14 +55,14 @@ import java.util.Map;
 public class CommentController {
     private org.slf4j.Logger log = LoggerFactory.getLogger(CommentController.class);
 
-    private CommentDao commentDao = null;
+    private CommentRepository commentDao = null;
     private EntryRepository entryDao = null;
 
     public void setEntryDao(@NotNull final EntryRepository entryDao) {
         this.entryDao = entryDao;
     }
 
-    public void setCommentDao(@NotNull final CommentDao commentDao) {
+    public void setCommentDao(@NotNull final CommentRepository commentDao) {
         this.commentDao = commentDao;
     }
 

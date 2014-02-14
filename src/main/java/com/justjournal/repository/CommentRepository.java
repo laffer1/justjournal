@@ -24,24 +24,21 @@
  * SUCH DAMAGE.
  */
 
-package com.justjournal.services;
+package com.justjournal.repository;
 
-import com.justjournal.model.Statistics;
-import com.justjournal.model.UserStatistics;
-import com.sun.istack.internal.NotNull;
-import com.sun.istack.internal.Nullable;
-import org.springframework.stereotype.Service;
+import com.justjournal.model.Comment;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
+ * Manipulate and fetch comments
+ *
  * @author Lucas Holt
  */
-@Service
-public interface StatisticsService {
-    public
-    @NotNull
-    Statistics getStatistics() throws ServiceException;
+@Component
+public interface CommentRepository extends CrudRepository<Comment, Integer> {
 
-    public
-    @Nullable
-    UserStatistics getUserStatistics(String username) throws ServiceException;
+    public List<Comment> findByEntryId(int entryId);
 }

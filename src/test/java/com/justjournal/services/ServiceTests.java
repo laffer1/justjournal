@@ -26,6 +26,7 @@
 
 package com.justjournal.services;
 
+import com.justjournal.Util;
 import com.justjournal.model.Statistics;
 import com.justjournal.model.UserStatistics;
 import org.junit.BeforeClass;
@@ -53,7 +54,7 @@ public class ServiceTests {
 
     @BeforeClass
     public static void setup() throws Exception {
-        statisticsService = new StatisticsServiceImpl();
+        Util.setupDb();
     }
 
     @Test

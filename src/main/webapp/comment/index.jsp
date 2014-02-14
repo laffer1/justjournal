@@ -4,7 +4,7 @@
 <%@ page import="com.justjournal.model.DateTime" %>
 <%@ page import="com.justjournal.model.Entry" %>
 <%@ page import="com.justjournal.model.MoodThemeData" %>
-<%@ page import="com.justjournal.repository.CommentDao" %>
+<%@ page import="com.justjournal.repository.CommentRepository" %>
 <%@ page import="com.justjournal.repository.MoodThemeDataRepository" %>
 <%@ page import="com.justjournal.utility.StringUtil" %>
 <%@ page import="com.justjournal.utility.Xml" %>
@@ -34,7 +34,7 @@ $Id: index.jsp,v 1.5 2008/04/26 17:06:30 laffer1 Exp $
 
     String aUser = (String) session.getAttribute("auth.user");
 
-    CommentDao commentDao = new CommentDaoImpl();
+    CommentRepository commentDao = new CommentDaoImpl();
     Collection comments = commentDao.list(eid);
 
     Entry entry = EntryDaoImpl.viewSinglePublic(eid);

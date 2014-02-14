@@ -64,14 +64,14 @@ public class Entry implements Serializable {
     @Temporal(value = TemporalType.DATE)
     private Date date = new Date();
 
-    @JsonProperty("locationId")
+    @JsonProperty("location")
     @ManyToOne
-    @JoinColumn(name = "location_id")
+    @JoinColumn(name = "location")
     private Location location;
 
     @JsonProperty("mood")
     @ManyToOne
-    @JoinColumn(name = "mood_id")
+    @JoinColumn(name = "mood", nullable = true)
     private Mood mood;
 
     @JsonProperty("user")
@@ -81,13 +81,14 @@ public class Entry implements Serializable {
 
     @JsonProperty("security")
     @ManyToOne
-    @JoinColumn(name = "security_id")
+    @JoinColumn(name = "security")
     private Security security;
 
     @JsonProperty("subject")
     @Column(name = "subject", length = 255)
     private String subject = "";
 
+    @Basic(fetch = FetchType.LAZY)
     @JsonProperty("body")
     @Column(name = "body")
     @Lob
@@ -102,16 +103,19 @@ public class Entry implements Serializable {
     @Enumerated(EnumType.STRING)
     private PrefBool autoFormat;
 
+    @Basic(fetch = FetchType.LAZY)
     @JsonProperty("allowComments")
     @Column(name = "allow_comments", nullable = false, length = 1)
     @Enumerated(EnumType.STRING)
     private PrefBool allowComments;
 
+    @Basic(fetch = FetchType.LAZY)
     @JsonProperty("emailComments")
     @Column(name = "email_comments", nullable = false, length = 1)
     @Enumerated(EnumType.STRING)
     private PrefBool emailComments;
 
+    @Basic(fetch = FetchType.LAZY)
     @Column(name = "draft", nullable = false, length = 1)
     @Enumerated(EnumType.STRING)
     private PrefBool draft;

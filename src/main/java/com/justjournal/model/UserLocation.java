@@ -58,11 +58,11 @@ public class UserLocation implements Serializable {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "state")
+    @JoinColumn(name = "state", nullable = true)
     private State state;
 
     @ManyToOne
-    @JoinColumn(name = "country")
+    @JoinColumn(name = "country", nullable = true)
     private Country country;
 
     @Basic(fetch = FetchType.LAZY)
@@ -73,5 +73,61 @@ public class UserLocation implements Serializable {
     @JsonCreator
     public UserLocation() {
 
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(final int id) {
+        this.id = id;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(final String city) {
+        this.city = city;
+    }
+
+    public String getZip() {
+        return zip;
+    }
+
+    public void setZip(final String zip) {
+        this.zip = zip;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(final User user) {
+        this.user = user;
+    }
+
+    public State getState() {
+        return state;
+    }
+
+    public void setState(final State state) {
+        this.state = state;
+    }
+
+    public Country getCountry() {
+        return country;
+    }
+
+    public void setCountry(final Country country) {
+        this.country = country;
+    }
+
+    public Timestamp getModified() {
+        return modified;
+    }
+
+    public void setModified(final Timestamp modified) {
+        this.modified = modified;
     }
 }

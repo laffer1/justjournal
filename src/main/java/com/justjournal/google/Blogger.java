@@ -125,7 +125,7 @@ public class Blogger {
                 s.put("nickname", user.getUsername());
                 s.put("userid", userId);
                 s.put("url", "http://www.justjournal.com/users/" + user.getUsername());
-                s.put("email", user.getUserContactTo().getEmail());
+                s.put("email", user.getUserContact().getEmail());
                 s.put("firstname", user.getFirstName());
             } catch (Exception e) {
                 blnError = true;

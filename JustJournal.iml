@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
+  <component name="CompassSettings">
+    <option name="compassConfigPath" value="$MODULE_DIR$/src/main/webapp/components/lightbox2/config.rb" />
+    <option name="compassExecutableFilePath" value="/usr/bin/compass" />
+  </component>
   <component name="FacetManager">
     <facet type="web" name="Web">
       <configuration>
