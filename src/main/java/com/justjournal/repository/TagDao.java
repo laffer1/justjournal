@@ -37,6 +37,6 @@ import org.springframework.data.repository.query.Param;
  * @author Lucas Holt
  */
 public interface TagDao extends CrudRepository<Tag, Integer> {
-    @Query("SELECT t FROM tag t WHERE LOWER(t.name) = LOWER(:name)")
+    @Query("SELECT t FROM Tag t WHERE LOWER(t.name) = LOWER(:name)")
     public Tag findByName(@Param("name") String name);
 }
