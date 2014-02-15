@@ -27,6 +27,7 @@
 package com.justjournal.services;
 
 import com.justjournal.Util;
+import com.justjournal.model.Entry;
 import com.justjournal.model.Statistics;
 import com.justjournal.model.UserStatistics;
 import org.junit.BeforeClass;
@@ -35,6 +36,8 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
+
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -47,14 +50,35 @@ import static org.junit.Assert.*;
 public class ServiceTests {
 
     private static StatisticsService statisticsService;
+    private static EntryService entryService;
 
     public void setStatisticsService(StatisticsService statisticsService1) {
         this.statisticsService = statisticsService1;
     }
 
+    public static void setEntryService(final EntryService entryService) {
+        ServiceTests.entryService = entryService;
+    }
+
     @BeforeClass
     public static void setup() throws Exception {
         Util.setupDb();
+    }
+
+    @Test
+    public void entryGetPublicEntry() {
+        Entry entry = entryService.getPublicEntry(33626, "laffer1");
+                     assertNotNull(entry);
+        assertEquals(33626, entry.getId());
+        assertEquals("laffer1", entry.getUser().getUsername());
+        assertEquals(2, entry.getSecurity().getId());
+    }
+
+    @Test
+    public void entryGetPublicEntries() {
+        List<Entry> entryList = entryService.getPublicEntries("jjsite");
+        assertNotNull(entryList);
+        assertTrue(entryList.size() > 0);
     }
 
     @Test

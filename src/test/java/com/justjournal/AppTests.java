@@ -27,6 +27,7 @@
 package com.justjournal;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +51,11 @@ public class AppTests {
     private static final int STATUS_HTTP_400 = 400;
     private static final int STATUS_HTTP_403 = 403;
 
+    @BeforeClass
+    public static void setupClass() throws Exception {
+        Util.setupDb();
+    }
+
     @SuppressWarnings({"SpringJavaAutowiringInspection", "ProtectedField"})
     @Autowired
     protected WebApplicationContext wac;
@@ -57,8 +63,8 @@ public class AppTests {
 
     @Before
     public void setup() {
-        this.mockMvc = webAppContextSetup(this.wac).build();
         Util.setupDb();
+        this.mockMvc = webAppContextSetup(this.wac).build();
     }
 
     @Test
