@@ -60,6 +60,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.transaction.Transactional;
 import java.awt.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -75,20 +76,23 @@ import java.util.List;
  *
  * @author Lucas Holt
  */
+@Transactional
 @Controller
 @RequestMapping("/users")
-public class UsersController implements Serializable {
+public class UsersController {
     public static final int SEARCH_MAX_LENGTH = 20;
     public static final float FONT_10_POINT = 10.0F;
     // constants
     private static final char endl = '\n';
     private static final Logger log = Logger.getLogger(UsersController.class);
-    private static final long serialVersionUID = 1191172806869579057L;
 
     @SuppressWarnings({"InstanceVariableOfConcreteClass"})
     private Settings settings = null;
+    @Autowired
     private CommentRepository commentDao = null;
+    @Autowired
     private EntryRepository entryDao = null;
+    @Autowired
     private EntryService entryService = null;
     @Autowired
     private MoodThemeDataRepository emoticonDao;
@@ -102,14 +106,6 @@ public class UsersController implements Serializable {
 
     public void setEntryService(EntryService entryService) {
         this.entryService = entryService;
-    }
-
-    public void setEntryDao(EntryRepository entryDao) {
-        this.entryDao = entryDao;
-    }
-
-    public void setCommentDao(CommentRepository commentDao) {
-        this.commentDao = commentDao;
     }
 
     @Autowired
@@ -388,6 +384,7 @@ public class UsersController implements Serializable {
         }
     }
 
+    @Transactional(value= Transactional.TxType.REQUIRED)
     @RequestMapping(value = "{username}/pictures", method = RequestMethod.GET, produces = "text/html")
     public String pictures(@PathVariable("username") String username, Model model, HttpSession session, HttpServletResponse response) {
         UserContext userc = getUserContext(username, session);
@@ -497,6 +494,7 @@ public class UsersController implements Serializable {
         return "users";
     }
 
+    @Transactional(value= Transactional.TxType.REQUIRED)
     private UserContext getUserContext(String username, HttpSession session) {
         User authUser = null;
         try {
@@ -638,6 +636,7 @@ public class UsersController implements Serializable {
         }
     }
 
+    @Transactional(value= Transactional.TxType.REQUIRED)
     @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
     private String getImageList(@NotNull final UserContext uc) {
         StringBuilder sb = new StringBuilder();
@@ -1326,6 +1325,7 @@ public class UsersController implements Serializable {
      * @param uc User Context
      */
     @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
+    @Transactional(value= Transactional.TxType.REQUIRED)
     private String getCalendarMini(UserContext uc) {
         StringBuilder sb = new StringBuilder();
         try {
@@ -1360,11 +1360,15 @@ public class UsersController implements Serializable {
      * @param uc User Context
      */
     @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
+    @Transactional(value= Transactional.TxType.REQUIRED)
     private String getTagMini(final UserContext uc) {
+        assert(uc != null);
+        assert(uc.getBlogUser() != null);
+        assert(entryService != null);
+
         StringBuilder sb = new StringBuilder();
         Tag tag;
-        uc.getBlogUser().getEntries();
-        final Collection<Tag> tags = entryService.getEntryTags(uc.getBlogUser().getUsername());
+        Collection<Tag> tags = entryService.getEntryTags(uc.getBlogUser().getUsername());
 
         int largest = 0;
         int smallest = 10;
@@ -1414,7 +1418,10 @@ public class UsersController implements Serializable {
      * @param uc User Context
      */
     @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
-    private String getUserLinks(final UserContext uc) {
+    @Transactional(value= Transactional.TxType.REQUIRED)
+    private String getUserLinks(@NotNull final UserContext uc) {
+        assert(uc!=null);
+
         log.debug("getUserLinks(): Init and load collection");
         StringBuilder sb = new StringBuilder();
         UserLink link;
@@ -1440,7 +1447,8 @@ public class UsersController implements Serializable {
      * @param uc User Context
      */
     @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
-    private String getUserRecentEntries(final UserContext uc) {
+    @Transactional(value= Transactional.TxType.REQUIRED)
+    private String getUserRecentEntries(@NotNull final UserContext uc) {
         StringBuilder sb = new StringBuilder();
         Page<Entry> entries;
         final int maxrecent = 5;
@@ -1505,10 +1513,11 @@ public class UsersController implements Serializable {
      * @param day   the day we are interested in
      * @param uc    The UserContext we are working on including blog owner, authenticated user, and sb to write
      */
+    @Transactional(value= Transactional.TxType.REQUIRED)
     private String getCalendarDay(final int year,
                                   final int month,
                                   final int day,
-                                  final UserContext uc) {
+                                  @NotNull final UserContext uc) {
 
         StringBuffer sb = new StringBuffer();
 
@@ -1576,10 +1585,10 @@ public class UsersController implements Serializable {
      * @param uc User Context
      */
     @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
-    private String getArchive(final UserContext uc) {
+    private String getArchive(@NotNull final UserContext uc) {
         final java.util.GregorianCalendar calendarg = new java.util.GregorianCalendar();
         int yearNow = calendarg.get(Calendar.YEAR);
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         // BEGIN: YEARS
         sb.append("\t<div class=\"menuentity\" id=\"archive\" style=\"padding-top: 10px;\"><strong style=\"text-transform: uppercase; letter-spacing: 2px; border: 0 none; border-bottom: 1px; border-style: dotted; border-color: #999999; margin-bottom: 5px; width: 100%; font-size: 10px;\">Archive</strong><ul class=\"list-group\">");
@@ -1620,7 +1629,8 @@ public class UsersController implements Serializable {
      *
      * @param user
      */
-    private String getRSS(final User user) {
+    @Transactional(value= Transactional.TxType.REQUIRED)
+    private String getRSS(@NotNull final User user) {
         Rss rss = new Rss();
 
         final java.util.GregorianCalendar calendar = new java.util.GregorianCalendar();
@@ -1644,7 +1654,8 @@ public class UsersController implements Serializable {
      *
      * @param user blog user
      */
-    private String getAtom(final User user) {
+    @Transactional(value= Transactional.TxType.REQUIRED)
+    private String getAtom(@NotNull final User user) {
 
         AtomFeed atom = new AtomFeed();
 
@@ -1667,6 +1678,7 @@ public class UsersController implements Serializable {
      *
      * @param user blog user
      */
+    @Transactional(value= Transactional.TxType.REQUIRED)
     private String getPicturesRSS(final User user) {
 
         final Rss rss = new Rss();
@@ -1688,6 +1700,7 @@ public class UsersController implements Serializable {
     }
 
     /* TODO: finish this */
+    @Transactional(value= Transactional.TxType.REQUIRED)
     private String getTags(final UserContext uc, String tag) {
         final StringBuilder sb = new StringBuilder();
         final Collection entries;
@@ -2039,6 +2052,7 @@ public class UsersController implements Serializable {
      * Represent the blog user and authenticated user in one package along with the output buffer.
      */
     @SuppressWarnings({"InstanceVariableOfConcreteClass"})
+    @Transactional(value= Transactional.TxType.REQUIRED)
     static private class UserContext {
         private User blogUser;          // the blog owner
         private User authenticatedUser; // the logged in user

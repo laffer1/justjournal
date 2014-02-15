@@ -26,6 +26,7 @@
 
 package com.justjournal.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.istack.internal.NotNull;
 
 import javax.persistence.*;
@@ -65,6 +66,7 @@ public class UserPref implements Serializable {
     @Column(name = "modified", nullable = false)
     private Timestamp modified;
 
+    @JsonIgnore
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;

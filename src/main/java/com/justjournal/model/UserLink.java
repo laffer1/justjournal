@@ -36,6 +36,7 @@ package com.justjournal.model;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -52,6 +53,7 @@ public class UserLink implements Serializable {
     private static final long serialVersionUID = 6356304916167520610L;
     @Id
     @GeneratedValue
+    @Column(name="linkid")
     private int id;
 
     @Column(name = "title")
@@ -60,6 +62,7 @@ public class UserLink implements Serializable {
     @Column(name = "uri")
     private String uri;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

@@ -34,6 +34,10 @@ import com.justjournal.rss.Rss;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -93,7 +97,9 @@ public class RecentBlogs {
 
 
             Security security = securityDao.findOne(2); // public
-            Iterable<Entry> entries = entryRepository.findBySecurityOrderByDateDesc(security);
+            Pageable pageable = new PageRequest(1,15);
+            Page<Entry> entries = entryRepository.findBySecurityOrderByDateDesc(security, pageable);
+
             Map<String, Entry> map = new HashMap<String, Entry>();
             int count = 0;
             for (Entry e : entries) {

@@ -34,6 +34,8 @@ import com.justjournal.repository.CommentRepository;
 import com.justjournal.repository.EntryRepository;
 import com.justjournal.repository.SecurityDao;
 import com.justjournal.repository.UserRepository;
+import com.justjournal.services.EntryService;
+import com.justjournal.services.ServiceException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -60,20 +62,18 @@ import java.util.Map;
 public class EntryController {
     private static final Logger log = Logger.getLogger(EntryController.class);
 
+    @Autowired
     private CommentRepository commentDao = null;
+
+    @Autowired
     private EntryRepository entryDao = null;
     @Autowired
     private SecurityDao securityDao;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private EntryService entryService;
 
-    public void setCommentDao(CommentRepository commentDao) {
-        this.commentDao = commentDao;
-    }
-
-    public void setEntryDao(EntryRepository entryDao) {
-        this.entryDao = entryDao;
-    }
 
     /**
      * Get an individual entry
@@ -95,9 +95,37 @@ public class EntryController {
     @RequestMapping(value = "{username}", method = RequestMethod.GET, produces = "application/json")
     public
     @ResponseBody
-    Collection<Entry> getEntries(@PathVariable("username") String username) {
-        User user = userRepository.findByUsername(username);
-        return entryDao.findByUserAndSecurityOrderByDateDesc(user, securityDao.findOne(2));
+    Collection<Entry> getEntries(@PathVariable("username") String username, HttpServletResponse response) {
+        Collection<Entry> entries = null;
+        try {
+            entries = entryService.getPublicEntries(username);
+
+            if (entries == null) {
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                return null;
+            }
+           
+        } catch (ServiceException e) {
+            log.error(e);
+        }
+         return entries;
+    }
+
+    @RequestMapping(value = "{username}", method = RequestMethod.GET, produces = "application/json")
+    public
+    @ResponseBody
+    Collection<Entry> getEntries(@PathVariable("username") String username, HttpServletResponse response) {
+        try {
+            Collection<Entry> entries = entryService.getPublicEntries(username);
+
+            if (entries == null) {
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                return null;
+            }
+            return entries;
+        } catch (ServiceException e) {
+            log.error(e);
+        }
     }
 
     @RequestMapping(value = "{username}/size/{size}/page/{page}", method = RequestMethod.GET, produces = "application/json")
@@ -111,22 +139,6 @@ public class EntryController {
 
     public static Logger getLog() {
         return log;
-    }
-
-    public CommentRepository getCommentDao() {
-        return commentDao;
-    }
-
-    public EntryRepository getEntryDao() {
-        return entryDao;
-    }
-
-    public SecurityDao getSecurityDao() {
-        return securityDao;
-    }
-
-    public void setSecurityDao(final SecurityDao securityDao) {
-        this.securityDao = securityDao;
     }
 
     public UserRepository getUserRepository() {

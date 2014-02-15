@@ -59,7 +59,9 @@ import java.util.*;
 @Table(name = "user")
 public class User implements Serializable {
 
+    @JsonIgnore
     private static final long serialVersionUID = -7545141063644043241L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id = 0;
@@ -81,53 +83,57 @@ public class User implements Serializable {
     @Column(name = "password", length = 40, nullable = false)
     private String password = "";
 
-    @Basic(fetch = FetchType.LAZY)
     @NotNull
     @Column(name = "since", nullable = false)
     private Integer since = 2003;
 
-    @Basic(fetch = FetchType.LAZY)
     @Column(name = "lastlogin", nullable = true)
     private Date lastLogin = null;
 
+    @JsonIgnore
     @Basic(fetch = FetchType.LAZY)
     @NotNull
     @Column(name = "modified", nullable = false)
     private Timestamp modified;
 
-    @Basic(fetch = FetchType.LAZY)
     @NotNull
     @Column(name = "type", nullable = false)
     private Integer type;
 
+    @JsonIgnore
     @Basic(fetch = FetchType.LAZY)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private Set<Entry> entries = new HashSet<Entry>();
 
+    @JsonIgnore
     @Basic(fetch = FetchType.LAZY)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private List<Comment> comments = new ArrayList<Comment>();
 
+    @JsonIgnore
     @Basic(fetch = FetchType.LAZY)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private List<Friend> friends = new ArrayList<Friend>();
 
-    @Basic(fetch = FetchType.LAZY)
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch=FetchType.EAGER) // TODO: Lazy fetch type
     private Set<UserLink> links = new HashSet<UserLink>();
 
-    @Basic(fetch = FetchType.LAZY)
-    @OneToOne(mappedBy = "user")
+    @JsonIgnore
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
     private UserBio bio;
 
+    @JsonIgnore
     @Basic(fetch = FetchType.LAZY)
     @OneToOne(mappedBy = "user")
     private UserContact userContact;
 
+    @JsonIgnore
     @Basic(fetch = FetchType.LAZY)
     @OneToOne(mappedBy = "user")
     private UserPref userPref;
 
+    @JsonIgnore
     @Basic(fetch = FetchType.LAZY)
     @OneToOne(mappedBy = "user")
     private UserLocation userLocation;

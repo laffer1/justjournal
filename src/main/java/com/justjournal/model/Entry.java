@@ -103,19 +103,16 @@ public class Entry implements Serializable {
     @Enumerated(EnumType.STRING)
     private PrefBool autoFormat;
 
-    @Basic(fetch = FetchType.LAZY)
     @JsonProperty("allowComments")
     @Column(name = "allow_comments", nullable = false, length = 1)
     @Enumerated(EnumType.STRING)
     private PrefBool allowComments;
 
-    @Basic(fetch = FetchType.LAZY)
     @JsonProperty("emailComments")
     @Column(name = "email_comments", nullable = false, length = 1)
     @Enumerated(EnumType.STRING)
     private PrefBool emailComments;
 
-    @Basic(fetch = FetchType.LAZY)
     @Column(name = "draft", nullable = false, length = 1)
     @Enumerated(EnumType.STRING)
     private PrefBool draft;
@@ -125,7 +122,7 @@ public class Entry implements Serializable {
     transient private int attachFile = 0;
 
     @JsonProperty("tags")
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "entry")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "entry", fetch = FetchType.EAGER) // TODO: why!
     private Set<EntryTag> tags = new HashSet<EntryTag>();
 
     @JsonProperty("comments")

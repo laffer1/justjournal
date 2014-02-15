@@ -33,10 +33,13 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceContextType;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -56,22 +59,28 @@ public class MembersController {
      *
      * @return mood list
      */
+    @Transactional
     @Cacheable("members")
     @RequestMapping(method = RequestMethod.GET, headers = "Accept=*/*", produces = "application/json")
     public
     @ResponseBody
     Collection<User> list() {
-        Iterable<User> members = userRepository.findAll();
+        if ((userRepository == null)) throw new AssertionError();
+
         Collection<User> publicMembers = new ArrayList<User>();
 
-        for (User member : members) {
-            try {
+        try {
+            Iterable<User> members = userRepository.findAll();
+
+            if ((members == null)) throw new AssertionError();
+
+            for (User member : members) {
                 if (member.getUserPref().getOwnerViewOnly() == PrefBool.N) {
                     publicMembers.add(member);
                 }
-            } catch (Exception e) {
-                log.error(e);
             }
+        } catch (Exception e) {
+            log.error(e.getMessage());
         }
         return publicMembers;
     }

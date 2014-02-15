@@ -36,6 +36,7 @@ package com.justjournal.model;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -56,6 +57,7 @@ public class UserBio implements Serializable {
     @Column(length = 65535, nullable = false, name = "content", columnDefinition = "TEXT")
     private String bio = "";
 
+    @JsonIgnore
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;

@@ -57,7 +57,7 @@ public interface EntryRepository extends CrudRepository<Entry, Integer> {
 
     public Page<Entry> findByUserOrderByDateDesc(User user, Pageable pageable);
 
-    public Iterable<Entry> findBySecurityOrderByDateDesc(Security security);
+    public Page<Entry> findBySecurityOrderByDateDesc(Security security, Pageable pageable);
 
     @Query("select e from Entry e, User u where e.user= u and LOWER(u.username) = LOWER(:username) and e.date >= :startDate and e.date <= :endDate")
     public List<Entry> findByUsernameAndDate(@Param("username") String username,
