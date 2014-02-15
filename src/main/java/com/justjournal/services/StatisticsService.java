@@ -27,21 +27,79 @@
 package com.justjournal.services;
 
 import com.justjournal.model.Statistics;
+import com.justjournal.model.StatisticsImpl;
+import com.justjournal.model.User;
 import com.justjournal.model.UserStatistics;
+import com.justjournal.repository.EntryRepository;
+import com.justjournal.repository.UserRepository;
+import com.justjournal.utility.SQLHelper;
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 /**
+ * Provide Statistics Services for Just Journal
+ *
  * @author Lucas Holt
  */
 @Service
-public interface StatisticsService {
-    public
-    @NotNull
-    Statistics getStatistics() throws ServiceException;
+@Transactional(Transactional.TxType.REQUIRED)
+public class StatisticsService {
+    private static final Logger log = Logger.getLogger(StatisticsService.class);
 
-    public
+    @Autowired
+    private EntryRepository entryRepository;
+    @Autowired
+    private UserRepository userRepository;
+
+    @Transactional(value = Transactional.TxType.REQUIRED)
     @Nullable
-    UserStatistics getUserStatistics(String username) throws ServiceException;
+    public UserStatistics getUserStatistics(@NotNull String username) throws ServiceException {
+        if (userRepository == null) throw new AssertionError();
+
+        try {
+            UserStatistics userStatistics = new UserStatistics();
+
+            if (username == null) {
+                return null;
+            }
+            User user = userRepository.findByUsername(username);
+            if (user == null)
+                return null;
+
+            userStatistics.setUsername(username);
+            userStatistics.setEntryCount(user.getEntries().size()); // TODO: slow
+            userStatistics.setCommentCount(user.getComments().size()); // TODO: slow!!!!
+
+            return userStatistics;
+        } catch (Exception e) {
+            log.error(e);
+            throw new ServiceException(e);
+        }
+    }
+
+    @NotNull
+    public Statistics getStatistics() throws ServiceException {
+        try {
+            Statistics statistics = new StatisticsImpl();
+
+            statistics.setComments(SQLHelper.count("comments"));
+            statistics.setEntries(SQLHelper.count("entry"));
+            statistics.setUsers(SQLHelper.count("user"));
+            statistics.setTags(SQLHelper.count("tags"));
+            statistics.setStyles(SQLHelper.count("style"));
+            statistics.setPublicEntries(SQLHelper.scalarInt("SELECT count(*) FROM entry WHERE security='2';"));
+            statistics.setPrivateEntries(SQLHelper.scalarInt("SELECT count(*) FROM entry WHERE security='0';"));
+            statistics.setFriendsEntries(SQLHelper.scalarInt("SELECT count(*) FROM entry WHERE security='1';"));
+
+            return statistics;
+        } catch (Exception e) {
+            log.error(e);
+            throw new ServiceException(e);
+        }
+    }
 }
