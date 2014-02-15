@@ -30,90 +30,65 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:jpa="http://www.springframework.org/schema/data/jpa"
        xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa-1.0.xsd
-        http://www.springframework.org/schema/mvc
-        http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
     <context:component-scan base-package="com.justjournal"/>
 
     <!-- SPRING - JPA -->
-       <jpa:repositories
-               base-package="com.justjournal.repository" />
+    <jpa:repositories
+            base-package="com.justjournal.repository"/>
 
-       <bean class="org.springframework.orm.jpa.JpaTransactionManager"
-             id="transactionManager">
-           <property name="entityManagerFactory"
-                     ref="entityManagerFactory" />
-           <property name="jpaDialect">
-               <bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
-           </property>
-       </bean>
-
-    <bean id="mainDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
-      <property name="jndiName" value="java:comp/env/jdbc/jjDB"/>
+    <bean class="org.springframework.orm.jpa.JpaTransactionManager"
+          id="transactionManager">
+        <property name="entityManagerFactory"
+                  ref="entityManagerFactory"/>
+        <property name="jpaDialect">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect"/>
+        </property>
+        <property name="nestedTransactionAllowed" value="true"/>
     </bean>
 
-       <bean id="entityManagerFactory"
-             class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-           <property name="dataSource" ref="mainDataSource" />
-           <property name="packagesToScan" value="com.justjournal.model"/>
-           <property name="jpaVendorAdapter">
-               <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-                   <property name="generateDdl" value="true" />
-                   <property name="showSql" value="false"/>
-                   <property name="databasePlatform" value="org.hibernate.dialect.MySQLDialect"/>
-                   <property name="database" value="MYSQL"/>
-               </bean>
-           </property>
-           <property name="jpaProperties">
-               <value>
-                   hibernate.generate_statistics = true
-               </value>
-           </property>
-       </bean>
-
-    <bean id="commentDao" class="com.justjournal.repository.CommentDaoImpl"/>
-    <bean id="entryDao" class="com.justjournal.repository.EntryDaoImpl"/>
-    <bean id="tagDao" class="com.justjournal.repository.TagDaoImpl"/>
-    <bean id="userDao" class="com.justjournal.repository.UserRepository"/>
-
-    <bean id="entryService" class="com.justjournal.services.EntryServiceImpl">
-           <property name="commentDao" ref="commentDao"/>
-           <property name="entryDao" ref="entryDao"/>
-           <property name="userDao" ref="userDao"/>
-       </bean>
-
-    <bean id="statisticsService" class="com.justjournal.services.StatisticsServiceImpl">
-        <property name="commentDao" ref="commentDao"/>
-        <property name="entryDao" ref="entryDao"/>
+    <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+        <property name="jndiName" value="java:comp/env/jdbc/jjDB"/>
     </bean>
 
-    <bean id="statisticsController" class="com.justjournal.ctl.api.StatisticsController">
+    <bean id="entityManagerFactory"
+          class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="packagesToScan" value="com.justjournal.model"/>
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+                <property name="generateDdl" value="true"/>
+                <property name="showSql" value="false"/>
+                <property name="databasePlatform" value="org.hibernate.dialect.MySQLDialect"/>
+                <property name="database" value="MYSQL"/>
+            </bean>
+        </property>
+        <property name="jpaProperties">
+            <value>
+                hibernate.generate_statistics = true
+            </value>
+        </property>
+    </bean>
+
+    <bean id="entryService" class="com.justjournal.services.EntryService"/>
+    <bean id="statisticsService" class="com.justjournal.services.StatisticsService"/>
+    <bean id="serviceTests" class="com.justjournal.services.ServiceTests">
         <property name="statisticsService" ref="statisticsService"/>
+        <property name="entryService" ref="entryService"/>
     </bean>
 
-
-    <bean id="entryController" class="com.justjournal.ctl.api.EntryController">
-        <property name="entryDao" ref="entryDao"/>
-        <property name="commentDao" ref="commentDao"/>
-    </bean>
-
-    <bean id="commentController" class="com.justjournal.ctl.api.CommentController">
-        <property name="entryDao" ref="entryDao"/>
-        <property name="commentDao" ref="commentDao"/>
-    </bean>
 
     <bean id="tagsController" class="com.justjournal.ctl.api.TagsController">
         <property name="tagDao" ref="tagDao"/>
-    </bean>
-
-    <bean id="usersController" class="com.justjournal.ctl.UsersController">
-        <property name="entryDao" ref="entryDao"/>
-        <property name="commentDao" ref="commentDao"/>
-        <property name="entryService" ref="entryService"/>
     </bean>
 
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
@@ -133,6 +108,30 @@
             </bean>
         </mvc:message-converters>
     </mvc:annotation-driven>
+
+    <!-- the transactional advice (what 'happens'; see the <aop:advisor/> bean below) -->
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <!-- the transactional semantics... -->
+        <tx:attributes>
+            <!-- all methods starting with 'get' are read-only -->
+            <tx:method name="get*" read-only="true"/>
+            <!-- other methods use the default transaction settings (see below) -->
+            <tx:method name="*"/>
+        </tx:attributes>
+    </tx:advice>
+
+    <aop:config>
+        <aop:pointcut id="statisticsServiceOperation"
+                      expression="execution(* com.justjournal.services.StatisticsService.*(..))"/>
+        <aop:pointcut id="entryServiceOperation"
+                      expression="execution(* com.justjournal.services.EntryService.*(..))"/>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="statisticsServiceOperation"/>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="entryServiceOperation"/>
+    </aop:config>
+
+    <tx:annotation-driven/>
+
+    <aop:aspectj-autoproxy/>
 </beans>
 
 
