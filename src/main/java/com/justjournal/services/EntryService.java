@@ -26,29 +26,99 @@
 
 package com.justjournal.services;
 
-import com.justjournal.model.Entry;
-import com.justjournal.model.Tag;
+import com.justjournal.model.*;
 import com.justjournal.repository.CommentRepository;
 import com.justjournal.repository.EntryRepository;
 import com.justjournal.repository.UserRepository;
+import com.sun.istack.internal.NotNull;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Lucas Holt
  */
 @Service
-public interface EntryService {
+public class EntryService implements EntryService {
 
-    public Collection<Tag> getEntryTags(String username);
+    private static final Logger log = Logger.getLogger(EntryService.class);
 
-    public List<Entry> getFriendsEntries(String username);
+    @Autowired
+    private CommentRepository commentDao;
+    @Autowired
+    private EntryRepository entryDao;
+    @Autowired
+    private UserRepository userDao;
 
-    public void setCommentDao(CommentRepository commentDao);
+    /**
+     * Get Friend public blog entries. TODO: Eventually, we'll want security and performance taken into account.
+     *
+     * @param username
+     * @return
+     */
+    @Override
+    public List<Entry> getFriendsEntries(@NotNull String username) {
+        User user = userDao.findByUsername(username);
+        List<Friend> friends = user.getFriends();
 
-    public void setEntryDao(EntryRepository entryDao);
+        List<Entry> list = new ArrayList<Entry>();
 
-    public void setUserDao(UserRepository userDao);
+        for (Friend friend : friends) {
+            // TODO: limit record count
+            Collection<Entry> fe = friend.getFriend().getEntries();
+            for (Entry entry : fe) {
+                if (entry.getSecurity().getId() == 2)
+                    list.add(entry);
+            }
+        }
+
+        Collections.sort(list, new Comparator<Entry>() {
+            public int compare(Entry m1, Entry m2) {
+                return m1.getDate().compareTo(m2.getDate());
+            }
+        });
+
+        if (list.isEmpty()) return list;
+
+        int end = list.size() - 1;
+        int start = 0;
+        if (end > 20)
+            start = end - 20;
+
+        return list.subList(start, end);
+    }
+
+    public Collection<Tag> getEntryTags(@NotNull String username) {
+        assert (entryDao != null);
+        assert (username != null);
+
+        Map<String, Tag> tags = new HashMap<String, Tag>();
+
+        // TODO: insanely slow. Refactor
+        List<Entry> entries = entryDao.findByUsername(username);
+        for (Entry entry : entries) {
+            for (EntryTag entryTag : entry.getTags())
+                if (!tags.containsKey(entryTag.getTag().getName()))
+                    tags.put(entryTag.getTag().getName(), entryTag.getTag());
+        }
+
+        return tags.values();
+    }
+
+    @Override
+    public void setCommentDao(CommentRepository commentDao) {
+        this.commentDao = commentDao;
+    }
+
+    @Override
+    public void setEntryDao(EntryRepository entryDao) {
+        this.entryDao = entryDao;
+    }
+
+    @Override
+    public void setUserDao(final UserRepository userDao) {
+        this.userDao = userDao;
+    }
 }
