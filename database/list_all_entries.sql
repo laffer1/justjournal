@@ -5,7 +5,7 @@ CREATE PROCEDURE `jj`.`list_all_entries`()
   BEGIN
     SELECT
       us.id          AS id,
-      us.userName,
+      us.username,
       eh.date        AS date,
       eh.subject     AS subject,
       eh.music,

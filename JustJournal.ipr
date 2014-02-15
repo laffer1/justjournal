@@ -85,6 +85,7 @@
             <element id="library" level="project" name="Maven: org.springframework:spring-jdbc:3.1.4.RELEASE" />
             <element id="library" level="project" name="Maven: org.springframework:spring-tx:3.1.4.RELEASE" />
             <element id="library" level="project" name="Maven: org.aspectj:aspectjrt:1.7.2" />
+            <element id="library" level="project" name="Maven: org.aspectj:aspectjweaver:1.7.4" />
             <element id="library" level="project" name="Maven: cglib:cglib-nodep:2.2" />
             <element id="library" level="project" name="Maven: javax.inject:javax.inject:1" />
             <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.2.3" />
@@ -341,7 +342,6 @@
         <inspection_tool class="InstanceVariableInitialization" enabled="true" level="WARNING" enabled_by_default="true">
           <option name="m_ignorePrimitives" value="false" />
         </inspection_tool>
-        <inspection_tool class="InstanceVariableOfConcreteClass" enabled="true" level="WARNING" enabled_by_default="true" />
         <inspection_tool class="InstanceVariableUninitializedUse" enabled="true" level="WARNING" enabled_by_default="true">
           <option name="m_ignorePrimitives" value="false" />
           <option name="annotationNamesString" value="" />
@@ -1244,6 +1244,17 @@
       </JAVADOC>
       <SOURCES>
         <root url="jar://$MAVEN_REPOSITORY$/org/aspectj/aspectjrt/1.7.2/aspectjrt-1.7.2-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: org.aspectj:aspectjweaver:1.7.4">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/aspectj/aspectjweaver/1.7.4/aspectjweaver-1.7.4.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/org/aspectj/aspectjweaver/1.7.4/aspectjweaver-1.7.4-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/aspectj/aspectjweaver/1.7.4/aspectjweaver-1.7.4-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.eclipse.jetty:jetty-http:8.1.12.v20130726">
