@@ -65,8 +65,9 @@ public class LoginController {
     // Response format
     @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
     public class LoginResponse implements Serializable {
-        private String status;
-        private String username;
+        private static final long serialVersionUID = 6809817814936626615L;
+        private String status = null;
+        private String username = null;
 
         @JsonCreator
         public LoginResponse() {
