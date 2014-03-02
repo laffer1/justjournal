@@ -111,23 +111,6 @@ public class EntryController {
          return entries;
     }
 
-    @RequestMapping(value = "{username}", method = RequestMethod.GET, produces = "application/json")
-    public
-    @ResponseBody
-    Collection<Entry> getEntries(@PathVariable("username") String username, HttpServletResponse response) {
-        try {
-            Collection<Entry> entries = entryService.getPublicEntries(username);
-
-            if (entries == null) {
-                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                return null;
-            }
-            return entries;
-        } catch (ServiceException e) {
-            log.error(e);
-        }
-    }
-
     @RequestMapping(value = "{username}/size/{size}/page/{page}", method = RequestMethod.GET, produces = "application/json")
     public
     @ResponseBody

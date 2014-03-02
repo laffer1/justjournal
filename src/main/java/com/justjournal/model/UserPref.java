@@ -43,24 +43,24 @@ public class UserPref implements Serializable {
     private static final long serialVersionUID = -4301597963273403598L;
 
     @Id
-    private int id;
+    private int id = 0;
 
     @Column(name = "allow_spider")
     @Enumerated(EnumType.STRING)
-    private PrefBool allowSpider;
+    private PrefBool allowSpider = PrefBool.Y;
 
-    private int style;
+    private int style = 0;
 
     @Column(name = "owner_view_only", nullable = false, length = 1)
     @Enumerated(EnumType.STRING)
-    private PrefBool ownerViewOnly;
+    private PrefBool ownerViewOnly = PrefBool.N;
 
     @Column(name = "journal_name", length = 150, nullable = true)
-    private String journalName;
+    private String journalName = "";
 
     @Column(name = "ping_services", nullable = false, length = 1)
     @Enumerated(EnumType.STRING)
-    private PrefBool pingServices;
+    private PrefBool pingServices = PrefBool.Y;
 
     @NotNull
     @Column(name = "modified", nullable = false)

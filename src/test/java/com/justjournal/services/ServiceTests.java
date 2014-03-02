@@ -66,7 +66,7 @@ public class ServiceTests {
     }
 
     @Test
-    public void entryGetPublicEntry() {
+    public void entryGetPublicEntry() throws ServiceException {
         Entry entry = entryService.getPublicEntry(33626, "laffer1");
                      assertNotNull(entry);
         assertEquals(33626, entry.getId());
@@ -75,7 +75,7 @@ public class ServiceTests {
     }
 
     @Test
-    public void entryGetPublicEntries() {
+    public void entryGetPublicEntries() throws ServiceException {
         List<Entry> entryList = entryService.getPublicEntries("jjsite");
         assertNotNull(entryList);
         assertTrue(entryList.size() > 0);
