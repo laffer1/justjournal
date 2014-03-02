@@ -56,6 +56,9 @@ final public class Util {
             ds.setURL("jdbc:mysql://ds9.midnightbsd.org:3306/jj");
             ds.setUser("jj");
             ds.setPassword("");
+            ds.setAllowMultiQueries(true);
+            ds.setAutoReconnect(true);
+            ds.setTcpKeepAlive(true);
 
             ic.bind("java:comp/env/jdbc/jjDB", ds);
         } catch (NamingException ex) {
