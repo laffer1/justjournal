@@ -27,8 +27,6 @@
 package com.justjournal;
 
 import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
-import org.apache.cayenne.access.DataContext;
-import org.apache.cayenne.configuration.server.ServerRuntime;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -38,7 +36,7 @@ import javax.naming.NamingException;
  * Utilities for unit testing
  * @author Lucas Holt
  */
-public class Util {
+final public class Util {
     public static void setupDb() {
         try {
             // Create initial context
@@ -60,9 +58,6 @@ public class Util {
             ds.setPassword("");
 
             ic.bind("java:comp/env/jdbc/jjDB", ds);
-
-            ServerRuntime cayenneRuntime = new ServerRuntime("cayenne-JustJournalDomain.xml");
-            DataContext.bindThreadObjectContext(cayenneRuntime.getContext());
         } catch (NamingException ex) {
             System.err.println(ex.getMessage());
         }
