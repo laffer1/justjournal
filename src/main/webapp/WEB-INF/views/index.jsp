@@ -13,6 +13,7 @@
     <title>Just Journal: Free Online Journals</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
+    <meta name="msvalidate.01" content="D1E040678EBA2490CC51CABAABCE7928">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/bootstrap.min.css">
     <!-- build:css styles/main.css -->
