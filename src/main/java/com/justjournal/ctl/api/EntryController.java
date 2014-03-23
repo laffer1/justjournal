@@ -50,6 +50,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -74,6 +75,9 @@ public class EntryController {
     @Autowired
     private EntryService entryService;
 
+    public static Logger getLog() {
+        return log;
+    }
 
     /**
      * Get an individual entry
@@ -104,11 +108,11 @@ public class EntryController {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
                 return null;
             }
-           
+
         } catch (ServiceException e) {
             log.error(e);
         }
-         return entries;
+        return entries;
     }
 
     @RequestMapping(value = "{username}/size/{size}/page/{page}", method = RequestMethod.GET, produces = "application/json")
@@ -118,10 +122,6 @@ public class EntryController {
         Pageable pageable = new PageRequest(page, size);
         User user = userRepository.findByUsername(username);
         return entryDao.findByUserAndSecurityOrderByDateDesc(user, securityDao.findOne(2), pageable);
-    }
-
-    public static Logger getLog() {
-        return log;
     }
 
     public UserRepository getUserRepository() {
@@ -150,15 +150,32 @@ public class EntryController {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
         }
+
         User user = userRepository.findOne(WebLogin.currentLoginId(session));
+        if (user == null) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return java.util.Collections.singletonMap("error", "User not found");
+        }
+
         entry.setUser(user);
 
         // TODO: validate
-        entryDao.save(entry);
+        Entry saved = entryDao.save(entry);
+
+        if (saved.getId() < 1) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            return java.util.Collections.singletonMap("error", "Could not save entry");
+        }
 
         model.addAttribute("status", "ok");
+        model.addAttribute("id", saved.getId());
+
+
         // return java.util.Collections.singletonMap("id", Integer.toString(entry.getId()));
-        return java.util.Collections.singletonMap("status", "OK");
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("status", "ok");
+        map.put("id", Integer.toString(saved.getId()));
+        return map;
     }
 
     /**
