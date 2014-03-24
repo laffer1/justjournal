@@ -1,40 +1,46 @@
 -- 
 -- Database: `jj`
 -- justjournal.com  DATABASEJJ 
-CREATE DATABASE `jj`
-  DEFAULT CHARACTER SET latin1
-  COLLATE latin1_swedish_ci;
-USE jj;
+-- CREATE DATABASE `jj`
+--  DEFAULT CHARACTER SET latin1
+--  COLLATE latin1_swedish_ci;
+-- USE jj;
 
--- --------------------------------------------------------
+  -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `comments`
--- 
--- Creation: Aug 30, 2005 at 09:49 AM
--- 
+--
+-- Creation: Feb 14, 2014 at 02:40 AM
+--
 
 CREATE TABLE IF NOT EXISTS `comments` (
-  `id`      INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `eid`     INT(10) UNSIGNED NOT NULL DEFAULT '0',
-  `uid`     INT(10) UNSIGNED NOT NULL DEFAULT '0',
-  `subject` VARCHAR(150) DEFAULT NULL,
-  `date`    DATETIME         NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `body`    TEXT             NOT NULL,
-  PRIMARY KEY (`id`)
+  `id`       SMALLINT(4) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `eid`      INT(10) UNSIGNED     NOT NULL DEFAULT '0',
+  `uid`      INT(10) UNSIGNED     NOT NULL DEFAULT '0',
+  `subject`  VARCHAR(150)
+             CHARACTER SET latin1 DEFAULT NULL,
+  `date`     DATETIME             NOT NULL,
+  `body`     TEXT
+             CHARACTER SET latin1 NOT NULL,
+  `modified` TIMESTAMP            NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `eid_uid` (`eid`, `uid`),
+  KEY `userid` (`uid`)
 )
   ENGINE =InnoDB
-  DEFAULT CHARSET =latin1
-  AUTO_INCREMENT =18;
+  DEFAULT CHARSET =utf8
+  COMMENT ='Journal Entry Comments'
+  AUTO_INCREMENT =501;
 
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `content`
--- 
--- Creation: Aug 30, 2005 at 09:49 AM
--- 
+--
+-- Creation: Feb 09, 2013 at 05:05 PM
+--
 
 CREATE TABLE IF NOT EXISTS `content` (
   `id`        INT(10) UNSIGNED NOT NULL DEFAULT '0',
@@ -52,54 +58,46 @@ CREATE TABLE IF NOT EXISTS `content` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `country`
--- 
--- Creation: Aug 30, 2005 at 09:49 AM
--- 
+--
+-- Creation: Feb 09, 2013 at 05:05 PM
+--
 
 CREATE TABLE IF NOT EXISTS `country` (
-  `id`    TINYINT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `title` VARCHAR(30)         NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`)
+  `id`        SMALLINT(5) UNSIGNED    NOT NULL AUTO_INCREMENT,
+  `title`     VARCHAR(80)
+              CHARACTER SET latin1    NOT NULL,
+  `iso`       CHAR(2)
+              COLLATE utf8_unicode_ci NOT NULL,
+  `iso3`      CHAR(3)
+              COLLATE utf8_unicode_ci DEFAULT NULL,
+  `numcode`   SMALLINT(6) DEFAULT NULL,
+  `iso_title` VARCHAR(50)
+              COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `country_title` (`title`)
 )
   ENGINE =InnoDB
-  DEFAULT CHARSET =latin1
-  AUTO_INCREMENT =16;
-
--- 
--- Dumping data for table `country`
--- 
-
-INSERT DELAYED IGNORE INTO `country` (`id`, `title`) VALUES (1, 'United States'),
-(2, 'Canada'),
-(3, 'United Kingdom'),
-(4, 'Germany'),
-(5, 'France'),
-(6, 'Sweden'),
-(7, 'Belgium'),
-(8, 'Norway'),
-(9, 'Finland'),
-(10, 'Mexico'),
-(11, 'Russia'),
-(12, 'China'),
-(13, 'Slovenia'),
-(15, 'Japan');
+  DEFAULT CHARSET =utf8
+  COLLATE =utf8_unicode_ci
+  AUTO_INCREMENT =1199;
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `entry`
--- 
--- Creation: Aug 30, 2005 at 09:49 AM
--- 
+--
+-- Creation: Feb 14, 2014 at 03:01 AM
+--
 
 CREATE TABLE IF NOT EXISTS `entry` (
   `id`             INT(10) UNSIGNED    NOT NULL AUTO_INCREMENT,
   `uid`            INT(10) UNSIGNED    NOT NULL DEFAULT '0',
   `date`           DATETIME            NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `subject`        VARCHAR(150) DEFAULT NULL,
-  `mood`           TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',
+  `modified`       TIMESTAMP           NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `subject`        VARCHAR(255) DEFAULT NULL,
+  `mood`           TINYINT(3) UNSIGNED DEFAULT NULL,
   `music`          VARCHAR(125)        NOT NULL DEFAULT '',
   `location`       TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',
   `body`           TEXT                NOT NULL,
@@ -107,75 +105,128 @@ CREATE TABLE IF NOT EXISTS `entry` (
   `autoformat`     ENUM('Y', 'N')      NOT NULL DEFAULT 'Y',
   `allow_comments` ENUM('Y', 'N')      NOT NULL DEFAULT 'Y',
   `email_comments` ENUM('Y', 'N')      NOT NULL DEFAULT 'Y',
+  `draft`          ENUM('Y', 'N')      NOT NULL DEFAULT 'Y'
+  COMMENT 'is a draft entry',
+  `attach_image`   INT(10) UNSIGNED    NOT NULL DEFAULT '0',
+  `attach_file`    INT(10) UNSIGNED    NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
-  KEY `sec` (`security`)
+  KEY `sec` (`security`),
+  KEY `dateindex` (`date`),
+  KEY `user_id` (`uid`)
 )
   ENGINE =InnoDB
   DEFAULT CHARSET =latin1
-  AUTO_INCREMENT =573;
+  AUTO_INCREMENT =33659;
+
+--
+-- RELATIONS FOR TABLE `entry`:
+--   `security`
+--       `entry_security` -> `id`
+--   `uid`
+--       `user` -> `id`
+--
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `entry_security`
--- 
--- Creation: Aug 30, 2005 at 09:49 AM
--- 
+--
+-- Creation: Feb 09, 2013 at 05:05 PM
+--
 
 CREATE TABLE IF NOT EXISTS `entry_security` (
-  `id`    TINYINT(4) NOT NULL DEFAULT '0',
-  `title` CHAR(8)    NOT NULL DEFAULT '',
+  `id`    TINYINT(4)           NOT NULL DEFAULT '0',
+  `title` CHAR(7)
+          CHARACTER SET latin1 NOT NULL,
   PRIMARY KEY (`id`)
 )
   ENGINE =InnoDB
-  DEFAULT CHARSET =latin1;
-
--- 
--- Dumping data for table `entry_security`
--- 
-
-INSERT DELAYED IGNORE INTO `entry_security` (`id`, `title`) VALUES (0, 'private'),
-(1, 'friends'),
-(2, 'public');
+  DEFAULT CHARSET =utf8
+  COLLATE =utf8_unicode_ci
+  COMMENT ='Journal Entry Security Setting';
 
 -- --------------------------------------------------------
 
--- 
--- Table structure for table `friends`
--- 
--- Creation: Aug 30, 2005 at 09:49 AM
--- 
+--
+-- Table structure for table `entry_tags`
+--
+-- Creation: Feb 12, 2014 at 02:41 AM
+--
 
-CREATE TABLE IF NOT EXISTS `friends` (
-  `id`       INT(10) UNSIGNED NOT NULL DEFAULT '0',
-  `friendid` INT(10) UNSIGNED NOT NULL DEFAULT '0'
+CREATE TABLE IF NOT EXISTS `entry_tags` (
+  `id`      INT(10) UNSIGNED      NOT NULL AUTO_INCREMENT,
+  `entryid` INT(10) UNSIGNED      NOT NULL,
+  `tagid`   SMALLINT(10) UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `entrytags` (`entryid`, `tagid`)
 )
   ENGINE =InnoDB
-  DEFAULT CHARSET =latin1;
+  DEFAULT CHARSET =latin1
+  AUTO_INCREMENT =8343;
 
 -- --------------------------------------------------------
 
--- 
+--
+-- Table structure for table `favorites`
+--
+-- Creation: Feb 09, 2013 at 05:05 PM
+--
+
+CREATE TABLE IF NOT EXISTS `favorites` (
+  `id`      INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `owner`   INT(10) UNSIGNED NOT NULL,
+  `entryid` INT(10) UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `FAVORITE` (`owner`, `entryid`)
+)
+  ENGINE =InnoDB
+  DEFAULT CHARSET =latin1
+  COMMENT ='Favorite Entries'
+  AUTO_INCREMENT =170;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `friends`
+--
+-- Creation: Feb 09, 2013 at 05:05 PM
+--
+
+CREATE TABLE IF NOT EXISTS `friends` (
+  `pk`       INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `id`       INT(10) UNSIGNED NOT NULL DEFAULT '0',
+  `friendid` INT(10) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY (`pk`),
+  KEY `FRIEND` (`id`, `friendid`)
+)
+  ENGINE =InnoDB
+  DEFAULT CHARSET =latin1
+  AUTO_INCREMENT =111;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `friends_lj`
--- 
--- Creation: Aug 30, 2005 at 09:49 AM
--- 
+--
+-- Creation: Feb 09, 2013 at 05:05 PM
+--
 
 CREATE TABLE IF NOT EXISTS `friends_lj` (
   `id`        INT(10) UNSIGNED NOT NULL DEFAULT '0',
   `username`  CHAR(15)         NOT NULL DEFAULT '',
-  `community` ENUM('Y', 'N')   NOT NULL DEFAULT 'N'
+  `community` ENUM('Y', 'N')   NOT NULL DEFAULT 'N',
+  PRIMARY KEY (`id`, `username`)
 )
   ENGINE =InnoDB
   DEFAULT CHARSET =latin1;
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `friends_lj_cache`
--- 
--- Creation: Aug 30, 2005 at 09:49 AM
--- 
+--
+-- Creation: Feb 09, 2013 at 05:05 PM
+--
 
 CREATE TABLE IF NOT EXISTS `friends_lj_cache` (
   `ljusername`  VARCHAR(15)    NOT NULL DEFAULT '',
@@ -187,18 +238,34 @@ CREATE TABLE IF NOT EXISTS `friends_lj_cache` (
   ENGINE =InnoDB
   DEFAULT CHARSET =latin1;
 
--- 
--- Dumping data for table `friends_lj_cache`
--- 
+-- --------------------------------------------------------
 
+--
+-- Table structure for table `hitcount`
+--
+-- Creation: Feb 09, 2013 at 05:05 PM
+--
+
+CREATE TABLE IF NOT EXISTS `hitcount` (
+  `resource` VARCHAR(200)
+             COLLATE utf8_unicode_ci NOT NULL,
+  `count`    MEDIUMINT(5) UNSIGNED   NOT NULL DEFAULT '0',
+  `id`       INT(20) UNSIGNED        NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_resource` (`resource`) USING HASH
+)
+  ENGINE =InnoDB
+  DEFAULT CHARSET =utf8
+  COLLATE =utf8_unicode_ci
+  AUTO_INCREMENT =90714;
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `location`
--- 
--- Creation: Aug 30, 2005 at 09:49 AM
--- 
+--
+-- Creation: Feb 09, 2013 at 05:05 PM
+--
 
 CREATE TABLE IF NOT EXISTS `location` (
   `id`    TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',
@@ -208,23 +275,13 @@ CREATE TABLE IF NOT EXISTS `location` (
   ENGINE =InnoDB
   DEFAULT CHARSET =latin1;
 
--- 
--- Dumping data for table `location`
--- 
-
-INSERT DELAYED IGNORE INTO `location` (`id`, `title`) VALUES (0, 'Not Specified'),
-(1, 'Home'),
-(2, 'Work'),
-(3, 'School'),
-(5, 'Other');
-
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `mood`
--- 
--- Creation: Aug 30, 2005 at 09:49 AM
--- 
+--
+-- Creation: Feb 09, 2013 at 05:05 PM
+--
 
 CREATE TABLE IF NOT EXISTS `mood` (
   `id`         TINYINT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -237,173 +294,13 @@ CREATE TABLE IF NOT EXISTS `mood` (
   DEFAULT CHARSET =latin1
   AUTO_INCREMENT =126;
 
--- 
--- Dumping data for table `mood`
--- 
-
-INSERT DELAYED IGNORE INTO `mood` (`id`, `parentmood`, `title`) VALUES (1, 0, 'Happy'),
-(2, 0, 'Sad'),
-(3, 0, 'Awake'),
-(4, 0, 'Tired'),
-(5, 0, 'Angry'),
-(6, 5, 'Mad'),
-(7, 1, 'Gay'),
-(8, 0, 'Silly'),
-(9, 0, 'Confused'),
-(10, 0, 'Bewildered'),
-(11, 0, 'Smart'),
-(12, 0, 'Not Specified'),
-(13, 0, 'Hungry'),
-(14, 0, 'Accomplished'),
-(15, 1, 'Amused'),
-(16, 0, 'Annoyed'),
-(17, 0, 'Anxious'),
-(18, 0, 'Bored'),
-(19, 0, 'Accepted'),
-(20, 0, 'Alone'),
-(21, 0, 'Ashamed'),
-(22, 0, 'Bittersweet'),
-(23, 0, 'Blissful'),
-(24, 0, 'Dark'),
-(25, 5, 'Aggravated'),
-(26, 5, 'Bitchy'),
-(27, 5, 'Cranky'),
-(28, 5, 'Cynical'),
-(29, 5, 'Enraged'),
-(30, 5, 'Frustrated'),
-(31, 5, 'Grumpy'),
-(32, 5, 'Infuriated'),
-(33, 5, 'Irate'),
-(34, 5, 'Irritated'),
-(35, 5, 'Moody'),
-(36, 5, 'Pissed off'),
-(37, 5, 'Stressed'),
-(38, 37, 'Rushed'),
-(39, 9, 'Curious'),
-(40, 0, 'Determined'),
-(41, 40, 'Predatory'),
-(42, 0, 'Devious'),
-(43, 0, 'Energetic'),
-(44, 43, 'Bouncy'),
-(45, 43, 'Hyper'),
-(46, 0, 'Enthralled'),
-(47, 1, 'Cheerful'),
-(48, 1, 'Horny'),
-(49, 1, 'Chipper'),
-(50, 1, 'High'),
-(51, 1, 'Ecstatic'),
-(52, 1, 'Excited'),
-(53, 1, 'Good'),
-(54, 1, 'Grateful'),
-(55, 1, 'Impressed'),
-(56, 1, 'Jubilant'),
-(57, 1, 'Loved'),
-(58, 1, 'Optimistic'),
-(59, 58, 'Hopeful'),
-(60, 1, 'Pleased'),
-(61, 1, 'Refreshed'),
-(62, 61, 'Rejuvenated'),
-(63, 1, 'Relaxed'),
-(64, 63, 'Calm'),
-(65, 63, 'Mellow'),
-(66, 63, 'Peaceful'),
-(67, 63, 'Recumbent'),
-(68, 63, 'Satisfied'),
-(69, 68, 'Content'),
-(70, 69, 'Complacent'),
-(71, 69, 'Indifferent'),
-(72, 68, 'Full'),
-(73, 68, 'Relieved'),
-(74, 1, 'Thankful'),
-(75, 1, 'Touched'),
-(76, 1, 'Surprised'),
-(77, 76, 'Shocked'),
-(78, 8, 'Crazy'),
-(79, 8, 'Ditzy'),
-(80, 8, 'Flirty'),
-(81, 8, 'Giddy'),
-(82, 8, 'Giggly'),
-(83, 8, 'Mischievous'),
-(84, 83, 'Naughty'),
-(85, 8, 'Quixotic'),
-(86, 8, 'Weird'),
-(87, 0, 'Indescribable'),
-(88, 0, 'Nerdy'),
-(89, 88, 'Dorky'),
-(90, 88, 'Geeky'),
-(91, 0, 'Okay'),
-(92, 91, 'Blah'),
-(93, 91, 'Lazy'),
-(94, 93, 'Lethargic'),
-(95, 93, 'Listless'),
-(96, 93, 'Exanimate'),
-(97, 96, 'Apathetic'),
-(98, 96, 'Blank'),
-(99, 2, 'Crappy'),
-(100, 2, 'Crushed'),
-(101, 2, 'Depressed'),
-(102, 2, 'Disappointed'),
-(103, 2, 'Discontent'),
-(104, 2, 'Envious'),
-(105, 2, 'Gloomy'),
-(106, 2, 'Pessimistic'),
-(107, 2, 'Jealous'),
-(108, 2, 'Lonely'),
-(109, 2, 'Melancholy'),
-(110, 2, 'Morose'),
-(111, 2, 'Numb'),
-(112, 2, 'Rejected'),
-(113, 2, 'Sympathetic'),
-(114, 2, 'Uncomfortable'),
-(115, 2, 'Cold'),
-(116, 2, 'Dirty'),
-(117, 2, 'Drunk'),
-(118, 2, 'Exhausted'),
-(119, 2, 'Drained'),
-(120, 2, 'Groggy'),
-(121, 2, 'Sleepy'),
-(122, 2, 'Guilty'),
-(123, 2, 'Hot'),
-(124, 2, 'Restless'),
-(125, 2, 'Sick');
-
 -- --------------------------------------------------------
 
--- 
--- Table structure for table `mood_theme_data`
--- 
--- Creation: Aug 30, 2005 at 09:49 AM
--- 
-
-CREATE TABLE IF NOT EXISTS `mood_theme_data` (
-  `moodthemeid` INT(10) UNSIGNED    NOT NULL DEFAULT '0',
-  `moodid`      INT(10) UNSIGNED    NOT NULL DEFAULT '0',
-  `picurl`      VARCHAR(100) DEFAULT NULL,
-  `width`       TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',
-  `height`      TINYINT(3) UNSIGNED NOT NULL DEFAULT '0'
-)
-  ENGINE =InnoDB
-  DEFAULT CHARSET =latin1;
-
--- 
--- Dumping data for table `mood_theme_data`
--- 
-
-INSERT DELAYED IGNORE INTO `mood_theme_data` (`moodthemeid`, `moodid`, `picurl`, `width`, `height`) VALUES (1, 1, 'smile.gif', 15, 15),
-(1, 2, 'sad.gif', 15, 15),
-(1, 4, 'tired.gif', 15, 15),
-(1, 5, 'angry.gif', 15, 15),
-(1, 9, 'confused.gif', 15, 15),
-(1, 42, 'devious.gif', 15, 15),
-(1, 43, 'energetic.gif', 15, 15);
-
--- --------------------------------------------------------
-
--- 
+--
 -- Table structure for table `mood_themes`
--- 
--- Creation: Aug 30, 2005 at 09:49 AM
--- 
+--
+-- Creation: Feb 09, 2013 at 05:05 PM
+--
 
 CREATE TABLE IF NOT EXISTS `mood_themes` (
   `id`        INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -418,19 +315,61 @@ CREATE TABLE IF NOT EXISTS `mood_themes` (
   DEFAULT CHARSET =latin1
   AUTO_INCREMENT =2;
 
--- 
--- Dumping data for table `mood_themes`
--- 
+-- --------------------------------------------------------
 
-INSERT DELAYED IGNORE INTO `mood_themes` (`id`, `owner`, `name`, `des`, `is_public`) VALUES (1, 0, 'Default', NULL, 'Y');
+--
+-- Table structure for table `mood_theme_data`
+--
+-- Creation: Feb 09, 2013 at 05:05 PM
+--
+
+CREATE TABLE IF NOT EXISTS `mood_theme_data` (
+  `id`          INT(10) UNSIGNED    NOT NULL AUTO_INCREMENT,
+  `moodthemeid` INT(10) UNSIGNED    NOT NULL DEFAULT '0',
+  `moodid`      INT(10) UNSIGNED    NOT NULL DEFAULT '0',
+  `picurl`      VARCHAR(100) DEFAULT NULL,
+  `width`       TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',
+  `height`      TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+)
+  ENGINE =InnoDB
+  DEFAULT CHARSET =latin1
+  AUTO_INCREMENT =8;
 
 -- --------------------------------------------------------
 
--- 
+--
+-- Table structure for table `queue_mail`
+--
+-- Creation: Feb 09, 2013 at 05:05 PM
+--
+
+CREATE TABLE IF NOT EXISTS `queue_mail` (
+  `id`      INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `to`      VARCHAR(100)
+            COLLATE utf8_bin NOT NULL,
+  `from`    VARCHAR(100)
+            COLLATE utf8_bin NOT NULL,
+  `subject` VARCHAR(100)
+            COLLATE utf8_bin NOT NULL,
+  `body`    TEXT
+            COLLATE utf8_bin NOT NULL,
+  `purpose` VARCHAR(150)
+            COLLATE utf8_bin NOT NULL,
+  PRIMARY KEY (`id`)
+)
+  ENGINE =InnoDB
+  DEFAULT CHARSET =utf8
+  COLLATE =utf8_bin
+  AUTO_INCREMENT =1;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `resources`
--- 
--- Creation: Aug 30, 2005 at 09:49 AM
--- 
+--
+-- Creation: Feb 09, 2013 at 05:05 PM
+--
 
 CREATE TABLE IF NOT EXISTS `resources` (
   `id`       INT(10) UNSIGNED     NOT NULL AUTO_INCREMENT,
@@ -445,108 +384,235 @@ CREATE TABLE IF NOT EXISTS `resources` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `rss_cache`
--- 
--- Creation: Aug 30, 2005 at 09:49 AM
--- 
+--
+-- Creation: Feb 09, 2013 at 05:05 PM
+--
 
 CREATE TABLE IF NOT EXISTS `rss_cache` (
-  `id`          INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `interval`    INT(10) UNSIGNED NOT NULL DEFAULT '0',
-  `lastupdated` DATETIME         NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `uri`         TINYTEXT         NOT NULL,
+  `id`          INT(10) UNSIGNED     NOT NULL AUTO_INCREMENT,
+  `interval`    TINYINT(10) UNSIGNED NOT NULL DEFAULT '0',
+  `lastupdated` DATETIME             NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `uri`         TINYTEXT             NOT NULL,
   `content`     TEXT,
+  PRIMARY KEY (`id`),
+  KEY `rssurl` (`uri`(100))
+)
+  ENGINE =InnoDB
+  DEFAULT CHARSET =latin1
+  AUTO_INCREMENT =67;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `rss_subscriptions`
+--
+-- Creation: Feb 09, 2013 at 05:05 PM
+--
+
+CREATE TABLE IF NOT EXISTS `rss_subscriptions` (
+  `id`    INT(10) UNSIGNED NOT NULL DEFAULT '0',
+  `uri`   TINYTEXT         NOT NULL,
+  `subid` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'unique subscription id for easier changes',
+  PRIMARY KEY (`subid`),
+  UNIQUE KEY `UNIQUE` (`id`, `uri`(256))
+)
+  ENGINE =InnoDB
+  DEFAULT CHARSET =latin1
+  AUTO_INCREMENT =18;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `settings`
+--
+-- Creation: Feb 09, 2013 at 05:05 PM
+--
+
+CREATE TABLE IF NOT EXISTS `settings` (
+  `name`  VARCHAR(25)      NOT NULL,
+  `value` VARCHAR(100)     NOT NULL,
+  `id`    INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_name` (`name`)
+)
+  ENGINE =InnoDB
+  DEFAULT CHARSET =latin1
+  AUTO_INCREMENT =26;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `state`
+--
+-- Creation: Feb 14, 2014 at 02:44 AM
+--
+
+CREATE TABLE IF NOT EXISTS `state` (
+  `id`         INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `country_id` INT(10) UNSIGNED NOT NULL,
+  `title`      VARCHAR(100)     NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `title` (`title`),
+  KEY `country_id` (`country_id`)
+)
+  ENGINE =InnoDB
+  DEFAULT CHARSET =utf8
+  AUTO_INCREMENT =1;
+
+--
+-- RELATIONS FOR TABLE `state`:
+--   `country_id`
+--       `country` -> `id`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `style`
+--
+-- Creation: Feb 09, 2013 at 05:05 PM
+--
+
+CREATE TABLE IF NOT EXISTS `style` (
+  `id`       TINYINT(10) UNSIGNED NOT NULL DEFAULT '0',
+  `title`    VARCHAR(30)          NOT NULL DEFAULT '''''',
+  `desc`     TINYTEXT             NOT NULL,
+  `modified` TIMESTAMP            NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+)
+  ENGINE =InnoDB
+  DEFAULT CHARSET =latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tags`
+--
+-- Creation: Feb 09, 2013 at 05:05 PM
+--
+
+CREATE TABLE IF NOT EXISTS `tags` (
+  `id`   SMALLINT(10) UNSIGNED   NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(30)
+         COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
+)
+  ENGINE =InnoDB
+  DEFAULT CHARSET =utf8
+  COLLATE =utf8_unicode_ci
+  AUTO_INCREMENT =1559;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `timezones`
+--
+-- Creation: Feb 09, 2013 at 05:05 PM
+--
+
+CREATE TABLE IF NOT EXISTS `timezones` (
+  `id`   INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(32)      NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `names` (`name`)
+)
+  ENGINE =InnoDB
+  DEFAULT CHARSET =latin1
+  PACK_KEYS =1
+  AUTO_INCREMENT =1726;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `trackback`
+--
+-- Creation: Feb 09, 2013 at 05:05 PM
+--
+
+CREATE TABLE IF NOT EXISTS `trackback` (
+  `id`           INT(10) UNSIGNED                        NOT NULL AUTO_INCREMENT,
+  `eid`          INT(10) UNSIGNED                        NOT NULL
+  COMMENT 'Entry ID',
+  `date`         DATETIME                                NOT NULL
+  COMMENT 'Trackback Date',
+  `type`         ENUM('trackback', 'pingback', 'postit') NOT NULL DEFAULT 'trackback',
+  `url`          VARCHAR(150)                            NOT NULL,
+  `author_name`  VARCHAR(50)                             NOT NULL
+  COMMENT 'dc:creator',
+  `author_email` VARCHAR(150)                            NOT NULL,
+  `blogname`     VARCHAR(150)                            NOT NULL,
+  `subject`      VARCHAR(150)                            NOT NULL
+  COMMENT 'title, name',
+  `body`         TEXT                                    NOT NULL
+  COMMENT 'description, excert, comment',
+  `modified`     TIMESTAMP                               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 )
   ENGINE =InnoDB
   DEFAULT CHARSET =latin1
-  AUTO_INCREMENT =32;
-
-
--- --------------------------------------------------------
-
--- 
--- Table structure for table `rss_subscriptions`
--- 
--- Creation: Aug 30, 2005 at 09:49 AM
--- 
-
-CREATE TABLE IF NOT EXISTS `rss_subscriptions` (
-  `id`  INT(10) UNSIGNED NOT NULL DEFAULT '0',
-  `uri` TINYTEXT         NOT NULL,
-  UNIQUE KEY `UNIQUE` (`id`, `uri`(300))
-)
-  ENGINE =InnoDB
-  DEFAULT CHARSET =latin1;
-
+  COMMENT ='Trackback, Pingback, Post-it comments for blog entries'
+  AUTO_INCREMENT =1;
 
 -- --------------------------------------------------------
 
--- 
--- Table structure for table `style`
--- 
--- Creation: Aug 30, 2005 at 09:49 AM
--- 
-
-CREATE TABLE IF NOT EXISTS `style` (
-  `id`    INT(10) UNSIGNED NOT NULL DEFAULT '0',
-  `title` VARCHAR(50)      NOT NULL DEFAULT '''''',
-  `desc`  TEXT             NOT NULL,
-  PRIMARY KEY (`id`)
-)
-  ENGINE =InnoDB
-  DEFAULT CHARSET =latin1;
-
--- --------------------------------------------------------
-
--- 
+--
 -- Table structure for table `user`
--- 
--- Creation: Aug 30, 2005 at 09:49 AM
--- 
+--
+-- Creation: Feb 08, 2014 at 08:20 PM
+--
 
 CREATE TABLE IF NOT EXISTS `user` (
-  `id`       INT(10) UNSIGNED     NOT NULL AUTO_INCREMENT,
-  `username` VARCHAR(15)          NOT NULL DEFAULT '',
-  `password` VARCHAR(40)          NOT NULL DEFAULT '',
-  `type`     TINYINT(3) UNSIGNED  NOT NULL DEFAULT '0',
-  `name`     VARCHAR(20)          NOT NULL DEFAULT '',
-  `since`    SMALLINT(4) UNSIGNED NOT NULL DEFAULT '2005',
+  `id`        INT(10) UNSIGNED     NOT NULL AUTO_INCREMENT,
+  `username`  VARCHAR(15)          NOT NULL DEFAULT '',
+  `password`  CHAR(40)             NOT NULL,
+  `type`      TINYINT(3) UNSIGNED  NOT NULL DEFAULT '0',
+  `name`      VARCHAR(20)          NOT NULL DEFAULT '',
+  `lastname`  VARCHAR(20)
+              CHARACTER SET utf8
+              COLLATE utf8_unicode_ci DEFAULT NULL,
+  `since`     SMALLINT(4) UNSIGNED NOT NULL DEFAULT '2014',
+  `lastlogin` DATETIME DEFAULT NULL,
+  `modified`  TIMESTAMP            NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
 )
   ENGINE =InnoDB
   DEFAULT CHARSET =latin1
-  AUTO_INCREMENT =51;
-
+  AUTO_INCREMENT =2908;
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `user_bio`
--- 
--- Creation: Aug 30, 2005 at 09:49 AM
--- 
+--
+-- Creation: Feb 09, 2014 at 02:42 PM
+--
 
 CREATE TABLE IF NOT EXISTS `user_bio` (
-  `id`      INT(10) UNSIGNED NOT NULL DEFAULT '0',
-  `content` TEXT             NOT NULL,
-  UNIQUE KEY `id` (`id`)
+  `id`       INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_id`  INT(10) UNSIGNED NOT NULL DEFAULT '0',
+  `content`  TEXT             NOT NULL,
+  `modified` TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
 )
   ENGINE =InnoDB
-  DEFAULT CHARSET =latin1;
+  DEFAULT CHARSET =latin1
+  AUTO_INCREMENT =2187;
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `user_contact`
--- 
--- Creation: Aug 30, 2005 at 09:49 AM
--- 
+--
+-- Creation: Feb 09, 2014 at 02:34 PM
+--
 
 CREATE TABLE IF NOT EXISTS `user_contact` (
-  `id`       INT(10) UNSIGNED NOT NULL DEFAULT '0',
+  `id`       INT(11)          NOT NULL AUTO_INCREMENT,
+  `user_id`  INT(10) UNSIGNED NOT NULL DEFAULT '0',
   `email`    VARCHAR(100)     NOT NULL DEFAULT '',
   `icq`      VARCHAR(20) DEFAULT NULL,
   `aim`      VARCHAR(30) DEFAULT NULL,
@@ -555,42 +621,180 @@ CREATE TABLE IF NOT EXISTS `user_contact` (
   `hp_uri`   VARCHAR(250) DEFAULT NULL,
   `hp_title` VARCHAR(50) DEFAULT NULL,
   `phone`    VARCHAR(14) DEFAULT NULL,
-  UNIQUE KEY `id` (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `user_id` (`user_id`)
 )
   ENGINE =InnoDB
-  DEFAULT CHARSET =latin1;
+  DEFAULT CHARSET =latin1
+  AUTO_INCREMENT =2168;
+
+--
+-- RELATIONS FOR TABLE `user_contact`:
+--   `user_id`
+--       `user` -> `id`
+--
 
 -- --------------------------------------------------------
 
--- 
+--
+-- Table structure for table `user_files`
+--
+-- Creation: Feb 09, 2013 at 05:05 PM
+--
+
+CREATE TABLE IF NOT EXISTS `user_files` (
+  `id`            INT(10) UNSIGNED        NOT NULL AUTO_INCREMENT,
+  `ownerid`       INT(10) UNSIGNED        NOT NULL
+  COMMENT 'user id',
+  `title`         VARCHAR(150)
+                  COLLATE utf8_unicode_ci NOT NULL,
+  `date_modified` TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `mimetype`      VARCHAR(40)
+                  COLLATE utf8_unicode_ci NOT NULL,
+  `data`          LONGBLOB                NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `ownerid` (`ownerid`)
+)
+  ENGINE =InnoDB
+  DEFAULT CHARSET =utf8
+  COLLATE =utf8_unicode_ci
+  AUTO_INCREMENT =1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user_images`
+--
+-- Creation: Feb 09, 2013 at 05:05 PM
+--
+
+CREATE TABLE IF NOT EXISTS `user_images` (
+  `id`       INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `title`    VARCHAR(150) DEFAULT '',
+  `owner`    INT(10) UNSIGNED NOT NULL DEFAULT '0',
+  `modified` TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `mimetype` VARCHAR(45)      NOT NULL DEFAULT '',
+  `image`    MEDIUMBLOB       NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `imagesowner` (`owner`)
+)
+  ENGINE =InnoDB
+  DEFAULT CHARSET =utf8
+  PACK_KEYS =0
+  CHECKSUM =1
+  AUTO_INCREMENT =135;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user_images_album`
+--
+-- Creation: Feb 09, 2013 at 05:05 PM
+--
+
+CREATE TABLE IF NOT EXISTS `user_images_album` (
+  `id`          INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `owner`       INT(10) UNSIGNED NOT NULL DEFAULT '0',
+  `title`       VARCHAR(100)     NOT NULL DEFAULT '',
+  `description` TEXT,
+  `modified`    TIMESTAMP        NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+)
+  ENGINE =InnoDB
+  DEFAULT CHARSET =latin1
+  CHECKSUM =1
+  AUTO_INCREMENT =1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user_images_album_map`
+--
+-- Creation: Feb 09, 2013 at 05:05 PM
+--
+
+CREATE TABLE IF NOT EXISTS `user_images_album_map` (
+  `id`       INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `owner`    INT(10) UNSIGNED NOT NULL,
+  `album_id` INT(10) UNSIGNED NOT NULL DEFAULT '0',
+  `image_id` INT(10) UNSIGNED NOT NULL DEFAULT '0',
+  `modified` TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `map` (`owner`, `album_id`, `image_id`),
+  KEY `FK_user_images_album_map_1` (`image_id`)
+)
+  ENGINE =InnoDB
+  DEFAULT CHARSET =utf8
+  CHECKSUM =1
+  AUTO_INCREMENT =1;
+
+--
+-- RELATIONS FOR TABLE `user_images_album_map`:
+--   `image_id`
+--       `user_images` -> `id`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user_link`
+--
+-- Creation: Feb 09, 2014 at 02:44 PM
+--
+
+CREATE TABLE IF NOT EXISTS `user_link` (
+  `linkid`  MEDIUMINT(8) UNSIGNED   NOT NULL AUTO_INCREMENT,
+  `user_id` INT(10) UNSIGNED        NOT NULL,
+  `title`   VARCHAR(50)
+            COLLATE utf8_unicode_ci NOT NULL,
+  `uri`     VARCHAR(255)
+            COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`linkid`),
+  UNIQUE KEY `id` (`user_id`, `title`, `uri`)
+)
+  ENGINE =InnoDB
+  DEFAULT CHARSET =utf8
+  COLLATE =utf8_unicode_ci
+  COMMENT ='user''s link list'
+  AUTO_INCREMENT =68;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `user_location`
--- 
--- Creation: Aug 30, 2005 at 09:49 AM
--- 
+--
+-- Creation: Feb 14, 2014 at 01:44 AM
+--
 
 CREATE TABLE IF NOT EXISTS `user_location` (
-  `id`      INT(10) UNSIGNED NOT NULL DEFAULT '0',
-  `city`    VARCHAR(35)      NOT NULL DEFAULT '',
-  `state`   SMALLINT(6)      NOT NULL DEFAULT '0',
-  `country` SMALLINT(6)      NOT NULL DEFAULT '0',
-  `zip`     VARCHAR(10) DEFAULT NULL,
-  UNIQUE KEY `id` (`id`)
+  `id`       INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_id`  INT(10) UNSIGNED NOT NULL DEFAULT '0',
+  `city`     VARCHAR(35)      NOT NULL DEFAULT '',
+  `state`    SMALLINT(6) DEFAULT NULL,
+  `country`  SMALLINT(6) DEFAULT NULL,
+  `zip`      VARCHAR(10) DEFAULT NULL,
+  `modified` TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
 )
   ENGINE =InnoDB
-  DEFAULT CHARSET =latin1;
-
+  DEFAULT CHARSET =latin1
+  AUTO_INCREMENT =2195;
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `user_pic`
--- 
--- Creation: Aug 30, 2005 at 09:49 AM
--- 
+--
+-- Creation: Feb 09, 2013 at 05:05 PM
+--
 
 CREATE TABLE IF NOT EXISTS `user_pic` (
-  `id`    INT(10) UNSIGNED NOT NULL DEFAULT '0',
-  `image` BLOB             NOT NULL,
+  `id`            INT(10) UNSIGNED NOT NULL DEFAULT '0',
+  `date_modified` DATETIME DEFAULT NULL,
+  `mimetype`      VARCHAR(75)
+                  CHARACTER SET utf8
+                  COLLATE utf8_bin NOT NULL,
+  `image`         BLOB             NOT NULL,
   PRIMARY KEY (`id`)
 )
   ENGINE =InnoDB
@@ -598,36 +802,93 @@ CREATE TABLE IF NOT EXISTS `user_pic` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `user_pref`
--- 
--- Creation: Aug 30, 2005 at 09:49 AM
--- 
+--
+-- Creation: Feb 09, 2014 at 02:42 PM
+--
 
 CREATE TABLE IF NOT EXISTS `user_pref` (
-  `id`              INT(10) UNSIGNED    NOT NULL DEFAULT '0',
+  `id`              INT(11) UNSIGNED    NOT NULL AUTO_INCREMENT,
+  `user_id`         INT(10) UNSIGNED    NOT NULL DEFAULT '0',
   `allow_spider`    ENUM('N', 'Y')      NOT NULL DEFAULT 'N',
   `style`           TINYINT(6) UNSIGNED NOT NULL DEFAULT '1',
   `owner_view_only` ENUM('Y', 'N')      NOT NULL DEFAULT 'N',
-  UNIQUE KEY `id` (`id`)
+  `show_avatar`     ENUM('Y', 'N')      NOT NULL DEFAULT 'N',
+  `journal_name`    VARCHAR(150)
+                    CHARACTER SET utf8 DEFAULT NULL,
+  `ping_services`   ENUM('Y', 'N')      NOT NULL DEFAULT 'N',
+  `modified`        TIMESTAMP           NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `user_id` (`user_id`)
+)
+  ENGINE =InnoDB
+  DEFAULT CHARSET =latin1
+  AUTO_INCREMENT =2192;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user_style`
+--
+-- Creation: Feb 09, 2013 at 05:05 PM
+--
+
+CREATE TABLE IF NOT EXISTS `user_style` (
+  `id`       INT(10) UNSIGNED NOT NULL DEFAULT '0',
+  `url`      TEXT,
+  `doc`      TEXT,
+  `modified` TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
 )
   ENGINE =InnoDB
   DEFAULT CHARSET =latin1;
 
 -- --------------------------------------------------------
 
--- 
--- Table structure for table `user_style`
--- 
--- Creation: Aug 30, 2005 at 09:49 AM
--- 
+--
+-- Stand-in structure for view `v_entry_new_unique`
+--
+CREATE TABLE IF NOT EXISTS `v_entry_new_unique` (
+  `id` INT(10) UNSIGNED
+);
+-- --------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS `user_style` (
-  `id`  INT(10) UNSIGNED NOT NULL DEFAULT '0',
-  `url` TEXT,
-  `doc` TEXT,
-  PRIMARY KEY (`id`)
-)
-  ENGINE =InnoDB
-  DEFAULT CHARSET =latin1;
+--
+-- Structure for view `v_entry_new_unique`
+--
+DROP TABLE IF EXISTS `v_entry_new_unique`;
 
+CREATE ALGORITHM = UNDEFINED
+  DEFINER =`laffer1`@`70.91.226.204`
+  SQL SECURITY DEFINER VIEW `v_entry_new_unique` AS
+  SELECT
+    max(`entry`.`id`) AS `id`
+  FROM `entry`
+  WHERE (`entry`.`security` = 2)
+  GROUP BY `entry`.`uid`;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `comments`
+--
+ALTER TABLE `comments`
+ADD CONSTRAINT `fk_entry_id` FOREIGN KEY (`eid`) REFERENCES `entry` (`id`),
+ADD CONSTRAINT `fk_user_id` FOREIGN KEY (`uid`) REFERENCES `user` (`id`);
+
+--
+-- Constraints for table `entry`
+--
+ALTER TABLE `entry`
+ADD CONSTRAINT `fk_entry_user` FOREIGN KEY (`uid`) REFERENCES `user` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+--
+-- Constraints for table `user_images_album_map`
+--
+ALTER TABLE `user_images_album_map`
+ADD CONSTRAINT `FK_user_images_album_map_1` FOREIGN KEY (`image_id`) REFERENCES `user_images` (`id`);
