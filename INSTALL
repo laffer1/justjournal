@@ -1,95 +1,30 @@
-Updated: May 2013
+Updated: March 2014
 
-Project is migrating to maven 3.  This should simplify getting dependencies.
+Building JustJournal
 
-This document is incomplete, but briefly outlines installing
-justjournal.
+JustJournal uses maven 3 to build.  You can use the standard mvn package to get a war file.
 
-JustJournal is developed on JDK 1.6 (java 6) on Mac OS X Mountain Lion
-using MySQL 5.5 and Apache Tomcat 6.  It has been successfully
-deployed on MidnightBSD 0.4 with the native 1.6 JDK using Apache
-Tomcat 7.0 and MySQL 5.5.
+Requirements:
+Java 6 or higher
+Maven 3
+MySQL 5.6 server
+Tomcat 7
 
-Work is underway to migrate to Apache Cayenne.  This ORM will replace
+Note:
+Work is underway to migrate to Spring DATA.  This ORM will replace
 the hackish data access code using the old Sun CachedRowSet.  There are
 known deployment problems on newer versions of MySQL as they changed the
 way aliases are handled.  (SELECT fieldname as something from tablename; something
 won't show up in the CachedRowSet with MySQL 5.5.25)
 
-Libraries needed for Just Journal:
-
-This list is mostly historic. rowset.jar and maverick are the only
-non-maven friendly files remaining.
-
-sun:
-Activation.jar  (JAF 1.02)
-mail.jar
-rowset.jar (sun.jdbc.CachedRowSet, old)
-standard.jar
-
-apache:
-commons-beanutils
-commons-collecitons 3.1
-commons-email 1.0 (probably not needed anymore)
-commons-fileupload 1.0
-commons-logging
-log4j 1.2.11 
-
-Maverick: (Sf.net)
-maverick (2 years old, not sure on version right now)
-opt-domify
-opt-fop is currently not used
-domify (seperate project now)
-
-jdom
-
-mysql-connector-java (5.x currently used)
-
-jazzy-core.jar (jazzy spell check engine sf.net)
-
-additional probably not used:
-jta-spec1_0_1.jar
-jstl.jar
-jdbc2_0-stdext.jar
-
-
-Full jar list as of July 2008:
-activation.jar
-commons-beanutils.jar
-commons-collections-3.1.jar
-commons-email-1.0.jar
-commons-fileupload-1.2.jar
-commons-io-1.3.1.jar
-commons-logging.jar
-domify.jar
-itext-2.0.2.jar
-jazzy-core.jar
-jdbc2_0-stdext.jar
-jdom.jar
-jstl.jar
-jta-spec1_0_1.jar
-log4j-1.2.11.jar
-mail.jar
-maverick.jar
-mysql-connector-java-5.0.5-bin.jar
-opt-domify.jar
-opt-fop.jar
-rowset.jar
-simplecaptcha-20050925.jar
-standard.jar
-xalan.jar
-xercesImpl.jar
-xml-apis.jar
-xmlrpc-1.1.jar
-
 I am not currently using war file deployments.  I've been
 just pointing a context root in tomcat to a directory.  I'm working
 on war deployments.  In addition, a database connection reference
 must be created.  This is usually different among servlet container
-implemenatations.
+implementations.
 
 In tomcat, this might work in the web.xml
- <resource-ref>
+   <resource-ref>
         <description>DB Connection</description>
         <res-ref-name>jdbc/jjDB</res-ref-name>
         <res-type>javax.sql.DataSource</res-type>
@@ -103,10 +38,4 @@ to the domain name and / throughout the code.  I'm working on a
 global settings class to fix these problems so the code is
 reusable.
 
-I'll include a web.xml and maverick.xml sample file eventually along
-with xsl style sheets and jsp files needed to make the site work.  I'm
-moving away from JSP currently toward XSL/XML.  Do to incompatibilities
-with recent domify versions, i'll either need to move to cvs maverick or
-drop it all together.
-
-The database documentation is in /database.
+The database schema & documentation is in /database.
