@@ -27,7 +27,6 @@
 package com.justjournal.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sun.istack.internal.NotNull;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -62,7 +61,7 @@ public class UserPref implements Serializable {
     @Enumerated(EnumType.STRING)
     private PrefBool pingServices = PrefBool.Y;
 
-    @NotNull
+
     @Column(name = "modified", nullable = false)
     private Timestamp modified;
 

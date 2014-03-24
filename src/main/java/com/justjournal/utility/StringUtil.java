@@ -34,7 +34,6 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.utility;
 
-import com.sun.istack.internal.NotNull;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -46,8 +45,8 @@ import java.util.regex.Pattern;
  * @author Lucas Holt
  * @version $Id: StringUtil.java,v 1.7 2011/05/29 22:32:59 laffer1 Exp $
  * @since 1.0
- *        <p/>
- *        Sun Jun 01 2003
+ * <p/>
+ * Sun Jun 01 2003
  */
 public final class StringUtil {
 
@@ -58,7 +57,7 @@ public final class StringUtil {
      * @param delChar Character to remove from the string
      * @return Modified string
      */
-    public @NotNull
+    public
     static String deleteChar(String origin, char delChar) {
         final int len = origin.length();
         char[] val = origin.toCharArray();
@@ -83,7 +82,7 @@ public final class StringUtil {
      * @param str  Modified string after completion.
      * @return The new string
      */
-    public @NotNull static String replace(String base, char ch, String str) {
+    public static String replace(String base, char ch, String str) {
         return (base.indexOf(ch) < 0) ? base :
                 replace(base, String.valueOf(ch), new String[]{str});
     }
@@ -97,7 +96,7 @@ public final class StringUtil {
      * @param str   the substring
      * @return Modified string after operations.
      */
-    public @NotNull static String replace(String base, String delim, String[] str) {
+    public static String replace(String base, String delim, String[] str) {
         final int len = base.length();
         final StringBuilder result = new StringBuilder();
 
@@ -131,13 +130,10 @@ public final class StringUtil {
     */
 
     /**
-     * Checks e-mail addresses for invalid characters.
-     * If the address is invalid, false is returned.
+     * Checks e-mail addresses for invalid characters. If the address is invalid, false is returned.
      * <p/>
-     * This might be too restrictive
-     * TODO: look at .NET version or regex.com
-     * Email address generally contain more characters
-     * than this.  (flawed)
+     * This might be too restrictive TODO: look at .NET version or regex.com Email address generally contain more
+     * characters than this.  (flawed)
      *
      * @param address an email address to check
      * @return true if the address is valid.
@@ -150,8 +146,7 @@ public final class StringUtil {
     }
 
     /**
-     * Checks a string to find non alpha numeric characters.
-     * If found, it returns false.
+     * Checks a string to find non alpha numeric characters. If found, it returns false.
      *
      * @param input A string to check for alphanumeric characters.
      * @return boolean indicating alphanumeric status
@@ -164,8 +159,7 @@ public final class StringUtil {
     }
 
     /**
-     * Checks a string to find non alpha characters.
-     * if found, it returns false.
+     * Checks a string to find non alpha characters. if found, it returns false.
      *
      * @param input a string to check for alpha chars.
      * @return boolean indicating alpha status
@@ -178,14 +172,12 @@ public final class StringUtil {
     }
 
     /**
-     * Check the length of the string str using the
-     * minimum and maximum values provided.
+     * Check the length of the string str using the minimum and maximum values provided.
      *
      * @param str       string to check
      * @param minLength the minimum length
      * @param maxLength the max length
-     * @return true if the str is between the constraints,
-     *         false if it violates them.
+     * @return true if the str is between the constraints, false if it violates them.
      */
     public static boolean lengthCheck(final String str, final int minLength, final int maxLength) {
         int len = str.length();

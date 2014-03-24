@@ -34,17 +34,17 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.utility;
 
-import com.sun.istack.internal.NotNull;
 
 import java.io.*;
 
 /**
  * File IO utility classes
+ *
  * @author Lucas Holt
  */
 public final class FileIO {
 
-    public @NotNull
+    public
     static String ReadTextFile(String FilePath)
             throws IOException {
         int myC;

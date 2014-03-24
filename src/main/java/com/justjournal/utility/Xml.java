@@ -34,32 +34,27 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.utility;
 
-import com.sun.istack.internal.NotNull;
 
 /**
  * XML Utilities
+ *
  * @author Lucas Holt
- * @version $Id: Xml.java,v 1.9 2010/02/05 03:11:24 laffer1 Exp $
- *         User: laffer1
- *         Date: Sep 24, 2003
- *         Time: 11:39:50 AM
+ * @version $Id: Xml.java,v 1.9 2010/02/05 03:11:24 laffer1 Exp $ User: laffer1 Date: Sep 24, 2003 Time: 11:39:50 AM
  */
 public final class Xml {
 
     /**
-     * converts characters that are special in xml
-     * to their equivalents.
+     * converts characters that are special in xml to their equivalents.
      * <p/>
-     * This does not alter elements that may be part of DTDs
-     * like &nbsp; (formerly) but &nbsp; is converted to a plain space.
+     * This does not alter elements that may be part of DTDs like &nbsp; (formerly) but &nbsp; is converted to a plain
+     * space.
      * <p/>
-     * It currently does not handle numerical escapes as
-     * defined in XML either. &#xA0; etc
+     * It currently does not handle numerical escapes as defined in XML either. &#xA0; etc
      *
      * @param input dirty xml unescaped document
      * @return A string with xml friendly escaped sequences.
      */
-    public @NotNull
+    public
     static String cleanString(final String input) {
         if (input == null) return "";
 
@@ -74,7 +69,7 @@ public final class Xml {
            character to get added to an XML document we can't control.  This also assumes latin1.
          */
         if (input.contains("&nbsp;"))
-           work = work.replaceAll("&nbsp;", " ");
+            work = work.replaceAll("&nbsp;", " ");
 
         work = StringUtil.replace(work, '&', "&amp;");
         work = StringUtil.replace(work, '"', "&quot;");

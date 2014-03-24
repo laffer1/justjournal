@@ -47,8 +47,6 @@ import com.lowagie.text.Font;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfWriter;
 import com.lowagie.text.rtf.RtfWriter2;
-import com.sun.istack.internal.NotNull;
-import com.sun.istack.internal.Nullable;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -412,7 +410,7 @@ public class UsersController {
 
     @RequestMapping(value = "{username}/search", method = RequestMethod.GET, produces = "text/html")
     public String search(@PathVariable("username") String username,
-                         @RequestParam("max") @Nullable String max,
+                         @RequestParam("max") String max,
                          @RequestParam("bquery") String bquery,
                          Model model, HttpSession session, HttpServletResponse response) {
         UserContext userc = getUserContext(username, session);
@@ -641,7 +639,7 @@ public class UsersController {
 
     @Transactional(value = Transactional.TxType.REQUIRED)
     @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
-    private String getImageList(@NotNull final UserContext uc) {
+    private String getImageList(final UserContext uc) {
         StringBuilder sb = new StringBuilder();
         sb.append("<h2>Pictures</h2>");
         sb.append(endl);
@@ -1427,7 +1425,7 @@ public class UsersController {
      */
     @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
     @Transactional(value = Transactional.TxType.REQUIRED)
-    private String getUserLinks(@NotNull final UserContext uc) {
+    private String getUserLinks(final UserContext uc) {
         assert (uc != null);
 
         log.debug("getUserLinks(): Init and load collection");
@@ -1456,7 +1454,7 @@ public class UsersController {
      */
     @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
     @Transactional(value = Transactional.TxType.REQUIRED)
-    private String getUserRecentEntries(@NotNull final UserContext uc) {
+    private String getUserRecentEntries(final UserContext uc) {
         StringBuilder sb = new StringBuilder();
         Page<Entry> entries;
         final int maxrecent = 5;
@@ -1525,7 +1523,7 @@ public class UsersController {
     private String getCalendarDay(final int year,
                                   final int month,
                                   final int day,
-                                  @NotNull final UserContext uc) {
+                                  final UserContext uc) {
 
         StringBuffer sb = new StringBuffer();
 
@@ -1593,7 +1591,7 @@ public class UsersController {
      * @param uc User Context
      */
     @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
-    private String getArchive(@NotNull final UserContext uc) {
+    private String getArchive(final UserContext uc) {
         final java.util.GregorianCalendar calendarg = new java.util.GregorianCalendar();
         int yearNow = calendarg.get(Calendar.YEAR);
         StringBuilder sb = new StringBuilder();
@@ -1638,7 +1636,7 @@ public class UsersController {
      * @param user
      */
     @Transactional(value = Transactional.TxType.REQUIRED)
-    private String getRSS(@NotNull final User user) {
+    private String getRSS(final User user) {
         Rss rss = new Rss();
 
         final java.util.GregorianCalendar calendar = new java.util.GregorianCalendar();
@@ -1663,7 +1661,7 @@ public class UsersController {
      * @param user blog user
      */
     @Transactional(value = Transactional.TxType.REQUIRED)
-    private String getAtom(@NotNull final User user) {
+    private String getAtom(final User user) {
 
         AtomFeed atom = new AtomFeed();
 

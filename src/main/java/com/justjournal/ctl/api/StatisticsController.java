@@ -30,7 +30,6 @@ import com.justjournal.model.Statistics;
 import com.justjournal.model.UserStatistics;
 import com.justjournal.services.ServiceException;
 import com.justjournal.services.StatisticsService;
-import com.sun.istack.internal.Nullable;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -66,7 +65,6 @@ public class StatisticsController {
     @RequestMapping(method = RequestMethod.GET, headers = "Accept=*/*", produces = "application/json")
     public
     @ResponseBody
-    @Nullable
     Statistics get(HttpServletResponse response) {
         if ((statisticsService == null)) throw new AssertionError();
 

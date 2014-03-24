@@ -26,7 +26,6 @@
 
 package com.justjournal.utility;
 
-import com.sun.istack.internal.NotNull;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -54,7 +53,7 @@ public final class DateConvert {
     }
 
     public
-    @NotNull
+
     static String encode822() {
         SimpleDateFormat df822 = getDateFormat822();
         df822.setTimeZone(TimeZone.getTimeZone("GMT"));
@@ -62,7 +61,7 @@ public final class DateConvert {
     }
 
     public
-    @NotNull
+
     static String encode822(final Date data) {
         SimpleDateFormat df822 = getDateFormat822();
         df822.setTimeZone(TimeZone.getTimeZone("GMT"));
@@ -70,7 +69,7 @@ public final class DateConvert {
     }
 
     public
-    @NotNull
+
     static String encode822(final Date data, final TimeZone tz) {
         SimpleDateFormat df822 = getDateFormat822();
 
@@ -134,7 +133,7 @@ public final class DateConvert {
     }
 
     public
-    @NotNull
+
     static String encode3339() {
         SimpleDateFormat df3339 = getDateFormat3339();
         df3339.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -142,14 +141,14 @@ public final class DateConvert {
     }
 
     public
-    @NotNull
+
     static String encode3339(final Date data) {
         SimpleDateFormat df3339 = getDateFormat3339();
         df3339.setTimeZone(TimeZone.getTimeZone("UTC"));
         return df3339.format(data);
     }
 
-    @NotNull
+
     public static Date decode8601(final String input) throws java.text.ParseException {
         SimpleDateFormat df8601 = getDateFormat8601();
         String date = input;
@@ -163,12 +162,12 @@ public final class DateConvert {
 
     }
 
-    @NotNull
+
     public static String encode8601() {
         return encode8601(new Date());
     }
 
-    @NotNull
+
     public static String encode8601(final Date data) {
         SimpleDateFormat df8601 = getDateFormat8601();
         df8601.setTimeZone(TimeZone.getTimeZone("UTC"));

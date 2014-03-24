@@ -31,8 +31,6 @@ import com.justjournal.repository.CommentRepository;
 import com.justjournal.repository.EntryRepository;
 import com.justjournal.repository.SecurityDao;
 import com.justjournal.repository.UserRepository;
-import com.sun.istack.internal.NotNull;
-import com.sun.istack.internal.Nullable;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -57,8 +55,8 @@ public class EntryService {
     private SecurityDao securityDao;
 
     @Transactional(value = Transactional.TxType.REQUIRED)
-    @Nullable
-    public Entry getPublicEntry(int id, @NotNull String username) throws ServiceException {
+
+    public Entry getPublicEntry(int id, String username) throws ServiceException {
         try {
             Entry entry = entryDao.findOne(id);
             if (entry.getUser().getUsername().equalsIgnoreCase(username) && entry.getSecurity().getId() == 2) // public
@@ -71,8 +69,8 @@ public class EntryService {
     }
 
     @Transactional(value = Transactional.TxType.REQUIRED)
-    @Nullable
-    public List<Entry> getPublicEntries(@NotNull String username) throws ServiceException {
+
+    public List<Entry> getPublicEntries(String username) throws ServiceException {
         try {
             User user = userRepository.findByUsername(username);
             if (user == null) {
@@ -92,7 +90,7 @@ public class EntryService {
      * @return
      */
     @Transactional(value = Transactional.TxType.REQUIRED)
-    public List<Entry> getFriendsEntries(@NotNull String username) throws ServiceException {
+    public List<Entry> getFriendsEntries(String username) throws ServiceException {
         try {
             User user = userRepository.findByUsername(username);
             List<Friend> friends = user.getFriends();
@@ -135,7 +133,7 @@ public class EntryService {
      * @return
      */
     @Transactional(value = Transactional.TxType.REQUIRED)
-    public Collection<Tag> getEntryTags(@NotNull String username) throws ServiceException {
+    public Collection<Tag> getEntryTags(String username) throws ServiceException {
         try {
             assert (entryDao != null);
             assert (username != null);

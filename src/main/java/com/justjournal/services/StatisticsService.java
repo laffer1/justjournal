@@ -33,8 +33,6 @@ import com.justjournal.model.UserStatistics;
 import com.justjournal.repository.EntryRepository;
 import com.justjournal.repository.UserRepository;
 import com.justjournal.utility.SQLHelper;
-import com.sun.istack.internal.NotNull;
-import com.sun.istack.internal.Nullable;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -57,8 +55,8 @@ public class StatisticsService {
     private UserRepository userRepository;
 
     @Transactional(value = Transactional.TxType.REQUIRED)
-    @Nullable
-    public UserStatistics getUserStatistics(@NotNull String username) throws ServiceException {
+
+    public UserStatistics getUserStatistics(String username) throws ServiceException {
         if (userRepository == null) throw new AssertionError();
 
         try {
@@ -82,7 +80,7 @@ public class StatisticsService {
         }
     }
 
-    @NotNull
+
     public Statistics getStatistics() throws ServiceException {
         try {
             Statistics statistics = new StatisticsImpl();

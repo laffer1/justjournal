@@ -39,7 +39,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.justjournal.WebLogin;
 import com.justjournal.utility.StringUtil;
-import com.sun.istack.internal.NotNull;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -66,11 +65,11 @@ public class User implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id = 0;
 
-    @NotNull
+
     @Column(name = "username", length = 15, nullable = false)
     private String username = "";
 
-    @NotNull
+
     @Column(name = "name", length = 20, nullable = false)
     private String name = "";
 
@@ -79,11 +78,11 @@ public class User implements Serializable {
 
     @JsonIgnore // don't show password in output
     @Basic(fetch = FetchType.LAZY)
-    @NotNull
+
     @Column(name = "password", length = 40, nullable = false)
     private String password = "";
 
-    @NotNull
+
     @Column(name = "since", nullable = false)
     private Integer since = 2003;
 
@@ -92,11 +91,11 @@ public class User implements Serializable {
 
     @JsonIgnore
     @Basic(fetch = FetchType.LAZY)
-    @NotNull
+
     @Column(name = "modified", nullable = false)
     private Timestamp modified;
 
-    @NotNull
+
     @Column(name = "type", nullable = false)
     private Integer type;
 

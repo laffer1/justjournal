@@ -29,7 +29,6 @@ package com.justjournal.model;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sun.istack.internal.NotNull;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -68,7 +67,7 @@ public class UserLocation implements Serializable {
     private Country country;
 
     @Basic(fetch = FetchType.LAZY)
-    @NotNull
+
     @Column(name = "modified", nullable = false)
     private Timestamp modified;
 

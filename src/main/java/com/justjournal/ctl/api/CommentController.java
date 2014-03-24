@@ -40,7 +40,6 @@ import com.justjournal.model.Entry;
 import com.justjournal.model.PrefBool;
 import com.justjournal.repository.CommentRepository;
 import com.justjournal.repository.EntryRepository;
-import com.sun.istack.internal.NotNull;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -58,11 +57,11 @@ public class CommentController {
     private CommentRepository commentDao = null;
     private EntryRepository entryDao = null;
 
-    public void setEntryDao(@NotNull final EntryRepository entryDao) {
+    public void setEntryDao(final EntryRepository entryDao) {
         this.entryDao = entryDao;
     }
 
-    public void setCommentDao(@NotNull final CommentRepository commentDao) {
+    public void setCommentDao(final CommentRepository commentDao) {
         this.commentDao = commentDao;
     }
 
