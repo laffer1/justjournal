@@ -41,6 +41,7 @@ import com.justjournal.restping.BasePing;
 import com.justjournal.restping.IceRocket;
 import com.justjournal.restping.TechnoratiPing;
 import com.justjournal.services.EntryService;
+import com.justjournal.services.ServiceException;
 import com.justjournal.utility.HTMLUtil;
 import com.justjournal.utility.StringUtil;
 import org.apache.log4j.Logger;
@@ -608,11 +609,15 @@ public class MetaWeblog {
             return s;
         }
 
-        for (Tag curtag : entryService.getEntryTags(username)) {
-            HashMap<Object, Serializable> entry = new HashMap<Object, Serializable>();
-            entry.put("description", curtag.getName());
-            entry.put("title", curtag.getName());
-            arr.add(entry);
+        try {
+            for (Tag curtag : entryService.getEntryTags(username)) {
+                HashMap<Object, Serializable> entry = new HashMap<Object, Serializable>();
+                entry.put("description", curtag.getName());
+                entry.put("title", curtag.getName());
+                arr.add(entry);
+            }
+        } catch (ServiceException se) {
+            log.error(se.getMessage());
         }
         return arr;
     }

@@ -37,6 +37,7 @@ import com.justjournal.rss.CachedHeadlineBean;
 import com.justjournal.rss.Rss;
 import com.justjournal.search.BaseSearch;
 import com.justjournal.services.EntryService;
+import com.justjournal.services.ServiceException;
 import com.justjournal.utility.HTMLUtil;
 import com.justjournal.utility.SQLHelper;
 import com.justjournal.utility.StringUtil;
@@ -64,7 +65,6 @@ import javax.transaction.Transactional;
 import java.awt.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.Serializable;
 import java.sql.ResultSet;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
@@ -176,8 +176,11 @@ public class UsersController {
         model.addAttribute("archive", getArchive(userc));
         model.addAttribute("taglist", getTagMini(userc));
 
-        model.addAttribute("friends", getFriends(userc));
-
+        try {
+            model.addAttribute("friends", getFriends(userc));
+        } catch (ServiceException se) {
+            log.error(se.getMessage());
+        }
         return "users";
     }
 
@@ -384,7 +387,7 @@ public class UsersController {
         }
     }
 
-    @Transactional(value= Transactional.TxType.REQUIRED)
+    @Transactional(value = Transactional.TxType.REQUIRED)
     @RequestMapping(value = "{username}/pictures", method = RequestMethod.GET, produces = "text/html")
     public String pictures(@PathVariable("username") String username, Model model, HttpSession session, HttpServletResponse response) {
         UserContext userc = getUserContext(username, session);
@@ -494,7 +497,7 @@ public class UsersController {
         return "users";
     }
 
-    @Transactional(value= Transactional.TxType.REQUIRED)
+    @Transactional(value = Transactional.TxType.REQUIRED)
     private UserContext getUserContext(String username, HttpSession session) {
         User authUser = null;
         try {
@@ -636,7 +639,7 @@ public class UsersController {
         }
     }
 
-    @Transactional(value= Transactional.TxType.REQUIRED)
+    @Transactional(value = Transactional.TxType.REQUIRED)
     @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
     private String getImageList(@NotNull final UserContext uc) {
         StringBuilder sb = new StringBuilder();
@@ -941,7 +944,7 @@ public class UsersController {
      *
      * @param uc The UserContext we are working on including blog owner, authenticated user, and sb to write
      */
-    private String getFriends(final UserContext uc) {
+    private String getFriends(final UserContext uc) throws ServiceException {
 
         StringBuffer sb = new StringBuffer();
         final Collection entries;
@@ -1325,7 +1328,7 @@ public class UsersController {
      * @param uc User Context
      */
     @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
-    @Transactional(value= Transactional.TxType.REQUIRED)
+    @Transactional(value = Transactional.TxType.REQUIRED)
     private String getCalendarMini(UserContext uc) {
         StringBuilder sb = new StringBuilder();
         try {
@@ -1360,16 +1363,21 @@ public class UsersController {
      * @param uc User Context
      */
     @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
-    @Transactional(value= Transactional.TxType.REQUIRED)
+    @Transactional(value = Transactional.TxType.REQUIRED)
     private String getTagMini(final UserContext uc) {
-        assert(uc != null);
-        assert(uc.getBlogUser() != null);
-        assert(entryService != null);
+        assert (uc != null);
+        assert (uc.getBlogUser() != null);
+        assert (entryService != null);
 
         StringBuilder sb = new StringBuilder();
         Tag tag;
-        Collection<Tag> tags = entryService.getEntryTags(uc.getBlogUser().getUsername());
-
+        Collection<Tag> tags = null;
+        try {
+            tags = entryService.getEntryTags(uc.getBlogUser().getUsername());
+        } catch (ServiceException se) {
+            log.error(se.getMessage());
+           tags = Collections.emptyList();
+        }
         int largest = 0;
         int smallest = 10;
         int cutSmall;
@@ -1418,9 +1426,9 @@ public class UsersController {
      * @param uc User Context
      */
     @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
-    @Transactional(value= Transactional.TxType.REQUIRED)
+    @Transactional(value = Transactional.TxType.REQUIRED)
     private String getUserLinks(@NotNull final UserContext uc) {
-        assert(uc!=null);
+        assert (uc != null);
 
         log.debug("getUserLinks(): Init and load collection");
         StringBuilder sb = new StringBuilder();
@@ -1447,7 +1455,7 @@ public class UsersController {
      * @param uc User Context
      */
     @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
-    @Transactional(value= Transactional.TxType.REQUIRED)
+    @Transactional(value = Transactional.TxType.REQUIRED)
     private String getUserRecentEntries(@NotNull final UserContext uc) {
         StringBuilder sb = new StringBuilder();
         Page<Entry> entries;
@@ -1513,7 +1521,7 @@ public class UsersController {
      * @param day   the day we are interested in
      * @param uc    The UserContext we are working on including blog owner, authenticated user, and sb to write
      */
-    @Transactional(value= Transactional.TxType.REQUIRED)
+    @Transactional(value = Transactional.TxType.REQUIRED)
     private String getCalendarDay(final int year,
                                   final int month,
                                   final int day,
@@ -1629,7 +1637,7 @@ public class UsersController {
      *
      * @param user
      */
-    @Transactional(value= Transactional.TxType.REQUIRED)
+    @Transactional(value = Transactional.TxType.REQUIRED)
     private String getRSS(@NotNull final User user) {
         Rss rss = new Rss();
 
@@ -1654,7 +1662,7 @@ public class UsersController {
      *
      * @param user blog user
      */
-    @Transactional(value= Transactional.TxType.REQUIRED)
+    @Transactional(value = Transactional.TxType.REQUIRED)
     private String getAtom(@NotNull final User user) {
 
         AtomFeed atom = new AtomFeed();
@@ -1678,7 +1686,7 @@ public class UsersController {
      *
      * @param user blog user
      */
-    @Transactional(value= Transactional.TxType.REQUIRED)
+    @Transactional(value = Transactional.TxType.REQUIRED)
     private String getPicturesRSS(final User user) {
 
         final Rss rss = new Rss();
@@ -1700,7 +1708,7 @@ public class UsersController {
     }
 
     /* TODO: finish this */
-    @Transactional(value= Transactional.TxType.REQUIRED)
+    @Transactional(value = Transactional.TxType.REQUIRED)
     private String getTags(final UserContext uc, String tag) {
         final StringBuilder sb = new StringBuilder();
         final Collection entries;
@@ -2052,7 +2060,7 @@ public class UsersController {
      * Represent the blog user and authenticated user in one package along with the output buffer.
      */
     @SuppressWarnings({"InstanceVariableOfConcreteClass"})
-    @Transactional(value= Transactional.TxType.REQUIRED)
+    @Transactional(value = Transactional.TxType.REQUIRED)
     static private class UserContext {
         private User blogUser;          // the blog owner
         private User authenticatedUser; // the logged in user

@@ -14,6 +14,7 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
     <meta name="msvalidate.01" content="D1E040678EBA2490CC51CABAABCE7928">
+    <meta name="google-site-verification" content="DTrNXBvTzRjd3Rl622MXUgtYzEJv2Dz6Mp5GBfVOo9Y" />
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/bootstrap.min.css">
     <!-- build:css styles/main.css -->
