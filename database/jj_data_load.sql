@@ -1108,7 +1108,7 @@ INSERT INTO `entry` (`id`, `uid`, `date`, `modified`, `subject`, `mood`, `music`
 VALUES (33661, '2908', CURRENT_DATE(), CURRENT_TIMESTAMP, 'test subject', '2', 'the rock band song', '2',
         'i am a body of a blog post in text format', '2', 'Y', 'Y', 'Y', 'N', '0', '0');
 INSERT INTO `entry` (`id`, `uid`, `date`, `modified`, `subject`, `mood`, `music`, `location`, `body`, `security`, `autoformat`, `allow_comments`, `email_comments`, `draft`, `attach_image`, `attach_file`)
-VALUES (NULL, '2908', CURRENT_DATE(), CURRENT_TIMESTAMP, 'test subject 2', '3', 'the rock band song', '1',
+VALUES (33660, '2908', CURRENT_DATE(), CURRENT_TIMESTAMP, 'test subject 2', '3', 'the rock band song', '1',
         'i am a body of a blog post in text format', '1', 'Y', 'Y', 'Y', 'N', '0', '0');
 
 -- Create friends
