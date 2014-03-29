@@ -1069,3 +1069,19 @@ INSERT INTO `timezones` (`id`, `name`) VALUES
   (1556, 'W-SU'),
   (1434, 'WET'),
   (1435, 'Zulu');
+
+
+INSERT INTO `user` (`id`, `username`, `password`, `type`, `name`, `lastname`, `since`, `lastlogin`, `modified`) VALUES
+  (2908, 'testuser', 'dc724af18fbdd4e59189f5fe768a5f8311527050', 1, 'Test', 'User', 2014, '2014-03-29 00:00:00',
+   '2014-03-29 15:10:48');
+
+INSERT INTO `user_bio` (`id`, `user_id`, `content`, `modified`) VALUES
+  (2187, 2908, 'testing bio', '2014-03-29 15:11:47');
+
+INSERT INTO `user_contact` (`id`, `user_id`, `email`, `icq`, `aim`, `yahoo`, `msn`, `hp_uri`, `hp_title`, `phone`)
+VALUES
+  (2168, 2908, 'test@justjournal.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+
+INSERT INTO `user_pref` (`id`, `user_id`, `allow_spider`, `style`, `owner_view_only`, `show_avatar`, `journal_name`, `ping_services`, `modified`)
+VALUES
+  (2192, 2908, 'Y', 1, 'N', 'N', 'Testing Journal', 'N', '2014-03-29 15:12:53');
