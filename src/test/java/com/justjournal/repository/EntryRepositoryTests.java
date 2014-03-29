@@ -62,9 +62,9 @@ public class EntryRepositoryTests {
 
     @Test
     public void get() {
-        Entry entry = entryRepository.findOne(2);
+        Entry entry = entryRepository.findOne(33661);
         assertNotNull(entry);
-        assertEquals(2, entry.getId());
+        assertEquals(33661, entry.getId());
         assertNotNull(entry.getSubject());
     }
 }

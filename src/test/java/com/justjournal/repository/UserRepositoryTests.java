@@ -69,7 +69,7 @@ public class UserRepositoryTests {
 
     @Test
     public void getByUsername() throws Exception {
-        User user = userRepository.findByUsername("jjsite");
+        User user = userRepository.findByUsername("testuser");
         assertNotNull(user);
         assertEquals(16, user.getId());
     }
@@ -82,7 +82,7 @@ public class UserRepositoryTests {
 
     @Test
     public void getByUserAndPasswordInvalid() {
-        User user = userRepository.findByUsernameAndPassword("jjsite", "wrongpassword");
+        User user = userRepository.findByUsernameAndPassword("testuser", "wrongpassword");
         assertNull(user);
     }
 
