@@ -55,6 +55,7 @@ public class RssSubscription implements Serializable {
 
     @Id
     @GeneratedValue
+    @Column(name = "subid")
     private int subscriptionId;
 
     public User getUser() {
