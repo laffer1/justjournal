@@ -101,21 +101,21 @@ public class Entry implements Serializable {
     @JsonProperty("autoFormat")
     @Column(name = "autoformat", nullable = false, length = 1)
     @Enumerated(EnumType.STRING)
-    private PrefBool autoFormat;
+    private PrefBool autoFormat = PrefBool.Y;
 
     @JsonProperty("allowComments")
     @Column(name = "allow_comments", nullable = false, length = 1)
     @Enumerated(EnumType.STRING)
-    private PrefBool allowComments;
+    private PrefBool allowComments = PrefBool.Y;
 
     @JsonProperty("emailComments")
     @Column(name = "email_comments", nullable = false, length = 1)
     @Enumerated(EnumType.STRING)
-    private PrefBool emailComments;
+    private PrefBool emailComments = PrefBool.Y;
 
     @Column(name = "draft", nullable = false, length = 1)
     @Enumerated(EnumType.STRING)
-    private PrefBool draft;
+    private PrefBool draft = PrefBool.N;
 
     // TODO: implement
     transient private int attachImage = 0;
