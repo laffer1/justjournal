@@ -62,6 +62,7 @@ public final class SQLHelper {
     static {
         try {
             ctx = new InitialContext();
+            //noinspection NonFinalStaticVariableUsedInClassInitialization
             ds = (DataSource) ctx.lookup(DbEnv);
         } catch (Exception e) {
             log.error(e);

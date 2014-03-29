@@ -40,8 +40,6 @@ import java.io.PrintWriter;
  * Prints out an error message in HTML.
  *
  * @author Lucas Holt
- * @version $Id: WebError.java,v 1.5 2009/05/16 00:40:02 laffer1 Exp $
- * @since 1.0
  */
 public final class ErrorPage {
     private final static String severeStyle =

@@ -144,7 +144,7 @@ public class EntryController {
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json", headers = {"Accept=*/*", "content-type=application/json"})
     public
     @ResponseBody
-    Map<String, String> post(@RequestBody Entry entry, HttpSession session, HttpServletResponse response, Model model) {
+    Map<String, String> post(@ModelAttribute Entry entry, HttpSession session, HttpServletResponse response, Model model) {
 
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);

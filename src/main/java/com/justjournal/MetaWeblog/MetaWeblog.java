@@ -34,7 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.metaweblog;
 
-import com.justjournal.WebLogin;
+import com.justjournal.Login;
 import com.justjournal.model.*;
 import com.justjournal.repository.*;
 import com.justjournal.restping.BasePing;
@@ -71,7 +71,7 @@ public class MetaWeblog {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private WebLogin webLogin;
+    private Login webLogin;
     @Autowired
     private SecurityDao securityDao;
     @Autowired
@@ -105,11 +105,11 @@ public class MetaWeblog {
         HashMap<String, Serializable> s = new HashMap<String, Serializable>();
 
 
-        if (!StringUtil.lengthCheck(username, 3, WebLogin.USERNAME_MAX_LENGTH)) {
+        if (!StringUtil.lengthCheck(username, 3, Login.USERNAME_MAX_LENGTH)) {
             blnError = true;
         }
 
-        if (!StringUtil.lengthCheck(password, 5, WebLogin.PASSWORD_MAX_LENGTH)) {
+        if (!StringUtil.lengthCheck(password, 5, Login.PASSWORD_MAX_LENGTH)) {
             blnError = true;
         }
 
@@ -159,11 +159,11 @@ public class MetaWeblog {
         HashMap<Object, Serializable> s = new HashMap<Object, Serializable>();
 
 
-        if (!StringUtil.lengthCheck(username, 3, WebLogin.USERNAME_MAX_LENGTH)) {
+        if (!StringUtil.lengthCheck(username, 3, Login.USERNAME_MAX_LENGTH)) {
             blnError = true;
         }
 
-        if (!StringUtil.lengthCheck(password, 5, WebLogin.PASSWORD_MAX_LENGTH)) {
+        if (!StringUtil.lengthCheck(password, 5, Login.PASSWORD_MAX_LENGTH)) {
             blnError = true;
         }
 
@@ -213,11 +213,11 @@ public class MetaWeblog {
         Entry et2;
         HashMap<String, Serializable> s = new HashMap<String, Serializable>();
 
-        if (!StringUtil.lengthCheck(username, 3, WebLogin.USERNAME_MAX_LENGTH)) {
+        if (!StringUtil.lengthCheck(username, 3, Login.USERNAME_MAX_LENGTH)) {
             blnError = true;
         }
 
-        if (!StringUtil.lengthCheck(password, 5, WebLogin.PASSWORD_MAX_LENGTH)) {
+        if (!StringUtil.lengthCheck(password, 5, Login.PASSWORD_MAX_LENGTH)) {
             blnError = true;
         }
 
@@ -309,11 +309,11 @@ public class MetaWeblog {
 
         int eid = 0;
 
-        if (!StringUtil.lengthCheck(username, 3, WebLogin.USERNAME_MAX_LENGTH)) {
+        if (!StringUtil.lengthCheck(username, 3, Login.USERNAME_MAX_LENGTH)) {
             blnError = true;
         }
 
-        if (!StringUtil.lengthCheck(password, 5, WebLogin.PASSWORD_MAX_LENGTH)) {
+        if (!StringUtil.lengthCheck(password, 5, Login.PASSWORD_MAX_LENGTH)) {
             blnError = true;
         }
 
@@ -371,11 +371,11 @@ public class MetaWeblog {
 
         int eid = 0;
 
-        if (!StringUtil.lengthCheck(username, 3, WebLogin.USERNAME_MAX_LENGTH)) {
+        if (!StringUtil.lengthCheck(username, 3, Login.USERNAME_MAX_LENGTH)) {
             blnError = true;
         }
 
-        if (!StringUtil.lengthCheck(password, 5, WebLogin.PASSWORD_MAX_LENGTH)) {
+        if (!StringUtil.lengthCheck(password, 5, Login.PASSWORD_MAX_LENGTH)) {
             blnError = true;
         }
 
@@ -476,11 +476,11 @@ public class MetaWeblog {
         int userId;
         HashMap<String, Serializable> s = new HashMap<String, Serializable>();
 
-        if (!StringUtil.lengthCheck(username, 3, WebLogin.USERNAME_MAX_LENGTH)) {
+        if (!StringUtil.lengthCheck(username, 3, Login.USERNAME_MAX_LENGTH)) {
             blnError = true;
         }
 
-        if (!StringUtil.lengthCheck(password, 5, WebLogin.PASSWORD_MAX_LENGTH)) {
+        if (!StringUtil.lengthCheck(password, 5, Login.PASSWORD_MAX_LENGTH)) {
             blnError = true;
         }
 
@@ -541,11 +541,11 @@ public class MetaWeblog {
         HashMap<Object, Serializable> entry = new HashMap<Object, Serializable>();
         Entry e;
 
-        if (!StringUtil.lengthCheck(username, 3, WebLogin.USERNAME_MAX_LENGTH)) {
+        if (!StringUtil.lengthCheck(username, 3, Login.USERNAME_MAX_LENGTH)) {
             blnError = true;
         }
 
-        if (!StringUtil.lengthCheck(password, 5, WebLogin.PASSWORD_MAX_LENGTH)) {
+        if (!StringUtil.lengthCheck(password, 5, Login.PASSWORD_MAX_LENGTH)) {
             blnError = true;
         }
 
@@ -594,11 +594,11 @@ public class MetaWeblog {
         ArrayList<HashMap<Object, Serializable>> arr = new ArrayList<HashMap<Object, Serializable>>();
         Map<String, Tag> tags = new HashMap<String, Tag>();
 
-        if (!StringUtil.lengthCheck(username, 3, WebLogin.USERNAME_MAX_LENGTH)) {
+        if (!StringUtil.lengthCheck(username, 3, Login.USERNAME_MAX_LENGTH)) {
             blnError = true;
         }
 
-        if (!StringUtil.lengthCheck(password, 5, WebLogin.PASSWORD_MAX_LENGTH)) {
+        if (!StringUtil.lengthCheck(password, 5, Login.PASSWORD_MAX_LENGTH)) {
             blnError = true;
         }
 
