@@ -29,6 +29,7 @@ package com.justjournal.ctl.api;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.justjournal.Login;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -58,7 +59,7 @@ public class LoginController {
 
     private static final Logger log = Logger.getLogger(LoginController.class);
     @Autowired
-    private Login webLogin;
+    private com.justjournal.Login webLogin;
 
     // Response format
     @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
@@ -118,7 +119,7 @@ public class LoginController {
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json;charset=UTF-8", produces = "application/json;charset=UTF-8", headers = {"Accept=*/*", "content-type=application/json"})
     public
     @ResponseBody
-    ResponseEntity<LoginResponse> post(@RequestBody Login login, HttpServletRequest request) {
+    ResponseEntity<LoginResponse> post(@RequestBody com.justjournal.core.Login login, HttpServletRequest request) {
         LoginResponse loginResponse = new LoginResponse();
 
         try {
