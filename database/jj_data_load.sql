@@ -1104,10 +1104,10 @@ INSERT INTO `user_pref` (`id`, `user_id`, `allow_spider`, `style`, `owner_view_o
 VALUES
   (1, 1, 'N', 1, 'N', 'N', 'JJ REAL DEAL Test Blog', 'N', '2014-03-29 15:12:53');
 
-INSERT INTO `justjournal_test`.`entry` (`id`, `uid`, `date`, `modified`, `subject`, `mood`, `music`, `location`, `body`, `security`, `autoformat`, `allow_comments`, `email_comments`, `draft`, `attach_image`, `attach_file`)
+INSERT INTO `entry` (`id`, `uid`, `date`, `modified`, `subject`, `mood`, `music`, `location`, `body`, `security`, `autoformat`, `allow_comments`, `email_comments`, `draft`, `attach_image`, `attach_file`)
 VALUES (33661, '2908', CURRENT_DATE(), CURRENT_TIMESTAMP, 'test subject', '2', 'the rock band song', '2',
         'i am a body of a blog post in text format', '2', 'Y', 'Y', 'Y', 'N', '0', '0');
-INSERT INTO `justjournal_test`.`entry` (`id`, `uid`, `date`, `modified`, `subject`, `mood`, `music`, `location`, `body`, `security`, `autoformat`, `allow_comments`, `email_comments`, `draft`, `attach_image`, `attach_file`)
+INSERT INTO `entry` (`id`, `uid`, `date`, `modified`, `subject`, `mood`, `music`, `location`, `body`, `security`, `autoformat`, `allow_comments`, `email_comments`, `draft`, `attach_image`, `attach_file`)
 VALUES (NULL, '2908', CURRENT_DATE(), CURRENT_TIMESTAMP, 'test subject 2', '3', 'the rock band song', '1',
         'i am a body of a blog post in text format', '1', 'Y', 'Y', 'Y', 'N', '0', '0');
 
@@ -1126,5 +1126,5 @@ VALUES (
 
 -- test comments
 INSERT INTO `comments` (`id`, `eid`, `uid`, `subject`, `date`, `body`, `modified`)
-VALUES (NULL, '33661', '1', 'test comment', NOW(), 'i am a test comment', NOW()),
+VALUES (1, '33661', '1', 'test comment', NOW(), 'i am a test comment', NOW()),
   (NULL, '33660', '2908', 'i am another comment', NOW(), 'another comment', NOW());
