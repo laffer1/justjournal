@@ -60,6 +60,9 @@ public class ServiceTests {
         ServiceTests.entryService = entryService;
     }
 
+    private static final String TEST_USER = "testuser";
+    private static final int PUBLIC_ENTRY_ID = 33661;
+
     @BeforeClass
     public static void setup() throws Exception {
         Util.setupDb();
@@ -67,16 +70,16 @@ public class ServiceTests {
 
     @Test
     public void entryGetPublicEntry() throws ServiceException {
-        Entry entry = entryService.getPublicEntry(33626, "laffer1");
-                     assertNotNull(entry);
-        assertEquals(33626, entry.getId());
+        Entry entry = entryService.getPublicEntry(PUBLIC_ENTRY_ID, TEST_USER);
+        assertNotNull(entry);
+        assertEquals(PUBLIC_ENTRY_ID, entry.getId());
         assertEquals("laffer1", entry.getUser().getUsername());
         assertEquals(2, entry.getSecurity().getId());
     }
 
     @Test
     public void entryGetPublicEntries() throws ServiceException {
-        List<Entry> entryList = entryService.getPublicEntries("jjsite");
+        List<Entry> entryList = entryService.getPublicEntries("testuser");
         assertNotNull(entryList);
         assertTrue(entryList.size() > 0);
     }
@@ -96,9 +99,9 @@ public class ServiceTests {
 
     @Test
     public void testGetUserStatistics() throws ServiceException {
-        UserStatistics statistics = statisticsService.getUserStatistics("jjsite");
+        UserStatistics statistics = statisticsService.getUserStatistics("testuser");
         assertNotNull(statistics);
-        assertEquals("jjsite", statistics.getUsername());
+        assertEquals("testuser", statistics.getUsername());
         assertTrue(statistics.getEntryCount() > 0);
         assertTrue(statistics.getCommentCount() > 0);
     }

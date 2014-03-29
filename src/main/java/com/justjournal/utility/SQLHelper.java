@@ -34,6 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.utility;
 
+
 import com.sun.rowset.CachedRowSetImpl;
 import org.apache.log4j.Logger;
 

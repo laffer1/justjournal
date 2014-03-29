@@ -1087,7 +1087,7 @@ VALUES
   (2192, 2908, 'Y', 1, 'N', 'N', 'Testing Journal', 'N', '2014-03-29 15:12:53');
 
 INSERT INTO `justjournal_test`.`entry` (`id`, `uid`, `date`, `modified`, `subject`, `mood`, `music`, `location`, `body`, `security`, `autoformat`, `allow_comments`, `email_comments`, `draft`, `attach_image`, `attach_file`)
-VALUES (NULL, '2908', CURRENT_DATE(), CURRENT_TIMESTAMP, 'test subject', '2', 'the rock band song', '2',
+VALUES (33661, '2908', CURRENT_DATE(), CURRENT_TIMESTAMP, 'test subject', '2', 'the rock band song', '2',
         'i am a body of a blog post in text format', '2', 'Y', 'Y', 'Y', 'N', '0', '0');
 INSERT INTO `justjournal_test`.`entry` (`id`, `uid`, `date`, `modified`, `subject`, `mood`, `music`, `location`, `body`, `security`, `autoformat`, `allow_comments`, `email_comments`, `draft`, `attach_image`, `attach_file`)
 VALUES (NULL, '2908', CURRENT_DATE(), CURRENT_TIMESTAMP, 'test subject 2', '3', 'the rock band song', '20',
