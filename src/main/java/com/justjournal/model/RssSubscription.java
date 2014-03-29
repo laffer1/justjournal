@@ -41,7 +41,7 @@ import java.io.Serializable;
  * User: laffer1 Date: Mar 19, 2005 Time: 9:19:40 PM
  */
 @Entity
-@Table(name = "rss_subscriptions")
+@Table(name = "rss_subscriptions", indexes = @Index(unique = true, name = "rss_sub_unique", columnList = "id,uri"))
 public class RssSubscription implements Serializable {
 
     private static final long serialVersionUID = -5641819117393997020L;
