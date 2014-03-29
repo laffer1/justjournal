@@ -79,6 +79,20 @@ public class EntryController {
         return log;
     }
 
+    @RequestMapping(value = "{username}/size/{size}/page/{page}", method = RequestMethod.GET, produces = "application/json")
+    public
+    @ResponseBody
+    Page<Entry> getEntries(@PathVariable("username") String username, @PathVariable("size") int size, @PathVariable("page") int page,
+                           HttpServletResponse response) {
+        Pageable pageable = new PageRequest(page, size);
+        User user = userRepository.findByUsername(username);
+        if (user == null) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return null;
+        }
+        return entryDao.findByUserAndSecurityOrderByDateDesc(user, securityDao.findOne(2), pageable);
+    }
+
     /**
      * Get an individual entry
      *
@@ -89,13 +103,31 @@ public class EntryController {
     @ResponseBody
     public Entry getById(@PathVariable("username") String username, @PathVariable("id") int id, HttpServletResponse response) {
         Entry entry = entryDao.findOne(id);
-        if (entry.getUser().getUsername().equalsIgnoreCase(username) && entry.getSecurity().getId() == 2) // public
-            return entry;
 
-        response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-        return null;
+        if (entry == null) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return null;
+        }
+
+        if (entry.getUser().getUsername().equalsIgnoreCase(username)) {
+            if (entry.getSecurity().getId() == 2) // public
+                return entry;
+            else
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return null;
+        } else {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return null;
+        }
     }
 
+    /**
+     * Get all the blog entries for a user (public) /api/entry/username
+     *
+     * @param username
+     * @param response
+     * @return
+     */
     @RequestMapping(value = "{username}", method = RequestMethod.GET, produces = "application/json")
     public
     @ResponseBody
@@ -104,7 +136,7 @@ public class EntryController {
         try {
             entries = entryService.getPublicEntries(username);
 
-            if (entries == null) {
+            if (entries == null || entries.isEmpty()) {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
                 return null;
             }
@@ -115,14 +147,6 @@ public class EntryController {
         return entries;
     }
 
-    @RequestMapping(value = "{username}/size/{size}/page/{page}", method = RequestMethod.GET, produces = "application/json")
-    public
-    @ResponseBody
-    Page<Entry> getEntries(@PathVariable("username") String username, @PathVariable("size") int size, @PathVariable("page") int page) {
-        Pageable pageable = new PageRequest(page, size);
-        User user = userRepository.findByUsername(username);
-        return entryDao.findByUserAndSecurityOrderByDateDesc(user, securityDao.findOne(2), pageable);
-    }
 
     public UserRepository getUserRepository() {
         return userRepository;

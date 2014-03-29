@@ -90,7 +90,7 @@ public class AppTests {
 
     @Test
     public void usersFriends() throws Exception {
-        mockMvc.perform(get("/users/jjsite/friends"))
+        mockMvc.perform(get("/users/testuser/friends"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("users"));
     }
