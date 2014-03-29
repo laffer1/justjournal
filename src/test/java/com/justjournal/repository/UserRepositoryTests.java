@@ -71,7 +71,7 @@ public class UserRepositoryTests {
     public void getByUsername() throws Exception {
         User user = userRepository.findByUsername("testuser");
         assertNotNull(user);
-        assertEquals(16, user.getId());
+        assertEquals(2908, user.getId());
     }
 
     @Test
