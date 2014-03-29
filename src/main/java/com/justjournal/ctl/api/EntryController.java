@@ -102,7 +102,8 @@ public class EntryController {
     @RequestMapping(value = "{username}/eid/{id}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public Entry getById(@PathVariable("username") String username, @PathVariable("id") int id, HttpServletResponse response) {
-        Entry entry = entryDao.findOne(id);
+        try {
+            Entry entry = entryDao.findOne(id);
 
         if (entry == null) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -117,6 +118,11 @@ public class EntryController {
             return null;
         } else {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return null;
+        }
+        } catch (Exception e) {
+            log.error(e);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return null;
         }
     }
