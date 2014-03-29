@@ -26,7 +26,7 @@
 
 package com.justjournal.ctl.api;
 
-import com.justjournal.WebLogin;
+import com.justjournal.Login;
 import com.justjournal.core.Settings;
 import com.justjournal.model.*;
 import com.justjournal.repository.UserRepository;
@@ -68,13 +68,13 @@ public class SignUpController {
             throw new IllegalArgumentException("Invalid email address");
         }
 
-        if (!WebLogin.isUserName(user.getUsername())) {
+        if (!Login.isUserName(user.getUsername())) {
 
             throw new IllegalArgumentException(
                     "Username must be letters and numbers only");
         }
 
-        if (!WebLogin.isPassword(user.getPassword())) {
+        if (!Login.isPassword(user.getPassword())) {
 
             throw new IllegalArgumentException(
                     "Password must be 5-18 characters.");

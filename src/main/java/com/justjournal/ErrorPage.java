@@ -43,13 +43,11 @@ import java.io.PrintWriter;
  * @version $Id: WebError.java,v 1.5 2009/05/16 00:40:02 laffer1 Exp $
  * @since 1.0
  */
-public final class WebError {
+public final class ErrorPage {
     private final static String severeStyle =
             "width: 100%; height: 100px; margin-top: 1in; margin-left: 0; margin-right: 0; position relative; text-align: center; background: maroon; color: white;";
-    private final static String mildStyle =
-            "width: 100%; height: 100px; margin-top: 1in; margin-left: 0; margin-right: 0; position relative; text-align: center; background: orange; color: white;";
 
-    private static void headStyle( String title, final StringBuffer sb ) {
+    private static void headStyle(String title, final StringBuffer sb) {
         sb.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n");
         sb.append("<html xmlns=\"http://www.w3.org/1999/xhtml\">\n");
         sb.append("<head>\n");
@@ -60,7 +58,7 @@ public final class WebError {
         sb.append("<body style=\"margin: 0;\">\n");
     }
 
-    private static void footStyle( final StringBuffer sb ) {
+    private static void footStyle(final StringBuffer sb) {
         sb.append("</body>\n");
         sb.append("</html>\n");
     }
@@ -77,7 +75,7 @@ public final class WebError {
         severe(ErrTitle, ErrMsg, sb);
     }
 
-     public static void severe(final String ErrTitle, final String ErrMsg, final StringBuffer sb) {
+    public static void severe(final String ErrTitle, final String ErrMsg, final StringBuffer sb) {
         if (sb.length() > 0) {
             // reset the output to display the error.
             sb.delete(0, sb.length() - 1);
@@ -86,35 +84,6 @@ public final class WebError {
         headStyle(ErrTitle, sb);
         sb.append("<div style=\"");
         sb.append(severeStyle);
-        sb.append("\">\n");
-        sb.append("<h1 style=\"font: 72pt Arial, Helvetica, sans-serif; letter-spacing: .2in;\">").append(ErrTitle).append("</h1>\n");
-        sb.append("</div>\n");
-
-        sb.append("<div style=\"margin: 1in; font: 12pt Arial, Helvetica, sans-serif;\">\n");
-        sb.append("<p>");
-        sb.append(ErrMsg);
-        sb.append("</p>\n");
-        sb.append("</div>\n");
-        footStyle(sb);
-
-    }
-
-    /**
-     * Non fatal error
-     * @param ErrTitle title of error message
-     * @param ErrMsg details of error
-     * @param sb output string buffer
-     */
-     @Deprecated
-     public static void mild(final String ErrTitle, final String ErrMsg, final StringBuffer sb) {
-        if (sb.length() > 0) {
-            // reset the output to display the error.
-            sb.delete(0, sb.length() - 1);
-        }
-
-        headStyle(ErrTitle, sb);
-        sb.append("<div style=\"");
-        sb.append(mildStyle);
         sb.append("\">\n");
         sb.append("<h1 style=\"font: 72pt Arial, Helvetica, sans-serif; letter-spacing: .2in;\">").append(ErrTitle).append("</h1>\n");
         sb.append("</div>\n");

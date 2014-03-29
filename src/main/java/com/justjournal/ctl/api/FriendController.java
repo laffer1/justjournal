@@ -26,7 +26,7 @@
 
 package com.justjournal.ctl.api;
 
-import com.justjournal.WebLogin;
+import com.justjournal.Login;
 import com.justjournal.model.Friend;
 import com.justjournal.model.User;
 import com.justjournal.repository.FriendsDao;
@@ -90,7 +90,7 @@ public class FriendController {
     @RequestMapping(method = RequestMethod.PUT, produces = "application/json")
     @ResponseBody
     public Map<String, String> put(@RequestParam String friend, HttpSession session, HttpServletResponse response) {
-        if (!WebLogin.isAuthenticated(session)) {
+        if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
         }
@@ -101,7 +101,7 @@ public class FriendController {
             if (friendUser == null)
                 return java.util.Collections.singletonMap("error", "Could not find friend's username");
 
-            String sqlStatement = "Insert INTO friends (id, friendid) values('" + WebLogin.currentLoginId(session) + "','" + friendUser.getId() + "');";
+            String sqlStatement = "Insert INTO friends (id, friendid) values('" + Login.currentLoginId(session) + "','" + friendUser.getId() + "');";
             int rowsAffected = SQLHelper.executeNonQuery(sqlStatement);
             if (rowsAffected == 1)
                 return java.util.Collections.singletonMap("status", "success");
@@ -122,13 +122,13 @@ public class FriendController {
     Map<String, String> delete(@RequestBody Friend friend, HttpSession session, HttpServletResponse response) throws Exception {
 
 
-        if (!WebLogin.isAuthenticated(session)) {
+        if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
         }
 
         try {
-            User user = userRepository.findOne(WebLogin.currentLoginId(session));
+            User user = userRepository.findOne(Login.currentLoginId(session));
             friend.setUser(user);
 
             friendsDao.delete(friend);

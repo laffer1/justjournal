@@ -1,5 +1,5 @@
 <%@ page contentType="text/html; charset=iso-8859-1" language="java"
-         import="com.justjournal.UserImpl, com.justjournal.WebError" %>
+         import="com.justjournal.ErrorPage, com.justjournal.UserImpl" %>
 <%@ page import="com.justjournal.model.Comment" %>
 <%@ page import="com.justjournal.model.DateTime" %>
 <%@ page import="com.justjournal.model.Entry" %>
@@ -28,7 +28,7 @@ $Id: index.jsp,v 1.5 2008/04/26 17:06:30 laffer1 Exp $
 
     if (eid <= 0) {
         PrintWriter out2 = response.getWriter();
-        WebError.Display("Error", "Invalid entry id.", out2);
+        ErrorPage.Display("Error", "Invalid entry id.", out2);
         return;
     }
 

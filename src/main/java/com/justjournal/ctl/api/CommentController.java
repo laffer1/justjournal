@@ -34,7 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.ctl.api;
 
-import com.justjournal.WebLogin;
+import com.justjournal.Login;
 import com.justjournal.model.Comment;
 import com.justjournal.model.Entry;
 import com.justjournal.model.PrefBool;
@@ -96,14 +96,14 @@ public class CommentController {
     @ResponseBody
     Map<String, String> delete(@PathVariable("id") int id, HttpSession session, HttpServletResponse response) throws Exception {
 
-        if (!WebLogin.isAuthenticated(session)) {
+        if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
         }
 
         try {
             Comment comment = commentDao.findOne(id);
-            if (comment.getUser().getId() == WebLogin.currentLoginId(session))
+            if (comment.getUser().getId() == Login.currentLoginId(session))
                 commentDao.delete(id);
 
             return java.util.Collections.singletonMap("id", Integer.toString(comment.getId()));

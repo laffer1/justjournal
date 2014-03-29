@@ -26,7 +26,7 @@
 
 package com.justjournal.ctl;
 
-import com.justjournal.WebLogin;
+import com.justjournal.Login;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,7 +45,7 @@ final public class HomeController {
 
     @RequestMapping(method = RequestMethod.GET)
     public String home(Model model, HttpSession session) {
-        model.addAttribute("username", WebLogin.currentLoginName(session));
+        model.addAttribute("username", Login.currentLoginName(session));
         return "index";
     }
 

@@ -26,11 +26,11 @@
 
 package com.justjournal.ctl.api;
 
-import com.justjournal.WebLogin;
-import com.justjournal.repository.UserBioDao;
-import com.justjournal.repository.UserRepository;
+import com.justjournal.Login;
 import com.justjournal.model.User;
 import com.justjournal.model.UserBio;
+import com.justjournal.repository.UserBioDao;
+import com.justjournal.repository.UserRepository;
 import com.justjournal.utility.StringUtil;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,7 +86,7 @@ public class BiographyController {
     @ResponseBody
     Map<String, String> post(@RequestBody String bio, HttpServletResponse response, HttpSession session) {
 
-        int userID = WebLogin.currentLoginId(session);
+        int userID = Login.currentLoginId(session);
 
         if (!StringUtil.lengthCheck(bio, 5, BIO_MAX_LENGTH)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

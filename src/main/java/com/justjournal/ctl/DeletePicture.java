@@ -1,6 +1,6 @@
 package com.justjournal.ctl;
 
-import com.justjournal.WebError;
+import com.justjournal.ErrorPage;
 import com.justjournal.model.User;
 import com.justjournal.repository.UserRepository;
 import com.justjournal.utility.FileIO;
@@ -45,19 +45,19 @@ public class DeletePicture extends JustJournalBaseServlet {
 
         /* Make sure we are logged in */
         if (userID < 1) {
-            WebError.Display("Error", "You must be logged in to upload a picture.", sb);
+            ErrorPage.Display("Error", "You must be logged in to upload a picture.", sb);
             return;
         }
 
         String picIDstr = request.getParameter("id");
         if (picIDstr == null) {
-            WebError.Display("Error", "A picture id must be provided.", sb);
+            ErrorPage.Display("Error", "A picture id must be provided.", sb);
             return;
         }
 
         Integer picID = Integer.parseInt(picIDstr);
         if (picID.intValue() < 1) {
-            WebError.Display("Error", "Invalid picture id.", sb);
+            ErrorPage.Display("Error", "Invalid picture id.", sb);
             return;
         }
 
@@ -72,7 +72,7 @@ public class DeletePicture extends JustJournalBaseServlet {
         } catch (Exception e) {
             log.error(e.getMessage());
             blnError = true;
-            WebError.Display("Database", "Could not retrieve database resources.", sb);
+            ErrorPage.Display("Database", "Could not retrieve database resources.", sb);
         }
 
         if (!blnError) {
@@ -121,7 +121,7 @@ public class DeletePicture extends JustJournalBaseServlet {
 
 
         if (!blnError && RowsAffected != 1) {
-            WebError.Display("Database",
+            ErrorPage.Display("Database",
                     "Database Error.  Please try again later.",
                     sb);
             blnError = true;
@@ -168,7 +168,7 @@ public class DeletePicture extends JustJournalBaseServlet {
             template = template.replaceAll("\\$CONTENT\\$", content.toString());
             sb.append(template);
         } catch (Exception e) {
-            WebError.Display("Internal Error", "Error dislaying page. " + e.getMessage(), sb);
+            ErrorPage.Display("Internal Error", "Error dislaying page. " + e.getMessage(), sb);
         }
     }
 

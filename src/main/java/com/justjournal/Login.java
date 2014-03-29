@@ -28,8 +28,6 @@ package com.justjournal;
 
 import com.justjournal.repository.UserRepository;
 import com.justjournal.utility.StringUtil;
-import com.sun.istack.internal.NotNull;
-import com.sun.istack.internal.Nullable;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -49,14 +47,14 @@ import java.util.regex.Pattern;
  * @author Lucas Holt
  */
 @Component
-public class WebLogin {
+public class Login {
     public static final int USERNAME_MAX_LENGTH = 15;
     public static final int PASSWORD_MAX_LENGTH = 18;
     public static final int SHA1_HASH_LENGTH = 40;
     public static final int BAD_USER_ID = 0;
     protected static final String LOGIN_ATTRNAME = "auth.user";
     protected static final String LOGIN_ATTRID = "auth.uid";
-    private static org.slf4j.Logger log = LoggerFactory.getLogger(WebLogin.class);
+    private static org.slf4j.Logger log = LoggerFactory.getLogger(Login.class);
     @Autowired
     private UserRepository userRepository;
 
@@ -66,13 +64,13 @@ public class WebLogin {
     }
 
     public
-    @Nullable
+
     static String currentLoginName(HttpSession session) {
         return (String) session.getAttribute(LOGIN_ATTRNAME);
     }
 
     public
-    @NotNull
+
     static int currentLoginId(HttpSession session) {
         int aUserID = 0;
         Integer userIDasi = (Integer) session.getAttribute(LOGIN_ATTRID);
@@ -104,7 +102,7 @@ public class WebLogin {
     }
 
     private
-    @NotNull
+
     static String convertToHex(byte[] data) {
         StringBuilder buf = new StringBuilder();
         for (final byte aData : data) {
@@ -122,7 +120,7 @@ public class WebLogin {
     }
 
     public
-    @NotNull
+
     static String SHA1(String text)
             throws NoSuchAlgorithmException, UnsupportedEncodingException {
         MessageDigest md = MessageDigest.getInstance("SHA-1");
@@ -241,9 +239,7 @@ public class WebLogin {
         return false;
     }
 
-    private
-    @Nullable
-    com.justjournal.model.User lookupUser(final String userName, final String passwordHash) {
+    private com.justjournal.model.User lookupUser(final String userName, final String passwordHash) {
 
         return userRepository.findByUsernameAndPassword(userName, passwordHash);
     }

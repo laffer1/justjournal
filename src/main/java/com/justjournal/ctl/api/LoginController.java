@@ -29,8 +29,6 @@ package com.justjournal.ctl.api;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.justjournal.WebLogin;
-import com.justjournal.core.Login;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -60,7 +58,7 @@ public class LoginController {
 
     private static final Logger log = Logger.getLogger(LoginController.class);
     @Autowired
-    private WebLogin webLogin;
+    private Login webLogin;
 
     // Response format
     @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
@@ -126,13 +124,13 @@ public class LoginController {
         try {
             // Current authentication needs to get whacked
             HttpSession session = request.getSession(true);
-            if (WebLogin.isAuthenticated(session)) {
+            if (Login.isAuthenticated(session)) {
                 session.invalidate();
                 session = request.getSession(true); // reset
             }
 
             int userID = webLogin.validate(login.getUsername(), login.getPassword());
-            if (userID > WebLogin.BAD_USER_ID) {
+            if (userID > Login.BAD_USER_ID) {
                 log.debug("LoginController.post(): Username is " + login.getUsername());
                 session.setAttribute("auth.uid", userID);
                 session.setAttribute("auth.user", login.getUsername());

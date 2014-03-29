@@ -26,8 +26,8 @@
 
 package com.justjournal.ctl;
 
-import com.justjournal.WebError;
-import com.justjournal.WebLogin;
+import com.justjournal.ErrorPage;
+import com.justjournal.Login;
 import com.justjournal.model.User;
 import com.justjournal.repository.UserRepository;
 import com.justjournal.utility.FileIO;
@@ -60,7 +60,7 @@ public class LoginAccount extends JustJournalBaseServlet {
     //private static final String JJ_LOGIN_ERROR = "JJ.LOGIN.ERROR";  // server error
 
     @Autowired
-    private WebLogin webLogin;
+    private Login webLogin;
     @Autowired
     private UserRepository userRepository;
 
@@ -103,7 +103,7 @@ public class LoginAccount extends JustJournalBaseServlet {
             template = template.replaceAll("\\$CONTENT\\$", content.toString());
             sb.append(template);
         } catch (Exception e) {
-            WebError.Display("Internal Error", "Error dislaying page. ", sb);
+            ErrorPage.Display("Internal Error", "Error dislaying page. ", sb);
             log.error(e);
         }
     }
@@ -133,20 +133,20 @@ public class LoginAccount extends JustJournalBaseServlet {
         }
 
 
-        if (!StringUtil.lengthCheck(userName, 3, WebLogin.USERNAME_MAX_LENGTH)) {
+        if (!StringUtil.lengthCheck(userName, 3, Login.USERNAME_MAX_LENGTH)) {
             blnError = true;
             if (webClient)
-                WebError.Display("Input Error",
+                ErrorPage.Display("Input Error",
                         "username must be 3-15 characters.",
                         sb);
             else
                 sb.append(JJ_LOGIN_FAIL);
         }
 
-        if (passwordHash.compareTo("") == 0 && !StringUtil.lengthCheck(password, 5, WebLogin.PASSWORD_MAX_LENGTH)) {
+        if (passwordHash.compareTo("") == 0 && !StringUtil.lengthCheck(password, 5, Login.PASSWORD_MAX_LENGTH)) {
             blnError = true;
             if (webClient)
-                WebError.Display("Input Error",
+                ErrorPage.Display("Input Error",
                         "Please input a password.",
                         sb);
             else
@@ -193,7 +193,7 @@ public class LoginAccount extends JustJournalBaseServlet {
                     }
                 } else {
                     if (webClient)
-                        WebError.Display("Authentication Error",
+                        ErrorPage.Display("Authentication Error",
                                 "Unable to login.  Please check your username and password.",
                                 sb);
                     else
@@ -201,7 +201,7 @@ public class LoginAccount extends JustJournalBaseServlet {
                 }
             } catch (Exception e3) {
                 if (webClient)
-                    WebError.Display("Authentication Error",
+                    ErrorPage.Display("Authentication Error",
                             "Unable to login.  Please check your username and password.",
                             sb);
                 else

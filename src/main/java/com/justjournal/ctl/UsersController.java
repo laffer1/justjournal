@@ -27,8 +27,8 @@
 package com.justjournal.ctl;
 
 import com.justjournal.Cal;
-import com.justjournal.WebError;
-import com.justjournal.WebLogin;
+import com.justjournal.ErrorPage;
+import com.justjournal.Login;
 import com.justjournal.atom.AtomFeed;
 import com.justjournal.core.Settings;
 import com.justjournal.model.*;
@@ -114,7 +114,7 @@ public class UsersController {
     @RequestMapping(value = "{username}", method = RequestMethod.GET, produces = "text/html")
     public String entries(@PathVariable("username") String username, @RequestParam(value = "skip", required = false) Integer skip, Model model, HttpSession session, HttpServletResponse response) {
         UserContext userContext = getUserContext(username, session);
-        model.addAttribute("authenticatedUsername", WebLogin.currentLoginName(session));
+        model.addAttribute("authenticatedUsername", Login.currentLoginName(session));
         model.addAttribute("user", userContext.getBlogUser());
 
         if (userContext.getBlogUser().getUserPref().getOwnerViewOnly() == PrefBool.Y && !userContext.isAuthBlog()) {
@@ -138,7 +138,7 @@ public class UsersController {
                         Model model, HttpSession session, HttpServletResponse response) {
 
         UserContext userContext = getUserContext(username, session);
-        model.addAttribute("authenticatedUsername", WebLogin.currentLoginName(session));
+        model.addAttribute("authenticatedUsername", Login.currentLoginName(session));
         model.addAttribute("user", userContext.getBlogUser());
 
         if (userContext.getBlogUser().getUserPref().getOwnerViewOnly() == PrefBool.Y && !userContext.isAuthBlog()) {
@@ -160,7 +160,7 @@ public class UsersController {
     @RequestMapping(value = "{username}/friends", method = RequestMethod.GET, produces = "text/html")
     public String friends(@PathVariable("username") String username, Model model, HttpSession session, HttpServletResponse response) {
         UserContext userc = getUserContext(username, session);
-        model.addAttribute("authenticatedUsername", WebLogin.currentLoginName(session));
+        model.addAttribute("authenticatedUsername", Login.currentLoginName(session));
         model.addAttribute("user", userc.getBlogUser());
 
         if (userc.getBlogUser().getUserPref().getOwnerViewOnly() == PrefBool.Y && !userc.isAuthBlog()) {
@@ -186,7 +186,7 @@ public class UsersController {
     public String calendar(@PathVariable("username") String username, Model model, HttpSession session, HttpServletResponse response) {
 
         UserContext userContext = getUserContext(username, session);
-        model.addAttribute("authenticatedUsername", WebLogin.currentLoginName(session));
+        model.addAttribute("authenticatedUsername", Login.currentLoginName(session));
         model.addAttribute("user", userContext.getBlogUser());
 
         if (userContext.getBlogUser().getUserPref().getOwnerViewOnly() == PrefBool.Y && !userContext.isAuthBlog()) {
@@ -212,7 +212,7 @@ public class UsersController {
     @RequestMapping(value = "{username}/{year}", method = RequestMethod.GET, produces = "text/html")
     public String calendarYear(@PathVariable("username") String username, @PathVariable("year") int year, Model model, HttpSession session, HttpServletResponse response) {
         UserContext userc = getUserContext(username, session);
-        model.addAttribute("authenticatedUsername", WebLogin.currentLoginName(session));
+        model.addAttribute("authenticatedUsername", Login.currentLoginName(session));
         model.addAttribute("user", userc.getBlogUser());
 
         if (userc.getBlogUser().getUserPref().getOwnerViewOnly() == PrefBool.Y && !userc.isAuthBlog()) {
@@ -237,7 +237,7 @@ public class UsersController {
                                 @PathVariable("month") int month,
                                 Model model, HttpSession session, HttpServletResponse response) {
         UserContext userc = getUserContext(username, session);
-        model.addAttribute("authenticatedUsername", WebLogin.currentLoginName(session));
+        model.addAttribute("authenticatedUsername", Login.currentLoginName(session));
         model.addAttribute("user", userc.getBlogUser());
 
         if (userc.getBlogUser().getUserPref().getOwnerViewOnly() == PrefBool.Y && !userc.isAuthBlog()) {
@@ -262,7 +262,7 @@ public class UsersController {
                               @PathVariable("month") int month,
                               @PathVariable("day") int day, Model model, HttpServletResponse response, HttpSession session) {
         UserContext userc = getUserContext(username, session);
-        model.addAttribute("authenticatedUsername", WebLogin.currentLoginName(session));
+        model.addAttribute("authenticatedUsername", Login.currentLoginName(session));
         model.addAttribute("user", userc.getBlogUser());
 
         if (userc.getBlogUser().getUserPref().getOwnerViewOnly() == PrefBool.Y && !userc.isAuthBlog()) {
@@ -345,7 +345,7 @@ public class UsersController {
     public void pdf(@PathVariable("username") String username, HttpServletResponse response, HttpSession session) {
         User authUser = null;
         try {
-            authUser = userRepository.findByUsername(WebLogin.currentLoginName(session));
+            authUser = userRepository.findByUsername(Login.currentLoginName(session));
         } catch (Exception ignored) {
 
         }
@@ -367,7 +367,7 @@ public class UsersController {
     public void rtf(@PathVariable("username") String username, HttpServletResponse response, HttpSession session) {
         User authUser = null;
         try {
-            authUser = userRepository.findByUsername(WebLogin.currentLoginName(session));
+            authUser = userRepository.findByUsername(Login.currentLoginName(session));
         } catch (Exception ignored) {
 
         }
@@ -389,7 +389,7 @@ public class UsersController {
     @RequestMapping(value = "{username}/pictures", method = RequestMethod.GET, produces = "text/html")
     public String pictures(@PathVariable("username") String username, Model model, HttpSession session, HttpServletResponse response) {
         UserContext userc = getUserContext(username, session);
-        model.addAttribute("authenticatedUsername", WebLogin.currentLoginName(session));
+        model.addAttribute("authenticatedUsername", Login.currentLoginName(session));
         model.addAttribute("user", userc.getBlogUser());
 
         if (userc.getBlogUser().getUserPref().getOwnerViewOnly() == PrefBool.Y && !userc.isAuthBlog()) {
@@ -414,7 +414,7 @@ public class UsersController {
                          @RequestParam("bquery") String bquery,
                          Model model, HttpSession session, HttpServletResponse response) {
         UserContext userc = getUserContext(username, session);
-        model.addAttribute("authenticatedUsername", WebLogin.currentLoginName(session));
+        model.addAttribute("authenticatedUsername", Login.currentLoginName(session));
         model.addAttribute("user", userc.getBlogUser());
 
         if (userc.getBlogUser().getUserPref().getOwnerViewOnly() == PrefBool.Y && !userc.isAuthBlog()) {
@@ -445,7 +445,7 @@ public class UsersController {
     @RequestMapping(value = "{username}/subscriptions", method = RequestMethod.GET, produces = "text/html")
     public String subscriptions(@PathVariable("username") String username, Model model, HttpSession session, HttpServletResponse response) {
         UserContext userc = getUserContext(username, session);
-        model.addAttribute("authenticatedUsername", WebLogin.currentLoginName(session));
+        model.addAttribute("authenticatedUsername", Login.currentLoginName(session));
         model.addAttribute("user", userc.getBlogUser());
 
         if (userc.getBlogUser().getUserPref().getOwnerViewOnly() == PrefBool.Y && !userc.isAuthBlog()) {
@@ -471,7 +471,7 @@ public class UsersController {
 
         User authUser = null;
         try {
-            authUser = userRepository.findByUsername(WebLogin.currentLoginName(session));
+            authUser = userRepository.findByUsername(Login.currentLoginName(session));
         } catch (Exception ignored) {
 
         }
@@ -481,7 +481,7 @@ public class UsersController {
             UserContext userc = new UserContext(user, authUser);
 
             model.addAttribute("username", user);
-            model.addAttribute("authenticatedUsername", WebLogin.currentLoginName(session));
+            model.addAttribute("authenticatedUsername", Login.currentLoginName(session));
 
             if (userc.getBlogUser().getUserPref().getOwnerViewOnly() == PrefBool.N || userc.isAuthBlog())
                 model.addAttribute("tags", getTags(userc, tag));
@@ -499,7 +499,7 @@ public class UsersController {
     private UserContext getUserContext(String username, HttpSession session) {
         User authUser = null;
         try {
-            authUser = userRepository.findByUsername(WebLogin.currentLoginName(session));
+            authUser = userRepository.findByUsername(Login.currentLoginName(session));
         } catch (Exception ignored) {
 
         }
@@ -726,7 +726,7 @@ public class UsersController {
         Entry o;
 
         if (singleEntryId < 1) {
-            WebError.Display("Invalid Entry Id", "The entry id was invalid for the journal entry you tried to get.", sb);
+            ErrorPage.Display("Invalid Entry Id", "The entry id was invalid for the journal entry you tried to get.", sb);
         } else {
             try {
                 o = entryDao.findOne(singleEntryId);
@@ -758,7 +758,7 @@ public class UsersController {
             } catch (Exception e1) {
                 log.error("getSingleEntry: " + e1.getMessage() + '\n' + e1.toString());
 
-                WebError.Display("Error",
+                ErrorPage.Display("Error",
                         "Unable to retrieve journal entry from data store.",
                         sb);
             }
@@ -908,7 +908,7 @@ public class UsersController {
             sb.append(jumpmenu(skip, 20, entries.getTotalElements() > 19, skip > 0, uc));
 
         } catch (Exception e1) {
-            WebError.Display("Error",
+            ErrorPage.Display("Error",
                     "Unable to retrieve journal entries from data store.",
                     sb);
 
@@ -1170,7 +1170,7 @@ public class UsersController {
 
         } catch (Exception e1) {
             log.error(e1.getMessage());
-            WebError.Display(" Error",
+            ErrorPage.Display(" Error",
                     "Error retrieving the friends entries",
                     sb);
         }
@@ -1240,7 +1240,7 @@ public class UsersController {
             }
 
         } catch (Exception e1) {
-            WebError.Display(" Error",
+            ErrorPage.Display(" Error",
                     "An error has occured rendering calendar.",
                     sb);
         }
@@ -1313,7 +1313,7 @@ public class UsersController {
             }
 
         } catch (Exception e1) {
-            WebError.Display(" Error",
+            ErrorPage.Display(" Error",
                     "An error has occured rendering calendar.",
                     sb);
         }
@@ -1576,7 +1576,7 @@ public class UsersController {
             }
 
         } catch (Exception e1) {
-            WebError.Display(" Error",
+            ErrorPage.Display(" Error",
                     "An error has occured rendering calendar.",
                     sb);
         }

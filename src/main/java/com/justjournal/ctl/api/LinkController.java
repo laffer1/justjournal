@@ -34,7 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.ctl.api;
 
-import com.justjournal.WebLogin;
+import com.justjournal.Login;
 import com.justjournal.model.UserLink;
 import com.justjournal.repository.UserLinkRepository;
 import com.justjournal.repository.UserRepository;
@@ -83,13 +83,13 @@ public class LinkController {
     @ResponseBody
     Map<String, String> create(@RequestBody UserLink link, HttpSession session, HttpServletResponse response) {
 
-        if (!WebLogin.isAuthenticated(session)) {
+        if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
         }
 
         try {
-            link.setUser(userRepository.findOne(WebLogin.currentLoginId(session)));
+            link.setUser(userRepository.findOne(Login.currentLoginId(session)));
             userLinkDao.save(link);
             return java.util.Collections.singletonMap("id", ""); // XXX
         } catch (Exception e) {
@@ -105,7 +105,7 @@ public class LinkController {
     Map<String, String> delete(@RequestBody int linkId, HttpSession session, HttpServletResponse response) throws Exception {
 
 
-        if (!WebLogin.isAuthenticated(session)) {
+        if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
         }
@@ -113,7 +113,7 @@ public class LinkController {
         if (linkId > 0) {
             /* valid link id */
             UserLink link = userLinkDao.findOne(linkId);
-            if (link.getUser().getId() == WebLogin.currentLoginId(session)) {
+            if (link.getUser().getId() == Login.currentLoginId(session)) {
                 userLinkDao.delete(linkId);
 
                 return java.util.Collections.singletonMap("id", Integer.toString(linkId));

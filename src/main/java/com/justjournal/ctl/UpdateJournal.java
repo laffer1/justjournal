@@ -34,8 +34,8 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.ctl;
 
-import com.justjournal.WebError;
-import com.justjournal.WebLogin;
+import com.justjournal.ErrorPage;
+import com.justjournal.Login;
 import com.justjournal.core.Settings;
 import com.justjournal.core.TrackbackOut;
 import com.justjournal.model.*;
@@ -96,7 +96,7 @@ public class UpdateJournal extends HttpServlet {
     @Autowired
     private MoodDao moodDao;
     @Autowired
-    private WebLogin webLogin;
+    private Login webLogin;
 
     /**
      * Determine the type of client
@@ -351,7 +351,7 @@ public class UpdateJournal extends HttpServlet {
                 }
             } catch (Exception e3) {
                 if (myclient == ClientType.web)
-                    WebError.Display("Authentication Error",
+                    ErrorPage.Display("Authentication Error",
                             "Unable to login.  Please check your username and password.",
                             sb);
                 else
@@ -472,7 +472,7 @@ public class UpdateJournal extends HttpServlet {
 
             } catch (IllegalArgumentException e1) {
                 if (myclient == ClientType.web)
-                    WebError.Display("Input Error", e1.getMessage(), sb);
+                    ErrorPage.Display("Input Error", e1.getMessage(), sb);
                 else
                     sb.append("JJ.JOURNAL.UPDATE.FAIL");
 
@@ -480,7 +480,7 @@ public class UpdateJournal extends HttpServlet {
             } catch (ParseException e) {
                 log.error(e.getMessage());
                 if (myclient == ClientType.web)
-                    WebError.Display("Input Error", "Date Parse failure", sb);
+                    ErrorPage.Display("Input Error", "Date Parse failure", sb);
                 else
                     sb.append("JJ.JOURNAL.UPDATE.FAIL");
             }
@@ -635,7 +635,7 @@ public class UpdateJournal extends HttpServlet {
         } else {
             if (myclient == ClientType.web)
                 // We couldn't authenticate.  Tell the user.
-                WebError.Display("Authentication Error",
+                ErrorPage.Display("Authentication Error",
                         "Unable to login.  Please check your username and password.",
                         sb);
             else

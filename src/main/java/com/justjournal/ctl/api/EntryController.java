@@ -26,7 +26,7 @@
 
 package com.justjournal.ctl.api;
 
-import com.justjournal.WebLogin;
+import com.justjournal.Login;
 import com.justjournal.model.Comment;
 import com.justjournal.model.Entry;
 import com.justjournal.model.User;
@@ -146,12 +146,12 @@ public class EntryController {
     @ResponseBody
     Map<String, String> post(@RequestBody Entry entry, HttpSession session, HttpServletResponse response, Model model) {
 
-        if (!WebLogin.isAuthenticated(session)) {
+        if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
         }
 
-        User user = userRepository.findOne(WebLogin.currentLoginId(session));
+        User user = userRepository.findOne(Login.currentLoginId(session));
         if (user == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return java.util.Collections.singletonMap("error", "User not found");
@@ -191,11 +191,11 @@ public class EntryController {
     public
     @ResponseBody
     Map<String, String> put(@RequestBody Entry entry, HttpSession session, HttpServletResponse response) {
-        if (!WebLogin.isAuthenticated(session)) {
+        if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
         }
-        User user = userRepository.findOne(WebLogin.currentLoginId(session));
+        User user = userRepository.findOne(Login.currentLoginId(session));
         entry.setUser(user);
 
 
@@ -225,7 +225,7 @@ public class EntryController {
     @ResponseBody
     Map<String, String> delete(@RequestBody int entryId, HttpSession session, HttpServletResponse response) throws Exception {
 
-        if (!WebLogin.isAuthenticated(session)) {
+        if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
         }
@@ -234,7 +234,7 @@ public class EntryController {
             return Collections.singletonMap("error", "The entry id was invalid.");
 
         try {
-            User user = userRepository.findOne(WebLogin.currentLoginId(session));
+            User user = userRepository.findOne(Login.currentLoginId(session));
             Entry entry = entryDao.findOne(entryId);
 
             if (user.getId() == entry.getUser().getId()) {

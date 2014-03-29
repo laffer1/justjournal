@@ -37,7 +37,7 @@ package com.justjournal.model;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.justjournal.WebLogin;
+import com.justjournal.Login;
 import com.justjournal.utility.StringUtil;
 
 import javax.persistence.*;
@@ -288,7 +288,7 @@ public class User implements Serializable {
      */
     public final void setUsername(final String username) {
         // TODO: move username max length to this class
-        if (!StringUtil.lengthCheck(username, 3, WebLogin.USERNAME_MAX_LENGTH)) {
+        if (!StringUtil.lengthCheck(username, 3, Login.USERNAME_MAX_LENGTH)) {
             throw new IllegalArgumentException("Invalid username " + username);
         }
         this.username = username.toLowerCase();

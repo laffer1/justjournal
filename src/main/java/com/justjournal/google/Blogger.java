@@ -34,7 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.google;
 
-import com.justjournal.WebLogin;
+import com.justjournal.Login;
 import com.justjournal.model.Entry;
 import com.justjournal.model.PrefBool;
 import com.justjournal.model.User;
@@ -76,7 +76,7 @@ public class Blogger {
     private EntryRepository entryRepository;
 
     @Autowired
-    private WebLogin webLogin;
+    private Login webLogin;
 
     @Autowired
     private UserRepository userRepository;
@@ -106,11 +106,11 @@ public class Blogger {
         HashMap<String, Serializable> s = new HashMap<String, Serializable>();
 
 
-        if (!StringUtil.lengthCheck(username, 3, WebLogin.USERNAME_MAX_LENGTH)) {
+        if (!StringUtil.lengthCheck(username, 3, Login.USERNAME_MAX_LENGTH)) {
             blnError = true;
         }
 
-        if (!StringUtil.lengthCheck(password, 5, WebLogin.PASSWORD_MAX_LENGTH)) {
+        if (!StringUtil.lengthCheck(password, 5, Login.PASSWORD_MAX_LENGTH)) {
             blnError = true;
         }
 
@@ -215,11 +215,11 @@ public class Blogger {
         Entry et2;
         HashMap<String, Serializable> s = new HashMap<String, Serializable>();
 
-        if (!StringUtil.lengthCheck(username, 3, WebLogin.USERNAME_MAX_LENGTH)) {
+        if (!StringUtil.lengthCheck(username, 3, Login.USERNAME_MAX_LENGTH)) {
             blnError = true;
         }
 
-        if (!StringUtil.lengthCheck(password, 5, WebLogin.PASSWORD_MAX_LENGTH)) {
+        if (!StringUtil.lengthCheck(password, 5, Login.PASSWORD_MAX_LENGTH)) {
             blnError = true;
         }
 
@@ -487,11 +487,11 @@ public class Blogger {
         int userId;
         HashMap<String, Serializable> s = new HashMap<String, Serializable>();
 
-        if (!StringUtil.lengthCheck(username, 3, WebLogin.USERNAME_MAX_LENGTH)) {
+        if (!StringUtil.lengthCheck(username, 3, Login.USERNAME_MAX_LENGTH)) {
             blnError = true;
         }
 
-        if (!StringUtil.lengthCheck(password, 5, WebLogin.PASSWORD_MAX_LENGTH)) {
+        if (!StringUtil.lengthCheck(password, 5, Login.PASSWORD_MAX_LENGTH)) {
             blnError = true;
         }
 

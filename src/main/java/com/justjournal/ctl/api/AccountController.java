@@ -26,7 +26,7 @@
 
 package com.justjournal.ctl.api;
 
-import com.justjournal.WebLogin;
+import com.justjournal.Login;
 import com.justjournal.model.PrefBool;
 import com.justjournal.model.User;
 import com.justjournal.repository.UserRepository;
@@ -54,12 +54,12 @@ public class AccountController {
     private UserRepository userDao;
 
     @Autowired
-    private WebLogin webLogin;
+    private Login webLogin;
 
     private Map<String, String>
     changePassword(String passCurrent, String passNew, HttpSession session, HttpServletResponse response) {
 
-        if (!WebLogin.isAuthenticated(session)) {
+        if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
         }
@@ -78,7 +78,7 @@ public class AccountController {
         }
 
         // TODO: Refactor change pass
-        boolean result = webLogin.changePass(WebLogin.currentLoginName(session), passCurrent, passNew);
+        boolean result = webLogin.changePass(Login.currentLoginName(session), passCurrent, passNew);
 
         if (!result) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -88,7 +88,7 @@ public class AccountController {
     }
 
     private Map<String, String> updateUser(User user, HttpSession session, HttpServletResponse response) {
-        if (WebLogin.currentLoginId(session) == user.getId() && WebLogin.currentLoginName(session).equals(user.getUsername())) {
+        if (Login.currentLoginId(session) == user.getId() && Login.currentLoginName(session).equals(user.getUsername())) {
 
             userDao.save(user);
             return java.util.Collections.singletonMap("id", Integer.toString(user.getId()));
@@ -99,12 +99,12 @@ public class AccountController {
 
     @RequestMapping(method = RequestMethod.DELETE)
     public Map<String, String> delete(HttpServletResponse response, HttpSession session) {
-        if (!WebLogin.isAuthenticated(session)) {
+        if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
         }
 
-        int userID = WebLogin.currentLoginId(session);
+        int userID = Login.currentLoginId(session);
 
         try {
             SQLHelper.executeNonQuery("DELETE FROM comments WHERE uid=" + userID + ";");
@@ -138,7 +138,7 @@ public class AccountController {
     @ResponseBody
     Map<String, String> post(@RequestParam String type, @RequestParam String passCurrent, @RequestParam String passNew, @RequestBody User user, HttpSession session, HttpServletResponse response) {
 
-        if (!WebLogin.isAuthenticated(session)) {
+        if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
         }
@@ -158,7 +158,7 @@ public class AccountController {
 
             if (user.getUserPref().getOwnerViewOnly() == PrefBool.Y) {
                 if (
-                        !WebLogin.isAuthenticated(session) || user.getUsername().equals(WebLogin.currentLoginName(session))) {
+                        !Login.isAuthenticated(session) || user.getUsername().equals(Login.currentLoginName(session))) {
                     response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                     return null;
                 }

@@ -26,7 +26,7 @@
 
 package com.justjournal.ctl.api;
 
-import com.justjournal.WebLogin;
+import com.justjournal.Login;
 import com.justjournal.model.RssSubscription;
 import com.justjournal.model.User;
 import com.justjournal.repository.RssSubscriptionsDAO;
@@ -82,7 +82,7 @@ public class RssReaderController {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 return java.util.Collections.singletonMap("error", "Error adding link.");
             }
-            User user = userRepository.findOne(WebLogin.currentLoginId(session));
+            User user = userRepository.findOne(Login.currentLoginId(session));
             to.setUser(user);
             to.setUri(uri);
             rssSubscriptionsDAO.save(to);
@@ -99,13 +99,13 @@ public class RssReaderController {
     public
     @ResponseBody
     Map<String, String> delete(@RequestBody int subId, HttpSession session, HttpServletResponse response) throws Exception {
-        if (!WebLogin.isAuthenticated(session)) {
+        if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
         }
 
         if (subId > 0) {
-            User user = userRepository.findOne(WebLogin.currentLoginId(session));
+            User user = userRepository.findOne(Login.currentLoginId(session));
             RssSubscription to = rssSubscriptionsDAO.findOne(subId);
 
             if (user.getId() == to.getUser().getId()) {

@@ -33,9 +33,9 @@ POSSIBILITY OF SUCH DAMAGE.
 */
 package com.justjournal.ctl.api;
 
-import com.justjournal.WebLogin;
-import com.justjournal.repository.EntryRepository;
+import com.justjournal.Login;
 import com.justjournal.model.Entry;
+import com.justjournal.repository.EntryRepository;
 import com.justjournal.utility.SQLHelper;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
@@ -86,7 +86,7 @@ public class FavoriteController {
 
         try {
 
-            String sql = "call viewfavorite(" + WebLogin.currentLoginId(session) + ");";
+            String sql = "call viewfavorite(" + Login.currentLoginId(session) + ");";
             ResultSet rs = SQLHelper.executeResultSet(sql);
 
             while (rs.next()) {
@@ -107,7 +107,7 @@ public class FavoriteController {
     Map<String, String> create(@RequestBody Entry favorite, HttpSession session, HttpServletResponse response) {
 
         try {
-            String sql = "call addfavorite( " + WebLogin.currentLoginId(session) + "," + favorite.getId() + ");";
+            String sql = "call addfavorite( " + Login.currentLoginId(session) + "," + favorite.getId() + ");";
             int result = SQLHelper.executeNonQuery(sql);
 
             if (result != 1) {
@@ -126,13 +126,13 @@ public class FavoriteController {
     public
     @ResponseBody
     Map<String, String> delete(@RequestBody Entry favorite, HttpSession session, HttpServletResponse response) throws Exception {
-        if (!WebLogin.isAuthenticated(session)) {
+        if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
         }
 
         try {
-            String sql = "call deletefavorite( " + WebLogin.currentLoginId(session) + "," + favorite.getId() + ");";
+            String sql = "call deletefavorite( " + Login.currentLoginId(session) + "," + favorite.getId() + ");";
             int result = SQLHelper.executeNonQuery(sql);
 
             if (result != 1) {
