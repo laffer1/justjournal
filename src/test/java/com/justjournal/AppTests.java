@@ -227,7 +227,7 @@ public class AppTests {
 
     @Test
     public void apiEntry() throws Exception {
-        mockMvc.perform(get("/api/entry/testuser/33661").accept(MediaType.parseMediaType("application/json;charset=UTF-8")))
+        mockMvc.perform(get("/api/entry/testuser/eid/33661").accept(MediaType.parseMediaType("application/json;charset=UTF-8")))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith("application/json;charset=UTF-8"));
     }

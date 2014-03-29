@@ -105,21 +105,21 @@ public class EntryController {
         try {
             Entry entry = entryDao.findOne(id);
 
-        if (entry == null) {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            return null;
-        }
+            if (entry == null) {
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                return null;
+            }
 
-        if (entry.getUser().getUsername().equalsIgnoreCase(username)) {
-            if (entry.getSecurity().getId() == 2) // public
-                return entry;
-            else
-                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            return null;
-        } else {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            return null;
-        }
+            if (entry.getUser().getUsername().equalsIgnoreCase(username)) {
+                if (entry.getSecurity().getId() == 2) // public
+                    return entry;
+                else
+                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                return null;
+            } else {
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                return null;
+            }
         } catch (Exception e) {
             log.error(e);
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
