@@ -73,7 +73,7 @@ public class ServiceTests {
         Entry entry = entryService.getPublicEntry(PUBLIC_ENTRY_ID, TEST_USER);
         assertNotNull(entry);
         assertEquals(PUBLIC_ENTRY_ID, entry.getId());
-        assertEquals("laffer1", entry.getUser().getUsername());
+        assertEquals(TEST_USER, entry.getUser().getUsername());
         assertEquals(2, entry.getSecurity().getId());
     }
 
