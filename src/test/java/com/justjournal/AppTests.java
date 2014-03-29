@@ -76,14 +76,14 @@ public class AppTests {
 
     @Test
     public void users() throws Exception {
-        mockMvc.perform(get("/users/jjsite"))
+        mockMvc.perform(get("/users/testuser"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("users"));
     }
 
     @Test
     public void usersSingleEntry() throws Exception {
-        mockMvc.perform(get("/users/laffer1/entry/33626"))
+        mockMvc.perform(get("/users/testuser/entry/33661"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("users"));
     }
@@ -97,28 +97,28 @@ public class AppTests {
 
     @Test
     public void usersPictures() throws Exception {
-        mockMvc.perform(get("/users/jjsite/pictures"))
+        mockMvc.perform(get("/users/testuser/pictures"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("users"));
     }
 
     @Test
     public void usersCalendar() throws Exception {
-        mockMvc.perform(get("/users/jjsite/calendar"))
+        mockMvc.perform(get("/users/testuser/calendar"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("users"));
     }
 
     @Test
     public void usersCalendarYear() throws Exception {
-        mockMvc.perform(get("/users/jjsite/2003"))
+        mockMvc.perform(get("/users/testuser/2014"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("users"));
     }
 
     @Test
     public void usersCalendarMonth() throws Exception {
-        mockMvc.perform(get("/users/jjsite/2012/01"))
+        mockMvc.perform(get("/users/testuser/2014/03"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("users"));
     }
@@ -187,7 +187,7 @@ public class AppTests {
 
     @Test
     public void apiStatisticsUser() throws Exception {
-        mockMvc.perform(get("/api/statistics/jjsite"))
+        mockMvc.perform(get("/api/statistics/testuser"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith("application/json;charset=UTF-8"));
     }
@@ -227,14 +227,14 @@ public class AppTests {
 
     @Test
     public void apiEntry() throws Exception {
-        mockMvc.perform(get("/api/entry/laffer1/33626").accept(MediaType.parseMediaType("application/json;charset=UTF-8")))
+        mockMvc.perform(get("/api/entry/testuser/33661").accept(MediaType.parseMediaType("application/json;charset=UTF-8")))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith("application/json;charset=UTF-8"));
     }
 
     @Test
     public void apiEntryWithUser() throws Exception {
-        mockMvc.perform(get("/api/entry/jjsite").accept(MediaType.parseMediaType("application/json;charset=UTF-8")))
+        mockMvc.perform(get("/api/entry/testuser").accept(MediaType.parseMediaType("application/json;charset=UTF-8")))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith("application/json;charset=UTF-8"));
     }
@@ -249,10 +249,10 @@ public class AppTests {
 
     @Test
     public void apiLogin() throws Exception {
-        mockMvc.perform(post("/api/login", "{\"username\":\"laffer1\", \"password\":\"blah\"}")
+        mockMvc.perform(post("/api/login", "{\"username\":\"testuser\", \"password\":\"blah\"}")
                 .accept(MediaType.parseMediaType("application/json"))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"username\":\"laffer1\", \"password\":\"blah\"}"))
+                .content("{\"username\":\"testuser\", \"password\":\"blah\"}"))
                 .andExpect(status().is(STATUS_HTTP_400))
                 .andExpect(content().contentTypeCompatibleWith("application/json;charset=UTF-8"));
     }
