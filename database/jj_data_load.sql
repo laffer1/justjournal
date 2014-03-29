@@ -1070,6 +1070,7 @@ INSERT INTO `timezones` (`id`, `name`) VALUES
   (1434, 'WET'),
   (1435, 'Zulu');
 
+-- First Test User
 
 INSERT INTO `user` (`id`, `username`, `password`, `type`, `name`, `lastname`, `since`, `lastlogin`, `modified`) VALUES
   (2908, 'testuser', 'dc724af18fbdd4e59189f5fe768a5f8311527050', 1, 'Test', 'User', 2014, '2014-03-29 00:00:00',
@@ -1086,9 +1087,39 @@ INSERT INTO `user_pref` (`id`, `user_id`, `allow_spider`, `style`, `owner_view_o
 VALUES
   (2192, 2908, 'Y', 1, 'N', 'N', 'Testing Journal', 'N', '2014-03-29 15:12:53');
 
+-- Second Test User
+
+INSERT INTO `user` (`id`, `username`, `password`, `type`, `name`, `lastname`, `since`, `lastlogin`, `modified`) VALUES
+  (1, 'jjtest', 'dc724af18fbdd4e59189f5fe768a5f8311527050', 1, 'JJ', 'Test', 2014, '2014-03-01 00:00:00',
+   '2014-03-29 15:10:48');
+
+INSERT INTO `user_bio` (`id`, `user_id`, `content`, `modified`) VALUES
+  (1, 1, 'testing bio', '2014-03-29 15:11:47');
+
+INSERT INTO `user_contact` (`id`, `user_id`, `email`, `icq`, `aim`, `yahoo`, `msn`, `hp_uri`, `hp_title`, `phone`)
+VALUES
+  (1, 1, 'test@justjournal.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+
+INSERT INTO `user_pref` (`id`, `user_id`, `allow_spider`, `style`, `owner_view_only`, `show_avatar`, `journal_name`, `ping_services`, `modified`)
+VALUES
+  (1, 1, 'N', 1, 'N', 'N', 'JJ REAL DEAL Test Blog', 'N', '2014-03-29 15:12:53');
+
 INSERT INTO `justjournal_test`.`entry` (`id`, `uid`, `date`, `modified`, `subject`, `mood`, `music`, `location`, `body`, `security`, `autoformat`, `allow_comments`, `email_comments`, `draft`, `attach_image`, `attach_file`)
 VALUES (33661, '2908', CURRENT_DATE(), CURRENT_TIMESTAMP, 'test subject', '2', 'the rock band song', '2',
         'i am a body of a blog post in text format', '2', 'Y', 'Y', 'Y', 'N', '0', '0');
 INSERT INTO `justjournal_test`.`entry` (`id`, `uid`, `date`, `modified`, `subject`, `mood`, `music`, `location`, `body`, `security`, `autoformat`, `allow_comments`, `email_comments`, `draft`, `attach_image`, `attach_file`)
 VALUES (NULL, '2908', CURRENT_DATE(), CURRENT_TIMESTAMP, 'test subject 2', '3', 'the rock band song', '1',
         'i am a body of a blog post in text format', '1', 'Y', 'Y', 'Y', 'N', '0', '0');
+
+-- Create friends
+
+INSERT INTO `justjournal_test`.`friends` (
+  `pk`,
+  `id`,
+  `friendid`
+)
+VALUES (
+  NULL, '1', '2908'
+), (
+  NULL, '2908', '1'
+);
