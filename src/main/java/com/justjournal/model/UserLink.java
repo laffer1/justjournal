@@ -35,6 +35,7 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.model;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -62,6 +63,7 @@ public class UserLink implements Serializable {
     @Column(name = "uri")
     private String uri;
 
+    @JsonBackReference
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id")

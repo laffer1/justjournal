@@ -26,6 +26,7 @@
 
 package com.justjournal.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
@@ -65,6 +66,7 @@ public class UserPref implements Serializable {
     @Column(name = "modified", nullable = false)
     private Timestamp modified;
 
+    @JsonBackReference
     @JsonIgnore
     @OneToOne
     @JoinColumn(name = "user_id")

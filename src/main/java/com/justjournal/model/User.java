@@ -37,6 +37,7 @@ package com.justjournal.model;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.justjournal.Login;
 import com.justjournal.utility.StringUtil;
 
@@ -91,47 +92,53 @@ public class User implements Serializable {
 
     @JsonIgnore
     @Basic(fetch = FetchType.LAZY)
-
     @Column(name = "modified", nullable = false)
     private Timestamp modified;
-
 
     @Column(name = "type", nullable = false)
     private Integer type;
 
+    @JsonManagedReference
     @JsonIgnore
     @Basic(fetch = FetchType.LAZY)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private Set<Entry> entries = new HashSet<Entry>();
 
+    @JsonManagedReference
     @JsonIgnore
     @Basic(fetch = FetchType.LAZY)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private List<Comment> comments = new ArrayList<Comment>();
 
+    @JsonManagedReference
     @JsonIgnore
     @Basic(fetch = FetchType.LAZY)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private List<Friend> friends = new ArrayList<Friend>();
 
+    @JsonManagedReference
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch=FetchType.EAGER) // TODO: Lazy fetch type
     private Set<UserLink> links = new HashSet<UserLink>();
 
+    @JsonManagedReference
     @JsonIgnore
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
     private UserBio bio;
 
+    @JsonManagedReference
     @JsonIgnore
     @Basic(fetch = FetchType.LAZY)
     @OneToOne(mappedBy = "user")
     private UserContact userContact;
 
+    @JsonManagedReference
     @JsonIgnore
     @Basic(fetch = FetchType.LAZY)
     @OneToOne(mappedBy = "user")
     private UserPref userPref;
 
+    @JsonManagedReference
     @JsonIgnore
     @Basic(fetch = FetchType.LAZY)
     @OneToOne(mappedBy = "user")

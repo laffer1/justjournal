@@ -1073,7 +1073,7 @@ INSERT INTO `timezones` (`id`, `name`) VALUES
 -- First Test User
 
 INSERT INTO `user` (`id`, `username`, `password`, `type`, `name`, `lastname`, `since`, `lastlogin`, `modified`) VALUES
-  (2908, 'testuser', 'dc724af18fbdd4e59189f5fe768a5f8311527050', 1, 'Test', 'User', 2014, '2014-03-29 00:00:00',
+  (2908, 'testuser', '45c571a156ddcef41351a713bcddee5ba7e95460', 1, 'Test', 'User', 2014, '2014-03-29 00:00:00',
    '2014-03-29 15:10:48');
 
 INSERT INTO `user_bio` (`id`, `user_id`, `content`, `modified`) VALUES

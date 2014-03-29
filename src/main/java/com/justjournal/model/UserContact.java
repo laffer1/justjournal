@@ -27,6 +27,7 @@
 package com.justjournal.model;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -69,6 +70,7 @@ public class UserContact implements Serializable {
     @Column(name = "hp_uri")
     private String hpUri;
 
+    @JsonBackReference
     @JsonIgnore
     @OneToOne
     @JoinColumn(name = "user_id")

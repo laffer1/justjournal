@@ -27,6 +27,7 @@
 package com.justjournal.model;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -48,11 +49,13 @@ public class Friend implements Serializable {
     @GeneratedValue
     private int pk;
 
+    @JsonBackReference
     @JsonProperty("user")
     @ManyToOne
     @JoinColumn(name = "id")
     private User user;
 
+    @JsonBackReference
     @JsonProperty("friend")
     @ManyToOne
     @JoinColumn(name = "friendid")

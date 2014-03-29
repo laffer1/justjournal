@@ -26,6 +26,7 @@
 
 package com.justjournal.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -43,11 +44,13 @@ public class EntryTag {
     @GeneratedValue
     private int id;
 
+    @JsonBackReference
     @JsonProperty("entry")
     @ManyToOne
     @JoinColumn(name = "entryid")
     private Entry entry;
 
+    @JsonBackReference
     @JsonProperty("tag")
     @ManyToOne
     @JoinColumn(name = "tagid")

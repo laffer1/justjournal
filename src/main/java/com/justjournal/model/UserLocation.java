@@ -27,6 +27,7 @@
 package com.justjournal.model;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -53,6 +54,7 @@ public class UserLocation implements Serializable {
     @Column
     private String zip;
 
+    @JsonBackReference
     @JsonIgnore
     @OneToOne
     @JoinColumn(name = "user_id")

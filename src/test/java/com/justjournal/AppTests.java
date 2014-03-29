@@ -213,7 +213,7 @@ public class AppTests {
     }
 
     @Test
-    public void apiEntryPost() throws Exception {
+    public void apiEntryPostInvalid() throws Exception {
 
         mockMvc.perform(post("/api/entry", "{\"id\":\"1\", \"subject\":\"testing\", \"body\":\"test\"}")
                 .content("{\"id\":\"1\", \"subject\":\"testing\", \"body\":\"test\"}")
@@ -255,12 +255,12 @@ public class AppTests {
     }
 
     @Test
-    public void apiLogin() throws Exception {
+    public void apiLoginBad() throws Exception {
         mockMvc.perform(post("/api/login", "{\"username\":\"testuser\", \"password\":\"blah\"}")
                 .accept(MediaType.parseMediaType("application/json"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"username\":\"testuser\", \"password\":\"blah\"}"))
-                .andExpect(status().is(STATUS_HTTP_400))
+                .andExpect(status().is(401))
                 .andExpect(content().contentTypeCompatibleWith("application/json;charset=UTF-8"));
     }
 }
