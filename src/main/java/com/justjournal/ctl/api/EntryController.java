@@ -99,7 +99,7 @@ public class EntryController {
      * @param id entry id
      * @return entry
      */
-    @RequestMapping(value = "{username}/{id}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "{username}/eid/{id}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public Entry getById(@PathVariable("username") String username, @PathVariable("id") int id, HttpServletResponse response) {
         Entry entry = entryDao.findOne(id);
