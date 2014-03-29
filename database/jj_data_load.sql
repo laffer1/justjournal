@@ -1113,7 +1113,7 @@ VALUES (NULL, '2908', CURRENT_DATE(), CURRENT_TIMESTAMP, 'test subject 2', '3', 
 
 -- Create friends
 
-INSERT INTO `justjournal_test`.`friends` (
+INSERT INTO `friends` (
   `pk`,
   `id`,
   `friendid`
@@ -1123,3 +1123,8 @@ VALUES (
 ), (
   NULL, '2908', '1'
 );
+
+-- test comments
+INSERT INTO `comments` (`id`, `eid`, `uid`, `subject`, `date`, `body`, `modified`)
+VALUES (NULL, '33661', '1', 'test comment', NOW(), 'i am a test comment', NOW()),
+  (NULL, '33660', '2908', 'i am another comment', NOW(), 'another comment', NOW());
