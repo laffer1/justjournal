@@ -139,7 +139,7 @@ public class LoginController {
                 log.error("Login attempt failed with user: " + login.getUsername());
 
                 loginResponse.setStatus(JJ_LOGIN_FAIL);
-                return new ResponseEntity<LoginResponse>(loginResponse, HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<LoginResponse>(loginResponse, HttpStatus.UNAUTHORIZED);
             }
 
             loginResponse.setUsername(login.getUsername());
