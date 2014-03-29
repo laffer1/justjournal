@@ -26,10 +26,7 @@
 
 package com.justjournal.model;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import com.justjournal.utility.HTMLUtil;
 
 import javax.persistence.*;
@@ -51,11 +48,13 @@ public final class Comment implements Serializable {
     @GeneratedValue
     private int id = 0;
 
+    @JsonBackReference
     @JsonProperty("entry")
     @ManyToOne
     @JoinColumn(name = "eid")
     private Entry entry;
 
+    @JsonBackReference
     @JsonProperty("user")
     @ManyToOne
     @JoinColumn(name = "uid")
@@ -70,7 +69,7 @@ public final class Comment implements Serializable {
     @Column(name = "subject", length = 150)
     private String subject = "";
 
-    @Basic(fetch = FetchType.LAZY)
+   // @Basic(fetch = FetchType.LAZY)
     @JsonProperty("body")
     @Column(name = "body")
     @Lob

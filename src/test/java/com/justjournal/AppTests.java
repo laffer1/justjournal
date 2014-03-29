@@ -239,6 +239,13 @@ public class AppTests {
                 .andExpect(content().contentTypeCompatibleWith("application/json;charset=UTF-8"));
     }
 
+    @Test
+    public void apiEntryWithUserParam() throws Exception {
+        mockMvc.perform(get("/api/entry?username=testuser").accept(MediaType.parseMediaType("application/json;charset=UTF-8")))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith("application/json;charset=UTF-8"));
+    }
+
 
     @Test
     public void apiLoginCheck() throws Exception {

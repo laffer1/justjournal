@@ -48,10 +48,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import javax.transaction.Transactional;
+import java.util.*;
 
 /**
  * Entry Controller, for managing blog entries
@@ -99,6 +97,7 @@ public class EntryController {
      * @param id entry id
      * @return entry
      */
+
     @RequestMapping(value = "{username}/eid/{id}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public Entry getById(@PathVariable("username") String username, @PathVariable("id") int id, HttpServletResponse response) {
@@ -121,7 +120,7 @@ public class EntryController {
                 return null;
             }
         } catch (Exception e) {
-            log.error(e);
+            log.error(e.getMessage());
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return null;
         }
@@ -148,8 +147,36 @@ public class EntryController {
             }
 
         } catch (ServiceException e) {
-            log.error(e);
+            log.error(e.getMessage());
         }
+        return entries;
+    }
+
+    @Transactional(Transactional.TxType.REQUIRED)
+    @RequestMapping(value = "", params = "username", method = RequestMethod.GET, produces = "application/json")
+    public
+    @ResponseBody
+    Collection<Entry> getEntriesByUsername(@RequestParam("username") String username, HttpServletResponse response) {
+        Collection<Entry> entries = new ArrayList<Entry>();
+        log.warn("in entriesByUsername with " + username);
+
+        if (username == null || username.isEmpty()) {
+            log.trace("Username was null or empty ");
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return entries;
+        }
+
+        try {
+            entries = entryService.getPublicEntries(username);
+
+            if (entries == null || entries.isEmpty()) {
+                log.warn("entries is null or empty");
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            }
+        } catch (Exception e) {
+            log.error("error is happening " + e.getMessage());
+        }
+        log.warn("ready to return");
         return entries;
     }
 

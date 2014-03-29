@@ -77,6 +77,14 @@ public class MoodThemeData implements Serializable {
 
     }
 
+    public final int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public final String getFileName() {
         return filename;
     }
