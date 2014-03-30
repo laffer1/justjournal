@@ -38,7 +38,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.mail.*;
+import javax.mail.Address;
+import javax.mail.Message;
+import javax.mail.Session;
+import javax.mail.Transport;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
@@ -131,16 +134,6 @@ public class MailSender extends Thread {
         }
 
         log.trace("MailSender: Quit");
-    }
-
-    @Component
-    class ForcedAuthenticator extends Authenticator {
-        @Autowired
-        private Settings set;
-
-        public PasswordAuthentication getPasswordAuthentication() {
-            return new PasswordAuthentication(set.getMailUser(), set.getMailPass());
-        }
     }
 }
 
