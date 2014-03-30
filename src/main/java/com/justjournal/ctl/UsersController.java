@@ -516,29 +516,28 @@ public class UsersController {
 
     private void getPDF(final HttpServletResponse response, final UserContext uc) {
         try {
-            response.reset();
-
-            final Document document = new Document();
-            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            PdfWriter.getInstance(document, baos);
-            formatRTFPDF(uc, document);
-            document.close();
-
+            response.resetBuffer();
             response.setContentType("application/pdf");
             response.setHeader("Expires", "0");
             response.setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
             response.setHeader("Pragma", "public");
             // RFC 1806
             response.setHeader("Content-Disposition", "attachment; filename=" + uc.getBlogUser().getUsername() + ".pdf");
-            response.setContentLength(baos.size()); /* required by IE */
-            final ServletOutputStream out = response.getOutputStream();
-            baos.writeTo(out);
-            out.flush();
-            out.close();
+
+            final Document document = new Document();
+            //    final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            PdfWriter.getInstance(document, response.getOutputStream());    // baos
+            formatRTFPDF(uc, document);
+            document.close();
+
+            //     response.setContentLength(baos.size()); /* required by IE */
+            //   final OutputStream out = response.getOutputStream();
+            //   baos.writeTo(out);
+            //   out.flush();
         } catch (DocumentException e) {
-            log.error("Users.getPDF():" + e.getMessage());
+            log.error("Users.getPDF() DocumentException:" + e.getMessage());
         } catch (IOException e1) {
-            log.error("Users.getPDF():" + e1.getMessage());
+            log.error("Users.getPDF() IOException:" + e1.getMessage());
         } catch (Exception e) {
             // user class caused this
             log.error("Users.getPDF():" + e.getMessage());
@@ -565,9 +564,9 @@ public class UsersController {
             out.flush();
             out.close();
         } catch (DocumentException e) {
-            log.error("Users.getPDF():" + e.getMessage());
+            log.error("Users.getPDF() DocumentException:" + e.getMessage());
         } catch (IOException e1) {
-            log.error("Users.getPDF():" + e1.getMessage());
+            log.error("Users.getPDF() IOException:" + e1.getMessage());
         } catch (Exception e) {
             // user class caused this
             log.error("Users.getPDF():" + e.getMessage());
@@ -1375,7 +1374,7 @@ public class UsersController {
             tags = entryService.getEntryTags(uc.getBlogUser().getUsername());
         } catch (ServiceException se) {
             log.error(se.getMessage());
-           tags = Collections.emptyList();
+            tags = Collections.emptyList();
         }
         int largest = 0;
         int smallest = 10;

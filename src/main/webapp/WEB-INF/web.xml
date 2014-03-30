@@ -118,6 +118,10 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>default</servlet-name>
+        <url-pattern>/fonts/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+    <servlet-name>default</servlet-name>
         <url-pattern>/scripts/*</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
@@ -131,6 +135,10 @@
     <servlet-mapping>
         <servlet-name>default</servlet-name>
         <url-pattern>*.map</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>*.ico</url-pattern>
     </servlet-mapping>
 
     <servlet>
