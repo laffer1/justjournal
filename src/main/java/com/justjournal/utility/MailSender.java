@@ -58,6 +58,8 @@ public class MailSender extends Thread {
     private Logger log = LoggerFactory.getLogger(MailSender.class);
     @Autowired
     private QueueMailRepository queueMailRepository;
+    @Autowired
+    private Settings set;
 
     @Override
     @SuppressWarnings("unchecked")
@@ -65,7 +67,6 @@ public class MailSender extends Thread {
         log.trace("MailSender: Init");
 
         try {
-            Settings set = new Settings();
             Properties props = new Properties();
             props.put("mail.smtp.host", set.getMailHost());
             props.put("mail.smtp.user", set.getMailUser());
@@ -132,9 +133,12 @@ public class MailSender extends Thread {
         log.trace("MailSender: Quit");
     }
 
+    @Component
     class ForcedAuthenticator extends Authenticator {
+        @Autowired
+        private Settings set;
+
         public PasswordAuthentication getPasswordAuthentication() {
-            Settings set = new Settings();
             return new PasswordAuthentication(set.getMailUser(), set.getMailPass());
         }
     }

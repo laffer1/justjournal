@@ -34,6 +34,8 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.core;
 
 import com.justjournal.utility.MailSender;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -43,9 +45,11 @@ import javax.servlet.ServletContextListener;
  *
  * @author Lucas Holt
  */
+@Component
 final public class MailServletContextListener
         implements ServletContextListener {
 
+    @Autowired
     MailSender m;
 
     public MailServletContextListener() {
@@ -53,7 +57,6 @@ final public class MailServletContextListener
     }
 
     public void contextInitialized(ServletContextEvent sce) {
-        m = new MailSender();
         m.start();
         System.out.println("MailServletContextListener:" +
                 "contextInitialized.");

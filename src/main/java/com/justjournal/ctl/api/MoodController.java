@@ -34,8 +34,8 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.ctl.api;
 
-import com.justjournal.repository.MoodDao;
 import com.justjournal.model.Mood;
+import com.justjournal.repository.MoodDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Controller;
@@ -74,7 +74,7 @@ public class MoodController {
     public
     @ResponseBody
     Iterable<Mood> getMoodList() {
-        return moodDao.findAll();
+        return moodDao.findAllOrderByTitleAsc();
     }
 
 }

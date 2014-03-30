@@ -38,6 +38,8 @@ import com.justjournal.model.Mood;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 
 /**
  * Retrieve and acquire mood's for use with journal entries.
@@ -46,4 +48,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface MoodDao extends CrudRepository<Mood, Integer> {
+    public List<Mood> findAllOrderByTitleAsc();
 }

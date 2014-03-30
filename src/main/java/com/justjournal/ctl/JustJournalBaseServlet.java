@@ -36,6 +36,7 @@ package com.justjournal.ctl;
 
 import com.justjournal.core.Settings;
 import com.justjournal.utility.ETag;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -58,7 +59,8 @@ import java.io.IOException;
 public class JustJournalBaseServlet extends HttpServlet {
     protected static final char endl = '\n';  /* end of line character for output */
     public static final int BUFFER_SIZE = 8192;
-    protected Settings set = new Settings();  /* Global Just Journal web app settings */
+    @Autowired
+    protected Settings set;
 
     /**
      * Handles the HTTP <code>GET</code> method.

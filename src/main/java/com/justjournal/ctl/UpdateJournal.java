@@ -84,7 +84,8 @@ public class UpdateJournal extends HttpServlet {
     private static final Logger log = Logger.getLogger(UpdateJournal.class);
     private static final long serialVersionUID = -6905389941955230503L;
     @SuppressWarnings({"InstanceVariableOfConcreteClass"})
-    private Settings settings = new Settings();  // global jj settings
+    @Autowired
+    private Settings settings;
     @Autowired
     private EntryRepository entryRepository;
     @Autowired
