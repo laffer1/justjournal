@@ -51,13 +51,13 @@ public class SignUpController {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private Settings settings;
 
     @RequestMapping(method = RequestMethod.POST, produces = "application/json")
     public
     @ResponseBody
     Map<String, String> post(@RequestParam String email, @RequestBody User user, HttpServletResponse response) {
-
-        Settings settings = new Settings();
 
         if (!settings.isUserAllowNew()) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);

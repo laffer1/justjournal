@@ -37,7 +37,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -65,14 +64,14 @@ public class RecentBlogs {
     private EntryRepository entryRepository;
     @Autowired
     private SecurityDao securityDao;
+    @Autowired
+    private Settings set;
 
     @Cacheable("recentblogs")
     @RequestMapping(method = RequestMethod.GET, produces = "application/rss+xml")
     public
     @ResponseBody
     String get(HttpServletResponse response) {
-        Settings set = new Settings();
-
         response.setContentType("application/rss+xml;charset=UTF-8");
         response.setDateHeader("Expires", System.currentTimeMillis() + 1000 * 60);
         response.setHeader("Cache-Control", "max-age=60, private, proxy-revalidate");
