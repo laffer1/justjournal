@@ -36,6 +36,7 @@ package com.justjournal.ctl.api;
 
 import com.justjournal.model.Mood;
 import com.justjournal.repository.MoodDao;
+import org.apache.commons.collections.IteratorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Controller;
@@ -43,6 +44,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * List moods used for journal entries.
@@ -74,7 +78,10 @@ public class MoodController {
     public
     @ResponseBody
     Iterable<Mood> getMoodList() {
-        return moodDao.findAllOrderByTitleAsc();
+        Iterable iter = moodDao.findAll();
+        List list = IteratorUtils.toList(iter.iterator());
+        Collections.sort(list);
+        return list;
     }
 
 }

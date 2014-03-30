@@ -40,7 +40,7 @@ import java.io.Serializable;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @Entity
 @Table(name = "mood")
-public class Mood implements Serializable {
+public class Mood implements Serializable, Comparable<Mood> {
 
     private static final long serialVersionUID = 6121574687739275660L;
     @Id
@@ -80,5 +80,10 @@ public class Mood implements Serializable {
 
     public void setName(final String name) {
         this.name = name;
+    }
+
+    @Override
+    public int compareTo(final Mood mood) {
+        return this.getName().compareTo(mood.getName());
     }
 }
