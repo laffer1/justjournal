@@ -34,6 +34,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.List;
@@ -43,6 +44,7 @@ import java.util.List;
  *
  * @author Lucas Holt
  */
+@Repository
 public interface EntryRepository extends CrudRepository<Entry, Integer> {
 
     @Query("select e from Entry e, User u where e.user = u and LOWER(u.username) = LOWER(:username)")

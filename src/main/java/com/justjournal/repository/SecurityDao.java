@@ -36,10 +36,12 @@ package com.justjournal.repository;
 
 import com.justjournal.model.Security;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
 
 /**
  * Entry Security
  */
+@Repository
 public interface SecurityDao extends CrudRepository<Security, Integer> {
 }

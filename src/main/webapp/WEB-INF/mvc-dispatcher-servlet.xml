@@ -28,82 +28,19 @@
 <!-- http://docs.spring.io/spring/docs/3.1.0.M1/spring-framework-reference/html/cache.html -->
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:cache="http://www.springframework.org/schema/cache"
        xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:jpa="http://www.springframework.org/schema/data/jpa"
        xmlns:mvc="http://www.springframework.org/schema/mvc"
-       xmlns:tx="http://www.springframework.org/schema/tx"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-        http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd
-        http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa-1.0.xsd
-        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
         http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
-    <context:component-scan base-package="com.justjournal"/>
+    <context:annotation-config/>
+    <context:component-scan base-package="com.justjournal.ctl" use-default-filters="false">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
 
-    <!-- SPRING - JPA -->
-    <jpa:repositories
-            base-package="com.justjournal.repository"/>
-
-    <bean class="org.springframework.orm.jpa.JpaTransactionManager"
-          id="transactionManager">
-        <property name="entityManagerFactory"
-                  ref="entityManagerFactory"/>
-        <property name="jpaDialect">
-            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect"/>
-        </property>
-    </bean>
-
-    <bean id="mainDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
-        <property name="jndiName" value="java:comp/env/jdbc/jjDB"/>
-    </bean>
-
-    <bean id="entityManagerFactory"
-          class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-        <property name="dataSource" ref="mainDataSource"/>
-        <property name="packagesToScan" value="com.justjournal.model"/>
-        <property name="jpaVendorAdapter">
-            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-                <property name="generateDdl" value="true"/>
-                <property name="showSql" value="false"/>
-                <property name="databasePlatform" value="org.hibernate.dialect.MySQLDialect"/>
-                <property name="database" value="MYSQL"/>
-            </bean>
-        </property>
-        <property name="jpaProperties">
-            <value>
-                hibernate.cache.use_second_level_cache = true
-                hibernate.cache.region.factory_class = org.hibernate.cache.ehcache.EhCacheRegionFactory
-                hibernate.cache.use_query_cache = true
-                hibernate.generate_statistics = true
-            </value>
-        </property>
-    </bean>
-
-    <bean id="entryService" class="com.justjournal.services.EntryService"/>
-
-    <bean id="entryController" class="com.justjournal.ctl.api.EntryController">
-    </bean>
-
-    <bean id="statisticsService" class="com.justjournal.services.StatisticsService">
-    </bean>
-
-    <bean id="commentController" class="com.justjournal.ctl.api.CommentController">
-    </bean>
-
-    <bean id="statisticsController" class="com.justjournal.ctl.api.StatisticsController">
-        <property name="statisticsService" ref="statisticsService"/>
-    </bean>
-
-    <bean id="tagsController" class="com.justjournal.ctl.api.TagsController">
-        <property name="tagDao" ref="tagDao"/>
-    </bean>
-
-    <bean id="usersController" class="com.justjournal.ctl.UsersController">
-        <property name="entryService" ref="entryService"/>
-    </bean>
+    <bean class="org.springframework.data.web.config.SpringDataWebConfiguration"/>
 
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix" value="/WEB-INF/views/"/>
@@ -122,18 +59,6 @@
             </bean>
         </mvc:message-converters>
     </mvc:annotation-driven>
-
-    <cache:annotation-driven/>
-
-    <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
-        <property name="cacheManager" ref="ehcache"/>
-    </bean>
-    <bean id="ehcache"
-          class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
-        <property name="configLocation" value="classpath:ehcache.xml"/>
-    </bean>
-
-    <tx:annotation-driven/>
 </beans>
 
 

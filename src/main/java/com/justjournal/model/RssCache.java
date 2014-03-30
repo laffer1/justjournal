@@ -38,6 +38,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -48,8 +49,10 @@ import java.util.Date;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @Entity
 @Table(name = "rss_cache")
-public final class RssCache {
+public final class RssCache implements Serializable {
 
+
+    private static final long serialVersionUID = 7699995609479936367L;
     @Id
     @GeneratedValue
     private int id;

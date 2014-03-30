@@ -36,6 +36,7 @@ package com.justjournal.repository;
 
 import com.justjournal.model.Mood;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
 
 /**
@@ -43,5 +44,6 @@ import org.springframework.data.repository.CrudRepository;
  *
  * @author Lucas Holt
  */
+@Repository
 public interface MoodDao extends CrudRepository<Mood, Integer> {
 }

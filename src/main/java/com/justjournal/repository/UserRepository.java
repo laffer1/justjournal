@@ -38,10 +38,7 @@ import com.justjournal.model.User;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceContextType;
+import org.springframework.stereotype.Repository;
 
 
 /**
@@ -49,6 +46,7 @@ import javax.persistence.PersistenceContextType;
  *
  * @author Lucas Holt
  */
+@Repository
 public interface UserRepository extends CrudRepository<User, Integer> {
 
     @Query("SELECT u FROM User u WHERE LOWER(u.username) = LOWER(:username)")

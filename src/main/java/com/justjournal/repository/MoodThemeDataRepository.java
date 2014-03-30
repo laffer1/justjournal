@@ -36,7 +36,9 @@ package com.justjournal.repository;
 
 import com.justjournal.model.MoodThemeData;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface MoodThemeDataRepository extends CrudRepository<MoodThemeData, Integer> {
 
     public MoodThemeData findByThemeIdAndMoodId(int themeId, int moodId);

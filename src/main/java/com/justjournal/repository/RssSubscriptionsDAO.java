@@ -37,9 +37,11 @@ package com.justjournal.repository;
 import com.justjournal.model.RssSubscription;
 import com.justjournal.model.User;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface RssSubscriptionsDAO extends CrudRepository<RssSubscription, Integer> {
     public List<RssSubscription> findByUser(User user);
 }

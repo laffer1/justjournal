@@ -31,6 +31,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * Entry To Tags relationship
@@ -39,7 +40,9 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "entry_tags")
-public class EntryTag {
+public class EntryTag implements Serializable {
+
+    private static final long serialVersionUID = -1338174937085787799L;
     @Id
     @GeneratedValue
     private int id;

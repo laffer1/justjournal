@@ -38,6 +38,7 @@ import com.justjournal.model.UserLink;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -47,6 +48,7 @@ import java.util.List;
  *
  * @author Lucas Holt
  */
+@Repository
 public interface UserLinkRepository extends CrudRepository<UserLink, Integer> {
 
     @Query("select ul from UserLink ul, User u where ul.user = u and LOWER(u.username) = LOWER(:username)")

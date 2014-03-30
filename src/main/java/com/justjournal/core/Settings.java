@@ -30,6 +30,7 @@ import com.justjournal.repository.SettingsDao;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
 
 /**
@@ -43,8 +44,8 @@ import org.springframework.stereotype.Component;
 @Deprecated
 public class Settings {
     private static Logger log = Logger.getLogger(Settings.class.getName());
-    @Autowired
-    private SettingsDao settingsDao;
+
+    private final SettingsDao settingsDao;
 
     /* paths */
     private String baseUri = "http://localhost:8080/";
@@ -84,7 +85,10 @@ public class Settings {
     /* Users */
     private boolean userAllowNew = true;
 
-    public Settings() {
+    @Autowired
+    public Settings(SettingsDao settingsDao) {
+        Assert.notNull(settingsDao);
+        this.settingsDao = settingsDao;
         try {
             String name;
             String value;

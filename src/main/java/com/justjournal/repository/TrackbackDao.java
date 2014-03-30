@@ -36,11 +36,13 @@ package com.justjournal.repository;
 
 import com.justjournal.model.Trackback;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
 /**
  * Manipulate trackback storage
  *
  * @author Lucas Holt
  */
+@Repository
 public interface TrackbackDao extends CrudRepository<Trackback, Integer> {
 }

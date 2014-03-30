@@ -52,6 +52,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -861,7 +862,7 @@ public class UsersController {
         StringBuffer sb = new StringBuffer();
         Page<Entry> entries;
 
-        Pageable page = new PageRequest(skip / 20 + 1, 20);
+        Pageable page = new PageRequest((skip / 20), 20, new Sort(Sort.Direction.DESC, "date"));
         try {
             if (uc.isAuthBlog()) {
                 entries = entryDao.findByUserOrderByDateDesc(uc.getBlogUser(), page);
@@ -1430,14 +1431,12 @@ public class UsersController {
 
         log.debug("getUserLinks(): Init and load collection");
         StringBuilder sb = new StringBuilder();
-        UserLink link;
-        Set<UserLink> links = uc.getBlogUser().getLinks();
+        List<UserLink> links = uc.getBlogUser().getLinks();
 
         if (!links.isEmpty()) {
             sb.append("\t<div class=\"menuentity\" id=\"userlinks\" style=\"padding-top: 10px;\">\n\t\t<strong style=\"text-transform: uppercase; letter-spacing: 2px; border: 0 none; border-bottom: 1px; border-style: dotted; border-color: #999999; margin-bottom: 5px; width: 100%; font-size: 10px;\"><i class=\"fa fa-external-link-square\"></i> Links</strong>\n\t\t<ul class=\"list-group\">\n");
-            final Iterator itr = links.iterator();
-            for (int i = 0, n = links.size(); i < n; i++) {
-                link = (UserLink) itr.next();
+            Collections.sort(links);
+            for (UserLink link : links) {
                 sb.append("\t\t\t<li class=\"list-group-item\"><a href=\"").append(link.getUri()).append("\" title=\"").append(link.getTitle()).append("\">").append(link.getTitle()).append("</a></li>");
                 sb.append(endl);
             }

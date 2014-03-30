@@ -28,7 +28,7 @@ package com.justjournal.repository;
 
 import com.justjournal.model.Comment;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -37,7 +37,7 @@ import java.util.List;
  *
  * @author Lucas Holt
  */
-@Component
+@Repository
 public interface CommentRepository extends CrudRepository<Comment, Integer> {
 
     public List<Comment> findByEntryId(int entryId);

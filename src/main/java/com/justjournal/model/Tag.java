@@ -32,6 +32,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.justjournal.utility.StringUtil;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * A tag is a form of metadata about a blog entry.  It is similar to a category.
@@ -44,7 +45,9 @@ import javax.persistence.*;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @Entity
 @Table(name = "tags")
-public class Tag {
+public class Tag implements Serializable {
+
+    private static final long serialVersionUID = 6428478632490878525L;
     /**
      * Unique id to represent the global tag
      */

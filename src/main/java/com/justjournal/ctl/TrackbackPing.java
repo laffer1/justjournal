@@ -41,6 +41,7 @@ import com.justjournal.utility.ServletUtilities;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -70,8 +71,13 @@ public class TrackbackPing {
     private static final String MESSAGE = "<message>";
     private static final String END_MESSAGE = "</message>";
 
+    private final TrackbackDao trackbackDao;
+
     @Autowired
-    private TrackbackDao trackbackDao;
+    public TrackbackPing(TrackbackDao trackbackDao) {
+        Assert.notNull(trackbackDao, "TrackbackDao must not be null");
+        this.trackbackDao = trackbackDao;
+    }
 
     @RequestMapping(method = RequestMethod.GET, produces = "text/xml")
     public

@@ -27,13 +27,17 @@
 package com.justjournal.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * @author Lucas Holt
  */
 @Entity
 @Table(name = "settings")
-public class Settings {
+public class Settings implements Serializable {
+
+    private static final long serialVersionUID = -7137678422555117028L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;

@@ -16,19 +16,19 @@
         <persistence strategy="localTempSwap"/>
     </defaultCache>
 
-    <cache name="location" maxEntriesLocalHeap="10000" maxEntriesLocalDisk="1000" eternal="false"
+    <cache name="location" maxEntriesLocalHeap="10" maxEntriesLocalDisk="1000" eternal="false"
            diskSpoolBufferSizeMB="20" timeToIdleSeconds="300" timeToLiveSeconds="600" memoryStoreEvictionPolicy="LFU"
            transactionalMode="off">
         <persistence strategy="localTempSwap"/>
     </cache>
 
-    <cache name="security" maxEntriesLocalHeap="10000" maxEntriesLocalDisk="1000" eternal="false"
+    <cache name="security" maxEntriesLocalHeap="10" maxEntriesLocalDisk="1000" eternal="false"
            diskSpoolBufferSizeMB="20" timeToIdleSeconds="300" timeToLiveSeconds="600" memoryStoreEvictionPolicy="LFU"
            transactionalMode="off">
         <persistence strategy="localTempSwap"/>
     </cache>
 
-    <cache name="mood" maxEntriesLocalHeap="10000" maxEntriesLocalDisk="1000" eternal="false" diskSpoolBufferSizeMB="20"
+    <cache name="mood" maxEntriesLocalHeap="130" maxEntriesLocalDisk="1000" eternal="false" diskSpoolBufferSizeMB="20"
            timeToIdleSeconds="300" timeToLiveSeconds="600" memoryStoreEvictionPolicy="LFU" transactionalMode="off">
         <persistence strategy="localTempSwap"/>
     </cache>

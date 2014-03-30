@@ -28,10 +28,12 @@ package com.justjournal.repository;
 
 import com.justjournal.model.Settings;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
 /**
  * @author Lucas Holt
  */
+@Repository
 public interface SettingsDao extends CrudRepository<Settings, Integer> {
 
     public Settings findByName(String name);

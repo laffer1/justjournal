@@ -36,11 +36,12 @@ package com.justjournal.repository;
 
 import com.justjournal.model.UserBio;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
 /**
  * Manage biography for users
  */
-
+@Repository
 public interface UserBioDao extends CrudRepository<UserBio, Integer> {
 
     public UserBio findByUserId(int userId);

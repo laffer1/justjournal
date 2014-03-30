@@ -50,11 +50,11 @@ import java.io.Serializable;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @Entity
 @Table(name = "user_link")
-public class UserLink implements Serializable {
+public class UserLink implements Serializable, Comparable<UserLink> {
     private static final long serialVersionUID = 6356304916167520610L;
     @Id
     @GeneratedValue
-    @Column(name="linkid")
+    @Column(name = "linkid")
     private int id;
 
     @Column(name = "title")
@@ -143,4 +143,10 @@ public class UserLink implements Serializable {
     public void setUser(final User user) {
         this.user = user;
     }
+
+    @Override
+    public int compareTo(UserLink ul) {
+        return this.getTitle().compareTo(ul.getTitle());
+    }
+
 }

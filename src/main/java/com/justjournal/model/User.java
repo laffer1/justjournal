@@ -118,8 +118,8 @@ public class User implements Serializable {
 
     @JsonManagedReference
     @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch=FetchType.EAGER) // TODO: Lazy fetch type
-    private Set<UserLink> links = new HashSet<UserLink>();
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER) // TODO: Lazy fetch type
+    private List<UserLink> links = new ArrayList<UserLink>();
 
     @JsonManagedReference
     @JsonIgnore
@@ -338,11 +338,11 @@ public class User implements Serializable {
         this.friends = friends;
     }
 
-    public Set<UserLink> getLinks() {
+    public List<UserLink> getLinks() {
         return links;
     }
 
-    public void setLinks(final Set<UserLink> links) {
+    public void setLinks(final List<UserLink> links) {
         this.links = links;
     }
 }

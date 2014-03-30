@@ -28,9 +28,11 @@ package com.justjournal.repository;
 
 import com.justjournal.model.UserContact;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
 /**
  * @author Lucas Holt
  */
+@Repository
 public interface UserContactRepository extends CrudRepository<UserContact, Integer> {
 }

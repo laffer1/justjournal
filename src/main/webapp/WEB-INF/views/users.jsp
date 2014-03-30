@@ -3,9 +3,9 @@
 <html>
 
 <head>
-    <title><c:out value="${user.journalName}"/></title>
-    <c:if test="${user.spiderAllowed == true}">
-        <meta name="robots" content="noindex, nofollow, noarchive">
+    <title><c:out value="${user.userPref.journalName}"/></title>
+    <c:if test="${user.userPref.allowSpider == 'Y'}">
+    <meta name="robots" content="noindex, nofollow, noarchive">
         <meta name="googlebot" content="nosnippet">
     </c:if>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/bootstrap.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/bootstrap-theme.min.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/styles/users.css">
-    <!-- TODO: write new themes <link rel="stylesheet" type="text/css" media="screen" href="${pageContext.request.contextPath}/styles/<c:out value="${user.styleId}"/>.css">
+    <!-- TODO: write new themes <link rel="stylesheet" type="text/css" media="screen" href="${pageContext.request.contextPath}/styles/<c:out value="${user.userPref.style}"/>.css">
           -->
     <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" media="screen"
@@ -158,11 +158,10 @@
     <div class="row">
         <section>
             <div id="menu" class="col-xs-6 col-md-3">
-                <c:if test="${user.showAvatar == true}">
-                    <p><img class="img-rounded img-responsive" alt="avatar"
-                            src="${pageContext.request.contextPath}/image?id=<c:out value="${user.userId}"/>">
-                    </p>
-                </c:if>
+
+                <p><img class="img-rounded img-responsive" alt="avatar"
+                        src="${pageContext.request.contextPath}/image?id=<c:out value="${user.id}"/>">
+                </p>
 
                 <c:out escapeXml="false" value="${recentEntries}"/>
 
@@ -179,7 +178,7 @@
         <section>
             <div id="content" class="col-xs-12 col-md-8 col-md-offset-1">
                 <div class="page-header">
-                    <h1><c:out value="${user.journalName}"/></h1>
+                    <h1><c:out value="${user.userPref.journalName}"/></h1>
                 </div>
 
                 <c:if test="${authenticatedUsername != null}">

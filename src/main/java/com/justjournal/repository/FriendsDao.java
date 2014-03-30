@@ -36,6 +36,7 @@ package com.justjournal.repository;
 
 import com.justjournal.model.Friend;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
 
 /**
@@ -43,6 +44,7 @@ import org.springframework.data.repository.CrudRepository;
  *
  * @author Lucas Holt
  */
+@Repository
 public interface FriendsDao extends CrudRepository<Friend, Integer> {
 
 }

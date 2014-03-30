@@ -36,8 +36,10 @@ package com.justjournal.model;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -48,31 +50,43 @@ import java.util.Date;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @Entity
 @Table(name = "trackback")
-public class Trackback {
-    /*
-    id  int 10  unsigned auto  (trackback unit id)
-    eid (entry it refers to)
-    date datetime
-    subject  (title, name)   varchar 150
-    body   (comment, excert)
-    email (author email)
-    name  (author name)
-    type  (trackback, pingback, post-it)
-    */
+public class Trackback implements Serializable {
+    private static final long serialVersionUID = 1249662473110605504L;
+
     @Id
     @GeneratedValue
     @Column(name = "id")
     private int id;
-    // TODO: finish
-    private int entryId;
-    private Date date;
-    private String subject;
-    private String body;
-    private String authorEmail;
-    private String authorName;
-    private String blogName;
-    private String url;
-    private TrackbackType type;
+
+    @Column(name = "eid")
+    private int entryId = 0;
+
+    @JsonIgnore
+    @Column(name = "date")
+    @Temporal(value = TemporalType.DATE)
+    private Date date = new Date();
+
+    @Column(name = "subject", length = 150)
+    private String subject = null;
+
+    @Lob
+    private String body = null;
+
+    @Column(name = "author_email", length = 150)
+    private String authorEmail = null;
+
+    @Column(name = "author_name", length = 50)
+    private String authorName = null;
+
+    @Column(name = "blogname", length = 150)
+    private String blogName = null;
+
+    @Column(name = "url", length = 150)
+    private String url = null;
+
+    @Column(name = "type", length = 10)
+    @Enumerated(EnumType.STRING)
+    private TrackbackType type = null;
 
     @JsonCreator
     public Trackback() {
