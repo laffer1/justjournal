@@ -59,7 +59,7 @@ public final class RssCache implements Serializable {
 
     private int interval;
 
-    @Column(name = "last_updated")
+    @Column(name = "lastupdated")
     private Date lastUpdated;
 
     //TODO: mark as tinytext
