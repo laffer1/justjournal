@@ -66,7 +66,7 @@ public final class RssCache implements Serializable {
     @Column(name = "uri", nullable = false)
     private String uri;
 
-    @Column(name = "context", nullable = false, length = 65535, columnDefinition = "TEXT")
+    @Column(name = "content", nullable = false, length = 65535, columnDefinition = "TEXT")
     private String content;
 
     @JsonCreator
