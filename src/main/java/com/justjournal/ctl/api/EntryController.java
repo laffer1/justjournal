@@ -30,10 +30,7 @@ import com.justjournal.Login;
 import com.justjournal.model.Comment;
 import com.justjournal.model.Entry;
 import com.justjournal.model.User;
-import com.justjournal.repository.CommentRepository;
-import com.justjournal.repository.EntryRepository;
-import com.justjournal.repository.SecurityDao;
-import com.justjournal.repository.UserRepository;
+import com.justjournal.repository.*;
 import com.justjournal.services.EntryService;
 import com.justjournal.services.ServiceException;
 import org.apache.log4j.Logger;
@@ -68,6 +65,10 @@ public class EntryController {
     private EntryRepository entryDao = null;
     @Autowired
     private SecurityDao securityDao;
+    @Autowired
+    private LocationDao locationDao;
+    @Autowired
+    private MoodDao moodDao;
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -215,6 +216,18 @@ public class EntryController {
         }
 
         entry.setUser(user);
+
+        if (entry.getLocation() == null)
+            entry.setLocation(locationDao.findOne(0));
+
+        if (entry.getSecurity() == null)
+            entry.setSecurity(securityDao.findOne(0));
+
+        if (entry.getMood() == null)
+            entry.setMood(moodDao.findOne(12));  // not specified
+
+        if (entry.getDate() == null)
+            entry.setDate(new Date());
 
         // TODO: validate
         Entry saved = entryDao.save(entry);

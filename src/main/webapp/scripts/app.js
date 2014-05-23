@@ -1,13 +1,15 @@
 angular.module('wwwApp',
                 [
                     'ui',
+                    'ui.bootstrap',
+                    'ui.bootstrap.pagination',
                     'ngRoute',
                     'ngResource',
                     'ngCookies',
                     'ngRoute',
                     'ngSanitize'
                 ])
-        .config(function ($routeProvider) {
+        .config(function ($routeProvider, $locationProvider) {
             'use strict';
 
             $routeProvider
@@ -75,7 +77,12 @@ angular.module('wwwApp',
                         templateUrl: 'views/tags.html',
                         controller: 'TagsCtrl'
                     })
+                    .when('/users', {
+
+                    })
                     .otherwise({
                         redirectTo: '/'
                     });
+
+            $locationProvider.hashPrefix('!');
         });

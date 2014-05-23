@@ -68,6 +68,6 @@ public class MoodDaoTests {
         Mood moodTo = moodDao.findOne(1);
         assertNotNull(moodTo);
         assertEquals(1, moodTo.getId());
-        assertNotNull(moodTo.getName());
+        assertNotNull(moodTo.getTitle());
     }
 }
