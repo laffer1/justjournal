@@ -51,7 +51,7 @@ public class Mood implements Serializable, Comparable<Mood> {
     private int parent = 0;  // parent mood
 
     @Column(length = 30, nullable = false, name = "title", unique = true)
-    private String name = "";
+    private String title = "";
 
     @JsonCreator
     public Mood() {
@@ -74,16 +74,16 @@ public class Mood implements Serializable, Comparable<Mood> {
         this.parent = parent;
     }
 
-    public String getName() {
-        return this.name;
+    public String getTitle() {
+        return this.title;
     }
 
-    public void setName(final String name) {
-        this.name = name;
+    public void setTitle(final String title) {
+        this.title = title;
     }
 
     @Override
     public int compareTo(final Mood mood) {
-        return this.getName().compareTo(mood.getName());
+        return this.getTitle().compareTo(mood.getTitle());
     }
 }
