@@ -113,7 +113,9 @@ public class UsersController {
     }
 
     @RequestMapping(value = "{username}", method = RequestMethod.GET, produces = "text/html")
-    public String entries(@PathVariable("username") String username, @RequestParam(value = "skip", required = false) Integer skip, Model model, HttpSession session, HttpServletResponse response) {
+    public String entries(@PathVariable("username") String username,
+                          Pageable pageable,
+                          Model model, HttpSession session, HttpServletResponse response) {
         UserContext userContext = getUserContext(username, session);
         model.addAttribute("authenticatedUsername", Login.currentLoginName(session));
         model.addAttribute("user", userContext.getBlogUser());
@@ -129,7 +131,7 @@ public class UsersController {
         model.addAttribute("archive", getArchive(userContext));
         model.addAttribute("taglist", getTagMini(userContext));
 
-        model.addAttribute("entries", getEntries(userContext, skip == null ? 0 : skip));
+        model.addAttribute("entries", getEntries(userContext, pageable));
         return "users";
     }
 
@@ -507,6 +509,8 @@ public class UsersController {
 
         try {
             User user = userRepository.findByUsername(username);
+            if (user == null || user.getId() == 0) return null;
+
             return new UserContext(user, authUser);
         } catch (Exception e) {
             log.error(e);
@@ -629,7 +633,7 @@ public class UsersController {
 
             document.add(new Chunk("Location: " + o.getLocation().getTitle()));
             document.add(Chunk.NEWLINE);
-            document.add(new Chunk("Mood: " + o.getMood().getName()));
+            document.add(new Chunk("Mood: " + o.getMood().getTitle()));
             document.add(Chunk.NEWLINE);
             document.add(new Chunk("Music: " + o.getMusic()));
             document.add(Chunk.NEWLINE);
@@ -857,19 +861,18 @@ public class UsersController {
         return sb.toString();
     }
 
-    private String getEntries(final UserContext uc, final int skip) {
+    private String getEntries(final UserContext uc, Pageable pageable) {
         StringBuffer sb = new StringBuffer();
         Page<Entry> entries;
 
-        Pageable page = new PageRequest((skip / 20), 20, new Sort(Sort.Direction.DESC, "date"));
         try {
             if (uc.isAuthBlog()) {
-                entries = entryDao.findByUserOrderByDateDesc(uc.getBlogUser(), page);
+                entries = entryDao.findByUserOrderByDateDesc(uc.getBlogUser(), pageable);
 
                 if (log.isDebugEnabled())
                     log.debug("getEntries: User is logged in.");
             } else {
-                entries = entryDao.findByUserAndSecurityOrderByDateDesc(uc.getBlogUser(), securityDao.findOne(2), page);
+                entries = entryDao.findByUserAndSecurityOrderByDateDesc(uc.getBlogUser(), securityDao.findOne(2), pageable);
 
                 if (log.isDebugEnabled())
                     log.debug("getEntries: User is not logged in.");
@@ -882,7 +885,7 @@ public class UsersController {
             String lastDate = "";
             String curDate;
 
-            sb.append(jumpmenu(skip, 20, entries.getTotalElements() > 19, skip > 0, uc));
+         //   sb.append(jumpmenu(skip, 20, entries.getTotalElements() > 19, skip > 0, uc));
 
             if (log.isDebugEnabled())
                 log.debug("getEntries: Begin Iteration of records.");
@@ -905,7 +908,7 @@ public class UsersController {
                 sb.append(formatEntry(uc, o, currentDate, false));
             }
 
-            sb.append(jumpmenu(skip, 20, entries.getTotalElements() > 19, skip > 0, uc));
+           // sb.append(jumpmenu(skip, 20, entries.getTotalElements() > 19, skip > 0, uc));
 
         } catch (Exception e1) {
             ErrorPage.Display("Error",
@@ -1067,7 +1070,7 @@ public class UsersController {
                     sb.append(endl);
                 }
 
-                if (o.getMood().getName().length() > 0 && o.getMood().getId() != 12) {
+                if (o.getMood().getTitle().length() > 0 && o.getMood().getId() != 12) {
                     final MoodThemeData emoto = emoticonDao.findByThemeIdAndMoodId(1, o.getMood().getId());
 
                     sb.append("<span class=\"mood\">mood: <img src=\"/images/emoticons/1/");
@@ -1077,9 +1080,9 @@ public class UsersController {
                     sb.append("\" height=\"");
                     sb.append(emoto.getHeight());
                     sb.append("\" alt=\"");
-                    sb.append(o.getMood().getName());
+                    sb.append(o.getMood().getTitle());
                     sb.append("\" /> ");
-                    sb.append(o.getMood().getName());
+                    sb.append(o.getMood().getTitle());
                     sb.append("</span><br>");
                     sb.append(endl);
                 }
@@ -1649,7 +1652,7 @@ public class UsersController {
         rss.setWebMaster("webmaster@justjournal.com (Lucas)");
         // RSS advisory board format
         rss.setManagingEditor(user.getUserContact().getEmail() + " (" + user.getFirstName() + ")");
-        rss.populate(entryDao.findByUsernameAndSecurity(user.getUsername(), securityDao.findOne(2)));
+        rss.populate(entryDao.findByUserAndSecurityOrderByDateDesc(user, securityDao.findOne(2)));
         return rss.toXml();
     }
 
@@ -1876,7 +1879,7 @@ public class UsersController {
             sb.append(endl);
         }
 
-        if (o.getMood().getName().length() > 0 && o.getMood().getId() != 12) {
+        if (o.getMood().getTitle().length() > 0 && o.getMood().getId() != 12) {
             final MoodThemeData emoto = emoticonDao.findByThemeIdAndMoodId(1, o.getMood().getId());
 
             sb.append("\t\t\t<span class=\"mood\">mood: <img src=\"/images/emoticons/1/");
@@ -1886,9 +1889,9 @@ public class UsersController {
             sb.append("\" height=\"");
             sb.append(emoto.getHeight());
             sb.append("\" alt=\"");
-            sb.append(o.getMood().getName());
+            sb.append(o.getMood().getTitle());
             sb.append("\" /> ");
-            sb.append(o.getMood().getName());
+            sb.append(o.getMood().getTitle());
             sb.append("</span><br />");
             sb.append(endl);
         }
