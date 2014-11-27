@@ -35,6 +35,7 @@ import com.justjournal.services.EntryService;
 import com.justjournal.services.ServiceException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -58,19 +59,30 @@ import java.util.*;
 public class EntryController {
     private static final Logger log = Logger.getLogger(EntryController.class);
 
+    @Qualifier("commentRepository")
     @Autowired
     private CommentRepository commentDao = null;
 
+    @Qualifier("entryRepository")
     @Autowired
     private EntryRepository entryDao = null;
+
+    @Qualifier("securityDao")
     @Autowired
     private SecurityDao securityDao;
+
+    @Qualifier("locationDao")
     @Autowired
     private LocationDao locationDao;
+
+    @Qualifier("moodDao")
     @Autowired
     private MoodDao moodDao;
+
+    @Qualifier("userRepository")
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private EntryService entryService;
 
@@ -206,13 +218,13 @@ public class EntryController {
 
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
+            return Collections.singletonMap("error", "The login timed out or is invalid.");
         }
 
         User user = userRepository.findOne(Login.currentLoginId(session));
         if (user == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return java.util.Collections.singletonMap("error", "User not found");
+            return Collections.singletonMap("error", "User not found");
         }
 
         entry.setUser(user);
@@ -234,7 +246,7 @@ public class EntryController {
 
         if (saved.getId() < 1) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            return java.util.Collections.singletonMap("error", "Could not save entry");
+            return Collections.singletonMap("error", "Could not save entry");
         }
 
         model.addAttribute("status", "ok");
@@ -263,7 +275,7 @@ public class EntryController {
     Map<String, String> put(@RequestBody Entry entry, HttpSession session, HttpServletResponse response) {
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
+            return Collections.singletonMap("error", "The login timed out or is invalid.");
         }
         User user = userRepository.findOne(Login.currentLoginId(session));
         entry.setUser(user);
@@ -279,7 +291,7 @@ public class EntryController {
         } else
             entryDao.save(entry);
 
-        return java.util.Collections.singletonMap("id", Integer.toString(entry.getId()));
+        return Collections.singletonMap("id", Integer.toString(entry.getId()));
     }
 
     /**
@@ -297,7 +309,7 @@ public class EntryController {
 
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
+            return Collections.singletonMap("error", "The login timed out or is invalid.");
         }
 
         if (entryId < 1)
@@ -313,14 +325,14 @@ public class EntryController {
                 entryDao.delete(entryId);
             } else {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                return java.util.Collections.singletonMap("error", "Could not delete entry.");
+                return Collections.singletonMap("error", "Could not delete entry.");
             }
 
-            return java.util.Collections.singletonMap("id", Integer.toString(entryId));
+            return Collections.singletonMap("id", Integer.toString(entryId));
         } catch (Exception e) {
             log.error(e.getMessage());
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return java.util.Collections.singletonMap("error", "Could not delete the comment.");
+            return Collections.singletonMap("error", "Could not delete the comment.");
         }
     }
 }
