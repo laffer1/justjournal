@@ -13,8 +13,6 @@
     <link rel="stylesheet" type="text/css" href="../../layout.css" media="all"/>
     <link rel="stylesheet" type="text/css" href="../../font-normal.css" media="all"/>
     <link rel="home" title="Home" href="index.jsp"/>
-    <link rel="contents" title="Site Map" href="sitemap.jsp"/>
-    <link rel="help" title="Technical Support" href="support/index.jsp"/>
 </head>
 
 <body>
