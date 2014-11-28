@@ -47,8 +47,10 @@ import com.lowagie.text.Font;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfWriter;
 import com.lowagie.text.rtf.RtfWriter2;
+import com.sun.istack.internal.NotNull;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -87,19 +89,28 @@ public class UsersController {
 
     @SuppressWarnings({"InstanceVariableOfConcreteClass"})
     private Settings settings = null;
+
+    @Qualifier("commentRepository")
     @Autowired
     private CommentRepository commentDao = null;
+
+    @Qualifier("entryRepository")
     @Autowired
     private EntryRepository entryDao = null;
+
     @Autowired
     private EntryService entryService = null;
+
+    @Qualifier("moodThemeDataRepository")
     @Autowired
     private MoodThemeDataRepository emoticonDao;
 
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private SecurityDao securityDao;
+
     @Autowired
     private RssSubscriptionsDAO rssSubscriptionsDAO;
 
@@ -203,8 +214,8 @@ public class UsersController {
         model.addAttribute("archive", getArchive(userContext));
         model.addAttribute("taglist", getTagMini(userContext));
 
-        final java.util.Calendar cal = Calendar.getInstance();
-        Integer year = cal.get(java.util.Calendar.YEAR);
+        final Calendar cal = Calendar.getInstance();
+        Integer year = cal.get(Calendar.YEAR);
 
         model.addAttribute("startYear", userContext.getBlogUser().getSince());
         model.addAttribute("currentYear", year);
@@ -815,7 +826,7 @@ public class UsersController {
 
                         // Parse the previous string back into a Date.
                         final ParsePosition pos = new ParsePosition(0);
-                        final java.util.Date currentDate = formatter.parse(brs.getString("date"), pos);
+                        final Date currentDate = formatter.parse(brs.getString("date"), pos);
 
                         curDate = formatmydate.format(currentDate);
 
@@ -869,13 +880,11 @@ public class UsersController {
             if (uc.isAuthBlog()) {
                 entries = entryDao.findByUserOrderByDateDesc(uc.getBlogUser(), pageable);
 
-                if (log.isDebugEnabled())
-                    log.debug("getEntries: User is logged in.");
+                log.debug("getEntries: User is logged in.");
             } else {
                 entries = entryDao.findByUserAndSecurityOrderByDateDesc(uc.getBlogUser(), securityDao.findOne(2), pageable);
 
-                if (log.isDebugEnabled())
-                    log.debug("getEntries: User is not logged in.");
+                log.debug("getEntries: User is not logged in.");
             }
 
             // Format the current time.
@@ -886,9 +895,7 @@ public class UsersController {
             String curDate;
 
          //   sb.append(jumpmenu(skip, 20, entries.getTotalElements() > 19, skip > 0, uc));
-
-            if (log.isDebugEnabled())
-                log.debug("getEntries: Begin Iteration of records.");
+            log.debug("getEntries: Begin Iteration of records.");
 
             for (Entry o : entries) {
                 // Parse the previous string back into a Date.
@@ -984,7 +991,7 @@ public class UsersController {
 
                 // Parse the previous string back into a Date.
                 final ParsePosition pos = new ParsePosition(0);
-                final java.util.Date currentDate = formatter.parse(new DateTimeBean(o.getDate()).toString(), pos);
+                final Date currentDate = formatter.parse(new DateTimeBean(o.getDate()).toString(), pos);
 
                 curDate = formatmydate.format(currentDate);
 
@@ -1191,7 +1198,7 @@ public class UsersController {
     private String getCalendar(final int year,
                                final UserContext uc) {
         StringBuffer sb = new StringBuffer();
-        final java.util.GregorianCalendar calendar = new java.util.GregorianCalendar();
+        final GregorianCalendar calendar = new GregorianCalendar();
         int yearNow = calendar.get(Calendar.YEAR);
 
         // print out header
@@ -1333,7 +1340,7 @@ public class UsersController {
     private String getCalendarMini(UserContext uc) {
         StringBuilder sb = new StringBuilder();
         try {
-            final Calendar cal = new GregorianCalendar(java.util.TimeZone.getDefault());
+            final Calendar cal = new GregorianCalendar(TimeZone.getDefault());
             int year = cal.get(Calendar.YEAR);
             int month = cal.get(Calendar.MONTH) + 1; // zero based
 
@@ -1560,7 +1567,7 @@ public class UsersController {
 
                     // Parse the previous string back into a Date.
                     final ParsePosition pos = new ParsePosition(0);
-                    final java.util.Date currentDate = formatter.parse(new DateTimeBean(o.getDate()).toString(), pos);
+                    final Date currentDate = formatter.parse(new DateTimeBean(o.getDate()).toString(), pos);
 
                     curDate = formatmydate.format(currentDate);
 
@@ -1593,7 +1600,7 @@ public class UsersController {
      */
     @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
     private String getArchive(final UserContext uc) {
-        final java.util.GregorianCalendar calendarg = new java.util.GregorianCalendar();
+        final GregorianCalendar calendarg = new GregorianCalendar();
         int yearNow = calendarg.get(Calendar.YEAR);
         StringBuilder sb = new StringBuilder();
 
@@ -1640,8 +1647,8 @@ public class UsersController {
     private String getRSS(final User user) {
         Rss rss = new Rss();
 
-        final java.util.GregorianCalendar calendar = new java.util.GregorianCalendar();
-        calendar.setTime(new java.util.Date());
+        final GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTime(new Date());
 
         rss.setTitle(user.getUsername());
         rss.setLink("http://www.justjournal.com/users/" + user.getUsername());
@@ -1666,8 +1673,8 @@ public class UsersController {
 
         AtomFeed atom = new AtomFeed();
 
-        final java.util.GregorianCalendar calendarg = new java.util.GregorianCalendar();
-        calendarg.setTime(new java.util.Date());
+        final GregorianCalendar calendarg = new GregorianCalendar();
+        calendarg.setTime(new Date());
 
         atom.setUserName(user.getUsername());
         atom.setAlternateLink("http://www.justjournal.com/users/" + user.getUsername());
@@ -1690,8 +1697,8 @@ public class UsersController {
 
         final Rss rss = new Rss();
 
-        final java.util.GregorianCalendar calendarg = new java.util.GregorianCalendar();
-        calendarg.setTime(new java.util.Date());
+        final GregorianCalendar calendarg = new GregorianCalendar();
+        calendarg.setTime(new Date());
 
         rss.setTitle(user.getUsername() + "\'s pictures");
         rss.setLink("http://www.justjournal.com/users/" + user.getUsername() + "/pictures");
@@ -1738,7 +1745,7 @@ public class UsersController {
 
                 // Parse the previous string back into a Date.
                 final ParsePosition pos = new ParsePosition(0);
-                final java.util.Date currentDate = formatter.parse(new DateTimeBean(o.getDate()).toString(), pos);
+                final Date currentDate = formatter.parse(new DateTimeBean(o.getDate()).toString(), pos);
 
                 curDate = formatmydate.format(currentDate);
 
