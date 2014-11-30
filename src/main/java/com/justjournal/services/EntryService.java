@@ -115,6 +115,7 @@ public class EntryService {
                 RecentEntry recentEntry = new RecentEntry();
                 recentEntry.setId(o.getId());
                 recentEntry.setSubject(Xml.cleanString(o.getSubject()));
+                recentEntries.add(recentEntry);
             }
         } catch (Exception e) {
             log.error(e.getMessage());
