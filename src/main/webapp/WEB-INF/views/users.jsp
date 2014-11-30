@@ -49,7 +49,7 @@
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                         </button>
-                        <a class="navbar-brand" href="${pageContext.request.contextPath}/#/" title="JustJournal">
+                        <a class="navbar-brand" href="${pageContext.request.contextPath}/#!/" title="JustJournal">
                             JustJournal
                         </a>
                     </div>
