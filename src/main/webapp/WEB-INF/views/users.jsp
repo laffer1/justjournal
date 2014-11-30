@@ -93,11 +93,11 @@
                                             class="fa fa-rss"></i>
                                         ATOM</a></li>
                                     <li>
-                                        <a href="http://www.justjournal.com/users/<c:out value="${user.username}"/>/pdf"><i
+                                        <a href="${pageContext.request.contextPath}/users/<c:out value="${user.username}"/>/pdf"><i
                                                 class="fa fa-download"></i> PDF</a>
                                     </li>
                                     <li>
-                                        <a href="http://www.justjournal.com/users/<c:out value="${user.username}"/>/rtf"><i
+                                        <a href="${pageContext.request.contextPath}/users/<c:out value="${user.username}"/>/rtf"><i
                                                 class="fa fa-download"></i> RTF</a>
                                     </li>
                                 </ul>
@@ -116,10 +116,10 @@
                             </li>
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
-                            <li><a href="${pageContext.request.contextPath}/#/entry" title="New Entry"><i
+                            <li><a href="${pageContext.request.contextPath}/#!/entry" title="New Entry"><i
                                     class="fa fa-pencil-square"></i> New Entry</a></li>
                             <li>
-                                <a href="${pageContext.request.contextPath}/#/profile/<c:out value="${user.username}"/>"><i
+                                <a href="${pageContext.request.contextPath}/#!/profile/<c:out value="${user.username}"/>"><i
                                         class="fa fa-user"></i> Profile</a>
                             </li>
 
