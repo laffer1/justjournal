@@ -63,6 +63,12 @@ final public class MailServletContextListener
     }
 
     public void contextDestroyed(ServletContextEvent sce) {
+        if (m == null) {
+            System.out.println("MailServletContextListener:" +
+                            "contextDestroyed not needed. MailSender not initialized");
+            return;
+        }
+
         m.process = false;
         m.interrupt();
         System.out.println("MailServletContextListener:" +
