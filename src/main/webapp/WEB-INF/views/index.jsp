@@ -105,6 +105,10 @@
 <script type="text/javascript"
         src="${pageContext.request.contextPath}/components/angular-ui/build/angular-ui.js"></script>
 
+<script type="text/javascript"
+        src="${pageContext.request.contextPath}/components/angular-ui-bootstrap/src/pagination/pagination.js"></script>
+
+
 <!-- build:js scripts/scripts.js -->
 <script type="text/javascript" src="scripts/app.js"></script>
 <script type="text/javascript" src="scripts/controllers/wwwApp.js"></script>

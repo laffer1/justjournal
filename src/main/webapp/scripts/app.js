@@ -1,7 +1,6 @@
 angular.module('wwwApp',
                 [
                     'ui',
-                    'ui.bootstrap',
                     'ui.bootstrap.pagination',
                     'ngRoute',
                     'ngResource',
