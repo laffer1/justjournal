@@ -892,7 +892,11 @@ public class UsersController {
             String lastDate = "";
             String curDate;
 
-         //   sb.append(jumpmenu(skip, 20, entries.getTotalElements() > 19, skip > 0, uc));
+            int skip = pageable.getOffset();
+
+            String menu = jumpmenu(pageable.getPageNumber() + 1, entries.getTotalElements() > 19, skip > 0, uc);
+
+            sb.append(menu);
             log.debug("getEntries: Begin Iteration of records.");
 
             for (Entry o : entries) {
@@ -912,9 +916,7 @@ public class UsersController {
 
                 sb.append(formatEntry(uc, o, currentDate, false));
             }
-
-           // sb.append(jumpmenu(skip, 20, entries.getTotalElements() > 19, skip > 0, uc));
-
+            sb.append(menu);
         } catch (Exception e1) {
             ErrorPage.Display("Error",
                     "Unable to retrieve journal entries from data store.",
@@ -926,19 +928,19 @@ public class UsersController {
         return sb.toString();
     }
 
-    private String jumpmenu(final int skip, final int offset, final boolean back, final boolean forward, final UserContext uc) {
+    private String jumpmenu(final int page, final boolean back, final boolean forward, final UserContext uc) {
         StringBuilder sb = new StringBuilder();
 
         sb.append("<ul class=\"pager\">");
         sb.append("<li class=\"previous " + (back ? "" : "disabled") + "\"><a href=\"/users/");
         sb.append(uc.getBlogUser().getUsername());
-        sb.append("?skip=");
-        sb.append((skip + offset));
+        sb.append("?page=");
+        sb.append((page + 1));
         sb.append("\">&larr; Older</a></li>");
         sb.append("<li class=\"next " + (forward ? "" : "disabled") + "\"><a href=\"/users/");
         sb.append(uc.getBlogUser().getUsername());
         sb.append("?skip=");
-        sb.append((skip - offset));
+        sb.append((page - 1));
         sb.append("\">Newer &rarr;</a></li>");
         sb.append("</ul>");
 
@@ -1466,7 +1468,7 @@ public class UsersController {
         final int maxrecent = 5;
 
         try {
-            Pageable page = new PageRequest(1, 20);
+            Pageable page = new PageRequest(0, 5);
 
             if (uc.isAuthBlog()) {
                 entries = entryDao.findByUserOrderByDateDesc(uc.getBlogUser(), page);
