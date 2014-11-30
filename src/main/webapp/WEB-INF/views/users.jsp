@@ -5,7 +5,7 @@
 <head>
     <title><c:out value="${user.userPref.journalName}"/></title>
     <c:if test="${user.userPref.allowSpider == 'Y'}">
-    <meta name="robots" content="noindex, nofollow, noarchive">
+        <meta name="robots" content="noindex, nofollow, noarchive">
         <meta name="googlebot" content="nosnippet">
     </c:if>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -189,7 +189,32 @@
                     </p>
                 </c:if>
 
+                <c:if test="${pageable != null}">
+                    <ul class="pager">
+                        <li class="previous">
+                            <a href="${pageContext.request.contextPath}/users/<c:out value="${user.username}"/>?page=<c:out value="${pageable.getPageNumber() + 2}"/>">&larr;
+                                Older</a>
+                        </li>
+                        <li class="next <c:if test="pageable.getPageNumber() == 1">disabled</c:if>">
+                            <a href="${pageContext.request.contextPath}/users/<c:out value="${user.username}"/>?page=<c:out value="${pageable.getPageNumber()}"/>">Newer &rarr;</a>
+                        </li>
+                    </ul>
+                </c:if>
+
                 <c:out escapeXml="false" value="${entries}"/>
+
+                <c:if test="${pageable != null}">
+                    <ul class="pager">
+                        <li class="previous">
+                            <a href="${pageContext.request.contextPath}/users/<c:out value="${user.username}"/>?page=<c:out value="${pageable.getPageNumber() + 2}"/>">&larr;
+                                Older</a>
+                        </li>
+                        <li class="next <c:if test="pageable.getPageNumber() == 1">disabled</c:if>">
+                            <a href="${pageContext.request.contextPath}/users/<c:out value="${user.username}"/>?page=<c:out value="${pageable.getPageNumber()}"/>">Newer &rarr;</a>
+                        </li>
+                    </ul>
+                </c:if>
+
                 <c:out escapeXml="false" value="${entry}"/>
                 <c:out escapeXml="false" value="${friends}"/>
                 <c:out escapeXml="false" value="${pictures}"/>

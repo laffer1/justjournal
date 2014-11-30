@@ -146,6 +146,8 @@ public class UsersController {
         model.addAttribute("archive", getArchive(userContext));
         model.addAttribute("taglist", getTagMini(userContext));
 
+        model.addAttribute("pageable", pageable);
+
         model.addAttribute("entries", getEntries(userContext, pageable));
         return "users";
     }
@@ -982,11 +984,6 @@ public class UsersController {
             String lastDate = "";
             String curDate;
 
-            int skip = pageable.getOffset();
-
-            String menu = jumpmenu(pageable.getPageNumber() + 1, entries.getTotalElements() > 19, skip > 0, uc);
-
-            sb.append(menu);
             log.debug("getEntries: Begin Iteration of records.");
 
             for (Entry o : entries) {
@@ -1006,7 +1003,6 @@ public class UsersController {
 
                 sb.append(formatEntry(uc, o, currentDate, false));
             }
-            sb.append(menu);
         } catch (Exception e1) {
             ErrorPage.Display("Error",
                     "Unable to retrieve journal entries from data store.",
@@ -1014,25 +1010,6 @@ public class UsersController {
 
             log.error("getEntries: Exception is " + e1.getMessage() + '\n' + e1.toString());
         }
-        return sb.toString();
-    }
-
-    private String jumpmenu(final int page, final boolean back, final boolean forward, final UserContext uc) {
-        StringBuilder sb = new StringBuilder();
-
-        sb.append("<ul class=\"pager\">");
-        sb.append("<li class=\"previous ").append(back ? "" : "disabled").append("\"><a href=\"/users/");
-        sb.append(uc.getBlogUser().getUsername());
-        sb.append("?page=");
-        sb.append((page + 1));
-        sb.append("\">&larr; Older</a></li>");
-        sb.append("<li class=\"next ").append(forward ? "" : "disabled").append("\"><a href=\"/users/");
-        sb.append(uc.getBlogUser().getUsername());
-        sb.append("?page=");
-        sb.append((page - 1));
-        sb.append("\">Newer &rarr;</a></li>");
-        sb.append("</ul>");
-
         return sb.toString();
     }
 
