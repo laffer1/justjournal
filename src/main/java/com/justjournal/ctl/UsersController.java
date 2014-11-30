@@ -1464,51 +1464,33 @@ public class UsersController {
     @Transactional(value = Transactional.TxType.REQUIRED)
     private String getUserRecentEntries(final UserContext uc) {
         StringBuilder sb = new StringBuilder();
-        Page<Entry> entries;
-        final int maxrecent = 5;
 
         try {
-            Pageable page = new PageRequest(0, 5);
+            List<RecentEntry> entries;
 
             if (uc.isAuthBlog()) {
-                entries = entryDao.findByUserOrderByDateDesc(uc.getBlogUser(), page);
-
-                if (log.isDebugEnabled())
-                    log.debug("getEntries: User is logged in.");
+                entries = entryService.getRecentEntries(uc.getBlogUser());
             } else {
-                entries = entryDao.findByUserAndSecurityOrderByDateDesc(uc.getBlogUser(), securityDao.findOne(2), page);
-
-                if (log.isDebugEnabled())
-                    log.debug("getEntries: User is not logged in.");
+                entries = entryService.getRecentEntriesPublic(uc.getBlogUser());
             }
-
-            /* Iterator */
-            Entry o;
-            final Iterator itr = entries.iterator();
 
             sb.append("\t<div class=\"menuentity\" id=\"userRecentEntries\">\n<strong style=\"text-transform: uppercase; letter-spacing: 2px; border: 0 none; border-bottom: 1px; border-style: dotted; border-color: #999999; margin-bottom: 5px; width: 100%; font-size: 10px;\">Recent Entries</strong>\n");
             sb.append("\t\t<ul class=\"list-group\">");
             sb.append(endl);
 
-
-            int n = entries.getNumberOfElements();
-            if (maxrecent < n) {
-                n = maxrecent;
-            }
-            for (int i = 0; i < n; i++) {
-                o = (Entry) itr.next();
+            for (RecentEntry o : entries) {
                 sb.append("\t\t\t<li class=\"list-group-item\"><a href=\"/users/");
                 sb.append(uc.getBlogUser().getUsername());
                 sb.append("/entry/");
                 sb.append(o.getId());
                 sb.append("\" title=\"");
-                sb.append(Xml.cleanString(o.getSubject()));
+                sb.append(o.getSubject());
                 sb.append("\">");
-                sb.append(Xml.cleanString(o.getSubject()));
+                sb.append(o.getSubject());
                 sb.append("</a></li>");
                 sb.append(endl);
-
             }
+
             sb.append("\t\t</ul>");
             sb.append(endl);
             sb.append("\t</div>");

@@ -31,8 +31,12 @@ import com.justjournal.repository.CommentRepository;
 import com.justjournal.repository.EntryRepository;
 import com.justjournal.repository.SecurityDao;
 import com.justjournal.repository.UserRepository;
+import com.justjournal.utility.Xml;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -43,8 +47,8 @@ import java.util.*;
  */
 @Service
 public class EntryService {
+    private static final int MAX_RECENT_ENTRIES = 5;
     private static org.slf4j.Logger log = LoggerFactory.getLogger(EntryService.class);
-
     @Autowired
     private CommentRepository commentDao;
     @Autowired
@@ -53,6 +57,61 @@ public class EntryService {
     private UserRepository userRepository;
     @Autowired
     private SecurityDao securityDao;
+
+    /**
+     * Get the recent blog entries list for the sidebar, but only use public entries.
+     *
+     * @param user blog user
+     * @return subject & entry id data
+     */
+    @Transactional(value = Transactional.TxType.REQUIRED)
+    public List<RecentEntry> getRecentEntriesPublic(User user) {
+        Page<Entry> entries;
+        List<RecentEntry> recentEntries = new ArrayList<RecentEntry>();
+
+        try {
+            Pageable page = new PageRequest(0, MAX_RECENT_ENTRIES);
+            entries = entryDao.findByUserAndSecurityOrderByDateDesc(user, securityDao.findOne(2), page);
+
+            for (Entry o : entries) {
+                RecentEntry recentEntry = new RecentEntry();
+                recentEntry.setId(o.getId());
+                recentEntry.setSubject(Xml.cleanString(o.getSubject()));
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+
+        return recentEntries;
+    }
+
+    /**
+     * Get the recent blog entries list for the sidebar.
+     *
+     * @param user blog user
+     * @return subject & entry id data
+     */
+    @Transactional(value = Transactional.TxType.REQUIRED)
+    public List<RecentEntry> getRecentEntries(User user) {
+        Page<Entry> entries;
+        List<RecentEntry> recentEntries = new ArrayList<RecentEntry>();
+
+
+        try {
+            Pageable page = new PageRequest(0, MAX_RECENT_ENTRIES);
+            entries = entryDao.findByUserOrderByDateDesc(user, page);
+
+            for (Entry o : entries) {
+                RecentEntry recentEntry = new RecentEntry();
+                recentEntry.setId(o.getId());
+                recentEntry.setSubject(Xml.cleanString(o.getSubject()));
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+
+        return recentEntries;
+    }
 
     @Transactional(value = Transactional.TxType.REQUIRED)
 
@@ -154,4 +213,5 @@ public class EntryService {
             throw new ServiceException(e);
         }
     }
+
 }
