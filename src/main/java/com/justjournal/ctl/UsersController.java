@@ -1659,7 +1659,9 @@ public class UsersController {
         rss.setWebMaster("webmaster@justjournal.com (Lucas)");
         // RSS advisory board format
         rss.setManagingEditor(user.getUserContact().getEmail() + " (" + user.getFirstName() + ")");
-        rss.populate(entryDao.findByUserAndSecurityOrderByDateDesc(user, securityDao.findOne(2)));
+
+        Pageable page = new PageRequest(0, 15);
+        rss.populate(entryDao.findByUserAndSecurityOrderByDateDesc(user, securityDao.findOne(2), page).getContent());
         return rss.toXml();
     }
 
@@ -1683,7 +1685,8 @@ public class UsersController {
         atom.setTitle(user.getUserPref().getJournalName());
         atom.setId("http://www.justjournal.com/users/" + user.getUsername() + "/atom");
         atom.setSelfLink("/users/" + user.getUsername() + "/atom");
-        atom.populate(entryDao.findByUsernameAndSecurity(user.getUsername(), securityDao.findOne(2)));
+        Pageable page = new PageRequest(0, 15);
+        atom.populate(entryDao.findByUserAndSecurityOrderByDateDesc(user, securityDao.findOne(2), page).getContent());
         return (atom.toXml());
     }
 
