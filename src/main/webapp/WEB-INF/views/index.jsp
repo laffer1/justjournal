@@ -1,8 +1,4 @@
 <!doctype html>
-<!--[if lt IE 7]>
-<html class="no-js lt-ie9 lt-ie8 lt-ie7" ng-app="wwwApp"> <![endif]-->
-<!--[if IE 7]>
-<html class="no-js lt-ie9 lt-ie8" ng-app="wwwApp"> <![endif]-->
 <!--[if IE 8]>
 <html class="no-js lt-ie9" ng-app="wwwApp"> <![endif]-->
 <!--[if gt IE 8]><!-->
@@ -97,22 +93,22 @@
 </footer>
 <!-- Footer: End -->
 
-<script type="text/javascript" src="${pageContext.request.contextPath}components/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/components/jquery/jquery.min.js"></script>
 <script type="text/javascript"
-        src="${pageContext.request.contextPath}components/jquery.validation/jquery.validate.js"></script>
+        src="${pageContext.request.contextPath}/components/jquery.validation/jquery.validate.js"></script>
 <script type="text/javascript" src="js/bootstrap.min.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}components/angular/angular.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/components/angular/angular.js"></script>
 <script type="text/javascript"
-        src="${pageContext.request.contextPath}components/angular-resource/angular-resource.js"></script>
+        src="${pageContext.request.contextPath}/components/angular-resource/angular-resource.js"></script>
 <script type="text/javascript"
-        src="${pageContext.request.contextPath}components/angular-route/angular-route.js"></script>
+        src="${pageContext.request.contextPath}/components/angular-route/angular-route.js"></script>
 <script type="text/javascript"
-        src="${pageContext.request.contextPath}components/angular-cookies/angular-cookies.js"></script>
+        src="${pageContext.request.contextPath}/components/angular-cookies/angular-cookies.js"></script>
 <script type="text/javascript"
-        src="${pageContext.request.contextPath}components/angular-sanitize/angular-sanitize.js"></script>
+        src="${pageContext.request.contextPath}/components/angular-sanitize/angular-sanitize.js"></script>
 
 <script type="text/javascript"
-        src="${pageContext.request.contextPath}components/angular-ui/build/angular-ui.js"></script>
+        src="${pageContext.request.contextPath}/components/angular-ui/build/angular-ui.js"></script>
 
 <!-- build:js scripts/scripts.js -->
 <script type="text/javascript" src="scripts/app.js"></script>
