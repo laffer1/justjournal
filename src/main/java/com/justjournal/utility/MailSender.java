@@ -36,12 +36,10 @@ import com.justjournal.repository.QueueMailRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import javax.mail.Address;
-import javax.mail.Message;
-import javax.mail.Session;
-import javax.mail.Transport;
+import javax.mail.*;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
@@ -59,8 +57,10 @@ public class MailSender extends Thread {
 
     public boolean process = true;
     private Logger log = LoggerFactory.getLogger(MailSender.class);
+
     @Autowired
     private QueueMailRepository queueMailRepository;
+
     @Autowired
     private Settings set;
 
@@ -87,7 +87,7 @@ public class MailSender extends Thread {
 
                     log.trace("MailSender: Recordset loaded.");
 
-                    for (com.justjournal.model.QueueMail item : items) {
+                    for (QueueMail item : items) {
                         boolean sentok = true;
 
                         try {
@@ -111,7 +111,7 @@ public class MailSender extends Thread {
                         } catch (AddressException e) {
                             sentok = false;
                             log.error("MailSender: Invalid address. " + e.getMessage());
-                        } catch (javax.mail.MessagingException me) {
+                        } catch (MessagingException me) {
                             sentok = false;
                             log.error("MailSender: Send failed." + me.getMessage() + " : " + me.toString());
                         }
