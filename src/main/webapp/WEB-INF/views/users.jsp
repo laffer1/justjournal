@@ -209,7 +209,7 @@
                             <a href="${pageContext.request.contextPath}/users/<c:out value="${user.username}"/>?page=<c:out value="${pageable.getPageNumber() + 2}"/>">&larr;
                                 Older</a>
                         </li>
-                        <li class="next <c:if test="pageable.getPageNumber() == 1">disabled</c:if>">
+                        <li class="next <c:if test="pageable.getPageNumber() == 0">disabled</c:if>">
                             <a href="${pageContext.request.contextPath}/users/<c:out value="${user.username}"/>?page=<c:out value="${pageable.getPageNumber()}"/>">Newer &rarr;</a>
                         </li>
                     </ul>
