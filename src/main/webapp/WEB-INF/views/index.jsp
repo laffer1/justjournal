@@ -50,11 +50,6 @@
     experience this site.</p>
 <![endif]-->
 
-<!--[if lt IE 9]>
-<script src="${pageContext.request.contextPath}/components/es5-shim/es5-shim.js" type="text/javascript"></script>
-<script src="${pageContext.request.contextPath}/components/json3/lib/json3.min.js" type="text/javascript"></script>
-<![endif]-->
-
 <!-- Header: Begin -->
 <header>
     <div id="header">
