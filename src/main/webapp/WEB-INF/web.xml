@@ -59,6 +59,7 @@
     </filter-mapping>
 
     <!-- Listeners -->
+    <!-- TODO: turn on after these are fixed
     <listener>
         <listener-class>com.justjournal.core.MailServletContextListener</listener-class>
     </listener>
@@ -66,6 +67,7 @@
     <listener>
         <listener-class>com.justjournal.core.RssCacheContextListener</listener-class>
     </listener>
+    -->
 
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
