@@ -72,7 +72,7 @@ public class EntryService {
             return null;
         }
         Page<Entry> entries;
-        List<RecentEntry> recentEntries = new ArrayList<RecentEntry>();
+        List<RecentEntry> recentEntries = new ArrayList<RecentEntry>(MAX_RECENT_ENTRIES);
 
         try {
             Pageable page = new PageRequest(0, MAX_RECENT_ENTRIES);
@@ -82,6 +82,7 @@ public class EntryService {
                 RecentEntry recentEntry = new RecentEntry();
                 recentEntry.setId(o.getId());
                 recentEntry.setSubject(Xml.cleanString(o.getSubject()));
+                recentEntries.add(recentEntry);
             }
         } catch (Exception e) {
             log.error(e.getMessage());
