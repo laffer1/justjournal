@@ -27,9 +27,7 @@
 package com.justjournal.services;
 
 import com.justjournal.Util;
-import com.justjournal.model.Entry;
-import com.justjournal.model.Statistics;
-import com.justjournal.model.UserStatistics;
+import com.justjournal.model.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,23 +47,22 @@ import static org.junit.Assert.*;
 @ContextConfiguration("file:src/test/resources/mvc-dispatcher-servlet.xml")
 public class ServiceTests {
 
+    private static final String TEST_USER = "testuser";
+    private static final int PUBLIC_ENTRY_ID = 33661;
     private static StatisticsService statisticsService;
     private static EntryService entryService;
-
-    public void setStatisticsService(StatisticsService statisticsService1) {
-        this.statisticsService = statisticsService1;
-    }
 
     public static void setEntryService(final EntryService entryService) {
         ServiceTests.entryService = entryService;
     }
 
-    private static final String TEST_USER = "testuser";
-    private static final int PUBLIC_ENTRY_ID = 33661;
-
     @BeforeClass
     public static void setup() throws Exception {
         Util.setupDb();
+    }
+
+    public void setStatisticsService(StatisticsService statisticsService1) {
+        this.statisticsService = statisticsService1;
     }
 
     @Test
@@ -78,8 +75,22 @@ public class ServiceTests {
     }
 
     @Test
+    public void entryGetRecentEntriesPublic() throws ServiceException {
+        List<RecentEntry> entryList = entryService.getRecentEntriesPublic(TEST_USER);
+        assertNotNull(entryList);
+        assertTrue(entryList.size() > 0);
+    }
+
+    @Test
+    public void entryGetRecentEntries() throws ServiceException {
+        List<RecentEntry> entryList = entryService.getRecentEntries(TEST_USER);
+        assertNotNull(entryList);
+        assertTrue(entryList.size() > 0);
+    }
+
+    @Test
     public void entryGetPublicEntries() throws ServiceException {
-        List<Entry> entryList = entryService.getPublicEntries("testuser");
+        List<Entry> entryList = entryService.getPublicEntries(TEST_USER);
         assertNotNull(entryList);
         assertTrue(entryList.size() > 0);
     }
@@ -99,7 +110,7 @@ public class ServiceTests {
 
     @Test
     public void testGetUserStatistics() throws ServiceException {
-        UserStatistics statistics = statisticsService.getUserStatistics("testuser");
+        UserStatistics statistics = statisticsService.getUserStatistics(TEST_USER);
         assertNotNull(statistics);
         assertEquals("testuser", statistics.getUsername());
         assertTrue(statistics.getEntryCount() > 0);
