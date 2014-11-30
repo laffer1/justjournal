@@ -126,6 +126,12 @@ public class UsersController {
                           Pageable pageable,
                           Model model, HttpSession session, HttpServletResponse response) {
         UserContext userContext = getUserContext(username, session);
+
+        if (userContext == null) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return "";
+        }
+
         model.addAttribute("authenticatedUsername", Login.currentLoginName(session));
         model.addAttribute("user", userContext.getBlogUser());
 
@@ -150,6 +156,12 @@ public class UsersController {
                         Model model, HttpSession session, HttpServletResponse response) {
 
         UserContext userContext = getUserContext(username, session);
+
+        if (userContext == null) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return "";
+        }
+
         model.addAttribute("authenticatedUsername", Login.currentLoginName(session));
         model.addAttribute("user", userContext.getBlogUser());
 
@@ -172,6 +184,12 @@ public class UsersController {
     @RequestMapping(value = "{username}/friends", method = RequestMethod.GET, produces = "text/html")
     public String friends(@PathVariable("username") String username, Model model, HttpSession session, HttpServletResponse response) {
         UserContext userc = getUserContext(username, session);
+
+        if (userc == null) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return "";
+        }
+
         model.addAttribute("authenticatedUsername", Login.currentLoginName(session));
         model.addAttribute("user", userc.getBlogUser());
 
@@ -198,6 +216,12 @@ public class UsersController {
     public String calendar(@PathVariable("username") String username, Model model, HttpSession session, HttpServletResponse response) {
 
         UserContext userContext = getUserContext(username, session);
+
+        if (userContext == null) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return "";
+        }
+
         model.addAttribute("authenticatedUsername", Login.currentLoginName(session));
         model.addAttribute("user", userContext.getBlogUser());
 
@@ -224,6 +248,12 @@ public class UsersController {
     @RequestMapping(value = "{username}/{year}", method = RequestMethod.GET, produces = "text/html")
     public String calendarYear(@PathVariable("username") String username, @PathVariable("year") int year, Model model, HttpSession session, HttpServletResponse response) {
         UserContext userc = getUserContext(username, session);
+
+        if (userc == null) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return "";
+        }
+
         model.addAttribute("authenticatedUsername", Login.currentLoginName(session));
         model.addAttribute("user", userc.getBlogUser());
 
@@ -249,6 +279,12 @@ public class UsersController {
                                 @PathVariable("month") int month,
                                 Model model, HttpSession session, HttpServletResponse response) {
         UserContext userc = getUserContext(username, session);
+
+        if (userc == null) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return "";
+        }
+
         model.addAttribute("authenticatedUsername", Login.currentLoginName(session));
         model.addAttribute("user", userc.getBlogUser());
 
@@ -274,6 +310,12 @@ public class UsersController {
                               @PathVariable("month") int month,
                               @PathVariable("day") int day, Model model, HttpServletResponse response, HttpSession session) {
         UserContext userc = getUserContext(username, session);
+
+        if (userc == null) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return "";
+        }
+
         model.addAttribute("authenticatedUsername", Login.currentLoginName(session));
         model.addAttribute("user", userc.getBlogUser());
 
@@ -300,6 +342,11 @@ public class UsersController {
         try {
             User user = userRepository.findByUsername(username);
 
+            if (user == null) {
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                return "";
+            }
+
             if (user.getUserPref().getOwnerViewOnly() == PrefBool.Y) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 return "";
@@ -320,6 +367,11 @@ public class UsersController {
         try {
             User user = userRepository.findByUsername(username);
 
+            if (user == null) {
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                return "";
+            }
+
             if (user.getUserPref().getOwnerViewOnly() == PrefBool.Y) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 return "";
@@ -339,6 +391,11 @@ public class UsersController {
     String rssPictures(@PathVariable("username") String username, HttpServletResponse response) {
         try {
             User user = userRepository.findByUsername(username);
+
+            if (user == null) {
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                return "";
+            }
 
             if (user.getUserPref().getOwnerViewOnly() == PrefBool.Y) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -364,6 +421,12 @@ public class UsersController {
 
         try {
             User user = userRepository.findByUsername(username);
+
+            if (user == null) {
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                return;
+            }
+
             UserContext userc = new UserContext(user, authUser);
             if (user.getUserPref().getOwnerViewOnly() == PrefBool.N || userc.isAuthBlog()) {
                 getPDF(response, userc);
@@ -386,6 +449,10 @@ public class UsersController {
 
         try {
             User user = userRepository.findByUsername(username);
+            if (user == null) {
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                return;
+            }
             UserContext userc = new UserContext(user, authUser);
             if (user.getUserPref().getOwnerViewOnly() == PrefBool.N || userc.isAuthBlog())
                 getRTF(response, userc);
@@ -401,6 +468,12 @@ public class UsersController {
     @RequestMapping(value = "{username}/pictures", method = RequestMethod.GET, produces = "text/html")
     public String pictures(@PathVariable("username") String username, Model model, HttpSession session, HttpServletResponse response) {
         UserContext userc = getUserContext(username, session);
+
+        if (userc == null) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return "";
+        }
+
         model.addAttribute("authenticatedUsername", Login.currentLoginName(session));
         model.addAttribute("user", userc.getBlogUser());
 
@@ -426,6 +499,11 @@ public class UsersController {
                          @RequestParam("bquery") String bquery,
                          Model model, HttpSession session, HttpServletResponse response) {
         UserContext userc = getUserContext(username, session);
+        if (userc == null) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return "";
+        }
+
         model.addAttribute("authenticatedUsername", Login.currentLoginName(session));
         model.addAttribute("user", userc.getBlogUser());
 
@@ -457,6 +535,12 @@ public class UsersController {
     @RequestMapping(value = "{username}/subscriptions", method = RequestMethod.GET, produces = "text/html")
     public String subscriptions(@PathVariable("username") String username, Model model, HttpSession session, HttpServletResponse response) {
         UserContext userc = getUserContext(username, session);
+
+        if (userc == null) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return "";
+        }
+
         model.addAttribute("authenticatedUsername", Login.currentLoginName(session));
         model.addAttribute("user", userc.getBlogUser());
 
@@ -490,6 +574,12 @@ public class UsersController {
 
         try {
             User user = userRepository.findByUsername(username);
+
+            if (user == null) {
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                return "";
+            }
+
             UserContext userc = new UserContext(user, authUser);
 
             model.addAttribute("username", user);
@@ -922,8 +1012,7 @@ public class UsersController {
                     "Unable to retrieve journal entries from data store.",
                     sb);
 
-            if (log.isDebugEnabled())
-                log.debug("getEntries: Exception is " + e1.getMessage() + '\n' + e1.toString());
+            log.error("getEntries: Exception is " + e1.getMessage() + '\n' + e1.toString());
         }
         return sb.toString();
     }
@@ -932,14 +1021,14 @@ public class UsersController {
         StringBuilder sb = new StringBuilder();
 
         sb.append("<ul class=\"pager\">");
-        sb.append("<li class=\"previous " + (back ? "" : "disabled") + "\"><a href=\"/users/");
+        sb.append("<li class=\"previous ").append(back ? "" : "disabled").append("\"><a href=\"/users/");
         sb.append(uc.getBlogUser().getUsername());
         sb.append("?page=");
         sb.append((page + 1));
         sb.append("\">&larr; Older</a></li>");
-        sb.append("<li class=\"next " + (forward ? "" : "disabled") + "\"><a href=\"/users/");
+        sb.append("<li class=\"next ").append(forward ? "" : "disabled").append("\"><a href=\"/users/");
         sb.append(uc.getBlogUser().getUsername());
-        sb.append("?skip=");
+        sb.append("?page=");
         sb.append((page - 1));
         sb.append("\">Newer &rarr;</a></li>");
         sb.append("</ul>");
