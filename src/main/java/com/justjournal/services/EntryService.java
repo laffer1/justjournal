@@ -61,11 +61,16 @@ public class EntryService {
     /**
      * Get the recent blog entries list for the sidebar, but only use public entries.
      *
-     * @param user blog user
+     * @param username blog user
      * @return subject & entry id data
      */
     @Transactional(value = Transactional.TxType.REQUIRED)
-    public List<RecentEntry> getRecentEntriesPublic(User user) {
+    public List<RecentEntry> getRecentEntriesPublic(String username) {
+        User user = userRepository.findByUsername(username);
+        if (user == null) {
+            log.warn("username not found in getRecentEntriesPublic with " + username);
+            return null;
+        }
         Page<Entry> entries;
         List<RecentEntry> recentEntries = new ArrayList<RecentEntry>();
 
@@ -88,14 +93,18 @@ public class EntryService {
     /**
      * Get the recent blog entries list for the sidebar.
      *
-     * @param user blog user
+     * @param username blog username
      * @return subject & entry id data
      */
     @Transactional(value = Transactional.TxType.REQUIRED)
-    public List<RecentEntry> getRecentEntries(User user) {
+    public List<RecentEntry> getRecentEntries(String username) {
+        User user = userRepository.findByUsername(username);
+        if (user == null) {
+            return null;
+        }
+
         Page<Entry> entries;
         List<RecentEntry> recentEntries = new ArrayList<RecentEntry>();
-
 
         try {
             Pageable page = new PageRequest(0, MAX_RECENT_ENTRIES);

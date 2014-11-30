@@ -1469,9 +1469,9 @@ public class UsersController {
             List<RecentEntry> entries;
 
             if (uc.isAuthBlog()) {
-                entries = entryService.getRecentEntries(uc.getBlogUser());
+                entries = entryService.getRecentEntries(uc.getBlogUser().getUsername());
             } else {
-                entries = entryService.getRecentEntriesPublic(uc.getBlogUser());
+                entries = entryService.getRecentEntriesPublic(uc.getBlogUser().getUsername());
             }
 
             sb.append("\t<div class=\"menuentity\" id=\"userRecentEntries\">\n<strong style=\"text-transform: uppercase; letter-spacing: 2px; border: 0 none; border-bottom: 1px; border-style: dotted; border-color: #999999; margin-bottom: 5px; width: 100%; font-size: 10px;\">Recent Entries</strong>\n");
