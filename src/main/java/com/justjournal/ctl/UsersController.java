@@ -742,7 +742,7 @@ public class UsersController {
         }
     }
 
-    @Transactional(value = Transactional.TxType.REQUIRED)
+    @Transactional(value = Transactional.TxType.SUPPORTS)
     @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
     private String getImageList(final UserContext uc) {
         StringBuilder sb = new StringBuilder();
@@ -968,11 +968,13 @@ public class UsersController {
 
         try {
             if (uc.isAuthBlog()) {
-                entries = entryDao.findByUserOrderByDateDesc(uc.getBlogUser(), pageable);
+                entries = entryService.getEntries(uc.getBlogUser().getUsername(), pageable);
+                        //entryDao.findByUserOrderByDateDesc(uc.getBlogUser(), pageable);
 
                 log.debug("getEntries: User is logged in.");
             } else {
-                entries = entryDao.findByUserAndSecurityOrderByDateDesc(uc.getBlogUser(), securityDao.findOne(2), pageable);
+                entries = entryService.getPublicEntries(uc.getBlogUser().getUsername(), pageable);
+                       //entryDao.findByUserAndSecurityOrderByDateDesc(uc.getBlogUser(), securityDao.findOne(2), pageable);
 
                 log.debug("getEntries: User is not logged in.");
             }
