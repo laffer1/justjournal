@@ -34,6 +34,7 @@ import javax.naming.NamingException;
 
 /**
  * Utilities for unit testing
+ *
  * @author Lucas Holt
  */
 final public class Util {
@@ -46,14 +47,14 @@ final public class Util {
                     "org.apache.naming");
             InitialContext ic = new InitialContext();
 
-            ic.createSubcontext("java:");
-            ic.createSubcontext("java:comp");
+            //   ic.createSubcontext("java:");
+               ic.createSubcontext("java:comp");
             ic.createSubcontext("java:comp/env");
             ic.createSubcontext("java:comp/env/jdbc");
 
             // Construct DataSource
             MysqlConnectionPoolDataSource ds = new MysqlConnectionPoolDataSource();
-            ds.setURL("jdbc:mysql://localhost:3306/justjournal_test");
+            ds.setURL("jdbc:mysql://ds9.midnightbsd.org:3306/justjournal_test");
             ds.setUser("travis");
             ds.setPassword("");
             ds.setAllowMultiQueries(true);
