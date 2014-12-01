@@ -64,7 +64,7 @@ public class EntryService {
      * @param username blog user
      * @return subject & entry id data
      */
-    @Transactional(value = Transactional.TxType.REQUIRED)
+    @Transactional(value = Transactional.TxType.SUPPORTS)
     public List<RecentEntry> getRecentEntriesPublic(String username) {
         User user = userRepository.findByUsername(username);
         if (user == null) {
@@ -97,7 +97,7 @@ public class EntryService {
      * @param username blog username
      * @return subject & entry id data
      */
-    @Transactional(value = Transactional.TxType.REQUIRED)
+    @Transactional(value = Transactional.TxType.SUPPORTS)
     public List<RecentEntry> getRecentEntries(String username) {
         User user = userRepository.findByUsername(username);
         if (user == null) {
@@ -124,8 +124,7 @@ public class EntryService {
         return recentEntries;
     }
 
-    @Transactional(value = Transactional.TxType.REQUIRED)
-
+    @Transactional(value = Transactional.TxType.SUPPORTS)
     public Entry getPublicEntry(int id, String username) throws ServiceException {
         try {
             Entry entry = entryDao.findOne(id);
@@ -138,8 +137,7 @@ public class EntryService {
         }
     }
 
-    @Transactional(value = Transactional.TxType.REQUIRED)
-
+    @Transactional(value = Transactional.TxType.SUPPORTS)
     public List<Entry> getPublicEntries(String username) throws ServiceException {
         try {
             User user = userRepository.findByUsername(username);
@@ -153,13 +151,41 @@ public class EntryService {
         }
     }
 
+    @Transactional(value = Transactional.TxType.SUPPORTS)
+    public Page<Entry> getPublicEntries(String username, Pageable pageable) throws ServiceException {
+        try {
+            User user = userRepository.findByUsername(username);
+            if (user == null) {
+                return null;
+            }
+            return entryDao.findByUserAndSecurityOrderByDateDesc(user, securityDao.findOne(2), pageable);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            throw new ServiceException(e);
+        }
+    }
+
+    @Transactional(value = Transactional.TxType.SUPPORTS)
+    public Page<Entry> getEntries(String username, Pageable pageable) throws ServiceException {
+        try {
+            User user = userRepository.findByUsername(username);
+            if (user == null) {
+                return null;
+            }
+            return entryDao.findByUserOrderByDateDesc(user, pageable);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            throw new ServiceException(e);
+        }
+    }
+
     /**
      * Get Friend public blog entries. TODO: Eventually, we'll want security and performance taken into account.
      *
      * @param username
      * @return
      */
-    @Transactional(value = Transactional.TxType.REQUIRED)
+    @Transactional(value = Transactional.TxType.SUPPORTS)
     public List<Entry> getFriendsEntries(String username) throws ServiceException {
         try {
             User user = userRepository.findByUsername(username);
@@ -202,7 +228,7 @@ public class EntryService {
      * @param username
      * @return
      */
-    @Transactional(value = Transactional.TxType.REQUIRED)
+    @Transactional(value = Transactional.TxType.SUPPORTS)
     public Collection<Tag> getEntryTags(String username) throws ServiceException {
         try {
             assert (entryDao != null);
