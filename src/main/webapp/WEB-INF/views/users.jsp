@@ -29,7 +29,7 @@
     <script type="text/javascript"
             src="${pageContext.request.contextPath}/components/jquery-ui/ui/minified/jquery-ui.min.js"></script>
     <script type="text/javascript"
-            src="${pageContext.request.contextPath}/components/lightbox2/js/lightbox-2.6.min.js" defer></script>
+            src="${pageContext.request.contextPath}/components/lightbox2/js/lightbox.min.js" defer></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
 </head>
 
