@@ -95,13 +95,21 @@ public class EntryController {
     @ResponseBody
     Page<Entry> getEntries(@PathVariable("username") String username, @PathVariable("size") int size, @PathVariable("page") int page,
                            HttpServletResponse response) {
+        Page<Entry> entries;
         Pageable pageable = new PageRequest(page, size);
-        User user = userRepository.findByUsername(username);
-        if (user == null) {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        try {
+            entries = entryService.getPublicEntries(username, pageable);
+
+            if (entries == null) {
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                return null;
+            }
+            return entries;
+        } catch (ServiceException e) {
+            log.error(e);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return null;
         }
-        return entryDao.findByUserAndSecurityOrderByDateDesc(user, securityDao.findOne(2), pageable);
     }
 
     /**
@@ -189,7 +197,7 @@ public class EntryController {
         } catch (Exception e) {
             log.error("error is happening " + e.getMessage());
         }
-        log.warn("ready to return");
+
         return entries;
     }
 
