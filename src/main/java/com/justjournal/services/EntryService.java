@@ -76,7 +76,7 @@ public class EntryService {
 
         try {
             Pageable page = new PageRequest(0, MAX_RECENT_ENTRIES);
-            entries = entryDao.findByUserAndSecurityOrderByDateDesc(user, securityDao.findOne(2), page);
+            entries = entryDao.findByUserAndSecurityAndDraftOrderByDateDesc(user, securityDao.findOne(2), PrefBool.N, page);
 
             for (Entry o : entries) {
                 RecentEntry recentEntry = new RecentEntry();
@@ -128,7 +128,7 @@ public class EntryService {
     public Entry getPublicEntry(int id, String username) throws ServiceException {
         try {
             Entry entry = entryDao.findOne(id);
-            if (entry.getUser().getUsername().equalsIgnoreCase(username) && entry.getSecurity().getId() == 2) // public
+            if (entry.getUser().getUsername().equalsIgnoreCase(username) && entry.getSecurity().getId() == 2 && entry.getDraft().equals(PrefBool.N)) // public
                 return entry;
             return null;
         } catch (Exception e) {
@@ -144,7 +144,7 @@ public class EntryService {
             if (user == null) {
                 return null;
             }
-            return entryDao.findByUserAndSecurityOrderByDateDesc(user, securityDao.findOne(2));
+            return entryDao.findByUserAndSecurityAndDraftOrderByDateDesc(user, securityDao.findOne(2), PrefBool.N);
         } catch (Exception e) {
             log.error(e.getMessage());
             throw new ServiceException(e);
@@ -158,7 +158,7 @@ public class EntryService {
             if (user == null) {
                 return null;
             }
-            return entryDao.findByUserAndSecurityOrderByDateDesc(user, securityDao.findOne(2), pageable);
+            return entryDao.findByUserAndSecurityAndDraftOrderByDateDesc(user, securityDao.findOne(2), PrefBool.N, pageable);
         } catch (Exception e) {
             log.error(e.getMessage());
             throw new ServiceException(e);
@@ -197,7 +197,7 @@ public class EntryService {
                 // TODO: limit record count
                 Collection<Entry> fe = friend.getFriend().getEntries();
                 for (Entry entry : fe) {
-                    if (entry.getSecurity().getId() == 2)
+                    if (entry.getSecurity().getId() == 2 && entry.getDraft().equals(PrefBool.N))
                         list.add(entry);
                 }
             }

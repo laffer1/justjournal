@@ -27,6 +27,7 @@
 package com.justjournal.repository;
 
 import com.justjournal.model.Entry;
+import com.justjournal.model.PrefBool;
 import com.justjournal.model.Security;
 import com.justjournal.model.User;
 import org.springframework.data.domain.Page;
@@ -56,7 +57,11 @@ public interface EntryRepository extends PagingAndSortingRepository<Entry, Integ
 
     public List<Entry> findByUserAndSecurityOrderByDateDesc(@Param("user") User user, @Param("security") Security security);
 
+    public List<Entry> findByUserAndSecurityAndDraftOrderByDateDesc(@Param("user") User user, @Param("security") Security security, @Param("draft") PrefBool draft);
+
     public Page<Entry> findByUserAndSecurityOrderByDateDesc(@Param("user") User user, @Param("security") Security security, Pageable pageable);
+
+    public Page<Entry> findByUserAndSecurityAndDraftOrderByDateDesc(@Param("user") User user, @Param("security") Security security, @Param("draft") PrefBool draft, Pageable pageable);
 
     public Page<Entry> findByUserOrderByDateDesc(User user, Pageable pageable);
 
