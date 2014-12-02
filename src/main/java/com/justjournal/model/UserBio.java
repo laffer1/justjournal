@@ -58,7 +58,6 @@ public class UserBio implements Serializable {
     private String bio = "";
 
     @JsonBackReference
-
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;

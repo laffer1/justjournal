@@ -51,7 +51,7 @@ public class UserImage implements Serializable {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "title", length = 150)
+    @Column(name = "title", length = 150, nullable = true)
     private String title;
 
     @JsonBackReference
@@ -60,13 +60,13 @@ public class UserImage implements Serializable {
     @JoinColumn(name = "owner")
     private User user;
 
-    @Column(name = "mimetype", length = 45)
+    @Column(name = "mimetype", length = 45, nullable = false)
     private String mimeType;
 
     @Column(name = "modified")
     private Date modified;
 
-    @Column(name = "content")
+    @Column(name = "content", columnDefinition = "MEDIUMBLOB")
     @Lob
     private Blob image;
 

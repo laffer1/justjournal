@@ -66,7 +66,6 @@ public class User implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id = 0;
 
-
     @Column(name = "username", length = 15, nullable = false)
     private String username = "";
 
@@ -79,7 +78,6 @@ public class User implements Serializable {
 
     @JsonIgnore // don't show password in output
     @Basic(fetch = FetchType.LAZY)
-
     @Column(name = "password", length = 40, nullable = false)
     private String password = "";
 
