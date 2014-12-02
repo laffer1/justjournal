@@ -94,11 +94,15 @@ public class EntryController {
     public
     @ResponseBody
     Page<Entry> getEntries(@PathVariable("username") String username, @PathVariable("size") int size, @PathVariable("page") int page,
-                           HttpServletResponse response) {
+                           HttpServletResponse response, HttpSession session) {
         Page<Entry> entries;
         Pageable pageable = new PageRequest(page, size);
         try {
-            entries = entryService.getPublicEntries(username, pageable);
+            if (Login.isAuthenticated(session) && Login.isUserName(username)) {
+                entries = entryService.getEntries(username, pageable);
+            } else {
+                entries = entryService.getPublicEntries(username, pageable);
+            }
 
             if (entries == null) {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
