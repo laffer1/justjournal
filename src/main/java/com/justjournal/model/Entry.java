@@ -121,14 +121,12 @@ public class Entry implements Serializable {
     transient private int attachImage = 0;
     transient private int attachFile = 0;
 
-    @JsonManagedReference
-    @JsonProperty("tags")
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "entry", fetch = FetchType.EAGER) // TODO: why!
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "entry", fetch = FetchType.LAZY) // TODO: why!
     private Set<EntryTag> tags = new HashSet<EntryTag>();
 
-    @JsonManagedReference
-    @JsonProperty("comments")
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "entry", fetch = FetchType.EAGER)
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "entry", fetch = FetchType.LAZY)
     private Set<Comment> comments = new HashSet<Comment>();
 
     @JsonCreator
