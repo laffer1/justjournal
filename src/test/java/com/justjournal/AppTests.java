@@ -213,6 +213,13 @@ public class AppTests {
     }
 
     @Test
+    public void apiTagCloud() throws Exception {
+        mockMvc.perform(get("/api/tagcloud/testuser"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith("application/json;charset=UTF-8"));
+    }
+
+    @Test
     public void apiEntryPostInvalid() throws Exception {
 
         mockMvc.perform(post("/api/entry", "{\"id\":\"1\", \"subject\":\"testing\", \"body\":\"test\"}")
