@@ -47,8 +47,8 @@ final public class Util {
                     "org.apache.naming");
             InitialContext ic = new InitialContext();
 
-            //   ic.createSubcontext("java:");
-               ic.createSubcontext("java:comp");
+            ic.createSubcontext("java:");
+            ic.createSubcontext("java:comp");
             ic.createSubcontext("java:comp/env");
             ic.createSubcontext("java:comp/env/jdbc");
 
