@@ -67,6 +67,9 @@ public class Tag implements Serializable {
     @Transient
     private int count;
 
+    @JsonProperty("type")
+    @Transient
+    private String type;
 
     @JsonCreator
     public Tag() {
@@ -137,5 +140,13 @@ public class Tag implements Serializable {
             throw new IllegalArgumentException("Name contains invalid characters.  Must be A-Za-z");
 
         this.name = name.toLowerCase();
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(final String type) {
+        this.type = type;
     }
 }
