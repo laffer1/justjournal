@@ -1170,8 +1170,8 @@ public class UsersController {
                     sb.append("<td width=\"30\"><a title=\"Edit Entry\" href=\"/#/entry/").append(o.getId());
                     sb.append("\"><i class=\"fa fa-pencil-square-o\"></i></a></td>");
                     sb.append(endl);
-                    sb.append("<td width=\"30\"><a title=\"Delete Entry\" onclick=\"return deleteEntry(" + o.getId() + ")\"");
-                    sb.append("\"><i class=\"fa fa-trash-o\"></i></a>");
+                    sb.append("<td width=\"30\"><a title=\"Delete Entry\" onclick=\"return deleteEntry(").append(o.getId()).append(")\"");
+                    sb.append("><i class=\"fa fa-trash-o\"></i></a>");
                     sb.append("</td>");
                     sb.append(endl);
 
@@ -1946,9 +1946,8 @@ public class UsersController {
             sb.append(o.getId());
             sb.append("\"><i class=\"fa fa-pencil-square-o\"></i></a></td>");
             sb.append(endl);
-            sb.append("<td style=\"width: 30px\"><a title=\"Delete Entry\" onclick=\"return confirmDelete()\"; href=\"/entry/delete.h?entryId=");
-            sb.append(o.getId());
-            sb.append("\"><i class=\"fa fa-trash-o\"></i></a>");
+            sb.append("<td style=\"width: 30px\"><a title=\"Delete Entry\" onclick=\"return deleteEntry(" + o.getId() + ");\"");
+            sb.append("><i class=\"fa fa-trash-o\"></i></a>");
             sb.append("</td>");
             sb.append(endl);
 
