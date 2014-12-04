@@ -778,8 +778,6 @@ public class UsersController {
 
         sb.append("<h2>RSS Reader</h2>");
         sb.append(endl);
-        sb.append("<p>This page might be slow because we must wait for RSS to download from different servers!.</p>");
-        sb.append(endl);
         sb.append("<p><a href=\"javascript:sweeptoggle('contract')\">Contract All</a> | <a href=\"javascript:sweeptoggle('expand')\">Expand All</a></p>");
         sb.append(endl);
 
@@ -1172,8 +1170,7 @@ public class UsersController {
                     sb.append("<td width=\"30\"><a title=\"Edit Entry\" href=\"/#/entry/").append(o.getId());
                     sb.append("\"><i class=\"fa fa-pencil-square-o\"></i></a></td>");
                     sb.append(endl);
-                    sb.append("<td width=\"30\"><a title=\"Delete Entry\" onclick=\"return confirmDelete()\"; href=\"/entry/delete.h?entryId=");
-                    sb.append(o.getId());
+                    sb.append("<td width=\"30\"><a title=\"Delete Entry\" onclick=\"return deleteEntry(" + o.getId() + ")\"");
                     sb.append("\"><i class=\"fa fa-trash-o\"></i></a>");
                     sb.append("</td>");
                     sb.append(endl);
@@ -1874,13 +1871,13 @@ public class UsersController {
 
         if (o.getSecurity().getId() == 0) {
             sb.append("<span class=\"security\">security: ");
-            sb.append("<img src=\"/img/icon_private.gif\" alt=\"private\" /> ");
+            sb.append("<img src=\"/images/icon_private.gif\" alt=\"private\" /> ");
             sb.append("private");
             sb.append("</span><br />");
             sb.append(endl);
         } else if (o.getSecurity().getId() == 1) {
             sb.append("\t\t\t<span class=\"security\">security: ");
-            sb.append("<img src=\"/img/icon_protected.gif\" alt=\"friends\" /> ");
+            sb.append("<img src=\"/images/icon_protected.gif\" alt=\"friends\" /> ");
             sb.append("friends");
             sb.append("</span><br />");
             sb.append(endl);
@@ -1945,7 +1942,7 @@ public class UsersController {
         sb.append(endl);
 
         if (uc.isAuthBlog()) {
-            sb.append("<td style=\"width: 30px\"><a title=\"Edit Entry\" href=\"/#/entry/");
+            sb.append("<td style=\"width: 30px\"><a title=\"Edit Entry\" href=\"/#!/entry/");
             sb.append(o.getId());
             sb.append("\"><i class=\"fa fa-pencil-square-o\"></i></a></td>");
             sb.append(endl);

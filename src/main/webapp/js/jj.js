@@ -4,16 +4,34 @@
     date created: June 10, 2007
 */
 
-function confirmDelete()
-{
+function deleteEntry(entryId) {
+    "use strict";
+    if (confirmDelete()) {
+        var request = jQuery.ajax({
+          url: "/api/entry",
+          type: "DELETE",
+          data: { entryId : entryId }
+        });
+
+        request.done(function() {
+          window.alert('Removed Entry');
+        });
+
+        request.fail(function(jqXHR, textStatus) {
+          window.alert("Request failed: " + textStatus);
+        });
+    }
+}
+
+function confirmDelete() {
     'use strict';
-    return window.confirm("Are you sure you want to delete this?");
+    window.confirm("Are you sure you want to delete this?");
 }
 
 function showbox(boxId) {
     'use strict';
     var box = document.getElementById(boxId);
-    var parentBox = document.getElementById( boxId + "parent" );
+    var parentBox = document.getElementById(boxId + "parent");
     box.style.top = getAbsY(parentBox) + "px";
     box.style.left = getAbsX(parentBox) + "px";
     box.style.visibility='visible';

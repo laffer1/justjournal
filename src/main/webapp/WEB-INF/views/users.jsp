@@ -237,6 +237,7 @@
 
 <script type="text/javascript" src="${pageContext.request.contextPath}/js/switchcontent.js" defer></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/components/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/js/jj.js" defer></script>
 <script type="text/javascript"
         src="${pageContext.request.contextPath}/components/jquery-ui/ui/minified/jquery-ui.min.js"></script>
 <script type="text/javascript"
