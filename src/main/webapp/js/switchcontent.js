@@ -12,9 +12,7 @@ var expandsymbol = '+ '; //HTML for expand symbol.
 
 
 if (document.getElementById) {
-    document.write('<style type="text/css">');
-    document.write('.switchcontent{display:none;}');
-    document.write('</style>');
+    jQuery('body').append('<style type="text/css">.switchcontent{display:none;}</style>');
 }
 
 function getElementbyClass(rootobj, classname) {
