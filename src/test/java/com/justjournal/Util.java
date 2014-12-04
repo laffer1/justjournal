@@ -54,7 +54,6 @@ final public class Util {
 
             // Construct DataSource
             MysqlConnectionPoolDataSource ds = new MysqlConnectionPoolDataSource();
-            ds.setURL("jdbc:mysql://ds9.midnightbsd.org:3306/justjournal_test");
             ds.setUser("travis");
             ds.setPassword("");
             ds.setAllowMultiQueries(true);
