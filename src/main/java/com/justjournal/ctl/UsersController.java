@@ -141,8 +141,6 @@ public class UsersController {
         }
 
         model.addAttribute("calendarMini", getCalendarMini(userContext));
-        model.addAttribute("recentEntries", getUserRecentEntries(userContext));
-        model.addAttribute("links", getUserLinks(userContext));
         model.addAttribute("archive", getArchive(userContext));
         model.addAttribute("taglist", getTagMini(userContext));
 
@@ -173,8 +171,6 @@ public class UsersController {
         }
 
         model.addAttribute("calendarMini", getCalendarMini(userContext));
-        model.addAttribute("recentEntries", getUserRecentEntries(userContext));
-        model.addAttribute("links", getUserLinks(userContext));
         model.addAttribute("archive", getArchive(userContext));
         model.addAttribute("taglist", getTagMini(userContext));
 
@@ -201,8 +197,6 @@ public class UsersController {
         }
 
         model.addAttribute("calendarMini", getCalendarMini(userc));
-        model.addAttribute("recentEntries", getUserRecentEntries(userc));
-        model.addAttribute("links", getUserLinks(userc));
         model.addAttribute("archive", getArchive(userc));
         model.addAttribute("taglist", getTagMini(userc));
 
@@ -233,8 +227,6 @@ public class UsersController {
         }
 
         model.addAttribute("calendarMini", getCalendarMini(userContext));
-        model.addAttribute("recentEntries", getUserRecentEntries(userContext));
-        model.addAttribute("links", getUserLinks(userContext));
         model.addAttribute("archive", getArchive(userContext));
         model.addAttribute("taglist", getTagMini(userContext));
 
@@ -265,8 +257,6 @@ public class UsersController {
         }
 
         model.addAttribute("calendarMini", getCalendarMini(userc));
-        model.addAttribute("recentEntries", getUserRecentEntries(userc));
-        model.addAttribute("links", getUserLinks(userc));
         model.addAttribute("archive", getArchive(userc));
         model.addAttribute("taglist", getTagMini(userc));
 
@@ -296,8 +286,6 @@ public class UsersController {
         }
 
         model.addAttribute("calendarMini", getCalendarMini(userc));
-        model.addAttribute("recentEntries", getUserRecentEntries(userc));
-        model.addAttribute("links", getUserLinks(userc));
         model.addAttribute("archive", getArchive(userc));
         model.addAttribute("taglist", getTagMini(userc));
 
@@ -327,8 +315,6 @@ public class UsersController {
         }
 
         model.addAttribute("calendarMini", getCalendarMini(userc));
-        model.addAttribute("recentEntries", getUserRecentEntries(userc));
-        model.addAttribute("links", getUserLinks(userc));
         model.addAttribute("archive", getArchive(userc));
         model.addAttribute("taglist", getTagMini(userc));
 
@@ -485,8 +471,6 @@ public class UsersController {
         }
 
         model.addAttribute("calendarMini", getCalendarMini(userc));
-        model.addAttribute("recentEntries", getUserRecentEntries(userc));
-        model.addAttribute("links", getUserLinks(userc));
         model.addAttribute("archive", getArchive(userc));
         model.addAttribute("taglist", getTagMini(userc));
 
@@ -515,8 +499,6 @@ public class UsersController {
         }
 
         model.addAttribute("calendarMini", getCalendarMini(userc));
-        model.addAttribute("recentEntries", getUserRecentEntries(userc));
-        model.addAttribute("links", getUserLinks(userc));
         model.addAttribute("archive", getArchive(userc));
         model.addAttribute("taglist", getTagMini(userc));
         int maxr = SEARCH_MAX_LENGTH;
@@ -552,8 +534,6 @@ public class UsersController {
         }
 
         model.addAttribute("calendarMini", getCalendarMini(userc));
-        model.addAttribute("recentEntries", getUserRecentEntries(userc));
-        model.addAttribute("links", getUserLinks(userc));
         model.addAttribute("archive", getArchive(userc));
         model.addAttribute("taglist", getTagMini(userc));
 
@@ -968,13 +948,14 @@ public class UsersController {
 
         try {
             if (uc.isAuthBlog()) {
-                entries = entryService.getEntries(uc.getBlogUser().getUsername(), pageable);
-                        //entryDao.findByUserOrderByDateDesc(uc.getBlogUser(), pageable);
+                entries =
+                       // entryService.getEntries(uc.getBlogUser().getUsername(), pageable);
+                        entryDao.findByUserOrderByDateDesc(uc.getBlogUser(), pageable);
 
                 log.debug("getEntries: User is logged in.");
             } else {
-                entries = entryService.getPublicEntries(uc.getBlogUser().getUsername(), pageable);
-                       //entryDao.findByUserAndSecurityOrderByDateDesc(uc.getBlogUser(), securityDao.findOne(2), pageable);
+                entries = //entryService.getPublicEntries(uc.getBlogUser().getUsername(), pageable);
+                       entryDao.findByUserAndSecurityOrderByDateDesc(uc.getBlogUser(), securityDao.findOne(2), pageable);
 
                 log.debug("getEntries: User is not logged in.");
             }
@@ -1493,33 +1474,6 @@ public class UsersController {
         sb.append("\t\t</p>\n\t</div>");
         sb.append(endl);
 
-        return sb.toString();
-    }
-
-    /**
-     * Print a list of links the user has added to their blog in HTML.
-     *
-     * @param uc User Context
-     */
-    @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
-    @Transactional(value = Transactional.TxType.REQUIRED)
-    private String getUserLinks(final UserContext uc) {
-        assert (uc != null);
-
-        log.debug("getUserLinks(): Init and load collection");
-        StringBuilder sb = new StringBuilder();
-        List<UserLink> links = uc.getBlogUser().getLinks();
-
-        if (!links.isEmpty()) {
-            sb.append("\t<div class=\"menuentity\" id=\"userlinks\" style=\"padding-top: 10px;\">\n\t\t<strong style=\"text-transform: uppercase; letter-spacing: 2px; border: 0 none; border-bottom: 1px; border-style: dotted; border-color: #999999; margin-bottom: 5px; width: 100%; font-size: 10px;\"><i class=\"fa fa-external-link-square\"></i> Links</strong>\n\t\t<ul class=\"list-group\">\n");
-            Collections.sort(links);
-            for (UserLink link : links) {
-                sb.append("\t\t\t<li class=\"list-group-item\"><a href=\"").append(link.getUri()).append("\" title=\"").append(link.getTitle()).append("\">").append(link.getTitle()).append("</a></li>");
-                sb.append(endl);
-            }
-            sb.append("\t\t</ul>\n\t</div>");
-            sb.append(endl);
-        }
         return sb.toString();
     }
 

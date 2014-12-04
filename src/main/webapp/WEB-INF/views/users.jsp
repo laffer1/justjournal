@@ -24,13 +24,6 @@
           href="http://www.justjournal.com/users/<c:out value="${user.username}"/>/atom">
     <link rel="EditURI" type="application/rsd+xml" title="RSD"
           href="http://www.justjournal.com/rsd?blogID=<c:out value="${user.username}"/>">
-    <script type="text/javascript" src="${pageContext.request.contextPath}/js/switchcontent.js" defer></script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/components/jquery/jquery.min.js"></script>
-    <script type="text/javascript"
-            src="${pageContext.request.contextPath}/components/jquery-ui/ui/minified/jquery-ui.min.js"></script>
-    <script type="text/javascript"
-            src="${pageContext.request.contextPath}/components/lightbox2/js/lightbox.min.js" defer></script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
 </head>
 
 <body>
@@ -158,9 +151,19 @@
                         src="${pageContext.request.contextPath}/image?id=<c:out value="${user.id}"/>">
                 </p>
 
-                <c:out escapeXml="false" value="${recentEntries}"/>
+                <div class="menuentity" id="userRecentEntries">
+                    <strong style="text-transform: uppercase; letter-spacing: 2px; border: 0 none; border-bottom: 1px; border-style: dotted; border-color: #999999; margin-bottom: 5px; width: 100%; font-size: 10px;">Recent
+                        Entries</strong>
+                    <ul class="list-group" id="userRecentEntriesList">
+                    </ul>
+                </div>
 
-                <c:out escapeXml="false" value="${links}"/>
+                <div class="menuentity" id="userlinks" style="padding-top: 10px;">
+                    <strong style="text-transform: uppercase; letter-spacing: 2px; border: 0 none; border-bottom: 1px; border-style: dotted; border-color: #999999; margin-bottom: 5px; width: 100%; font-size: 10px;"><i
+                            class="fa fa-external-link-square"></i> Links</strong>
+                    <ul class="list-group" id="userlinkList">
+                    </ul>
+                </div>
 
                 <c:out escapeXml="false" value="${archive}"/>
 
@@ -232,6 +235,33 @@
     </div>
 </div>
 
+<script type="text/javascript" src="${pageContext.request.contextPath}/js/switchcontent.js" defer></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/components/jquery/jquery.min.js"></script>
+<script type="text/javascript"
+        src="${pageContext.request.contextPath}/components/jquery-ui/ui/minified/jquery-ui.min.js"></script>
+<script type="text/javascript"
+        src="${pageContext.request.contextPath}/components/lightbox2/js/lightbox.min.js" defer></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+    $().ready(function () {
+        $.get('${pageContext.request.contextPath}/api/entry/<c:out value="${user.username}"/>/size/5/page/0',
+                function (data) {
+                    for (var i = 0; i < data.content.length; i++) {
+                        var link = '<li class="list-group-item"><a href="/users/<c:out value="${user.username}"/>/entry/' + data.content[i].id + '">' + data.content[i].subject + '</a></li>';
+                        $('ul#userRecentEntriesList').append(link);
+                    }
+                }
+        );
+        $.get('${pageContext.request.contextPath}/api/link/user/<c:out value="${user.username}"/>',
+                function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        var link = '<li class="list-group-item"><a href="' + data[i].uri + '">' + data[i].title + '</a></li>';
+                        $('ul#userlinksList').append(link);
+                    }
+                }
+        );
+    });
+</script>
 <script>
     (function (i, s, o, g, r, a, m) {
         i['GoogleAnalyticsObject'] = r;
