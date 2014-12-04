@@ -1417,7 +1417,6 @@ public class UsersController {
      * @param uc User Context
      */
     @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
-    @Transactional(value = Transactional.TxType.REQUIRED)
     private String getTagMini(final UserContext uc) {
         assert (uc != null);
         assert (uc.getBlogUser() != null);
@@ -1471,52 +1470,6 @@ public class UsersController {
         sb.append("\t\t</p>\n\t</div>");
         sb.append(endl);
 
-        return sb.toString();
-    }
-
-    /**
-     * Print a short list of recent blog entries in HTML
-     *
-     * @param uc User Context
-     */
-    @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
-    @Transactional(value = Transactional.TxType.REQUIRED)
-    private String getUserRecentEntries(final UserContext uc) {
-        StringBuilder sb = new StringBuilder();
-
-        try {
-            List<RecentEntry> entries;
-
-            if (uc.isAuthBlog()) {
-                entries = entryService.getRecentEntries(uc.getBlogUser().getUsername());
-            } else {
-                entries = entryService.getRecentEntriesPublic(uc.getBlogUser().getUsername());
-            }
-
-            sb.append("\t<div class=\"menuentity\" id=\"userRecentEntries\">\n<strong style=\"text-transform: uppercase; letter-spacing: 2px; border: 0 none; border-bottom: 1px; border-style: dotted; border-color: #999999; margin-bottom: 5px; width: 100%; font-size: 10px;\">Recent Entries</strong>\n");
-            sb.append("\t\t<ul class=\"list-group\">");
-            sb.append(endl);
-
-            for (RecentEntry o : entries) {
-                sb.append("\t\t\t<li class=\"list-group-item\"><a href=\"/users/");
-                sb.append(uc.getBlogUser().getUsername());
-                sb.append("/entry/");
-                sb.append(o.getId());
-                sb.append("\" title=\"");
-                sb.append(o.getSubject());
-                sb.append("\">");
-                sb.append(o.getSubject());
-                sb.append("</a></li>");
-                sb.append(endl);
-            }
-
-            sb.append("\t\t</ul>");
-            sb.append(endl);
-            sb.append("\t</div>");
-            sb.append(endl);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-        }
         return sb.toString();
     }
 
@@ -2069,7 +2022,6 @@ public class UsersController {
      * Represent the blog user and authenticated user in one package along with the output buffer.
      */
     @SuppressWarnings({"InstanceVariableOfConcreteClass"})
-    @Transactional(value = Transactional.TxType.REQUIRED)
     static private class UserContext {
         private User blogUser;          // the blog owner
         private User authenticatedUser; // the logged in user
