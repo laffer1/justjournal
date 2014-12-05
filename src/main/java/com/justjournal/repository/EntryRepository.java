@@ -75,6 +75,9 @@ public interface EntryRepository extends PagingAndSortingRepository<Entry, Integ
     @Query("SELECT count(eh) FROM User us, Entry eh WHERE LOWER(us.username) = LOWER(:username) AND YEAR(eh.date)= :yr AND us = eh.user")
     public Long calendarCount(@Param("yr") int year, @Param("username") String username);
 
+    @Query("SELECT count(eh) FROM User us, Entry eh WHERE LOWER(us.username) = LOWER(:username) AND YEAR(eh.date)= :yr AND MONTH(eh.date)= :mn AND us = eh.user")
+    public Long calendarCount(@Param("yr") int year, @Param("mn") int month, @Param("username") String username);
+
     @Query("SELECT eh FROM User us, Entry eh WHERE LOWER(us.username) = LOWER(:username) AND YEAR(eh.date) = :yr AND us = eh.user and eh.security = :security")
     public List<Entry> findByUsernameAndYearAndSecurity(@Param("username") String username, @Param("yr") int year, @Param("security") Security security);
 
