@@ -142,7 +142,6 @@ public class UsersController {
 
         model.addAttribute("calendarMini", getCalendarMini(userContext));
         model.addAttribute("archive", getArchive(userContext));
-        model.addAttribute("taglist", getTagMini(userContext));
 
         model.addAttribute("pageable", pageable);
 
@@ -172,7 +171,6 @@ public class UsersController {
 
         model.addAttribute("calendarMini", getCalendarMini(userContext));
         model.addAttribute("archive", getArchive(userContext));
-        model.addAttribute("taglist", getTagMini(userContext));
 
         model.addAttribute("entry", getSingleEntry(id, userContext));
 
@@ -198,7 +196,6 @@ public class UsersController {
 
         model.addAttribute("calendarMini", getCalendarMini(userc));
         model.addAttribute("archive", getArchive(userc));
-        model.addAttribute("taglist", getTagMini(userc));
 
         try {
             model.addAttribute("friends", getFriends(userc));
@@ -228,7 +225,6 @@ public class UsersController {
 
         model.addAttribute("calendarMini", getCalendarMini(userContext));
         model.addAttribute("archive", getArchive(userContext));
-        model.addAttribute("taglist", getTagMini(userContext));
 
         final Calendar cal = Calendar.getInstance();
         Integer year = cal.get(Calendar.YEAR);
@@ -258,7 +254,6 @@ public class UsersController {
 
         model.addAttribute("calendarMini", getCalendarMini(userc));
         model.addAttribute("archive", getArchive(userc));
-        model.addAttribute("taglist", getTagMini(userc));
 
         model.addAttribute("calendar", getCalendar(year, userc));
 
@@ -287,7 +282,6 @@ public class UsersController {
 
         model.addAttribute("calendarMini", getCalendarMini(userc));
         model.addAttribute("archive", getArchive(userc));
-        model.addAttribute("taglist", getTagMini(userc));
 
         model.addAttribute("calendar", getCalendarMonth(year, month, userc));
 
@@ -316,7 +310,6 @@ public class UsersController {
 
         model.addAttribute("calendarMini", getCalendarMini(userc));
         model.addAttribute("archive", getArchive(userc));
-        model.addAttribute("taglist", getTagMini(userc));
 
         model.addAttribute("calendar", getCalendarDay(year, month, day, userc));
 
@@ -472,7 +465,6 @@ public class UsersController {
 
         model.addAttribute("calendarMini", getCalendarMini(userc));
         model.addAttribute("archive", getArchive(userc));
-        model.addAttribute("taglist", getTagMini(userc));
 
         model.addAttribute("pictures", getImageList(userc));
 
@@ -500,7 +492,7 @@ public class UsersController {
 
         model.addAttribute("calendarMini", getCalendarMini(userc));
         model.addAttribute("archive", getArchive(userc));
-        model.addAttribute("taglist", getTagMini(userc));
+
         int maxr = SEARCH_MAX_LENGTH;
 
         if (max != null && max.length() > 0)
@@ -535,7 +527,6 @@ public class UsersController {
 
         model.addAttribute("calendarMini", getCalendarMini(userc));
         model.addAttribute("archive", getArchive(userc));
-        model.addAttribute("taglist", getTagMini(userc));
 
         model.addAttribute("subscriptions", getSubscriptions(userc));
 
@@ -1411,67 +1402,6 @@ public class UsersController {
         return sb.toString();
     }
 
-    /**
-     * Print a list of tags in HTML that the blog owner is using.
-     *
-     * @param uc User Context
-     */
-    @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
-    private String getTagMini(final UserContext uc) {
-        assert (uc != null);
-        assert (uc.getBlogUser() != null);
-        assert (entryService != null);
-
-        StringBuilder sb = new StringBuilder();
-        Tag tag;
-        Collection<Tag> tags = null;
-        try {
-            tags = entryService.getEntryTags(uc.getBlogUser().getUsername());
-        } catch (ServiceException se) {
-            log.error(se.getMessage());
-            tags = Collections.emptyList();
-        }
-        int largest = 0;
-        int smallest = 10;
-        int cutSmall;
-        int cutLarge;
-
-        for (final Tag tag1 : tags) {
-            tag = tag1;
-            if (tag.getCount() > largest)
-                largest = tag.getCount();
-
-            if (tag.getCount() < smallest)
-                smallest = tag.getCount();
-        }
-
-        cutSmall = largest / 3;
-        cutLarge = cutSmall * 2;
-
-        sb.append("\t<div class=\"menuentity\" id=\"usertags\" style=\"padding-top: 10px;\">\n\t\t<strong style=\"text-transform: uppercase; letter-spacing: 2px; border: 0 none; border-bottom: 1px; border-style: dotted; border-color: #999999; margin-bottom: 5px; width: 100%; font-size: 10px;\"><i class=\"fa fa-tags\"></i> Tags</strong>\n\t\t<p style=\"padding-left: 0; margin-left: 0;\">\n");
-        for (final Tag tag1 : tags) {
-            tag = tag1;
-            sb.append("<a href=\"/users/");
-            sb.append(uc.getBlogUser().getUsername());
-            sb.append("/tag/");
-            sb.append(tag.getName());
-            sb.append("\" class=\"");
-            if (tag.getCount() > cutLarge)
-                sb.append("TagCloudLarge");
-            else if (tag.getCount() < cutSmall)
-                sb.append("TagCloudSmall");
-            else
-                sb.append("TagCloudMedium");
-            sb.append("\">");
-            sb.append(tag.getName());
-            sb.append("</a>");
-            sb.append(endl);
-        }
-        sb.append("\t\t</p>\n\t</div>");
-        sb.append(endl);
-
-        return sb.toString();
-    }
 
     /**
      * Generates all of the HTML to display journal entries for a particular day specified in the url.
@@ -1539,7 +1469,7 @@ public class UsersController {
 
         } catch (Exception e1) {
             ErrorPage.Display(" Error",
-                    "An error has occured rendering calendar.",
+                    "An error has occurred rendering calendar.",
                     sb);
         }
 

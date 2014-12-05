@@ -167,7 +167,14 @@
 
                 <c:out escapeXml="false" value="${archive}"/>
 
-                <c:out escapeXml="false" value="${taglist}"/>
+
+                <div class="menuentity" id="usertags" style="padding-top: 10px;">
+                    <strong style="text-transform: uppercase; letter-spacing: 2px; border: 0 none; border-bottom: 1px; border-style: dotted; border-color: #999999; margin-bottom: 5px; width: 100%; font-size: 10px;"><i
+                            class="fa fa-tags"></i> Tags</strong>
+
+                    <p style="padding-left: 0; margin-left: 0;" id="tagsmini">
+                    </p>
+                </div>
 
                 <c:out escapeXml="false" value="${calendarMini}"/>
             </div>
@@ -258,6 +265,14 @@
                     for (var i = 0; i < data.length; i++) {
                         var link = '<li class="list-group-item"><a href="' + data[i].uri + '">' + data[i].title + '</a></li>';
                         $('ul#userlinksList').append(link);
+                    }
+                }
+        );
+        $.get('${pageContext.request.contextPath}/api/tagcloud/<c:out value="${user.username}"/>',
+                function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        var tag = '<a href="/users/<c:out value="${user.username}"/>/tag/' + data[i].name + '" class="' + data[i].type + '">' + data[i].name + '</a> ';
+                        $('p#tagmini').append(tag);
                     }
                 }
         );
