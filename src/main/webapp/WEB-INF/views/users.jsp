@@ -264,7 +264,7 @@
                 function (data) {
                     for (var i = 0; i < data.length; i++) {
                         var link = '<li class="list-group-item"><a href="' + data[i].uri + '">' + data[i].title + '</a></li>';
-                        $('ul#userlinksList').append(link);
+                        $('ul#userlinkList').append(link);
                     }
                 }
         );
@@ -272,7 +272,7 @@
                 function (data) {
                     for (var i = 0; i < data.length; i++) {
                         var tag = '<a href="/users/<c:out value="${user.username}"/>/tag/' + data[i].name + '" class="' + data[i].type + '">' + data[i].name + '</a> ';
-                        $('p#tagmini').append(tag);
+                        $('p#tagsmini').append(tag);
                     }
                 }
         );
