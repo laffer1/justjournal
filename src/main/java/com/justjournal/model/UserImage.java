@@ -43,7 +43,7 @@ import java.util.Date;
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @Entity
-@Table(name = "user_image")
+@Table(name = "user_images")
 public class UserImage implements Serializable {
     private static final long serialVersionUID = 6356304916167520629L;
     @Id
