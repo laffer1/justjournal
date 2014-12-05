@@ -31,6 +31,7 @@ import com.justjournal.services.EntryService;
 import com.justjournal.services.ServiceException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -55,6 +56,7 @@ public class TagCloudController {
         this.entryService = entryService;
     }
 
+    @Cacheable(value = "tagcloud", key = "username")
     @RequestMapping(value = "{username}", method = RequestMethod.GET, produces = "application/json")
     public
     @ResponseBody
