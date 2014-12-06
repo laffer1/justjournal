@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS `content` (
 --
 
 CREATE TABLE IF NOT EXISTS `country` (
-  `id`        SMALLINT(5) UNSIGNED    NOT NULL AUTO_INCREMENT,
+  `id`        INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `title`     VARCHAR(80)
               CHARACTER SET latin1    NOT NULL,
   `iso`       CHAR(2)
@@ -451,7 +451,7 @@ CREATE TABLE IF NOT EXISTS `settings` (
 
 CREATE TABLE IF NOT EXISTS `state` (
   `id`         INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `country_id` INT(10) UNSIGNED NOT NULL,
+  `country_id` INT(11) UNSIGNED NOT NULL,
   `title`      VARCHAR(100)     NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `title` (`title`),
@@ -460,12 +460,6 @@ CREATE TABLE IF NOT EXISTS `state` (
   ENGINE =InnoDB
   DEFAULT CHARSET =utf8
   AUTO_INCREMENT =1;
-
---
--- RELATIONS FOR TABLE `state`:
---   `country_id`
---       `country` -> `id`
---
 
 -- --------------------------------------------------------
 
@@ -770,8 +764,8 @@ CREATE TABLE IF NOT EXISTS `user_location` (
   `id`       INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `user_id`  INT(10) UNSIGNED NOT NULL DEFAULT '0',
   `city`     VARCHAR(35)      NOT NULL DEFAULT '',
-  `state`    SMALLINT(6) DEFAULT NULL,
-  `country`  SMALLINT(6) DEFAULT NULL,
+  `state`    INT(11) UNSIGNED DEFAULT NULL,
+  `country`  INT(11) UNSIGNED DEFAULT NULL,
   `zip`      VARCHAR(10) DEFAULT NULL,
   `modified` TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
@@ -888,8 +882,7 @@ ADD CONSTRAINT `fk_entry_user` FOREIGN KEY (`uid`) REFERENCES `user` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
--- ALTER TABLE mood_theme_data
--- add constraint FK_mood_theme_data_mood foreign key (moodid) references mood (id);
+ALTER TABLE mood_theme_data add constraint FK_mood_theme_data_mood foreign key (moodid) references mood (id);
 
 -- ALTER TABLE mood_themes
 -- add constraint FK_mood_themes_user foreign key (owner) references user (id);
@@ -897,14 +890,12 @@ ADD CONSTRAINT `fk_entry_user` FOREIGN KEY (`uid`) REFERENCES `user` (`id`)
 -- ALTER TABLE rss_subscriptions
 -- add constraint FK_rss_subscriptions_user foreign key (id) references user (id);
 
--- ALTER TABLE state
--- add constraint FK_state_country foreign key (country_id) references country (id);
+ALTER TABLE state
+add constraint FK_state_country foreign key (country_id) references country (id);
 
--- ALTER TABLE user_location
--- add constraint FK_user_location_country foreign key (country) references country (id);
-
--- ALTER TABLE user_location
--- add constraint FK_user_location_state foreign key (state) references state (id);
+ ALTER TABLE user_location
+ add constraint FK_user_location_state foreign key (state) references state (id),
+ add constraint FK_user_location_country foreign key (country) references country (id);
 
 --
 -- Constraints for table `user_images_album_map`
