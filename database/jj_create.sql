@@ -101,7 +101,7 @@ CREATE TABLE IF NOT EXISTS `entry` (
   `music`          VARCHAR(125)        NOT NULL DEFAULT '',
   `location`       TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',
   `body`           TEXT                NOT NULL,
-  `security`       TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',
+  `security`       TINYINT(4) UNSIGNED NOT NULL DEFAULT '0',
   `autoformat`     ENUM('Y', 'N')      NOT NULL DEFAULT 'Y',
   `allow_comments` ENUM('Y', 'N')      NOT NULL DEFAULT 'Y',
   `email_comments` ENUM('Y', 'N')      NOT NULL DEFAULT 'Y',
@@ -118,14 +118,6 @@ CREATE TABLE IF NOT EXISTS `entry` (
   DEFAULT CHARSET =latin1
   AUTO_INCREMENT =33659;
 
---
--- RELATIONS FOR TABLE `entry`:
---   `security`
---       `entry_security` -> `id`
---   `uid`
---       `user` -> `id`
---
-
 -- --------------------------------------------------------
 
 --
@@ -135,7 +127,7 @@ CREATE TABLE IF NOT EXISTS `entry` (
 --
 
 CREATE TABLE IF NOT EXISTS `entry_security` (
-  `id`    TINYINT(4)           NOT NULL DEFAULT '0',
+  `id`    TINYINT(4) UNSIGNED NOT NULL DEFAULT '0',
   `title` CHAR(7)
           CHARACTER SET latin1 NOT NULL,
   PRIMARY KEY (`id`)
@@ -877,7 +869,7 @@ ADD CONSTRAINT `fk_user_id` FOREIGN KEY (`uid`) REFERENCES `user` (`id`);
 -- Constraints for table `entry`
 --
 ALTER TABLE `entry`
--- ADD CONSTRAINT `fk_entry_entry_security` foreign key (security) references entry_security(id),
+ADD CONSTRAINT `fk_entry_entry_security` foreign key (security) references entry_security(id),
 ADD CONSTRAINT `fk_entry_user` FOREIGN KEY (`uid`) REFERENCES `user` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
@@ -893,9 +885,9 @@ ALTER TABLE mood_theme_data add constraint FK_mood_theme_data_mood foreign key (
 ALTER TABLE state
 add constraint FK_state_country foreign key (country_id) references country (id);
 
- ALTER TABLE user_location
- add constraint FK_user_location_state foreign key (state) references state (id),
- add constraint FK_user_location_country foreign key (country) references country (id);
+ALTER TABLE user_location
+add constraint FK_user_location_state foreign key (state) references state (id),
+add constraint FK_user_location_country foreign key (country) references country (id);
 
 --
 -- Constraints for table `user_images_album_map`
