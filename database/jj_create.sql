@@ -898,6 +898,8 @@ alter table state add constraint FK_state_country foreign key (country_id) refer
 
 alter table user_location add constraint FK_user_location_country foreign key (country) references country (id);
 
+alter table user_location add constraint FK_user_location_state foreign key (state) references state (id);
+
 --
 -- Constraints for table `user_images_album_map`
 --
