@@ -570,7 +570,7 @@ public class UsersController {
         return "users";
     }
 
-    @Transactional(value = Transactional.TxType.REQUIRED)
+    @Transactional(value = Transactional.TxType.SUPPORTS)
     private UserContext getUserContext(String username, HttpSession session) {
         User authUser = null;
         try {
@@ -1373,7 +1373,7 @@ public class UsersController {
      * @param uc User Context
      */
     @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
-    @Transactional(value = Transactional.TxType.REQUIRED)
+    @Transactional(value = Transactional.TxType.SUPPORTS)
     private String getCalendarMini(UserContext uc) {
         StringBuilder sb = new StringBuilder();
         try {
