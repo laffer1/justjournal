@@ -38,6 +38,7 @@ import com.justjournal.rss.Rss;
 import com.justjournal.search.BaseSearch;
 import com.justjournal.services.EntryService;
 import com.justjournal.services.ServiceException;
+import com.justjournal.services.UserImageService;
 import com.justjournal.utility.HTMLUtil;
 import com.justjournal.utility.SQLHelper;
 import com.justjournal.utility.StringUtil;
@@ -111,6 +112,9 @@ public class UsersController {
 
     @Autowired
     private RssSubscriptionsDAO rssSubscriptionsDAO;
+
+    @Autowired
+    private UserImageService userImageService;
 
     public void setEntryService(EntryService entryService) {
         this.entryService = entryService;
@@ -445,7 +449,6 @@ public class UsersController {
         }
     }
 
-    @Transactional(value = Transactional.TxType.REQUIRED)
     @RequestMapping(value = "{username}/pictures", method = RequestMethod.GET, produces = "text/html")
     public String pictures(@PathVariable("username") String username, Model model, HttpSession session, HttpServletResponse response) {
         UserContext userc = getUserContext(username, session);
@@ -466,7 +469,7 @@ public class UsersController {
         model.addAttribute("calendarMini", getCalendarMini(userc));
         model.addAttribute("archive", getArchive(userc));
 
-        model.addAttribute("pictures", getImageList(userc));
+        model.addAttribute("pictures", userImageService.getUserImages(username));
 
         return "users";
     }
@@ -711,57 +714,6 @@ public class UsersController {
             document.add(Chunk.NEWLINE);
             document.add(Chunk.NEWLINE);
         }
-    }
-
-    @Transactional(value = Transactional.TxType.SUPPORTS)
-    @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
-    private String getImageList(final UserContext uc) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("<h2>Pictures</h2>");
-        sb.append(endl);
-        sb.append("<ul style=\"list-style-image: url('/images/pictureframe.png'); list-style-type: circle;\">");
-
-
-        ResultSet rs = null;
-        String imageTitle;
-        final String sqlStmt = "SELECT id, title FROM user_images WHERE owner='" + uc.getBlogUser().getId() + "' ORDER BY title;";
-
-        try {
-            rs = SQLHelper.executeResultSet(sqlStmt);
-
-            while (rs.next()) {
-                imageTitle = rs.getString("title");
-
-                sb.append("\t<li>");
-                sb.append("<a href=\"/AlbumImage?id=");
-                sb.append(rs.getString("id"));
-                sb.append("\" rel=\"lightbox\" title=\"");
-                sb.append(imageTitle);
-                sb.append("\">");
-                sb.append(imageTitle);
-                sb.append("</a>");
-                sb.append("</li>");
-                sb.append(endl);
-            }
-
-            rs.close();
-
-        } catch (Exception e1) {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (Exception e) {
-                    // NOTHING TO DO
-                }
-            }
-        }
-        sb.append("</ul>\n");
-        sb.append("<p>Subscribe to pictures ");
-        sb.append("<a href=\"/users/");
-        sb.append(uc.getBlogUser().getUsername());
-        sb.append("/rsspics\">feed</a>.</p>");
-
-        return sb.toString();
     }
 
     private String getSubscriptions(final UserContext uc) {

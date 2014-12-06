@@ -222,7 +222,19 @@
 
                 <c:out escapeXml="false" value="${entry}"/>
                 <c:out escapeXml="false" value="${friends}"/>
-                <c:out escapeXml="false" value="${pictures}"/>
+
+                <c:if test="${pictures != null && pictures.size() > 0}">
+                        <h2>Pictures</h2>
+                        <ul style="list-style-image: url('${pageContext.request.contextPath}/images/pictureframe.png'); list-style-type: circle;">
+                            <c:forEach items="${pictures}" var="pic">
+                                <li><a href="${pageContext.request.contextPath}/AlbumImage?id=<c:out value="${pid.id}"/>" rel="lightbox">
+                                    <c:out value="${pid.title}"/>
+                                </a></li>
+                            </c:forEach>
+                        </ul>
+                        <p>Subscribe to pictures <a href="${pageContext.request.contextPath}/users/<c:out value="${user.username}"/>/rsspics">feed</a>.</p>
+                </c:if>
+
                 <c:out escapeXml="false" value="${search}"/>
                 <c:out escapeXml="false" value="${subscriptions}"/>
                 <c:out escapeXml="false" value="${tags}"/>
@@ -233,7 +245,7 @@
 
                     <p>
                         <c:forEach begin="${startYear}" end="${currentYear}" var="yr">
-                            <a href="../<c:out value="${yr}"/>"><c:out value="${yr}"/></a>
+                            <a href="${pageContext.request.contextPath}/users/<c:out value="${user.username}"/>/<c:out value="${yr}"/>"><c:out value="${yr}"/></a>
                         </c:forEach>
                     </p>
                 </c:if>

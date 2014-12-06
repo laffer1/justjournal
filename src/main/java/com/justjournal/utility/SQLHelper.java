@@ -149,6 +149,7 @@ public final class SQLHelper {
         return RowsAffected;
     }
 
+    @Deprecated
     public static CachedRowSet executeResultSet(final String commandText)
             throws Exception {
         Connection conn = null;
