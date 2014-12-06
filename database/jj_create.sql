@@ -888,23 +888,23 @@ ADD CONSTRAINT `fk_entry_user` FOREIGN KEY (`uid`) REFERENCES `user` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
-ALTER TABLE mood_theme_data
-add constraint FK_mood_theme_data_mood foreign key (moodid) references mood (id);
+-- ALTER TABLE mood_theme_data
+-- add constraint FK_mood_theme_data_mood foreign key (moodid) references mood (id);
 
-ALTER TABLE mood_themes
-add constraint FK_mood_themes_user foreign key (owner) references user (id);
+-- ALTER TABLE mood_themes
+-- add constraint FK_mood_themes_user foreign key (owner) references user (id);
 
-ALTER TABLE rss_subscriptions
-add constraint FK_rss_subscriptions_user foreign key (id) references user (id);
+-- ALTER TABLE rss_subscriptions
+-- add constraint FK_rss_subscriptions_user foreign key (id) references user (id);
 
-ALTER TABLE state
-add constraint FK_state_country foreign key (country_id) references country (id);
+-- ALTER TABLE state
+-- add constraint FK_state_country foreign key (country_id) references country (id);
 
-ALTER TABLE user_location
-add constraint FK_user_location_country foreign key (country) references country (id);
+-- ALTER TABLE user_location
+-- add constraint FK_user_location_country foreign key (country) references country (id);
 
-ALTER TABLE user_location
-add constraint FK_user_location_state foreign key (state) references state (id);
+-- ALTER TABLE user_location
+-- add constraint FK_user_location_state foreign key (state) references state (id);
 
 --
 -- Constraints for table `user_images_album_map`
