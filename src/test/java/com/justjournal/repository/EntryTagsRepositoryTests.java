@@ -26,20 +26,45 @@
 
 package com.justjournal.repository;
 
+import com.justjournal.Util;
 import com.justjournal.model.EntryTag;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 
-import java.util.List;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Lucas Holt
  */
-@Repository
-public interface EntryTagsRepository extends CrudRepository<EntryTag, Integer> {
+@RunWith(SpringJUnit4ClassRunner.class)
+@WebAppConfiguration
+@ContextConfiguration("file:src/test/resources/mvc-dispatcher-servlet.xml")
+public class EntryTagsRepositoryTests {
+    @Autowired
+    EntryTagsRepository entryTagsRepository;
 
-    @Query("select et from EntryTag et, Entry e, User u where et.entry = e and e.user = u and LOWER(u.username) = LOWER(:username)")
-    public List<EntryTag> findByUsername(@Param("username") String username);
+    @BeforeClass
+    public static void setup() throws Exception {
+        Util.setupDb();
+    }
+
+    @Test
+    public void list() throws Exception {
+        Iterable<EntryTag> list = entryTagsRepository.findAll();
+        assertNotNull(list);
+        assertTrue(entryTagsRepository.count() > 0);
+    }
+
+    @Test
+    public void findByUsername() {
+        Iterable<EntryTag> list = entryTagsRepository.findByUsername("testuser");
+        assertNotNull(list);
+        assertTrue(entryTagsRepository.count() > 0);
+    }
 }

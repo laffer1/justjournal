@@ -59,10 +59,13 @@ public class Entry implements Serializable {
     @GeneratedValue
     private int id = 0;
 
-    @JsonIgnore
     @Column(name = "date")
     @Temporal(value = TemporalType.DATE)
     private Date date = new Date();
+
+    @Column(name = "modified")
+    @Temporal(value = TemporalType.TIMESTAMP)
+    private Date modified;
 
     @JsonProperty("location")
     @ManyToOne
@@ -85,7 +88,7 @@ public class Entry implements Serializable {
     private Security security;
 
     @JsonProperty("subject")
-    @Column(name = "subject", length = 255)
+    @Column(name = "subject", length = 255, nullable = true)
     private String subject = "";
 
     @Basic(fetch = FetchType.LAZY)
@@ -118,7 +121,9 @@ public class Entry implements Serializable {
     private PrefBool draft = PrefBool.N;
 
     // TODO: implement
+    @JsonIgnore
     transient private int attachImage = 0;
+    @JsonIgnore
     transient private int attachFile = 0;
 
     @JsonManagedReference
@@ -150,6 +155,14 @@ public class Entry implements Serializable {
 
     public void setDate(final Date date) {
         this.date = date;
+    }
+
+    public Date getModified() {
+        return modified;
+    }
+
+    public void setModified(final Date modified) {
+        this.modified = modified;
     }
 
     public Location getLocation() {

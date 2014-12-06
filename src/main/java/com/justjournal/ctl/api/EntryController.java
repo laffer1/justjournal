@@ -58,31 +58,25 @@ import java.util.*;
 @RequestMapping("/api/entry")
 public class EntryController {
     private static final Logger log = Logger.getLogger(EntryController.class);
-
+    private static final int DEFAULT_SIZE = 20;
     @Qualifier("commentRepository")
     @Autowired
     private CommentRepository commentDao = null;
-
     @Qualifier("entryRepository")
     @Autowired
     private EntryRepository entryDao = null;
-
     @Qualifier("securityDao")
     @Autowired
     private SecurityDao securityDao;
-
     @Qualifier("locationDao")
     @Autowired
     private LocationDao locationDao;
-
     @Qualifier("moodDao")
     @Autowired
     private MoodDao moodDao;
-
     @Qualifier("userRepository")
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private EntryService entryService;
 
@@ -114,6 +108,15 @@ public class EntryController {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return null;
         }
+    }
+
+    @RequestMapping(value = "{username}/page/{page}", method = RequestMethod.GET, produces = "application/json")
+    public
+    @ResponseBody
+    Page<Entry> getEntries(@PathVariable("username") String username, @PathVariable("page") int page,
+                           HttpServletResponse response, HttpSession session) {
+
+        return getEntries(username, DEFAULT_SIZE, page, response, session);
     }
 
     /**

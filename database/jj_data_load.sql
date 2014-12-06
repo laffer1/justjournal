@@ -1111,6 +1111,11 @@ INSERT INTO `entry` (`id`, `uid`, `date`, `modified`, `subject`, `mood`, `music`
 VALUES (33660, '2908', CURRENT_DATE(), CURRENT_TIMESTAMP, 'test subject 2', '3', 'the rock band song', '1',
         'i am a body of a blog post in text format', '1', 'Y', 'Y', 'Y', 'N', '0', '0');
 
+
+INSERT INTO `tags` (id, name) VALUES('1', 'footest');
+
+INSERT INTO `entry_tags` (id, entryid, tagid) VALUES('1', '33660', '1');
+
 -- Create friends
 
 INSERT INTO `friends` (
