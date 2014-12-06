@@ -101,7 +101,7 @@ CREATE TABLE IF NOT EXISTS `entry` (
   `music`          VARCHAR(125)        NOT NULL DEFAULT '',
   `location`       TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',
   `body`           TEXT                NOT NULL,
-  `security`       TINYINT(4) UNSIGNED NOT NULL DEFAULT '0',
+  `security`       TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',
   `autoformat`     ENUM('Y', 'N')      NOT NULL DEFAULT 'Y',
   `allow_comments` ENUM('Y', 'N')      NOT NULL DEFAULT 'Y',
   `email_comments` ENUM('Y', 'N')      NOT NULL DEFAULT 'Y',
@@ -326,7 +326,7 @@ CREATE TABLE IF NOT EXISTS `mood_themes` (
 CREATE TABLE IF NOT EXISTS `mood_theme_data` (
   `id`          INT(10) UNSIGNED    NOT NULL AUTO_INCREMENT,
   `moodthemeid` INT(10) UNSIGNED    NOT NULL DEFAULT '0',
-  `moodid`      INT(10) UNSIGNED    NOT NULL DEFAULT '0',
+  `moodid`      TINYINT(3) UNSIGNED    NOT NULL DEFAULT '0',
   `picurl`      VARCHAR(100) DEFAULT NULL,
   `width`       TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',
   `height`      TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',
@@ -611,7 +611,7 @@ CREATE TABLE IF NOT EXISTS `user_bio` (
 --
 
 CREATE TABLE IF NOT EXISTS `user_contact` (
-  `id`       INT(11)          NOT NULL AUTO_INCREMENT,
+  `id`       INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `user_id`  INT(10) UNSIGNED NOT NULL DEFAULT '0',
   `email`    VARCHAR(100)     NOT NULL DEFAULT '',
   `icq`      VARCHAR(20) DEFAULT NULL,
@@ -883,22 +883,28 @@ ADD CONSTRAINT `fk_user_id` FOREIGN KEY (`uid`) REFERENCES `user` (`id`);
 -- Constraints for table `entry`
 --
 ALTER TABLE `entry`
-add constraint fk_entry_entry_security foreign key (security) references entry_security (id),
+ADD CONSTRAINT `fk_entry_entry_security` foreign key (`security`) references entry_security(`id`),
 ADD CONSTRAINT `fk_entry_user` FOREIGN KEY (`uid`) REFERENCES `user` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
-alter table mood_theme_data add constraint FK_mood_theme_data_mood foreign key (moodid) references mood (id);
+ALTER TABLE mood_theme_data
+add constraint FK_mood_theme_data_mood foreign key (moodid) references mood (id);
 
-alter table mood_themes add constraint FK_mood_themes_user foreign key (owner) references user (id);
+ALTER TABLE mood_themes
+add constraint FK_mood_themes_user foreign key (owner) references user (id);
 
-alter table rss_subscriptions add constraint FK_rss_subscriptions_user foreign key (id) references user (id);
+ALTER TABLE rss_subscriptions
+add constraint FK_rss_subscriptions_user foreign key (id) references user (id);
 
-alter table state add constraint FK_state_country foreign key (country_id) references country (id);
+ALTER TABLE state
+add constraint FK_state_country foreign key (country_id) references country (id);
 
-alter table user_location add constraint FK_user_location_country foreign key (country) references country (id);
+ALTER TABLE user_location
+add constraint FK_user_location_country foreign key (country) references country (id);
 
-alter table user_location add constraint FK_user_location_state foreign key (state) references state (id);
+ALTER TABLE user_location
+add constraint FK_user_location_state foreign key (state) references state (id);
 
 --
 -- Constraints for table `user_images_album_map`
