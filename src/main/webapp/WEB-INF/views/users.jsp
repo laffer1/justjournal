@@ -152,14 +152,14 @@
                 </p>
 
                 <div class="menuentity" id="userRecentEntries">
-                    <strong style="text-transform: uppercase; letter-spacing: 2px; border: 0 none; border-bottom: 1px; border-style: dotted; border-color: #999999; margin-bottom: 5px; width: 100%; font-size: 10px;">Recent
+                    <strong style="text-transform: uppercase; letter-spacing: 2px; border: 0 dotted #999999;border-bottom-width: 1px;margin-bottom: 5px; width: 100%; font-size: 10px;">Recent
                         Entries</strong>
                     <ul class="list-group" id="userRecentEntriesList">
                     </ul>
                 </div>
 
                 <div class="menuentity" id="userlinks" style="padding-top: 10px;">
-                    <strong style="text-transform: uppercase; letter-spacing: 2px; border: 0 none; border-bottom: 1px; border-style: dotted; border-color: #999999; margin-bottom: 5px; width: 100%; font-size: 10px;"><i
+                    <strong style="text-transform: uppercase; letter-spacing: 2px; border: 0 dotted #999999;border-bottom-width: 1px;margin-bottom: 5px; width: 100%; font-size: 10px;"><i
                             class="fa fa-external-link-square"></i> Links</strong>
                     <ul class="list-group" id="userlinkList">
                     </ul>
@@ -169,7 +169,7 @@
 
 
                 <div class="menuentity" id="usertags" style="padding-top: 10px;">
-                    <strong style="text-transform: uppercase; letter-spacing: 2px; border: 0 none; border-bottom: 1px; border-style: dotted; border-color: #999999; margin-bottom: 5px; width: 100%; font-size: 10px;"><i
+                    <strong style="text-transform: uppercase; letter-spacing: 2px; border: 0 dotted #999999;border-bottom-width: 1px;margin-bottom: 5px; width: 100%; font-size: 10px;"><i
                             class="fa fa-tags"></i> Tags</strong>
 
                     <p style="padding-left: 0; margin-left: 0;" id="tagsmini">
