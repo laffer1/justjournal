@@ -883,7 +883,7 @@ ADD CONSTRAINT `fk_user_id` FOREIGN KEY (`uid`) REFERENCES `user` (`id`);
 -- Constraints for table `entry`
 --
 ALTER TABLE `entry`
-ADD CONSTRAINT `fk_entry_entry_security` foreign key (`security`) references entry_security(`id`),
+-- ADD CONSTRAINT `fk_entry_entry_security` foreign key (security) references entry_security(id),
 ADD CONSTRAINT `fk_entry_user` FOREIGN KEY (`uid`) REFERENCES `user` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
