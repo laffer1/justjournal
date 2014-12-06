@@ -883,9 +883,20 @@ ADD CONSTRAINT `fk_user_id` FOREIGN KEY (`uid`) REFERENCES `user` (`id`);
 -- Constraints for table `entry`
 --
 ALTER TABLE `entry`
+add constraint fk_entry_entry_security foreign key (security) references entry_security (id),
 ADD CONSTRAINT `fk_entry_user` FOREIGN KEY (`uid`) REFERENCES `user` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
+
+alter table mood_theme_data add constraint FK_mood_theme_data_mood foreign key (moodid) references mood (id);
+
+alter table mood_themes add constraint FK_mood_themes_user foreign key (owner) references user (id);
+
+alter table rss_subscriptions add constraint FK_rss_subscriptions_user foreign key (id) references user (id);
+
+alter table state add constraint FK_state_country foreign key (country_id) references country (id);
+
+alter table user_location add constraint FK_user_location_country foreign key (country) references country (id);
 
 --
 -- Constraints for table `user_images_album_map`
