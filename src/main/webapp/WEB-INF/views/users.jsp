@@ -1,4 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<jsp:useBean id="user" scope="request" type="com.justjournal.model.User"/>
+<jsp:useBean id="pictures" scope="request" type="java.util.List<com.justjournal.model.UserImage>"/>
 <!doctype html>
 <html>
 
@@ -223,7 +225,7 @@
                 <c:out escapeXml="false" value="${entry}"/>
                 <c:out escapeXml="false" value="${friends}"/>
 
-                <c:if test="${pictures != null && pictures.size() > 0}">
+                <c:if test="${pictures != null && pictures.size > 0}">
                         <h2>Pictures</h2>
                         <ul style="list-style-image: url('${pageContext.request.contextPath}/images/pictureframe.png'); list-style-type: circle;">
                             <c:forEach items="${pictures}" var="pic">

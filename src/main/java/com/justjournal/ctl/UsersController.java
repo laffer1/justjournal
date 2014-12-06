@@ -40,7 +40,6 @@ import com.justjournal.services.EntryService;
 import com.justjournal.services.ServiceException;
 import com.justjournal.services.UserImageService;
 import com.justjournal.utility.HTMLUtil;
-import com.justjournal.utility.SQLHelper;
 import com.justjournal.utility.StringUtil;
 import com.justjournal.utility.Xml;
 import com.lowagie.text.*;
