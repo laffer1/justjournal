@@ -40,6 +40,6 @@ import java.util.List;
 @Repository
 public interface SearchEntryRepository extends ElasticsearchCrudRepository<Entry, String> {
 
-    public Page<Entry> findByUsername(String username, Pageable page);
+   // public Page<Entry> findByUsername(String username, Pageable page);
 }
 

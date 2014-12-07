@@ -34,6 +34,7 @@
        xmlns:tx="http://www.springframework.org/schema/tx"
        xmlns:aop="http://www.springframework.org/schema/aop"
        xmlns:elasticsearch="http://www.springframework.org/schema/data/elasticsearch"
+       xmlns:util="http://www.springframework.org/schema/util"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
@@ -123,7 +124,12 @@
 
     <aop:aspectj-autoproxy/>
 
-    <elasticsearch:node-client id="client" local="true"/>
+   <!-- <elasticsearch:node-client id="client" local="true"/>   -->
+
+    <bean name="client" class="org.springframework.data.elasticsearch.client.NodeClientFactoryBean">
+        <property name="local" value="true"/>
+        <property name="clusterName" value="JJ"/>
+    </bean>
 
     <bean name="elasticsearchTemplate" class="org.springframework.data.elasticsearch.core.ElasticsearchTemplate">
         <constructor-arg name="client" ref="client"/>

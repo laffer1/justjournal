@@ -28,6 +28,7 @@ package com.justjournal.services;
 
 import com.justjournal.model.Entry;
 import com.justjournal.repository.EntryRepository;
+import com.justjournal.repository.SearchEntryRepository;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -49,8 +50,13 @@ import java.util.List;
 public class SearchService {
     private static final Logger log = Logger.getLogger(SearchService.class);
 
+    //@Qualifier("elasticsearchTemplate")
+    //@Autowired
+    //private ElasticsearchTemplate elasticsearchTemplate;
+
+    @Qualifier("searchEntryRepository")
     @Autowired
-    private ElasticsearchTemplate elasticsearchTemplate;
+    private SearchEntryRepository searchEntryRepository;
 
     @Qualifier("entryRepository")
     @Autowired
@@ -70,11 +76,12 @@ public class SearchService {
 
             for (Entry entry : entries) {
                 log.trace("Adding entry to index " + entry.getId());
-                IndexQuery indexQuery1 = new IndexQueryBuilder().withId(Integer.toString(entry.getId())).withObject(entry).build();
-                indexQueries.add(indexQuery1);
+                searchEntryRepository.save(entry);
+                //IndexQuery indexQuery1 = new IndexQueryBuilder().withId(Integer.toString(entry.getId())).withObject(entry).build();
+                //indexQueries.add(indexQuery1);
             }
 
-            elasticsearchTemplate.bulkIndex(indexQueries);
+         //   elasticsearchTemplate.bulkIndex(indexQueries);
 
             pageable = entries.nextPageable();
             entries = entryRepository.findAll(pageable);
@@ -89,7 +96,8 @@ public class SearchService {
 
         log.trace("Elasticsearch: Adding entry to index " + entry.getId());
 
-        IndexQuery indexQuery = new IndexQueryBuilder().withId(Integer.toString(entry.getId())).withObject(entry).build();
-        elasticsearchTemplate.index(indexQuery);
+        searchEntryRepository.save(entry);
+        //IndexQuery indexQuery = new IndexQueryBuilder().withId(Integer.toString(entry.getId())).withObject(entry).build();
+        //elasticsearchTemplate.index(indexQuery);
     }
 }
