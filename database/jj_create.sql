@@ -405,10 +405,10 @@ CREATE TABLE IF NOT EXISTS `rss_cache` (
 
 CREATE TABLE IF NOT EXISTS `rss_subscriptions` (
   `id`    INT(10) UNSIGNED NOT NULL DEFAULT '0',
-  `uri`   TINYTEXT         NOT NULL,
+  `uri`   varchar(255)         NOT NULL,
   `subid` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'unique subscription id for easier changes',
   PRIMARY KEY (`subid`),
-  UNIQUE KEY `UNIQUE` (`id`, `uri`(256))
+  UNIQUE KEY `UNIQUE` (`id`, `uri`(255))
 )
   ENGINE =InnoDB
   DEFAULT CHARSET =latin1
@@ -464,7 +464,7 @@ CREATE TABLE IF NOT EXISTS `state` (
 CREATE TABLE IF NOT EXISTS `style` (
   `id`       TINYINT(10) UNSIGNED NOT NULL DEFAULT '0',
   `title`    VARCHAR(30)          NOT NULL DEFAULT '''''',
-  `desc`     TINYTEXT             NOT NULL,
+  `desc`     varchar(255)             NOT NULL,
   `modified` TIMESTAMP            NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 )
