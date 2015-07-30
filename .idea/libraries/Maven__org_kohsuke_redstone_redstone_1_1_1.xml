@@ -1,13 +1,13 @@
 <component name="libraryTable">
   <library name="Maven: org.kohsuke.redstone:redstone:1.1.1">
     <CLASSES>
-      <root url="jar://C:/Users/lholt/.m2/repository/org/kohsuke/redstone/redstone/1.1.1/redstone-1.1.1.jar!/" />
+      <root url="jar://$APPLICATION_HOME_DIR$/bin/C:/users/Lholt/.m2/repository/org/kohsuke/redstone/redstone/1.1.1/redstone-1.1.1.jar!/" />
     </CLASSES>
     <JAVADOC>
-      <root url="jar://C:/Users/lholt/.m2/repository/org/kohsuke/redstone/redstone/1.1.1/redstone-1.1.1-javadoc.jar!/" />
+      <root url="jar://$APPLICATION_HOME_DIR$/bin/C:/users/Lholt/.m2/repository/org/kohsuke/redstone/redstone/1.1.1/redstone-1.1.1-javadoc.jar!/" />
     </JAVADOC>
     <SOURCES>
-      <root url="jar://C:/Users/lholt/.m2/repository/org/kohsuke/redstone/redstone/1.1.1/redstone-1.1.1-sources.jar!/" />
+      <root url="jar://$APPLICATION_HOME_DIR$/bin/C:/users/Lholt/.m2/repository/org/kohsuke/redstone/redstone/1.1.1/redstone-1.1.1-sources.jar!/" />
     </SOURCES>
   </library>
 </component>
