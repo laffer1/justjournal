@@ -1,4 +1,5 @@
 language: java
+sudo: false
 before_script:
   - mysql -e 'create database justjournal_test;'
   - mysql --database=justjournal_test < database/jj_create.sql
