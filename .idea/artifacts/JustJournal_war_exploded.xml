@@ -39,13 +39,13 @@
           <element id="library" level="project" name="Maven: net.sf.ehcache:ehcache-web:2.0.4" />
           <element id="library" level="project" name="Maven: net.sf.ehcache:ehcache-core:2.4.6" />
           <element id="library" level="project" name="Maven: com.google.code.gson:gson:2.2.4" />
-          <element id="library" level="project" name="Maven: org.springframework:spring-core:3.2.14.RELEASE" />
-          <element id="library" level="project" name="Maven: org.springframework:spring-beans:3.2.14.RELEASE" />
-          <element id="library" level="project" name="Maven: org.springframework:spring-web:3.2.14.RELEASE" />
-          <element id="library" level="project" name="Maven: org.springframework:spring-webmvc:3.2.14.RELEASE" />
-          <element id="library" level="project" name="Maven: org.springframework:spring-expression:3.2.14.RELEASE" />
-          <element id="library" level="project" name="Maven: org.springframework:spring-context:3.2.14.RELEASE" />
-          <element id="library" level="project" name="Maven: org.springframework:spring-context-support:3.2.14.RELEASE" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-core:4.0.2.RELEASE" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-beans:4.0.2.RELEASE" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-web:4.0.2.RELEASE" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-webmvc:4.0.2.RELEASE" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-expression:4.0.2.RELEASE" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-context:4.0.2.RELEASE" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-context-support:4.0.2.RELEASE" />
           <element id="library" level="project" name="Maven: org.springframework.data:spring-data-jpa:1.6.4.RELEASE" />
           <element id="library" level="project" name="Maven: org.springframework.data:spring-data-commons:1.8.4.RELEASE" />
           <element id="library" level="project" name="Maven: org.springframework:spring-orm:3.2.10.RELEASE" />
@@ -72,7 +72,7 @@
           <element id="library" level="project" name="Maven: org.apache.lucene:lucene-grouping:4.7.2" />
           <element id="library" level="project" name="Maven: org.apache.lucene:lucene-spatial:4.7.2" />
           <element id="library" level="project" name="Maven: com.spatial4j:spatial4j:0.4.1" />
-          <element id="library" level="project" name="Maven: org.springframework:spring-aop:3.2.14.RELEASE" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-aop:4.0.2.RELEASE" />
           <element id="library" level="project" name="Maven: aopalliance:aopalliance:1.0" />
           <element id="library" level="project" name="Maven: org.aspectj:aspectjweaver:1.7.4" />
           <element id="library" level="project" name="Maven: xml-apis:xml-apis:1.4.01" />
