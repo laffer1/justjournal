@@ -23,11 +23,12 @@
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
         <module name="justjournal" />
+        <module name="JustJournal" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="JustJournal" target="1.6" />
       <module name="justjournal" target="1.6" />
     </bytecodeTargetLevel>
   </component>
 </project>
-
