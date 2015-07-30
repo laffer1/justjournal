@@ -34,7 +34,7 @@ import org.springframework.stereotype.Repository;
  * @author Lucas Holt
  */
 @Repository
-public interface SettingsDao extends CrudRepository<Settings, Integer> {
+public interface SettingsRepository extends CrudRepository<Settings, Integer> {
 
     public Settings findByName(String name);
 }

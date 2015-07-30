@@ -26,7 +26,7 @@
 
 package com.justjournal.core;
 
-import com.justjournal.repository.SettingsDao;
+import com.justjournal.repository.SettingsRepository;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -45,7 +45,7 @@ import org.springframework.util.Assert;
 public class Settings {
     private static Logger log = Logger.getLogger(Settings.class.getName());
 
-    private final SettingsDao settingsDao;
+    private final SettingsRepository settingsDao;
 
     /* paths */
     private String baseUri = "http://localhost:8080/";
@@ -86,7 +86,7 @@ public class Settings {
     private boolean userAllowNew = true;
 
     @Autowired
-    public Settings(SettingsDao settingsDao) {
+    public Settings(SettingsRepository settingsDao) {
         Assert.notNull(settingsDao);
         this.settingsDao = settingsDao;
         try {

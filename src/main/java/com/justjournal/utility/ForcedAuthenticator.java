@@ -26,7 +26,7 @@
 
 package com.justjournal.utility;
 
-import com.justjournal.core.Settings;
+import com.justjournal.repository.SettingsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -37,10 +37,14 @@ import javax.mail.PasswordAuthentication;
  */
 @Component
 public class ForcedAuthenticator extends javax.mail.Authenticator {
+
     @Autowired
-    private Settings set;
+    private SettingsRepository settingsDao;
 
     public PasswordAuthentication getPasswordAuthentication() {
-        return new PasswordAuthentication(set.getMailUser(), set.getMailPass());
+        String user = settingsDao.findByName("mailUser").getValue();
+        String pass = settingsDao.findByName("mailPass").getValue();
+
+        return new PasswordAuthentication(user, pass);
     }
 }

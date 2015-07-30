@@ -50,7 +50,7 @@ public class RssSubscription implements Serializable {
     @JoinColumn(name = "id")
     private User user;
 
-    @Column(name = "uri", length = 255, nullable = false)
+    @Column(name = "uri", length = 255, nullable = false, columnDefinition = "varchar(255)", unique = false)
     private String uri;
 
     @Id
