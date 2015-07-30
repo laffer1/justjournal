@@ -602,12 +602,6 @@ public class UpdateJournal extends HttpServlet {
                             rp.setPingUri("http://ping.blo.gs/");
                             rp.ping();
 
-                            /* Technorati */
-                            final TechnoratiPing rpt = new TechnoratiPing();
-                            rpt.setName(pf.getUserPref().getJournalName());
-                            rpt.setUri(settings.getBaseUri() + "users/" + userName);
-                            rpt.ping();
-
                             /* IceRocket */
                             final IceRocket ice = new IceRocket();
                             ice.setName(pf.getUserPref().getJournalName());

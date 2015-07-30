@@ -282,12 +282,6 @@ public class Blogger {
                     rp.setPingUri("http://ping.blo.gs/");
                     rp.ping();
 
-                    /* Technorati */
-                    TechnoratiPing rpt = new TechnoratiPing();
-                    rpt.setName(user.getUserPref().getJournalName());
-                    rpt.setUri("http://www.justjournal.com/" + "users/" + user.getUsername());
-                    rpt.ping();
-
                     /* IceRocket */
                     IceRocket ice = new IceRocket();
                     ice.setName(user.getUserPref().getJournalName());
