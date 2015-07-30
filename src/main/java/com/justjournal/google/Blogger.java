@@ -41,7 +41,6 @@ import com.justjournal.model.User;
 import com.justjournal.repository.*;
 import com.justjournal.restping.BasePing;
 import com.justjournal.restping.IceRocket;
-import com.justjournal.restping.TechnoratiPing;
 import com.justjournal.utility.DateConvert;
 import com.justjournal.utility.HTMLUtil;
 import com.justjournal.utility.StringUtil;

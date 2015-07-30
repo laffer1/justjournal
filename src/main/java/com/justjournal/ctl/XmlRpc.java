@@ -47,10 +47,13 @@ import javax.servlet.ServletException;
  * @author Lucas Holt
  */
 final public class XmlRpc extends XmlRpcServlet {
-    public void init(ServletConfig servletConfig) throws ServletException {
+    private static final String BLOGGER = "blogger";
+    private static final String METAWEBLOG = "metaWeblog";
+
+    public void init(final ServletConfig servletConfig) throws ServletException {
         super.init(servletConfig);
 
-        getXmlRpcServer().addInvocationHandler("blogger", new Blogger());   // This is blogger 1.0 api which is no longer used by Google, but still popular with older blogging clients.
-        getXmlRpcServer().addInvocationHandler("metaWeblog", new MetaWeblog());
+        getXmlRpcServer().addInvocationHandler(BLOGGER, new Blogger());   // This is blogger 1.0 api which is no longer used by Google, but still popular with older blogging clients.
+        getXmlRpcServer().addInvocationHandler(METAWEBLOG, new MetaWeblog());
     }
 }

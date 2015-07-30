@@ -58,22 +58,22 @@ public class Login {
     @Autowired
     private UserRepository userRepository;
 
-    public static boolean isAuthenticated(HttpSession session) {
-        String username = (String) session.getAttribute("auth.user");
+    public static boolean isAuthenticated(final HttpSession session) {
+        final String username = (String) session.getAttribute("auth.user");
         return username != null && !username.isEmpty();
     }
 
     public
 
-    static String currentLoginName(HttpSession session) {
+    static String currentLoginName(final HttpSession session) {
         return (String) session.getAttribute(LOGIN_ATTRNAME);
     }
 
     public
 
-    static int currentLoginId(HttpSession session) {
+    static int currentLoginId(final HttpSession session) {
         int aUserID = 0;
-        Integer userIDasi = (Integer) session.getAttribute(LOGIN_ATTRID);
+        final Integer userIDasi = (Integer) session.getAttribute(LOGIN_ATTRID);
 
         if (userIDasi != null) {
             aUserID = userIDasi;
@@ -82,19 +82,19 @@ public class Login {
         return aUserID;
     }
 
-    protected static void logout(HttpSession session) {
+    protected static void logout(final HttpSession session) {
         session.removeAttribute(LOGIN_ATTRNAME);
         session.removeAttribute(LOGIN_ATTRID);
     }
 
-    public static boolean isUserName(CharSequence input) {
+    public static boolean isUserName(final CharSequence input) {
         final Pattern p = Pattern.compile("[A-Za-z0-9_]+");
         final Matcher m = p.matcher(input);
 
         return m.matches(); // valid on true
     }
 
-    public static boolean isPassword(CharSequence input) {
+    public static boolean isPassword(final CharSequence input) {
         final Pattern p = Pattern.compile("[A-Za-z0-9_@.#$ ]+");
         final Matcher m = p.matcher(input);
 
@@ -104,7 +104,7 @@ public class Login {
     private
 
     static String convertToHex(byte[] data) {
-        StringBuilder buf = new StringBuilder();
+        final StringBuilder buf = new StringBuilder();
         for (final byte aData : data) {
             int halfByte = (aData >>> 4) & 0x0F;
             int twoHalves = 0;
@@ -121,7 +121,7 @@ public class Login {
 
     public
 
-    static String SHA1(String text)
+    static String SHA1(final String text)
             throws NoSuchAlgorithmException, UnsupportedEncodingException {
         MessageDigest md = MessageDigest.getInstance("SHA-1");
         byte[] sha1hash;
@@ -162,7 +162,7 @@ public class Login {
     }
 
     private int lookupUserId(final String userName, final String passwordHash) {
-        com.justjournal.model.User user = lookupUser(userName, passwordHash);
+        final com.justjournal.model.User user = lookupUser(userName, passwordHash);
         if (user == null) return BAD_USER_ID;
         return user.getId();
     }
@@ -220,13 +220,13 @@ public class Login {
                               final String password,
                               final String newPass) {
 
-        int uid;
+        final int uid;
 
         try {
             uid = validate(userName, password);
 
             if (uid > BAD_USER_ID && isPassword(newPass)) {
-                com.justjournal.model.User user = lookupUser(userName, password);
+                final com.justjournal.model.User user = lookupUser(userName, password);
                 user.setPassword(SHA1(newPass));
                 userRepository.save(user);
 

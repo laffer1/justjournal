@@ -42,7 +42,6 @@ import com.justjournal.model.*;
 import com.justjournal.repository.*;
 import com.justjournal.restping.BasePing;
 import com.justjournal.restping.IceRocket;
-import com.justjournal.restping.TechnoratiPing;
 import com.justjournal.utility.HTMLUtil;
 import com.justjournal.utility.Spelling;
 import com.justjournal.utility.StringUtil;
