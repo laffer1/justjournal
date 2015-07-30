@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/justjournal.iml" filepath="$PROJECT_DIR$/justjournal.iml" />
+      <module fileurl="file://$PROJECT_DIR$/JustJournal.iml" filepath="$PROJECT_DIR$/JustJournal.iml" />
     </modules>
   </component>
 </project>
-
