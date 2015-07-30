@@ -1,13 +1,13 @@
 <component name="libraryTable">
   <library name="Maven: cglib:cglib-nodep:2.2">
     <CLASSES>
-      <root url="jar://C:/Users/lholt/.m2/repository/cglib/cglib-nodep/2.2/cglib-nodep-2.2.jar!/" />
+      <root url="jar://$APPLICATION_HOME_DIR$/bin/C:/users/Lholt/.m2/repository/cglib/cglib-nodep/2.2/cglib-nodep-2.2.jar!/" />
     </CLASSES>
     <JAVADOC>
-      <root url="jar://C:/Users/lholt/.m2/repository/cglib/cglib-nodep/2.2/cglib-nodep-2.2-javadoc.jar!/" />
+      <root url="jar://$APPLICATION_HOME_DIR$/bin/C:/users/Lholt/.m2/repository/cglib/cglib-nodep/2.2/cglib-nodep-2.2-javadoc.jar!/" />
     </JAVADOC>
     <SOURCES>
-      <root url="jar://C:/Users/lholt/.m2/repository/cglib/cglib-nodep/2.2/cglib-nodep-2.2-sources.jar!/" />
+      <root url="jar://$APPLICATION_HOME_DIR$/bin/C:/users/Lholt/.m2/repository/cglib/cglib-nodep/2.2/cglib-nodep-2.2-sources.jar!/" />
     </SOURCES>
   </library>
 </component>
