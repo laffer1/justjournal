@@ -63,7 +63,7 @@ public final class RssCache implements Serializable {
     private Date lastUpdated;
 
     //TODO: mark as tinytext
-    @Column(name = "uri", nullable = false)
+    @Column(name = "uri", nullable = false, length = 255)
     private String uri;
 
     @Column(name = "content", nullable = false, length = 65535, columnDefinition = "TEXT")
