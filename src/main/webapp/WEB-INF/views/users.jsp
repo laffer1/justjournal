@@ -1,6 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <jsp:useBean id="user" scope="request" type="com.justjournal.model.User"/>
-<jsp:useBean id="pictures" scope="request" type="java.util.List<com.justjournal.model.UserImage>"/>
 <!doctype html>
 <html>
 
@@ -268,8 +267,8 @@
     $().ready(function () {
         $.get('${pageContext.request.contextPath}/api/entry/<c:out value="${user.username}"/>/recent',
                 function (data) {
-                    for (var i = 0; i < data.content.length; i++) {
-                        var link = '<li class="list-group-item"><a href="/users/<c:out value="${user.username}"/>/entry/' + data.content[i].id + '">' + data.content[i].subject + '</a></li>';
+                    for (var i = 0; i < data.length; i++) {
+                        var link = '<li class="list-group-item"><a href="/users/<c:out value="${user.username}"/>/entry/' + data[i].id + '">' + data[i].subject + '</a></li>';
                         $('ul#userRecentEntriesList').append(link);
                     }
                 }
