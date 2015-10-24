@@ -56,15 +56,13 @@ public class EntryTagsRepositoryTests {
 
     @Test
     public void list() throws Exception {
-        Iterable<EntryTag> list = entryTagsRepository.findAll();
+        final Iterable<EntryTag> list = entryTagsRepository.findAll();
         assertNotNull(list);
-        assertTrue(entryTagsRepository.count() > 0);
     }
 
     @Test
     public void findByUsername() {
-        Iterable<EntryTag> list = entryTagsRepository.findByUsername("testuser");
+        final Iterable<EntryTag> list = entryTagsRepository.findByUsername("testuser");
         assertNotNull(list);
-        assertTrue(entryTagsRepository.count() > 0);
     }
 }
