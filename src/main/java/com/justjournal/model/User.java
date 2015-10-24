@@ -121,6 +121,12 @@ public class User implements Serializable {
 
     @JsonManagedReference
     @JsonIgnore
+    @Basic(fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    private List<UserImage> images = new ArrayList<UserImage>();
+
+    @JsonManagedReference
+    @JsonIgnore
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
     private UserBio bio;
 
@@ -342,5 +348,13 @@ public class User implements Serializable {
 
     public void setLinks(final List<UserLink> links) {
         this.links = links;
+    }
+
+    public List<UserImage> getImages() {
+        return images;
+    }
+
+    public void setImages(final List<UserImage> images) {
+        this.images = images;
     }
 }
