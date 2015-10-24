@@ -26,8 +26,10 @@
 
 package com.justjournal.services;
 
+import com.justjournal.model.User;
 import com.justjournal.model.UserImage;
 import com.justjournal.repository.UserImageRepository;
+import com.justjournal.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,14 +44,14 @@ import java.util.List;
 public class UserImageService {
 
     @Autowired
-    private UserImageRepository userImageRepository;
+    private UserRepository userRepository;
 
-    public List<UserImage> getUserImages(String username) {
-        List<UserImage> images = userImageRepository.findByUsername(username);
+    public List<UserImage> getUserImages(final String username) {
+        final User user = userRepository.findByUsername(username);
+        final List<UserImage> images = user.getImages();
 
         Collections.sort(images, new Comparator<UserImage>() {
-
-            public int compare(UserImage o1, UserImage o2) {
+            public int compare(final UserImage o1, final UserImage o2) {
                 return o2.getTitle().compareTo(o1.getTitle());
             }
         });
