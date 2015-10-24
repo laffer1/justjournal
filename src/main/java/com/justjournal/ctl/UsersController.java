@@ -90,6 +90,11 @@ public class UsersController {
     private static final String MODEL_CALENDAR_MINI = "calendarMini";
     private static final String MODEL_CALENDAR = "calendar";
     private static final String MODEL_ARCHIVE = "archive";
+    private static final String MODEL_PICTURES = "pictures";
+    private static final String MODEL_FRIENDS = "friends";
+    private static final String VIEW_USERS = "users";
+    private static final String PATH_USERNAME = "username";
+    private static final String PATH_MONTH = "month";
 
     @SuppressWarnings({"InstanceVariableOfConcreteClass"})
     private Settings settings = null;
@@ -131,7 +136,7 @@ public class UsersController {
     }
 
     @RequestMapping(value = "{username}", method = RequestMethod.GET, produces = "text/html")
-    public String entries(@PathVariable("username") final String username,
+    public String entries(@PathVariable(PATH_USERNAME) final String username,
                           final Pageable pageable,
                           final Model model,
                           final HttpSession session,
@@ -153,15 +158,16 @@ public class UsersController {
 
         model.addAttribute(MODEL_CALENDAR_MINI, getCalendarMini(userContext));
         model.addAttribute(MODEL_ARCHIVE, getArchive(userContext));
+        model.addAttribute(MODEL_PICTURES, null);
 
         model.addAttribute("pageable", pageable);
 
         model.addAttribute("entries", getEntries(userContext, pageable));
-        return "users";
+        return VIEW_USERS;
     }
 
     @RequestMapping(value = "{username}/entry/{id}", method = RequestMethod.GET, produces = "text/html")
-    public String entry(@PathVariable("username") final String username,
+    public String entry(@PathVariable(PATH_USERNAME) final String username,
                         @PathVariable("id") final int id,
                         final Model model, final HttpSession session, final HttpServletResponse response) {
 
@@ -182,14 +188,15 @@ public class UsersController {
 
         model.addAttribute(MODEL_CALENDAR_MINI, getCalendarMini(userContext));
         model.addAttribute(MODEL_ARCHIVE, getArchive(userContext));
+        model.addAttribute(MODEL_PICTURES, null);
 
         model.addAttribute(MODEL_ENTRY, getSingleEntry(id, userContext));
 
-        return "users";
+        return VIEW_USERS;
     }
 
     @RequestMapping(value = "{username}/friends", method = RequestMethod.GET, produces = "text/html")
-    public String friends(@PathVariable("username") final String username,
+    public String friends(@PathVariable(PATH_USERNAME) final String username,
                           final Model model,
                           final HttpSession session,
                           final HttpServletResponse response) {
@@ -210,17 +217,18 @@ public class UsersController {
 
         model.addAttribute(MODEL_CALENDAR_MINI, getCalendarMini(userc));
         model.addAttribute(MODEL_ARCHIVE, getArchive(userc));
+        model.addAttribute(MODEL_PICTURES, null);
 
         try {
-            model.addAttribute("friends", getFriends(userc));
+            model.addAttribute(MODEL_FRIENDS, getFriends(userc));
         } catch (final ServiceException se) {
             log.error(se.getMessage());
         }
-        return "users";
+        return VIEW_USERS;
     }
 
     @RequestMapping(value = "{username}/calendar", method = RequestMethod.GET, produces = "text/html")
-    public String calendar(@PathVariable("username") final String username, final Model model, final HttpSession session, final HttpServletResponse response) {
+    public String calendar(@PathVariable(PATH_USERNAME) final String username, final Model model, final HttpSession session, final HttpServletResponse response) {
 
         final UserContext userContext = getUserContext(username, session);
 
@@ -239,6 +247,7 @@ public class UsersController {
 
         model.addAttribute(MODEL_CALENDAR_MINI, getCalendarMini(userContext));
         model.addAttribute(MODEL_ARCHIVE, getArchive(userContext));
+        model.addAttribute(MODEL_PICTURES, null);
 
         final Calendar cal = Calendar.getInstance();
         final Integer year = cal.get(Calendar.YEAR);
@@ -246,11 +255,15 @@ public class UsersController {
         model.addAttribute("startYear", userContext.getBlogUser().getSince());
         model.addAttribute("currentYear", year);
 
-        return "users";
+        return VIEW_USERS;
     }
 
     @RequestMapping(value = "{username}/{year}", method = RequestMethod.GET, produces = "text/html")
-    public String calendarYear(@PathVariable("username") String username, @PathVariable("year") int year, Model model, HttpSession session, HttpServletResponse response) {
+    public String calendarYear(@PathVariable(PATH_USERNAME) final String username,
+                               @PathVariable("year") final int year,
+                               final Model model,
+                               final HttpSession session,
+                               final HttpServletResponse response) {
         final UserContext userc = getUserContext(username, session);
 
         if (userc == null) {
@@ -268,45 +281,19 @@ public class UsersController {
 
         model.addAttribute(MODEL_CALENDAR_MINI, getCalendarMini(userc));
         model.addAttribute(MODEL_ARCHIVE, getArchive(userc));
+        model.addAttribute(MODEL_PICTURES, null);
 
         model.addAttribute(MODEL_CALENDAR, getCalendar(year, userc));
 
-        return "users";
+        return VIEW_USERS;
     }
 
     @RequestMapping(value = "{username}/{year}/{month}", method = RequestMethod.GET, produces = "text/html")
-    public String calendarMonth(@PathVariable("username") String username,
-                                @PathVariable("year") int year,
-                                @PathVariable("month") int month,
-                                Model model, HttpSession session, HttpServletResponse response) {
-        UserContext userc = getUserContext(username, session);
-
-        if (userc == null) {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            return "";
-        }
-
-        model.addAttribute(MODEL_AUTHENTICATED_USER, Login.currentLoginName(session));
-        model.addAttribute(MODEL_USER, userc.getBlogUser());
-
-        if (userc.getBlogUser().getUserPref().getOwnerViewOnly() == PrefBool.Y && !userc.isAuthBlog()) {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            return "";
-        }
-
-        model.addAttribute(MODEL_CALENDAR_MINI, getCalendarMini(userc));
-        model.addAttribute(MODEL_ARCHIVE, getArchive(userc));
-
-        model.addAttribute(MODEL_CALENDAR, getCalendarMonth(year, month, userc));
-
-        return "users";
-    }
-
-    @RequestMapping(value = "{username}/{year}/{month}/{day}", method = RequestMethod.GET, produces = "text/html")
-    public String calendarDay(@PathVariable("username") String username,
-                              @PathVariable("year") int year,
-                              @PathVariable("month") int month,
-                              @PathVariable("day") int day, Model model, HttpServletResponse response, HttpSession session) {
+    public String calendarMonth(@PathVariable(PATH_USERNAME) final String username,
+                                @PathVariable("year") final int year,
+                                @PathVariable(PATH_MONTH) final int month,
+                                final Model model,
+                                final HttpSession session, final HttpServletResponse response) {
         final UserContext userc = getUserContext(username, session);
 
         if (userc == null) {
@@ -324,16 +311,46 @@ public class UsersController {
 
         model.addAttribute(MODEL_CALENDAR_MINI, getCalendarMini(userc));
         model.addAttribute(MODEL_ARCHIVE, getArchive(userc));
+        model.addAttribute(MODEL_PICTURES, null);
+
+        model.addAttribute(MODEL_CALENDAR, getCalendarMonth(year, month, userc));
+
+        return VIEW_USERS;
+    }
+
+    @RequestMapping(value = "{username}/{year}/{month}/{day}", method = RequestMethod.GET, produces = "text/html")
+    public String calendarDay(@PathVariable(PATH_USERNAME) final String username,
+                              @PathVariable("year") final int year,
+                              @PathVariable(PATH_MONTH) final int month,
+                              @PathVariable("day") final int day, final Model model, final HttpServletResponse response, final HttpSession session) {
+        final UserContext userc = getUserContext(username, session);
+
+        if (userc == null) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return "";
+        }
+
+        model.addAttribute(MODEL_AUTHENTICATED_USER, Login.currentLoginName(session));
+        model.addAttribute(MODEL_USER, userc.getBlogUser());
+
+        if (userc.getBlogUser().getUserPref().getOwnerViewOnly() == PrefBool.Y && !userc.isAuthBlog()) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return "";
+        }
+
+        model.addAttribute(MODEL_CALENDAR_MINI, getCalendarMini(userc));
+        model.addAttribute(MODEL_ARCHIVE, getArchive(userc));
+        model.addAttribute(MODEL_PICTURES, null);
 
         model.addAttribute(MODEL_CALENDAR, getCalendarDay(year, month, day, userc));
 
-        return "users";
+        return VIEW_USERS;
     }
 
     @RequestMapping(value = "{username}/atom", method = RequestMethod.GET, produces = "text/xml; charset=UTF-8")
     public
     @ResponseBody
-    String atom(@PathVariable("username") final String username, final HttpServletResponse response) {
+    String atom(@PathVariable(PATH_USERNAME) final String username, final HttpServletResponse response) {
         try {
             final User user = userRepository.findByUsername(username);
 
@@ -358,7 +375,7 @@ public class UsersController {
     @RequestMapping(value = "{username}/rss", method = RequestMethod.GET, produces = "application/rss+xml; charset=ISO-8859-1")
     public
     @ResponseBody
-    String rss(@PathVariable("username") final String username, final HttpServletResponse response) {
+    String rss(@PathVariable(PATH_USERNAME) final String username, final HttpServletResponse response) {
         try {
             final User user = userRepository.findByUsername(username);
 
@@ -373,7 +390,7 @@ public class UsersController {
             }
 
             return getRSS(user);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             log.error(e);
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return "";
@@ -383,7 +400,7 @@ public class UsersController {
     @RequestMapping(value = "{username}/rsspics", method = RequestMethod.GET, produces = "application/rss+xml; charset=ISO-8859-1")
     public
     @ResponseBody
-    String rssPictures(@PathVariable("username") final String username, final HttpServletResponse response) {
+    String rssPictures(@PathVariable(PATH_USERNAME) final String username, final HttpServletResponse response) {
         try {
             final User user = userRepository.findByUsername(username);
 
@@ -398,7 +415,7 @@ public class UsersController {
             }
 
             return getPicturesRSS(user);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             log.error(e);
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return "";
@@ -406,7 +423,7 @@ public class UsersController {
     }
 
     @RequestMapping(value = "{username}/pdf", method = RequestMethod.GET, produces = "application/pdf")
-    public void pdf(@PathVariable("username") final String username, final HttpServletResponse response, final HttpSession session) {
+    public void pdf(@PathVariable(PATH_USERNAME) final String username, final HttpServletResponse response, final HttpSession session) {
         User authUser = null;
         try {
             authUser = userRepository.findByUsername(Login.currentLoginName(session));
@@ -427,14 +444,14 @@ public class UsersController {
                 getPDF(response, userc);
             } else
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             log.error(e);
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
 
     @RequestMapping(value = "{username}/rtf", method = RequestMethod.GET, produces = "application/rtf")
-    public void rtf(@PathVariable("username") final String username, final HttpServletResponse response, final HttpSession session) {
+    public void rtf(@PathVariable(PATH_USERNAME) final String username, final HttpServletResponse response, final HttpSession session) {
         User authUser = null;
         try {
             authUser = userRepository.findByUsername(Login.currentLoginName(session));
@@ -460,7 +477,7 @@ public class UsersController {
     }
 
     @RequestMapping(value = "{username}/pictures", method = RequestMethod.GET, produces = "text/html")
-    public String pictures(@PathVariable("username") final String username, final Model model,
+    public String pictures(@PathVariable(PATH_USERNAME) final String username, final Model model,
                            final HttpSession session, final HttpServletResponse response) {
         final UserContext userc = getUserContext(username, session);
 
@@ -480,24 +497,24 @@ public class UsersController {
         model.addAttribute(MODEL_CALENDAR_MINI, getCalendarMini(userc));
         model.addAttribute(MODEL_ARCHIVE, getArchive(userc));
 
-        model.addAttribute("pictures", userImageService.getUserImages(username));
+        model.addAttribute(MODEL_PICTURES, userImageService.getUserImages(username));
 
-        return "users";
+        return VIEW_USERS;
     }
 
     @RequestMapping(value = "{username}/search", method = RequestMethod.GET, produces = "text/html")
-    public String search(@PathVariable("username") String username,
-                         @RequestParam("max") String max,
-                         @RequestParam("bquery") String bquery,
-                         Model model, HttpSession session, HttpServletResponse response) {
+    public String search(@PathVariable(PATH_USERNAME) final String username,
+                         @RequestParam("max") final String max,
+                         @RequestParam("bquery") final String bquery,
+                         final Model model, final HttpSession session, final HttpServletResponse response) {
         final UserContext userc = getUserContext(username, session);
         if (userc == null) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return "";
         }
 
-        model.addAttribute("authenticatedUsername", Login.currentLoginName(session));
-        model.addAttribute("user", userc.getBlogUser());
+        model.addAttribute(MODEL_AUTHENTICATED_USER, Login.currentLoginName(session));
+        model.addAttribute(MODEL_USER, userc.getBlogUser());
 
         if (userc.getBlogUser().getUserPref().getOwnerViewOnly() == PrefBool.Y && !userc.isAuthBlog()) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -506,6 +523,8 @@ public class UsersController {
 
         model.addAttribute(MODEL_CALENDAR_MINI, getCalendarMini(userc));
         model.addAttribute(MODEL_ARCHIVE, getArchive(userc));
+        model.addAttribute(MODEL_PICTURES, null);
+
 
         int maxr = SEARCH_MAX_LENGTH;
 
@@ -519,11 +538,11 @@ public class UsersController {
 
         model.addAttribute("search", search(userc, maxr, bquery));
 
-        return "users";
+        return VIEW_USERS;
     }
 
     @RequestMapping(value = "{username}/subscriptions", method = RequestMethod.GET, produces = "text/html")
-    public String subscriptions(@PathVariable("username") final String username,
+    public String subscriptions(@PathVariable(PATH_USERNAME) final String username,
                                 final Model model, final HttpSession session, final HttpServletResponse response) {
         final UserContext userc = getUserContext(username, session);
 
@@ -542,64 +561,65 @@ public class UsersController {
 
         model.addAttribute(MODEL_CALENDAR_MINI, getCalendarMini(userc));
         model.addAttribute(MODEL_ARCHIVE, getArchive(userc));
+        model.addAttribute(MODEL_PICTURES, null);
 
         model.addAttribute("subscriptions", getSubscriptions(userc));
 
-        return "users";
+        return VIEW_USERS;
     }
 
     @RequestMapping(value = "{username}/tag/{tag}", method = RequestMethod.GET, produces = "text/html")
-    public String tag(@PathVariable("username") String username,
-                      @PathVariable("tag") String tag,
-                      Model model, HttpSession session, HttpServletResponse response) {
+    public String tag(@PathVariable(PATH_USERNAME) final String username,
+                      @PathVariable("tag") final String tag,
+                      final Model model, final HttpSession session, final HttpServletResponse response) {
 
         User authUser = null;
         try {
             authUser = userRepository.findByUsername(Login.currentLoginName(session));
-        } catch (Exception ignored) {
+        } catch (final Exception ignored) {
 
         }
 
         try {
-            User user = userRepository.findByUsername(username);
+            final User user = userRepository.findByUsername(username);
 
             if (user == null) {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
                 return "";
             }
 
-            UserContext userc = new UserContext(user, authUser);
+            final UserContext userc = new UserContext(user, authUser);
 
-            model.addAttribute("username", user);
-            model.addAttribute("authenticatedUsername", Login.currentLoginName(session));
+            model.addAttribute(MODEL_USER, user);
+            model.addAttribute(MODEL_AUTHENTICATED_USER, Login.currentLoginName(session));
 
             if (userc.getBlogUser().getUserPref().getOwnerViewOnly() == PrefBool.N || userc.isAuthBlog())
                 model.addAttribute("tags", getTags(userc, tag));
             else
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             log.error(e);
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
 
-        return "users";
+        return VIEW_USERS;
     }
 
     @Transactional(value = Transactional.TxType.SUPPORTS)
-    private UserContext getUserContext(String username, HttpSession session) {
+    private UserContext getUserContext(final String username, final HttpSession session) {
         User authUser = null;
         try {
             authUser = userRepository.findByUsername(Login.currentLoginName(session));
-        } catch (Exception ignored) {
+        } catch (final Exception ignored) {
 
         }
 
         try {
-            User user = userRepository.findByUsername(username);
+            final User user = userRepository.findByUsername(username);
             if (user == null || user.getId() == 0) return null;
 
             return new UserContext(user, authUser);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             log.error(e);
         }
         return null;
@@ -625,11 +645,11 @@ public class UsersController {
             //   final OutputStream out = response.getOutputStream();
             //   baos.writeTo(out);
             //   out.flush();
-        } catch (DocumentException e) {
+        } catch (final DocumentException e) {
             log.error("Users.getPDF() DocumentException:" + e.getMessage());
-        } catch (IOException e1) {
+        } catch (final IOException e1) {
             log.error("Users.getPDF() IOException:" + e1.getMessage());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             // user class caused this
             log.error("Users.getPDF():" + e.getMessage());
         }
@@ -654,11 +674,11 @@ public class UsersController {
             baos.writeTo(out);
             out.flush();
             out.close();
-        } catch (DocumentException e) {
+        } catch (final DocumentException e) {
             log.error("Users.getPDF() DocumentException:" + e.getMessage());
-        } catch (IOException e1) {
+        } catch (final IOException e1) {
             log.error("Users.getPDF() IOException:" + e1.getMessage());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             // user class caused this
             log.error("Users.getPDF():" + e.getMessage());
         }
@@ -729,7 +749,7 @@ public class UsersController {
     }
 
     private String getSubscriptions(final UserContext uc) {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
 
         sb.append("<h2>RSS Reader</h2>");
         sb.append(endl);
@@ -760,7 +780,7 @@ public class UsersController {
 
     private String getSingleEntry(final int singleEntryId, final UserContext uc) {
 
-        StringBuffer sb = new StringBuffer();
+        final StringBuffer sb = new StringBuffer();
         Entry o;
 
         if (singleEntryId < 1) {
@@ -784,7 +804,7 @@ public class UsersController {
                 if (o != null && o.getId() > 0) {
                     final SimpleDateFormat formatmydate = new SimpleDateFormat("EEE, d MMM yyyy");
 
-                    String curDate = formatmydate.format(o.getDate());
+                    final String curDate = formatmydate.format(o.getDate());
 
                     sb.append("<h2>");
                     sb.append(curDate);
@@ -793,7 +813,7 @@ public class UsersController {
 
                     sb.append(formatEntry(uc, o, o.getDate(), true));
                 }
-            } catch (Exception e1) {
+            } catch (final Exception e1) {
                 log.error("getSingleEntry: " + e1.getMessage() + '\n' + e1.toString());
 
                 ErrorPage.Display("Error",
@@ -881,12 +901,12 @@ public class UsersController {
                     brs.close();
                 }
 
-            } catch (Exception e1) {
+            } catch (final Exception e1) {
                 log.error("Could not close database resultset on first attempt: " + e1.getMessage());
                 if (brs != null) {
                     try {
                         brs.close();
-                    } catch (Exception e) {
+                    } catch (final Exception e) {
                         log.error("Could not close database resultset: " + e.getMessage());
                     }
                 }
@@ -956,7 +976,7 @@ public class UsersController {
      */
     private String getFriends(final UserContext uc) throws ServiceException {
 
-        StringBuffer sb = new StringBuffer();
+        final StringBuffer sb = new StringBuffer();
         final Collection entries;
 
   /*      if (uc.getAuthenticatedUser() != null)
@@ -1234,8 +1254,7 @@ public class UsersController {
         // END: YEARS
 
         try {
-
-            Collection<Entry> entries;
+            final Collection<Entry> entries;
             if (uc.isAuthBlog())
                 entries = entryDao.findByUsernameAndYear(uc.getBlogUser().getUsername(), year);
             else
@@ -1250,7 +1269,7 @@ public class UsersController {
                 sb.append(mycal.render());
             }
 
-        } catch (Exception e1) {
+        } catch (final Exception e1) {
             ErrorPage.Display(" Error",
                     "An error has occured rendering calendar.",
                     sb);
@@ -1269,7 +1288,7 @@ public class UsersController {
     private String getCalendarMonth(final int year,
                                     final int month,
                                     final UserContext uc) {
-        StringBuffer sb = new StringBuffer();
+        final StringBuffer sb = new StringBuffer();
 
         sb.append("<h2>Calendar: ");
         sb.append(month);
@@ -1282,7 +1301,7 @@ public class UsersController {
         sb.append(endl);
 
         try {
-            Collection<Entry> entries;
+            final Collection<Entry> entries;
             if (uc.isAuthBlog())
                 entries = entryDao.findByUsernameAndYearAndMonth(uc.getBlogUser().getUsername(), year, month);
             else
@@ -1299,9 +1318,9 @@ public class UsersController {
                 String curDate;
                 String lastDate = "";
 
-                for (Entry Entry : entries) {
+                for (final Entry Entry : entries) {
 
-                    Date currentDate = Entry.getDate();
+                    final Date currentDate = Entry.getDate();
                     curDate = formatmydate.format(currentDate);
 
                     if (curDate.compareTo(lastDate) != 0) {
@@ -1323,7 +1342,7 @@ public class UsersController {
                 }
             }
 
-        } catch (Exception e1) {
+        } catch (final Exception e1) {
             ErrorPage.Display(" Error",
                     "An error has occured rendering calendar.",
                     sb);
@@ -1338,14 +1357,14 @@ public class UsersController {
      */
     @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
     @Transactional(value = Transactional.TxType.SUPPORTS)
-    private String getCalendarMini(UserContext uc) {
-        StringBuilder sb = new StringBuilder();
+    private String getCalendarMini(final UserContext uc) {
+        final StringBuilder sb = new StringBuilder();
         try {
             final Calendar cal = new GregorianCalendar(TimeZone.getDefault());
-            int year = cal.get(Calendar.YEAR);
-            int month = cal.get(Calendar.MONTH) + 1; // zero based
+            final int year = cal.get(Calendar.YEAR);
+            final int month = cal.get(Calendar.MONTH) + 1; // zero based
 
-            Collection<Entry> entries;
+            final Collection<Entry> entries;
             if (uc.isAuthBlog())
                 entries = entryDao.findByUsernameAndYearAndMonth(uc.getBlogUser().getUsername(), year, month);
             else
@@ -1360,7 +1379,7 @@ public class UsersController {
                 mycal.setBaseUrl("/users/" + uc.getBlogUser().getUsername() + '/');
                 sb.append(mycal.renderMini());
             }
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             log.debug(ex);
         }
         return sb.toString();
@@ -1381,7 +1400,7 @@ public class UsersController {
                                   final int day,
                                   final UserContext uc) {
 
-        StringBuffer sb = new StringBuffer();
+        final StringBuffer sb = new StringBuffer();
 
         // sb.append("<h2>Calendar: " + day + "/" + month + "/" + year + "</h2>" );
 
@@ -1431,7 +1450,7 @@ public class UsersController {
                 }
             }
 
-        } catch (Exception e1) {
+        } catch (final Exception e1) {
             ErrorPage.Display(" Error",
                     "An error has occurred rendering calendar.",
                     sb);
@@ -1449,8 +1468,8 @@ public class UsersController {
     @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
     private String getArchive(final UserContext uc) {
         final GregorianCalendar calendarg = new GregorianCalendar();
-        int yearNow = calendarg.get(Calendar.YEAR);
-        StringBuilder sb = new StringBuilder();
+        final int yearNow = calendarg.get(Calendar.YEAR);
+        final StringBuilder sb = new StringBuilder();
 
         // BEGIN: YEARS
         sb.append("\t<div class=\"menuentity\" id=\"archive\" style=\"padding-top: 10px;\"><strong style=\"text-transform: uppercase; letter-spacing: 2px; border: 0 none; border-bottom: 1px; border-style: dotted; border-color: #999999; margin-bottom: 5px; width: 100%; font-size: 10px;\">Archive</strong><ul class=\"list-group\">");
@@ -1466,7 +1485,7 @@ public class UsersController {
             sb.append(" (");
             try {
                 sb.append(entryDao.calendarCount(i, uc.getBlogUser().getUsername()));
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 log.error("getArchive: could not fetch count for " + uc.getBlogUser().getUsername() + ": " + i + e.getMessage());
                 sb.append("0");
             }
@@ -1493,7 +1512,7 @@ public class UsersController {
      */
     @Transactional(value = Transactional.TxType.REQUIRED)
     private String getRSS(final User user) {
-        Rss rss = new Rss();
+        final Rss rss = new Rss();
 
         final GregorianCalendar calendar = new GregorianCalendar();
         calendar.setTime(new Date());
@@ -1508,7 +1527,7 @@ public class UsersController {
         // RSS advisory board format
         rss.setManagingEditor(user.getUserContact().getEmail() + " (" + user.getFirstName() + ")");
 
-        Pageable page = new PageRequest(0, 15);
+        final Pageable page = new PageRequest(0, 15);
         rss.populate(entryDao.findByUserAndSecurityOrderByDateDesc(user, securityDao.findOne(2), page).getContent());
         return rss.toXml();
     }
@@ -1520,8 +1539,7 @@ public class UsersController {
      */
     @Transactional(value = Transactional.TxType.REQUIRED)
     private String getAtom(final User user) {
-
-        AtomFeed atom = new AtomFeed();
+        final AtomFeed atom = new AtomFeed();
 
         final GregorianCalendar calendarg = new GregorianCalendar();
         calendarg.setTime(new Date());
@@ -1533,7 +1551,7 @@ public class UsersController {
         atom.setTitle(user.getUserPref().getJournalName());
         atom.setId("http://www.justjournal.com/users/" + user.getUsername() + "/atom");
         atom.setSelfLink("/users/" + user.getUsername() + "/atom");
-        Pageable page = new PageRequest(0, 15);
+        final Pageable page = new PageRequest(0, 15);
         atom.populate(entryDao.findByUserAndSecurityOrderByDateDesc(user, securityDao.findOne(2), page).getContent());
         return (atom.toXml());
     }
@@ -1566,7 +1584,7 @@ public class UsersController {
 
     /* TODO: finish this */
     @Transactional(value = Transactional.TxType.REQUIRED)
-    private String getTags(final UserContext uc, String tag) {
+    private String getTags(final UserContext uc, final String tag) {
         final StringBuilder sb = new StringBuilder();
         final Collection entries;
 
@@ -1584,8 +1602,7 @@ public class UsersController {
             String lastDate = "";
             String curDate;
 
-            if (log.isDebugEnabled())
-                log.debug("getTags: Begin Iteration of records.");
+            log.trace("getTags: Begin Iteration of records.");
 
             /* Iterator */
             Entry o;
@@ -1600,7 +1617,7 @@ public class UsersController {
 
                 curDate = formatmydate.format(currentDate);
 
-                Collection entryTags = o.getTags();
+                final Collection entryTags = o.getTags();
 
                 if (entryTags.contains(tag.toLowerCase())) {
                     if (curDate.compareTo(lastDate) != 0) {
@@ -1614,9 +1631,8 @@ public class UsersController {
                     sb.append(formatEntry(uc, o, currentDate, false));
                 }
             }
-        } catch (Exception e1) {
-            if (log.isDebugEnabled())
-                log.debug("getTags: Exception is " + e1.getMessage() + '\n' + e1.toString());
+        } catch (final Exception e1) {
+            log.error("getTags: Exception is " + e1.getMessage() + '\n' + e1.toString());
         }
         return sb.toString();
     }
@@ -1630,7 +1646,7 @@ public class UsersController {
      * @param single      Single blog entries are formatted differently
      * @return HTML formatted entry
      */
-    protected String formatEntry(final UserContext uc, final Entry o, final Date currentDate, boolean single) {
+    protected String formatEntry(final UserContext uc, final Entry o, final Date currentDate, final boolean single) {
         final StringBuilder sb = new StringBuilder();
         final SimpleDateFormat formatmytime = new SimpleDateFormat("h:mm a");
 
@@ -1764,7 +1780,7 @@ public class UsersController {
         sb.append("\t\t\t</p>");
         sb.append(endl);
 
-        Collection<EntryTag> ob = o.getTags();
+        final Collection<EntryTag> ob = o.getTags();
         if (ob.size() > 0) {
             sb.append("<p>tags:");
             for (final EntryTag tag : ob) {
@@ -1822,7 +1838,7 @@ public class UsersController {
 
             sb.append('(');
 
-            int commentCount = o.getComments().size();
+            final int commentCount = o.getComments().size();
             switch (commentCount) {
                 case 0:
                     break;
@@ -1854,7 +1870,7 @@ public class UsersController {
         sb.append(endl);
 
         if (single) {
-            List<Comment> comments = commentDao.findByEntryId(o.getId());
+            final List<Comment> comments = commentDao.findByEntryId(o.getId());
 
             sb.append("<div class=\"commentcount\">");
             sb.append(comments.size());
@@ -1863,7 +1879,7 @@ public class UsersController {
             sb.append("<div class=\"rightflt\">");
             sb.append("<a href=\"add.jsp?id=").append(o.getId()).append("\" title=\"Add Comment\">Add Comment</a></div>\n");
 
-            for (Comment co : comments) {
+            for (final Comment co : comments) {
                 sb.append("<div class=\"comment\">\n");
                 sb.append("<div class=\"chead\">\n");
                 sb.append("<h3><span class=\"subject\">");
