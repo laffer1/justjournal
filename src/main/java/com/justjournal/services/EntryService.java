@@ -37,6 +37,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -75,8 +76,10 @@ public class EntryService {
         final List<RecentEntry> recentEntries = new ArrayList<RecentEntry>(MAX_RECENT_ENTRIES);
 
         try {
-            final Pageable page = new PageRequest(0, MAX_RECENT_ENTRIES);
-            entries = entryDao.findByUserAndSecurityAndDraftOrderByDateDesc(user, securityDao.findOne(2), PrefBool.N, page);
+            final Pageable page = new PageRequest(0, MAX_RECENT_ENTRIES, new Sort(
+                    new Sort.Order(Sort.Direction.DESC, "date")
+            ));
+            entries = entryDao.findByUserAndSecurityAndDraft(user, securityDao.findOne(2), PrefBool.N, page);
 
             for (final Entry o : entries) {
                 final RecentEntry recentEntry = new RecentEntry();
