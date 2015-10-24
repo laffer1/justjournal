@@ -50,8 +50,7 @@ import java.util.*;
 public class EntryService {
     private static final int MAX_RECENT_ENTRIES = 5;
     private static org.slf4j.Logger log = LoggerFactory.getLogger(EntryService.class);
-    @Autowired
-    private CommentRepository commentDao;
+
     @Autowired
     private EntryRepository entryDao;
     @Autowired
@@ -112,7 +111,9 @@ public class EntryService {
         final List<RecentEntry> recentEntries = new ArrayList<RecentEntry>();
 
         try {
-            final Pageable page = new PageRequest(0, MAX_RECENT_ENTRIES);
+            final Pageable page = new PageRequest(0, MAX_RECENT_ENTRIES, new Sort(
+                                new Sort.Order(Sort.Direction.DESC, "date")
+                        ));
             entries = entryDao.findByUserOrderByDateDesc(user, page);
 
             for (final Entry o : entries) {
@@ -163,7 +164,7 @@ public class EntryService {
             if (user == null) {
                 return null;
             }
-            return entryDao.findByUserAndSecurityAndDraftOrderByDateDesc(user, securityDao.findOne(2), PrefBool.N, pageable);
+            return entryDao.findByUserAndSecurityAndDraft(user, securityDao.findOne(2), PrefBool.N, pageable);
         } catch (final Exception e) {
             log.error(e.getMessage());
             throw new ServiceException(e);
