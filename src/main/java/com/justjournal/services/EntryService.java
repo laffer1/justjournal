@@ -76,7 +76,8 @@ public class EntryService {
 
         try {
             final Pageable page = new PageRequest(0, MAX_RECENT_ENTRIES, new Sort(
-                    new Sort.Order(Sort.Direction.DESC, "date")
+                    new Sort.Order(Sort.Direction.DESC, "date"),
+                    new Sort.Order(Sort.Direction.DESC, "id")
             ));
             entries = entryDao.findByUserAndSecurityAndDraft(user, securityDao.findOne(2), PrefBool.N, page);
 
@@ -112,7 +113,8 @@ public class EntryService {
 
         try {
             final Pageable page = new PageRequest(0, MAX_RECENT_ENTRIES, new Sort(
-                                new Sort.Order(Sort.Direction.DESC, "date")
+                                new Sort.Order(Sort.Direction.DESC, "date"),
+                                new Sort.Order(Sort.Direction.DESC, "id")
                         ));
             entries = entryDao.findByUserOrderByDateDesc(user, page);
 
