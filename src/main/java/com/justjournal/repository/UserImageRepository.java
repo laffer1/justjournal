@@ -26,6 +26,7 @@
 
 package com.justjournal.repository;
 
+import com.justjournal.model.User;
 import com.justjournal.model.UserImage;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -40,5 +41,5 @@ import java.util.List;
 @Repository
 public interface UserImageRepository extends CrudRepository<UserImage, Integer> {
     @Query("select ul from UserImage ul, User u where ul.user = u and LOWER(u.username) = LOWER(:username)")
-    public List<UserImage> findByUsername(@Param("username") String username);
+    List<UserImage> findByUsername(@Param("username") String username);
 }
