@@ -239,6 +239,13 @@ public class AppTests {
     }
 
     @Test
+    public void apiEntryRecentWithUser() throws Exception {
+        mockMvc.perform(get("/api/entry/testuser/recent").accept(MediaType.parseMediaType("application/json;charset=UTF-8")))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith("application/json;charset=UTF-8"));
+    }
+
+    @Test
     public void apiEntryWithUser() throws Exception {
         mockMvc.perform(get("/api/entry/testuser").accept(MediaType.parseMediaType("application/json;charset=UTF-8")))
                 .andExpect(status().isOk())
