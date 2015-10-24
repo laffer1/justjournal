@@ -34,7 +34,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Blob;
-import java.sql.Timestamp;
 import java.util.Date;
 
 /**
