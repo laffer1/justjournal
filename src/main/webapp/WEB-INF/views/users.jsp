@@ -266,7 +266,7 @@
 <script type="text/javascript" src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
 <script type="text/javascript">
     $().ready(function () {
-        $.get('${pageContext.request.contextPath}/api/entry/<c:out value="${user.username}"/>/size/5/page/0',
+        $.get('${pageContext.request.contextPath}/api/entry/<c:out value="${user.username}"/>/recent',
                 function (data) {
                     for (var i = 0; i < data.content.length; i++) {
                         var link = '<li class="list-group-item"><a href="/users/<c:out value="${user.username}"/>/entry/' + data.content[i].id + '">' + data.content[i].subject + '</a></li>';

@@ -65,27 +65,28 @@ public class EntryService {
      * @return subject & entry id data
      */
     @Transactional(value = Transactional.TxType.SUPPORTS)
-    public List<RecentEntry> getRecentEntriesPublic(String username) {
-        User user = userRepository.findByUsername(username);
+    public List<RecentEntry> getRecentEntriesPublic(final String username) throws ServiceException {
+        final User user = userRepository.findByUsername(username);
         if (user == null) {
             log.warn("username not found in getRecentEntriesPublic with " + username);
             return null;
         }
-        Page<Entry> entries;
-        List<RecentEntry> recentEntries = new ArrayList<RecentEntry>(MAX_RECENT_ENTRIES);
+        final Page<Entry> entries;
+        final List<RecentEntry> recentEntries = new ArrayList<RecentEntry>(MAX_RECENT_ENTRIES);
 
         try {
-            Pageable page = new PageRequest(0, MAX_RECENT_ENTRIES);
+            final Pageable page = new PageRequest(0, MAX_RECENT_ENTRIES);
             entries = entryDao.findByUserAndSecurityAndDraftOrderByDateDesc(user, securityDao.findOne(2), PrefBool.N, page);
 
-            for (Entry o : entries) {
-                RecentEntry recentEntry = new RecentEntry();
+            for (final Entry o : entries) {
+                final RecentEntry recentEntry = new RecentEntry();
                 recentEntry.setId(o.getId());
                 recentEntry.setSubject(Xml.cleanString(o.getSubject()));
                 recentEntries.add(recentEntry);
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             log.error(e.getMessage());
+            throw new ServiceException("Unable to retrieve recent blog entries for " + username);
         }
 
         return recentEntries;
@@ -98,49 +99,50 @@ public class EntryService {
      * @return subject & entry id data
      */
     @Transactional(value = Transactional.TxType.SUPPORTS)
-    public List<RecentEntry> getRecentEntries(String username) {
-        User user = userRepository.findByUsername(username);
+    public List<RecentEntry> getRecentEntries(final String username) throws ServiceException {
+        final User user = userRepository.findByUsername(username);
         if (user == null) {
             return null;
         }
 
-        Page<Entry> entries;
-        List<RecentEntry> recentEntries = new ArrayList<RecentEntry>();
+        final Page<Entry> entries;
+        final List<RecentEntry> recentEntries = new ArrayList<RecentEntry>();
 
         try {
-            Pageable page = new PageRequest(0, MAX_RECENT_ENTRIES);
+            final Pageable page = new PageRequest(0, MAX_RECENT_ENTRIES);
             entries = entryDao.findByUserOrderByDateDesc(user, page);
 
-            for (Entry o : entries) {
-                RecentEntry recentEntry = new RecentEntry();
+            for (final Entry o : entries) {
+                final RecentEntry recentEntry = new RecentEntry();
                 recentEntry.setId(o.getId());
                 recentEntry.setSubject(Xml.cleanString(o.getSubject()));
                 recentEntries.add(recentEntry);
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             log.error(e.getMessage());
+            throw new ServiceException("Unable to retrieve recent blog entries for " + username);
         }
 
         return recentEntries;
     }
 
     @Transactional(value = Transactional.TxType.SUPPORTS)
-    public Entry getPublicEntry(int id, String username) throws ServiceException {
+    public Entry getPublicEntry(final int id, final String username) throws ServiceException {
         try {
-            Entry entry = entryDao.findOne(id);
+            final Entry entry = entryDao.findOne(id);
             if (entry.getUser().getUsername().equalsIgnoreCase(username) && entry.getSecurity().getId() == 2 && entry.getDraft().equals(PrefBool.N)) // public
                 return entry;
             return null;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             log.error(e.getMessage());
             throw new ServiceException(e);
         }
     }
 
     @Transactional(value = Transactional.TxType.SUPPORTS)
-    public List<Entry> getPublicEntries(String username) throws ServiceException {
+    public List<Entry> getPublicEntries(final String username) throws ServiceException {
         try {
-            User user = userRepository.findByUsername(username);
+            final User user = userRepository.findByUsername(username);
             if (user == null) {
                 return null;
             }
@@ -152,28 +154,28 @@ public class EntryService {
     }
 
     @Transactional(value = Transactional.TxType.SUPPORTS)
-    public Page<Entry> getPublicEntries(String username, Pageable pageable) throws ServiceException {
+    public Page<Entry> getPublicEntries(final String username, final Pageable pageable) throws ServiceException {
         try {
-            User user = userRepository.findByUsername(username);
+            final User user = userRepository.findByUsername(username);
             if (user == null) {
                 return null;
             }
             return entryDao.findByUserAndSecurityAndDraftOrderByDateDesc(user, securityDao.findOne(2), PrefBool.N, pageable);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             log.error(e.getMessage());
             throw new ServiceException(e);
         }
     }
 
     @Transactional(value = Transactional.TxType.SUPPORTS)
-    public Page<Entry> getEntries(String username, Pageable pageable) throws ServiceException {
+    public Page<Entry> getEntries(final String username, final Pageable pageable) throws ServiceException {
         try {
-            User user = userRepository.findByUsername(username);
+            final User user = userRepository.findByUsername(username);
             if (user == null) {
                 return null;
             }
             return entryDao.findByUserOrderByDateDesc(user, pageable);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             log.error(e.getMessage());
             throw new ServiceException(e);
         }
@@ -186,17 +188,17 @@ public class EntryService {
      * @return
      */
     @Transactional(value = Transactional.TxType.SUPPORTS)
-    public List<Entry> getFriendsEntries(String username) throws ServiceException {
+    public List<Entry> getFriendsEntries(final String username) throws ServiceException {
         try {
-            User user = userRepository.findByUsername(username);
-            List<Friend> friends = user.getFriends();
+            final User user = userRepository.findByUsername(username);
+            final List<Friend> friends = user.getFriends();
 
-            List<Entry> list = new ArrayList<Entry>();
+            final List<Entry> list = new ArrayList<Entry>();
 
-            for (Friend friend : friends) {
+            for (final Friend friend : friends) {
                 // TODO: limit record count
-                Collection<Entry> fe = friend.getFriend().getEntries();
-                for (Entry entry : fe) {
+                final Collection<Entry> fe = friend.getFriend().getEntries();
+                for (final Entry entry : fe) {
                     if (entry.getSecurity().getId() == 2 && entry.getDraft().equals(PrefBool.N))
                         list.add(entry);
                 }
@@ -210,13 +212,13 @@ public class EntryService {
 
             if (list.isEmpty()) return list;
 
-            int end = list.size() - 1;
+            final int end = list.size() - 1;
             int start = 0;
             if (end > 20)
                 start = end - 20;
 
             return list.subList(start, end);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             log.error(e.getMessage());
             throw new ServiceException(e);
         }
@@ -229,23 +231,23 @@ public class EntryService {
      * @return
      */
     @Transactional(value = Transactional.TxType.SUPPORTS)
-    public Collection<Tag> getEntryTags(String username) throws ServiceException {
+    public Collection<Tag> getEntryTags(final String username) throws ServiceException {
         try {
             assert (entryDao != null);
             assert (username != null);
 
-            Map<String, Tag> tags = new HashMap<String, Tag>();
+            final Map<String, Tag> tags = new HashMap<String, Tag>();
 
             // TODO: insanely slow. Refactor
-            List<Entry> entries = entryDao.findByUsername(username);
-            for (Entry entry : entries) {
-                for (EntryTag entryTag : entry.getTags())
+            final List<Entry> entries = entryDao.findByUsername(username);
+            for (final Entry entry : entries) {
+                for (final EntryTag entryTag : entry.getTags())
                     if (!tags.containsKey(entryTag.getTag().getName()))
                         tags.put(entryTag.getTag().getName(), entryTag.getTag());
             }
 
             return tags.values();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             log.error(e.getMessage());
             throw new ServiceException(e);
         }

@@ -29,6 +29,7 @@ package com.justjournal.ctl.api;
 import com.justjournal.Login;
 import com.justjournal.model.Comment;
 import com.justjournal.model.Entry;
+import com.justjournal.model.RecentEntry;
 import com.justjournal.model.User;
 import com.justjournal.repository.*;
 import com.justjournal.services.EntryService;
@@ -84,13 +85,41 @@ public class EntryController {
         return log;
     }
 
+     @RequestMapping(value = "{username}/recent", method = RequestMethod.GET, produces = "application/json")
+     public
+     @ResponseBody
+     List<RecentEntry> getRecentEntries(@PathVariable("username") final String username,
+                            final HttpServletResponse response, final HttpSession session) {
+         final  List<RecentEntry> entries;
+         try {
+             if (Login.isAuthenticated(session) && Login.isUserName(username)) {
+                 entries = entryService.getRecentEntries(username);
+             } else {
+                 entries = entryService.getRecentEntriesPublic(username);
+             }
+
+             if (entries == null) {
+                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                 return null;
+             }
+             return entries;
+         } catch (final ServiceException e) {
+             log.error(e);
+             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+             return null;
+         }
+     }
+
+
     @RequestMapping(value = "{username}/size/{size}/page/{page}", method = RequestMethod.GET, produces = "application/json")
     public
     @ResponseBody
-    Page<Entry> getEntries(@PathVariable("username") String username, @PathVariable("size") int size, @PathVariable("page") int page,
-                           HttpServletResponse response, HttpSession session) {
-        Page<Entry> entries;
-        Pageable pageable = new PageRequest(page, size);
+    Page<Entry> getEntries(@PathVariable("username") final String username,
+                           @PathVariable("size") final int size,
+                           @PathVariable("page") final int page,
+                           final HttpServletResponse response, final HttpSession session) {
+        final Page<Entry> entries;
+        final Pageable pageable = new PageRequest(page, size);
         try {
             if (Login.isAuthenticated(session) && Login.isUserName(username)) {
                 entries = entryService.getEntries(username, pageable);
@@ -103,7 +132,7 @@ public class EntryController {
                 return null;
             }
             return entries;
-        } catch (ServiceException e) {
+        } catch (final ServiceException e) {
             log.error(e);
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return null;
