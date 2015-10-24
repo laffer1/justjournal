@@ -34,6 +34,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Blob;
+import java.sql.Timestamp;
 import java.util.Date;
 
 /**
@@ -66,7 +67,7 @@ public class UserImage implements Serializable {
     @Column(name = "modified")
     private Date modified;
 
-    @Column(name = "content", columnDefinition = "MEDIUMBLOB")
+    @Column(name = "image", columnDefinition = "MEDIUMBLOB")
     @Lob
     private Blob image;
 
