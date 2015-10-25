@@ -229,12 +229,13 @@
                 <c:out escapeXml="false" value="${entry}"/>
                 <c:out escapeXml="false" value="${friends}"/>
 
-                <c:if test="${pictures != null && pictures.size > 0}">
+                <c:if test="${pictures != null && pictures.size() > 0}">
                         <h2>Pictures</h2>
                         <ul style="list-style-image: url('${pageContext.request.contextPath}/images/pictureframe.png'); list-style-type: circle;">
                             <c:forEach items="${pictures}" var="pic">
-                                <li><a href="${pageContext.request.contextPath}/AlbumImage?id=<c:out value="${pid.id}"/>" rel="lightbox">
-                                    <c:out value="${pid.title}"/>
+                                <li><a href="${pageContext.request.contextPath}/AlbumImage?id=<c:out value="${pic.id}"/>"
+                                       rel="lightbox">
+                                    <c:out value="${pic.title}"/>
                                 </a></li>
                             </c:forEach>
                         </ul>
