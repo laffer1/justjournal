@@ -12,10 +12,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/bootstrap.min.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/bootstrap-theme.min.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/styles/users.css">
-    <!-- TODO: write new themes <link rel="stylesheet" type="text/css" media="screen" href="${pageContext.request.contextPath}/styles/<c:out value="${user.userPref.style}"/>.css">
-          -->
+    <c:choose>
+      <c:when test="${user.userPref.style > 16}">
+          <link rel="stylesheet" type="text/css" media="screen" href="${pageContext.request.contextPath}/styles/<c:out value="${user.userPref.style}"/>.css">
+      </c:when>
+      <c:otherwise>
+          <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/bootstrap-theme.min.css">
+      </c:otherwise>
+    </c:choose>
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" media="screen"
           href="${pageContext.request.contextPath}/components/lightbox2/css/lightbox.css">
