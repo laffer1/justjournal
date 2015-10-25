@@ -472,7 +472,6 @@ INSERT INTO `settings` (`name`, `value`, `id`) VALUES
 --
 
 INSERT INTO `style` (`id`, `title`, `desc`, `modified`) VALUES
-  (1, 'Classic Theme', 'Default Justjournal theme in white', '2012-06-20 03:42:57'),
   (2, 'Classic Theme in blue', 'Original JJ theme in blue', '2012-06-20 03:42:57'),
   (3, 'Classic Theme in purple', 'A taste of purple', '2012-06-20 03:42:57'),
   (4, 'Classic Theme in pink', 'very pink!', '2012-06-20 03:42:57'),
@@ -489,6 +488,7 @@ INSERT INTO `style` (`id`, `title`, `desc`, `modified`) VALUES
   (17, 'Cerulean', 'A calm blue sky', '2015-10-25 10:42:57'),
   (18, 'Cosmo', 'An ode to metro', '2015-10-25 10:42:57');
 insert into style VALUES(19, 'Cyborg', 'Jet black and electric blue', '2015-10-25 10:42:57');
+insert into style VALUES(20, 'Journal', 'Crisp like a new sheet of paper', '2015-10-25 10:42:57');
 
 --
 -- Dumping data for table `timezones`
