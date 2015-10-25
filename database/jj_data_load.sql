@@ -488,7 +488,9 @@ INSERT INTO `style` (`id`, `title`, `desc`, `modified`) VALUES
   (14, 'Modern Right Black', 'A reverse layout', '2012-06-20 03:42:57'),
   (15, 'Colors', 'A bright theme', '2012-06-20 03:42:57'),
   (16, 'Ugly Orange', 'Orange', '2012-06-20 03:42:57'),
-  (17, 'Cerulean', 'A calm blue sky', '2015-10-25 10:42:57');
+  (17, 'Cerulean', 'A calm blue sky', '2015-10-25 10:42:57'),
+  (18, 'Cosmo', 'An ode to metro', '2015-10-25 10:42:57'),
+;
 
 --
 -- Dumping data for table `timezones`
