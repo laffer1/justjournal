@@ -206,9 +206,16 @@
                             <a href="${pageContext.request.contextPath}/users/<c:out value="${user.username}"/>?page=<c:out value="${pageable.getPageNumber() + 2}"/>">&larr;
                                 Older</a>
                         </li>
-                        <li class="next <c:if test="${pageable.getPageNumber() < 1}">disabled</c:if>">
+                        <c:if test="${pageable.getPageNumber() < 1}">
+                        <li class="next disabled">
+                            Newer &rarr;
+                        </li>
+                        </c:if>
+                        <c:if test="${pageable.getPageNumber() > 0}">
+                        <li class="next">
                             <a href="${pageContext.request.contextPath}/users/<c:out value="${user.username}"/>?page=<c:out value="${pageable.getPageNumber()}"/>">Newer &rarr;</a>
                         </li>
+                        </c:if>
                     </ul>
                 </c:if>
 
@@ -220,9 +227,16 @@
                             <a href="${pageContext.request.contextPath}/users/<c:out value="${user.username}"/>?page=<c:out value="${pageable.getPageNumber() + 2}"/>">&larr;
                                 Older</a>
                         </li>
-                        <li class="next <c:if test="${pageable.getPageNumber() < 1}">disabled</c:if>">
-                            <a href="${pageContext.request.contextPath}/users/<c:out value="${user.username}"/>?page=<c:out value="${pageable.getPageNumber()}"/>">Newer &rarr;</a>
-                        </li>
+                        <c:if test="${pageable.getPageNumber() < 1}">
+                            <li class="next disabled">
+                                Newer &rarr;
+                            </li>
+                        </c:if>
+                        <c:if test="${pageable.getPageNumber() > 0}">
+                            <li class="next">
+                                <a href="${pageContext.request.contextPath}/users/<c:out value="${user.username}"/>?page=<c:out value="${pageable.getPageNumber()}"/>">Newer &rarr;</a>
+                            </li>
+                        </c:if>
                     </ul>
                 </c:if>
 
@@ -231,9 +245,9 @@
 
                 <c:if test="${pictures != null && pictures.size() > 0}">
                         <h2>Pictures</h2>
-                        <ul style="list-style-image: url('${pageContext.request.contextPath}/images/pictureframe.png'); list-style-type: circle;">
+                        <ul class="fa-ul">
                             <c:forEach items="${pictures}" var="pic">
-                                <li><a href="${pageContext.request.contextPath}/AlbumImage?id=<c:out value="${pic.id}"/>"
+                                <li><i class="fa-li fa fa-picture-o"></i> <a href="${pageContext.request.contextPath}/AlbumImage?id=<c:out value="${pic.id}"/>"
                                        rel="lightbox">
                                     <c:out value="${pic.title}"/>
                                 </a></li>
