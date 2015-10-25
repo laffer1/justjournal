@@ -247,13 +247,13 @@
                 <c:out escapeXml="false" value="${calendar}"/>
 
                 <c:if test="${currentYear > 0}">
-                    <p>The calendar lists months with journal entries.</p>
+                    <p>Select a year to view blog entries.</p>
 
-                    <p>
+                    <ul>
                         <c:forEach begin="${startYear}" end="${currentYear}" var="yr">
-                            <a href="${pageContext.request.contextPath}/users/<c:out value="${user.username}"/>/<c:out value="${yr}"/>"><c:out value="${yr}"/></a>
+                            <li><a href="${pageContext.request.contextPath}/users/<c:out value="${user.username}"/>/<c:out value="${yr}"/>"><c:out value="${yr}"/></a></li>
                         </c:forEach>
-                    </p>
+                    </ul>
                 </c:if>
             </div>
         </section>
