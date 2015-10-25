@@ -228,7 +228,8 @@ public class UsersController {
     }
 
     @RequestMapping(value = "{username}/calendar", method = RequestMethod.GET, produces = "text/html")
-    public String calendar(@PathVariable(PATH_USERNAME) final String username, final Model model, final HttpSession session, final HttpServletResponse response) {
+    public String calendar(@PathVariable(PATH_USERNAME) final String username,
+                           final Model model, final HttpSession session, final HttpServletResponse response) {
 
         final UserContext userContext = getUserContext(username, session);
 
@@ -365,7 +366,7 @@ public class UsersController {
             }
 
             return getAtom(user);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             log.error(e);
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return "";
@@ -470,7 +471,7 @@ public class UsersController {
                 getRTF(response, userc);
             else
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             log.error(e);
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
