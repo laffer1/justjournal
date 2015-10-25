@@ -41,6 +41,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -130,7 +131,9 @@ public class EntryController {
                            @PathVariable("page") final int page,
                            final HttpServletResponse response, final HttpSession session) {
         final Page<Entry> entries;
-        final Pageable pageable = new PageRequest(page, size);
+        final Pageable pageable = new PageRequest(page, size, new Sort(
+                new Sort.Order(Sort.Direction.DESC, "date")
+        ));
         try {
             if (Login.isAuthenticated(session) && Login.isUserName(username)) {
                 entries = entryService.getEntries(username, pageable);
@@ -217,7 +220,7 @@ public class EntryController {
                 return null;
             }
 
-        } catch (ServiceException e) {
+        } catch (final ServiceException e) {
             log.error(e.getMessage());
         }
         return entries;

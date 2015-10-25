@@ -61,7 +61,7 @@ public interface EntryRepository extends PagingAndSortingRepository<Entry, Integ
 
     public Page<Entry> findByUserAndSecurityOrderByDateDesc(@Param("user") User user, @Param("security") Security security, Pageable pageable);
 
-    public Page<Entry> findByUserAndSecurityAndDraftOrderByDateDesc(@Param("user") User user, @Param("security") Security security, @Param("draft") PrefBool draft, Pageable pageable);
+    public Page<Entry> findByUserAndSecurityAndDraft(@Param("user") User user, @Param("security") Security security, @Param("draft") PrefBool draft, Pageable pageable);
 
     public Page<Entry> findByUserOrderByDateDesc(User user, Pageable pageable);
 
