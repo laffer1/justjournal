@@ -472,19 +472,6 @@ INSERT INTO `settings` (`name`, `value`, `id`) VALUES
 --
 
 INSERT INTO `style` (`id`, `title`, `desc`, `modified`) VALUES
-  (2, 'Classic Theme in blue', 'Original JJ theme in blue', '2012-06-20 03:42:57'),
-  (3, 'Classic Theme in purple', 'A taste of purple', '2012-06-20 03:42:57'),
-  (4, 'Classic Theme in pink', 'very pink!', '2012-06-20 03:42:57'),
-  (5, 'Jewel Theme', 'A tribute to Jewel.', '2012-06-20 03:42:57'),
-  (6, 'Modern', 'A clean, light theme.', '2012-06-20 03:42:57'),
-  (7, 'Modern Purple', 'A very purple theme.', '2012-06-20 03:42:57'),
-  (8, 'Modern Girl', 'A pink, red and purple creation.', '2012-06-20 03:42:57'),
-  (9, 'American Football', 'Football theme.', '2012-06-20 03:42:57'),
-  (10, 'Modern Red', 'Fire engines eat your heart out.', '2012-06-20 03:42:57'),
-  (11, 'Deep Blue Ocean', 'Created by Geomaniak', '2012-06-20 03:42:57'),
-  (12, 'Gold and Blue', 'A subtle theme based on Modern.', '2012-06-20 03:42:57'),
-  (15, 'Colors', 'A bright theme', '2012-06-20 03:42:57'),
-  (16, 'Ugly Orange', 'Orange', '2012-06-20 03:42:57'),
   (17, 'Cerulean', 'A calm blue sky', '2015-10-25 10:42:57'),
   (18, 'Cosmo', 'An ode to metro', '2015-10-25 10:42:57');
 insert into style VALUES(19, 'Cyborg', 'Jet black and electric blue', '2015-10-25 10:42:57');
