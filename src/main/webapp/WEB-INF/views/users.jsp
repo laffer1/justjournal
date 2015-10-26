@@ -128,7 +128,7 @@
                                         class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     <c:if test="${authenticatedUsername == null}">
-                                        <li><a href="${pageContext.request.contextPath}/#/"><i
+                                        <li><a href="${pageContext.request.contextPath}/#!/"><i
                                                 class="fa fa-sign-in"></i> Login</a>
                                         </li>
                                     </c:if>
