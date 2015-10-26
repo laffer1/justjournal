@@ -291,20 +291,26 @@ public class EntryController {
 
         entry.setUser(user);
 
-        if (entry.getLocation() == null)
+        if (entry.getLocationId() < 1)
             entry.setLocation(locationDao.findOne(0));
+        else
+            entry.setLocation(locationDao.findOne(entry.getLocationId()));
 
-        if (entry.getSecurity() == null)
+        if (entry.getSecurityId() < 1)
             entry.setSecurity(securityDao.findOne(0));
+        else
+            entry.setSecurity(securityDao.findOne(entry.getSecurityId()));
 
-        if (entry.getMood() == null)
+        if (entry.getMoodId() < 1)
             entry.setMood(moodDao.findOne(12));  // not specified
+        else
+            entry.setMood(moodDao.findOne(entry.getMoodId()));
 
         if (entry.getDate() == null)
             entry.setDate(new Date());
 
         // TODO: validate
-        Entry saved = entryDao.save(entry);
+        final Entry saved = entryDao.save(entry);
 
         if (saved.getId() < 1) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -314,9 +320,7 @@ public class EntryController {
         model.addAttribute("status", "ok");
         model.addAttribute("id", saved.getId());
 
-
-        // return java.util.Collections.singletonMap("id", Integer.toString(entry.getId()));
-        HashMap<String, String> map = new HashMap<String, String>();
+        final HashMap<String, String> map = new HashMap<String, String>();
         map.put("status", "ok");
         map.put("id", Integer.toString(saved.getId()));
         return map;
@@ -341,6 +345,24 @@ public class EntryController {
         }
         final User user = userRepository.findOne(Login.currentLoginId(session));
         entry.setUser(user);
+
+        if (entry.getLocationId() < 1)
+            entry.setLocation(locationDao.findOne(0));
+        else
+            entry.setLocation(locationDao.findOne(entry.getLocationId()));
+
+        if (entry.getSecurityId() < 1)
+            entry.setSecurity(securityDao.findOne(0));
+        else
+            entry.setSecurity(securityDao.findOne(entry.getSecurityId()));
+
+        if (entry.getMoodId() < 1)
+            entry.setMood(moodDao.findOne(12));  // not specified
+        else
+            entry.setMood(moodDao.findOne(entry.getMoodId()));
+
+        if (entry.getDate() == null)
+            entry.setDate(new Date());
 
 
         // TODO: validate

@@ -72,10 +72,14 @@ public class Entry implements Serializable {
     @JoinColumn(name = "location")
     private Location location;
 
+    private int locationId = 0;
+
     @JsonProperty("mood")
     @ManyToOne
     @JoinColumn(name = "mood", nullable = true)
     private Mood mood;
+
+    private int moodId = 0;
 
     @JsonProperty("user")
     @ManyToOne
@@ -86,6 +90,8 @@ public class Entry implements Serializable {
     @ManyToOne
     @JoinColumn(name = "security")
     private Security security;
+
+    private int securityId = 0;
 
     @JsonProperty("subject")
     @Column(name = "subject", length = 255, nullable = true)
@@ -165,12 +171,29 @@ public class Entry implements Serializable {
         this.modified = modified;
     }
 
+    public int getLocationId() {
+        return locationId;
+    }
+
+    public void setLocationId(final int locationId) {
+        this.locationId = locationId;
+    }
+
     public Location getLocation() {
         return location;
     }
 
     public void setLocation(final Location location) {
         this.location = location;
+        setLocationId(location.getId());
+    }
+
+    public int getMoodId() {
+        return moodId;
+    }
+
+    public void setMoodId(final int moodId) {
+        this.moodId = moodId;
     }
 
     public Mood getMood() {
@@ -179,6 +202,7 @@ public class Entry implements Serializable {
 
     public void setMood(final Mood mood) {
         this.mood = mood;
+        setMoodId(mood.getId());
     }
 
     public User getUser() {
@@ -189,12 +213,21 @@ public class Entry implements Serializable {
         this.user = user;
     }
 
+    public int getSecurityId() {
+        return securityId;
+    }
+
+    public void setSecurityId(final int securityId) {
+        this.securityId = securityId;
+    }
+
     public Security getSecurity() {
         return security;
     }
 
     public void setSecurity(final Security security) {
         this.security = security;
+        setSecurityId(security.getId());
     }
 
     public String getSubject() {
