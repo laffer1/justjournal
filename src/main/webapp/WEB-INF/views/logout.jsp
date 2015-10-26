@@ -22,7 +22,7 @@
 <div id="content">
     <h2>Log Out</h2>
 
-    <p>Your are now logged out. You may <a href="/#/">login</a> again.</p>
+    <p>Your are now logged out. You may <a href="/#!/">login</a> again.</p>
 
 </div>
 
