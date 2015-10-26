@@ -489,6 +489,7 @@ INSERT INTO `style` (`id`, `title`, `desc`, `modified`) VALUES
   (18, 'Cosmo', 'An ode to metro', '2015-10-25 10:42:57');
 insert into style VALUES(19, 'Cyborg', 'Jet black and electric blue', '2015-10-25 10:42:57');
 insert into style VALUES(20, 'Journal', 'Crisp like a new sheet of paper', '2015-10-25 10:42:57');
+insert into style VALUES(21, 'Lumen', 'Light and shadow', '2015-10-25 10:42:57');
 
 --
 -- Dumping data for table `timezones`
