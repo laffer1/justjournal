@@ -60,11 +60,11 @@ public class TagCloudController {
     @RequestMapping(value = "{username}", method = RequestMethod.GET, produces = "application/json")
     public
     @ResponseBody
-    Collection<Tag> getTags(@PathVariable("username") String username, HttpServletResponse response) {
+    Collection<Tag> getTags(@PathVariable("username") final String username, final HttpServletResponse response) {
         Collection<Tag> tags = null;
         try {
             tags = entryService.getEntryTags(username);
-        } catch (ServiceException se) {
+        } catch (final ServiceException se) {
             log.error(se.getMessage());
         }
 
@@ -75,8 +75,6 @@ public class TagCloudController {
 
         int largest = 0;
         int smallest = 10;
-        int cutSmall;
-        int cutLarge;
 
         for (final Tag tag : tags) {
             if (tag.getCount() > largest)
@@ -86,8 +84,8 @@ public class TagCloudController {
                 smallest = tag.getCount();
         }
 
-        cutSmall = largest / 3;
-        cutLarge = cutSmall * 2;
+        final int cutSmall = largest / 3;
+        final int cutLarge = cutSmall * 2;
 
         for (final Tag tag : tags) {
             if (tag.getCount() > cutLarge)

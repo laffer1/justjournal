@@ -248,8 +248,15 @@ public class EntryService {
             final List<Entry> entries = entryDao.findByUsername(username);
             for (final Entry entry : entries) {
                 for (final EntryTag entryTag : entry.getTags())
-                    if (!tags.containsKey(entryTag.getTag().getName()))
-                        tags.put(entryTag.getTag().getName(), entryTag.getTag());
+                    if (!tags.containsKey(entryTag.getTag().getName())) {
+                        final Tag t = entryTag.getTag();
+                        t.setCount(1);
+                        tags.put(entryTag.getTag().getName(), t);
+                    } else {
+                        final Tag t = tags.get(entryTag.getTag().getName());
+                        t.setCount(t.getCount() + 1);
+                        tags.put(entryTag.getTag().getName(), t);
+                    }
             }
 
             return tags.values();
