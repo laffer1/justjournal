@@ -72,6 +72,7 @@ public class Entry implements Serializable {
     @JoinColumn(name = "location")
     private Location location;
 
+    @Column(name="location", nullable = true, insertable = false, updatable = false)
     private int locationId = 0;
 
     @JsonProperty("mood")
@@ -79,6 +80,7 @@ public class Entry implements Serializable {
     @JoinColumn(name = "mood", nullable = true)
     private Mood mood;
 
+    @Column(name="mood", nullable = true, insertable = false, updatable = false)
     private int moodId = 0;
 
     @JsonProperty("user")
@@ -91,6 +93,7 @@ public class Entry implements Serializable {
     @JoinColumn(name = "security")
     private Security security;
 
+    @Column(name="security", nullable = true, insertable = false, updatable = false)
     private int securityId = 0;
 
     @JsonProperty("subject")
