@@ -27,7 +27,6 @@
 package com.justjournal.services;
 
 import com.justjournal.model.*;
-import com.justjournal.repository.CommentRepository;
 import com.justjournal.repository.EntryRepository;
 import com.justjournal.repository.SecurityDao;
 import com.justjournal.repository.UserRepository;
@@ -75,10 +74,7 @@ public class EntryService {
         final List<RecentEntry> recentEntries = new ArrayList<RecentEntry>(MAX_RECENT_ENTRIES);
 
         try {
-            final Pageable page = new PageRequest(0, MAX_RECENT_ENTRIES, new Sort(
-                    new Sort.Order(Sort.Direction.DESC, "date"),
-                    new Sort.Order(Sort.Direction.DESC, "id")
-            ));
+            final Pageable page = new PageRequest(0, MAX_RECENT_ENTRIES, Sort.Direction.DESC, "date");
             entries = entryDao.findByUserAndSecurityAndDraft(user, securityDao.findOne(2), PrefBool.N, page);
 
             for (final Entry o : entries) {
@@ -112,10 +108,7 @@ public class EntryService {
         final List<RecentEntry> recentEntries = new ArrayList<RecentEntry>();
 
         try {
-            final Pageable page = new PageRequest(0, MAX_RECENT_ENTRIES, new Sort(
-                                new Sort.Order(Sort.Direction.DESC, "date"),
-                                new Sort.Order(Sort.Direction.DESC, "id")
-                        ));
+            final Pageable page = new PageRequest(0, MAX_RECENT_ENTRIES, Sort.Direction.DESC, "date");
             entries = entryDao.findByUserOrderByDateDesc(user, page);
 
             for (final Entry o : entries) {
