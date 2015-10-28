@@ -78,7 +78,8 @@ public class ServiceTests {
     public void entryGetRecentEntriesPublic() throws ServiceException {
         List<RecentEntry> entryList = entryService.getRecentEntriesPublic(TEST_USER);
         assertNotNull(entryList);
-        assertTrue(entryList.size() > 0);
+        assertTrue(entryList.size() > 1);
+        assertTrue(entryList.get(0).getId() == 33662);
     }
 
     @Test
@@ -86,6 +87,7 @@ public class ServiceTests {
         List<RecentEntry> entryList = entryService.getRecentEntries(TEST_USER);
         assertNotNull(entryList);
         assertTrue(entryList.size() > 0);
+        assertTrue(entryList.get(0).getId() == 33660);
     }
 
     @Test
