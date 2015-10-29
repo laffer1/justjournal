@@ -87,7 +87,7 @@ public class ServiceTests {
         List<RecentEntry> entryList = entryService.getRecentEntries(TEST_USER);
         assertNotNull(entryList);
         assertTrue(entryList.size() > 0);
-        assertTrue(entryList.get(0).getId() == 33660);
+        assertTrue(entryList.get(0).getId() == 33663);
     }
 
     @Test

@@ -432,7 +432,7 @@ public class UpdateJournal extends HttpServlet {
 
             try {
                 et.setUser(user);
-                DateTime dtb = new DateTimeBean();
+                final DateTime dtb = new DateTimeBean();
                 dtb.set(date + " " + time);
                 et.setDate(dtb.toDate());
                 et.setSubject(subject);
@@ -442,6 +442,9 @@ public class UpdateJournal extends HttpServlet {
 
                 et.setLocation(locationDao.findOne(location));
                 et.setMood(moodDao.findOne(mood));
+
+                // assume it's not a draft for the old submit code.
+                et.setDraft(PrefBool.N);
 
                 // the check box says disable auto format
                 if ((aformat.equals("checked")) || myclient == ClientType.dashboard || myclient == ClientType.mobile)
