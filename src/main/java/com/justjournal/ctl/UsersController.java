@@ -1878,7 +1878,7 @@ public class UsersController {
             sb.append(" comments</div>\n");
 
             sb.append("<div class=\"rightflt\">");
-            sb.append("<a href=\"add.jsp?id=").append(o.getId()).append("\" title=\"Add Comment\">Add Comment</a></div>\n");
+            sb.append("<a href=\"/comment/add.jsp?id=").append(o.getId()).append("\" title=\"Add Comment\">Add Comment</a></div>\n");
 
             for (final Comment co : comments) {
                 sb.append("<div class=\"comment\">\n");
