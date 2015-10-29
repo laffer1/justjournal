@@ -61,13 +61,13 @@ public class ServiceTests {
         Util.setupDb();
     }
 
-    public void setStatisticsService(StatisticsService statisticsService1) {
+    public void setStatisticsService(final StatisticsService statisticsService1) {
         this.statisticsService = statisticsService1;
     }
 
     @Test
     public void entryGetPublicEntry() throws ServiceException {
-        Entry entry = entryService.getPublicEntry(PUBLIC_ENTRY_ID, TEST_USER);
+        final Entry entry = entryService.getPublicEntry(PUBLIC_ENTRY_ID, TEST_USER);
         assertNotNull(entry);
         assertEquals(PUBLIC_ENTRY_ID, entry.getId());
         assertEquals(TEST_USER, entry.getUser().getUsername());
@@ -76,30 +76,34 @@ public class ServiceTests {
 
     @Test
     public void entryGetRecentEntriesPublic() throws ServiceException {
-        List<RecentEntry> entryList = entryService.getRecentEntriesPublic(TEST_USER);
+        final List<RecentEntry> entryList = entryService.getRecentEntriesPublic(TEST_USER);
         assertNotNull(entryList);
-        assertTrue(entryList.size() > 1);
-        assertTrue(entryList.get(0).getId() == 33662);
+        assertTrue(entryList.size() > 2);
+        final RecentEntry re = entryList.get(0);
+        assertNotNull(re);
+        assertEquals(33662, re.getId());
     }
 
     @Test
     public void entryGetRecentEntries() throws ServiceException {
-        List<RecentEntry> entryList = entryService.getRecentEntries(TEST_USER);
+        final List<RecentEntry> entryList = entryService.getRecentEntries(TEST_USER);
         assertNotNull(entryList);
-        assertTrue(entryList.size() > 0);
-        assertTrue(entryList.get(0).getId() == 33663);
+        assertTrue(entryList.size() > 3);
+        final RecentEntry re = entryList.get(0);
+        assertNotNull(re);
+        assertEquals(33662, re.getId());
     }
 
     @Test
     public void entryGetPublicEntries() throws ServiceException {
-        List<Entry> entryList = entryService.getPublicEntries(TEST_USER);
+        final List<Entry> entryList = entryService.getPublicEntries(TEST_USER);
         assertNotNull(entryList);
         assertTrue(entryList.size() > 0);
     }
 
     @Test
     public void testGetStatistics() throws ServiceException {
-        Statistics statistics = statisticsService.getStatistics();
+        final Statistics statistics = statisticsService.getStatistics();
         assertNotNull(statistics);
         assertTrue(statistics.getComments() > 0);
         assertTrue(statistics.getEntries() > 0);

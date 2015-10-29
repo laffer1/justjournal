@@ -71,13 +71,19 @@ public class EntryService {
             return null;
         }
         final Page<Entry> entries;
-        final List<RecentEntry> recentEntries = new ArrayList<RecentEntry>(MAX_RECENT_ENTRIES);
+        final ArrayList<RecentEntry> recentEntries = new ArrayList<RecentEntry>(MAX_RECENT_ENTRIES);
 
         try {
-            final Pageable page = new PageRequest(0, MAX_RECENT_ENTRIES, Sort.Direction.DESC, "date");
+            final Pageable page = new PageRequest(0, MAX_RECENT_ENTRIES, new Sort(Sort.Direction.DESC, "date", "id"));
             entries = entryDao.findByUserAndSecurityAndDraft(user, securityDao.findOne(2), PrefBool.N, page);
 
             for (final Entry o : entries) {
+                // security safety net
+                if (! o.getSecurity().getName().equals("public"))
+                    continue;
+                if (o.getDraft().equals(PrefBool.Y))
+                    continue;
+
                 final RecentEntry recentEntry = new RecentEntry();
                 recentEntry.setId(o.getId());
                 recentEntry.setSubject(Xml.cleanString(o.getSubject()));
