@@ -114,7 +114,7 @@ public class EntryService {
         final List<RecentEntry> recentEntries = new ArrayList<RecentEntry>();
 
         try {
-            final Pageable page = new PageRequest(0, MAX_RECENT_ENTRIES, Sort.Direction.DESC, "date");
+            final Pageable page = new PageRequest(0, MAX_RECENT_ENTRIES, Sort.Direction.DESC, "date", "id");
             entries = entryDao.findByUserOrderByDateDesc(user, page);
 
             for (final Entry o : entries) {
