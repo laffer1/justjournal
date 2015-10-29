@@ -208,7 +208,7 @@
                         </li>
                         <c:if test="${pageable.getPageNumber() < 1}">
                         <li class="next disabled">
-                            Newer &rarr;
+                            <a>Newer &rarr;</a>
                         </li>
                         </c:if>
                         <c:if test="${pageable.getPageNumber() > 0}">
@@ -229,7 +229,7 @@
                         </li>
                         <c:if test="${pageable.getPageNumber() < 1}">
                             <li class="next disabled">
-                                Newer &rarr;
+                                <a>Newer &rarr;</a>
                             </li>
                         </c:if>
                         <c:if test="${pageable.getPageNumber() > 0}">
