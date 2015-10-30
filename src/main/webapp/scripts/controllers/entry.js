@@ -115,7 +115,7 @@ angular.module('wwwApp').controller('EntryCtrl', ['$scope', '$routeParams', '$lo
             });
 
             if (typeof $routeParams.entryId !== 'undefined') {
-                $scope.entry = EntryService.get({Id: $routeParams.entryId});
+                $scope.entry = EntryService.get({Id: $routeParams.entryId, User: $scope.login.username});
             }
         };
         $scope.init();
