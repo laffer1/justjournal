@@ -46,6 +46,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -364,7 +365,6 @@ public class EntryController {
         if (entry.getDate() == null)
             entry.setDate(new Date());
 
-
         // TODO: validate
         boolean result;
         final Entry entryTo = entryDao.findOne(entry.getId());
@@ -386,10 +386,11 @@ public class EntryController {
      * @throws Exception
      */
     @CacheEvict(value = "recentblogs")
-    @RequestMapping(method = RequestMethod.DELETE)
+    @RequestMapping(value = "/{entryId}", method = RequestMethod.DELETE)
     public
     @ResponseBody
-    Map<String, String> delete(@RequestBody final int entryId, final HttpSession session, final HttpServletResponse response) throws Exception {
+    Map<String, String> delete(@PathVariable("entryId") final int entryId,
+                               final HttpSession session, final HttpServletResponse response) throws Exception {
 
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
