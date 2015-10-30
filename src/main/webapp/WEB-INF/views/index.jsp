@@ -66,7 +66,7 @@
 
 <footer>
 <div id="footer">
-    <p id="copyright">&#169; 2003 - 2014 Lucas Holt. All rights reserved.</p>
+    <p id="copyright">&#169; 2003 - 2015 Lucas Holt. All rights reserved.</p>
 
     <p><a href="${pageContext.request.contextPath}#/privacy" title="Privacy Policy">Privacy</a> |
         <a href="${pageContext.request.contextPath}#/search" title="Search">Search</a> |
