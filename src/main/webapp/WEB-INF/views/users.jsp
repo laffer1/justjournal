@@ -288,7 +288,8 @@
         $.get('${pageContext.request.contextPath}/api/entry/<c:out value="${user.username}"/>/recent',
                 function (data) {
                     for (var i = 0; i < data.length; i++) {
-                        var link = '<li class="list-group-item"><a href="/users/<c:out value="${user.username}"/>/entry/' + data[i].id + '">' + data[i].subject + '</a></li>';
+                        var link = '<li class="list-group-item"><a href="/users/<c:out value="${user.username}"/>/entry/' + data[i].id + '">' +
+                                data[i].subject == '' ? '(no subject)' : data[i].subject + '</a></li>';
                         $('ul#userRecentEntriesList').append(link);
                     }
                 }
