@@ -8,9 +8,9 @@ function deleteEntry(entryId) {
     "use strict";
     if (confirmDelete()) {
         var request = jQuery.ajax({
-          url: "/api/entry",
-          type: "DELETE",
-          data: { entryId : entryId }
+            url: "/api/entry/" + entryId,
+            type: "DELETE",
+            data: {}
         });
 
         request.done(function() {
@@ -25,7 +25,7 @@ function deleteEntry(entryId) {
 
 function confirmDelete() {
     'use strict';
-    window.confirm("Are you sure you want to delete this?");
+    return window.confirm("Are you sure you want to delete this?");
 }
 
 function showbox(boxId) {
