@@ -7,7 +7,8 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title>Just Journal: Free Online Journals</title>
-    <meta name="description" content="">
+    <meta name="description" content="Just Journal is a free online blogging service with web and desktop clients.">
+    <meta property="og:site_name" content="Just Journal">
     <meta name="viewport" content="width=device-width">
     <meta name="msvalidate.01" content="D1E040678EBA2490CC51CABAABCE7928">
     <meta name="google-site-verification" content="DTrNXBvTzRjd3Rl622MXUgtYzEJv2Dz6Mp5GBfVOo9Y" />

@@ -10,6 +10,13 @@
         <meta name="googlebot" content="nosnippet">
     </c:if>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta property="og:site_name" content="Just Journal">
+    <meta property="og:type" content="article">
+    <meta property="og:image"  content="http://www.justjournal.com/image?id=<c:out value="${user.id}"/>">
+    <c:if test="${entry != null}">
+        <meta property="og:url"    content="http://www.justjournal.com/users/<c:out value="${user.username}/entry/${entry.getId()}"/>">
+        <meta property="og:title"  content="<c:out escapeXml="false" value="${entry.getSubject()}"/>">
+    </c:if>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/styles/users.css">
