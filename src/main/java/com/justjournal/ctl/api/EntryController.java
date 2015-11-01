@@ -273,11 +273,11 @@ public class EntryController {
      * @param response HttpServletResponse
      * @return status ok or error
      */
-    @CacheEvict(value = "recentblogs")
+    @CacheEvict(value = "recentblogs", allEntries = true)
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json", headers = {"Accept=*/*", "content-type=application/json"})
     public
     @ResponseBody
-    Map<String, String> post(@ModelAttribute Entry entry, HttpSession session, HttpServletResponse response, Model model) {
+    Map<String, String> post(@RequestBody final Entry entry, HttpSession session, HttpServletResponse response, Model model) {
 
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
