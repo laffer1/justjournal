@@ -190,7 +190,9 @@ public class UsersController {
         model.addAttribute(MODEL_ARCHIVE, getArchive(userContext));
         model.addAttribute(MODEL_PICTURES, null);
 
-        model.addAttribute(MODEL_ENTRY, getSingleEntry(id, userContext));
+        final Entry entry = getEntry(id, userContext);
+        model.addAttribute(MODEL_ENTRY, entry);
+        model.addAttribute(MODEL_ENTRY + "_format", getSingleEntry(entry, userContext));
 
         return VIEW_USERS;
     }
@@ -779,28 +781,52 @@ public class UsersController {
         return sb.toString();
     }
 
-    private String getSingleEntry(final int singleEntryId, final UserContext uc) {
+
+    /**
+     * Get a blog entry following the security rules as follows:
+     * if the entry belongs to the blog, check the remaining rules otherwise just punt with null.
+     * if public entry, return entry
+     * if private entry and logged in as owner of entry, return entry
+     * if protected and owner, return entry
+     * if protected and third party and in owner's friends list, return entry
+     * @param entryId
+     * @param uc
+     * @return
+     */
+    private Entry getEntry(final int entryId, final UserContext uc) {
+        final Entry entry = entryDao.findOne(entryId);
+        final int entryUserId = entry.getUser().getId();
+
+        // only show blog entries for the owner of the blog
+        if (entryUserId != uc.getBlogUser().getId())
+            return null;
+
+        // everyone can see public entries
+        if (entry.getSecurity().getName().equals("public"))
+            return entry;
+
+        final int authUserId = uc.getAuthenticatedUser().getId();
+
+        // since we know the blog owner owns the entry and the auth user is the entry user, we can assume
+        // private or protected access of their own blog is fine.
+        if (entryUserId == authUserId)
+            return entry;
+
+        if (entry.getSecurity().getName().equals("protected")) {
+            for (final Friend friend : uc.getBlogUser().getFriends()) {
+                if (friend.getFriend().getId() == authUserId)
+                    return entry;
+            }
+        }
+
+        return null;
+    }
+
+    private String getSingleEntry(final Entry o, final UserContext uc) {
 
         final StringBuffer sb = new StringBuffer();
-        Entry o;
 
-        if (singleEntryId < 1) {
-            ErrorPage.Display("Invalid Entry Id", "The entry id was invalid for the journal entry you tried to get.", sb);
-        } else {
             try {
-                o = entryDao.findOne(singleEntryId);
-                if (uc.isAuthBlog()) {
-                    if (o.getUser().getId() != uc.authenticatedUser.getId())
-                        o = null;
-
-                    log.debug("getSingleEntry: User is logged in.");
-                } else {
-                    if (o.getSecurity().getId() != 2)
-                        o = null;
-                    log.debug("getSingleEntry: User is not logged in.");
-                }
-
-                log.trace("getSingleEntry: Begin reading record.");
 
                 if (o != null && o.getId() > 0) {
                     final SimpleDateFormat formatmydate = new SimpleDateFormat("EEE, d MMM yyyy");
@@ -821,7 +847,7 @@ public class UsersController {
                         "Unable to retrieve journal entry from data store.",
                         sb);
             }
-        }
+
         return sb.toString();
     }
 

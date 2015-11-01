@@ -247,7 +247,9 @@
                     </ul>
                 </c:if>
 
-                <c:out escapeXml="false" value="${entry}"/>
+                <c:if test="${entry != null}">
+                    <c:out escapeXml="false" value="${entry_format}"/>
+                </c:if>
                 <c:out escapeXml="false" value="${friends}"/>
 
                 <c:if test="${pictures != null && pictures.size() > 0}">
