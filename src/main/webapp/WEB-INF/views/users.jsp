@@ -296,7 +296,7 @@
                 function (data) {
                     for (var i = 0; i < data.length; i++) {
                         var link = '<li class="list-group-item"><a href="/users/<c:out value="${user.username}"/>/entry/' + data[i].id + '">' +
-                                data[i].subject == '' ? '(no subject)' : data[i].subject + '</a></li>';
+                                (data[i].subject == '' ? '(no subject)' : data[i].subject) + '</a></li>';
                         $('ul#userRecentEntriesList').append(link);
                     }
                 }
