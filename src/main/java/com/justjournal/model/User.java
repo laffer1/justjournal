@@ -231,7 +231,7 @@ public class User implements Serializable {
         return modified;
     }
 
-    public void setModified(Timestamp modified) {
+    public void setModified(final Timestamp modified) {
         this.modified = modified;
     }
 
@@ -247,7 +247,7 @@ public class User implements Serializable {
         return lastName;
     }
 
-    public void setLastName(String lastName) {
+    public void setLastName(final String lastName) {
         this.lastName = lastName;
     }
 
@@ -279,7 +279,7 @@ public class User implements Serializable {
         return lastLogin;
     }
 
-    public void setLastLogin(java.util.Date dt) {
+    public void setLastLogin(final java.util.Date dt) {
         this.lastLogin = dt;
     }
 
