@@ -45,7 +45,7 @@ final public class Util {
                     "org.apache.naming.java.javaURLContextFactory");
             System.setProperty(Context.URL_PKG_PREFIXES,
                     "org.apache.naming");
-            InitialContext ic = new InitialContext();
+            final InitialContext ic = new InitialContext();
 
             ic.createSubcontext("java:");
             ic.createSubcontext("java:comp");
