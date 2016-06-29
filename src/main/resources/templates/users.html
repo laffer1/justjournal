@@ -52,19 +52,16 @@
                     </div>
                     <div class="navbar-collapse collapse">
                         <ul class="nav navbar-nav">
-                            <li th:if="${entries != null}" class="active">
-                            <li th:if="${entries == null}">
+                            <li th:class="${entries != null} ? 'active' : ''">
                                 <a title="Home"
                                    th:href="/users/${user.username}"><i
                                         class="fa fa-home"></i></a>
                             </li>
-                            <li th:if="${calendar != null}" class="active">
-                            <li th:if="${calendar == null}">
+                            <li th:class="${calendar != null} ? 'active' : ''">
                                 <a title="Calendar"
                                    th:href="/users/${user.username}/calendar"><i class="fa fa-calendar"></i></a>
                             </li>
-                            <li th:if="${friends != null}" class="active">
-                            <li th:if="${friends == null}">
+                            <li th:class="${friends != null} ? 'active' : ''">
                                 <a title="Friends"
                                    th:href="/users/${user.username}/friends"><i class="fa fa-group"></i></a>
                             </li>
