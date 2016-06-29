@@ -72,3 +72,5 @@ context.xml
 dataSources.local.xml
 JustJournal_war_exploded.xml
 misc.xml
+node.lock
+data/elasticsearch/nodes
