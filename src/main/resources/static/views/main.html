@@ -1,0 +1,126 @@
+<div class="jumbotron">
+    <h1>Blogging for Life.</h1>
+
+    <p class="lead">
+        Just
+        Journal is an online journal service, also
+        known as a blog. You can publish private
+        entries for yourself, friends' entries to share with those close to you or public entries you wish to share
+        with the Internet.</p>
+</div>
+
+<div class="row">
+    <div class="col-xs-6">
+        <form name="frmlogin" role="form" class="form-horizontal">
+            <fieldset>
+                <legend>Login</legend>
+
+                <div class="form-group">
+                    <label for="iusername" class="col-sm-2 control-label">Username</label>
+
+                    <div class="col-sm-4">
+                        <input type="text" name="username" id="iusername" size="18" maxlength="15"
+                               class="form-control input-sm"
+                               placeholder="Username" data-ng-model="username"
+                               required autofocus>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="ipassword" class="col-sm-2 control-label">Password</label>
+
+                    <div class="col-sm-4">
+                        <input type="password" name="password" id="ipassword" size="18" class="form-control input-sm"
+                               placeholder="Password" data-ng-model="password" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button class="btn btn-primary btn-md" name="submitlogin"
+                                data-ng-click="AccountLogin()">Login
+                        </button>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+
+    <div class="col-xs-6">
+        <form action="" name="frmCreateJournal" role="form" class="form-horizontal">
+            <fieldset>
+                <legend>Sign up</legend>
+
+                <div class="form-group">
+                    <label for="fname" class="col-sm-2 control-label">First Name</label>
+
+                    <div class="col-sm-4">
+                        <input class="form-control input-sm"
+                               type="text" name="fname" id="fname" data-ng-model="create.name"
+                               maxlength="50" size="25" placeholder="First Name" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="lname" class="col-sm-2 control-label">Last Name</label>
+
+                    <div class="col-sm-4">
+                        <input type="text" name="lname" id="lname" class="form-control input-sm"
+                               data-ng-model="create.lastName" maxlength="50"
+                               size="25" placeholder="Last Name">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email" class="col-sm-2 control-label">E-mail</label>
+
+                    <div class="col-sm-4">
+                        <input
+                                type="text" name="email" id="email" class="form-control input-sm"
+                                data-ng-model="email"
+                                maxlength="100" size="25" placeholder="E-mail" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="username" class="col-sm-2 control-label">Username</label>
+
+                    <div class="col-sm-4">
+                        <input
+                                type="text" name="username" id="username" class="form-control input-sm"
+                                data-ng-model="create.userName" placeholder="Username"
+                                maxlength="15" size="15" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="col-sm-2 control-label">Password</label>
+
+                    <div class="col-sm-4">
+                        <input
+                                type="text" name="password" id="password" class="form-control input-sm"
+                                data-ng-model="create.password" placeholder="Password"
+                                maxlength="18" size="18" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="password2" class="col-sm-2 control-label">Password (again)</label>
+
+                    <div class="col-sm-4">
+                        <input class="form-control input-sm"
+                               type="text" name="password2" id="password2" maxlength="18" size="18" required
+                               placeholder="Password">
+                    </div>
+                </div>
+            </fieldset>
+
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button class="btn btn-md" name="submitlogin"
+                            data-ng-click="CreateAccount()">Sign Up
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

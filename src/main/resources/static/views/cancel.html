@@ -1,0 +1,32 @@
+<div class="row">
+    <h2>Cancel Journal</h2>
+</div>
+
+<div class="row">
+    <form role="form" method="post" action="DeleteAccount" name="frmCancelJournal">
+
+        <fieldset>
+            <legend><strong>User Information</strong></legend>
+
+            <p>You must be logged in before you can cancel your account. Then, you must type your username
+                and password below to verify you want to cancel. The process will wipe all contents of your blog
+                without any way to get it back.</p>
+
+            <div class="row">
+                <span class="label span1"><label for="username">Username</label></span>
+
+                    <span class="span4"><input
+                            type="text" name="username" id="username" maxlength="15" size="15" required></span>
+            </div>
+
+            <div class="row">
+                <span class="label span1"><label for="password">Password</label></span>
+                    <span class="span4"><input
+                            type="text" name="password" id="password" maxlength="18" size="18" required></span>
+            </div>
+
+        </fieldset>
+
+        <div class="row"><input type="submit" name="submit" value="submit"></div>
+    </form>
+</div>

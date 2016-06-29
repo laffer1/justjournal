@@ -40,7 +40,7 @@ public class Settings implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private Integer id;
 
     @Column(name = "name", length = 25, nullable = false)
     private String name;
@@ -48,11 +48,11 @@ public class Settings implements Serializable {
     @Column(name = "value", length = 100, nullable = false)
     private String value;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(final int id) {
+    public void setId(final Integer id) {
         this.id = id;
     }
 

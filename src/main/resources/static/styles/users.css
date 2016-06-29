@@ -1,0 +1,151 @@
+/* navbar offset */
+body {
+    padding-top: 70px;
+}
+
+/* Mini calendar, calendar, and RSS styles */
+.minicalendar {
+    border: thin solid gray;
+    font-size: .8em;
+    margin-bottom: 20px;
+}
+
+.minicalendarth {
+    background: #F2F2F2;
+    color: gray;
+    width: 14%;
+}
+
+.minicalendaroffrow {
+    background: #F2F2F2;
+}
+
+.minicalendarrow {
+    background: white;
+    vertical-align: top;
+}
+
+.minicalendarsub {
+    background: #F2F2F2;
+    text-align: center;
+}
+
+.fullcalendar {
+    margin-top: .2in;
+    border: thin solid black;
+    width: 400px;
+}
+
+.fullcalendarth {
+    background: #F2F2F2;
+    color: gray;
+    width: 14%;
+}
+
+.fullcalendaroffrow {
+    background: #F2F2F2;
+}
+
+.fullcalendarrow {
+    background: white;
+    vertical-align: top;
+}
+
+.fullcalendarsub {
+    background: #F2F2F2;
+    text-align: center;
+}
+
+/* RSS Feed Reader/Subscription */
+
+.RssItems {
+
+}
+
+.RssItem {
+    margin: 1em 0 1.5em 3.5em;
+    padding: 10px;
+    padding-bottom: 1.5em;
+}
+
+.RssItemTitle {
+    font-size: 1.2em;
+    line-height: 1.5;
+    background-color: #F2F2F2;
+    color: black;
+    padding: 5px;
+    -moz-border-radius: 10%;
+    -moz-opacity: .75;
+}
+
+.RssItemTitle:hover {
+    color: white;
+    background-color: black;
+}
+
+.RssItemTitle a, .RssItemTitle a:visited, .RssItemTitle a:link {
+    color: gray;
+    font-weight: bold;
+    text-decoration: none;
+    background: transparent;
+}
+
+.RssItemTitle a:hover {
+    color: silver;
+    background: transparent;
+    text-decoration: none;
+}
+
+.RssItemPubDate {
+    font-size: 10px;
+    display: block;
+    float: left;
+    color: gray;
+    margin-top: .2em;
+}
+
+.RssItemDesc {
+    font-size: 10px;
+    line-height: 1.5;
+    color: black;
+    margin: 1em 0 0 0;
+    padding: 0;
+}
+
+.RssReadMore {
+    display: block;
+    clear: both;
+}
+
+.RssTechnoratiTrack {
+    display: block;
+    float: right;
+}
+
+#box1 {
+    visibility: hidden;
+    border: 1px solid gray;
+    position: absolute;
+    background: #F8F8F8;
+    padding: 0;
+    width: 250px;
+    z-index: 10;
+}
+
+/* Tags */
+
+.TagCloud {
+
+}
+
+.TagCloudSmall {
+    font-size: .7em;
+}
+
+.TagCloudMedium {
+    font-size: 1.0em;
+}
+
+.TagCloudLarge {
+    font-size: 1.3em;
+}
