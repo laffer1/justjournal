@@ -1,48 +1,39 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<jsp:useBean id="user" scope="request" type="com.justjournal.model.User"/>
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <title th:text="${user.userPref.journalName}"></title>
-    <c:if test="${user.userPref.allowSpider == 'Y'}">
-        <meta name="robots" content="noindex, nofollow, noarchive">
-        <meta name="googlebot" content="nosnippet">
-    </c:if>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta property="og:site_name" content="Just Journal">
-    <meta property="og:type" content="article">
-    <meta property="og:image"  content="http://www.justjournal.com/image?id=<c:out value="${user.id}"/>">
-    <c:if test="${entry != null}">
-        <meta property="og:url"    content="http://www.justjournal.com/users/<c:out value="${user.username}/entry/${entry.getId()}"/>">
-        <meta property="og:title"  content="<c:out escapeXml="false" value="${entry.getSubject()}"/>">
-    </c:if>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/styles/users.css">
-    <c:choose>
-      <c:when test="${user.userPref.style > 16}">
-          <link rel="stylesheet" type="text/css" media="screen" href="${pageContext.request.contextPath}/styles/<c:out value="${user.userPref.style}"/>.css">
-      </c:when>
-      <c:otherwise>
-          <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/bootstrap-theme.min.css">
-      </c:otherwise>
-    </c:choose>
-    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
+    <meta th:if="${user.userPref.allowSpider == 'Y'}" name="robots" content="noindex, nofollow, noarchive" />
+    <meta th:if="${user.userPref.allowSpider == 'Y'}" name="googlebot" content="nosnippet" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta property="og:site_name" content="Just Journal" />
+    <meta property="og:type" content="article" />
+    <meta property="og:image" th:content="http://www.justjournal.com/image?id=${user.id}" />
+
+    <meta th:if="${entry != null}" property="og:url"   th:content="http://www.justjournal.com/users/${user.username}/entry/${entry.getId()}" />
+    <meta th:if="${entry != null}" property="og:title" th:content="${entry.getSubject()}" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="/styles/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/styles/users.css" />
+
     <link rel="stylesheet" type="text/css" media="screen"
-          href="${pageContext.request.contextPath}/components/lightbox2/css/lightbox.css">
+          th:href="${user.userPref.style > 16} ? '/static/styles/${user.userPref.style}.css' : '/static/styles/bootstrap-theme.min.css'" />
+
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" media="screen"
+          href="/static/components/lightbox2/css/lightbox.css" />
     <link rel="alternate" type="application/rss+xml" title="RSS"
-          href="http://www.justjournal.com/users/<c:out value="${user.username}"/>/rss">
+          th:href="http://www.justjournal.com/users/${user.username}/rss" />
     <link rel="alternate" type="application/atom+xml" title="Atom"
-          href="http://www.justjournal.com/users/<c:out value="${user.username}"/>/atom">
+          th:href="http://www.justjournal.com/users/${user.username}/atom" />
     <link rel="EditURI" type="application/rsd+xml" title="RSD"
-          href="http://www.justjournal.com/rsd?blogID=<c:out value="${user.username}"/>">
+          th:href="http://www.justjournal.com/rsd?blogID=${user.username}" />
 </head>
 
 <body>
 
 <div class="container">
-
     <header>
         <div class="row">
             <div class="navbar navbar-default navbar-fixed-top navbar-inverse" role="navigation">
@@ -55,77 +46,75 @@
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                         </button>
-                        <a class="navbar-brand" href="${pageContext.request.contextPath}/#!/" title="JustJournal">
+                        <a class="navbar-brand" href="/#!/" title="JustJournal">
                             JustJournal
                         </a>
                     </div>
                     <div class="navbar-collapse collapse">
                         <ul class="nav navbar-nav">
-                            <li <c:if test="${entries != null}">class="active"</c:if>>
+                            <li th:if="${entries != null}" class="active">
+                            <li th:if="${entries == null}">
                                 <a title="Home"
-                                   href="${pageContext.request.contextPath}/users/<c:out value="${user.username}"/>"><i
+                                   th:href="/users/${user.username}"><i
                                         class="fa fa-home"></i></a>
                             </li>
-                            <li
-                                    <c:if test="${calendar != null}">class="active"</c:if>
-                                    <c:if test="${startYear > 2002}">class="active"</c:if>>
+                            <li th:if="${calendar != null}" class="active">
+                            <li th:if="${calendar == null}">
                                 <a title="Calendar"
-                                   href="${pageContext.request.contextPath}/users/<c:out value="${user.username}"/>/calendar"><i
-                                        class="fa fa-calendar"></i></a>
+                                   th:href="/users/${user.username}/calendar"><i class="fa fa-calendar"></i></a>
                             </li>
-                            <li <c:if test="${friends != null}">class="active"</c:if>>
+                            <li th:if="${friends != null}" class="active">
+                            <li th:if="${friends == null}">
                                 <a title="Friends"
-                                   href="${pageContext.request.contextPath}/users/<c:out value="${user.username}"/>/friends"><i
-                                        class="fa fa-group"></i></a>
+                                   th:href="/users/${user.username}/friends"><i class="fa fa-group"></i></a>
                             </li>
-                            <li <c:if test="${pictures != null}">class="active"</c:if>>
+                            <li th:class="${pictures != null} ? 'active' : ''">
                                 <a title="Photos"
-                                   href="${pageContext.request.contextPath}/users/<c:out value="${user.username}"/>/pictures"><i
-                                        class="fa fa-picture-o"></i></a>
+                                   th:href="/users/${user.username}/pictures"><i class="fa fa-picture-o"></i></a>
                             </li>
-                            <li <c:if test="${subscriptions != null}">class="active"</c:if>>
+                            <li th:class="${subscription != null} ? 'active' : ''">
                                 <a title="Feed Reader"
-                                   href="${pageContext.request.contextPath}/users/<c:out value="${user.username}"/>/subscriptions"><i
+                                   th:href="/users/${user.username}/subscriptions"><i
                                         class="fa fa-rss"></i>r</a></li>
 
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Formats <b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     <li><a rel="alternate"
-                                           href="${pageContext.request.contextPath}/users/<c:out value="${user.username}"/>/rss"><i
+                                           th:href="/users/${user.username}/rss"><i
                                             class="fa fa-rss"></i> RSS</a></li>
                                     <li><a rel="alternate"
-                                           href="${pageContext.request.contextPath}/users/<c:out value="${user.username}"/>/atom"><i
+                                           th:href="/users/${user.username}/atom"><i
                                             class="fa fa-rss"></i>
                                         ATOM</a></li>
                                     <li>
-                                        <a href="${pageContext.request.contextPath}/users/<c:out value="${user.username}"/>/pdf"><i
+                                        <a th:href="/users/${user.username}/pdf"><i
                                                 class="fa fa-download"></i> PDF</a>
                                     </li>
                                     <li>
-                                        <a href="${pageContext.request.contextPath}/users/<c:out value="${user.username}"/>/rtf"><i
+                                        <a th:href="/users/${user.username}/rtf"><i
                                                 class="fa fa-download"></i> RTF</a>
                                     </li>
                                 </ul>
                             </li>
                             <li>
                                 <form class="navbar-form navbar-left" role="search" method="get"
-                                      action="${pageContext.request.contextPath}/users/<c:out value="${user.username}"/>/search">
-                                    <input type="hidden" name="max" value="20">
+                                      th:action="/users/${user.username}/search">
+                                    <input type="hidden" name="max" value="20" />
 
                                     <div class="form-group">
                                         <input type="search" name="bquery" id="bquery"
                                                class="form-control input-sm search-query"
-                                               placeholder="Search">
+                                               placeholder="Search" />
                                     </div>
                                 </form>
                             </li>
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
-                            <li><a href="${pageContext.request.contextPath}/#!/entry" title="New Entry"><i
+                            <li><a href="/#!/entry" title="New Entry"><i
                                     class="fa fa-pencil-square"></i> New Entry</a></li>
                             <li>
-                                <a href="${pageContext.request.contextPath}/#!/profile/<c:out value="${user.username}"/>"><i
+                                <a th:href="'/#!/profile/' + ${user.username}"><i
                                         class="fa fa-user"></i> Profile</a>
                             </li>
 
@@ -134,17 +123,13 @@
                                         class="fa fa-cog"></i> <b
                                         class="caret"></b></a>
                                 <ul class="dropdown-menu">
-                                    <c:if test="${authenticatedUsername == null}">
-                                        <li><a href="${pageContext.request.contextPath}/#!/"><i
-                                                class="fa fa-sign-in"></i> Login</a>
-                                        </li>
-                                    </c:if>
-                                    <c:if test="${authenticatedUsername != null}">
-                                        <li><a href="${pageContext.request.contextPath}/logout"><i
-                                                class="fa fa-sign-out"></i>
-                                            Log
-                                            Out</a></li>
-                                    </c:if>
+                                    <li th:if="${authenticatedUsername == null}"><a href="/#!/"><i
+                                            class="fa fa-sign-in"></i> Login</a>
+                                    </li>
+
+                                    <li th:if="${authenticatedUsername != null}"><a href="/logout"><i
+                                        class="fa fa-sign-out"></i>
+                                    Log Out</a></li>
                                 </ul>
                             </li>
                             <li>&nbsp;</li>
@@ -161,7 +146,7 @@
             <div id="menu" class="col-xs-6 col-md-3">
 
                 <p><img class="img-rounded img-responsive" alt="avatar"
-                        src="${pageContext.request.contextPath}/image?id=<c:out value="${user.id}"/>">
+                        th:src="/image?id=${user.id}" />
                 </p>
 
                 <div class="menuentity" id="userRecentEntries">
@@ -178,8 +163,7 @@
                     </ul>
                 </div>
 
-                <c:out escapeXml="false" value="${archive}"/>
-
+                <div th:text="${archive}"></div>
 
                 <div class="menuentity" id="usertags" style="padding-top: 10px;">
                     <strong style="text-transform: uppercase; letter-spacing: 2px; border: 0 dotted #999999;border-bottom-width: 1px;margin-bottom: 5px; width: 100%; font-size: 10px;"><i
@@ -189,121 +173,108 @@
                     </p>
                 </div>
 
-                <c:out escapeXml="false" value="${calendarMini}"/>
+                <div th:text="${calendarMini}"></div>
             </div>
         </section>
 
         <section>
             <div id="content" class="col-xs-12 col-md-8 col-md-offset-1">
                 <div class="page-header">
-                    <h1><c:out value="${user.userPref.journalName}"/></h1>
+                    <h1 th:text="${user.userPref.journalName}"></h1>
                 </div>
 
-                <c:if test="${authenticatedUsername != null}">
-                    <p>You are logged in as <a
-                            href="${pageContext.request.contextPath}/users/<c:out value="${user.username}"/>"><img
-                            src="${pageContext.request.contextPath}/images/userclass_16.png"
-                            alt="user"> <c:out value="${user.username}"/></a>
+                    <p th:if="${authenticatedUsername != null}">You are logged in as <a
+                            th:href="/users/${user.username}"><img
+                            src="/images/userclass_16.png"
+                            alt="user" /> ${user.username}</a>
                     </p>
-                </c:if>
 
-                <c:if test="${pageable != null}">
-                    <ul class="pager">
+                   <ul class="pager" th:if="${pageable != null}">
                         <li class="previous">
-                            <a href="${pageContext.request.contextPath}/users/<c:out value="${user.username}"/>?page=<c:out value="${pageable.getPageNumber() + 2}"/>">&larr;
+                            <a th:href="/users/${user.username}?page=${pageable.getPageNumber() + 2}">&larr;
                                 Older</a>
                         </li>
-                        <c:if test="${pageable.getPageNumber() < 1}">
-                        <li class="next disabled">
+                        <li class="next disabled" th:if="${pageable.getPageNumber() < 1}">
                             <a>Newer &rarr;</a>
                         </li>
-                        </c:if>
-                        <c:if test="${pageable.getPageNumber() > 0}">
-                        <li class="next">
-                            <a href="${pageContext.request.contextPath}/users/<c:out value="${user.username}"/>?page=<c:out value="${pageable.getPageNumber()}"/>">Newer &rarr;</a>
+
+                        <li class="next" th:if="${pageable.getPageNumber() > 0}">
+                            <a th:href="/users/${user.username}?page=${pageable.getPageNumber()}">Newer &rarr;</a>
                         </li>
-                        </c:if>
                     </ul>
-                </c:if>
 
-                <c:out escapeXml="false" value="${entries}"/>
+                <div th:text="${entries}"></div>
 
-                <c:if test="${pageable != null}">
+                <div th:if="${pageable != null}">
                     <ul class="pager">
                         <li class="previous">
-                            <a href="${pageContext.request.contextPath}/users/<c:out value="${user.username}"/>?page=<c:out value="${pageable.getPageNumber() + 2}"/>">&larr;
+                            <a th:href="/users/${user.username}?page=${pageable.getPageNumber() + 2}">&larr;
                                 Older</a>
                         </li>
-                        <c:if test="${pageable.getPageNumber() < 1}">
-                            <li class="next disabled">
+                           <li class="next disabled" th:if="${pageable.getPageNumber() < 1}">
                                 <a>Newer &rarr;</a>
                             </li>
-                        </c:if>
-                        <c:if test="${pageable.getPageNumber() > 0}">
-                            <li class="next">
-                                <a href="${pageContext.request.contextPath}/users/<c:out value="${user.username}"/>?page=<c:out value="${pageable.getPageNumber()}"/>">Newer &rarr;</a>
+
+                            <li class="next" th:if="${pageable.getPageNumber() > 0}">
+                                <a th:href="/users/${user.username}?page=${pageable.getPageNumber()}">Newer &rarr;</a>
                             </li>
-                        </c:if>
-                    </ul>
-                </c:if>
+                      </ul>
+                </div>
 
-                <c:if test="${entry != null}">
-                    <c:out escapeXml="false" value="${entry_format}"/>
-                </c:if>
-                <c:out escapeXml="false" value="${friends}"/>
+                <div th:text="${entry_format}" th:if="${entry != null}"></div>
 
-                <c:if test="${pictures != null && pictures.size() > 0}">
+
+                <div th:text="${friends}"></div>
+
+                <div th:if="${pictures != null && pictures.size() > 0}">
                         <h2>Pictures</h2>
                         <ul class="fa-ul">
-                            <c:forEach items="${pictures}" var="pic">
-                                <li><i class="fa-li fa fa-picture-o"></i> <a href="${pageContext.request.contextPath}/AlbumImage?id=<c:out value="${pic.id}"/>"
-                                       rel="lightbox">
-                                    <c:out value="${pic.title}"/>
+                                <li th:each="pic : ${pictures}"><i class="fa-li fa fa-picture-o"></i> <a href="/AlbumImage?id=${pic.id}"
+                                       rel="lightbox" th:text="${pic.title}">
                                 </a></li>
-                            </c:forEach>
                         </ul>
-                        <p>Subscribe to pictures <a href="${pageContext.request.contextPath}/users/<c:out value="${user.username}"/>/rsspics">feed</a>.</p>
-                </c:if>
+                        <p>Subscribe to pictures <a th:href="/users/${user.username}/rsspics">feed</a>.</p>
+                </div>
 
-                <c:out escapeXml="false" value="${search}"/>
-                <c:out escapeXml="false" value="${subscriptions}"/>
-                <c:out escapeXml="false" value="${tags}"/>
-                <c:out escapeXml="false" value="${calendar}"/>
+                <div th:text="${search}"></div>
+                <div th:text="${subscriptions}"></div>
+                <div th:text="${tags}"></div>
+                <div th:text="${calendar}"></div>
 
-                <c:if test="${currentYear > 0}">
+                <div th:if="${currentYear > 0}">
                     <p>Select a year to view blog entries.</p>
 
                     <ul>
-                        <c:forEach begin="${startYear}" end="${currentYear}" var="yr">
-                            <li><a href="${pageContext.request.contextPath}/users/<c:out value="${user.username}"/>/<c:out value="${yr}"/>"><c:out value="${yr}"/></a></li>
-                        </c:forEach>
+                        <li th:each="yr : ${#numbers.sequence( ${startYear}, ${currentYear})}">
+                            <a th:href="/users/${user.username}/${yr}" th:text="${yr}"></a>
+                        </li>
                     </ul>
-                </c:if>
+                </div>
             </div>
         </section>
     </div>
 </div>
 
-<script type="text/javascript" src="${pageContext.request.contextPath}/js/switchcontent.js" defer></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/components/jquery/jquery.min.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/js/jj.js" defer></script>
+<script type="text/javascript" src="/js/switchcontent.js" defer></script>
+<script type="text/javascript" src="/components/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="/js/jj.js" defer></script>
 <script type="text/javascript"
-        src="${pageContext.request.contextPath}/components/jquery-ui/ui/minified/jquery-ui.min.js"></script>
+        src="/components/jquery-ui/ui/minified/jquery-ui.min.js"></script>
 <script type="text/javascript"
-        src="${pageContext.request.contextPath}/components/lightbox2/js/lightbox.min.js" defer></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
+        src="/components/lightbox2/js/lightbox.min.js" defer></script>
+<script type="text/javascript" src="/js/bootstrap.min.js"></script>
 <script type="text/javascript">
     $().ready(function () {
-        $.get('${pageContext.request.contextPath}/api/entry/<c:out value="${user.username}"/>/recent',
+        $.get('/api/entry/${user.username}/recent',
                 function (data) {
                     for (var i = 0; i < data.length; i++) {
-                        var link = '<li class="list-group-item"><a href="/users/<c:out value="${user.username}"/>/entry/' + data[i].id + '">' +
+                        var link = '<li class="list-group-item"><a th:href="/users/${user.username}/entry/' + data[i].id + '">' +
                                 (data[i].subject == '' ? '(no subject)' : data[i].subject) + '</a></li>';
                         $('ul#userRecentEntriesList').append(link);
                     }
                 }
         );
-        $.get('${pageContext.request.contextPath}/api/link/user/<c:out value="${user.username}"/>',
+        $.get('/api/link/user/${user.username}',
                 function (data) {
                     for (var i = 0; i < data.length; i++) {
                         var link = '<li class="list-group-item"><a href="' + data[i].uri + '">' + data[i].title + '</a></li>';
@@ -311,10 +282,10 @@
                     }
                 }
         );
-        $.get('${pageContext.request.contextPath}/api/tagcloud/<c:out value="${user.username}"/>',
+        $.get('/api/tagcloud/${user.username}',
                 function (data) {
                     for (var i = 0; i < data.length; i++) {
-                        var tag = '<a href="/users/<c:out value="${user.username}"/>/tag/' + data[i].name + '" class="' + data[i].type + '">' + data[i].name + '</a> ';
+                        var tag = '<a th:href="/users/${user.username}/tag/' + data[i].name + '" class="' + data[i].type + '">' + data[i].name + '</a> ';
                         $('p#tagsmini').append(tag);
                     }
                 }
