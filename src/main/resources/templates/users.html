@@ -8,9 +8,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta property="og:site_name" content="Just Journal" />
     <meta property="og:type" content="article" />
-    <meta property="og:image" th:content="http://www.justjournal.com/image?id=${user.id}" />
+    <meta property="og:image" th:content="@{'http://www.justjournal.com/image?id=' + ${user.id}}" />
 
-    <meta th:if="${entry != null}" property="og:url"   th:content="http://www.justjournal.com/users/${user.username}/entry/${entry.getId()}" />
+    <meta th:if="${entry != null}" property="og:url"   th:content="@{'http://www.justjournal.com/users/' + ${user.username} + '/entry/' + ${entry.getId()}}" />
     <meta th:if="${entry != null}" property="og:title" th:content="${entry.getSubject()}" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -24,11 +24,11 @@
     <link rel="stylesheet" type="text/css" media="screen"
           href="/static/components/lightbox2/css/lightbox.css" />
     <link rel="alternate" type="application/rss+xml" title="RSS"
-          th:href="http://www.justjournal.com/users/${user.username}/rss" />
+          th:href="@{'http://www.justjournal.com/users/' + ${user.username} +'/rss'}" />
     <link rel="alternate" type="application/atom+xml" title="Atom"
-          th:href="http://www.justjournal.com/users/${user.username}/atom" />
+          th:href="@{'http://www.justjournal.com/users/' + ${user.username} +'/atom'}" />
     <link rel="EditURI" type="application/rsd+xml" title="RSD"
-          th:href="http://www.justjournal.com/rsd?blogID=${user.username}" />
+          th:href="@{'http://www.justjournal.com/rsd?blogID=' + ${user.username}}" />
 </head>
 
 <body>
@@ -258,18 +258,21 @@
 <script type="text/javascript"
         src="/static/components/lightbox2/js/lightbox.min.js" defer="defer"></script>
 <script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
-<script type="text/javascript">
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var username = /*[[${user.username}]]*/ "";
+
     $().ready(function () {
-        $.get('/api/entry/${user.username}/recent',
+        $.get('/api/entry/' + username + '/recent',
                 function (data) {
                     for (var i = 0; i < data.length; i++) {
-                        var link = '<li class="list-group-item"><a th:href="/users/${user.username}/entry/' + data[i].id + '">' +
+                        var link = '<li class="list-group-item"><a href="/users/' + username + '/entry/' + data[i].id + '">' +
                                 (data[i].subject == '' ? '(no subject)' : data[i].subject) + '</a></li>';
                         $('ul#userRecentEntriesList').append(link);
                     }
                 }
         );
-        $.get('/api/link/user/${user.username}',
+        $.get('/api/link/user/' + username,
                 function (data) {
                     for (var i = 0; i < data.length; i++) {
                         var link = '<li class="list-group-item"><a href="' + data[i].uri + '">' + data[i].title + '</a></li>';
@@ -277,17 +280,20 @@
                     }
                 }
         );
-        $.get('/api/tagcloud/${user.username}',
+        $.get('/api/tagcloud/' + username,
                 function (data) {
                     for (var i = 0; i < data.length; i++) {
-                        var tag = '<a th:href="/users/${user.username}/tag/' + data[i].name + '" class="' + data[i].type + '">' + data[i].name + '</a> ';
+                        var tag = '<a href="/users/' + username + '/tag/' + data[i].name + '" class="' + data[i].type + '">' + data[i].name + '</a> ';
                         $('p#tagsmini').append(tag);
                     }
                 }
         );
     });
+    /*]]>*/
 </script>
 <script type="text/javascript">
+    /*<![CDATA[*/
+
     (function (i, s, o, g, r, a, m) {
         i['GoogleAnalyticsObject'] = r;
         i[r] = i[r] || function () {
@@ -303,6 +309,8 @@
     ga('create', 'UA-560995-1', 'justjournal.com');
     ga('require', 'linkid', 'linkid.js');
     ga('send', 'pageview');
+
+    /*]]>*/
 </script>
 
 </body>
