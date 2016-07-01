@@ -54,49 +54,49 @@
                         <ul class="nav navbar-nav">
                             <li th:class="${entries != null} ? 'active' : ''">
                                 <a title="Home"
-                                   th:href="/users/${user.username}"><i
+                                   th:href="@{'/users/' + ${user.username}}"><i
                                         class="fa fa-home"></i></a>
                             </li>
                             <li th:class="${calendar != null} ? 'active' : ''">
                                 <a title="Calendar"
-                                   th:href="/users/${user.username}/calendar"><i class="fa fa-calendar"></i></a>
+                                   th:href="@{'/users/' + ${user.username} + '/calendar'}"><i class="fa fa-calendar"></i></a>
                             </li>
                             <li th:class="${friends != null} ? 'active' : ''">
                                 <a title="Friends"
-                                   th:href="/users/${user.username}/friends"><i class="fa fa-group"></i></a>
+                                   th:href="@{'/users/' + ${user.username} + '/friends'}"><i class="fa fa-group"></i></a>
                             </li>
                             <li th:class="${pictures != null} ? 'active' : ''">
                                 <a title="Photos"
-                                   th:href="/users/${user.username}/pictures"><i class="fa fa-picture-o"></i></a>
+                                   th:href="@{'/users/' + ${user.username} + '/pictures'}"><i class="fa fa-picture-o"></i></a>
                             </li>
                             <li th:class="${subscription != null} ? 'active' : ''">
                                 <a title="Feed Reader"
-                                   th:href="/users/${user.username}/subscriptions"><i
+                                   th:href="@{'/users/' + ${user.username} + '/subscriptions'}"><i
                                         class="fa fa-rss"></i>r</a></li>
 
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Formats <b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     <li><a rel="alternate"
-                                           th:href="/users/${user.username}/rss"><i
+                                           th:href="@{'/users/' + ${user.username} + '/rss'}"><i
                                             class="fa fa-rss"></i> RSS</a></li>
                                     <li><a rel="alternate"
-                                           th:href="/users/${user.username}/atom"><i
+                                           th:href="@{'/users/' + ${user.username} + '/atom'}"><i
                                             class="fa fa-rss"></i>
                                         ATOM</a></li>
                                     <li>
-                                        <a th:href="/users/${user.username}/pdf"><i
+                                        <a th:href="@{'/users/' + ${user.username} + '/pdf'}"><i
                                                 class="fa fa-download"></i> PDF</a>
                                     </li>
                                     <li>
-                                        <a th:href="/users/${user.username}/rtf"><i
+                                        <a th:href="@{'/users/' + ${user.username} + '/rtf'}"><i
                                                 class="fa fa-download"></i> RTF</a>
                                     </li>
                                 </ul>
                             </li>
                             <li>
                                 <form class="navbar-form navbar-left" role="search" method="get"
-                                      th:action="/users/${user.username}/search">
+                                      th:action="@{'/users/' + ${user.username} + '/search'}">
                                     <input type="hidden" name="max" value="20" />
 
                                     <div class="form-group">
@@ -111,7 +111,7 @@
                             <li><a href="/#!/entry" title="New Entry"><i
                                     class="fa fa-pencil-square"></i> New Entry</a></li>
                             <li>
-                                <a th:href="'/#!/profile/' + ${user.username}"><i
+                                <a th:href="@{'/#!/profile/' + ${user.username}}"><i
                                         class="fa fa-user"></i> Profile</a>
                             </li>
 
@@ -143,7 +143,7 @@
             <div id="menu" class="col-xs-6 col-md-3">
 
                 <p><img class="img-rounded img-responsive" alt="avatar"
-                        th:src="/image?id=${user.id}" />
+                        th:src="@{'/image?id=' + ${user.id}}" />
                 </p>
 
                 <div class="menuentity" id="userRecentEntries">
@@ -188,14 +188,14 @@
 
                    <ul class="pager" th:if="${pageable != null}">
                         <li class="previous">
-                            <a th:href="/users/${user.username}?page=${pageable.getPageNumber() + 2}">&larr;
+                            <a th:href="@{'/users/' + ${user.username} + '?page=' + ${pageable.getPageNumber() + 2}}">&larr;
                                 Older</a>
                         </li>
                         <li class="next disabled" th:if="${pageable.getPageNumber()} == 0">
                             <a>Newer &rarr;</a>
                         </li>
                         <li class="next" th:if="${pageable.getPageNumber()} > 0">
-                            <a th:href="/users/${user.username}?page=${pageable.getPageNumber()}">Newer &rarr;</a>
+                            <a th:href="@{'/users/' + ${user.username} + '?page=' + ${pageable.getPageNumber()}}">Newer &rarr;</a>
                         </li>
                     </ul>
 
@@ -204,7 +204,7 @@
                 <div th:if="${pageable != null}">
                     <ul class="pager">
                         <li class="previous">
-                            <a th:href="/users/${user.username}?page=${pageable.getPageNumber() + 2}">&larr;
+                            <a th:href="@{'/users/' + ${user.username} + '?page=' + ${pageable.getPageNumber() + 2}}">&larr;
                                 Older</a>
                         </li>
                            <li class="next disabled" th:if="${pageable.getPageNumber()} == 0">
@@ -212,7 +212,7 @@
                             </li>
 
                             <li class="next" th:if="${pageable.getPageNumber()} > 0">
-                                <a th:href="/users/${user.username}?page=${pageable.getPageNumber()}">Newer &rarr;</a>
+                                <a th:href="@{'/users/' + ${user.username} + '?page=' + ${pageable.getPageNumber()}}">Newer &rarr;</a>
                             </li>
                       </ul>
                 </div>
@@ -225,11 +225,12 @@
                 <div th:if="${pictures} != null and ${pictures.size()} > 0">
                         <h2>Pictures</h2>
                         <ul class="fa-ul">
-                                <li th:each="pic : ${pictures}"><i class="fa-li fa fa-picture-o"></i> <a th:href="/AlbumImage?id=${pic.id}"
+                                <li th:each="pic : ${pictures}"><i class="fa-li fa fa-picture-o"></i>
+                                    <a th:href="@{'/AlbumImage?id=' + ${pic.id}}"
                                        rel="lightbox" th:text="${pic.title}">
                                 </a></li>
                         </ul>
-                        <p>Subscribe to pictures <a th:href="/users/${user.username}/rsspics">feed</a>.</p>
+                        <p>Subscribe to pictures <a th:href="@{'/users/' + ${user.username} + '/rsspics'}">feed</a>.</p>
                 </div>
 
                 <div th:text="${search}"></div>
@@ -242,7 +243,7 @@
 
                     <ul>
                         <li th:each="yr : ${#numbers.sequence( ${startYear}, ${currentYear})}">
-                            <a th:href="/users/${user.username}/${yr}" th:text="${yr}"></a>
+                            <a th:href="@{ '/users/' + ${user.username} + '/' + ${yr}}" th:text="${yr}"></a>
                         </li>
                     </ul>
                 </div>
