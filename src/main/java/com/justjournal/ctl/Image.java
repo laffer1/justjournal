@@ -26,10 +26,25 @@
 package com.justjournal.ctl;
 
 import com.justjournal.utility.ServletUtilities;
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.HttpRequestHandler;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
+import javax.servlet.Servlet;
+import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -37,6 +52,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -52,72 +68,73 @@ import java.sql.ResultSet;
  *
  * @version $Id: Image.java,v 1.12 2011/07/02 01:30:53 laffer1 Exp $
  */
-public final class Image extends HttpServlet {
+@RequestMapping("/image")
+@Controller
+public class Image {
 
     private static final Logger log = Logger.getLogger(Image.class);
 
-    // processes get requests
-    protected final void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws java.io.IOException {
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        Integer id;
-        Context ctx;
-        DataSource ds = null;
+    @RequestMapping("/{id}")
+    public ResponseEntity<byte[]> getByPath(@PathVariable("id") final int id) throws IOException {
+        return get(id);
+    }
+
+    @RequestMapping("")
+    public ResponseEntity<byte[]> get(@RequestParam("id") final int id) throws IOException {
+        final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+        DataSource ds;
         Connection conn;
         PreparedStatement stmt;
 
-        try {
-            id = new Integer(request.getParameter("id"));
-        } catch (Exception e) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND);
-            return;
-        }
-
         if (id < 1) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND);
-            return;
+            return new ResponseEntity<byte[]>(HttpStatus.BAD_REQUEST);
         }
 
         try {
-            response.reset();
-            response.setHeader("Expires", ServletUtilities.createExpiresHeader(180));
-            try {
-                ctx = new InitialContext();
-                ds = (DataSource) ctx.lookup("java:comp/env/jdbc/jjDB");
-            } catch (Exception e) {
-                log.debug(e.getMessage());
-                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-
-            }
-
+            ds = jdbcTemplate.getDataSource();
             conn = ds.getConnection();
             stmt = conn.prepareStatement("call getimage(?)");
             stmt.setInt(1, id);
-            ResultSet rs = stmt.executeQuery();
+            final ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                response.setContentType(rs.getString("mimetype").trim());
-                BufferedInputStream img = new BufferedInputStream(rs.getBinaryStream("image"));
+                final BufferedInputStream img = new BufferedInputStream(rs.getBinaryStream("image"));
                 byte[] buf = new byte[4 * 1024]; // 4k buffer
                 int len;
                 while ((len = img.read(buf, 0, buf.length)) != -1)
                     byteArrayOutputStream.write(buf, 0, len);
 
-                response.setContentLength(byteArrayOutputStream.size());
-                final ServletOutputStream outputStream = response.getOutputStream();
-                byteArrayOutputStream.writeTo(outputStream);
-                outputStream.flush();
-                outputStream.close();
-            } else
-                response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                final HttpHeaders headers = new HttpHeaders();
+                headers.setExpires(180);
+
+                final String t = rs.getString("mimetype").trim();
+                if (t.equalsIgnoreCase(MediaType.IMAGE_GIF_VALUE))
+                         headers.setContentType(MediaType.IMAGE_GIF);
+                else if (t.equalsIgnoreCase(MediaType.IMAGE_JPEG_VALUE))
+                    headers.setContentType(MediaType.IMAGE_JPEG);
+                else if (t.equalsIgnoreCase(MediaType.IMAGE_PNG_VALUE))
+                    headers.setContentType(MediaType.IMAGE_PNG);
+
+                rs.close();
+                stmt.close();
+                conn.close();
+
+                return new ResponseEntity<byte[]>( byteArrayOutputStream.toByteArray(), headers, HttpStatus.OK);
+            }
 
             rs.close();
             stmt.close();
             conn.close();
+
+            return new ResponseEntity<byte[]>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             log.warn("Could not load image: " + e.toString());
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<byte[]>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 }

@@ -58,10 +58,4 @@ public class Application {
 
 		return tomcat;
 	}
-
-
-	@Bean
-	public ServletRegistrationBean image(){
-	    return new ServletRegistrationBean(new Image(),"/image/*");
-	}
 }
