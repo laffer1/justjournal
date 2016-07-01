@@ -44,7 +44,6 @@ import static org.junit.Assert.*;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration("file:src/test/resources/mvc-dispatcher-servlet.xml")
 public class ServiceTests {
 
     private static final String TEST_USER = "testuser";

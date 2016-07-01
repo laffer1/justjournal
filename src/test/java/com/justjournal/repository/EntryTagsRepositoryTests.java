@@ -44,7 +44,7 @@ import static org.junit.Assert.assertTrue;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration("file:src/test/resources/mvc-dispatcher-servlet.xml")
+
 public class EntryTagsRepositoryTests {
     @Autowired
     EntryTagsRepository entryTagsRepository;

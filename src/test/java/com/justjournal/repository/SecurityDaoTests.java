@@ -47,7 +47,6 @@ import static org.junit.Assert.assertNotNull;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration("file:src/test/resources/mvc-dispatcher-servlet.xml")
 public class SecurityDaoTests {
     @Autowired
     private SecurityDao securityDao;

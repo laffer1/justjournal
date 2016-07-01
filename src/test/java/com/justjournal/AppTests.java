@@ -47,7 +47,6 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 @SuppressWarnings("ClassWithTooManyMethods")
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration("file:src/test/resources/mvc-dispatcher-servlet.xml")
 public class AppTests {
     private static final int STATUS_HTTP_400 = 400;
     private static final int STATUS_HTTP_403 = 403;

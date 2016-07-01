@@ -46,7 +46,6 @@ import static org.junit.Assert.assertTrue;
  * @author Lucas Holt
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration("file:src/test/resources/mvc-dispatcher-servlet.xml")
 public class RssTests {
     private final static String TEST_USER = "testuser";
     @Autowired

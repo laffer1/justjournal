@@ -46,7 +46,7 @@ import static org.junit.Assert.assertNotNull;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration("file:src/test/resources/mvc-dispatcher-servlet.xml")
+
 public class MoodDaoTests {
     @Autowired
     private MoodDao moodDao;
