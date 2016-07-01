@@ -1,5 +1,6 @@
 package com.justjournal;
 
+import com.justjournal.ctl.Image;
 import org.apache.catalina.connector.Connector;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -7,6 +8,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
+import org.springframework.boot.context.embedded.ServletRegistrationBean;
 import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
 import org.springframework.boot.context.web.SpringBootServletInitializer;
 import org.springframework.boot.orm.jpa.EntityScan;
@@ -16,6 +18,8 @@ import org.springframework.data.rest.webmvc.config.RepositoryRestMvcConfiguratio
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+
+import javax.servlet.Servlet;
 
 @Configuration
 @EnableJpaRepositories
@@ -53,5 +57,11 @@ public class Application {
 		}
 
 		return tomcat;
+	}
+
+
+	@Bean
+	public ServletRegistrationBean image(){
+	    return new ServletRegistrationBean(new Image(),"/image/*");
 	}
 }

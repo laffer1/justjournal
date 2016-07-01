@@ -116,7 +116,7 @@ public final class Image extends HttpServlet {
             stmt.close();
             conn.close();
         } catch (Exception e) {
-            log.debug("Could not load image: " + e.toString());
+            log.warn("Could not load image: " + e.toString());
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
