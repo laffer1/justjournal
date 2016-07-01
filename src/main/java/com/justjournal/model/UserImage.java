@@ -68,7 +68,7 @@ public class UserImage implements Serializable {
 
     @Column(name = "image", columnDefinition = "MEDIUMBLOB")
     @Lob
-    private Blob image;
+    private byte[] image;
 
     @JsonCreator
     public UserImage() {
@@ -140,11 +140,11 @@ public class UserImage implements Serializable {
         this.modified = modified;
     }
 
-    public Blob getImage() {
+    public byte[] getImage() {
         return image;
     }
 
-    public void setImage(final Blob image) {
+    public void setImage(final byte[] image) {
         this.image = image;
     }
 }
