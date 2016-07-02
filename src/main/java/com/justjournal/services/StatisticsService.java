@@ -30,10 +30,7 @@ import com.justjournal.model.Statistics;
 import com.justjournal.model.StatisticsImpl;
 import com.justjournal.model.User;
 import com.justjournal.model.UserStatistics;
-import com.justjournal.repository.CommentRepository;
-import com.justjournal.repository.EntryRepository;
-import com.justjournal.repository.TagDao;
-import com.justjournal.repository.UserRepository;
+import com.justjournal.repository.*;
 import com.justjournal.utility.SQLHelper;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,8 +59,13 @@ public class StatisticsService {
     @Autowired
     private TagDao tagDao;
 
-    @Transactional(value = Transactional.TxType.REQUIRED)
+    @Autowired
+    private SecurityDao securityDao;
 
+    @Autowired
+    private StyleRepository styleRepository;
+
+    @Transactional(value = Transactional.TxType.REQUIRED)
     public UserStatistics getUserStatistics(final String username) throws ServiceException {
         if (userRepository == null) throw new AssertionError();
 
@@ -97,10 +99,12 @@ public class StatisticsService {
             statistics.setEntries(entryRepository.count());
             statistics.setUsers(userRepository.count());
             statistics.setTags(tagDao.count());
-            statistics.setStyles(SQLHelper.count("style"));
-            statistics.setPublicEntries(SQLHelper.scalarInt("SELECT count(*) FROM entry WHERE security='2';"));
-            statistics.setPrivateEntries(SQLHelper.scalarInt("SELECT count(*) FROM entry WHERE security='0';"));
-            statistics.setFriendsEntries(SQLHelper.scalarInt("SELECT count(*) FROM entry WHERE security='1';"));
+
+            statistics.setStyles(styleRepository.count());
+
+            statistics.setPublicEntries(entryRepository.countBySecurity(securityDao.findOne(2)));
+            statistics.setPrivateEntries(entryRepository.countBySecurity(securityDao.findOne(0)));
+            statistics.setFriendsEntries(entryRepository.countBySecurity(securityDao.findOne(1)));
 
             return statistics;
         } catch (final Exception e) {
