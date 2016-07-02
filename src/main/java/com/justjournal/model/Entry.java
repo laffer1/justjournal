@@ -60,7 +60,7 @@ public class Entry implements Serializable {
     private int id = 0;
 
     @Column(name = "date")
-    @Temporal(value = TemporalType.DATE)
+    @Temporal(value = TemporalType.TIMESTAMP)
     private Date date = new Date();
 
     @Column(name = "modified")
