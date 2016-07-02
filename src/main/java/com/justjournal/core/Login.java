@@ -31,6 +31,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
+ * Represents login context (user/pass)
  * @author Lucas Holt
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)

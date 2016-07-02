@@ -116,7 +116,8 @@ public class LoginController {
     }
 
 
-    @RequestMapping(method = RequestMethod.POST, consumes = "application/json;charset=UTF-8", produces = "application/json;charset=UTF-8", headers = {"Accept=*/*", "content-type=application/json"})
+    @RequestMapping(method = RequestMethod.POST, consumes = "application/json;charset=UTF-8",
+            produces = "application/json;charset=UTF-8", headers = {"Accept=*/*", "content-type=application/json"})
     public
     @ResponseBody
     ResponseEntity<LoginResponse> post(@RequestBody com.justjournal.core.Login login, HttpServletRequest request) {

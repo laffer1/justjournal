@@ -103,6 +103,7 @@
     <orderEntry type="library" name="Maven: org.hibernate:hibernate-ehcache:4.3.11.Final" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-thymeleaf:1.2.2.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.thymeleaf:thymeleaf-spring4:2.1.4.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.thymeleaf:thymeleaf:2.1.4.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: ognl:ognl:3.0.8" level="project" />
     <orderEntry type="library" name="Maven: org.unbescape:unbescape:1.1.0.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:1.2.7" level="project" />
@@ -164,6 +165,5 @@
     <orderEntry type="library" scope="TEST" name="Maven: simple-jndi:simple-jndi:0.11.4.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: tomcat:tomcat-naming:1.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.12" level="project" />
-    <orderEntry type="library" name="Maven: org.thymeleaf:thymeleaf:2.1.4.RELEASE" level="project" />
   </component>
 </module>

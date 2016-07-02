@@ -1728,25 +1728,26 @@ public class UsersController {
         sb.append("\t\t\t<div class=\"ebody\">");
         sb.append(endl);
 
-
         /*
            autoformat controls whether new lines should be
            converted to br's.  If someone used html, we don't want autoformat!
            We handle Windows/UNIX with the \n case and Mac OS Classic with \r
          */
-        if (o.getAutoFormat() == PrefBool.Y) {
+        if (o.getAutoFormat() != null && o.getAutoFormat() == PrefBool.Y) {
 
-            sb.append("\t\t\t\t<p>");
-            if (o.getBody().contains("\n"))
-                sb.append(StringUtil.replace(o.getBody(), '\n', "<br>"));
-            else if (o.getBody().contains("\r"))
-                sb.append(StringUtil.replace(o.getBody(), '\r', "<br>"));
-            else
-                // we do not have any "new lines" but it might be
-                // one long line.
-                sb.append(o.getBody());
+            if (o.getBody() != null) {
+                sb.append("\t\t\t\t<p>");
+                if (o.getBody().contains("\n"))
+                    sb.append(StringUtil.replace(o.getBody(), '\n', "<br>"));
+                else if (o.getBody().contains("\r"))
+                    sb.append(StringUtil.replace(o.getBody(), '\r', "<br>"));
+                else
+                    // we do not have any "new lines" but it might be
+                    // one long line.
+                    sb.append(o.getBody());
 
-            sb.append("</p>");
+                sb.append("</p>");
+            }
         } else {
             sb.append(o.getBody());
         }
@@ -1757,7 +1758,7 @@ public class UsersController {
 
         sb.append("\t\t\t<p>");
 
-        if (o.getSecurity().getId() == 0) {
+        if (o.getSecurity() == null || o.getSecurity().getId() == 0) {
             sb.append("<span class=\"security\">security: ");
             sb.append("<img src=\"/images/icon_private.gif\" alt=\"private\" /> ");
             sb.append("private");
@@ -1771,31 +1772,35 @@ public class UsersController {
             sb.append(endl);
         }
 
-        if (o.getLocation().getId() > 0) {
+        if (o.getLocation() != null && o.getLocation().getId() > 0) {
             sb.append("\t\t\t<span class=\"location\">location: ");
             sb.append(o.getLocation().getTitle());
             sb.append("</span><br />");
             sb.append(endl);
         }
 
-        if (o.getMood().getTitle().length() > 0 && o.getMood().getId() != 12) {
+        if (o.getMood() != null && o.getMood().getTitle().length() > 0 && o.getMood().getId() != 12) {
             final MoodThemeData emoto = emoticonDao.findByThemeIdAndMoodId(1, o.getMood().getId());
 
-            sb.append("\t\t\t<span class=\"mood\">mood: <img src=\"/images/emoticons/1/");
-            sb.append(emoto.getFileName());
-            sb.append("\" width=\"");
-            sb.append(emoto.getWidth());
-            sb.append("\" height=\"");
-            sb.append(emoto.getHeight());
-            sb.append("\" alt=\"");
-            sb.append(o.getMood().getTitle());
-            sb.append("\" /> ");
-            sb.append(o.getMood().getTitle());
-            sb.append("</span><br />");
-            sb.append(endl);
+            if (emoto != null) {
+                sb.append("\t\t\t<span class=\"mood\">mood: <img src=\"/images/emoticons/1/");
+                sb.append(emoto.getFileName());
+                sb.append("\" width=\"");
+                sb.append(emoto.getWidth());
+                sb.append("\" height=\"");
+                sb.append(emoto.getHeight());
+                sb.append("\" alt=\"");
+                sb.append(o.getMood().getTitle());
+                sb.append("\" /> ");
+                sb.append(o.getMood().getTitle());
+                sb.append("</span><br />");
+                sb.append(endl);
+            } else {
+                log.error("Couldn't get mood theme data");
+            }
         }
 
-        if (o.getMusic().length() > 0) {
+        if (o.getMusic() != null && o.getMusic().length() > 0) {
             sb.append("\t\t\t<span class=\"music\">music: ");
             sb.append(Xml.cleanString(o.getMusic()));
             sb.append("</span><br />");
