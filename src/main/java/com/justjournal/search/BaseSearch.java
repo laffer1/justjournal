@@ -36,15 +36,20 @@ package com.justjournal.search;
 
 import com.justjournal.utility.SQLHelper;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Lucas Holt
  * @version $Id: BaseSearch.java,v 1.6 2009/05/16 03:15:27 laffer1 Exp $
  */
+@Component
 public class BaseSearch {
     private static final Logger log = Logger.getLogger(BaseSearch.class);
 
@@ -53,6 +58,9 @@ public class BaseSearch {
     protected int maxresults = 30;
     protected String baseQuery;
     protected String sort;
+
+    @Autowired
+       private JdbcTemplate jdbcTemplate;
 
     public void setMaxResults(int results) {
         maxresults = results;
@@ -78,11 +86,11 @@ public class BaseSearch {
             sort = "ORDER BY " + field + " DESC";
     }
 
-    public ResultSet search(String query) {
+    public List search(String query) {
         if (log.isDebugEnabled()) {
             log.debug("search() called with " + query);
         }
-        ResultSet result;
+        List result;
         parseQuery(query);
 
         result = realSearch(terms);
@@ -103,11 +111,9 @@ public class BaseSearch {
         }
     }
 
-    protected ResultSet realSearch(ArrayList<String> terms) {
+    protected List realSearch(ArrayList<String> terms) {
 
         String sqlStmt = baseQuery;
-        ResultSet rs = null;
-
 
         for (int i = 0; i < terms.size(); i++) {
             sqlStmt += " (";
@@ -125,13 +131,14 @@ public class BaseSearch {
             if (log.isDebugEnabled()) {
                 log.debug("realSearch() called on " + sqlStmt);
             }
-            rs = SQLHelper.executeResultSet(sqlStmt);
+
+            return jdbcTemplate.queryForList(sqlStmt);
 
         } catch (Exception e) {
             log.debug(sqlStmt);
             log.debug(e.getMessage());
         }
 
-        return rs;
+        return null;
     }
 }

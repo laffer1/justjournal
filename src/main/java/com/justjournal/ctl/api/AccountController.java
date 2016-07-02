@@ -33,6 +33,7 @@ import com.justjournal.utility.SQLHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -85,6 +86,12 @@ public class AccountController {
     @Autowired
     private UserPrefRepository userPrefRepository;
 
+    @Autowired
+    private FavoriteRepository favoriteRepository;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
     private Map<String, String>
     changePassword(String passCurrent, String passNew, HttpSession session, HttpServletResponse response) {
 
@@ -133,30 +140,31 @@ public class AccountController {
             return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
         }
 
-        int userID = Login.currentLoginId(session);
+        final int userID = Login.currentLoginId(session);
 
         try {
-            User user = userDao.findOne(userID);
+            final User user = userDao.findOne(userID);
             commentRepository.delete(commentRepository.findByUser(user));
             entryRepository.deleteInBatch(entryRepository.findByUser(user));
             entryRepository.flush();
 
-            SQLHelper.executeNonQuery("DELETE FROM favorites WHERE owner=" + userID + ";");
+            favoriteRepository.deleteInBatch(favoriteRepository.findByUser(user));
+            favoriteRepository.flush();
 
             friendsDao.delete(userID);
 
-            SQLHelper.executeNonQuery("DELETE FROM friends_lj WHERE id=" + userID + ";");
+            jdbcTemplate.execute("DELETE FROM friends_lj WHERE id=" + userID + ";");
 
             rssSubscriptionsDAO.delete(rssSubscriptionsDAO.findByUser(user));
 
-            SQLHelper.executeNonQuery("DELETE FROM user_files WHERE ownerid=" + userID + ";");
+            jdbcTemplate.execute("DELETE FROM user_files WHERE ownerid=" + userID + ";");
 
             userImageRepository.delete(userImageRepository.findByUsername(user.getUsername()));
-            SQLHelper.executeNonQuery("DELETE FROM user_images_album WHERE owner=" + userID + ";");
-            SQLHelper.executeNonQuery("DELETE FROM user_images_album_map WHERE owner=" + userID + ";");
-            SQLHelper.executeNonQuery("DELETE FROM user_pic WHERE id=" + userID + ";");
+            jdbcTemplate.execute("DELETE FROM user_images_album WHERE owner=" + userID + ";");
+            jdbcTemplate.execute("DELETE FROM user_images_album_map WHERE owner=" + userID + ";");
+            jdbcTemplate.execute("DELETE FROM user_pic WHERE id=" + userID + ";");
             userPrefRepository.delete(userID);
-            SQLHelper.executeNonQuery("DELETE FROM user_style WHERE id=" + userID + ";");
+            jdbcTemplate.execute("DELETE FROM user_style WHERE id=" + userID + ";");
 
             userLinkRepository.delete(userID);
             userLocationRepository.delete(userID);

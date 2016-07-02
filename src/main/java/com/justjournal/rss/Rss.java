@@ -33,10 +33,15 @@ import com.justjournal.utility.HTMLUtil;
 import com.justjournal.utility.SQLHelper;
 import com.justjournal.utility.Xml;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import static com.sun.tools.internal.xjc.reader.Ring.add;
 
 /**
  * Create an RSS feed as a string.  This should be a valid XML document. Implements RSS 2
@@ -44,6 +49,7 @@ import java.util.*;
  * @author Lucas Holt
  * @version $Id: Rss.java,v 1.13 2011/05/29 22:32:59 laffer1 Exp $
  */
+@Component
 public final class Rss {
     private static final Logger log = Logger.getLogger(Rss.class);
     private final static int MAX_LENGTH = 15; // max size of RSS content
@@ -56,6 +62,10 @@ public final class Rss {
     private String webMaster = "";
     private String managingEditor = "";
     private String selfLink = "";
+
+    @Autowired
+         private JdbcTemplate jdbcTemplate;
+
 
     private Date newestEntryDate = new Date();
 
@@ -168,42 +178,31 @@ public final class Rss {
 
         RssItem item;
 
-        // TODO: this sucks... need to make this reusable
-
-        ResultSet rs = null;
+        List<Map<String,Object>> list = null;
         String imageTitle;
-        String sqlStmt = "SELECT id, title, mimetype, BIT_LENGTH(image) As imglen FROM user_images WHERE owner='" + userid + "' ORDER BY id DESC;";
+        final String sqlStmt = "SELECT id, title, mimetype, BIT_LENGTH(image) As imglen FROM user_images WHERE owner='" + userid + "' ORDER BY id DESC;";
 
         try {
 
-            rs = SQLHelper.executeResultSet(sqlStmt);
+            list = jdbcTemplate.queryForList(sqlStmt);
 
-            while (rs.next()) {
-                imageTitle = rs.getString("title");
+           for (final Map<String, Object> rs : list)  {
+
+                imageTitle = rs.get("title").toString();
                 item = new RssItem();
                 item.setTruncateFields(false);
                 item.setTitle(imageTitle);
                 item.setLink("http://www.justjournal.com/users/" + userName + "/pictures");
                 item.setDescription("");
-                item.setGuid("http://www.justjournal.com/AlbumImage?id=" + rs.getString("id"));
-                item.setEnclosureURL("http://www.justjournal.com/AlbumImage?id=" + rs.getString("id"));
-                item.setEnclosureType(rs.getString("mimetype").trim());
-                item.setEnclosureLength(Integer.toString(rs.getInt("imglen") / 8));
+                item.setGuid("http://www.justjournal.com/AlbumImage?id=" + rs.get("id"));
+                item.setEnclosureURL("http://www.justjournal.com/AlbumImage?id=" + rs.get("id"));
+                item.setEnclosureType(rs.get("mimetype").toString().trim());
+                item.setEnclosureLength(Integer.toString(Integer.parseInt(rs.get("imglen").toString()) / 8));
                 //item.setPubDate();
                 add(item);
             }
-
-            rs.close();
-
-        } catch (Exception e1) {
+        } catch (final Exception e1) {
             log.error(e1.getMessage());
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (Exception e) {
-                    // NOTHING TO DO
-                }
-            }
         }
     }
 
