@@ -29,6 +29,7 @@ package com.justjournal.services;
 import com.justjournal.model.*;
 import com.justjournal.repository.EntryRepository;
 import com.justjournal.repository.SecurityDao;
+import com.justjournal.repository.TagDao;
 import com.justjournal.repository.UserRepository;
 import com.justjournal.utility.Xml;
 import org.slf4j.LoggerFactory;
@@ -56,6 +57,8 @@ public class EntryService {
     private UserRepository userRepository;
     @Autowired
     private SecurityDao securityDao;
+    @Autowired
+    private TagDao tagDao;
 
     /**
      * Get the recent blog entries list for the sidebar, but only use public entries.
@@ -70,6 +73,7 @@ public class EntryService {
             log.warn("username not found in getRecentEntriesPublic with " + username);
             return null;
         }
+
         final Page<Entry> entries;
         final ArrayList<RecentEntry> recentEntries = new ArrayList<RecentEntry>(MAX_RECENT_ENTRIES);
 
@@ -243,18 +247,15 @@ public class EntryService {
 
             final Map<String, Tag> tags = new HashMap<String, Tag>();
 
-            // TODO: insanely slow. Refactor
-            final List<Entry> entries = entryDao.findByUsername(username);
-            for (final Entry entry : entries) {
-                for (final EntryTag entryTag : entry.getTags())
-                    if (!tags.containsKey(entryTag.getTag().getName())) {
-                        final Tag t = entryTag.getTag();
+            final List<Tag> tagList = tagDao.findByUsername(username);
+            for (final Tag t : tagList) {
+                if (!tags.containsKey(t.getName())) {
                         t.setCount(1);
-                        tags.put(entryTag.getTag().getName(), t);
+                        tags.put(t.getName(), t);
                     } else {
-                        final Tag t = tags.get(entryTag.getTag().getName());
-                        t.setCount(t.getCount() + 1);
-                        tags.put(entryTag.getTag().getName(), t);
+                        final Tag tag = tags.get(t.getName());
+                        tag.setCount(t.getCount() + 1);
+                        tags.put(t.getName(), tag);
                     }
             }
 
