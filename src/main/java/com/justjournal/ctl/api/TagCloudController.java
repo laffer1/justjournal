@@ -56,7 +56,7 @@ public class TagCloudController {
         this.entryService = entryService;
     }
 
-    @Cacheable(value = "tagcloud", key = "username")
+    @Cacheable(value = "tagcloud", key = "#username")
     @RequestMapping(value = "{username}", method = RequestMethod.GET, produces = "application/json")
     public
     @ResponseBody

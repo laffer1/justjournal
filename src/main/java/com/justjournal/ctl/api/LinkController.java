@@ -71,7 +71,7 @@ public class LinkController {
         return userLinkDao.findOne(id);
     }
 
-    @Cacheable(value = "userlink", key = "username")
+    @Cacheable(value = "userlink", key = "#username")
     @RequestMapping(value = "user/{username}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public Collection<UserLink> getByUser(@PathVariable("username") String username) {

@@ -32,6 +32,8 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * Tag Dao
  *
@@ -41,4 +43,7 @@ import org.springframework.stereotype.Repository;
 public interface TagDao extends CrudRepository<Tag, Integer> {
     @Query("SELECT t FROM Tag t WHERE LOWER(t.name) = LOWER(:name)")
     public Tag findByName(@Param("name") String name);
+
+    @Query("SELECT t FROM Tag t, EntryTag et, User u, Entry e where et.tag = t and et.entry = e and e.user = u and LOWER(u.username) = LOWER(:username)")
+    public List<Tag> findByUsername(@Param("username") String username);
 }
