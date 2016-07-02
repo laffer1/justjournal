@@ -25,8 +25,6 @@
  */
 package com.justjournal.ctl;
 
-import com.justjournal.utility.ServletUtilities;
-import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -34,21 +32,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.HttpRequestHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.servlet.Servlet;
-import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -70,9 +58,9 @@ import java.sql.ResultSet;
  */
 @RequestMapping("/image")
 @Controller
-public class Image {
+public class ImageController {
 
-    private static final Logger log = Logger.getLogger(Image.class);
+    private static final Logger log = Logger.getLogger(ImageController.class);
 
     @Autowired
     private JdbcTemplate jdbcTemplate;

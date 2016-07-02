@@ -57,8 +57,8 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/RecentBlogs")
-public class RecentBlogs {
-    private static final Logger log = Logger.getLogger(RecentBlogs.class);
+public class RecentBlogsController {
+    private static final Logger log = Logger.getLogger(RecentBlogsController.class);
 
     @Autowired
     private EntryRepository entryRepository;

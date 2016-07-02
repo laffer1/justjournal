@@ -58,9 +58,9 @@ import javax.servlet.http.HttpServletResponse;
  */
 @Controller
 @RequestMapping("/trackback")
-public class TrackbackPing {
+public class TrackbackPingController {
 
-    private static final Logger log = Logger.getLogger(TrackbackPing.class);
+    private static final Logger log = Logger.getLogger(TrackbackPingController.class);
 
     private static final String XML_HEADER =
             "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
@@ -74,7 +74,7 @@ public class TrackbackPing {
     private final TrackbackDao trackbackDao;
 
     @Autowired
-    public TrackbackPing(TrackbackDao trackbackDao) {
+    public TrackbackPingController(TrackbackDao trackbackDao) {
         Assert.notNull(trackbackDao, "TrackbackDao must not be null");
         this.trackbackDao = trackbackDao;
     }

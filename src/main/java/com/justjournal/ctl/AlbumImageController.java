@@ -54,8 +54,8 @@ import java.sql.ResultSet;
  */
 @RequestMapping("/AlbumImage")
 @Controller
-public class AlbumImage {
-    private static final Logger log = Logger.getLogger(AlbumImage.class);
+public class AlbumImageController {
+    private static final Logger log = Logger.getLogger(AlbumImageController.class);
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
