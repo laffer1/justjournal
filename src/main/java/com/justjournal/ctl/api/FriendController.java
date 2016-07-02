@@ -96,18 +96,24 @@ public class FriendController {
         }
 
         try {
-            User friendUser = userRepository.findByUsername(friend);
+            final User friendUser = userRepository.findByUsername(friend);
+            final User owner = userRepository.findOne(Login.currentLoginId(session));
 
             if (friendUser == null)
                 return java.util.Collections.singletonMap("error", "Could not find friend's username");
 
-            String sqlStatement = "Insert INTO friends (id, friendid) values('" + Login.currentLoginId(session) + "','" + friendUser.getId() + "');";
-            int rowsAffected = SQLHelper.executeNonQuery(sqlStatement);
-            if (rowsAffected == 1)
+            if (owner == null)
+                return java.util.Collections.singletonMap("error", "Could not find logged in user account.");
+
+            final Friend f = new Friend();
+            f.setFriend(friendUser);
+            f.setUser(owner);
+            f.setPk(owner.getId());
+            if (friendsDao.save(f) != null)
                 return java.util.Collections.singletonMap("status", "success");
 
             return java.util.Collections.singletonMap("error", "Unable to add friend");
-        } catch (Exception e) {
+        } catch (final Exception e) {
             log.error(e.getMessage());
             return java.util.Collections.singletonMap("error", "Could not find friend's username");
         }
