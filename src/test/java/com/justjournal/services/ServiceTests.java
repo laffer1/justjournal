@@ -32,8 +32,8 @@ import com.justjournal.model.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
@@ -51,21 +51,17 @@ public class ServiceTests {
 
     private static final String TEST_USER = "testuser";
     private static final int PUBLIC_ENTRY_ID = 33661;
-    private static StatisticsService statisticsService;
-    private static EntryService entryService;
 
-    public static void setEntryService(final EntryService entryService) {
-        ServiceTests.entryService = entryService;
-    }
+    @Autowired
+    private StatisticsService statisticsService;
+    @Autowired
+    private EntryService entryService;
 
     @BeforeClass
     public static void setup() throws Exception {
         Util.setupDb();
     }
 
-    public void setStatisticsService(final StatisticsService statisticsService1) {
-        this.statisticsService = statisticsService1;
-    }
 
     @Test
     public void entryGetPublicEntry() throws ServiceException {
