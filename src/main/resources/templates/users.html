@@ -242,7 +242,7 @@
                     <p>Select a year to view blog entries.</p>
 
                     <ul>
-                        <li th:each="yr : ${#numbers.sequence( ${startYear}, ${currentYear})}">
+                        <li th:each="yr : ${years}">
                             <a th:href="@{ '/users/' + ${user.username} + '/' + ${yr}}" th:text="${yr}"></a>
                         </li>
                     </ul>

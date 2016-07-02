@@ -257,6 +257,11 @@ public class UsersController {
 
         model.addAttribute("startYear", userContext.getBlogUser().getSince());
         model.addAttribute("currentYear", year);
+        final List<Integer> years = new ArrayList<Integer>();
+        for (int i = userContext.getBlogUser().getSince(); i <= year; i++) {
+            years.add(i);
+        }
+        model.addAttribute("years", years);
 
         return VIEW_USERS;
     }
