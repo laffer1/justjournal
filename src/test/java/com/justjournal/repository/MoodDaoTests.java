@@ -27,14 +27,12 @@
 package com.justjournal.repository;
 
 import com.justjournal.Application;
-import com.justjournal.Util;
+import com.justjournal.ApplicationTest;
 import com.justjournal.model.Mood;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
@@ -47,7 +45,7 @@ import static org.junit.Assert.assertNotNull;
  * @author Lucas Holt
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = Application.class)
+@SpringApplicationConfiguration(classes = ApplicationTest.class)
 @WebAppConfiguration
 
 public class MoodDaoTests {

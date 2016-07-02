@@ -27,17 +27,16 @@
 package com.justjournal.rss;
 
 import com.justjournal.Application;
-import com.justjournal.Util;
+import com.justjournal.ApplicationTest;
 import com.justjournal.model.Entry;
 import com.justjournal.repository.EntryRepository;
 import com.justjournal.repository.SecurityDao;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.util.Collection;
 
@@ -48,7 +47,8 @@ import static org.junit.Assert.assertTrue;
  * @author Lucas Holt
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = Application.class)
+@SpringApplicationConfiguration(classes = ApplicationTest.class)
+@WebAppConfiguration
 public class RssTests {
     private final static String TEST_USER = "testuser";
     @Autowired
@@ -56,31 +56,26 @@ public class RssTests {
     @Autowired
     private SecurityDao securityDao;
 
-    @BeforeClass
-    public static void setup() throws Exception {
-        Util.setupDb();
-    }
-
     @Test
     public void testPopulate() {
-        Rss rss = new Rss();
+        final Rss rss = new Rss();
 
         final java.util.GregorianCalendar calendar = new java.util.GregorianCalendar();
         calendar.setTime(new java.util.Date());
-        Collection<Entry> entries = entryDao.findByUsernameAndSecurity(TEST_USER, securityDao.findOne(2));
+        final Collection<Entry> entries = entryDao.findByUsernameAndSecurity(TEST_USER, securityDao.findOne(2));
         assertTrue(entries.size() > 0);
         rss.populate(entries);
 
         assertTrue(rss.size() > 0);
 
-        String xml = rss.toXml();
+        final String xml = rss.toXml();
         assertTrue(xml.contains("<item"));
     }
 
     @Test
     public void testWebmaster() {
-        String webmaster = "test@test.com (test)";
-        Rss rss = new Rss();
+        final String webmaster = "test@test.com (test)";
+        final Rss rss = new Rss();
         rss.setWebMaster(webmaster);
         assertEquals(webmaster, rss.getWebMaster());
     }

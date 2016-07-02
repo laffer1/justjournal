@@ -27,14 +27,12 @@
 package com.justjournal;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -47,16 +45,11 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 
 @SuppressWarnings("ClassWithTooManyMethods")
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = Application.class)
+@SpringApplicationConfiguration(classes = ApplicationTest.class)
 @WebAppConfiguration
 public class AppTests {
     private static final int STATUS_HTTP_400 = 400;
     private static final int STATUS_HTTP_403 = 403;
-
-    @BeforeClass
-    public static void setupClass() throws Exception {
-        Util.setupDb();
-    }
 
     @SuppressWarnings({"SpringJavaAutowiringInspection", "ProtectedField"})
     @Autowired
@@ -65,7 +58,6 @@ public class AppTests {
 
     @Before
     public void setup() {
-        Util.setupDb();
         this.mockMvc = webAppContextSetup(this.wac).build();
     }
 

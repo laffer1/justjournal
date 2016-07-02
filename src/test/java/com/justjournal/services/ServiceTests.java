@@ -27,9 +27,11 @@
 package com.justjournal.services;
 
 import com.justjournal.Application;
-import com.justjournal.Util;
-import com.justjournal.model.*;
-import org.junit.BeforeClass;
+import com.justjournal.ApplicationTest;
+import com.justjournal.model.Entry;
+import com.justjournal.model.RecentEntry;
+import com.justjournal.model.Statistics;
+import com.justjournal.model.UserStatistics;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +47,7 @@ import static org.junit.Assert.*;
  * @author Lucas Holt
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = Application.class)
+@SpringApplicationConfiguration(classes = ApplicationTest.class)
 @WebAppConfiguration
 public class ServiceTests {
 
@@ -56,12 +58,6 @@ public class ServiceTests {
     private StatisticsService statisticsService;
     @Autowired
     private EntryService entryService;
-
-    @BeforeClass
-    public static void setup() throws Exception {
-        Util.setupDb();
-    }
-
 
     @Test
     public void entryGetPublicEntry() throws ServiceException {
@@ -114,7 +110,7 @@ public class ServiceTests {
 
     @Test
     public void testGetUserStatistics() throws ServiceException {
-        UserStatistics statistics = statisticsService.getUserStatistics(TEST_USER);
+        final UserStatistics statistics = statisticsService.getUserStatistics(TEST_USER);
         assertNotNull(statistics);
         assertEquals("testuser", statistics.getUsername());
         assertTrue(statistics.getEntryCount() > 0);
@@ -123,7 +119,7 @@ public class ServiceTests {
 
     @Test
     public void testGetUserStatisticsBadUser() throws ServiceException {
-        UserStatistics statistics = statisticsService.getUserStatistics("root");
+        final UserStatistics statistics = statisticsService.getUserStatistics("root");
         assertNull(statistics);
     }
 }
