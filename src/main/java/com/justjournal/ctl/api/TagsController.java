@@ -28,6 +28,7 @@ package com.justjournal.ctl.api;
 
 import com.justjournal.model.Tag;
 import com.justjournal.repository.TagDao;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,11 +45,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/api/tags")
 public class TagsController {
 
-    private TagDao tagDao = null;
-
-    public void setTagDao(TagDao tagDao) {
-        this.tagDao = tagDao;
-    }
+    @Autowired
+    private TagDao tagDao;
 
     /**
      * Get the tag list for the whole site
@@ -69,10 +67,10 @@ public class TagsController {
      * @param id tag id
      * @return tag list
      */
-    @Cacheable(value = "tags", key = "id")
+    @Cacheable(value = "tags", key = "#id")
     @RequestMapping(value = "/api/tags/{id}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public Tag getById(@PathVariable("id") Integer id) {
+    public Tag getById(@PathVariable("id") final Integer id) {
         return tagDao.findOne(id);
     }
 }
