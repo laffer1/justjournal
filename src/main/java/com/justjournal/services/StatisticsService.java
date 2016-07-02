@@ -30,7 +30,9 @@ import com.justjournal.model.Statistics;
 import com.justjournal.model.StatisticsImpl;
 import com.justjournal.model.User;
 import com.justjournal.model.UserStatistics;
+import com.justjournal.repository.CommentRepository;
 import com.justjournal.repository.EntryRepository;
+import com.justjournal.repository.TagDao;
 import com.justjournal.repository.UserRepository;
 import com.justjournal.utility.SQLHelper;
 import org.apache.log4j.Logger;
@@ -54,18 +56,24 @@ public class StatisticsService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private CommentRepository commentRepository;
+
+    @Autowired
+    private TagDao tagDao;
+
     @Transactional(value = Transactional.TxType.REQUIRED)
 
-    public UserStatistics getUserStatistics(String username) throws ServiceException {
+    public UserStatistics getUserStatistics(final String username) throws ServiceException {
         if (userRepository == null) throw new AssertionError();
 
         try {
-            UserStatistics userStatistics = new UserStatistics();
+            final UserStatistics userStatistics = new UserStatistics();
 
             if (username == null) {
                 return null;
             }
-            User user = userRepository.findByUsername(username);
+            final User user = userRepository.findByUsername(username);
             if (user == null)
                 return null;
 
@@ -74,7 +82,7 @@ public class StatisticsService {
             userStatistics.setCommentCount(user.getComments().size()); // TODO: slow!!!!
 
             return userStatistics;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             log.error(e);
             throw new ServiceException(e);
         }
@@ -83,19 +91,19 @@ public class StatisticsService {
 
     public Statistics getStatistics() throws ServiceException {
         try {
-            Statistics statistics = new StatisticsImpl();
+            final Statistics statistics = new StatisticsImpl();
 
-            statistics.setComments(SQLHelper.count("comments"));
-            statistics.setEntries(SQLHelper.count("entry"));
-            statistics.setUsers(SQLHelper.count("user"));
-            statistics.setTags(SQLHelper.count("tags"));
+            statistics.setComments(commentRepository.count());
+            statistics.setEntries(entryRepository.count());
+            statistics.setUsers(userRepository.count());
+            statistics.setTags(tagDao.count());
             statistics.setStyles(SQLHelper.count("style"));
             statistics.setPublicEntries(SQLHelper.scalarInt("SELECT count(*) FROM entry WHERE security='2';"));
             statistics.setPrivateEntries(SQLHelper.scalarInt("SELECT count(*) FROM entry WHERE security='0';"));
             statistics.setFriendsEntries(SQLHelper.scalarInt("SELECT count(*) FROM entry WHERE security='1';"));
 
             return statistics;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             log.error(e);
             throw new ServiceException(e);
         }

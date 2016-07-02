@@ -17,7 +17,7 @@
  * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
  * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS longERRUPTION)
  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
@@ -37,81 +37,81 @@ import org.springframework.stereotype.Component;
 @Component
 final public class StatisticsImpl implements Statistics {
 
-    private int users = 0;
-    private int entries = 0;
-    private int publicEntries = 0;
-    private int friendsEntries = 0;
-    private int privateEntries = 0;
-    private int comments = 0;
-    private int styles = 0;
-    private int tags = 0;
+    private long users = 0;
+    private long entries = 0;
+    private long publicEntries = 0;
+    private long friendsEntries = 0;
+    private long privateEntries = 0;
+    private long comments = 0;
+    private long styles = 0;
+    private long tags = 0;
 
     @JsonCreator
     public StatisticsImpl() {
 
     }
 
-    public int getPublicEntries() {
+    public long getPublicEntries() {
         return publicEntries;
     }
 
-    public void setPublicEntries(final int publicEntries) {
+    public void setPublicEntries(final long publicEntries) {
         this.publicEntries = publicEntries;
     }
 
-    public int getFriendsEntries() {
+    public long getFriendsEntries() {
         return friendsEntries;
     }
 
-    public void setFriendsEntries(final int friendsEntries) {
+    public void setFriendsEntries(final long friendsEntries) {
         this.friendsEntries = friendsEntries;
     }
 
-    public int getPrivateEntries() {
+    public long getPrivateEntries() {
         return privateEntries;
     }
 
-    public void setPrivateEntries(final int privateEntries) {
+    public void setPrivateEntries(final long privateEntries) {
         this.privateEntries = privateEntries;
     }
 
-    public void setUsers(final int users) {
+    public void setUsers(final long users) {
         this.users = users;
     }
 
-    public void setEntries(final int entries) {
+    public void setEntries(final long entries) {
         this.entries = entries;
     }
 
-    public void setComments(final int comments) {
+    public void setComments(final long comments) {
         this.comments = comments;
     }
 
-    public void setStyles(final int styles) {
+    public void setStyles(final long styles) {
         this.styles = styles;
     }
 
-    public void setTags(final int tags) {
+    public void setTags(final long tags) {
         this.tags = tags;
     }
 
-    public int getUsers() {
+    public long getUsers() {
         return users;
     }
 
-    public int getEntries() {
+    public long getEntries() {
         return entries;
     }
 
-    public int getComments() {
+    public long getComments() {
         return comments;
     }
 
-    public int getStyles() {
+    public long getStyles() {
         return styles;
     }
 
-    public int getTags() {
+    public long getTags() {
         return tags;
     }
 }

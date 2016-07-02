@@ -17,7 +17,7 @@
  * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
  * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS longERRUPTION)
  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
@@ -35,35 +35,35 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public interface Statistics {
-    public int getComments();
+    public long getComments();
 
-    public void setComments(final int comments);
+    public void setComments(final long comments);
 
-    public int getEntries();
+    public long getEntries();
 
-    public void setEntries(final int entries);
+    public void setEntries(final long entries);
 
-    public int getFriendsEntries();
+    public long getFriendsEntries();
 
-    public void setFriendsEntries(final int friendsEntries);
+    public void setFriendsEntries(final long friendsEntries);
 
-    public int getPrivateEntries();
+    public long getPrivateEntries();
 
-    public void setPrivateEntries(final int privateEntries);
+    public void setPrivateEntries(final long privateEntries);
 
-    public int getStyles();
+    public long getStyles();
 
-    public void setStyles(final int styles);
+    public void setStyles(final long styles);
 
-    public int getTags();
+    public long getTags();
 
-    public void setTags(final int tags);
+    public void setTags(final long tags);
 
-    public int getUsers();
+    public long getUsers();
 
-    public void setUsers(final int users);
+    public void setUsers(final long users);
 
-    public int getPublicEntries();
+    public long getPublicEntries();
 
-    public void setPublicEntries(final int publicEntries);
+    public void setPublicEntries(final long publicEntries);
 }
