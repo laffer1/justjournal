@@ -181,7 +181,7 @@
                 </div>
 
                     <p th:if="${authenticatedUsername != null}">You are logged in as <a
-                            th:href="/users/${user.username}"><img
+                            th:href="@{'/users/' + ${user.username}}"><img
                             src="/images/userclass_16.png"
                             alt="user" /> ${user.username}</a>
                     </p>
