@@ -51,11 +51,6 @@ public class CommentRepositoryTests {
     @Autowired
     private CommentRepository commentRepository;
 
-    @BeforeClass
-    public static void setup() throws Exception {
-        Util.setupDb();
-    }
-
     @Test
     public void list() throws Exception {
         Iterable<Comment> list = commentRepository.findAll();

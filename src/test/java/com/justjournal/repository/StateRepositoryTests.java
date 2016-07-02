@@ -51,14 +51,9 @@ public class StateRepositoryTests {
     @Autowired
     private StateRepository stateRepository;
 
-    @BeforeClass
-    public static void setup() throws Exception {
-        Util.setupDb();
-    }
-
     @Test
     public void list() throws Exception {
-        Iterable<State> list = stateRepository.findAll();
+        final Iterable<State> list = stateRepository.findAll();
         assertNotNull(list);
         assertEquals(0, stateRepository.count());
     }

@@ -50,11 +50,6 @@ public class EntryRepositoryTests {
     @Autowired
     EntryRepository entryRepository;
 
-    @BeforeClass
-    public static void setup() throws Exception {
-        Util.setupDb();
-    }
-
     @Test
     public void list() throws Exception {
         Iterable<Entry> list = entryRepository.findAll();

@@ -50,41 +50,36 @@ public class UserRepositoryTests {
     @Autowired
     private UserRepository userRepository;
 
-    @BeforeClass
-    public static void setup() throws Exception {
-        Util.setupDb();
-    }
-
     @Test
     public void list() throws Exception {
-        Iterable<User> list = userRepository.findAll();
+        final Iterable<User> list = userRepository.findAll();
         assertNotNull(list);
         assertTrue(userRepository.count() > 0);
     }
 
     @Test
     public void getById() throws Exception {
-        User user = userRepository.findOne(1);
+        final User user = userRepository.findOne(1);
         assertNotNull(user);
         assertEquals(1, user.getId());
     }
 
     @Test
     public void getByUsername() throws Exception {
-        User user = userRepository.findByUsername("testuser");
+        final User user = userRepository.findByUsername("testuser");
         assertNotNull(user);
         assertEquals(2908, user.getId());
     }
 
     @Test
     public void getByUsernameInvalid() throws Exception {
-        User user = userRepository.findByUsername("iamnotareal");
+        final User user = userRepository.findByUsername("iamnotareal");
         assertNull(user);
     }
 
     @Test
     public void getByUserAndPasswordInvalid() {
-        User user = userRepository.findByUsernameAndPassword("testuser", "wrongpassword");
+        final User user = userRepository.findByUsernameAndPassword("testuser", "wrongpassword");
         assertNull(user);
     }
 

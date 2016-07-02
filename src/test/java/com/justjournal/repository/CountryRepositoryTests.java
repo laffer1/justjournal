@@ -51,10 +51,6 @@ public class CountryRepositoryTests {
     @Autowired
     private CountryRepository countryRepository;
 
-    @BeforeClass
-    public static void setup() throws Exception {
-        Util.setupDb();
-    }
 
     @Test
     public void list() throws Exception {

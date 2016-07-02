@@ -54,11 +54,6 @@ public class SecurityDaoTests {
     @Autowired
     private SecurityDao securityDao;
 
-    @BeforeClass
-    public static void setup() throws Exception {
-        Util.setupDb();
-    }
-
     @Test
     public void list() {
         Iterable<Security> list = securityDao.findAll();

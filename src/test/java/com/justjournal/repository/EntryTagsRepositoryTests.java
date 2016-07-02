@@ -52,11 +52,6 @@ public class EntryTagsRepositoryTests {
     @Autowired
     EntryTagsRepository entryTagsRepository;
 
-    @BeforeClass
-    public static void setup() throws Exception {
-        Util.setupDb();
-    }
-
     @Test
     public void list() throws Exception {
         final Iterable<EntryTag> list = entryTagsRepository.findAll();

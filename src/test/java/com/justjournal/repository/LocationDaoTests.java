@@ -32,11 +32,6 @@ public class LocationDaoTests {
     @Autowired
     private LocationDao locationDao;
 
-    @BeforeClass
-    public static void setup() throws Exception {
-        Util.setupDb();
-    }
-
     @Test
     public void list() throws Exception {
         Iterable<Location> list = locationDao.findAll();

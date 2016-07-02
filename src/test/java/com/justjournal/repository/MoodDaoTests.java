@@ -54,11 +54,6 @@ public class MoodDaoTests {
     @Autowired
     private MoodDao moodDao;
 
-    @BeforeClass
-    public static void setup() throws Exception {
-        Util.setupDb();
-    }
-
     @Test
     public void list() {
         Iterable<Mood> list = moodDao.findAll();
