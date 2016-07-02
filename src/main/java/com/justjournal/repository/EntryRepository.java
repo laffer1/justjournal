@@ -48,6 +48,8 @@ import java.util.List;
 @Repository
 public interface EntryRepository extends JpaRepository<Entry, Integer> {
 
+    List<Entry> findByUser(@Param("user") User user);
+
     @Query("select e from Entry e, User u where e.user = u and LOWER(u.username) = LOWER(:username)")
     List<Entry> findByUsername(@Param("username") String username);
 

@@ -27,6 +27,7 @@
 package com.justjournal.repository;
 
 import com.justjournal.model.Comment;
+import com.justjournal.model.User;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -40,5 +41,7 @@ import java.util.List;
 @Repository
 public interface CommentRepository extends CrudRepository<Comment, Integer> {
 
-    public List<Comment> findByEntryId(int entryId);
+    List<Comment> findByEntryId(int entryId);
+
+    List<Comment> findByUser(User user);
 }

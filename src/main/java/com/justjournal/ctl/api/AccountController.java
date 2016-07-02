@@ -27,9 +27,8 @@
 package com.justjournal.ctl.api;
 
 import com.justjournal.Login;
-import com.justjournal.model.PrefBool;
-import com.justjournal.model.User;
-import com.justjournal.repository.UserRepository;
+import com.justjournal.model.*;
+import com.justjournal.repository.*;
 import com.justjournal.utility.SQLHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,6 +54,36 @@ public class AccountController {
 
     @Autowired
     private Login webLogin;
+
+    @Autowired
+    private CommentRepository commentRepository;
+
+    @Autowired
+    private EntryRepository entryRepository;
+
+    @Autowired
+    private FriendsDao friendsDao;
+
+    @Autowired
+    private UserBioDao userBioDao;
+
+    @Autowired
+    private UserContactRepository userContactRepository;
+
+    @Autowired
+    private UserLinkRepository userLinkRepository;
+
+    @Autowired
+    private UserLocationRepository userLocationRepository;
+
+    @Autowired
+    private RssSubscriptionsDAO rssSubscriptionsDAO;
+
+    @Autowired
+    private UserImageRepository userImageRepository;
+
+    @Autowired
+    private UserPrefRepository userPrefRepository;
 
     private Map<String, String>
     changePassword(String passCurrent, String passNew, HttpSession session, HttpServletResponse response) {
@@ -107,25 +136,34 @@ public class AccountController {
         int userID = Login.currentLoginId(session);
 
         try {
-            SQLHelper.executeNonQuery("DELETE FROM comments WHERE uid=" + userID + ";");
-            SQLHelper.executeNonQuery("DELETE FROM entry WHERE uid=" + userID + ";");
+            User user = userDao.findOne(userID);
+            commentRepository.delete(commentRepository.findByUser(user));
+            entryRepository.deleteInBatch(entryRepository.findByUser(user));
+            entryRepository.flush();
+
             SQLHelper.executeNonQuery("DELETE FROM favorites WHERE owner=" + userID + ";");
-            SQLHelper.executeNonQuery("DELETE FROM friends WHERE id=" + userID + ";");
+
+            friendsDao.delete(userID);
+
             SQLHelper.executeNonQuery("DELETE FROM friends_lj WHERE id=" + userID + ";");
-            SQLHelper.executeNonQuery("DELETE FROM rss_subscriptions WHERE id=" + userID + ";");
-            SQLHelper.executeNonQuery("DELETE FROM user WHERE id=" + userID + ";");
-            SQLHelper.executeNonQuery("DELETE FROM user_bio WHERE id=" + userID + ";");
-            SQLHelper.executeNonQuery("DELETE FROM user_contact WHERE id=" + userID + ";");
+
+            rssSubscriptionsDAO.delete(rssSubscriptionsDAO.findByUser(user));
+
             SQLHelper.executeNonQuery("DELETE FROM user_files WHERE ownerid=" + userID + ";");
-            SQLHelper.executeNonQuery("DELETE FROM user_images WHERE owner=" + userID + ";");
+
+            userImageRepository.delete(userImageRepository.findByUsername(user.getUsername()));
             SQLHelper.executeNonQuery("DELETE FROM user_images_album WHERE owner=" + userID + ";");
             SQLHelper.executeNonQuery("DELETE FROM user_images_album_map WHERE owner=" + userID + ";");
-            SQLHelper.executeNonQuery("DELETE FROM user_link WHERE id=" + userID + ";");
-            SQLHelper.executeNonQuery("DELETE FROM user_location WHERE id=" + userID + ";");
             SQLHelper.executeNonQuery("DELETE FROM user_pic WHERE id=" + userID + ";");
-            SQLHelper.executeNonQuery("DELETE FROM user_pref WHERE id=" + userID + ";");
+            userPrefRepository.delete(userID);
             SQLHelper.executeNonQuery("DELETE FROM user_style WHERE id=" + userID + ";");
-        } catch (Exception e) {
+
+            userLinkRepository.delete(userID);
+            userLocationRepository.delete(userID);
+            userBioDao.delete(userID);
+            userContactRepository.delete(userID);
+            userDao.delete(user);
+        } catch (final Exception e) {
             log.error(e.getMessage());
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return java.util.Collections.singletonMap("error", "Error deleting account");
