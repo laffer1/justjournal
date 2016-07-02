@@ -35,9 +35,13 @@ package com.justjournal.ctl.api;
 
 import com.justjournal.Login;
 import com.justjournal.model.Entry;
+import com.justjournal.model.Favorite;
+import com.justjournal.model.User;
 import com.justjournal.repository.EntryRepository;
-import com.justjournal.utility.SQLHelper;
+import com.justjournal.repository.FavoriteRepository;
+import com.justjournal.repository.UserRepository;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,9 +50,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 
@@ -66,11 +70,16 @@ import java.util.Map;
 public class FavoriteController {
     private static final Logger log = Logger.getLogger(FavoriteController.class.getName());
     public static final int MAX_FRIENDS_COUNT = 20;
-    private EntryRepository entryDao = null;
 
-    public void setEntryDao(final EntryRepository entryDao) {
-        this.entryDao = entryDao;
-    }
+    @Autowired
+    private FavoriteRepository favoriteRepository;
+
+    @Autowired
+    private EntryRepository entryRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
 
     /**
      * Retrieve the collection of favorite entries
@@ -81,20 +90,18 @@ public class FavoriteController {
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public
     @ResponseBody
-    Collection<Entry> getFavorites(HttpSession session, HttpServletResponse response) {
-        Collection<Entry> entries = new ArrayList<Entry>(MAX_FRIENDS_COUNT);
+    Collection<Entry> getFavorites(final HttpSession session, final HttpServletResponse response) {
+        final Collection<Entry> entries = new ArrayList<Entry>(MAX_FRIENDS_COUNT);
 
         try {
+            final User user = userRepository.findOne(Login.currentLoginId(session));
+            final List<Favorite> favoriteList = favoriteRepository.findByUser(user);
 
-            String sql = "call viewfavorite(" + Login.currentLoginId(session) + ");";
-            ResultSet rs = SQLHelper.executeResultSet(sql);
-
-            while (rs.next()) {
-                int eid = rs.getInt("entryid");
-                Entry et = entryDao.findOne(eid);
-                entries.add(et);
+            for (final Favorite f : favoriteList) {
+                entries.add(f.getEntry());
             }
-        } catch (Exception e) {
+
+        } catch (final Exception e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             log.error(e.getMessage());
         }
@@ -107,15 +114,18 @@ public class FavoriteController {
     Map<String, String> create(@RequestBody Entry favorite, HttpSession session, HttpServletResponse response) {
 
         try {
-            String sql = "call addfavorite( " + Login.currentLoginId(session) + "," + favorite.getId() + ");";
-            int result = SQLHelper.executeNonQuery(sql);
+            final User user = userRepository.findOne(Login.currentLoginId(session));
+            final Entry e = entryRepository.findOne(favorite.getId());
 
-            if (result != 1) {
+            final Favorite f = new Favorite();
+            f.setUser(user);
+            f.setEntry(e);
+            if (favoriteRepository.saveAndFlush(f) == null) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 return java.util.Collections.singletonMap("error", "Error adding your favorite.  Perhaps its already a favorite?");
             }
             return java.util.Collections.singletonMap("id", ""); // XXX
-        } catch (Exception e) {
+        } catch (final Exception e) {
             log.error(e.getMessage());
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return java.util.Collections.singletonMap("error", "Could not add the favorite.");
@@ -132,15 +142,14 @@ public class FavoriteController {
         }
 
         try {
-            String sql = "call deletefavorite( " + Login.currentLoginId(session) + "," + favorite.getId() + ");";
-            int result = SQLHelper.executeNonQuery(sql);
+            final User user = userRepository.findOne(Login.currentLoginId(session));
+            final Entry e = entryRepository.findOne(favorite.getId());
+            final Favorite f = favoriteRepository.findByUserAndEntry(user, e);
+            favoriteRepository.delete(f);
+            favoriteRepository.flush();
 
-            if (result != 1) {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                return java.util.Collections.singletonMap("error", "Error deleting your favorite.");
-            }
             return java.util.Collections.singletonMap("id", Integer.toString(favorite.getId()));
-        } catch (Exception e) {
+        } catch (final Exception e) {
             log.error(e.getMessage());
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return java.util.Collections.singletonMap("error", "Could not delete the favorite.");
