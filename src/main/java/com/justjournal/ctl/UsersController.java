@@ -859,7 +859,7 @@ public class UsersController {
     @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
     private String search(final UserContext uc, final int maxresults, final String bquery) {
         final StringBuilder sb = new StringBuilder();
-        ResultSet brs = null;
+        List<Map<String,Object>> searchResults;
         final String sql;
 
         if (uc.isAuthBlog())
@@ -881,17 +881,18 @@ public class UsersController {
                 b.setFields("subject body");
                 b.setMaxResults(maxresults);
                 b.setSortAscending("date");
-                brs = b.search(bquery);
+                searchResults = b.search(bquery);
 
                 sb.append("<h2><img src=\"/images/icon_search.gif\" alt=\"Search Blog\" style=\"float: left;\" /> Blog Search</h2>");
                 sb.append(endl);
 
-                if (brs == null) {
+                if (searchResults == null || searchResults.isEmpty()) {
                     sb.append("<p>No items were found matching your search criteria.</p>");
                     sb.append(endl);
                 } else {
 
-                    while (brs.next()) {
+                    for (Map<String,Object> brs : searchResults)
+                     {
 
                         // Format the current time.
                         final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm");
@@ -901,7 +902,7 @@ public class UsersController {
 
                         // Parse the previous string back into a Date.
                         final ParsePosition pos = new ParsePosition(0);
-                        final Date currentDate = formatter.parse(brs.getString("date"), pos);
+                        final Date currentDate = formatter.parse(brs.get("date").toString(), pos);
 
                         curDate = formatmydate.format(currentDate);
 
@@ -917,31 +918,23 @@ public class UsersController {
                         sb.append("<h3>");
                         sb.append("<span class=\"time\">");
                         sb.append(formatmytime.format(currentDate));
-                        sb.append("</span> - <span class=\"subject\"><a href=\"/users/").append(brs.getString("username")).append("/entry/").append(brs.getString("id")).append("\">");
-                        sb.append(Xml.cleanString(brs.getString("subject")));
+                        sb.append("</span> - <span class=\"subject\"><a href=\"/users/")
+                                .append(brs.get("username").toString()).append("/entry/").append(brs.get("id").toString()).append("\">");
+                        sb.append(Xml.cleanString(brs.get("subject").toString()));
                         sb.append("</a></span></h3> ");
                         sb.append(endl);
 
                         sb.append("<div class=\"ebody\">");
                         sb.append(endl);
-                        sb.append(brs.getString("body"));
+                        sb.append(brs.get("body").toString());
                         sb.append(endl);
                         sb.append("</div>");
                         sb.append(endl);
                     }
-
-                    brs.close();
                 }
 
             } catch (final Exception e1) {
-                log.error("Could not close database resultset on first attempt: " + e1.getMessage());
-                if (brs != null) {
-                    try {
-                        brs.close();
-                    } catch (final Exception e) {
-                        log.error("Could not close database resultset: " + e.getMessage());
-                    }
-                }
+                log.error( e1.getMessage());
             }
         }
         return sb.toString();

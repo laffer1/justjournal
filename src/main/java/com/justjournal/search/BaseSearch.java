@@ -34,7 +34,6 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.search;
 
-import com.justjournal.utility.SQLHelper;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;

@@ -31,7 +31,6 @@ import com.justjournal.model.Friend;
 import com.justjournal.model.User;
 import com.justjournal.repository.FriendsDao;
 import com.justjournal.repository.UserRepository;
-import com.justjournal.utility.SQLHelper;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;

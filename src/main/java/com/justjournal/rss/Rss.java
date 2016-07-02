@@ -30,18 +30,14 @@ import com.justjournal.model.DateTimeBean;
 import com.justjournal.model.Entry;
 import com.justjournal.utility.DateConvert;
 import com.justjournal.utility.HTMLUtil;
-import com.justjournal.utility.SQLHelper;
 import com.justjournal.utility.Xml;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
-import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.*;
-
-import static com.sun.tools.internal.xjc.reader.Ring.add;
 
 /**
  * Create an RSS feed as a string.  This should be a valid XML document. Implements RSS 2

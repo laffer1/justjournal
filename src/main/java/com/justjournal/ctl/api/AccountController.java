@@ -29,7 +29,6 @@ package com.justjournal.ctl.api;
 import com.justjournal.Login;
 import com.justjournal.model.*;
 import com.justjournal.repository.*;
-import com.justjournal.utility.SQLHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

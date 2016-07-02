@@ -52,6 +52,18 @@ angular.module('wwwApp',
                         templateUrl: 'views/sitemap.html',
                         controller: 'SitemapCtrl'
                     })
+                    .when('/software', {
+                        templateUrl: 'views/software.html',
+                        controller: 'SoftwareCtrl'
+                    })
+                    .when('/software/windows', {
+                        templateUrl: 'views/windows.html',
+                        controller: 'SoftwareCtrl'
+                    })
+                    .when('/software/unix', {
+                        templateUrl: 'views/unix.html',
+                        controller: 'SoftwareCtrl'
+                    })
                     .when('/stats', {
                         templateUrl: 'views/stats.html',
                         controller: 'StatsCtrl'
