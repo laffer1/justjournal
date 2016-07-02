@@ -46,7 +46,6 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -69,7 +68,7 @@ public class EntryController {
     private CommentRepository commentDao = null;
     @Qualifier("entryRepository")
     @Autowired
-    private EntryRepository entryDao = null;
+    private EntryRepository entryRepository = null;
     @Qualifier("securityDao")
     @Autowired
     private SecurityDao securityDao;
@@ -176,7 +175,7 @@ public class EntryController {
                          @PathVariable("id") final int id,
                          final HttpServletResponse response) {
         try {
-            final Entry entry = entryDao.findOne(id);
+            final Entry entry = entryRepository.findOne(id);
 
             if (entry == null) {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -274,10 +273,16 @@ public class EntryController {
      * @return status ok or error
      */
     @CacheEvict(value = "recentblogs", allEntries = true)
-    @RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json", headers = {"Accept=*/*", "content-type=application/json"})
+    @RequestMapping(method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            headers = {"Accept=*/*", "content-type=application/json"})
     public
     @ResponseBody
-    Map<String, String> post(@RequestBody final Entry entry, HttpSession session, HttpServletResponse response, Model model) {
+    Map<String, String> post(@RequestBody final Entry entry,
+                             final HttpSession session,
+                             final HttpServletResponse response,
+                             Model model) {
 
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -289,6 +294,12 @@ public class EntryController {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return Collections.singletonMap("error", "User not found");
         }
+
+        if (entry.getBody() == null || entry.getBody().isEmpty()) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return Collections.singletonMap("error", "Entry does not contain a body.");
+        }
+        log.trace("Entry contains body " + entry.getBody());
 
         entry.setUser(user);
 
@@ -311,7 +322,7 @@ public class EntryController {
             entry.setDate(new Date());
 
         // TODO: validate
-        final Entry saved = entryDao.save(entry);
+        final Entry saved = entryRepository.save(entry);
 
         if (saved.getId() < 1) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -336,7 +347,9 @@ public class EntryController {
      * @return
      */
     @CacheEvict(value = "recentblogs")
-    @RequestMapping(method = RequestMethod.PUT, consumes = "application/json", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.PUT,
+            consumes = "application/json",
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
     Map<String, String> put(@RequestBody Entry entry, HttpSession session, HttpServletResponse response) {
@@ -367,13 +380,13 @@ public class EntryController {
 
         // TODO: validate
         boolean result;
-        final Entry entryTo = entryDao.findOne(entry.getId());
+        final Entry entryTo = entryRepository.findOne(entry.getId());
 
         if (entryTo != null && entryTo.getId() > 0 && entryTo.getUser().getId() == user.getId()) {
             entry.setId(entryTo.getId());
-            entryDao.save(entry);
+            entryRepository.save(entry);
         } else
-            entryDao.save(entry);
+            entryRepository.save(entry);
 
         return Collections.singletonMap("id", Integer.toString(entry.getId()));
     }
@@ -402,12 +415,12 @@ public class EntryController {
 
         try {
             final User user = userRepository.findOne(Login.currentLoginId(session));
-            final Entry entry = entryDao.findOne(entryId);
+            final Entry entry = entryRepository.findOne(entryId);
 
             if (user.getId() == entry.getUser().getId()) {
                 final Iterable<Comment> comments = entry.getComments();
                 commentDao.delete(comments);
-                entryDao.delete(entryId);
+                entryRepository.delete(entryId);
             } else {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 return Collections.singletonMap("error", "Could not delete entry.");
