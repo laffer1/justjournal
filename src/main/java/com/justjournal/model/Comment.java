@@ -48,13 +48,13 @@ public final class Comment implements Serializable {
     @GeneratedValue
     private int id = 0;
 
-    @JsonBackReference
+    @JsonBackReference(value="entry-comment")
     @JsonProperty("entry")
     @ManyToOne
     @JoinColumn(name = "eid")
     private Entry entry;
 
-    @JsonBackReference
+    @JsonBackReference(value="comment-user")
     @JsonProperty("user")
     @ManyToOne
     @JoinColumn(name = "uid")

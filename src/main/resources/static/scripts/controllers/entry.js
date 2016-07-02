@@ -16,7 +16,10 @@ angular.module('wwwApp').controller('EntryCtrl', ['$scope', '$routeParams', '$lo
             body: '',
             tag: '',
             music: '',
-            trackback: ''
+            trackback: '',
+            security: 0,
+            mood: 12,
+            location: 0
         };
         $scope.ErrorMessage = '';
 
@@ -32,7 +35,10 @@ angular.module('wwwApp').controller('EntryCtrl', ['$scope', '$routeParams', '$lo
                 body: '',
                 tag: '',
                 music: '',
-                trackback: ''
+                trackback: '',
+                security: 0,
+                mood: 12,
+                location: 0
             };
         };
 
@@ -44,14 +50,14 @@ angular.module('wwwApp').controller('EntryCtrl', ['$scope', '$routeParams', '$lo
                     return false;
                 }
 
-                if (typeof $scope.entry.mood !== 'undefined' && typeof $scope.entry.mood.id !== 'undefined')
-                    $scope.entry.moodId = $scope.entry.mood.id;
+                /*if (typeof $scope.entry.mood !== 'undefined' && typeof $scope.entry.mood.id !== 'undefined')
+                    $scope.entry.mood = $scope.entry.mood.id;
 
                 if (typeof $scope.entry.location !== 'undefined' && typeof $scope.entry.location.id !== 'undefined')
-                    $scope.entry.locationId = $scope.entry.location.id;
+                    $scope.entry.location = $scope.entry.location.id;
 
                 if (typeof $scope.entry.security !== 'undefined' && typeof $scope.entry.security.id !== 'undefined')
-                    $scope.entry.securityId = $scope.entry.security.id;
+                    $scope.entry.security = $scope.entry.security.id;  */
 
                 $scope.entry.tags = [];
                 if (typeof $scope.tag !== 'undefined') {

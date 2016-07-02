@@ -47,7 +47,7 @@ public class EntryTag implements Serializable {
     @GeneratedValue
     private int id;
 
-    @JsonBackReference
+    @JsonBackReference(value="entry-entrytag")
     @JsonProperty("entry")
     @ManyToOne
     @JoinColumn(name = "entryid")

@@ -27,10 +27,8 @@
 package com.justjournal.ctl.api;
 
 import com.justjournal.Login;
-import com.justjournal.model.Comment;
-import com.justjournal.model.Entry;
-import com.justjournal.model.RecentEntry;
-import com.justjournal.model.User;
+import com.justjournal.model.*;
+import com.justjournal.model.api.EntryTo;
 import com.justjournal.repository.*;
 import com.justjournal.services.EntryService;
 import com.justjournal.services.ServiceException;
@@ -267,19 +265,17 @@ public class EntryController {
     /**
      * Creates a new entry resource
      *
-     * @param entry    EntryTo
+     * @param entryTo    EntryTo
      * @param session  HttpSession
      * @param response HttpServletResponse
      * @return status ok or error
      */
     @CacheEvict(value = "recentblogs", allEntries = true)
     @RequestMapping(method = RequestMethod.POST,
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE,
-            headers = {"Accept=*/*", "content-type=application/json"})
+            consumes = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    Map<String, String> post(@RequestBody final Entry entry,
+    Map<String, String> post(@RequestBody final EntryTo entryTo,
                              final HttpSession session,
                              final HttpServletResponse response,
                              Model model) {
@@ -295,34 +291,36 @@ public class EntryController {
             return Collections.singletonMap("error", "User not found");
         }
 
-        if (entry.getBody() == null || entry.getBody().isEmpty()) {
+        Entry entry = new Entry();
+        if (entryTo.getBody() == null || entryTo.getBody().isEmpty()) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return Collections.singletonMap("error", "Entry does not contain a body.");
         }
-        log.trace("Entry contains body " + entry.getBody());
+        entry.setBody(entryTo.getBody());
+        log.trace("Entry contains body " + entryTo.getBody());
+
+        entry.setSubject(entryTo.getSubject());
 
         entry.setUser(user);
 
-        if (entry.getLocationId() < 1)
-            entry.setLocation(locationDao.findOne(0));
-        else
-            entry.setLocation(locationDao.findOne(entry.getLocationId()));
+        entry.setLocation(locationDao.findOne(entryTo.getLocation()));
+        entry.setSecurity(securityDao.findOne(entryTo.getSecurity()));
 
-        if (entry.getSecurityId() < 1)
-            entry.setSecurity(securityDao.findOne(0));
-        else
-            entry.setSecurity(securityDao.findOne(entry.getSecurityId()));
+        if (entryTo.getMood() == 0)
+            entryTo.setMood(12); // DEFAULT NOT SPECIFIED
+        entry.setMood(moodDao.findOne(entryTo.getMood()));
 
-        if (entry.getMoodId() < 1)
-            entry.setMood(moodDao.findOne(12));  // not specified
-        else
-            entry.setMood(moodDao.findOne(entry.getMoodId()));
+        entry.setAutoFormat(entryTo.getAutoFormat() ? PrefBool.Y : PrefBool.N);
+        entry.setDraft(entryTo.getDraft() ? PrefBool.Y : PrefBool.N);
+        entry.setAllowComments(entryTo.getAllowComments() ? PrefBool.Y : PrefBool.N);
 
-        if (entry.getDate() == null)
+        if (entryTo.getDate() == null)
             entry.setDate(new Date());
+        else
+            entry.setDate(entryTo.getDate());
 
         // TODO: validate
-        final Entry saved = entryRepository.save(entry);
+        final Entry saved = entryRepository.saveAndFlush(entry);
 
         if (saved.getId() < 1) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -341,7 +339,7 @@ public class EntryController {
     /**
      * PUT generally allows for add or edit in REST.
      *
-     * @param entry    User's Blog entry
+     * @param entryTo    User's Blog entry
      * @param session  HttpSession
      * @param response HttpServletResponse
      * @return
@@ -352,38 +350,32 @@ public class EntryController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    Map<String, String> put(@RequestBody Entry entry, HttpSession session, HttpServletResponse response) {
+    Map<String, String> put(@RequestBody EntryTo entryTo, HttpSession session, HttpServletResponse response) {
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return Collections.singletonMap("error", "The login timed out or is invalid.");
         }
         final User user = userRepository.findOne(Login.currentLoginId(session));
+        final Entry entry = new Entry();
         entry.setUser(user);
 
-        if (entry.getLocationId() < 1)
-            entry.setLocation(locationDao.findOne(0));
-        else
-            entry.setLocation(locationDao.findOne(entry.getLocationId()));
+        entry.setSubject(entryTo.getSubject());
+        entry.setBody(entryTo.getBody());
 
-        if (entry.getSecurityId() < 1)
-            entry.setSecurity(securityDao.findOne(0));
-        else
-            entry.setSecurity(securityDao.findOne(entry.getSecurityId()));
+            entry.setLocation(locationDao.findOne(entryTo.getLocation()));
+            entry.setSecurity(securityDao.findOne(entryTo.getSecurity()));
+            entry.setMood(moodDao.findOne(entryTo.getMood()));
 
-        if (entry.getMoodId() < 1)
-            entry.setMood(moodDao.findOne(12));  // not specified
+        if (entryTo.getDate() == null)
+            entry.setDate(Calendar.getInstance().getTime());
         else
-            entry.setMood(moodDao.findOne(entry.getMoodId()));
-
-        if (entry.getDate() == null)
-            entry.setDate(new Date());
+            entry.setDate(entryTo.getDate());
 
         // TODO: validate
-        boolean result;
-        final Entry entryTo = entryRepository.findOne(entry.getId());
+        final Entry entry2 = entryRepository.findOne(entryTo.getId());
 
-        if (entryTo != null && entryTo.getId() > 0 && entryTo.getUser().getId() == user.getId()) {
-            entry.setId(entryTo.getId());
+        if (entry2 != null && entry2.getId() > 0 && entry2.getUser().getId() == user.getId()) {
+            entry.setId(entry2.getId());
             entryRepository.save(entry);
         } else
             entryRepository.save(entry);

@@ -96,13 +96,13 @@ public class User implements Serializable {
     @Column(name = "type", nullable = false)
     private Integer type;
 
-    @JsonManagedReference
+    @JsonManagedReference(value="entry-user")
     @JsonIgnore
     @Basic(fetch = FetchType.LAZY)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private Set<Entry> entries = new HashSet<Entry>();
 
-    @JsonManagedReference
+    @JsonManagedReference(value="comment-user")
     @JsonIgnore
     @Basic(fetch = FetchType.LAZY)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
@@ -200,6 +200,10 @@ public class User implements Serializable {
         this.userPref = userPref;
     }
 
+    public Integer getSince() {
+        return since;
+    }
+
     public void setSince(final Integer since) {
         this.since = since;
     }
@@ -235,13 +239,10 @@ public class User implements Serializable {
         this.modified = modified;
     }
 
-    public int getType() {
+    public Integer getType() {
         return type;
     }
 
-    public void setType(final int type) {
-        this.type = type;
-    }
 
     public String getLastName() {
         return lastName;
@@ -324,14 +325,6 @@ public class User implements Serializable {
             throw new IllegalArgumentException("Invalid password");
         }
         this.password = password;
-    }
-
-    public final int getSince() {
-        return since;
-    }
-
-    public final void setSince(final int since) {
-        this.since = since;
     }
 
     public List<Friend> getFriends() {

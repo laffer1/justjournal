@@ -135,12 +135,12 @@ public class Entry implements Serializable {
     @JsonIgnore
     transient private int attachFile = 0;
 
-    @JsonManagedReference
+    @JsonManagedReference(value="entry-entrytag")
     @JsonProperty("tags")
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "entry", fetch = FetchType.EAGER) // TODO: why!
     private Set<EntryTag> tags = new HashSet<EntryTag>();
 
-    @JsonManagedReference
+    @JsonManagedReference(value="entry-comment")
     @JsonProperty("comments")
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "entry", fetch = FetchType.EAGER)
     private Set<Comment> comments = new HashSet<Comment>();
@@ -205,7 +205,11 @@ public class Entry implements Serializable {
 
     public void setMood(final Mood mood) {
         this.mood = mood;
-        setMoodId(mood.getId());
+
+        if (mood != null)
+            setMoodId(mood.getId());
+        else
+            setMoodId(0);
     }
 
     public User getUser() {

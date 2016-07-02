@@ -48,10 +48,30 @@
                 timeToIdleSeconds="300" timeToLiveSeconds="600" memoryStoreEvictionPolicy="LFU" transactionalMode="off" />
     <cache name="com.justjournal.model.EntryTag" maxEntriesLocalHeap="500"
            timeToIdleSeconds="300" timeToLiveSeconds="600" memoryStoreEvictionPolicy="LFU" transactionalMode="off" />
+
+    <cache name="com.justjournal.model.Favorite" maxEntriesLocalHeap="500"
+             timeToIdleSeconds="300" timeToLiveSeconds="600" memoryStoreEvictionPolicy="LFU" transactionalMode="off" />
+    <cache name="com.justjournal.model.Friend" maxEntriesLocalHeap="500"
+             timeToIdleSeconds="300" timeToLiveSeconds="600" memoryStoreEvictionPolicy="LFU" transactionalMode="off" />
+
+    <cache name="com.justjournal.model.Location" maxEntriesLocalHeap="10"
+             timeToIdleSeconds="300" timeToLiveSeconds="600" memoryStoreEvictionPolicy="LFU" transactionalMode="off" />
+
+    <cache name="com.justjournal.model.Mood" maxEntriesLocalHeap="500"
+             timeToIdleSeconds="300" timeToLiveSeconds="600" memoryStoreEvictionPolicy="LFU" transactionalMode="off" />
     <cache name="com.justjournal.model.MoodTheme" maxEntriesLocalHeap="500"
                 timeToIdleSeconds="300" timeToLiveSeconds="600" memoryStoreEvictionPolicy="LFU" transactionalMode="off" />
     <cache name="com.justjournal.model.MoodThemeData" maxEntriesLocalHeap="500"
                 timeToIdleSeconds="300" timeToLiveSeconds="600" memoryStoreEvictionPolicy="LFU" transactionalMode="off" />
+
+    <cache name="com.justjournal.model.QueueMail" maxEntriesLocalHeap="50"
+             timeToIdleSeconds="300" timeToLiveSeconds="600" memoryStoreEvictionPolicy="LFU" transactionalMode="off" />
+
+    <cache name="com.justjournal.model.RssCache" maxEntriesLocalHeap="500"
+             timeToIdleSeconds="300" timeToLiveSeconds="600" memoryStoreEvictionPolicy="LFU" transactionalMode="off" />
+    <cache name="com.justjournal.model.RssSubscription" maxEntriesLocalHeap="500"
+             timeToIdleSeconds="300" timeToLiveSeconds="600" memoryStoreEvictionPolicy="LFU" transactionalMode="off" />
+
     <cache name="com.justjournal.model.Security" maxEntriesLocalHeap="10"
                 timeToIdleSeconds="300" timeToLiveSeconds="600" memoryStoreEvictionPolicy="LFU" transactionalMode="off" />
     <cache name="com.justjournal.model.Settings" maxEntriesLocalHeap="50"
@@ -60,12 +80,20 @@
                 timeToIdleSeconds="300" timeToLiveSeconds="600" memoryStoreEvictionPolicy="LFU" transactionalMode="off" />
     <cache name="com.justjournal.model.Style" maxEntriesLocalHeap="50"
                 timeToIdleSeconds="300" timeToLiveSeconds="600" memoryStoreEvictionPolicy="LFU" transactionalMode="off" />
+
+    <cache name="com.justjournal.model.Tag" maxEntriesLocalHeap="500"
+             timeToIdleSeconds="300" timeToLiveSeconds="600" memoryStoreEvictionPolicy="LFU" transactionalMode="off" />
+
     <cache name="com.justjournal.model.Trackback" maxEntriesLocalHeap="500"
                 timeToIdleSeconds="300" timeToLiveSeconds="600" memoryStoreEvictionPolicy="LFU" transactionalMode="off" />
     <cache name="com.justjournal.model.User" maxEntriesLocalHeap="1000"
                 timeToIdleSeconds="300" timeToLiveSeconds="600" memoryStoreEvictionPolicy="LFU" transactionalMode="off" />
     <cache name="com.justjournal.model.UserBio" maxEntriesLocalHeap="500"
                 timeToIdleSeconds="300" timeToLiveSeconds="600" memoryStoreEvictionPolicy="LFU" transactionalMode="off" />
+    <cache name="com.justjournal.model.UserContact" maxEntriesLocalHeap="500"
+             timeToIdleSeconds="300" timeToLiveSeconds="600" memoryStoreEvictionPolicy="LFU" transactionalMode="off" />
+    <cache name="com.justjournal.model.UserImage" maxEntriesLocalHeap="50"
+             timeToIdleSeconds="300" timeToLiveSeconds="600" memoryStoreEvictionPolicy="LFU" transactionalMode="off" />
     <cache name="com.justjournal.model.UserPref" maxEntriesLocalHeap="500"
                 timeToIdleSeconds="300" timeToLiveSeconds="600" memoryStoreEvictionPolicy="LFU" transactionalMode="off" />
     <cache name="com.justjournal.model.UserLink" maxEntriesLocalHeap="500"
