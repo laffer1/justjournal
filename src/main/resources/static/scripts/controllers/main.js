@@ -32,7 +32,7 @@ angular.module('wwwApp').controller('MainCtrl', ['$scope', '$http', function ($s
 
     $scope.CreateAccount = function() {
         var data = $scope.create;
-        $http.post('api/signup?email=' + $scope.email, data).success(function() {
+        $http.post('api/signup', data).success(function() {
             alert('Your account has been created. You may login after responding to the verification email.');
             return false;
         }.fail(function() {

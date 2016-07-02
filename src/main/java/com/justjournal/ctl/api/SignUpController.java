@@ -29,6 +29,7 @@ package com.justjournal.ctl.api;
 import com.justjournal.Login;
 import com.justjournal.core.Settings;
 import com.justjournal.model.*;
+import com.justjournal.model.api.NewUser;
 import com.justjournal.repository.UserRepository;
 import com.justjournal.utility.StringUtil;
 import org.apache.log4j.Logger;
@@ -41,7 +42,10 @@ import javax.transaction.Transactional;
 import java.util.Map;
 
 /**
+ * Create new accounts in Just Journal. To delete accounts, use AccountController.
+ *
  * @author Lucas Holt
+ * @see com.justjournal.ctl.api.AccountController
  */
 @Transactional
 @Controller
@@ -57,14 +61,14 @@ public class SignUpController {
     @RequestMapping(method = RequestMethod.POST, produces = "application/json")
     public
     @ResponseBody
-    Map<String, String> post(@RequestParam String email, @RequestBody User user, HttpServletResponse response) {
+    Map<String, String> post(@RequestBody final NewUser user, final HttpServletResponse response) {
 
         if (!settings.isUserAllowNew()) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return java.util.Collections.singletonMap("error", "Could not add user");
         }
 
-        if (!StringUtil.lengthCheck(email, 6, 100)) {
+        if (!StringUtil.lengthCheck(user.getEmail(), 6, 100)) {
             throw new IllegalArgumentException("Invalid email address");
         }
 
@@ -80,24 +84,30 @@ public class SignUpController {
                     "Password must be 5-18 characters.");
         }
 
-        return newUser(user, email, response);
+        return newUser(user, response);
     }
 
-    private Map<String, String> newUser(User user, String email, HttpServletResponse response) {
+    private Map<String, String> newUser(final NewUser newUser, final HttpServletResponse response) {
 
         try {
-            UserPref userPref = new UserPref();
+            User user = new User();
+            user.setName(newUser.getFirstName());
+            user.setLastName(newUser.getLastName());
+            user.setUsername(newUser.getUsername());
+            user.setPassword(newUser.getPassword());
+
+            final UserPref userPref = new UserPref();
             userPref.setAllowSpider(PrefBool.Y);
             userPref.setOwnerViewOnly(PrefBool.N);
             userPref.setPingServices(PrefBool.Y);
             userPref.setJournalName(user.getName() + "\'s Journal");
             user.setUserPref(userPref);
 
-            UserContact userContact = new UserContact();
-            userContact.setEmail(email);
+            final UserContact userContact = new UserContact();
+            userContact.setEmail(newUser.getEmail());
             user.setUserContact(userContact);
 
-            UserBio userBio = new UserBio();
+            final UserBio userBio = new UserBio();
             userBio.setBio("");
             user.setBio(userBio);
 
@@ -106,7 +116,7 @@ public class SignUpController {
             user = userRepository.findByUsername(user.getUsername());
 
             return java.util.Collections.singletonMap("id", Integer.toString(user.getId()));
-        } catch (Exception e) {
+        } catch (final Exception e) {
             log.error(e);
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return java.util.Collections.singletonMap("error", "Could not add user");
