@@ -114,8 +114,6 @@ public class SignUpController {
             if (user == null)
                 throw new Exception("Unable to save user");
 
-            log.debug("user id is " + user.getId());
-
             UserPref userPref = new UserPref();
             userPref.setAllowSpider(PrefBool.Y);
             userPref.setOwnerViewOnly(PrefBool.N);
