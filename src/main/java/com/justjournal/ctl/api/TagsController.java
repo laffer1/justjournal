@@ -27,6 +27,7 @@
 package com.justjournal.ctl.api;
 
 import com.justjournal.model.Tag;
+import com.justjournal.repository.EntryTagsRepository;
 import com.justjournal.repository.TagDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -35,6 +36,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Tags
@@ -48,6 +52,9 @@ public class TagsController {
     @Autowired
     private TagDao tagDao;
 
+    @Autowired
+    private EntryTagsRepository entryTagsRepository;
+
     /**
      * Get the tag list for the whole site
      *
@@ -58,7 +65,19 @@ public class TagsController {
     public
     @ResponseBody
     Iterable<Tag> getTags() {
-        return tagDao.findAll();
+
+        final Map<String, Tag> tags = new HashMap<String, Tag>();
+
+        final Iterable<Tag> tagList = tagDao.findAll();
+        for (final Tag t : tagList) {
+            if (!tags.containsKey(t.getName())) {
+                final long count = entryTagsRepository.countByTag(t);
+                t.setCount(count);
+                tags.put(t.getName(), t);
+            }
+        }
+
+        return tags.values();
     }
 
     /**

@@ -1,14 +1,16 @@
 angular.module('wwwApp').controller('TagsCtrl', ['$scope', 'TagService', function ($scope, TagService) {
   'use strict';
 
-    $scope.tags = TagService.query();
+    $scope.tags = TagService.query({}, function() {
+        $scope.sizeTags();
+    });
 
     $scope.sizeTags = function() {
         var largest = 0;
         var smallest = 0;
 
         for (var i = 0; i < $scope.tags.length; i++) {
-            var tmpcount = $scope.tags[i].Count;
+            var tmpcount = $scope.tags[i].count;
 
             if (tmpcount > largest)
                 largest = tmpcount;
@@ -21,7 +23,7 @@ angular.module('wwwApp').controller('TagsCtrl', ['$scope', 'TagService', functio
         var cutlarge = cutsmall * 2;
 
         for (var x = 0; x < $scope.tags.length; x++) {
-             var count = $scope.tags[x].Count;
+             var count = $scope.tags[x].count;
              if (count > cutlarge) {
                  $scope.tags[x].Class = 'TagCloudLarge';
              } else if (count < cutsmall) {
@@ -32,5 +34,5 @@ angular.module('wwwApp').controller('TagsCtrl', ['$scope', 'TagService', functio
         }
     };
 
-    $scope.sizeTags();
+
 }]);

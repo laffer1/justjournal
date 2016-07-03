@@ -73,8 +73,8 @@ public class TagCloudController {
             return null;
         }
 
-        int largest = 0;
-        int smallest = 10;
+        long largest = 0;
+        long smallest = 10;
 
         for (final Tag tag : tags) {
             if (tag.getCount() > largest)
@@ -84,8 +84,8 @@ public class TagCloudController {
                 smallest = tag.getCount();
         }
 
-        final int cutSmall = largest / 3;
-        final int cutLarge = cutSmall * 2;
+        final long cutSmall = largest / 3;
+        final long cutLarge = cutSmall * 2;
 
         for (final Tag tag : tags) {
             if (tag.getCount() > cutLarge)

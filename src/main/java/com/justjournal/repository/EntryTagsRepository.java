@@ -27,6 +27,7 @@
 package com.justjournal.repository;
 
 import com.justjournal.model.EntryTag;
+import com.justjournal.model.Tag;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -41,5 +42,9 @@ import java.util.List;
 public interface EntryTagsRepository extends CrudRepository<EntryTag, Integer> {
 
     @Query("select et from EntryTag et, Entry e, User u where et.entry = e and e.user = u and LOWER(u.username) = LOWER(:username)")
-    public List<EntryTag> findByUsername(@Param("username") String username);
+    List<EntryTag> findByUsername(@Param("username") String username);
+
+    List<EntryTag> findByTag(@Param("tag") Tag tag);
+
+    long countByTag(@Param("tag") Tag tag);
 }

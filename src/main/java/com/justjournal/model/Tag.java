@@ -65,7 +65,7 @@ public class Tag implements Serializable {
 
     @JsonProperty("count")
     @Transient
-    private int count;
+    private long count;
 
     @JsonProperty("type")
     @Transient
@@ -103,7 +103,7 @@ public class Tag implements Serializable {
      *
      * @return tag count
      */
-    public int getCount() {
+    public long getCount() {
         return count;
     }
 
@@ -112,7 +112,7 @@ public class Tag implements Serializable {
      *
      * @param count number of tags
      */
-    public void setCount(int count) {
+    public void setCount(long count) {
         this.count = count;
     }
 

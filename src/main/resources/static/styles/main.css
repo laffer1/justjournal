@@ -59,3 +59,15 @@ a:hover {
     margin-right: auto;
     text-align: center;
 }
+
+.TagCloudLarge {
+   font-size: 1.2em;
+}
+
+.TagCloudMedium {
+   font-size: 1em;
+}
+
+.TagCloudSmall {
+   font-size: .8em;
+}
