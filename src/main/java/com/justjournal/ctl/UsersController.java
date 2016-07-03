@@ -1407,18 +1407,20 @@ public class UsersController {
                 if (o.getMood().getTitle().length() > 0 && o.getMood().getId() != 12) {
                     final MoodThemeData emoto = emoticonDao.findByThemeIdAndMoodId(1, o.getMood().getId());
 
-                    sb.append("<span class=\"mood\">mood: <img src=\"/images/emoticons/1/");
-                    sb.append(emoto.getFileName());
-                    sb.append("\" width=\"");
-                    sb.append(emoto.getWidth());
-                    sb.append("\" height=\"");
-                    sb.append(emoto.getHeight());
-                    sb.append("\" alt=\"");
-                    sb.append(o.getMood().getTitle());
-                    sb.append("\" /> ");
-                    sb.append(o.getMood().getTitle());
-                    sb.append("</span><br>");
-                    sb.append(endl);
+                    if (emoto != null) {
+                        sb.append("<span class=\"mood\">mood: <img src=\"/images/emoticons/1/");
+                        sb.append(emoto.getFileName());
+                        sb.append("\" width=\"");
+                        sb.append(emoto.getWidth());
+                        sb.append("\" height=\"");
+                        sb.append(emoto.getHeight());
+                        sb.append("\" alt=\"");
+                        sb.append(o.getMood().getTitle());
+                        sb.append("\" /> ");
+                        sb.append(o.getMood().getTitle());
+                        sb.append("</span><br>");
+                        sb.append(endl);
+                    }
                 }
 
                 if (o.getMusic().length() > 0) {
