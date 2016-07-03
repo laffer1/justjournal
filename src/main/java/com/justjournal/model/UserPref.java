@@ -43,6 +43,7 @@ public class UserPref implements Serializable {
     private static final long serialVersionUID = -4301597963273403598L;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id = 0;
 
     @Column(name = "allow_spider")
@@ -71,6 +72,14 @@ public class UserPref implements Serializable {
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(final User user) {
+        this.user = user;
+    }
 
     public int getId() {
         return id;

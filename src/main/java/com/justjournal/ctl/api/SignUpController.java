@@ -30,6 +30,9 @@ import com.justjournal.Login;
 import com.justjournal.core.Settings;
 import com.justjournal.model.*;
 import com.justjournal.model.api.NewUser;
+import com.justjournal.repository.UserBioDao;
+import com.justjournal.repository.UserContactRepository;
+import com.justjournal.repository.UserPrefRepository;
 import com.justjournal.repository.UserRepository;
 import com.justjournal.utility.StringUtil;
 import org.apache.log4j.Logger;
@@ -39,6 +42,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -55,6 +60,13 @@ public class SignUpController {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private UserBioDao userBioDao;
+    @Autowired
+    private UserContactRepository userContactRepository;
+    @Autowired
+    private UserPrefRepository userPrefRepository;
+
     @Autowired
     private Settings settings;
 
@@ -95,25 +107,38 @@ public class SignUpController {
             user.setLastName(newUser.getLastName());
             user.setUsername(newUser.getUsername());
             user.setPassword(newUser.getPassword());
+            user.setType(0);
+            user.setSince(Calendar.getInstance().get(Calendar.YEAR));
+            user.setLastLogin(new Date());
+            user = userRepository.saveAndFlush(user);
+            if (user == null)
+                throw new Exception("Unable to save user");
 
-            final UserPref userPref = new UserPref();
+            log.debug("user id is " + user.getId());
+
+            UserPref userPref = new UserPref();
             userPref.setAllowSpider(PrefBool.Y);
             userPref.setOwnerViewOnly(PrefBool.N);
             userPref.setPingServices(PrefBool.Y);
             userPref.setJournalName(user.getName() + "\'s Journal");
-            user.setUserPref(userPref);
+            userPref.setUser(user);
+            userPref = userPrefRepository.save(userPref);
+            if (userPref == null)
+                throw new Exception("Unable to save user preferences");
 
-            final UserContact userContact = new UserContact();
+            UserContact userContact = new UserContact();
             userContact.setEmail(newUser.getEmail());
-            user.setUserContact(userContact);
+            userContact.setUser(user);
+            userContact = userContactRepository.save(userContact);
+            if (userContact == null)
+                throw new Exception("Unable to save user contact");
 
-            final UserBio userBio = new UserBio();
+            UserBio userBio = new UserBio();
             userBio.setBio("");
-            user.setBio(userBio);
-
-            userRepository.save(user);
-
-            user = userRepository.findByUsername(user.getUsername());
+            userBio.setUser(user);
+            userBio = userBioDao.save(userBio);
+            if (userBio == null)
+                throw new Exception("Unable to save user bio");
 
             return java.util.Collections.singletonMap("id", Integer.toString(user.getId()));
         } catch (final Exception e) {
