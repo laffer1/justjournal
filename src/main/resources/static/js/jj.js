@@ -4,8 +4,45 @@
     date created: June 10, 2007
 */
 
+function addFavorite(entryId) {
+    'use strict';
+
+    var request = jQuery.ajax({
+        url: "/api/favorite/" + entryId,
+        type: "POST",
+        data: {}
+    });
+
+    request.done(function () {
+        window.alert('Favorite saved.');
+    });
+
+    request.fail(function (jqXHR, textStatus) {
+        window.alert("Favorite not saved. Request failed: " + textStatus);
+    });
+}
+
+function deleteFavorite(entryId) {
+    'use strict';
+
+    var request = jQuery.ajax({
+        url: "/api/favorite/" + entryId,
+        type: "DELETE",
+        data: {}
+    });
+
+    request.done(function () {
+        window.alert('Favorite removed.');
+    });
+
+    request.fail(function (jqXHR, textStatus) {
+        window.alert("Favorite not removed. Request failed: " + textStatus);
+    });
+}
+
+
 function deleteEntry(entryId) {
-    "use strict";
+    'use strict';
     if (confirmDelete()) {
         var request = jQuery.ajax({
             url: "/api/entry/" + entryId,

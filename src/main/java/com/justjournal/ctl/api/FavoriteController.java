@@ -43,10 +43,7 @@ import com.justjournal.repository.UserRepository;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -69,7 +66,6 @@ import java.util.Map;
 @RequestMapping("/api/favorite")
 public class FavoriteController {
     private static final Logger log = Logger.getLogger(FavoriteController.class.getName());
-    public static final int MAX_FRIENDS_COUNT = 20;
 
     @Autowired
     private FavoriteRepository favoriteRepository;
@@ -91,7 +87,7 @@ public class FavoriteController {
     public
     @ResponseBody
     Collection<Entry> getFavorites(final HttpSession session, final HttpServletResponse response) {
-        final Collection<Entry> entries = new ArrayList<Entry>(MAX_FRIENDS_COUNT);
+        final Collection<Entry> entries = new ArrayList<Entry>();
 
         try {
             final User user = userRepository.findOne(Login.currentLoginId(session));
@@ -108,14 +104,16 @@ public class FavoriteController {
         return entries;
     }
 
-    @RequestMapping(method = RequestMethod.PUT)
+    @RequestMapping(method = RequestMethod.POST, value = "/{entryId}")
     public
     @ResponseBody
-    Map<String, String> create(@RequestBody Entry favorite, HttpSession session, HttpServletResponse response) {
+    Map<String, String> create(@PathVariable("entryId") final int entryId,
+                               final HttpSession session,
+                               final HttpServletResponse response) {
 
         try {
             final User user = userRepository.findOne(Login.currentLoginId(session));
-            final Entry e = entryRepository.findOne(favorite.getId());
+            final Entry e = entryRepository.findOne(entryId);
 
             final Favorite f = new Favorite();
             f.setUser(user);
@@ -132,10 +130,13 @@ public class FavoriteController {
         }
     }
 
-    @RequestMapping(method = RequestMethod.DELETE)
+    @RequestMapping(method = RequestMethod.DELETE, value = "/{entryId}")
     public
     @ResponseBody
-    Map<String, String> delete(@RequestBody Entry favorite, HttpSession session, HttpServletResponse response) throws Exception {
+    Map<String, String> delete(@PathVariable("entryId") final int entryId,
+                               final HttpSession session,
+                               final HttpServletResponse response) throws Exception {
+
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
@@ -143,12 +144,12 @@ public class FavoriteController {
 
         try {
             final User user = userRepository.findOne(Login.currentLoginId(session));
-            final Entry e = entryRepository.findOne(favorite.getId());
+            final Entry e = entryRepository.findOne(entryId);
             final Favorite f = favoriteRepository.findByUserAndEntry(user, e);
             favoriteRepository.delete(f);
             favoriteRepository.flush();
 
-            return java.util.Collections.singletonMap("id", Integer.toString(favorite.getId()));
+            return java.util.Collections.singletonMap("id", Integer.toString(entryId));
         } catch (final Exception e) {
             log.error(e.getMessage());
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

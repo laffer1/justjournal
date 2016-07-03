@@ -91,6 +91,7 @@ public class UsersController {
     private static final String MODEL_CALENDAR = "calendar";
     private static final String MODEL_ARCHIVE = "archive";
     private static final String MODEL_PICTURES = "pictures";
+    private static final String MODEL_FAVORITES = "favorites";
     private static final String MODEL_FRIENDS = "friends";
     private static final String VIEW_USERS = "users";
     private static final String PATH_USERNAME = "username";
@@ -109,6 +110,9 @@ public class UsersController {
 
     @Autowired
     private EntryService entryService = null;
+
+    @Autowired
+    private FavoriteRepository favoriteRepository;
 
     @Qualifier("moodThemeDataRepository")
     @Autowired
@@ -196,6 +200,38 @@ public class UsersController {
 
         return VIEW_USERS;
     }
+
+    @RequestMapping(value = "{username}/favorites", method = RequestMethod.GET, produces = "text/html")
+      public String favorites(@PathVariable(PATH_USERNAME) final String username,
+                            final Model model,
+                            final HttpSession session,
+                            final HttpServletResponse response) {
+          final UserContext userc = getUserContext(username, session);
+
+          if (userc == null) {
+              response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+              return "";
+          }
+
+          model.addAttribute(MODEL_AUTHENTICATED_USER, Login.currentLoginName(session));
+          model.addAttribute(MODEL_USER, userc.getBlogUser());
+
+          if (userc.getBlogUser().getUserPref().getOwnerViewOnly() == PrefBool.Y && !userc.isAuthBlog()) {
+              response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+              return "";
+          }
+
+          model.addAttribute(MODEL_CALENDAR_MINI, getCalendarMini(userc));
+          model.addAttribute(MODEL_ARCHIVE, getArchive(userc));
+          model.addAttribute(MODEL_PICTURES, null);
+
+          try {
+              model.addAttribute(MODEL_FAVORITES, getFavorites(userc));
+          } catch (final ServiceException se) {
+              log.error(se.getMessage());
+          }
+          return VIEW_USERS;
+      }
 
     @RequestMapping(value = "{username}/friends", method = RequestMethod.GET, produces = "text/html")
     public String friends(@PathVariable(PATH_USERNAME) final String username,
@@ -994,6 +1030,244 @@ public class UsersController {
         return sb.toString();
     }
 
+    private String getFavorites(final UserContext uc) throws ServiceException {
+
+          final StringBuffer sb = new StringBuffer();
+        final Collection<Entry> entries = new ArrayList<Entry>();
+
+        final List<Favorite> favorites = favoriteRepository.findByUser(uc.getBlogUser());
+
+        for (final Favorite fav : favorites) {
+            final Entry e = fav.getEntry();
+
+            // if the blog entry belongs to the user or it's public, render it.
+            // TODO: handle friends posts
+            if (e.getUser().getId() == uc.getAuthenticatedUser().getId() || e.getSecurity().getId() == 2)
+                entries.add(e);
+        }
+
+          sb.append("<h2>Favorites</h2>");
+          sb.append(endl);
+
+          try {
+              log.debug("getFavorites: Init Date Parsers.");
+
+              // Format the current time.
+              final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+              final SimpleDateFormat formatmydate = new SimpleDateFormat("EEE, d MMM yyyy");
+              final SimpleDateFormat formatmytime = new SimpleDateFormat("h:mm a");
+              String lastDate = "";
+              String curDate;
+
+              /* Iterator */
+              Entry o;
+              final Iterator itr = entries.iterator();
+
+              log.trace("getFavoritess: Number of entries " + entries.size());
+
+              if (entries.isEmpty())
+                  sb.append("<p>No favorite entries found</p>.");
+
+              for (int i = 0, n = entries.size(); i < n; i++) {
+                  o = (Entry) itr.next();
+
+                  // Parse the previous string back into a Date.
+                  final ParsePosition pos = new ParsePosition(0);
+                  final Date currentDate = formatter.parse(new DateTimeBean(o.getDate()).toString(), pos);
+
+                  curDate = formatmydate.format(currentDate);
+
+                  if (curDate.compareTo(lastDate) != 0) {
+                      sb.append("<h2>");
+                      sb.append(curDate);
+                      sb.append("</h2>");
+                      sb.append(endl);
+                      lastDate = curDate;
+                  }
+
+                  sb.append("<div class=\"ebody\">");
+                  sb.append(endl);
+
+                  // final User p = o.getUser();
+                  //  if (p.showAvatar()) {   TODO: avatar?
+                  sb.append("<img alt=\"avatar\" style=\"float: right\" src=\"/image?id=");
+                  sb.append(o.getUser().getId());
+                  sb.append("\"/>");
+                  sb.append(endl);
+                  //  }
+
+                  sb.append("<h3>");
+                  sb.append("<a href=\"/users/");
+                  sb.append(o.getUser().getUsername());
+                  sb.append("\" title=\"");
+                  sb.append(o.getUser().getUsername());
+                  sb.append("\">");
+                  sb.append(o.getUser().getUsername());
+                  sb.append("</a> ");
+
+                  sb.append("<span class=\"time\">");
+                  sb.append(formatmytime.format(currentDate));
+                  sb.append("</span> - <span class=\"subject\">");
+                  sb.append(Xml.cleanString(o.getSubject()));
+                  sb.append("</span></h3> ");
+                  sb.append(endl);
+
+                  sb.append("<div class=\"ebody\">");
+                  sb.append(endl);
+
+                  // Keep this synced with getEntries()
+                  if (o.getAutoFormat() == PrefBool.Y) {
+                      sb.append("<p>");
+                      if (o.getBody().contains("\n"))
+                          sb.append(StringUtil.replace(o.getBody(), '\n', "<br />"));
+                      else if (o.getBody().contains("\r"))
+                          sb.append(StringUtil.replace(o.getBody(), '\r', "<br />"));
+                      else
+                          // we do not have any "new lines" but it might be
+                          // one long line.
+                          sb.append(o.getBody());
+
+                      sb.append("</p>");
+                  } else {
+                      sb.append(o.getBody());
+                  }
+
+                  sb.append(endl);
+                  sb.append("</div>");
+                  sb.append(endl);
+
+                  sb.append("<p>");
+
+                  if (o.getSecurity().getId() == 0) {
+                      sb.append("<span class=\"security\">security: ");
+                      sb.append("<img src=\"/img/icon_private.gif\" alt=\"private\" /> ");
+                      sb.append("private");
+                      sb.append("</span><br />");
+                      sb.append(endl);
+                  } else if (o.getSecurity().getId() == 1) {
+                      sb.append("<span class=\"security\">security: ");
+                      sb.append("<img src=\"/img/icon_protected.gif\" alt=\"friends\" /> ");
+                      sb.append("friends");
+                      sb.append("</span><br />");
+                      sb.append(endl);
+                  }
+
+                  if (o.getLocation().getId() > 0) {
+                      sb.append("<span class=\"location\">location: ");
+                      sb.append(o.getLocation().getTitle());
+                      sb.append("</span><br />");
+                      sb.append(endl);
+                  }
+
+                  if (o.getMood().getTitle().length() > 0 && o.getMood().getId() != 12) {
+                      final MoodThemeData emoto = emoticonDao.findByThemeIdAndMoodId(1, o.getMood().getId());
+
+                      sb.append("<span class=\"mood\">mood: <img src=\"/images/emoticons/1/");
+                      sb.append(emoto.getFileName());
+                      sb.append("\" width=\"");
+                      sb.append(emoto.getWidth());
+                      sb.append("\" height=\"");
+                      sb.append(emoto.getHeight());
+                      sb.append("\" alt=\"");
+                      sb.append(o.getMood().getTitle());
+                      sb.append("\" /> ");
+                      sb.append(o.getMood().getTitle());
+                      sb.append("</span><br>");
+                      sb.append(endl);
+                  }
+
+                  if (o.getMusic().length() > 0) {
+                      sb.append("<span class=\"music\">music: ");
+                      sb.append(Xml.cleanString(o.getMusic()));
+                      sb.append("</span><br>");
+                      sb.append(endl);
+                  }
+
+                  sb.append("</p>");
+                  sb.append(endl);
+
+                  sb.append("<p>tags:");
+                  for (final EntryTag s : o.getTags()) {
+                      sb.append(" ");
+                      sb.append(s.getTag().getName());
+                  }
+                  sb.append("</p>");
+                  sb.append(endl);
+
+                  sb.append("<div>");
+                  sb.append(endl);
+                  sb.append("<table width=\"100%\"  border=\"0\">");
+                  sb.append(endl);
+                  sb.append("<tr>");
+                  sb.append(endl);
+
+                  if (uc.getAuthenticatedUser() != null && uc.getAuthenticatedUser().getId() == o.getUser().getId()) {
+                      sb.append("<td width=\"30\"><a title=\"Edit Entry\" href=\"/#/entry/").append(o.getId());
+                      sb.append("\"><i class=\"fa fa-pencil-square-o\"></i></a></td>");
+                      sb.append(endl);
+                      sb.append("<td width=\"30\"><a title=\"Delete Entry\" onclick=\"return deleteEntry(").append(o.getId()).append(")\"");
+                      sb.append("><i class=\"fa fa-trash-o\"></i></a>");
+                      sb.append("</td>");
+                      sb.append(endl);
+
+                      sb.append("<td width=\"30\"><a title=\"Add Favorite\" onclick=\"return addFavorite(\"");
+                      sb.append(o.getId());
+                      sb.append("\"><i class=\"fa fa-heart\"></i></a></td>");
+                      sb.append(endl);
+                  } else if (uc.getAuthenticatedUser() != null) {
+                      sb.append("<td width=\"30\"><a title=\"Add Favorite\" onclick=\"return addFavorite(\"");
+                      sb.append(o.getId());
+                      sb.append("\"><i class=\"fa fa-heart\"></i></a></td>");
+                      sb.append(endl);
+                  }
+
+                  sb.append("<td><div style=\"float: right\"><a href=\"/users/").append(o.getUser().getUsername()).append("/entry/");
+                  sb.append(o.getId());
+                  sb.append("\" title=\"Link to this entry\">link</a> ");
+                  sb.append('(');
+
+                  switch (o.getComments().size()) {
+                      case 0:
+                          break;
+                      case 1:
+                          sb.append("<a href=\"/comment/index.jsp?id=");
+                          sb.append(o.getId());
+                          sb.append("\" title=\"View Comment\">1 comment</a> | ");
+                          break;
+                      default:
+                          sb.append("<a href=\"/comment/index.jsp?id=");
+                          sb.append(o.getId());
+                          sb.append("\" title=\"View Comments\">");
+                          sb.append(o.getComments().size());
+                          sb.append(" comments</a> | ");
+                  }
+
+                  sb.append("<a href=\"/comment/add.jsp?id=");
+                  sb.append(o.getId());
+                  sb.append("\" title=\"Leave a comment on this entry\">comment on this</a>)");
+
+                  sb.append("</div></td>");
+                  sb.append(endl);
+                  sb.append("</tr>");
+                  sb.append(endl);
+                  sb.append("</table>");
+                  sb.append(endl);
+                  sb.append("</div>");
+                  sb.append(endl);
+
+                  sb.append("</div>");
+                  sb.append(endl);
+              }
+
+          } catch (final Exception e1) {
+              log.error(e1.getMessage());
+              ErrorPage.Display(" Error",
+                      "Error retrieving favorite entries",
+                      sb);
+          }
+          return sb.toString();
+      }
+
     /**
      * Displays friends entries for a particular user.
      *
@@ -1175,12 +1449,12 @@ public class UsersController {
                     sb.append("</td>");
                     sb.append(endl);
 
-                    sb.append("<td width=\"30\"><a title=\"Add Favorite\" href=\"/favorite/add.h?entryId=");
+                    sb.append("<td width=\"30\"><a title=\"Add Favorite\" onclick=\"return addFavorite(\"");
                     sb.append(o.getId());
                     sb.append("\"><i class=\"fa fa-heart\"></i></a></td>");
                     sb.append(endl);
                 } else if (uc.getAuthenticatedUser() != null) {
-                    sb.append("<td width=\"30\"><a title=\"Add Favorite\" href=\"/favorite/add.h?entryId=");
+                    sb.append("<td width=\"30\"><a title=\"Add Favorite\" onclick=\"return addFavorite(\"");
                     sb.append(o.getId());
                     sb.append("\"><i class=\"fa fa-heart\"></i></a></td>");
                     sb.append(endl);
@@ -1844,7 +2118,7 @@ public class UsersController {
             sb.append("</td>");
             sb.append(endl);
 
-            sb.append("<td style=\"width: 30px\"><a title=\"Add Favorite\" href=\"/favorite/add.h?entryId=");
+            sb.append("<td style=\"width: 30px\"><a title=\"Add Favorite\" onclick=\"return addFavorite(");
             sb.append(o.getId());
             sb.append("\"><i class=\"fa fa-heart\"></i></a></td>");
             sb.append(endl);
