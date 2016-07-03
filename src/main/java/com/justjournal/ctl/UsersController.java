@@ -1036,13 +1036,15 @@ public class UsersController {
         final Collection<Entry> entries = new ArrayList<Entry>();
 
         final List<Favorite> favorites = favoriteRepository.findByUser(uc.getBlogUser());
+        boolean auth = uc.getAuthenticatedUser() != null;
 
         for (final Favorite fav : favorites) {
             final Entry e = fav.getEntry();
 
             // if the blog entry belongs to the user or it's public, render it.
             // TODO: handle friends posts
-            if (e.getUser().getId() == uc.getAuthenticatedUser().getId() || e.getSecurity().getId() == 2)
+            if (e.getSecurity().getId() == 2 ||
+                    auth && (e.getUser().getId() == uc.getAuthenticatedUser().getId()))
                 entries.add(e);
         }
 
@@ -1050,7 +1052,7 @@ public class UsersController {
           sb.append(endl);
 
           try {
-              log.debug("getFavorites: Init Date Parsers.");
+              log.trace("getFavorites: Init Date Parsers.");
 
               // Format the current time.
               final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm");
@@ -1063,7 +1065,7 @@ public class UsersController {
               Entry o;
               final Iterator itr = entries.iterator();
 
-              log.trace("getFavoritess: Number of entries " + entries.size());
+              log.debug("getFavoritess: Number of entries " + entries.size());
 
               if (entries.isEmpty())
                   sb.append("<p>No favorite entries found</p>.");
@@ -1116,7 +1118,7 @@ public class UsersController {
                   sb.append(endl);
 
                   // Keep this synced with getEntries()
-                  if (o.getAutoFormat() == PrefBool.Y) {
+                  if (o.getAutoFormat() != null && o.getAutoFormat() == PrefBool.Y) {
                       sb.append("<p>");
                       if (o.getBody().contains("\n"))
                           sb.append(StringUtil.replace(o.getBody(), '\n', "<br />"));
@@ -1138,7 +1140,7 @@ public class UsersController {
 
                   sb.append("<p>");
 
-                  if (o.getSecurity().getId() == 0) {
+                  if (o.getSecurity() == null || o.getSecurity().getId() == 0) {
                       sb.append("<span class=\"security\">security: ");
                       sb.append("<img src=\"/img/icon_private.gif\" alt=\"private\" /> ");
                       sb.append("private");
@@ -1152,31 +1154,33 @@ public class UsersController {
                       sb.append(endl);
                   }
 
-                  if (o.getLocation().getId() > 0) {
+                  if (o.getLocation() != null && o.getLocation().getId() > 0) {
                       sb.append("<span class=\"location\">location: ");
                       sb.append(o.getLocation().getTitle());
                       sb.append("</span><br />");
                       sb.append(endl);
                   }
 
-                  if (o.getMood().getTitle().length() > 0 && o.getMood().getId() != 12) {
+                  if (o.getMood() != null && o.getMood().getTitle().length() > 0 && o.getMood().getId() != 12) {
                       final MoodThemeData emoto = emoticonDao.findByThemeIdAndMoodId(1, o.getMood().getId());
 
-                      sb.append("<span class=\"mood\">mood: <img src=\"/images/emoticons/1/");
-                      sb.append(emoto.getFileName());
-                      sb.append("\" width=\"");
-                      sb.append(emoto.getWidth());
-                      sb.append("\" height=\"");
-                      sb.append(emoto.getHeight());
-                      sb.append("\" alt=\"");
-                      sb.append(o.getMood().getTitle());
-                      sb.append("\" /> ");
-                      sb.append(o.getMood().getTitle());
-                      sb.append("</span><br>");
-                      sb.append(endl);
+                      if (emoto != null) {
+                          sb.append("<span class=\"mood\">mood: <img src=\"/images/emoticons/1/");
+                          sb.append(emoto.getFileName());
+                          sb.append("\" width=\"");
+                          sb.append(emoto.getWidth());
+                          sb.append("\" height=\"");
+                          sb.append(emoto.getHeight());
+                          sb.append("\" alt=\"");
+                          sb.append(o.getMood().getTitle());
+                          sb.append("\" /> ");
+                          sb.append(o.getMood().getTitle());
+                          sb.append("</span><br>");
+                          sb.append(endl);
+                      }
                   }
 
-                  if (o.getMusic().length() > 0) {
+                  if (o.getMusic() != null && o.getMusic().length() > 0) {
                       sb.append("<span class=\"music\">music: ");
                       sb.append(Xml.cleanString(o.getMusic()));
                       sb.append("</span><br>");
@@ -1186,13 +1190,15 @@ public class UsersController {
                   sb.append("</p>");
                   sb.append(endl);
 
-                  sb.append("<p>tags:");
-                  for (final EntryTag s : o.getTags()) {
-                      sb.append(" ");
-                      sb.append(s.getTag().getName());
+                  if (o.getTags() != null && !o.getTags().isEmpty()) {
+                      sb.append("<p>tags:");
+                      for (final EntryTag s : o.getTags()) {
+                          sb.append(" ");
+                          sb.append(s.getTag().getName());
+                      }
+                      sb.append("</p>");
+                      sb.append(endl);
                   }
-                  sb.append("</p>");
-                  sb.append(endl);
 
                   sb.append("<div>");
                   sb.append(endl);
@@ -1210,14 +1216,14 @@ public class UsersController {
                       sb.append("</td>");
                       sb.append(endl);
 
-                      sb.append("<td width=\"30\"><a title=\"Add Favorite\" onclick=\"return addFavorite(\"");
+                      sb.append("<td width=\"30\"><a title=\"Remove Favorite\" onclick=\"return deleteFavorite(");
                       sb.append(o.getId());
-                      sb.append("\"><i class=\"fa fa-heart\"></i></a></td>");
+                      sb.append(")\"><i class=\"fa fa-heart-o\"></i></a></td>");
                       sb.append(endl);
                   } else if (uc.getAuthenticatedUser() != null) {
-                      sb.append("<td width=\"30\"><a title=\"Add Favorite\" onclick=\"return addFavorite(\"");
+                      sb.append("<td width=\"30\"><a title=\"Add Favorite\" onclick=\"return addFavorite(");
                       sb.append(o.getId());
-                      sb.append("\"><i class=\"fa fa-heart\"></i></a></td>");
+                      sb.append(")\"><i class=\"fa fa-heart\"></i></a></td>");
                       sb.append(endl);
                   }
 
@@ -2120,18 +2126,23 @@ public class UsersController {
 
             sb.append("<td style=\"width: 30px\"><a title=\"Add Favorite\" onclick=\"return addFavorite(");
             sb.append(o.getId());
-            sb.append("\"><i class=\"fa fa-heart\"></i></a></td>");
+            sb.append(")\"><i class=\"fa fa-heart\"></i></a></td>");
             sb.append(endl);
         }
 
         if (single) {
             sb.append("<td><div align=\"right\">");
             if (o.getSecurity().getId() == 2) {
-                sb.append("<iframe src=\"https://www.facebook.com/plugins/like.php?href=http://www.justjournal.com/users/").append(o.getUser().getUsername()).append("/entry/");
+                // facebook
+                sb.append("<div style=\"padding-right: 5px\" class=\"fb-share-button\" data-href=\"http://www.justjournal.com/users/").append(o.getUser().getUsername()).append("/entry/");
                 sb.append(o.getId());
-                sb.append("\" scrolling=\"no\" frameborder=\"0\" style=\"border:none; width:450px; height:80px\"></iframe>");
+                sb.append("\" data-layout=\"button_count\">");
+                sb.append("\t</div> ");
 
+                // google+
+                sb.append("<div class=\"g-plus\" data-action=\"share\"></div>");
             }
+
             sb.append("</div></td>");
 
         } else {
