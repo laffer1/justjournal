@@ -3,7 +3,29 @@ angular.module('wwwApp').controller('EntryCtrl', ['$scope', '$routeParams', '$lo
     function ($scope, $routeParams, $location, MoodService, LocationService, SecurityService, EntryService, LoginService) {
         'use strict';
 
-        $scope.login = LoginService.get();
+        $scope.login = LoginService.get({}, function () {
+                    if (typeof $routeParams.entryId !== 'undefined') {
+                        $scope.entry = EntryService.get({Id: $routeParams.entryId, User: $scope.login.username},
+                                function () {
+                                    if (typeof $scope.entry.mood !== 'undefined' && typeof $scope.entry.mood.id !== 'undefined')
+                                        $scope.entry.mood = $scope.entry.mood.id;
+
+                                    if (typeof $scope.entry.location !== 'undefined' && typeof $scope.entry.location.id !== 'undefined')
+                                        $scope.entry.location = $scope.entry.location.id;
+
+                                    if (typeof $scope.entry.security !== 'undefined' && typeof $scope.entry.security.id !== 'undefined')
+                                        $scope.entry.security = $scope.entry.security.id;
+
+                                    $scope.entry.allowComments = $scope.entry.allowComments == 'Y';
+
+                                    $scope.entry.autoFormat = $scope.entry.autoFormat == 'Y';
+
+                                    $scope.entry.emailComments = $scope.entry.emailComments == 'Y';
+                                }
+                        );
+                    }
+                }
+        );
         $scope.moods = MoodService.query();
         $scope.locations = LocationService.query();
         $scope.security = SecurityService.query();
@@ -51,13 +73,13 @@ angular.module('wwwApp').controller('EntryCtrl', ['$scope', '$routeParams', '$lo
                 }
 
                 /*if (typeof $scope.entry.mood !== 'undefined' && typeof $scope.entry.mood.id !== 'undefined')
-                    $scope.entry.mood = $scope.entry.mood.id;
+                 $scope.entry.mood = $scope.entry.mood.id;
 
-                if (typeof $scope.entry.location !== 'undefined' && typeof $scope.entry.location.id !== 'undefined')
-                    $scope.entry.location = $scope.entry.location.id;
+                 if (typeof $scope.entry.location !== 'undefined' && typeof $scope.entry.location.id !== 'undefined')
+                 $scope.entry.location = $scope.entry.location.id;
 
-                if (typeof $scope.entry.security !== 'undefined' && typeof $scope.entry.security.id !== 'undefined')
-                    $scope.entry.security = $scope.entry.security.id;  */
+                 if (typeof $scope.entry.security !== 'undefined' && typeof $scope.entry.security.id !== 'undefined')
+                 $scope.entry.security = $scope.entry.security.id;  */
 
                 $scope.entry.tags = [];
                 if (typeof $scope.tag !== 'undefined') {
@@ -119,10 +141,6 @@ angular.module('wwwApp').controller('EntryCtrl', ['$scope', '$routeParams', '$lo
             jQuery('#tags').bind('change', function () {
                 $(this).value = $(this).value.toLocaleLowerCase();
             });
-
-            if (typeof $routeParams.entryId !== 'undefined') {
-                $scope.entry = EntryService.get({Id: $routeParams.entryId, User: $scope.login.username});
-            }
         };
         $scope.init();
     }]);
