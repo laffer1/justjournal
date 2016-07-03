@@ -17,10 +17,10 @@
 
                 <tbody>
                 <tr ng-repeat="member in Members">
-                    <td><a href="/users/{{ UserName }}">{{ UserName }}</a></td>
-                    <td>{{ Name }}</td>
-                    <td><{{ Since }}</td>
-                    <td><a href="#/profile/{{ UserName }}">view profile</a></td>
+                    <td><a href="/users/{{ member.username }}">{{ member.username }}</a></td>
+                    <td>{{ member.name }}</td>
+                    <td><{{ member.since }}</td>
+                    <td><a href="#!/profile/{{ member.username }}">view profile</a></td>
                 </tr>
                 </tbody>
             </table>
