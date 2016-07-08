@@ -20,6 +20,10 @@ angular.module('wwwApp',
                         templateUrl: 'views/cancel.html',
                         controller: 'CancelCtrl'
                     })
+                    .when('/comment/:entryId', {
+                        templateUrl: 'views/comment.html',
+                        controller: 'CommentCtrl'
+                    })
                     .when('/entry/:entryId', {
                         templateUrl: 'views/entry.html',
                         controller: 'EntryCtrl'
