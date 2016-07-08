@@ -15,7 +15,7 @@ public class XmlUrl {
 
         private String value;
 
-        Priority(String value) {
+        Priority(final String value) {
             this.value = value;
         }
 
@@ -29,7 +29,7 @@ public class XmlUrl {
 
         private String value;
 
-        ChangeFreqency(String value) {
+        ChangeFreqency(final String value) {
             this.value = value;
         }
 
@@ -45,20 +45,20 @@ public class XmlUrl {
     private String lastmod = DateConvert.encode8601();
 
     @XmlElement
-    private String changefreq = "daily";
+    private String changefreq = ChangeFreqency.DAILY.getValue();
 
     @XmlElement
-    private String priority = "0.5";
+    private String priority = Priority.MEDIUM.getValue();
 
     public XmlUrl() {
         this("", Priority.MEDIUM, ChangeFreqency.DAILY);
     }
 
-    public XmlUrl(String loc, Priority priority) {
+    public XmlUrl(final String loc, final Priority priority) {
         this(loc, priority, ChangeFreqency.DAILY);
     }
 
-    public XmlUrl(String loc, Priority priority, ChangeFreqency freqency) {
+    public XmlUrl(final String loc, final Priority priority, final ChangeFreqency freqency) {
         this.loc = loc;
         this.priority = priority.getValue();
         this.changefreq = freqency.getValue();

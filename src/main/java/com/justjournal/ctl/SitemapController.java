@@ -50,7 +50,15 @@ public class SitemapController {
         return xmlUrlSet;
     }
 
-    private void create(final XmlUrlSet xmlUrlSet, final String link, final XmlUrl.Priority priority, XmlUrl.ChangeFreqency changeFreqency) {
+    /**
+     * Create Link
+     * @param xmlUrlSet
+     * @param link
+     * @param priority
+     * @param changeFreqency
+     */
+    private void create(final XmlUrlSet xmlUrlSet, final String link,
+                        final XmlUrl.Priority priority, final XmlUrl.ChangeFreqency changeFreqency) {
         xmlUrlSet.addUrl(new XmlUrl(link, priority, changeFreqency));
     }
 
