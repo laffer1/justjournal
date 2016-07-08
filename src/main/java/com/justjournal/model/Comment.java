@@ -44,6 +44,7 @@ import java.util.Date;
 public final class Comment implements Serializable {
 
     private static final long serialVersionUID = 3594701186407268256L;
+
     @Id
     @GeneratedValue
     private int id = 0;
@@ -53,6 +54,9 @@ public final class Comment implements Serializable {
     @ManyToOne
     @JoinColumn(name = "eid")
     private Entry entry;
+
+    @Column(name="eid", insertable = false, updatable = false)
+    private int eid;
 
     @JsonBackReference(value="comment-user")
     @JsonProperty("user")
@@ -93,6 +97,14 @@ public final class Comment implements Serializable {
         this.id = commentId;
     }
 
+
+    public int getEid() {
+        return eid;
+    }
+
+    public void setEid(final int eid) {
+        this.eid = eid;
+    }
 
     public Date getDate() {
         return date;
