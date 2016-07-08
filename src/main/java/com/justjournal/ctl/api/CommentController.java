@@ -125,7 +125,7 @@ public class CommentController {
     @RequestMapping(method = RequestMethod.POST, produces = "application/json")
     public
     @ResponseBody
-    Map<String, String> update(@RequestBody final Comment comment, final HttpSession session, final HttpServletResponse response) {
+    Map<String, String> post(@RequestBody final Comment comment, final HttpSession session, final HttpServletResponse response) {
         return put(comment, session, response);
     }
 
@@ -153,10 +153,16 @@ public class CommentController {
             if (comment.getId() == 0) {
                 comment.setUser(user);
                 comment.setDate(new Date());
+                comment.setEntry(et);
                 saved = commentDao.save(comment);
             } else {
                 update = true;
                 final Comment c = commentDao.findOne(comment.getId());
+                if (c.getEntry().getId() != et.getId()) {
+                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    String error = "Error saving comment. Entry id does not match original on comment.";
+                    return java.util.Collections.singletonMap("error", error);
+                }
                 c.setUser(user);
                 c.setBody(comment.getBody());
                 c.setSubject(comment.getSubject());

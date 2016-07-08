@@ -1248,7 +1248,7 @@ public class UsersController {
                           sb.append(" comments</a> | ");
                   }
 
-                  sb.append("<a href=\"/comment/add.jsp?id=");
+                  sb.append("<a href=\"/#!/comment/");
                   sb.append(o.getId());
                   sb.append("\" title=\"Leave a comment on this entry\">comment on this</a>)");
 
@@ -1489,7 +1489,7 @@ public class UsersController {
                         sb.append(" comments</a> | ");
                 }
 
-                sb.append("<a href=\"/comment/add.jsp?id=");
+                sb.append("<a href=\"/#!/comment/");
                 sb.append(o.getId());
                 sb.append("\" title=\"Leave a comment on this entry\">comment on this</a>)");
 
@@ -2134,7 +2134,7 @@ public class UsersController {
 
         if (single) {
             sb.append("<td><div align=\"right\">");
-            if (o.getSecurity().getId() == 2) {
+            if (o.getSecurity() != null && o.getSecurity().getId() == 2) {
                 // facebook
                 sb.append("<div style=\"padding-right: 5px\" class=\"fb-share-button\" data-href=\"http://www.justjournal.com/users/").append(o.getUser().getUsername()).append("/entry/");
                 sb.append(o.getId());
@@ -2172,7 +2172,7 @@ public class UsersController {
                     sb.append(" comments</a> | ");
             }
 
-            sb.append("<a href=\"/comment/add.jsp?id=");
+            sb.append("<a href=\"/#!/comment/");
             sb.append(o.getId());
             sb.append("\" title=\"Leave a comment on this entry\"><i class=\"fa fa-comment-o\"></i></a>)");
             sb.append("\t\t\t\t\t\t</div></td>");
