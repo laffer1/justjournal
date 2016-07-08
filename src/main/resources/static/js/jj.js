@@ -60,6 +60,26 @@ function deleteEntry(entryId) {
     }
 }
 
+
+function deleteComment(commentId) {
+    'use strict';
+    if (confirmDelete()) {
+        var request = jQuery.ajax({
+            url: "/api/comment/" + commentId,
+            type: "DELETE",
+            data: {}
+        });
+
+        request.done(function() {
+          window.alert('Removed Comment');
+        });
+
+        request.fail(function(jqXHR, textStatus) {
+          window.alert("Request failed: " + textStatus);
+        });
+    }
+}
+
 function confirmDelete() {
     'use strict';
     return window.confirm("Are you sure you want to delete this?");
