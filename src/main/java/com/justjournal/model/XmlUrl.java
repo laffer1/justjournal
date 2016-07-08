@@ -25,7 +25,7 @@ public class XmlUrl {
     }
 
     public enum ChangeFreqency {
-        ALWAYS("always"), HOURLY("hourly"), DAILY("DAILY"), WEEKLY("weekly"), MONTHLY("monthly"), YEARLY("yearly"), NEVER("never");
+        ALWAYS("always"), HOURLY("hourly"), DAILY("daily"), WEEKLY("weekly"), MONTHLY("monthly"), YEARLY("yearly"), NEVER("never");
 
         private String value;
 
