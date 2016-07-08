@@ -9,11 +9,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
+ * Dynamically generate sitemap from http://stackoverflow.com/questions/12289232/serving-sitemap-xml-and-robots-txt-with-spring-mvc
+ *
  * @author Lucas Holt
  */
 @Controller
@@ -32,26 +31,27 @@ public class SitemapController {
         final Settings baseUri = settingsRepository.findByName("baseuri");
 
         final XmlUrlSet xmlUrlSet = new XmlUrlSet();
-        create(xmlUrlSet, baseUri.getValue(), XmlUrl.Priority.HIGH);
+        create(xmlUrlSet, baseUri.getValue(), XmlUrl.Priority.HIGH, XmlUrl.ChangeFreqency.MONTHLY);
 
         for (final User user : userRepository.findAll()) {
             if (user.getUserPref().getAllowSpider().equals(PrefBool.Y)) {
-                create(xmlUrlSet, baseUri.getValue() + "/users/" + user.getUsername(), XmlUrl.Priority.HIGH);
+                final String users = baseUri.getValue() + "users/" + user.getUsername();
 
-                create(xmlUrlSet, baseUri.getValue() + "/users/" + user.getUsername() + "/calendar", XmlUrl.Priority.MEDIUM);
-                create(xmlUrlSet, baseUri.getValue() + "/users/" + user.getUsername() + "/friends", XmlUrl.Priority.MEDIUM);
-                create(xmlUrlSet, baseUri.getValue() + "/users/" + user.getUsername() + "/pictures", XmlUrl.Priority.MEDIUM);
-                create(xmlUrlSet, baseUri.getValue() + "/users/" + user.getUsername() + "/favorites", XmlUrl.Priority.MEDIUM);
-                create(xmlUrlSet, baseUri.getValue() + "/users/" + user.getUsername() + "/rss", XmlUrl.Priority.MEDIUM);
-                create(xmlUrlSet, baseUri.getValue() + "/users/" + user.getUsername() + "/atom", XmlUrl.Priority.MEDIUM);
+                create(xmlUrlSet, users, XmlUrl.Priority.HIGH, XmlUrl.ChangeFreqency.DAILY);
+                create(xmlUrlSet, users + "/calendar", XmlUrl.Priority.MEDIUM, XmlUrl.ChangeFreqency.MONTHLY);
+                create(xmlUrlSet, users + "/friends", XmlUrl.Priority.MEDIUM, XmlUrl.ChangeFreqency.DAILY);
+                create(xmlUrlSet, users + "/pictures", XmlUrl.Priority.MEDIUM, XmlUrl.ChangeFreqency.WEEKLY);
+                create(xmlUrlSet, users + "/favorites", XmlUrl.Priority.MEDIUM, XmlUrl.ChangeFreqency.WEEKLY);
+                create(xmlUrlSet, users + "/rss", XmlUrl.Priority.MEDIUM, XmlUrl.ChangeFreqency.DAILY);
+                create(xmlUrlSet, users + "/atom", XmlUrl.Priority.MEDIUM, XmlUrl.ChangeFreqency.DAILY);
             }
         }
 
         return xmlUrlSet;
     }
 
-    private void create(final XmlUrlSet xmlUrlSet, final String link, final XmlUrl.Priority priority) {
-        xmlUrlSet.addUrl(new XmlUrl(link, priority));
+    private void create(final XmlUrlSet xmlUrlSet, final String link, final XmlUrl.Priority priority, XmlUrl.ChangeFreqency changeFreqency) {
+        xmlUrlSet.addUrl(new XmlUrl(link, priority, changeFreqency));
     }
 
 }
