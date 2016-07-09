@@ -226,13 +226,13 @@ public class Login {
             uid = validate(userName, password);
 
             if (uid > BAD_USER_ID && isPassword(newPass)) {
-                final com.justjournal.model.User user = lookupUser(userName, password);
+                final com.justjournal.model.User user = lookupUser(userName, SHA1(password));
                 user.setPassword(SHA1(newPass));
                 userRepository.save(user);
 
                 return true;
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             log.error("changePass(): " + e.getMessage());
         }
 
