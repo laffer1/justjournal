@@ -64,7 +64,6 @@ import javax.transaction.Transactional;
 import java.awt.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.sql.ResultSet;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -79,8 +78,8 @@ import java.util.List;
 @Controller
 @RequestMapping("/users")
 public class UsersController {
-    public static final int SEARCH_MAX_LENGTH = 20;
-    public static final float FONT_10_POINT = 10.0F;
+    private static final int SEARCH_MAX_LENGTH = 20;
+    private static final float FONT_10_POINT = 10.0F;
     // constants
     private static final char endl = '\n';
     private static final Logger log = Logger.getLogger(UsersController.class);
@@ -1236,12 +1235,12 @@ public class UsersController {
                       case 0:
                           break;
                       case 1:
-                          sb.append("<a href=\"/comment/index.jsp?id=");
+                          sb.append("<a href=\"/users/").append(o.getUser().getUsername()).append("/entry/");
                           sb.append(o.getId());
                           sb.append("\" title=\"View Comment\">1 comment</a> | ");
                           break;
                       default:
-                          sb.append("<a href=\"/comment/index.jsp?id=");
+                          sb.append("<a href=\"/users/").append(o.getUser().getUsername()).append("/entry/");
                           sb.append(o.getId());
                           sb.append("\" title=\"View Comments\">");
                           sb.append(o.getComments().size());
@@ -1473,16 +1472,17 @@ public class UsersController {
                 sb.append("\" title=\"Link to this entry\">link</a> ");
                 sb.append('(');
 
+
                 switch (o.getComments().size()) {
                     case 0:
                         break;
                     case 1:
-                        sb.append("<a href=\"/comment/index.jsp?id=");
+                        sb.append("<a href=\"/users/").append(o.getUser().getUsername()).append("/entry/");
                         sb.append(o.getId());
                         sb.append("\" title=\"View Comment\">1 comment</a> | ");
                         break;
                     default:
-                        sb.append("<a href=\"/comment/index.jsp?id=");
+                        sb.append("<a href=\"/users/").append(o.getUser().getUsername()).append("/entry/");
                         sb.append(o.getId());
                         sb.append("\" title=\"View Comments\">");
                         sb.append(o.getComments().size());
@@ -2155,20 +2155,19 @@ public class UsersController {
 
             sb.append('(');
 
-            final int commentCount = o.getComments().size();
-            switch (commentCount) {
+            switch (o.getComments().size()) {
                 case 0:
                     break;
                 case 1:
-                    sb.append("<a href=\"/comment/index.jsp?id=");
+                    sb.append("<a href=\"/users/").append(o.getUser().getUsername()).append("/entry/");
                     sb.append(o.getId());
                     sb.append("\" title=\"View Comment\">1 comment</a> | ");
                     break;
                 default:
-                    sb.append("<a href=\"/comment/index.jsp?id=");
+                    sb.append("<a href=\"/users/").append(o.getUser().getUsername()).append("/entry/");
                     sb.append(o.getId());
                     sb.append("\" title=\"View Comments\">");
-                    sb.append(commentCount);
+                    sb.append(o.getComments().size());
                     sb.append(" comments</a> | ");
             }
 
@@ -2194,7 +2193,7 @@ public class UsersController {
             sb.append(" comments</div>\n");
 
             sb.append("<div class=\"rightflt\">");
-            sb.append("<a href=\"/comment/add.jsp?id=").append(o.getId()).append("\" title=\"Add Comment\">Add Comment</a></div>\n");
+            sb.append("<a href=\"/#!/comment/").append(o.getId()).append("\" title=\"Add Comment\">Add Comment</a></div>\n");
 
             for (final Comment co : comments) {
                 sb.append("<div class=\"comment\">\n");
@@ -2202,7 +2201,7 @@ public class UsersController {
                 sb.append("<h3><span class=\"subject\">");
                 sb.append(Xml.cleanString(co.getSubject()));
                 sb.append("</span></h3>\n");
-                sb.append("<img src=\"../images/userclass_16.png\" alt=\"user\"/>");
+                sb.append("<img src=\"/static/images/userclass_16.png\" alt=\"user\"/>");
                 sb.append("<a href=\"../users/");
                 sb.append(co.getUser().getUsername());
                 sb.append("\" title=\"");
@@ -2215,18 +2214,18 @@ public class UsersController {
                 sb.append(new DateTimeBean(co.getDate()).toPubDate());
                 sb.append("</span>\n");
 
-
-                if (uc.getAuthenticatedUser().getUsername().equalsIgnoreCase(co.getUser().getUsername())) {
+                if (uc.getAuthenticatedUser() != null &&
+                        uc.getAuthenticatedUser().getUsername().equalsIgnoreCase(co.getUser().getUsername())) {
                     sb.append("<br/><span class=\"actions\">\n");
-                    sb.append("<a href=\"edit.h?commentId=");
+                    sb.append("<a href=\"/#!/comment/").append(o.getId()).append("/edit/");
                     sb.append(co.getId());
                     sb.append("\" title=\"Edit Comment\">");
                     sb.append("     <i class=\"fa fa-pencil-square-o\"></i>");
                     sb.append("</a>\n");
 
-                    sb.append("<a href=\"delete.h?commentId=");
+                    sb.append("<a onclick=\"deleteComment(");
                     sb.append(co.getId());
-                    sb.append("\" title=\"Delete Comment\">");
+                    sb.append(")\" title=\"Delete Comment\">");
                     sb.append("<i class=\"fa fa-trash-o\"></i>");
                     sb.append("</a>\n");
                     sb.append("</span>\n");
