@@ -44,6 +44,10 @@ angular.module('wwwApp',
                         templateUrl: 'views/moodlist.html',
                         controller: 'MoodListCtrl'
                     })
+                    .when('/prefs/password', {
+                        templateUrl: 'views/prefs/changePassword.html',
+                        controller: 'PrefsChangePasswordCtrl'
+                    })
                     .when('/privacy', {
                         templateUrl: 'views/privacy.html',
                         controller: 'PrivacyCtrl'

@@ -150,6 +150,10 @@
                                             class="fa fa-sign-in"></i> Login</a>
                                     </li>
 
+                                    <li th:if="${authenticatedUsername != null}"><a href="/#!/prefs/password"><i
+                                                                      class=""></i>
+                                        Change Password</a></li>
+
                                     <li th:if="${authenticatedUsername != null}"><a href="/logout"><i
                                         class="fa fa-sign-out"></i>
                                     Log Out</a></li>
