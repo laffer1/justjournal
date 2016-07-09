@@ -924,6 +924,7 @@ public class UsersController {
 
                 sb.append("<h2><img src=\"/images/icon_search.gif\" alt=\"Search Blog\" /></h2>");
                 sb.append(endl);
+                sb.append("<p>Searching for <i>" + bquery + "</i></p>");
 
                 if (searchResults == null || searchResults.isEmpty()) {
                     sb.append("<p>No items were found matching your search criteria.</p>");
