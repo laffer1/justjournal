@@ -53,6 +53,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -891,6 +892,9 @@ public class UsersController {
         return sb.toString();
     }
 
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
     @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
     private String search(final UserContext uc, final int maxresults, final String bquery) {
         final StringBuilder sb = new StringBuilder();
@@ -904,7 +908,7 @@ public class UsersController {
 
         if (bquery != null && bquery.length() > 0) {
             try {
-                final BaseSearch b = new BaseSearch();
+                final BaseSearch b = new BaseSearch(jdbcTemplate);
 
                 if (log.isDebugEnabled()) {
                     log.debug("Search base is: " + sql);
@@ -918,7 +922,7 @@ public class UsersController {
                 b.setSortAscending("date");
                 searchResults = b.search(bquery);
 
-                sb.append("<h2><img src=\"/images/icon_search.gif\" alt=\"Search Blog\" style=\"float: left;\" /> Blog Search</h2>");
+                sb.append("<h2><img src=\"/images/icon_search.gif\" alt=\"Search Blog\" /></h2>");
                 sb.append(endl);
 
                 if (searchResults == null || searchResults.isEmpty()) {
@@ -926,7 +930,7 @@ public class UsersController {
                     sb.append(endl);
                 } else {
 
-                    for (Map<String,Object> brs : searchResults)
+                    for (final Map<String,Object> brs : searchResults)
                      {
 
                         // Format the current time.

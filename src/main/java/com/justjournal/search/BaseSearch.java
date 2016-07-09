@@ -43,6 +43,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Lucas Holt
@@ -57,9 +58,12 @@ public class BaseSearch {
     protected int maxresults = 30;
     protected String baseQuery;
     protected String sort;
+    private JdbcTemplate jdbcTemplate;
 
     @Autowired
-       private JdbcTemplate jdbcTemplate;
+    public BaseSearch(final JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     public void setMaxResults(int results) {
         maxresults = results;
@@ -70,12 +74,12 @@ public class BaseSearch {
             baseQuery = base;
     }
 
-    public void setFields(String fields) {
+    public void setFields(final String fields) {
         String q[] = fields.split("\\s");
         fieldlist.addAll(Arrays.asList(q));
     }
 
-    public void setSortAscending(String field) {
+    public void setSortAscending(final String field) {
         if (field != null && field.length() > 0)
             sort = "ORDER BY " + field;
     }
@@ -85,11 +89,11 @@ public class BaseSearch {
             sort = "ORDER BY " + field + " DESC";
     }
 
-    public List search(String query) {
+    public List<Map<String, Object>> search(final String query) {
         if (log.isDebugEnabled()) {
             log.debug("search() called with " + query);
         }
-        List result;
+        final List<Map<String, Object>> result;
         parseQuery(query);
 
         result = realSearch(terms);
@@ -97,8 +101,8 @@ public class BaseSearch {
         return result;
     }
 
-    protected void parseQuery(String query) {
-        String q[] = query.split("\\s");
+    protected void parseQuery(final String query) {
+        final String q[] = query.split("\\s");
         final int qLen = java.lang.reflect.Array.getLength(q);
 
         for (int i = 0; i < qLen; i++) {
@@ -110,7 +114,7 @@ public class BaseSearch {
         }
     }
 
-    protected List realSearch(ArrayList<String> terms) {
+    protected List<Map<String, Object>> realSearch(final List<String> terms) {
 
         String sqlStmt = baseQuery;
 
@@ -133,9 +137,8 @@ public class BaseSearch {
 
             return jdbcTemplate.queryForList(sqlStmt);
 
-        } catch (Exception e) {
-            log.debug(sqlStmt);
-            log.debug(e.getMessage());
+        } catch (final Exception e) {
+            log.error("Error executing search with query: " +  sqlStmt + "; and error " + e.getMessage());
         }
 
         return null;
