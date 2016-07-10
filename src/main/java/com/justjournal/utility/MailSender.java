@@ -70,7 +70,7 @@ public class MailSender extends Thread {
         log.trace("MailSender: Init");
 
         try {
-            Properties props = new Properties();
+            final Properties props = new Properties();
             props.put("mail.smtp.host", set.getMailHost());
             props.put("mail.smtp.user", set.getMailUser());
             props.put("mail.smtp.auth", "true");
@@ -83,7 +83,7 @@ public class MailSender extends Thread {
 
             while (process) {
                 try {
-                    Iterable<QueueMail> items = queueMailRepository.findAll();
+                    final Iterable<QueueMail> items = queueMailRepository.findAll();
 
                     log.trace("MailSender: Recordset loaded.");
 
