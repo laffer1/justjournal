@@ -106,7 +106,7 @@ public class SignUpController {
             user.setName(newUser.getFirstName());
             user.setLastName(newUser.getLastName());
             user.setUsername(newUser.getUsername());
-            user.setPassword(newUser.getPassword());
+            user.setPassword(Login.SHA1(newUser.getPassword()));
             user.setType(0);
             user.setSince(Calendar.getInstance().get(Calendar.YEAR));
             user.setLastLogin(new Date());
