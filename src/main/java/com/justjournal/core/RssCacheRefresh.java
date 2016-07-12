@@ -29,7 +29,10 @@ package com.justjournal.core;
 import com.justjournal.model.RssCache;
 import com.justjournal.repository.RssCacheDao;
 import com.justjournal.utility.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.naming.Context;
@@ -41,6 +44,11 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import static java.lang.Thread.yield;
 
 /**
  * Update the RSS cache
@@ -48,67 +56,52 @@ import java.sql.Statement;
  * @author Lucas Holt
  */
 @Component
-public class RssCacheContextListener extends Thread {
+public class RssCacheRefresh {
+    private Logger log = LoggerFactory.getLogger(RssCacheRefresh.class);
 
     @Autowired
     private RssCacheDao rssCacheDao;
 
+    @Scheduled(fixedDelay = 1000 * 60 * 30, initialDelay = 60000)
     public void run() {
-        System.out.println("RssCache: Init");
-
-        final String DbEnv = "java:comp/env/jdbc/jjDB";
-        final String sqlSelect = "SELECT uri FROM rss_cache WHERE lastupdated <= DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY);";
+        log.trace("RssCache: Init");
 
         try {
-            System.out.println("RssCache: Lookup context");
-            Context ctx = new InitialContext();
-            DataSource ds = (DataSource) ctx.lookup(DbEnv);
+            final Calendar yesterday = Calendar.getInstance();
+            yesterday.add(Calendar.DATE, -1);
 
-            Connection conn = ds.getConnection();
-            System.out.println("MailSender: DB Connection up");
+            final List<RssCache> items = rssCacheDao.findByLastUpdatedBefore(yesterday.getTime());
 
-            while (true) {
-                try {
-                    Statement stmt = conn.createStatement();
-                    ResultSet rs = stmt.executeQuery(sqlSelect);
-                    System.out.println("RssCache: Recordset loaded.");
+             for (final RssCache cache : items) {
+                 try {
+                     getRssDocument(cache);
+                 } catch (final Exception e) {
+                    log.error(e.getMessage());
+                 }
+             }
 
-                    while (rs.next()) {
-                        getRssDocument(rs.getString("uri"));
-                        yield();  // be nice to others... we are in a servlet container...
-                    }
-
-                    rs.close();
-                    stmt.close();
-                    sleep(1000 * 60 * 60); // 60 minutes?
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                } catch (Exception e) {
-                    System.out.println("MailSender: Exception - " + e.getMessage());
-                }
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (final Exception e) {
+          log.error(e.getMessage());
         }
 
-        System.out.println("RssCache: Quit");
+       log.trace("RssCache: Quit");
     }
 
-    protected void getRssDocument(final String uri)
-            throws Exception {
+    /**
+     * Fetch the RSS feed.
+     * @param rss
+     * @throws Exception
+     */
+    void getRssDocument(final RssCache rss) throws Exception {
 
         URL u;
-        RssCache rss;
         InputStreamReader ir;
         StringBuilder sbx = new StringBuilder();
         BufferedReader buff;
 
-        rss = rssCacheDao.findByUri(uri);
-
         if (rss != null && rss.getUri() != null && rss.getUri().length() > 10) {
 
-            u = new URL(uri);
+            u = new URL(rss.getUri());
             ir = new InputStreamReader(u.openStream(), "UTF-8");
             buff = new BufferedReader(ir);
             String input;
@@ -125,7 +118,6 @@ public class RssCacheContextListener extends Thread {
             if (rss.getContent().startsWith("<html") || rss.getContent().startsWith("<!DOCTYPE HTML"))
                 rss.setContent(""); // it's an html page.. bad
             rssCacheDao.save(rss);
-
         }
     }
 

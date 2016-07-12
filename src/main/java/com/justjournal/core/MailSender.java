@@ -28,15 +28,15 @@ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
 
-package com.justjournal.utility;
+package com.justjournal.core;
 
-import com.justjournal.core.Settings;
 import com.justjournal.model.QueueMail;
 import com.justjournal.repository.QueueMailRepository;
+import com.justjournal.utility.ForcedAuthenticator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.mail.*;
@@ -53,9 +53,7 @@ import java.util.Properties;
  * @version $Id: MailSender.java,v 1.8 2009/03/16 22:10:31 laffer1 Exp $
  */
 @Component
-public class MailSender extends Thread {
-
-    public boolean process = true;
+public class MailSender {
     private Logger log = LoggerFactory.getLogger(MailSender.class);
 
     @Autowired
@@ -64,9 +62,8 @@ public class MailSender extends Thread {
     @Autowired
     private Settings set;
 
-    @Override
-    @SuppressWarnings("unchecked")
-    public void run() {
+    @Scheduled(fixedDelay = 120000, initialDelay = 30000)
+    public void send() {
         log.trace("MailSender: Init");
 
         try {
@@ -81,59 +78,47 @@ public class MailSender extends Thread {
             log.trace("MailSender: " + set.getMailUser() + "@" +
                     set.getMailHost() + ":" + set.getMailPort());
 
-            while (process) {
+            final Iterable<QueueMail> items = queueMailRepository.findAll();
+
+            log.trace("MailSender: Recordset loaded.");
+
+            for (QueueMail item : items) {
+                boolean sentok = true;
+
                 try {
-                    final Iterable<QueueMail> items = queueMailRepository.findAll();
+                    InternetAddress from = new InternetAddress(item.getFrom());
+                    InternetAddress to = new InternetAddress(item.getTo());
 
-                    log.trace("MailSender: Recordset loaded.");
+                    MimeMessage message = new MimeMessage(s);
+                    message.setFrom(from);
+                    message.setRecipient(Message.RecipientType.TO, to);
+                    message.setSubject(item.getSubject());
+                    message.setText(item.getBody());
+                    message.setSentDate(new Date());
+                    message.saveChanges();
 
-                    for (QueueMail item : items) {
-                        boolean sentok = true;
-
-                        try {
-                            InternetAddress from = new InternetAddress(item.getFrom());
-                            InternetAddress to = new InternetAddress(item.getTo());
-
-                            MimeMessage message = new MimeMessage(s);
-                            message.setFrom(from);
-                            message.setRecipient(Message.RecipientType.TO, to);
-                            message.setSubject(item.getSubject());
-                            message.setText(item.getBody());
-                            message.setSentDate(new Date());
-                            message.saveChanges();
-
-                            Address[] a = {to};
-                            Transport t = s.getTransport("smtp");
-                            t.connect();
-                            t.sendMessage(message, a);
-                            t.close();
-                            //Transport.send(message);
-                        } catch (AddressException e) {
-                            sentok = false;
-                            log.error("MailSender: Invalid address. " + e.getMessage());
-                        } catch (MessagingException me) {
-                            sentok = false;
-                            log.error("MailSender: Send failed." + me.getMessage() + " : " + me.toString());
-                        }
-
-                        if (sentok) {
-                            queueMailRepository.delete(item.getId());
-                        }
-
-                        yield();  // be nice to others... we are in a servlet container...
-                    }
-                    sleep(1000 * 60 * 15); // 15 minutes?
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                } catch (Exception e) {
-                    log.error("MailSender: Exception - " + e.getMessage());
+                    Address[] a = {to};
+                    Transport t = s.getTransport("smtp");
+                    t.connect();
+                    t.sendMessage(message, a);
+                    t.close();
+                    //Transport.send(message);
+                } catch (AddressException e) {
+                    sentok = false;
+                    log.error("MailSender: Invalid address. " + e.getMessage());
+                } catch (MessagingException me) {
+                    sentok = false;
+                    log.error("MailSender: Send failed." + me.getMessage() + " : " + me.toString());
                 }
-            }
-        } catch (Exception e) {
-            log.error(e.getMessage());
-        }
 
-        log.trace("MailSender: Quit");
+                if (sentok) {
+                    queueMailRepository.delete(item.getId());
+                }
+
+            }
+        } catch (Exception me) {
+            log.error("MailSender: Exception - " + me.getMessage());
+        }
     }
 }
 

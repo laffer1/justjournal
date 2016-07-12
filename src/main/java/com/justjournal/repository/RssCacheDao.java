@@ -47,4 +47,6 @@ public interface RssCacheDao extends CrudRepository<RssCache, Integer> {
     RssCache findByUri(String uri);
 
     List<RssCache> findByLastUpdatedBetween(Date begin, Date end);
+
+    List<RssCache> findByLastUpdatedBefore(Date lastUpdated);
 }
