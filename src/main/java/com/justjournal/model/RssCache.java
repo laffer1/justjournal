@@ -51,23 +51,24 @@ import java.util.Date;
 @Table(name = "rss_cache")
 public final class RssCache implements Serializable {
 
-
     private static final long serialVersionUID = 7699995609479936367L;
+
     @Id
     @GeneratedValue
     private int id;
 
-    private int interval;
+    // reserved keyword
+    @Column(name="\"interval\"", columnDefinition = "tinyint default 24")
+    private int interval = 24;
 
     @Temporal(value = TemporalType.TIMESTAMP)
     @Column(name = "lastupdated")
     private Date lastUpdated;
 
-    //TODO: mark as tinytext
-    @Column(name = "uri", nullable = false, length = 255)
+    @Column(name = "uri", nullable = false, length = 255, columnDefinition = "tinytext")
     private String uri;
 
-    @Column(name = "content", nullable = false, length = 65535, columnDefinition = "TEXT")
+    @Column(name = "content", nullable = false, length = 16777215, columnDefinition = "MEDIUMTEXT")
     private String content;
 
     @JsonCreator

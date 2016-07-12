@@ -117,7 +117,7 @@ public class RssCacheRefresh {
 
             if (rss.getContent().startsWith("<html") || rss.getContent().startsWith("<!DOCTYPE HTML"))
                 rss.setContent(""); // it's an html page.. bad
-            rssCacheDao.save(rss);
+            rssCacheDao.saveAndFlush(rss);
         }
     }
 

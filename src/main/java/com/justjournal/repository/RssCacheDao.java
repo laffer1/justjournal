@@ -35,18 +35,20 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.repository;
 
 import com.justjournal.model.RssCache;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.List;
 
 @Repository
-public interface RssCacheDao extends CrudRepository<RssCache, Integer> {
+public interface RssCacheDao extends JpaRepository<RssCache, Integer> {
 
     RssCache findByUri(String uri);
 
-    List<RssCache> findByLastUpdatedBetween(Date begin, Date end);
+    List<RssCache> findByLastUpdatedBetween(@Param("begin") Date begin, @Param("end") Date end);
 
-    List<RssCache> findByLastUpdatedBefore(Date lastUpdated);
+    List<RssCache> findByLastUpdatedBefore(@Param("lastUpdated") Date lastUpdated);
 }
