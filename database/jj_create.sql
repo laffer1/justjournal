@@ -387,7 +387,7 @@ CREATE TABLE IF NOT EXISTS `rss_cache` (
   `interval`    TINYINT(10) UNSIGNED NOT NULL DEFAULT '0',
   `lastupdated` DATETIME             NOT NULL DEFAULT '0000-00-00 00:00:00',
   `uri`         TINYTEXT             NOT NULL,
-  `content`     TEXT,
+  `content`     MEDIUMTEXT,
   PRIMARY KEY (`id`),
   KEY `rssurl` (`uri`(100))
 )
