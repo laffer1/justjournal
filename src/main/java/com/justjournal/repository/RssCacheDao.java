@@ -38,8 +38,13 @@ import com.justjournal.model.RssCache;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
+import java.util.List;
+
 @Repository
 public interface RssCacheDao extends CrudRepository<RssCache, Integer> {
 
-    public RssCache findByUri(String uri);
+    RssCache findByUri(String uri);
+
+    List<RssCache> findByLastUpdatedBetween(Date begin, Date end);
 }
