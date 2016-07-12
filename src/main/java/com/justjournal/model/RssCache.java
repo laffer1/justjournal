@@ -59,6 +59,7 @@ public final class RssCache implements Serializable {
 
     private int interval;
 
+    @Temporal(value = TemporalType.TIMESTAMP)
     @Column(name = "lastupdated")
     private Date lastUpdated;
 
