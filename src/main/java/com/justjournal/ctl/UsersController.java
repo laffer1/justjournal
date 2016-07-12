@@ -96,6 +96,7 @@ public class UsersController {
     private static final String VIEW_USERS = "users";
     private static final String PATH_USERNAME = "username";
     private static final String PATH_MONTH = "month";
+    private static final String MODEL_AVATAR = "avatar";
 
     @SuppressWarnings({"InstanceVariableOfConcreteClass"})
     private Settings settings = null;
@@ -130,6 +131,9 @@ public class UsersController {
     @Autowired
     private UserImageService userImageService;
 
+    @Autowired
+    private UserPicRepository userPicRepository;
+
     public void setEntryService(final EntryService entryService) {
         this.entryService = entryService;
     }
@@ -137,6 +141,17 @@ public class UsersController {
     @Autowired
     public void setSettings(final Settings settings) {
         this.settings = settings;
+    }
+
+    /**
+     * Do we have an avatar?
+     * @param userId
+     * @return  true if avatar, false otherwise
+     */
+    private boolean avatar(int userId) {
+        // TOOD: very slow
+        UserPic userPic = userPicRepository.findOne(userId);
+        return (userPic != null);
     }
 
     @RequestMapping(value = "{username}", method = RequestMethod.GET, produces = "text/html")
@@ -163,6 +178,8 @@ public class UsersController {
         model.addAttribute(MODEL_CALENDAR_MINI, getCalendarMini(userContext));
         model.addAttribute(MODEL_ARCHIVE, getArchive(userContext));
         model.addAttribute(MODEL_PICTURES, null);
+
+        model.addAttribute(MODEL_AVATAR, avatar(userContext.getBlogUser().getId()));
 
         model.addAttribute("pageable", pageable);
 
@@ -198,6 +215,8 @@ public class UsersController {
         model.addAttribute(MODEL_ENTRY, entry);
         model.addAttribute(MODEL_ENTRY + "_format", getSingleEntry(entry, userContext));
 
+        model.addAttribute(MODEL_AVATAR, avatar(userContext.getBlogUser().getId()));
+
         return VIEW_USERS;
     }
 
@@ -224,6 +243,7 @@ public class UsersController {
           model.addAttribute(MODEL_CALENDAR_MINI, getCalendarMini(userc));
           model.addAttribute(MODEL_ARCHIVE, getArchive(userc));
           model.addAttribute(MODEL_PICTURES, null);
+        model.addAttribute(MODEL_AVATAR, avatar(userc.getBlogUser().getId()));
 
           try {
               model.addAttribute(MODEL_FAVORITES, getFavorites(userc));
@@ -256,6 +276,7 @@ public class UsersController {
         model.addAttribute(MODEL_CALENDAR_MINI, getCalendarMini(userc));
         model.addAttribute(MODEL_ARCHIVE, getArchive(userc));
         model.addAttribute(MODEL_PICTURES, null);
+        model.addAttribute(MODEL_AVATAR, avatar(userc.getBlogUser().getId()));
 
         try {
             model.addAttribute(MODEL_FRIENDS, getFriends(userc));
@@ -287,6 +308,7 @@ public class UsersController {
         model.addAttribute(MODEL_CALENDAR_MINI, getCalendarMini(userContext));
         model.addAttribute(MODEL_ARCHIVE, getArchive(userContext));
         model.addAttribute(MODEL_PICTURES, null);
+        model.addAttribute(MODEL_AVATAR, avatar(userContext.getBlogUser().getId()));
 
         final Calendar cal = Calendar.getInstance();
         final Integer year = cal.get(Calendar.YEAR);
@@ -326,6 +348,7 @@ public class UsersController {
         model.addAttribute(MODEL_CALENDAR_MINI, getCalendarMini(userc));
         model.addAttribute(MODEL_ARCHIVE, getArchive(userc));
         model.addAttribute(MODEL_PICTURES, null);
+        model.addAttribute(MODEL_AVATAR, avatar(userc.getBlogUser().getId()));
 
         model.addAttribute(MODEL_CALENDAR, getCalendar(year, userc));
 
@@ -356,6 +379,7 @@ public class UsersController {
         model.addAttribute(MODEL_CALENDAR_MINI, getCalendarMini(userc));
         model.addAttribute(MODEL_ARCHIVE, getArchive(userc));
         model.addAttribute(MODEL_PICTURES, null);
+        model.addAttribute(MODEL_AVATAR, avatar(userc.getBlogUser().getId()));
 
         model.addAttribute(MODEL_CALENDAR, getCalendarMonth(year, month, userc));
 
@@ -385,6 +409,7 @@ public class UsersController {
         model.addAttribute(MODEL_CALENDAR_MINI, getCalendarMini(userc));
         model.addAttribute(MODEL_ARCHIVE, getArchive(userc));
         model.addAttribute(MODEL_PICTURES, null);
+        model.addAttribute(MODEL_AVATAR, avatar(userc.getBlogUser().getId()));
 
         model.addAttribute(MODEL_CALENDAR, getCalendarDay(year, month, day, userc));
 
