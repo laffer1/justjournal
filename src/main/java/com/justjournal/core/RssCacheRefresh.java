@@ -48,6 +48,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import static java.lang.Thread.sleep;
 import static java.lang.Thread.yield;
 
 /**
@@ -75,6 +76,7 @@ public class RssCacheRefresh {
              for (final RssCache cache : items) {
                  try {
                      getRssDocument(cache);
+                     sleep(200);
                  } catch (final Exception e) {
                     log.error(e.getMessage());
                  }
