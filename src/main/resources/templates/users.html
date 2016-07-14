@@ -90,7 +90,7 @@
                                 <a title="Photos"
                                    th:href="@{'/users/' + ${user.username} + '/pictures'}"><i class="fa fa-picture-o"></i></a>
                             </li>
-                            <li th:class="${pictures != null} ? 'active' : ''">
+                            <li th:class="${favorites != null} ? 'active' : ''">
                                 <a title="Favorites"
                                    th:href="@{'/users/' + ${user.username} + '/favorites'}"><i
                                         class="fa fa-heart"></i></a>

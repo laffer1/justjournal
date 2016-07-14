@@ -41,6 +41,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Calendar;
 import java.util.List;
@@ -92,9 +93,9 @@ public class RssCacheRefresh {
      * Fetch the RSS feed.
      *
      * @param rss
-     * @throws Exception
+     * @throws IOException
      */
-    void getRssDocument(final RssCache rss) throws Exception {
+    void getRssDocument(final RssCache rss) throws IOException {
         final StringBuilder sbx = new StringBuilder();
 
         if (rss != null && rss.getUri() != null && rss.getUri().length() > 10) {

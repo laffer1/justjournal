@@ -71,6 +71,9 @@ public final class RssCache implements Serializable {
     @Column(name = "content", nullable = false, length = 16777215, columnDefinition = "MEDIUMTEXT")
     private String content;
 
+    @Column(name = "active", columnDefinition = "boolean default true")
+    private Boolean active;
+
     @JsonCreator
     public RssCache() {
     }
@@ -113,5 +116,13 @@ public final class RssCache implements Serializable {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(final Boolean active) {
+        this.active = active;
     }
 }
