@@ -464,7 +464,7 @@ CREATE TABLE IF NOT EXISTS `state` (
 
 CREATE TABLE IF NOT EXISTS `style` (
   `id`       TINYINT(10) UNSIGNED NOT NULL DEFAULT '0',
-  `title`    VARCHAR(30)          NOT NULL DEFAULT '''''',
+  `title`    VARCHAR(30)          NOT NULL DEFAULT '',
   `desc`     varchar(255)             NOT NULL,
   `modified` TIMESTAMP            NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
