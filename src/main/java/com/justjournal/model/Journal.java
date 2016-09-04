@@ -35,7 +35,6 @@ public class Journal implements Serializable {
     private User user;
 
     @Column(name = "allow_spider")
-    @Enumerated(EnumType.STRING)
     private boolean allowSpider = true;
 
     @ManyToOne
@@ -43,11 +42,9 @@ public class Journal implements Serializable {
     private Style style;
 
     @Column(name = "owner_view_only", nullable = false, length = 1)
-    @Enumerated(EnumType.STRING)
     private boolean ownerViewOnly = false;
 
     @Column(name = "ping_services", nullable = false, length = 1)
-    @Enumerated(EnumType.STRING)
     private boolean pingServices = true;
 
     @Temporal(value = TemporalType.TIMESTAMP)
