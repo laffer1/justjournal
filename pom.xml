@@ -285,6 +285,17 @@
         </repository>
 
         <repository>
+            <id>spring-releases</id>
+            <url>https://repo.spring.io/libs-release</url>
+        </repository>
+        <!-- https://github.com/spring-projects/spring-boot/issues/2961 -->
+        <repository>
+            <id>gemfire-repository</id>
+            <name>Gemfire Repository</name>
+            <url>http://dist.gemstone.com/maven/release</url>
+        </repository>
+
+        <repository>
             <id>java.net</id>
             <url>https://maven.java.net/content/repositories/public/</url>
         </repository>
