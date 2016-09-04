@@ -837,7 +837,7 @@ CREATE TABLE IF NOT EXISTS `journal` (
   `user_id`         INT(10) UNSIGNED    NOT NULL DEFAULT '0',
   `slug`            VARCHAR(15)         NOT NULL DEFAULT '',
   `name`            VARCHAR(150) CHARACTER SET utf8           DEFAULT NULL,
-  `since`           TIMESTAMP           NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `since`           TIMESTAMP           NOT NULL,
   `style`           TINYINT(6) UNSIGNED NOT NULL DEFAULT '1',
   `allow_spider`    BOOLEAN                      DEFAULT TRUE,
   `owner_view_only` BOOLEAN                      DEFAULT FALSE,
