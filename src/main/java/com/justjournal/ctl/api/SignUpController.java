@@ -30,10 +30,7 @@ import com.justjournal.Login;
 import com.justjournal.core.Settings;
 import com.justjournal.model.*;
 import com.justjournal.model.api.NewUser;
-import com.justjournal.repository.UserBioDao;
-import com.justjournal.repository.UserContactRepository;
-import com.justjournal.repository.UserPrefRepository;
-import com.justjournal.repository.UserRepository;
+import com.justjournal.repository.*;
 import com.justjournal.utility.StringUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +63,8 @@ public class SignUpController {
     private UserContactRepository userContactRepository;
     @Autowired
     private UserPrefRepository userPrefRepository;
+    @Autowired
+    private JournalRepository journalRepository;
 
     @Autowired
     private Settings settings;
@@ -114,11 +113,17 @@ public class SignUpController {
             if (user == null)
                 throw new Exception("Unable to save user");
 
+            Journal journal = new Journal();
+            journal.setAllowSpider(true);
+            journal.setOwnerViewOnly(false);
+            journal.setPingServices(true);
+            journal.setName(user.getName() + "\'s Journal");
+            journal = journalRepository.saveAndFlush(journal);
+            if (journal == null)
+                throw new Exception("Unable to save journal");
+
             UserPref userPref = new UserPref();
-            userPref.setAllowSpider(PrefBool.Y);
-            userPref.setOwnerViewOnly(PrefBool.N);
-            userPref.setPingServices(PrefBool.Y);
-            userPref.setJournalName(user.getName() + "\'s Journal");
+            userPref.setShowAvatar(PrefBool.N);
             userPref.setUser(user);
             userPref = userPrefRepository.save(userPref);
             if (userPref == null)

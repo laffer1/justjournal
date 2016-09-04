@@ -26,6 +26,7 @@
 
 package com.justjournal.ctl.api;
 
+import com.justjournal.model.Journal;
 import com.justjournal.model.PrefBool;
 import com.justjournal.model.User;
 import com.justjournal.repository.UserRepository;
@@ -75,7 +76,14 @@ public class MembersController {
             if ((members == null)) throw new AssertionError();
 
             for (User member : members) {
-                if (member.getUserPref().getOwnerViewOnly() == PrefBool.N) {
+                boolean stealth = false;
+                for (Journal journal : member.getJournals()) {
+                   if (journal.isOwnerViewOnly()) {
+                       stealth = true;
+                       break;
+                   }
+                }
+                if (!stealth) {
                     publicMembers.add(member);
                 }
             }

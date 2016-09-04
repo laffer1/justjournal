@@ -123,4 +123,6 @@ public class Journal implements Serializable {
     public void setModified(final Timestamp modified) {
         this.modified = modified;
     }
+
+
 }

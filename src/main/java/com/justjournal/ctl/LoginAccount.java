@@ -26,11 +26,7 @@
 
 package com.justjournal.ctl;
 
-import com.justjournal.ErrorPage;
 import com.justjournal.Login;
-import com.justjournal.model.User;
-import com.justjournal.repository.UserRepository;
-import com.justjournal.utility.FileIO;
 import com.justjournal.utility.StringUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,56 +53,9 @@ public class LoginAccount extends JustJournalBaseServlet {
     private static final Logger log = Logger.getLogger(LoginAccount.class);
     private static final String JJ_LOGIN_OK = "JJ.LOGIN.OK";
     private static final String JJ_LOGIN_FAIL = "JJ.LOGIN.FAIL";
-    //private static final String JJ_LOGIN_ERROR = "JJ.LOGIN.ERROR";  // server error
 
     @Autowired
     private Login webLogin;
-    @Autowired
-    private UserRepository userRepository;
-
-    private void htmlOutput(StringBuffer sb, String userName) {
-        try {
-            String template = FileIO.ReadTextFile("/home/jj/docs/journal_template.inc");
-            String loginMenu;
-            StringBuilder content = new StringBuilder();
-            User user = userRepository.findByUsername(userName);
-
-            content.append("\t\t<h2>Welcome back to Just Journal</h2>");
-            content.append(endl);
-            content.append("\t<p>You are logged in as <a href=\"/users/").append(userName).append("\"><img src=\"/images/userclass_16.png\" alt=\"user\" />").append(userName).append("</a>.</p>");
-            if (user.getLastLogin() != null) {
-                content.append("\t<p>Your last login was on ");
-                content.append(user.getLastLogin());
-                content.append("</p>");
-            }
-            webLogin.setLastLogin(user.getId());
-            content.append(endl);
-            content.append("\t<p style=\"padding-left: 10px;\"><a href=\"/update.jsp\">Post a journal entry</a></p>");
-            content.append(endl);
-            content.append("\t<p style=\"padding-left: 10px;\"><img src=\"/images/userclass_16.png\" alt=\"user\" /> <a href=\"/users/").append(userName).append("\">View your journal</a>.</p>");
-            content.append(endl);
-            content.append("\t<p style=\"padding-left: 10px;\"><img src=\"/images/userclass_16.png\" alt=\"user\" /> <a href=\"/users/").append(userName).append("/friends\">Read your friends entries</a>.</p>");
-            content.append(endl);
-
-            // User is logged in.. give them the option to log out.
-            loginMenu = ("\t\t<a href=\"/prefs/index.jsp\">Preferences</a><br />");
-
-            loginMenu += ("\t\t<a href=\"/logout.jsp\">Log Out</a>");
-
-            template = template.replaceAll("\\$JOURNAL_TITLE\\$", user.getUserPref().getJournalName());
-            template = template.replaceAll("\\$USER\\$", userName);
-            template = template.replaceAll("\\$USER_STYLESHEET\\$", user.getUserPref().getStyle() + ".css");
-            template = template.replaceAll("\\$USER_STYLESHEET_ADD\\$", "");
-            template = template.replaceAll("\\$USER_AVATAR\\$", "");
-            template = template.replaceAll("\\$RECENT_ENTRIES\\$", "");
-            template = template.replaceAll("\\$LOGIN_MENU\\$", loginMenu);
-            template = template.replaceAll("\\$CONTENT\\$", content.toString());
-            sb.append(template);
-        } catch (Exception e) {
-            ErrorPage.Display("Internal Error", "Error dislaying page. ", sb);
-            log.error(e);
-        }
-    }
 
     protected void execute(HttpServletRequest request, HttpServletResponse response, HttpSession session, StringBuffer sb) {
         boolean blnError = false;
@@ -116,40 +65,29 @@ public class LoginAccount extends JustJournalBaseServlet {
         String passwordHash = fixInput(request, "password_hash");
         String userAgent = fixHeaderInput(request, "User-Agent");
         String mobile = fixInput(request, "mobile");
-        boolean webClient = true;  // browser
 
         // adjust the case
         userName = userName.toLowerCase();
         passwordHash = passwordHash.toLowerCase();
 
         // validate user input
-        if (userAgent.toLowerCase().contains("justjournal"))
-            webClient = false; // desktop client.. win/mac/java
+        //   if (userAgent.toLowerCase().contains("justjournal"))
+        //    webClient = false; // desktop client.. win/mac/java
 
         if (log.isDebugEnabled()) {
             log.debug("User Agent is: " + userAgent + endl);
-            log.debug("Is web client? " + webClient + endl);
             log.debug("mobile: " + mobile + endl);
         }
 
 
         if (!StringUtil.lengthCheck(userName, 3, Login.USERNAME_MAX_LENGTH)) {
             blnError = true;
-            if (webClient)
-                ErrorPage.Display("Input Error",
-                        "username must be 3-15 characters.",
-                        sb);
-            else
                 sb.append(JJ_LOGIN_FAIL);
         }
 
         if (passwordHash.compareTo("") == 0 && !StringUtil.lengthCheck(password, 5, Login.PASSWORD_MAX_LENGTH)) {
             blnError = true;
-            if (webClient)
-                ErrorPage.Display("Input Error",
-                        "Please input a password.",
-                        sb);
-            else
+
                 sb.append(JJ_LOGIN_FAIL);
         }
 
@@ -171,40 +109,13 @@ public class LoginAccount extends JustJournalBaseServlet {
                 }
 
                 if (userID > 0) {
-                    if (!webClient) {
+
                         sb.append(JJ_LOGIN_OK);
                         webLogin.setLastLogin(userID);
-                    } else if (mobile.compareTo("yes") == 0) {
-
-                        session.setAttribute("auth.uid", userID);
-                        session.setAttribute("auth.user", userName);
-
-                        webLogin.setLastLogin(userID);
-                        response.setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY);
-                        response.setHeader("Location", set.getBaseUri() + "mob/update.jsp");
-                        sb = new StringBuffer();
-                        return;
-                    } else {
-                        session.setAttribute("auth.uid", userID);
-                        session.setAttribute("auth.user", userName);
-
-                        // lastlogin is set after the html display
-                        htmlOutput(sb, userName);
-                    }
                 } else {
-                    if (webClient)
-                        ErrorPage.Display("Authentication Error",
-                                "Unable to login.  Please check your username and password.",
-                                sb);
-                    else
                         sb.append(JJ_LOGIN_FAIL);
                 }
-            } catch (Exception e3) {
-                if (webClient)
-                    ErrorPage.Display("Authentication Error",
-                            "Unable to login.  Please check your username and password.",
-                            sb);
-                else
+            } catch (final Exception e3) {
                     sb.append(JJ_LOGIN_FAIL);
                 log.error(e3);
             }

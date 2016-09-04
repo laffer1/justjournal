@@ -86,7 +86,7 @@ public class CommentController {
         final Entry entry = entryDao.findOne(entryId);
 
         try {
-            if (entry.getUser().getUserPref().getOwnerViewOnly() == PrefBool.Y ||
+            if (entry.getUser().getJournals().get(0).isOwnerViewOnly()  ||
                     entry.getAllowComments() == PrefBool.N ||
                     entry.getSecurity().getId() == 0) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);

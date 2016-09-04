@@ -121,7 +121,7 @@ public class AccountController {
         return java.util.Collections.singletonMap("status", "Password Changed.");
     }
 
-    private Map<String, String> updateUser(User user, HttpSession session, HttpServletResponse response) {
+    private Map<String, String> updateUser(final User user, final HttpSession session, final HttpServletResponse response) {
         if (Login.currentLoginId(session) == user.getId() && Login.currentLoginName(session).equals(user.getUsername())) {
 
             userDao.save(user);
@@ -132,7 +132,7 @@ public class AccountController {
     }
 
     @RequestMapping(method = RequestMethod.DELETE)
-    public Map<String, String> delete(HttpServletResponse response, HttpSession session) {
+    public Map<String, String> delete(final HttpServletResponse response, final HttpSession session) {
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
@@ -164,6 +164,8 @@ public class AccountController {
             userPrefRepository.delete(userID);
             jdbcTemplate.execute("DELETE FROM user_style WHERE id=" + userID + ";");
 
+            jdbcTemplate.execute("DELETE FROM journal WHERE user_id=" + userID + ";");
+
             userLinkRepository.delete(userID);
             userLocationRepository.delete(userID);
             userBioDao.delete(userID);
@@ -194,8 +196,9 @@ public class AccountController {
     @RequestMapping(method = RequestMethod.POST, produces = "application/json")
     public
     @ResponseBody
-    Map<String, String> post(@RequestBody User user,
-                             HttpSession session, HttpServletResponse response) {
+    Map<String, String> post(@RequestBody final User user,
+                             final HttpSession session,
+                             final HttpServletResponse response) {
 
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -207,20 +210,25 @@ public class AccountController {
 
     @RequestMapping(value = "{username}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public User getByUsername(@PathVariable("username") String username, HttpSession session, HttpServletResponse response) {
+    public User getByUsername(@PathVariable("username") final String username,
+                              final HttpSession session,
+                              final HttpServletResponse response) {
         try {
-            User user = userDao.findByUsername(username);
+            final User user = userDao.findByUsername(username);
 
-            if (user.getUserPref().getOwnerViewOnly() == PrefBool.Y) {
-                if (
-                        !Login.isAuthenticated(session) || user.getUsername().equals(Login.currentLoginName(session))) {
-                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                    return null;
+            // TODO: we should handle this per journal rather than globally if one is there. Be conservative for now
+            for (final Journal journal : user.getJournals()) {
+                if (journal.isOwnerViewOnly()) {
+                    if (
+                            !Login.isAuthenticated(session) || user.getUsername().equals(Login.currentLoginName(session))) {
+                        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                        return null;
+                    }
                 }
             }
 
             return user;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             log.error(e.getMessage());
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return null;

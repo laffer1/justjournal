@@ -96,6 +96,12 @@ public class User implements Serializable {
     @Column(name = "type", nullable = false)
     private Integer type;
 
+    @JsonManagedReference(value = "journal-user")
+    @JsonIgnore
+    @Basic(fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    private List<Journal> journals = new ArrayList<Journal>();
+
     @JsonManagedReference(value="entry-user")
     @JsonIgnore
     @Basic(fetch = FetchType.LAZY)
@@ -349,5 +355,13 @@ public class User implements Serializable {
 
     public void setImages(final List<UserImage> images) {
         this.images = images;
+    }
+
+    public List<Journal> getJournals() {
+        return journals;
+    }
+
+    public void setJournals(final List<Journal> journals) {
+        this.journals = journals;
     }
 }

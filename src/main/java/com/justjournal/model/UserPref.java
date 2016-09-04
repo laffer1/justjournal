@@ -46,23 +46,9 @@ public class UserPref implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id = 0;
 
-    @Column(name = "allow_spider")
+    @Column(name = "show_avatar", nullable = false, length = 1)
     @Enumerated(EnumType.STRING)
-    private PrefBool allowSpider = PrefBool.Y;
-
-    private int style = 0;
-
-    @Column(name = "owner_view_only", nullable = false, length = 1)
-    @Enumerated(EnumType.STRING)
-    private PrefBool ownerViewOnly = PrefBool.N;
-
-    @Column(name = "journal_name", length = 150, nullable = true)
-    private String journalName = "";
-
-    @Column(name = "ping_services", nullable = false, length = 1)
-    @Enumerated(EnumType.STRING)
-    private PrefBool pingServices = PrefBool.Y;
-
+    private PrefBool showAvatar = PrefBool.N;
 
     @Column(name = "modified", nullable = false)
     private Timestamp modified;
@@ -89,44 +75,12 @@ public class UserPref implements Serializable {
         this.id = id;
     }
 
-    public PrefBool getAllowSpider() {
-        return allowSpider;
+    public PrefBool getShowAvatar() {
+        return showAvatar;
     }
 
-    public void setAllowSpider(final PrefBool allowSpider) {
-        this.allowSpider = allowSpider;
-    }
-
-    public int getStyle() {
-        return style;
-    }
-
-    public void setStyle(final int style) {
-        this.style = style;
-    }
-
-    public PrefBool getOwnerViewOnly() {
-        return ownerViewOnly;
-    }
-
-    public void setOwnerViewOnly(final PrefBool ownerViewOnly) {
-        this.ownerViewOnly = ownerViewOnly;
-    }
-
-    public String getJournalName() {
-        return journalName;
-    }
-
-    public void setJournalName(final String journalName) {
-        this.journalName = journalName;
-    }
-
-    public PrefBool getPingServices() {
-        return pingServices;
-    }
-
-    public void setPingServices(final PrefBool pingServices) {
-        this.pingServices = pingServices;
+    public void setShowAvatar(final PrefBool showAvatar) {
+        this.showAvatar = showAvatar;
     }
 
     public Timestamp getModified() {

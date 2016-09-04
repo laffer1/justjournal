@@ -173,10 +173,11 @@ public class MetaWeblog {
         if (!blnError)
             try {
                 User user = userRepository.findOne(userId);
+                Journal journal = user.getJournals().get(0);
 
                 s.put("url", "http://www.justjournal.com/users/" + user.getUsername());
                 s.put("blogid", userId);
-                s.put("blogName", user.getUserPref().getJournalName());
+                s.put("blogName", journal.getName());
             } catch (Exception e) {
                 blnError = true;
                 log.debug(e.getMessage());
@@ -246,11 +247,13 @@ public class MetaWeblog {
                 result = Integer.toString(et.getId());
                 log.debug("Result is: " + result);
 
-                if (user.getUserPref().getOwnerViewOnly() == PrefBool.N) {
+                Journal journal = user.getJournals().get(0);
+
+                if (!journal.isOwnerViewOnly() && journal.isPingServices()) {
                     log.debug("Ping weblogs");
                     /* WebLogs, Google, blo.gs */
                     BasePing rp = new BasePing("http://rpc.weblogs.com/pingSiteForm");
-                    rp.setName(user.getUserPref().getJournalName());
+                    rp.setName(journal.getName());
                     rp.setUri("http://www.justjournal.com/" + "users/" + user.getUsername());
                     rp.setChangesURL("http://www.justjournal.com" + "/users/" + user.getUsername() + "/rss");
                     rp.ping();
@@ -260,8 +263,8 @@ public class MetaWeblog {
                     rp.ping();
 
                     /* IceRocket */
-                    IceRocket ice = new IceRocket();
-                    ice.setName(user.getUserPref().getJournalName());
+                    final IceRocket ice = new IceRocket();
+                    ice.setName(journal.getName());
                     ice.setUri("http://www.justjournal.com/" + "users/" + user.getUsername());
                     ice.ping();
                 }

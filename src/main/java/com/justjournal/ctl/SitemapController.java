@@ -34,16 +34,18 @@ public class SitemapController {
         create(xmlUrlSet, baseUri.getValue(), XmlUrl.Priority.HIGH, XmlUrl.ChangeFreqency.MONTHLY);
 
         for (final User user : userRepository.findAll()) {
-            if (user.getUserPref().getAllowSpider().equals(PrefBool.Y)) {
-                final String users = baseUri.getValue() + "users/" + user.getUsername();
+            for (final Journal journal : user.getJournals()) {
+                if (journal.isAllowSpider()) {
+                    final String users = baseUri.getValue() + "users/" + user.getUsername();
 
-                create(xmlUrlSet, users, XmlUrl.Priority.HIGH, XmlUrl.ChangeFreqency.DAILY);
-                create(xmlUrlSet, users + "/calendar", XmlUrl.Priority.MEDIUM, XmlUrl.ChangeFreqency.MONTHLY);
-                create(xmlUrlSet, users + "/friends", XmlUrl.Priority.MEDIUM, XmlUrl.ChangeFreqency.DAILY);
-                create(xmlUrlSet, users + "/pictures", XmlUrl.Priority.MEDIUM, XmlUrl.ChangeFreqency.WEEKLY);
-                create(xmlUrlSet, users + "/favorites", XmlUrl.Priority.MEDIUM, XmlUrl.ChangeFreqency.WEEKLY);
-                create(xmlUrlSet, users + "/rss", XmlUrl.Priority.MEDIUM, XmlUrl.ChangeFreqency.DAILY);
-                create(xmlUrlSet, users + "/atom", XmlUrl.Priority.MEDIUM, XmlUrl.ChangeFreqency.DAILY);
+                    create(xmlUrlSet, users, XmlUrl.Priority.HIGH, XmlUrl.ChangeFreqency.DAILY);
+                    create(xmlUrlSet, users + "/calendar", XmlUrl.Priority.MEDIUM, XmlUrl.ChangeFreqency.MONTHLY);
+                    create(xmlUrlSet, users + "/friends", XmlUrl.Priority.MEDIUM, XmlUrl.ChangeFreqency.DAILY);
+                    create(xmlUrlSet, users + "/pictures", XmlUrl.Priority.MEDIUM, XmlUrl.ChangeFreqency.WEEKLY);
+                    create(xmlUrlSet, users + "/favorites", XmlUrl.Priority.MEDIUM, XmlUrl.ChangeFreqency.WEEKLY);
+                    create(xmlUrlSet, users + "/rss", XmlUrl.Priority.MEDIUM, XmlUrl.ChangeFreqency.DAILY);
+                    create(xmlUrlSet, users + "/atom", XmlUrl.Priority.MEDIUM, XmlUrl.ChangeFreqency.DAILY);
+                }
             }
         }
 

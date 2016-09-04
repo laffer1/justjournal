@@ -127,6 +127,7 @@ public class UpdateJournal extends HttpServlet {
     private void htmlOutput(final StringBuffer sb, final String userName, final int userID) {
         /* Initialize Preferences Object */
         final User pf = userRepository.findByUsername(userName);
+        Journal journal = pf.getJournals().get(0);
 
         // Begin HTML document.
         // IE hates this.
@@ -146,12 +147,12 @@ public class UpdateJournal extends HttpServlet {
         sb.append("<head>");
         sb.append(endl);
         sb.append("\t<title>");
-        sb.append(pf.getUserPref().getJournalName());
+        sb.append(journal.getName());
         sb.append("</title>");
         sb.append(endl);
 
         /* use our template system instead */
-        sb.append("\t<link rel=\"stylesheet\" type=\"text/css\" media=\"screen\" href=\"/styles/").append(pf.getUserPref().getStyle()).append(".css\" />");
+        sb.append("\t<link rel=\"stylesheet\" type=\"text/css\" media=\"screen\" href=\"/styles/").append(journal.getStyle().getId()).append(".css\" />");
         sb.append(endl);
 
         /* End overrides */
@@ -165,7 +166,7 @@ public class UpdateJournal extends HttpServlet {
         sb.append("\t\t<div id=\"header\">");
         sb.append(endl);
         sb.append("\t\t<h1>");
-        sb.append(pf.getUserPref().getJournalName());
+        sb.append(journal.getName());
         sb.append("</h1>");
         sb.append(endl);
         sb.append("\t</div>");
@@ -590,12 +591,13 @@ public class UpdateJournal extends HttpServlet {
                     if (et.getSecurity().getId() == 2) {
                         /* Initialize Preferences Object */
                         User pf = userRepository.findByUsername(userName);
+                        Journal journal = pf.getJournals().get(0);
 
-                        if (pf != null && pf.getUserPref().getOwnerViewOnly() == PrefBool.N && pf.getUserPref().getPingServices() == PrefBool.Y) {
+                        if (pf != null && !journal.isOwnerViewOnly() && journal.isPingServices()) {
                             log.debug("Ping weblogs");
                             /* WebLogs, Google, blo.gs */
                             final BasePing rp = new BasePing("http://rpc.weblogs.com/pingSiteForm");
-                            rp.setName(pf.getUserPref().getJournalName());
+                            rp.setName(journal.getName());
                             rp.setUri(settings.getBaseUri() + "users/" + userName);
                             rp.setChangesURL(settings.getBaseUri() + "/users/" + userName + "/rss");
                             rp.ping();
@@ -606,7 +608,7 @@ public class UpdateJournal extends HttpServlet {
 
                             /* IceRocket */
                             final IceRocket ice = new IceRocket();
-                            ice.setName(pf.getUserPref().getJournalName());
+                            ice.setName(journal.getName());
                             ice.setUri(settings.getBaseUri() + "users/" + userName);
                             ice.ping();
 
@@ -616,7 +618,7 @@ public class UpdateJournal extends HttpServlet {
                                 final Entry et2 = entryRepository.findOne(et.getId());
                                 final TrackbackOut tbout = new TrackbackOut(trackback,
                                         settings.getBaseUri() + "users/" + userName + "/entry/" + et2.getId(),
-                                        et.getSubject(), et.getBody(), pf.getUserPref().getJournalName());
+                                        et.getSubject(), et.getBody(), journal.getName());
                                 tbout.ping();
                             }
                         }

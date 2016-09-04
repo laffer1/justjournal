@@ -36,6 +36,7 @@ package com.justjournal.google;
 
 import com.justjournal.Login;
 import com.justjournal.model.Entry;
+import com.justjournal.model.Journal;
 import com.justjournal.model.PrefBool;
 import com.justjournal.model.User;
 import com.justjournal.repository.*;
@@ -177,7 +178,7 @@ public class Blogger {
 
                 s.put("url", "http://www.justjournal.com/users/" + user.getUsername());
                 s.put("blogid", userId);
-                s.put("blogName", user.getUserPref().getJournalName());
+                s.put("blogName", user.getJournals().get(0).getName());
             } catch (Exception e) {
                 blnError = true;
                 log.debug(e.getMessage());
@@ -268,11 +269,12 @@ public class Blogger {
                 et2 = entryRepository.findOne(et.getId()); // TODO: this is wrong.
                 result = Integer.toString(et2.getId());
 
-                if (user.getUserPref().getOwnerViewOnly() == PrefBool.N) {
+                Journal journal = user.getJournals().get(0);
+                if (!journal.isOwnerViewOnly() && journal.isPingServices()) {
                     log.debug("Ping weblogs");
                     /* WebLogs, Google, blo.gs */
                     BasePing rp = new BasePing("http://rpc.weblogs.com/pingSiteForm");
-                    rp.setName(user.getUserPref().getJournalName());
+                    rp.setName(journal.getName());
                     rp.setUri("http://www.justjournal.com/" + "users/" + user.getUsername());
                     rp.setChangesURL("http://www.justjournal.com" + "/users/" + user.getUsername() + "/rss");
                     rp.ping();
@@ -283,7 +285,7 @@ public class Blogger {
 
                     /* IceRocket */
                     IceRocket ice = new IceRocket();
-                    ice.setName(user.getUserPref().getJournalName());
+                    ice.setName(journal.getName());
                     ice.setUri("http://www.justjournal.com/" + "users/" + user.getUsername());
                     ice.ping();
                 }
