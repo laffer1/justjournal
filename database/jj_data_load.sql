@@ -1062,15 +1062,6 @@ INSERT INTO `timezones` (`id`, `name`) VALUES
   (1434, 'WET'),
   (1435, 'Zulu');
 
-INSERT INTO style (`id`, `title`, `desc`) VALUES (17, 'Cerulean', 'A calm blue sky'),
-  (18, 'Cosmo', 'An ode to metro'),
-  (19, 'Cyborg', 'Jet black and electric blue'),
-  (20, 'Journal', 'Crisp like a new sheet of paper'),
-  (21, 'Lumen', 'Light and shadow'),
-  (22, 'Paper', 'Material is the metaphor'),
-  (23, 'Readable', 'Optimized for legibility'),
-  (24, 'Sandstone', 'A little warmth');
-
 -- First Test User
 
 INSERT INTO `user` (`id`, `username`, `password`, `type`, `name`, `lastname`, `since`, `lastlogin`, `modified`) VALUES
