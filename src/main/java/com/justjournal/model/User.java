@@ -154,9 +154,23 @@ public class User implements Serializable {
     @OneToOne(mappedBy = "user")
     private UserLocation userLocation;
 
+    @JsonIgnore
+    	@ManyToMany(fetch = FetchType.EAGER)
+    	@JoinTable(name = "user_role", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = { @JoinColumn(name = "role_id") })
+    	private Set<Role> roles = new HashSet<Role>();
+
     @JsonCreator
     public User() {
     }
+
+    public User(User user) {
+    		super();
+    		this.id = user.getId();
+    		this.name = user.getName();
+    		this.username = user.getUsername();
+    		this.password = user.getPassword();
+    		this.roles = user.getRoles();
+    	}
 
     public UserLocation getUserLocation() {
         return userLocation;
@@ -363,5 +377,13 @@ public class User implements Serializable {
 
     public void setJournals(final List<Journal> journals) {
         this.journals = journals;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(final Set<Role> roles) {
+        this.roles = roles;
     }
 }
