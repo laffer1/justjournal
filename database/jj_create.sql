@@ -914,3 +914,7 @@ add constraint FK_user_location_country foreign key (country) references country
 --
 ALTER TABLE `user_images_album_map`
 ADD CONSTRAINT `FK_user_images_album_map_1` FOREIGN KEY (`image_id`) REFERENCES `user_images` (`id`);
+
+ALTER TABLE journal
+        ADD CONSTRAINT `FK_journal_user_id` FOREIGN KEY (user_id) REFERENCES `user` (`id`),
+        ADD CONSTRAINT `FK_journal_style_id` FOREIGN KEY (style) REFERENCES `style` (`id`);
