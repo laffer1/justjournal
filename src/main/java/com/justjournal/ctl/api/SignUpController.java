@@ -118,6 +118,8 @@ public class SignUpController {
             journal.setOwnerViewOnly(false);
             journal.setPingServices(true);
             journal.setName(user.getName() + "\'s Journal");
+            journal.setSince(Calendar.getInstance().getTime());
+            journal.setModified(Calendar.getInstance().getTime());
             journal = journalRepository.saveAndFlush(journal);
             if (journal == null)
                 throw new Exception("Unable to save journal");
