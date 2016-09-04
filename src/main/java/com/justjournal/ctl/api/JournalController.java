@@ -18,7 +18,7 @@ import java.util.Map;
  *
  * @author Lucas Holt
  */
-@RestController
+@RestController("/api/journal")
 public class JournalController {
     private static final Logger log = Logger.getLogger(JournalController.class.getName());
 
