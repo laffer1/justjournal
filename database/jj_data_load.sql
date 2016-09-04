@@ -1079,6 +1079,11 @@ INSERT INTO `user_pref` (`id`, `user_id`, `allow_spider`, `style`, `owner_view_o
 VALUES
   (2192, 2908, 'Y', 1, 'N', 'N', 'Testing Journal', 'N', '2014-03-29 15:12:53');
 
+INSERT INTO journal (`id`, `user_id`, slug, name, since,  `style`, `allow_spider`, `owner_view_only`, `ping_services`, `modified`)
+  VALUES
+    (2192, 2908, 'testuser', 'Testing Journal', '2014-01-01 00:00:00', 1, false, false, false, '2014-03-29 15:12:53');
+
+
 -- Second Test User
 
 INSERT INTO `user` (`id`, `username`, `password`, `type`, `name`, `lastname`, `since`, `lastlogin`, `modified`) VALUES
@@ -1095,6 +1100,10 @@ VALUES
 INSERT INTO `user_pref` (`id`, `user_id`, `allow_spider`, `style`, `owner_view_only`, `show_avatar`, `journal_name`, `ping_services`, `modified`)
 VALUES
   (1, 1, 'N', 1, 'N', 'N', 'JJ REAL DEAL Test Blog', 'N', '2014-03-29 15:12:53');
+
+INSERT INTO journal (`id`, `user_id`, slug, name, since,  `style`, `allow_spider`, `owner_view_only`, `ping_services`, `modified`)
+  VALUES
+    (1, 1, 'jjtest', 'JJ REAL DEAL Test Blog', '2014-01-01 00:00:00', 1, false, false, false, '2014-03-29 15:12:53');
 
 INSERT INTO `entry` (`id`, `uid`, `date`, `modified`, `subject`, `mood`, `music`, `location`, `body`, `security`, `autoformat`, `allow_comments`, `email_comments`, `draft`, `attach_image`, `attach_file`)
 VALUES (33661, '2908', CURRENT_DATE(), CURRENT_TIMESTAMP, 'test subject', '2', 'the rock band song', '2',
