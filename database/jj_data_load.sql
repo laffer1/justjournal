@@ -1062,6 +1062,15 @@ INSERT INTO `timezones` (`id`, `name`) VALUES
   (1434, 'WET'),
   (1435, 'Zulu');
 
+INSERT INTO style (title, desc) VALUES('Cerulean', 'A calm blue sky');
+INSERT INTO style (title, desc) VALUES('Cosmo', 'An ode to metro');
+INSERT INTO style (title, desc) VALUES('Cyborg', 'Jet black and electric blue');
+INSERT INTO style (title, desc) VALUES('Journal', 'Crisp like a new sheet of paper');
+INSERT INTO style (title, desc) VALUES('Lumen', 'Light and shadow');
+INSERT INTO style (title, desc) VALUES('Paper', 'Material is the metaphor');
+INSERT INTO style (title, desc) VALUES('Readable', 'Optimized for legibility');
+INSERT INTO style (title, desc) VALUES('Sandstone', 'A little warmth');
+
 -- First Test User
 
 INSERT INTO `user` (`id`, `username`, `password`, `type`, `name`, `lastname`, `since`, `lastlogin`, `modified`) VALUES
@@ -1081,7 +1090,7 @@ VALUES
 
 INSERT INTO journal (`id`, `user_id`, slug, name, since,  `style`, `allow_spider`, `owner_view_only`, `ping_services`, `modified`)
   VALUES
-    (2192, 2908, 'testuser', 'Testing Journal', '2014-01-01 00:00:00', 1, false, false, false, '2014-03-29 15:12:53');
+    (2192, 2908, 'testuser', 'Testing Journal', '2014-01-01 00:00:00', 17, false, false, false, '2014-03-29 15:12:53');
 
 
 -- Second Test User
@@ -1103,7 +1112,7 @@ VALUES
 
 INSERT INTO journal (`id`, `user_id`, slug, name, since,  `style`, `allow_spider`, `owner_view_only`, `ping_services`, `modified`)
   VALUES
-    (1, 1, 'jjtest', 'JJ REAL DEAL Test Blog', '2014-01-01 00:00:00', 1, false, false, false, '2014-03-29 15:12:53');
+    (1, 1, 'jjtest', 'JJ REAL DEAL Test Blog', '2014-01-01 00:00:00', 17, false, false, false, '2014-03-29 15:12:53');
 
 INSERT INTO `entry` (`id`, `uid`, `date`, `modified`, `subject`, `mood`, `music`, `location`, `body`, `security`, `autoformat`, `allow_comments`, `email_comments`, `draft`, `attach_image`, `attach_file`)
 VALUES (33661, '2908', CURRENT_DATE(), CURRENT_TIMESTAMP, 'test subject', '2', 'the rock band song', '2',
