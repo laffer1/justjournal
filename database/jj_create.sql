@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS `comments` (
   `date`     DATETIME             NOT NULL,
   `body`     TEXT
              CHARACTER SET latin1 NOT NULL,
-  `modified` TIMESTAMP            NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
+  `modified` TIMESTAMP            NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `eid_uid` (`eid`, `uid`),
   KEY `userid` (`uid`)
@@ -95,7 +95,7 @@ CREATE TABLE IF NOT EXISTS `entry` (
   `id`             INT(10) UNSIGNED    NOT NULL AUTO_INCREMENT,
   `uid`            INT(10) UNSIGNED    NOT NULL DEFAULT '0',
   `date`           DATETIME            NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `modified`       TIMESTAMP           NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
+  `modified`       TIMESTAMP           NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `subject`        VARCHAR(255) DEFAULT NULL,
   `mood`           TINYINT(3) UNSIGNED DEFAULT NULL,
   `music`          VARCHAR(125)        NOT NULL DEFAULT '',
@@ -466,7 +466,7 @@ CREATE TABLE IF NOT EXISTS `style` (
   `id`       TINYINT(10) UNSIGNED NOT NULL DEFAULT '0',
   `title`    VARCHAR(30)          NOT NULL DEFAULT '''''',
   `desc`     varchar(255)             NOT NULL,
-  `modified` TIMESTAMP            NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
+  `modified` TIMESTAMP            NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 )
   ENGINE =InnoDB
@@ -535,7 +535,7 @@ CREATE TABLE IF NOT EXISTS `trackback` (
   COMMENT 'title, name',
   `body`         TEXT                                    NOT NULL
   COMMENT 'description, excert, comment',
-  `modified`     TIMESTAMP                               NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
+  `modified`     TIMESTAMP                               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 )
   ENGINE =InnoDB
@@ -562,7 +562,7 @@ CREATE TABLE IF NOT EXISTS `user` (
               COLLATE utf8_unicode_ci DEFAULT NULL,
   `since`     SMALLINT(4) UNSIGNED NOT NULL DEFAULT '2014',
   `lastlogin` DATETIME DEFAULT NULL,
-  `modified`  TIMESTAMP            NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
+  `modified`  TIMESTAMP            NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
 )
@@ -582,7 +582,7 @@ CREATE TABLE IF NOT EXISTS `user_bio` (
   `id`       INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `user_id`  INT(10) UNSIGNED NOT NULL DEFAULT '0',
   `content`  TEXT             NOT NULL,
-  `modified` TIMESTAMP        NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
+  `modified` TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 )
   ENGINE =InnoDB
@@ -635,7 +635,7 @@ CREATE TABLE IF NOT EXISTS `user_files` (
   COMMENT 'user id',
   `title`         VARCHAR(150)
                   COLLATE utf8_unicode_ci NOT NULL,
-  `date_modified` TIMESTAMP               NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
+  `date_modified` TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `mimetype`      VARCHAR(40)
                   COLLATE utf8_unicode_ci NOT NULL,
   `data`          LONGBLOB                NOT NULL,
@@ -659,7 +659,7 @@ CREATE TABLE IF NOT EXISTS `user_images` (
   `id`       INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `title`    VARCHAR(150) DEFAULT '',
   `owner`    INT(10) UNSIGNED NOT NULL DEFAULT '0',
-  `modified` TIMESTAMP        NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
+  `modified` TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `mimetype` VARCHAR(45)      NOT NULL DEFAULT '',
   `image`    MEDIUMBLOB       NOT NULL,
   PRIMARY KEY (`id`),
@@ -684,7 +684,7 @@ CREATE TABLE IF NOT EXISTS `user_images_album` (
   `owner`       INT(10) UNSIGNED NOT NULL DEFAULT '0',
   `title`       VARCHAR(100)     NOT NULL DEFAULT '',
   `description` TEXT,
-  `modified`    TIMESTAMP        NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
+  `modified`    TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 )
   ENGINE =InnoDB
@@ -705,7 +705,7 @@ CREATE TABLE IF NOT EXISTS `user_images_album_map` (
   `owner`    INT(10) UNSIGNED NOT NULL,
   `album_id` INT(10) UNSIGNED NOT NULL DEFAULT '0',
   `image_id` INT(10) UNSIGNED NOT NULL DEFAULT '0',
-  `modified` TIMESTAMP        NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
+  `modified` TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `map` (`owner`, `album_id`, `image_id`),
   KEY `FK_user_images_album_map_1` (`image_id`)
@@ -760,7 +760,7 @@ CREATE TABLE IF NOT EXISTS `user_location` (
   `state`    INT(11) UNSIGNED DEFAULT NULL,
   `country`  INT(11) UNSIGNED DEFAULT NULL,
   `zip`      VARCHAR(10) DEFAULT NULL,
-  `modified` TIMESTAMP        NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
+  `modified` TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 )
   ENGINE =InnoDB
@@ -805,7 +805,7 @@ CREATE TABLE IF NOT EXISTS `user_pref` (
   `journal_name`    VARCHAR(150)
                     CHARACTER SET utf8 DEFAULT NULL,
   `ping_services`   ENUM('Y', 'N')      NOT NULL DEFAULT 'N',
-  `modified`        TIMESTAMP           NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
+  `modified`        TIMESTAMP           NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_id` (`user_id`)
 )
@@ -825,7 +825,7 @@ CREATE TABLE IF NOT EXISTS `user_style` (
   `id`       INT(10) UNSIGNED NOT NULL DEFAULT '0',
   `url`      TEXT,
   `doc`      TEXT,
-  `modified` TIMESTAMP        NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
+  `modified` TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 )
   ENGINE =InnoDB
@@ -837,12 +837,12 @@ CREATE TABLE IF NOT EXISTS `journal` (
   `user_id`         INT(10) UNSIGNED    NOT NULL DEFAULT '0',
   `slug`            VARCHAR(15)         NOT NULL DEFAULT '',
   `name`            VARCHAR(150) CHARACTER SET utf8           DEFAULT NULL,
-  `since`           TIMESTAMP           NOT NULL,
+  `since`           DATETIME           NOT NULL,
   `style`           TINYINT(6) UNSIGNED NOT NULL DEFAULT '1',
   `allow_spider`    BOOLEAN                      DEFAULT TRUE,
   `owner_view_only` BOOLEAN                      DEFAULT FALSE,
   `ping_services`   BOOLEAN                      DEFAULT TRUE,
-  `modified`        TIMESTAMP           NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
+  `modified`        TIMESTAMP           NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `slug` (`slug`)
 )

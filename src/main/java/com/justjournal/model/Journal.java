@@ -50,9 +50,11 @@ public class Journal implements Serializable {
     @Enumerated(EnumType.STRING)
     private boolean pingServices = true;
 
+    @Temporal(value = TemporalType.TIMESTAMP)
     @Column(name = "since", nullable = false)
     private Date since;
 
+    @Temporal(value = TemporalType.TIMESTAMP)
     @Column(name = "modified", nullable = false)
     private Date modified;
 

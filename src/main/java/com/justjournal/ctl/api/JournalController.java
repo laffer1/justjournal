@@ -15,16 +15,21 @@ import java.util.Map;
 
 /**
  * Manage individual journals
+ *
  * @author Lucas Holt
  */
 @RestController
 public class JournalController {
     private static final Logger log = Logger.getLogger(JournalController.class.getName());
 
-    @Autowired
     private JournalRepository journalRepository;
-    @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    public JournalController(final JournalRepository journalRepository, final UserRepository userRepository) {
+        this.journalRepository = journalRepository;
+        this.userRepository = userRepository;
+    }
 
     @RequestMapping(value = "{slug}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
@@ -36,8 +41,8 @@ public class JournalController {
     public
     @ResponseBody
     Map<String, String> put(@PathVariable("slug") final String slug,
-            @RequestBody Journal journal,
-                               final HttpSession session, final HttpServletResponse response) {
+                            @RequestBody Journal journal,
+                            final HttpSession session, final HttpServletResponse response) {
 
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
