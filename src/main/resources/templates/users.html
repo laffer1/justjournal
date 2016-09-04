@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title th:text="${user.userPref.journalName}"></title>
+    <title th:text="${user.journals.get(0).name}"></title>
     <meta th:if="${user.userPref.allowSpider == 'Y'}" name="robots" content="noindex, nofollow, noarchive" />
     <meta th:if="${user.userPref.allowSpider == 'Y'}" name="googlebot" content="nosnippet" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -207,7 +207,7 @@
         <section>
             <div id="content" class="col-xs-12 col-md-8 col-md-offset-1">
                 <div class="page-header">
-                    <h1 th:text="${user.userPref.journalName}"></h1>
+                    <h1 th:text="${user.journals.get(0).name}"></h1>
                 </div>
 
                     <p th:if="${authenticatedUsername != null}">You are logged in as <a
