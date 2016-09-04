@@ -831,6 +831,25 @@ CREATE TABLE IF NOT EXISTS `user_style` (
   ENGINE =InnoDB
   DEFAULT CHARSET =latin1;
 
+
+CREATE TABLE IF NOT EXISTS `journal` (
+  `id`              INT(10) UNSIGNED    NOT NULL AUTO_INCREMENT,
+  `user_id`         INT(10) UNSIGNED    NOT NULL DEFAULT '0',
+  `slug`            VARCHAR(15)         NOT NULL DEFAULT '',
+  `name`            VARCHAR(150) CHARACTER SET utf8           DEFAULT NULL,
+  `since`           TIMESTAMP           NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `style`           TINYINT(6) UNSIGNED NOT NULL DEFAULT '1',
+  `allow_spider`    BOOLEAN                      DEFAULT TRUE,
+  `owner_view_only` BOOLEAN                      DEFAULT FALSE,
+  `ping_services`   BOOLEAN                      DEFAULT TRUE,
+  `modified`        TIMESTAMP           NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `slug` (`slug`)
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = latin1
+  AUTO_INCREMENT = 1;
+
 -- --------------------------------------------------------
 
 --
