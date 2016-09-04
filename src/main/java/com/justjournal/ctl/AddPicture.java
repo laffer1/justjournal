@@ -1,6 +1,7 @@
 package com.justjournal.ctl;
 
 import com.justjournal.ErrorPage;
+import com.justjournal.model.Journal;
 import com.justjournal.model.User;
 import com.justjournal.repository.UserRepository;
 import com.justjournal.utility.FileIO;
@@ -10,6 +11,7 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUpload;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.naming.Context;
@@ -32,6 +34,9 @@ public class AddPicture extends JustJournalBaseServlet {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     protected void execute(HttpServletRequest request, HttpServletResponse response, HttpSession session, StringBuffer sb) {
         boolean blnError = false;
@@ -105,23 +110,13 @@ public class AddPicture extends JustJournalBaseServlet {
                     if (sizeInBytes > 500) {
                         byte[] data = fi.get();
 
-                        Context ctx;
-                        DataSource ds = null;
                         Connection conn = null;
                         PreparedStatement stmt = null; // create statement
 
-                        try {
-                            ctx = new InitialContext();
-                            ds = (DataSource) ctx.lookup("java:comp/env/jdbc/jjDB");
-                        } catch (Exception e) {
-                            log.error(e.getMessage());
-                            blnError = true;
-                            ErrorPage.Display("Database", "Could not retrieve database resources.", sb);
-                        }
-
                         if (!blnError) {
                             try {
-                                conn = ds.getConnection();
+                                // TODO: make this spring friendly
+                                conn = jdbcTemplate.getDataSource().getConnection();
 
                                 // do the create of the image
                                 stmt = conn.prepareStatement("INSERT INTO user_images (owner,title,modified,mimetype,image) VALUES(?,?,now(),?,?)");
@@ -201,6 +196,7 @@ public class AddPicture extends JustJournalBaseServlet {
             String loginMenu;
             StringBuilder content = new StringBuilder();
             User user = userRepository.findByUsername(userName);
+            Journal journal = user.getJournals().get(0);
 
             content.append("\t\t<h2>Preferences</h2>");
             content.append(endl);
@@ -218,9 +214,9 @@ public class AddPicture extends JustJournalBaseServlet {
 
             loginMenu += ("\t\t<a href=\"/logout.jsp\">Log Out</a>");
 
-            template = template.replaceAll("\\$JOURNAL_TITLE\\$", user.getUserPref().getJournalName());
+            template = template.replaceAll("\\$JOURNAL_TITLE\\$", journal.getName());
             template = template.replaceAll("\\$USER\\$", userName);
-            template = template.replaceAll("\\$USER_STYLESHEET\\$", user.getUserPref().getStyle() + ".css");
+            template = template.replaceAll("\\$USER_STYLESHEET\\$", journal.getStyle().getId() + ".css");
             template = template.replaceAll("\\$USER_STYLESHEET_ADD\\$", "");
             template = template.replaceAll("\\$USER_AVATAR\\$", "");
             template = template.replaceAll("\\$RECENT_ENTRIES\\$", "");

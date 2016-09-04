@@ -1,11 +1,14 @@
 package com.justjournal.ctl;
 
 import com.justjournal.ErrorPage;
+import com.justjournal.model.Journal;
 import com.justjournal.model.User;
 import com.justjournal.repository.UserRepository;
 import com.justjournal.utility.FileIO;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.naming.Context;
@@ -27,9 +30,11 @@ public class DeletePicture extends JustJournalBaseServlet {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
     protected void execute(HttpServletRequest request, HttpServletResponse response, HttpSession session, StringBuffer sb) {
         boolean blnError = false;
-        int RowsAffected = 0;
 
         // Retreive username
         String userName;
@@ -61,76 +66,18 @@ public class DeletePicture extends JustJournalBaseServlet {
             return;
         }
 
-        Context ctx;
-        DataSource ds = null;
-        Connection conn = null;
-        PreparedStatement stmt = null; // create statement
-
         try {
-            ctx = new InitialContext();
-            ds = (DataSource) ctx.lookup("java:comp/env/jdbc/jjDB");
-        } catch (Exception e) {
-            log.error(e.getMessage());
+            jdbcTemplate.execute("DELETE FROM user_images WHERE id='" + picID.intValue() + "' AND owner='" + userID + "';");
+        } catch (DataAccessException dae) {
+            log.error(dae.getMessage());
             blnError = true;
-            ErrorPage.Display("Database", "Could not retrieve database resources.", sb);
         }
 
-        if (!blnError) {
-            try {
-                conn = ds.getConnection();
-
-                // do the create of the image
-                stmt = conn.prepareStatement("DELETE FROM user_images WHERE id=? AND owner=?;");
-                stmt.setInt(1, picID.intValue());
-                stmt.setInt(2, userID);
-                stmt.execute();
-                RowsAffected = stmt.getUpdateCount();
-                stmt.close();
-
-                conn.close();
-
-                if (log.isDebugEnabled())
-                    log.debug("RowsAffected: " + RowsAffected);
-            } catch (Exception e) {
-                log.error(e.getMessage());
-                // throw new Exception("Error getting connect or executing it", e);
-            } finally {
-                /*
-                * Close any JDBC instances here that weren't
-                * explicitly closed during normal code path, so
-                * that we don't 'leak' resources...
-                */
-
-                try {
-                    if (stmt != null)
-                        stmt.close();
-                } catch (SQLException sqlEx) {
-                    // ignore -- as we can't do anything about it here
-                    log.error(sqlEx.getMessage());
-                }
-
-                try {
-                    if (conn != null)
-                        conn.close();
-                } catch (SQLException sqlEx) {
-                    // ignore -- as we can't do anything about it here
-                    log.error(sqlEx.getMessage());
-                }
-            }
-        }
-
-
-        if (!blnError && RowsAffected != 1) {
+        if (blnError) {
             ErrorPage.Display("Database",
                     "Database Error.  Please try again later.",
                     sb);
-            blnError = true;
-        }
-
-        if (log.isDebugEnabled())
-            log.debug("Write out Response  ");
-
-        if (!blnError)
+        } else
             htmlOutput(sb, userName);
     }
 
@@ -158,9 +105,10 @@ public class DeletePicture extends JustJournalBaseServlet {
 
             loginMenu += ("\t\t<a href=\"/logout.jsp\">Log Out</a>");
 
-            template = template.replaceAll("\\$JOURNAL_TITLE\\$", user.getUserPref().getJournalName());
+            final Journal journal = user.getJournals().get(0);
+            template = template.replaceAll("\\$JOURNAL_TITLE\\$", journal.getName());
             template = template.replaceAll("\\$USER\\$", userName);
-            template = template.replaceAll("\\$USER_STYLESHEET\\$", user.getUserPref().getStyle() + ".css");
+            template = template.replaceAll("\\$USER_STYLESHEET\\$", journal.getStyle().getId() + ".css");
             template = template.replaceAll("\\$USER_STYLESHEET_ADD\\$", "");
             template = template.replaceAll("\\$USER_AVATAR\\$", "");
             template = template.replaceAll("\\$RECENT_ENTRIES\\$", "");
