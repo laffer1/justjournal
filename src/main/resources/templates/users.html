@@ -3,8 +3,8 @@
 
 <head>
     <title th:text="${user.journals.get(0).name}"></title>
-    <meta th:if="${user.userPref.allowSpider == 'Y'}" name="robots" content="noindex, nofollow, noarchive" />
-    <meta th:if="${user.userPref.allowSpider == 'Y'}" name="googlebot" content="nosnippet" />
+    <meta th:if="${user.journals.get(0).allowSpider}" name="robots" content="noindex, nofollow, noarchive" />
+    <meta th:if="${user.journals.get(0).allowSpider}" name="googlebot" content="nosnippet" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta property="og:site_name" content="Just Journal" />
     <meta property="og:type" content="article" />
@@ -18,7 +18,7 @@
     <link rel="stylesheet" type="text/css" href="/static/styles/users.css" th:href="@{/static/styles/users.css}"/>
 
     <link rel="stylesheet" type="text/css" media="screen"
-          th:href="${user.userPref.style > 16} ? '/static/styles/' + ${user.userPref.style} + '.css' : '/static/styles/bootstrap-theme.min.css'" />
+          th:href="${user.journals.get(0).style.id > 16} ? '/static/styles/' + ${user.journals.get(0).style.id} + '.css' : '/static/styles/bootstrap-theme.min.css'" />
 
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" media="screen"
