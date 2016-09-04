@@ -114,6 +114,7 @@ public class SignUpController {
                 throw new Exception("Unable to save user");
 
             Journal journal = new Journal();
+            journal.setSlug(newUser.getUsername());
             journal.setAllowSpider(true);
             journal.setOwnerViewOnly(false);
             journal.setPingServices(true);

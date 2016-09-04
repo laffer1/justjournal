@@ -44,7 +44,6 @@ import static org.junit.Assert.assertNotNull;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = ApplicationTest.class)
 @WebAppConfiguration
-
 public class EntryTagsRepositoryTests {
     @Autowired
     EntryTagsRepository entryTagsRepository;
