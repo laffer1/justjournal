@@ -110,7 +110,7 @@ public class RssCacheRefresh {
                 if (entity != null) {
                     final InputStream inputStream = entity.getContent();
                     try {
-                        int bytesRead = 0;
+                        int bytesRead;
                         final BufferedInputStream bis = new BufferedInputStream(inputStream);
                         while ((bytesRead = bis.read(buffer)) != -1) {
                             final String chunk = new String(buffer, 0, bytesRead);

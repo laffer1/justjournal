@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.Date;
 
 /**
  * Represent individual journal.  This allows multiple journals to be associated with one login.
@@ -49,8 +50,11 @@ public class Journal implements Serializable {
     @Enumerated(EnumType.STRING)
     private boolean pingServices = true;
 
+    @Column(name = "since", nullable = false)
+    private Date since;
+
     @Column(name = "modified", nullable = false)
-    private Timestamp modified;
+    private Date modified;
 
     public int getId() {
         return id;
@@ -116,13 +120,19 @@ public class Journal implements Serializable {
         this.pingServices = pingServices;
     }
 
-    public Timestamp getModified() {
+    public Date getModified() {
         return modified;
     }
 
-    public void setModified(final Timestamp modified) {
+    public void setModified(final Date modified) {
         this.modified = modified;
     }
 
+    public Date getSince() {
+        return since;
+    }
 
+    public void setSince(final Date since) {
+        this.since = since;
+    }
 }
