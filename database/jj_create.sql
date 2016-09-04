@@ -470,7 +470,8 @@ CREATE TABLE IF NOT EXISTS `style` (
   PRIMARY KEY (`id`)
 )
   ENGINE =InnoDB
-  DEFAULT CHARSET =latin1;
+  DEFAULT CHARSET =latin1
+  AUTO_INCREMENT = 17;
 
 -- --------------------------------------------------------
 
