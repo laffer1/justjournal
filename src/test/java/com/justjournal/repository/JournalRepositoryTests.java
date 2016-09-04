@@ -1,7 +1,6 @@
 package com.justjournal.repository;
 
 import com.justjournal.ApplicationTest;
-import com.justjournal.model.EntryTag;
 import com.justjournal.model.Journal;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,14 +22,20 @@ public class JournalRepositoryTests {
     private JournalRepository journalRepository;
 
     @Test
-       public void list() throws Exception {
-           final Iterable<Journal> list = journalRepository.findAll();
-           assertNotNull(list);
-       }
+    public void list() throws Exception {
+        final Iterable<Journal> list = journalRepository.findAll();
+        assertNotNull(list);
+    }
 
-       @Test
-       public void findByUsername() {
-           final Iterable<Journal> list = journalRepository.findByUsername("testuser");
-           assertNotNull(list);
-       }
+    @Test
+    public void findByUsername() {
+        final Iterable<Journal> list = journalRepository.findByUsername("testuser");
+        assertNotNull(list);
+    }
+
+    @Test
+    public void findBySlug() {
+        final Journal journal = journalRepository.findOneBySlug("testuser");
+        assertNotNull(journal);
+    }
 }
