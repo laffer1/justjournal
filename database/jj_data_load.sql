@@ -1062,14 +1062,14 @@ INSERT INTO `timezones` (`id`, `name`) VALUES
   (1434, 'WET'),
   (1435, 'Zulu');
 
-INSERT INTO style (title, desc) VALUES('Cerulean', 'A calm blue sky');
-INSERT INTO style (title, desc) VALUES('Cosmo', 'An ode to metro');
-INSERT INTO style (title, desc) VALUES('Cyborg', 'Jet black and electric blue');
-INSERT INTO style (title, desc) VALUES('Journal', 'Crisp like a new sheet of paper');
-INSERT INTO style (title, desc) VALUES('Lumen', 'Light and shadow');
-INSERT INTO style (title, desc) VALUES('Paper', 'Material is the metaphor');
-INSERT INTO style (title, desc) VALUES('Readable', 'Optimized for legibility');
-INSERT INTO style (title, desc) VALUES('Sandstone', 'A little warmth');
+INSERT INTO style (`title`, `desc`) VALUES ('Cerulean', 'A calm blue sky'),
+  ('Cosmo', 'An ode to metro'),
+  ('Cyborg', 'Jet black and electric blue'),
+  ('Journal', 'Crisp like a new sheet of paper'),
+  ('Lumen', 'Light and shadow'),
+  ('Paper', 'Material is the metaphor'),
+  ('Readable', 'Optimized for legibility'),
+  ('Sandstone', 'A little warmth');
 
 -- First Test User
 
