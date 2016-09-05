@@ -15,6 +15,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.resource.PathResourceResolver;
 
@@ -109,6 +110,12 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
           converters.add(new StringHttpMessageConverter());
           converters.add(new ByteArrayHttpMessageConverter());
           converters.add(mappingJackson2HttpMessageConverter());
+      }
+
+    @Override
+      public void addViewControllers(ViewControllerRegistry registry) {
+          registry.addViewController("/hello").setViewName("hello");
+          registry.addViewController("/login").setViewName("login");
       }
 
 }

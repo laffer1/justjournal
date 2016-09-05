@@ -18,7 +18,8 @@ import java.util.Map;
  *
  * @author Lucas Holt
  */
-@RestController("/api/journal")
+@RestController
+@RequestMapping("/api/journal")
 public class JournalController {
     private static final Logger log = Logger.getLogger(JournalController.class.getName());
 

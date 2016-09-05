@@ -31,8 +31,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpSession;
+import java.security.Principal;
 
 /**
  * Main homepage / index
@@ -55,6 +58,15 @@ final public class HomeController {
         session.invalidate();
 
         return "logout";
+    }
+
+    @RequestMapping(value = "/postlogin", method = RequestMethod.GET)
+            public View postlogin(final Principal principal)
+    {
+        // TODO: multi blog support
+        RedirectView redirect = new RedirectView("/users/" + principal.getName());
+         redirect.setExposeModelAttributes(false);
+         return redirect;
     }
 }
 
