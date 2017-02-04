@@ -65,6 +65,7 @@ import javax.transaction.Transactional;
 import java.awt.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.security.Principal;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -159,13 +160,16 @@ public class UsersController {
                           final Pageable pageable,
                           final Model model,
                           final HttpSession session,
-                          final HttpServletResponse response) {
+                          final HttpServletResponse response,
+                          Principal principal) {
         final UserContext userContext = getUserContext(username, session);
 
         if (userContext == null) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return "";
         }
+
+       log.warn("Principal Name is " + principal.getName());
 
         model.addAttribute(MODEL_AUTHENTICATED_USER, Login.currentLoginName(session));
         model.addAttribute(MODEL_USER, userContext.getBlogUser());
