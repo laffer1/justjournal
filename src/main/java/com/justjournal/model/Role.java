@@ -11,12 +11,11 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 
 import org.hibernate.validator.constraints.NotEmpty;
-import org.springframework.security.core.GrantedAuthority;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-public class Role implements GrantedAuthority {
+public class Role {
 
     private static final long serialVersionUID = 1L;
 
@@ -31,7 +30,6 @@ public class Role implements GrantedAuthority {
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "roles")
     private Set<User> users = new HashSet<User>();
 
-    @Override
     public String getAuthority() {
         return name;
     }
