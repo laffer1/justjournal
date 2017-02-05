@@ -24,6 +24,7 @@ import java.util.List;
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
+ * Blog entry search services
  * @author Lucas Holt
  */
 @Slf4j
@@ -43,11 +44,24 @@ public class BlogSearchService {
         this.securityDao = securityDao;
     }
 
-    public Page<BlogEntry> search(String term, Pageable page) {
+    /**
+     * Find all blog entries mentioning a specific term
+     * @param term search term
+     * @param page page
+     * @return a page of results
+     */
+    public Page<BlogEntry> search(final String term, final Pageable page) {
         return blogEntryRepository.findBySubjectContainsOrBodyContainsAllIgnoreCase(term, term, page);
     }
 
-    public Page<BlogEntry> search(String term, String username, Pageable page) {
+    /**
+     * Find all blog entries for a specific user
+     * @param term search term
+     * @param username user to filter on
+     * @param page page
+     * @return a page of results
+     */
+    public Page<BlogEntry> search(final String term, final String username, final Pageable page) {
         final QueryBuilder qb =
                 boolQuery()
                         .must(matchQuery("author", username))
@@ -62,6 +76,9 @@ public class BlogSearchService {
         return blogEntryRepository.search(qb, page);
     }
 
+    /**
+     * Index all public blog entries.
+     */
     @Async
     public void indexAllPublicBlogEntries() {
         try {
@@ -70,9 +87,13 @@ public class BlogSearchService {
 
             Page<Entry> entries = entryRepository.findBySecurityOrderByDateDesc(sec, pageable);
             for (int i = 0; i < entries.getTotalPages(); i++) {
+                ArrayList<BlogEntry> items = new ArrayList<BlogEntry>();
+                
                 for (final Entry entry : entries) {
-                    blogEntryRepository.save(convert(entry));
+                    items.add(convert(entry));
                 }
+
+                blogEntryRepository.save(items);
 
                 pageable = new PageRequest(i + 1, 100);
                 entries = entryRepository.findBySecurityOrderByDateDesc(sec, pageable);
@@ -82,6 +103,10 @@ public class BlogSearchService {
         }
     }
 
+    /**
+     * Index public blog entries since a specific date
+     * @param date newer blog entries
+     */
     @Async
     public void indexPublicBlogEntriesSince(final Date date) {
         final Security sec = securityDao.findByName("public");
@@ -89,14 +114,18 @@ public class BlogSearchService {
 
         Page<Entry> entries = entryRepository.findBySecurityOrderByDateDesc(sec, pageable);
         for (int i = 0; i < entries.getTotalPages(); i++) {
+            ArrayList<BlogEntry> items = new ArrayList<BlogEntry>();
             for (final Entry entry : entries) {
                 if (entry.getDate().before(date)) {
+                    blogEntryRepository.save(items);
                     // stop processing items.
                     return;
                 }
 
-                blogEntryRepository.save(convert(entry));
+                items.add(convert(entry));
             }
+
+            blogEntryRepository.save(items);
 
             pageable = new PageRequest(i + 1, 100);
             entries = entryRepository.findBySecurityOrderByDateDesc(sec, pageable);
