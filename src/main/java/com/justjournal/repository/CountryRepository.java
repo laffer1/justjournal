@@ -28,11 +28,12 @@ package com.justjournal.repository;
 
 import com.justjournal.model.Country;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 /**
  * @author Lucas Holt
  */
 @Repository
-public interface CountryRepository extends CrudRepository<Country, Integer> {
+public interface CountryRepository extends PagingAndSortingRepository<Country, Integer> {
 }
