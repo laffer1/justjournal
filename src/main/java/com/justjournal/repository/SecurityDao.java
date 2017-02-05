@@ -35,7 +35,6 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.repository;
 
 import com.justjournal.model.Security;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
