@@ -929,9 +929,9 @@ public class UsersController {
 
         if (term != null && term.length() > 0) {
             if (uc.isAuthBlog())
-                result = blogSearchService.search(term, page);
+                result = blogSearchService.search(term, uc.getAuthenticatedUser().getUsername(), page);
             else
-                result = blogSearchService.publicSearch(term, page);
+                result = blogSearchService.publicSearch(term, uc.getBlogUser().getUsername(), page);
 
             try {
 
