@@ -947,23 +947,20 @@ public class UsersController {
                     for (final BlogEntry blogEntry : result.getContent())
                      {
                         // Format the current time.
-                        final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm");
                         final SimpleDateFormat formatmydate = new SimpleDateFormat("EEE, d MMM yyyy");
                         final SimpleDateFormat formatmytime = new SimpleDateFormat("h:mm a");
-                        final String curDate;
+                         String curDate = "";
 
-                        // Parse the previous string back into a Date.
-                        final ParsePosition pos = new ParsePosition(0);
-                        final Date currentDate = formatter.parse(blogEntry.getDate().toString(), pos);
+                        final Date currentDate = blogEntry.getDate();
 
-                        curDate = formatmydate.format(currentDate);
+                        if (currentDate != null)
+                            curDate = formatmydate.format(currentDate);
 
                         sb.append("<h2>");
                         sb.append(curDate);
                         sb.append("</h2>");
                         sb.append(endl);
-
-
+                         
                         sb.append("<div class=\"ebody\">");
                         sb.append(endl);
 
@@ -986,7 +983,7 @@ public class UsersController {
                 }
 
             } catch (final Exception e1) {
-                log.error( e1.getMessage());
+                log.error( e1.getMessage(), e1);
             }
         }
         return sb.toString();

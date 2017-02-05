@@ -240,6 +240,14 @@ public class BlogSearchService {
     }
 
     /**
+     * Index a single entry
+     * @param entry
+     */
+    public void index(final Entry entry) {
+        this.blogEntryRepository.save(convert(entry));
+    }
+
+    /**
      * Convert an entry into a blog entry (search indexed document)
      *
      * @param entry entry domain object
