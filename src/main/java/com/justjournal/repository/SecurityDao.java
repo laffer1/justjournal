@@ -36,6 +36,8 @@ package com.justjournal.repository;
 
 import com.justjournal.model.Security;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 
@@ -43,5 +45,8 @@ import org.springframework.stereotype.Repository;
  * Entry Security
  */
 @Repository
-public interface SecurityDao extends CrudRepository<Security, Integer> {
+public interface SecurityDao extends PagingAndSortingRepository<Security, Integer> {
+
+    Security findByName(@Param("name") String name);
+
 }
