@@ -25,6 +25,7 @@ import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * Blog entry search services
+ *
  * @author Lucas Holt
  */
 @Slf4j
@@ -46,6 +47,7 @@ public class BlogSearchService {
 
     /**
      * Find all blog entries mentioning a specific term
+     *
      * @param term search term
      * @param page page
      * @return a page of results
@@ -55,10 +57,33 @@ public class BlogSearchService {
     }
 
     /**
-     * Find all blog entries for a specific user
+     * Find all public blog entries matching a specific term.
+     *
      * @param term search term
-     * @param username user to filter on
      * @param page page
+     * @return a page of results
+     */
+    public Page<BlogEntry> publicSearch(final String term, final Pageable page) {
+        final QueryBuilder qb =
+                boolQuery()
+                        .must(matchQuery("privateEntry", "false"))
+                        .must(multiMatchQuery(
+                                term,
+                                "subject", "body"
+                                )
+                        );
+
+        log.warn(qb.toString());
+
+        return blogEntryRepository.search(qb, page);
+    }
+
+    /**
+     * Find all blog entries for a specific user
+     *
+     * @param term     search term
+     * @param username user to filter on
+     * @param page     page
      * @return a page of results
      */
     public Page<BlogEntry> search(final String term, final String username, final Pageable page) {
@@ -77,6 +102,56 @@ public class BlogSearchService {
     }
 
     /**
+     * Find all blog entries for a specific user
+     *
+     * @param term     search term
+     * @param username user to filter on
+     * @param page     page
+     * @return a page of results
+     */
+    public Page<BlogEntry> publicSearch(final String term, final String username, final Pageable page) {
+        final QueryBuilder qb =
+                boolQuery()
+                        .must(matchQuery("privateEntry", "false"))
+                        .must(matchQuery("author", username))
+                        .must(multiMatchQuery(
+                                term,
+                                "subject", "body"
+                                )
+                        );
+
+        log.warn(qb.toString());
+
+        return blogEntryRepository.search(qb, page);
+    }
+
+    /**
+     * Index all blog entries regardless of security level.
+     */
+    @Async
+    public void indexAllBlogEntries() {
+        try {
+            Pageable pageable = new PageRequest(0, 100);
+
+            Page<Entry> entries = entryRepository.findAll(pageable);
+            for (int i = 0; i < entries.getTotalPages(); i++) {
+                ArrayList<BlogEntry> items = new ArrayList<BlogEntry>();
+
+                for (final Entry entry : entries) {
+                    items.add(convert(entry));
+                }
+
+                blogEntryRepository.save(items);
+
+                pageable = new PageRequest(i + 1, 100);
+                entries = entryRepository.findAll(pageable);
+            }
+        } catch (final Exception e) {
+            log.error(e.getMessage());
+        }
+    }
+
+    /**
      * Index all public blog entries.
      */
     @Async
@@ -88,7 +163,7 @@ public class BlogSearchService {
             Page<Entry> entries = entryRepository.findBySecurityOrderByDateDesc(sec, pageable);
             for (int i = 0; i < entries.getTotalPages(); i++) {
                 ArrayList<BlogEntry> items = new ArrayList<BlogEntry>();
-                
+
                 for (final Entry entry : entries) {
                     items.add(convert(entry));
                 }
@@ -105,6 +180,37 @@ public class BlogSearchService {
 
     /**
      * Index public blog entries since a specific date
+     *
+     * @param date newer blog entries
+     */
+    @Async
+    public void indexBlogEntriesSince(final Date date) {
+        Pageable pageable = new PageRequest(0, 100);
+
+        Page<Entry> entries = entryRepository.findAll(pageable);
+        for (int i = 0; i < entries.getTotalPages(); i++) {
+            ArrayList<BlogEntry> items = new ArrayList<BlogEntry>();
+            for (final Entry entry : entries) {
+                if (entry.getDate().before(date)) {
+                    if (!items.isEmpty())
+                        blogEntryRepository.save(items);
+                    // stop processing items.
+                    return;
+                }
+
+                items.add(convert(entry));
+            }
+
+            blogEntryRepository.save(items);
+
+            pageable = new PageRequest(i + 1, 100);
+            entries = entryRepository.findAll(pageable);
+        }
+    }
+
+    /**
+     * Index public blog entries since a specific date
+     *
      * @param date newer blog entries
      */
     @Async
@@ -117,7 +223,8 @@ public class BlogSearchService {
             ArrayList<BlogEntry> items = new ArrayList<BlogEntry>();
             for (final Entry entry : entries) {
                 if (entry.getDate().before(date)) {
-                    blogEntryRepository.save(items);
+                    if (!items.isEmpty())
+                        blogEntryRepository.save(items);
                     // stop processing items.
                     return;
                 }
@@ -145,6 +252,7 @@ public class BlogSearchService {
         blogEntry.setPrivateEntry(!entry.getSecurity().getName().equalsIgnoreCase("public"));
         blogEntry.setSubject(entry.getSubject());
         blogEntry.setBody(entry.getBody());
+        blogEntry.setDate(entry.getDate());
 
         final HashMap<String, Object> tags = new HashMap<String, Object>();
         for (final com.justjournal.model.EntryTag tag : entry.getTags()) {

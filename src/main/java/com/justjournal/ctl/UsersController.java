@@ -32,10 +32,11 @@ import com.justjournal.Login;
 import com.justjournal.atom.AtomFeed;
 import com.justjournal.core.Settings;
 import com.justjournal.model.*;
+import com.justjournal.model.search.BlogEntry;
 import com.justjournal.repository.*;
 import com.justjournal.rss.CachedHeadlineBean;
 import com.justjournal.rss.Rss;
-import com.justjournal.search.BaseSearch;
+import com.justjournal.services.BlogSearchService;
 import com.justjournal.services.EntryService;
 import com.justjournal.services.ServiceException;
 import com.justjournal.services.UserImageService;
@@ -53,7 +54,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -134,6 +134,9 @@ public class UsersController {
     @Autowired
     private UserPicRepository userPicRepository;
 
+    @Autowired
+    private BlogSearchService blogSearchService;
+
     public void setEntryService(final EntryService entryService) {
         this.entryService = entryService;
     }
@@ -148,9 +151,9 @@ public class UsersController {
      * @param userId
      * @return  true if avatar, false otherwise
      */
-    private boolean avatar(int userId) {
+    private boolean avatar(final int userId) {
         // TOOD: very slow
-        UserPic userPic = userPicRepository.findOne(userId);
+        final UserPic userPic = userPicRepository.findOne(userId);
         return (userPic != null);
     }
 
@@ -917,48 +920,32 @@ public class UsersController {
         return sb.toString();
     }
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
-
     @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
-    private String search(final UserContext uc, final int maxresults, final String bquery) {
+    private String search(final UserContext uc, final int maxResults, final String term) {
         final StringBuilder sb = new StringBuilder();
-        final List<Map<String,Object>> searchResults;
-        final String sql;
 
-        if (uc.isAuthBlog())
-            sql = "SELECT entry.subject AS subject, entry.body AS body, entry.date AS date, entry.id AS id, user.username AS username from entry, user, user_pref WHERE entry.uid = user.id AND entry.uid=user_pref.id AND user.username='" + uc.getBlogUser().getUsername() + "' AND ";
-        else
-            sql = "SELECT entry.subject AS subject, entry.body AS body, entry.date AS date, entry.id AS id, user.username AS username from entry, user, user_pref WHERE entry.uid = user.id AND entry.uid=user_pref.id AND user_pref.owner_view_only = 'N' AND entry.security=2 AND user.username='" + uc.getBlogUser().getUsername() + "' AND ";
+        PageRequest page = new PageRequest(0, maxResults);
+        Page<BlogEntry> result;
 
-        if (bquery != null && bquery.length() > 0) {
+        if (term != null && term.length() > 0) {
+            if (uc.isAuthBlog())
+                result = blogSearchService.search(term, page);
+            else
+                result = blogSearchService.publicSearch(term, page);
+
             try {
-                final BaseSearch b = new BaseSearch(jdbcTemplate);
-
-                if (log.isDebugEnabled()) {
-                    log.debug("Search base is: " + sql);
-                    log.debug("Max results are: " + maxresults);
-                    log.debug("Search query is: " + bquery);
-                }
-
-                b.setBaseQuery(sql);
-                b.setFields("subject body");
-                b.setMaxResults(maxresults);
-                b.setSortAscending("date");
-                searchResults = b.search(bquery);
 
                 sb.append("<h2><img src=\"/images/icon_search.gif\" alt=\"Search Blog\" /></h2>");
                 sb.append(endl);
-                sb.append("<p>Searching for <i>" + bquery + "</i></p>");
+                sb.append("<p>Searching for <i>" + term + "</i></p>");
 
-                if (searchResults == null || searchResults.isEmpty()) {
+                if (result == null || result.getTotalElements() == 0) {
                     sb.append("<p>No items were found matching your search criteria.</p>");
                     sb.append(endl);
                 } else {
 
-                    for (final Map<String,Object> brs : searchResults)
+                    for (final BlogEntry blogEntry : result.getContent())
                      {
-
                         // Format the current time.
                         final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm");
                         final SimpleDateFormat formatmydate = new SimpleDateFormat("EEE, d MMM yyyy");
@@ -967,7 +954,7 @@ public class UsersController {
 
                         // Parse the previous string back into a Date.
                         final ParsePosition pos = new ParsePosition(0);
-                        final Date currentDate = formatter.parse(brs.get("date").toString(), pos);
+                        final Date currentDate = formatter.parse(blogEntry.getDate().toString(), pos);
 
                         curDate = formatmydate.format(currentDate);
 
@@ -984,14 +971,14 @@ public class UsersController {
                         sb.append("<span class=\"time\">");
                         sb.append(formatmytime.format(currentDate));
                         sb.append("</span> - <span class=\"subject\"><a href=\"/users/")
-                                .append(brs.get("username").toString()).append("/entry/").append(brs.get("id").toString()).append("\">");
-                        sb.append(Xml.cleanString(brs.get("subject").toString()));
+                                .append(blogEntry.getAuthor()).append("/entry/").append(blogEntry.getId().toString()).append("\">");
+                        sb.append(Xml.cleanString(blogEntry.getSubject()));
                         sb.append("</a></span></h3> ");
                         sb.append(endl);
 
                         sb.append("<div class=\"ebody\">");
                         sb.append(endl);
-                        sb.append(brs.get("body").toString());
+                        sb.append(blogEntry.getBody());
                         sb.append(endl);
                         sb.append("</div>");
                         sb.append(endl);

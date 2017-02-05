@@ -70,7 +70,7 @@ public class SearchController {
             final PagedResourcesAssembler<BlogEntry> assembler) {
 
         try {
-            final Page<BlogEntry> entries = blogSearchService.search(term, page);
+            final Page<BlogEntry> entries = blogSearchService.publicSearch(term, page);
 
             final Link link = linkTo(methodOn(SearchController.class).search(term, page, assembler)).withSelfRel();
 
@@ -91,7 +91,7 @@ public class SearchController {
             final PagedResourcesAssembler<BlogEntry> assembler) {
 
         try {
-            final Page<BlogEntry> entries = blogSearchService.search(term, username, page);
+            final Page<BlogEntry> entries = blogSearchService.publicSearch(term, username, page);
 
             final Link link = linkTo(methodOn(SearchController.class).search(username, term, page, assembler)).withSelfRel();
 

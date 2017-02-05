@@ -14,6 +14,7 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -36,6 +37,10 @@ public class BlogEntry implements Serializable, Comparable<BlogEntry> {
     @Getter
     @Setter
     private String author;
+
+    @Getter
+    @Setter
+    private Date date;
 
 
     @Field(type = FieldType.Nested)
