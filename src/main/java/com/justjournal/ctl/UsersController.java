@@ -2092,7 +2092,7 @@ public class UsersController {
                 sb.append("</span><br />");
                 sb.append(endl);
             } else {
-                log.error("Couldn't get mood theme data");
+                log.error("Couldn't get mood theme data for " + o.getMood().getId());
             }
         }
 

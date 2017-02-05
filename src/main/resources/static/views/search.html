@@ -2,38 +2,52 @@
 
     <h2>Search</h2>
 
-        <form action="index.jsp" method="get" name="search" id="search">
-            <fieldset>
-                <legend><strong>Search members by</strong><br></legend>
-                <p>
-                    <select name="type">
-                        <option value="username">username</option>
-                        <option value="e-mail">e-mail</option>
-                        <option value="name">name</option>
-                        <option value="aim">aim</option>
-                        <option value="icq">icq</option>
-                        <option value="yahoo">yahoo</option>
-                        <option value="msn">msn</option>
-                        <option value="phone">phone number</option>
-                    </select>
+    <form action="index.jsp" method="get" name="search" id="search">
+        <fieldset>
+            <legend><strong>Search members by</strong><br></legend>
+            <p>
+                <select name="type">
+                    <option value="username">username</option>
+                    <option value="e-mail">e-mail</option>
+                    <option value="name">name</option>
+                    <option value="aim">aim</option>
+                    <option value="icq">icq</option>
+                    <option value="yahoo">yahoo</option>
+                    <option value="msn">msn</option>
+                    <option value="phone">phone number</option>
+                </select>
 
-                    <input type="text" name="query" id="query" value="">
-                    <input type="submit" name="Submit" value="Find" id="Submit">
-                </p>
-            </fieldset>
-        </form>
+                <input type="text" name="query" id="query" value="">
+                <input type="submit" name="Submit" value="Find" id="Submit">
+            </p>
+        </fieldset>
+    </form>
 
-        <form action="index.jsp" method="get" name="bsearch" id="bsearch">
-            <fieldset>
-                <legend><strong>Search Blogs for</strong><br/></legend>
-                <p>
-                    <input type="text" name="bquery" id="bquery" value="">
-                    <input type="submit" name="BlogSearch" value="Find" id="BlogSearch">
-                </p>
+    <form name="bsearch" id="bsearch">
+        <fieldset>
+            <legend><strong>Search Blogs for</strong><br/></legend>
+            <p>
+                <input type="text" name="bquery" id="bquery" value="" data-ng-model="term">
+                <button data-ng-click="blogSearch()" class="btn btn-primary btn-md">Find</button>
+            </p>
 
-                <p>Displays first 20 public entries containing the search terms.</p>
-            </fieldset>
-        </form>
+            <p>Displays first 20 public entries containing the search terms.</p>
+        </fieldset>
+
+        <div data-ng-repeat="entry in results.content">
+            <h4 style="color: orange;">{{ entry.date }}</h4>
+            <div>
+                <h5><img src="/images/userclass_16.png" alt="user"/> <a href="/users/{{entry.author}}"
+                                                                        style="font-size: 12px;">{{entry.author}}</a>
+                    - <span class="time">{{ entry.date }}</span> - <span class="subject"><a
+                            href="/users/{{entry.author}}/entry/{{entry.id}}">
+                              {{entry.subject}}
+                             </a></span></h5>
+
+                <div class="ebody" ng-bind-html="entry.body"></div>
+            </div>
+        </div>
+    </form>
 
     <h3>Google Search of this site</h3>
 
