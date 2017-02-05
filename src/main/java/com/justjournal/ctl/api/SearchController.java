@@ -26,8 +26,81 @@
 
 package com.justjournal.ctl.api;
 
+import com.justjournal.ctl.api.assembler.BlogEntrySearchResourceAssembler;
+import com.justjournal.model.search.BlogEntry;
+import com.justjournal.services.BlogSearchService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.PagedResources;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+
 /**
  * @author Lucas Holt
  */
+@Slf4j
+@RestController
+@RequestMapping("/api/search")
 public class SearchController {
+
+    private BlogEntrySearchResourceAssembler blogEntrySearchResourceAssembler;
+
+    private BlogSearchService blogSearchService;
+
+    @Autowired
+    public SearchController(final BlogEntrySearchResourceAssembler blogEntrySearchResourceAssembler,
+                            final BlogSearchService blogSearchService) {
+        this.blogEntrySearchResourceAssembler = blogEntrySearchResourceAssembler;
+        this.blogSearchService = blogSearchService;
+    }
+
+    @RequestMapping(value = "", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<PagedResources<BlogEntry>> search(
+            @RequestParam("term") final String term,
+            final Pageable page,
+            final PagedResourcesAssembler<BlogEntry> assembler) {
+
+        try {
+            final Page<BlogEntry> entries = blogSearchService.search(term, page);
+
+            final Link link = linkTo(methodOn(SearchController.class).search(term, page, assembler)).withSelfRel();
+
+            final PagedResources resources = assembler.toResource(entries, blogEntrySearchResourceAssembler, link);
+            return new ResponseEntity<PagedResources<BlogEntry>>(resources, HttpStatus.OK);
+        } catch (final Exception e) {
+            log.error(e.getMessage());
+        }
+
+        return new ResponseEntity<PagedResources<BlogEntry>>(HttpStatus.BAD_REQUEST);
+    }
+
+    @RequestMapping(value = "/{username}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<PagedResources<BlogEntry>> search(
+            @PathVariable("username") final String username,
+            @RequestParam("term") final String term,
+            final Pageable page,
+            final PagedResourcesAssembler<BlogEntry> assembler) {
+
+        try {
+            final Page<BlogEntry> entries = blogSearchService.search(term, username, page);
+
+            final Link link = linkTo(methodOn(SearchController.class).search(username, term, page, assembler)).withSelfRel();
+
+            final PagedResources resources = assembler.toResource(entries, blogEntrySearchResourceAssembler, link);
+            return new ResponseEntity<PagedResources<BlogEntry>>(resources, HttpStatus.OK);
+        } catch (final Exception e) {
+            log.error(e.getMessage());
+        }
+
+        return new ResponseEntity<PagedResources<BlogEntry>>(HttpStatus.BAD_REQUEST);
+    }
 }
