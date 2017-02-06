@@ -204,9 +204,12 @@ public class EntryService {
 
             final List<Entry> list = new ArrayList<Entry>();
 
+            Security security = securityDao.findByName("public");
+
             for (final Friend friend : friends) {
-                // TODO: limit record count
-                final Collection<Entry> fe = friend.getFriend().getEntries();
+                Pageable page = new PageRequest(0, 20, Sort.Direction.DESC, "date", "id");
+                Page<Entry> fe = entryDao.findByUserAndSecurityOrderByDateDesc(friend.getFriend(),security,page);
+
                 for (final Entry entry : fe) {
                     if (entry.getSecurity().getId() == 2 && entry.getDraft().equals(PrefBool.N))
                         list.add(entry);
