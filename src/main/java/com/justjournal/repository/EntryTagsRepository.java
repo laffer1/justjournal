@@ -26,6 +26,7 @@
 
 package com.justjournal.repository;
 
+import com.justjournal.model.Entry;
 import com.justjournal.model.EntryTag;
 import com.justjournal.model.Tag;
 import org.springframework.data.jpa.repository.Query;
@@ -45,6 +46,8 @@ public interface EntryTagsRepository extends CrudRepository<EntryTag, Integer> {
     List<EntryTag> findByUsername(@Param("username") String username);
 
     List<EntryTag> findByTag(@Param("tag") Tag tag);
+
+    List<EntryTag> findByEntry(@Param("entry") Entry entry);
 
     long countByTag(@Param("tag") Tag tag);
 }
