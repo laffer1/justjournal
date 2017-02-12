@@ -35,7 +35,7 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.model;
 
 import com.justjournal.utility.DateConvert;
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -52,8 +52,8 @@ import java.util.TimeZone;
  * @version $Id: DateTimeBean.java,v 1.11 2012/06/23 18:15:31 laffer1 Exp $
  * @since 1.0
  */
+@Slf4j
 public final class DateTimeBean implements DateTime {
-    private static Logger log = Logger.getLogger(DateTimeBean.class.getName());
 
     // default is epoch -1 sec
     private int day = 31;
@@ -64,10 +64,12 @@ public final class DateTimeBean implements DateTime {
     private TimeZone tz = TimeZone.getTimeZone("UTC");
 
     public DateTimeBean() {
+        super();
     }
 
     // extra case we have a java date already
-    public DateTimeBean(java.util.Date date) {
+    public DateTimeBean(final java.util.Date date) {
+        super();
         this.set(date);
     }
 
@@ -84,10 +86,12 @@ public final class DateTimeBean implements DateTime {
         this.set(calendar.getTime());
     }
 
+    @Override
     public int getDay() {
         return this.day;
     }
 
+    @Override
     public void setDay(final int day) {
         if (day < 1)
             throw new IllegalArgumentException("illegal day");
@@ -98,10 +102,12 @@ public final class DateTimeBean implements DateTime {
         this.day = day;
     }
 
+    @Override
     public int getMonth() {
         return this.month;
     }
 
+    @Override
     public void setMonth(final int month) {
         if (month < 1)
             throw new IllegalArgumentException("illegal month");
@@ -112,10 +118,12 @@ public final class DateTimeBean implements DateTime {
         this.month = month;
     }
 
+    @Override
     public int getYear() {
         return this.year;
     }
 
+    @Override
     public void setYear(final int year) {
         if (year < 1970)
             throw new IllegalArgumentException("illegal year");
@@ -123,10 +131,12 @@ public final class DateTimeBean implements DateTime {
         this.year = year;
     }
 
+    @Override
     public int getHour() {
         return this.hour;
     }
 
+    @Override
     public void setHour(int hour) {
         if (hour == 24)
             hour = 0;
@@ -140,10 +150,12 @@ public final class DateTimeBean implements DateTime {
         this.hour = hour;
     }
 
+    @Override
     public int getMinutes() {
         return this.minutes;
     }
 
+    @Override
     public void setMinutes(final int minutes) {
         if (minutes < 0)
             throw new IllegalArgumentException("illegal minutes");
@@ -154,6 +166,7 @@ public final class DateTimeBean implements DateTime {
         this.minutes = minutes;
     }
 
+    @Override
     public void set(final String mysqlDate)
             throws java.text.ParseException {
 
@@ -174,6 +187,7 @@ public final class DateTimeBean implements DateTime {
 
     }
 
+    @Override
     public void set(final java.util.Date date) {
         final java.util.GregorianCalendar calendarg = new java.util.GregorianCalendar(java.util.TimeZone.getDefault());
 
@@ -187,10 +201,12 @@ public final class DateTimeBean implements DateTime {
         log.debug("Internal values: " + year + "-" + month + "-" + day + " " + hour + ":" + minutes);
     }
 
+    @Override
     public String toPubDate() {
         return DateConvert.encode822(toDate());
     }
 
+    @Override
     public String toRFC3339() {
         return DateConvert.encode3339(toDate());
     }
@@ -216,10 +232,10 @@ public final class DateTimeBean implements DateTime {
      *
      * @return java Date with tz
      */
+    @Override
     public Date toDate() {
         final java.util.GregorianCalendar cal =
                 new java.util.GregorianCalendar(year, month - 1, day, hour, minutes);
-        //cal.setTimeZone(tz);
         cal.setTimeZone(TimeZone.getDefault());
         return cal.getTime();
     }

@@ -31,12 +31,11 @@ import com.justjournal.model.Entry;
 import com.justjournal.utility.DateConvert;
 import com.justjournal.utility.HTMLUtil;
 import com.justjournal.utility.Xml;
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -45,10 +44,13 @@ import java.util.*;
  * @author Lucas Holt
  * @version $Id: Rss.java,v 1.13 2011/05/29 22:32:59 laffer1 Exp $
  */
+@Slf4j
 @Component
 public final class Rss {
-    private static final Logger log = Logger.getLogger(Rss.class);
-    private final static int MAX_LENGTH = 15; // max size of RSS content
+
+    private static final int MAX_LENGTH = 15; // max size of RSS content
+    private static final String USER_BASE_URL = "http://www.justjournal.com/users/";
+    private static final String ALBUM_IMAGE_URL = "http://www.justjournal.com/AlbumImage?id=";
 
     private String title = "";
     private String link = "";
@@ -60,8 +62,7 @@ public final class Rss {
     private String selfLink = "";
 
     @Autowired
-         private JdbcTemplate jdbcTemplate;
-
+    private JdbcTemplate jdbcTemplate;
 
     private Date newestEntryDate = new Date();
 
@@ -137,7 +138,7 @@ public final class Rss {
 
     // Methods
 
-    public void populate(Collection<Entry> entries) {
+    public void populate(final Collection<Entry> entries) {
 
         RssItem item;
 
@@ -145,60 +146,65 @@ public final class Rss {
         try {
 
             Entry o;
-            Iterator<Entry> itr = entries.iterator();
+            final Iterator<Entry> itr = entries.iterator();
 
             for (int x = 0, n = entries.size(); x < n && x < MAX_LENGTH; x++) {
                 o = itr.next();
                 item = new RssItem();
                 item.setTruncateFields(false);
                 item.setTitle(o.getSubject());
-                item.setLink("http://www.justjournal.com/users/" + o.getUser().getUsername());
+                item.setLink(USER_BASE_URL + o.getUser().getUsername());
                 // RSS feeds don't like &apos; and friends.  try to go unicode
-                String descUnicode = HTMLUtil.clean(o.getBody(), false);
+                final String descUnicode = HTMLUtil.clean(o.getBody(), false);
                 item.setDescription(HTMLUtil.convertCharacterEntities(descUnicode));
-                item.setGuid("http://www.justjournal.com/users/" + o.getUser().getUsername() + "/entry/" + o.getId());
+                item.setGuid(USER_BASE_URL + o.getUser().getUsername() + "/entry/" + o.getId());
                 item.setPubDate(new DateTimeBean(o.getDate()).toPubDate());
 
-                Date date = o.getDate();
+                final Date date = o.getDate();
                 if (newestEntryDate == null || date.compareTo(newestEntryDate) > 0)
                     newestEntryDate = date;
                 add(item);
             }
 
-        } catch (Exception e) {
-            log.error(e.getMessage());
+        } catch (final Exception e) {
+            log.error("Could not populate blog entries", e);
         }
     }
 
-    public void populateImageList(int userid, String userName) {
+    public void populateImageList(final int userid, final String userName) {
 
         RssItem item;
-
-        List<Map<String,Object>> list = null;
         String imageTitle;
-        final String sqlStmt = "SELECT id, title, mimetype, BIT_LENGTH(image) As imglen FROM user_images WHERE owner='" + userid + "' ORDER BY id DESC;";
+        final String sqlStmt = "SELECT id, title, modified, mimetype, BIT_LENGTH(image) As imglen FROM user_images WHERE owner='" + userid + "' ORDER BY id DESC;";
 
         try {
 
-            list = jdbcTemplate.queryForList(sqlStmt);
+            final List<Map<String, Object>> list = jdbcTemplate.queryForList(sqlStmt);
 
-           for (final Map<String, Object> rs : list)  {
+            if (list.isEmpty())
+                log.debug("No images loaded from database for Rss Image List");
+
+            for (final Map<String, Object> rs : list) {
+                final DateTimeBean dt = new DateTimeBean();
 
                 imageTitle = rs.get("title").toString();
                 item = new RssItem();
                 item.setTruncateFields(false);
                 item.setTitle(imageTitle);
-                item.setLink("http://www.justjournal.com/users/" + userName + "/pictures");
+                item.setLink(USER_BASE_URL + userName + "/pictures");
                 item.setDescription("");
-                item.setGuid("http://www.justjournal.com/AlbumImage?id=" + rs.get("id"));
-                item.setEnclosureURL("http://www.justjournal.com/AlbumImage?id=" + rs.get("id"));
+                item.setGuid(ALBUM_IMAGE_URL + rs.get("id"));
+                item.setEnclosureURL(ALBUM_IMAGE_URL + rs.get("id"));
                 item.setEnclosureType(rs.get("mimetype").toString().trim());
                 item.setEnclosureLength(Integer.toString(Integer.parseInt(rs.get("imglen").toString()) / 8));
-                //item.setPubDate();
+
+                dt.set(rs.get("modified").toString());
+                item.setPubDate(dt.toPubDate());
+
                 add(item);
             }
         } catch (final Exception e1) {
-            log.error(e1.getMessage());
+            log.error("Error populating image from list", e1);
         }
     }
 
@@ -207,13 +213,13 @@ public final class Rss {
      *
      * @param item rss item
      */
-    public void add(RssItem item) {
+    public void add(final RssItem item) {
         items.add(item);
     }
 
     public String toXml() {
 
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
 
         sb.append("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n");
 
@@ -287,7 +293,7 @@ public final class Rss {
 
         /* Iterator */
         RssItem o;
-        Iterator<RssItem> itr = items.listIterator();
+        final Iterator<RssItem> itr = items.listIterator();
         for (int i = 0, n = items.size(); i < n && i < MAX_LENGTH; i++)     // 15 is the limit for RSS
         {
             o = itr.next();
@@ -318,7 +324,7 @@ public final class Rss {
             <enclosure url="http://www.scripting.com/mp3s/touchOfGrey.mp3"
             length="5588242" type="audio/mpeg"/>
             */
-            if (o.getEnclosureURL() != null && o.getEnclosureURL().length() > 0) {
+            if (o.getEnclosureURL() != null && !o.getEnclosureURL().isEmpty()) {
                 sb.append("\t\t\t<enclosure url=\"").append(o.getEnclosureURL());
                 sb.append("\" length=\"").append(o.getEnclosureLength());
                 sb.append("\" type=\"");
@@ -342,17 +348,9 @@ public final class Rss {
      * @return rss item count
      */
     public int size() {
-        if (items == null) return 0;
+        if (items == null)
+            return 0;
 
         return items.size();
-    }
-
-    private String date() {
-        //Sat, 07 Sep 2002 09:43:33 GMT
-        Calendar cal = new GregorianCalendar(java.util.TimeZone.getTimeZone("UTC"));
-        java.util.Date current = cal.getTime();
-        final SimpleDateFormat formatmydate = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zz");
-
-        return formatmydate.format(current);
     }
 }
