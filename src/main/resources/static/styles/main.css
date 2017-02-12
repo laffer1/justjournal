@@ -71,3 +71,17 @@ a:hover {
 .TagCloudSmall {
    font-size: .8em;
 }
+
+input.ng-invalid {
+    background-color: pink;
+}
+input.ng-valid {
+    background-color:  white;
+}
+
+textarea.ng-invalid {
+    background-color: pink;
+}
+textarea.ng-valid {
+    background-color:  white;
+}

@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-xs-12 col-sm-6 col-md-8">
-        <form role="form" id="frmUpdateJournal" name="UpdateJournal">
+        <form role="form" id="frmUpdateJournal" name="UpdateJournal" novalidate>
 
             <fieldset>
                 <legend><strong>Journal Entry</strong><br></legend>
@@ -8,8 +8,13 @@
                 <div class="form-group">
                     <label for="subject">Subject</label>
                     <input class="form-control" name="subject" type="text" id="subject" size="30" maxlength="150"
+                           data-ng-maxlength="150"
                            value="" ng-model="entry.subject" trim="true" autofocus>
                     (optional)
+
+                    <span style="color:red" ng-show="UpdateJournal.subject.$dirty && UpdateJournal.subject.$invalid">
+                      <span ng-show="UpdateJournal.subject.$error.maxlength">Subject must not exceed 150 characters</span>
+                      </span>
                 </div>
 
                 <div class="form-group"><textarea id="body" name="body" style="width: 100%" cols="60" rows="20"
@@ -28,7 +33,7 @@
                     <label for="security">Security</label>
                     <select class="form-control" id="security" name="security" size="1"
                             ng-options="s.id as s.name for s in security" ng-model="entry.security"
-                            adfadfng-init="entry.security = entry.security || options[0].value">
+                            adfng-init="entry.security = entry.security || options[0].value">
                     </select>
                 </div>
 
@@ -49,7 +54,11 @@
                 <div class="form-group">
                     <label for="tags">Tags</label>
                     <input class="form-control" type="text" name="tags" id="tags" size="30" value=""
-                           trim="true" ng-model="entry.tag">
+                           trim="true" ng-model="entry.tag" data-ng-pattern="/^[a-z,\s]+$/">
+
+                    <span style="color:red" ng-show="UpdateJournal.tags.$dirty && UpdateJournal.tags.$invalid">
+                        <span ng-show="UpdateJournal.tags.$error.pattern">Must be a valid tag of lowercase letters</span>
+                    </span>
                 </div>
 
                 <div class="form-group">
@@ -85,7 +94,8 @@
                 </div>
             </fieldset>
 
-            <button class="btn btn-primary" ng-click="save()">Save</button>
+            <button class="btn btn-primary" ng-click="save()"
+                    ng-disabled="UpdateJournal.$invalid">Save</button>
             <button class="btn btn-default" ng-click="cancel()">Cancel</button>
         </form>
         <div class="alert" ng-hide="ErrorMessage == null">{{ ErrorMessage }}</div>
