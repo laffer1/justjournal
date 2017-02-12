@@ -157,6 +157,9 @@ public class BlogSearchService {
     @Async
     public void indexAllPublicBlogEntries() {
         try {
+            // so as to not use all the ram, i loop through a page at a time and save the blog entries in a batch of 100 at a time to ES
+            // since i can't use java 8 on this project, i don't have streams.
+
             final Security sec = securityDao.findByName("public");
             Pageable pageable = new PageRequest(0, 100);
 
