@@ -1,3 +1,5 @@
+package com.justjournal.model.api;
+
 /*
  * Copyright (c) 2005-2011 Lucas Holt
  * All rights reserved.
@@ -24,12 +26,9 @@
  * SUCH DAMAGE.
  */
 
-package com.justjournal.model;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
 
-import com.fasterxml.jackson.annotation.*;
-import com.justjournal.utility.HTMLUtil;
-
-import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -39,49 +38,23 @@ import java.util.Date;
  * @author Lucas Holt
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-@Entity
-@Table(name = "comments")
 public final class Comment implements Serializable {
 
     private static final long serialVersionUID = 3594701186407268256L;
 
-    @Id
-    @GeneratedValue
     private int id = 0;
 
-    @JsonBackReference(value = "entry-comment")
-    @JsonProperty("entry")
-    @ManyToOne
-    @JoinColumn(name = "eid")
-    private Entry entry;
+    private String username;
 
-    @Column(name = "eid", insertable = false, updatable = false)
-    private int eid;
+    private Date date;
 
-    @JsonBackReference(value = "comment-user")
-    @JsonProperty("user")
-    @ManyToOne
-    @JoinColumn(name = "uid")
-    private User user;
-
-    @JsonIgnore
-    @Column(name = "date")
-    @Temporal(value = TemporalType.DATE)
-    private Date date = new Date();
-
-    @JsonProperty("subject")
-    @Column(name = "subject", length = 150)
     private String subject = "";
 
-    // @Basic(fetch = FetchType.LAZY)
-    @JsonProperty("body")
-    @Column(name = "body")
-    @Lob
     private String body = "";
 
     @JsonCreator
     public Comment() {
-        super();
+       super();
     }
 
     public int getId() {
@@ -94,15 +67,6 @@ public final class Comment implements Serializable {
                     commentId);
 
         this.id = commentId;
-    }
-
-
-    public int getEid() {
-        return eid;
-    }
-
-    public void setEid(final int eid) {
-        this.eid = eid;
     }
 
     public Date getDate() {
@@ -137,31 +101,12 @@ public final class Comment implements Serializable {
         this.body = bodyText;
     }
 
-    @JsonIgnore
-    @Transient
-    public String getBodyWithLinks() {
-        return HTMLUtil.uriToLink(getBody());
+    public String getUsername() {
+        return username;
     }
 
-    @JsonIgnore
-    @Transient
-    public String getBodyWithoutHTML() {
-        return HTMLUtil.stripHTMLTags(getBody());
-    }
-
-    public Entry getEntry() {
-        return entry;
-    }
-
-    public void setEntry(final Entry entry) {
-        this.entry = entry;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(final User user) {
-        this.user = user;
+    public void setUsername(final String username) {
+        this.username = username;
     }
 }
+

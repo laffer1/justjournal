@@ -82,8 +82,8 @@ angular.module('wwwApp').controller('EntryCtrl', ['$scope', '$routeParams', '$lo
                  $scope.entry.security = $scope.entry.security.id;  */
 
                 $scope.entry.tags = [];
-                if (typeof $scope.tag !== 'undefined') {
-                    $scope.entry.tags = $scope.tag.split(", ");
+                if (typeof $scope.entry.tag !== 'undefined' && $scope.entry.tag.length > 0) {
+                    $scope.entry.tags = $scope.entry.tag.toLowerCase().split(", ");
                 }
 
                 // EDIT case
@@ -139,7 +139,9 @@ angular.module('wwwApp').controller('EntryCtrl', ['$scope', '$routeParams', '$lo
             jQuery("#frmUpdateJournal").validate();
 
             jQuery('#tags').bind('change', function () {
-                $(this).value = $(this).value.toLocaleLowerCase();
+                if ($(this).value !== 'undefined') {
+                    $(this).value = $(this).val().toLowerCase();
+                }
             });
         };
         $scope.init();

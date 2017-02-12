@@ -49,5 +49,7 @@ public interface EntryTagsRepository extends CrudRepository<EntryTag, Integer> {
 
     List<EntryTag> findByEntry(@Param("entry") Entry entry);
 
+    EntryTag findByEntryAndTag(@Param("entry") Entry entry, @Param("tag") Tag tag);
+
     long countByTag(@Param("tag") Tag tag);
 }

@@ -26,9 +26,7 @@
 
 package com.justjournal.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -38,22 +36,22 @@ import java.io.Serializable;
  *
  * @author Lucas Holt
  */
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class , property = "id")
 @Entity
 @Table(name = "entry_tags")
 public class EntryTag implements Serializable {
 
     private static final long serialVersionUID = -1338174937085787799L;
+
     @Id
     @GeneratedValue
     private int id;
 
-    @JsonBackReference(value="entry-entrytag")
     @JsonProperty("entry")
     @ManyToOne
     @JoinColumn(name = "entryid")
     private Entry entry;
 
-    @JsonBackReference
     @JsonProperty("tag")
     @ManyToOne
     @JoinColumn(name = "tagid")

@@ -35,7 +35,8 @@ POSSIBILITY OF SUCH DAMAGE.
 */
 
 import com.fasterxml.jackson.annotation.*;
-import com.justjournal.model.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -53,165 +54,62 @@ import java.util.Set;
 public class EntryTo implements Serializable {
     private static final long serialVersionUID = 6558001750470601777L;
 
+    @Getter @Setter 
     private int id = 0;
+
+    @Getter @Setter
     private Date date = new Date();
+
+    @Getter @Setter
     private Date modified;
+
+    @Getter @Setter
     private int location;
+
+    @Getter @Setter 
     private int mood;
+
+    @Getter @Setter
     private String user;
+
+    @Getter @Setter
     private int security;
+
+    @Getter @Setter
     private String subject = "";
+
+    @Getter @Setter
     private String body = "";
 
+    @Getter @Setter 
     private String music = "";
 
+    @Getter @Setter
     @JsonProperty("autoFormat")
     private Boolean autoFormat = true;
 
+    @Getter @Setter
     @JsonProperty("allowComments")
     private Boolean allowComments = true;
 
+    @Getter @Setter 
     @JsonProperty("emailComments")
     private Boolean emailComments = true;
 
+    @Getter @Setter 
     private Boolean draft = false;
 
+    @Getter @Setter 
     @JsonProperty("tags")
-    private Set<EntryTag> tags = new HashSet<EntryTag>();
-
+    private Set<String> tags = new HashSet<String>();
+    
+    @Getter @Setter 
     @JsonProperty("comments")
     private Set<Comment> comments = new HashSet<Comment>();
 
+    
     @JsonCreator
     public EntryTo() {
-
-    }
-
-    public void setLocation(final int location) {
-        this.location = location;
-    }
-
-    public int getMood() {
-        return mood;
-    }
-
-    public void setMood(final int mood) {
-        this.mood = mood;
-    }
-
-    public String getUser() {
-        return user;
-    }
-
-    public void setUser(final String user) {
-        this.user = user;
-    }
-
-    public int getSecurity() {
-        return security;
-    }
-
-    public void setSecurity(final int security) {
-        this.security = security;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(final int id) {
-        this.id = id;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(final Date date) {
-        this.date = date;
-    }
-
-    public Date getModified() {
-        return modified;
-    }
-
-    public void setModified(final Date modified) {
-        this.modified = modified;
-    }
-
-    public int getLocation() {
-        return location;
-    }
-
-    public String getSubject() {
-        return subject;
-    }
-
-    public void setSubject(final String subject) {
-        this.subject = subject;
-    }
-
-    public String getBody() {
-        return body;
-    }
-
-    public void setBody(final String body) {
-        this.body = body;
-    }
-
-    public String getMusic() {
-        return music;
-    }
-
-    public void setMusic(final String music) {
-        this.music = music;
-    }
-
-    public Boolean getAutoFormat() {
-        return autoFormat;
-    }
-
-    public void setAutoFormat(final Boolean autoFormat) {
-        this.autoFormat = autoFormat;
-    }
-
-    public Boolean getAllowComments() {
-        return allowComments;
-    }
-
-    public void setAllowComments(final Boolean allowComments) {
-        this.allowComments = allowComments;
-    }
-
-    public Boolean getEmailComments() {
-        return emailComments;
-    }
-
-    public void setEmailComments(final Boolean emailComments) {
-        this.emailComments = emailComments;
-    }
-
-    public Boolean getDraft() {
-        return draft;
-    }
-
-    public void setDraft(final Boolean draft) {
-        this.draft = draft;
-    }
-
-    public Set<EntryTag> getTags() {
-        return tags;
-    }
-
-    public void setTags(final Set<EntryTag> tags) {
-        this.tags = tags;
-    }
-
-    public Set<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(final Set<Comment> comments) {
-        this.comments = comments;
+        super();
     }
 }

@@ -28,6 +28,7 @@ package com.justjournal.model;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.justjournal.utility.StringUtil;
 
@@ -73,7 +74,13 @@ public class Tag implements Serializable {
 
     @JsonCreator
     public Tag() {
+        super();
+    }
 
+    @JsonIgnore
+    public Tag(final String name) {
+        super();
+        this.setName(name);
     }
 
 
@@ -91,7 +98,7 @@ public class Tag implements Serializable {
      *
      * @param id tag id > 0
      */
-    public void setId(int id) {
+    public void setId(final int id) {
         if (id < 1)
             throw new IllegalArgumentException("Tag id must be > 0");
         this.id = id;
@@ -112,7 +119,7 @@ public class Tag implements Serializable {
      *
      * @param count number of tags
      */
-    public void setCount(long count) {
+    public void setCount(final long count) {
         this.count = count;
     }
 
@@ -130,8 +137,8 @@ public class Tag implements Serializable {
      *
      * @param name 30 character or less string with letters only.
      */
-    public void setName(String name) {
-        if (name == null || name.equalsIgnoreCase(""))
+    public void setName(final String name) {
+        if (name == null || name.isEmpty())
             throw new IllegalArgumentException("Name must be set");
         if (name.length() > 30)
             throw new IllegalArgumentException("Name cannot be longer than 30 characters.");

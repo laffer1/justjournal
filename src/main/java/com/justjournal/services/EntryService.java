@@ -27,10 +27,7 @@
 package com.justjournal.services;
 
 import com.justjournal.model.*;
-import com.justjournal.repository.EntryRepository;
-import com.justjournal.repository.SecurityDao;
-import com.justjournal.repository.TagDao;
-import com.justjournal.repository.UserRepository;
+import com.justjournal.repository.*;
 import com.justjournal.utility.Xml;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +57,9 @@ public class EntryService {
     @Autowired
     private TagDao tagDao;
 
+    @Autowired
+    private EntryTagsRepository entryTagsRepository;
+
     /**
      * Get the recent blog entries list for the sidebar, but only use public entries.
      *
@@ -70,8 +70,8 @@ public class EntryService {
     public List<RecentEntry> getRecentEntriesPublic(final String username) throws ServiceException {
         final User user = userRepository.findByUsername(username);
         if (user == null) {
-            log.warn("username not found in getRecentEntriesPublic with " + username);
-            return null;
+            log.warn("username not found in getRecentEntriesPublic with %s", username);
+            return Collections.emptyList();
         }
 
         final Page<Entry> entries;
@@ -83,9 +83,8 @@ public class EntryService {
 
             for (final Entry o : entries) {
                 // security safety net
-                if (! o.getSecurity().getName().equals("public"))
-                    continue;
-                if (o.getDraft().equals(PrefBool.Y))
+                if (! "public".equals(o.getSecurity().getName()) ||
+                        o.getDraft().equals(PrefBool.Y))
                     continue;
 
                 final RecentEntry recentEntry = new RecentEntry();
@@ -95,7 +94,7 @@ public class EntryService {
             }
         } catch (final Exception e) {
             log.error(e.getMessage());
-            throw new ServiceException("Unable to retrieve recent blog entries for " + username);
+            throw new ServiceException("Unable to retrieve recent blog entries for " + username, e);
         }
 
         return recentEntries;
@@ -111,7 +110,7 @@ public class EntryService {
     public List<RecentEntry> getRecentEntries(final String username) throws ServiceException {
         final User user = userRepository.findByUsername(username);
         if (user == null) {
-            return null;
+            return Collections.emptyList();
         }
 
         final Page<Entry> entries;
@@ -128,7 +127,7 @@ public class EntryService {
                 recentEntries.add(recentEntry);
             }
         } catch (final Exception e) {
-            log.error(e.getMessage());
+            log.error(e.getMessage(), e);
             throw new ServiceException("Unable to retrieve recent blog entries for " + username);
         }
 
@@ -153,7 +152,7 @@ public class EntryService {
         try {
             final User user = userRepository.findByUsername(username);
             if (user == null) {
-                return null;
+                return Collections.emptyList();
             }
             return entryDao.findByUserAndSecurityAndDraftOrderByDateDesc(user, securityDao.findOne(2), PrefBool.N);
         } catch (Exception e) {
@@ -207,8 +206,8 @@ public class EntryService {
             Security security = securityDao.findByName("public");
 
             for (final Friend friend : friends) {
-                Pageable page = new PageRequest(0, 20, Sort.Direction.DESC, "date", "id");
-                Page<Entry> fe = entryDao.findByUserAndSecurityOrderByDateDesc(friend.getFriend(),security,page);
+                final Pageable page = new PageRequest(0, 20, Sort.Direction.DESC, "date", "id");
+                final Page<Entry> fe = entryDao.findByUserAndSecurityOrderByDateDesc(friend.getFriend(), security, page);
 
                 for (final Entry entry : fe) {
                     if (entry.getSecurity().getId() == 2 && entry.getDraft().equals(PrefBool.N))
@@ -217,12 +216,14 @@ public class EntryService {
             }
 
             Collections.sort(list, new Comparator<Entry>() {
-                public int compare(Entry m1, Entry m2) {
+                @Override
+                public int compare(final Entry m1, final Entry m2) {
                     return m1.getDate().compareTo(m2.getDate());
                 }
             });
 
-            if (list.isEmpty()) return list;
+            if (list.isEmpty())
+                return list;
 
             final int end = list.size() - 1;
             int start = 0;
@@ -245,21 +246,21 @@ public class EntryService {
     @Transactional(value = Transactional.TxType.SUPPORTS)
     public Collection<Tag> getEntryTags(final String username) throws ServiceException {
         try {
-            assert (entryDao != null);
-            assert (username != null);
+            assert entryDao != null;
+            assert username != null;
 
             final Map<String, Tag> tags = new HashMap<String, Tag>();
 
             final List<Tag> tagList = tagDao.findByUsername(username);
             for (final Tag t : tagList) {
                 if (!tags.containsKey(t.getName())) {
-                        t.setCount(1);
-                        tags.put(t.getName(), t);
-                    } else {
-                        final Tag tag = tags.get(t.getName());
-                        tag.setCount(t.getCount() + 1);
-                        tags.put(t.getName(), tag);
-                    }
+                    t.setCount(1);
+                    tags.put(t.getName(), t);
+                } else {
+                    final Tag tag = tags.get(t.getName());
+                    tag.setCount(t.getCount() + 1);
+                    tags.put(t.getName(), tag);
+                }
             }
 
             return tags.values();
@@ -268,5 +269,81 @@ public class EntryService {
             throw new ServiceException(e);
         }
     }
+
+
+    /**
+     * Add and remove tags on an entry from a list.
+     * @param entry entry to modify
+     * @param tags tags that should be present (removes anything not listed)
+     */
+    public void applyTags(final Entry entry, final Set<String> tags) {
+       final List<EntryTag> entryTags = entryTagsRepository.findByEntry(entry);
+
+       // find tags that are missing in the db and add them.
+       for (final String tag : tags) {
+           boolean found = false;
+           for (final EntryTag entryTag : entryTags) {
+               if (entryTag.getTag().getName().equalsIgnoreCase(tag)) {
+                   // in list
+                   found = true;
+                   break;
+               }
+           }
+
+           if (!found) {
+               addTagToEntry(entry, tag);
+           }
+       }
+
+        for (final EntryTag entryTag : entryTags) {
+            boolean found = false;
+
+            for (final String tag : tags) {
+                if (tag.equalsIgnoreCase(entryTag.getTag().getName())) {
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found)
+                removeTagFromEntry(entry, entryTag.getTag().getName());
+        }
+    }
+
+    /**
+     * Add a tag to an entry
+     * @param entry entry to add tags to
+     * @param tag tag name
+     */
+    public void addTagToEntry(final Entry entry, final String tag) {
+        Tag t = tagDao.findByName(tag);
+        if (t == null)
+            t = tagDao.save(new Tag(tag));
+
+        final EntryTag ets = entryTagsRepository.findByEntryAndTag(entry, t);
+        if (ets == null) {
+            final EntryTag et = new EntryTag();
+            et.setTag(t);
+            et.setEntry(entry);
+            entryTagsRepository.save(et);
+        }
+    }
+
+    /**
+     * Remove tag from entry
+     * @param entry entry to modify
+     * @param tag tag name
+     */
+    public void removeTagFromEntry(final Entry entry, final String tag) {
+         final Tag t = tagDao.findByName(tag);
+         if (t == null)
+             return;
+
+         final EntryTag ets = entryTagsRepository.findByEntryAndTag(entry, t);
+         if (ets != null) {
+
+             entryTagsRepository.delete(ets);
+         }
+     }
 
 }

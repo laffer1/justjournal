@@ -46,6 +46,10 @@ public class ServiceException extends Exception {
         super(msg);
     }
 
+    public ServiceException(String msg, Exception e) {
+            super(msg, e);
+        }
+
     @Override
     public String getMessage() {
         return "ServiceException: " + super.getMessage();
