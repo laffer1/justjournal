@@ -1045,11 +1045,11 @@ public class UsersController {
 
     private String getFavorites(final UserContext uc) throws ServiceException {
 
-          final StringBuffer sb = new StringBuffer();
+        final StringBuffer sb = new StringBuffer();
         final Collection<Entry> entries = new ArrayList<Entry>();
 
         final List<Favorite> favorites = favoriteRepository.findByUser(uc.getBlogUser());
-        boolean auth = uc.getAuthenticatedUser() != null;
+        final boolean auth = uc.getAuthenticatedUser() != null;
 
         for (final Favorite fav : favorites) {
             final Entry e = fav.getEntry();
