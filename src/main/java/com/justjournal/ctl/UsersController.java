@@ -82,7 +82,7 @@ public class UsersController {
     private static final int SEARCH_MAX_LENGTH = 20;
     private static final float FONT_10_POINT = 10.0F;
     // constants
-    private static final char endl = '\n';
+    private static final char ENDL = '\n';
     private static final Logger log = Logger.getLogger(UsersController.class);
     private static final String MODEL_USER = "user";
     private static final String MODEL_AUTHENTICATED_USER = "authenticatedUsername";
@@ -101,44 +101,41 @@ public class UsersController {
     @SuppressWarnings({"InstanceVariableOfConcreteClass"})
     private Settings settings = null;
 
-    @Qualifier("commentRepository")
-    @Autowired
-    private CommentRepository commentDao = null;
+    private final CommentRepository commentDao;
 
-    @Qualifier("entryRepository")
-    @Autowired
-    private EntryRepository entryDao = null;
+    private final EntryRepository entryDao;
 
-    @Autowired
-    private EntryService entryService = null;
+    private final EntryService entryService;
 
-    @Autowired
-    private FavoriteRepository favoriteRepository;
+    private final FavoriteRepository favoriteRepository;
 
-    @Qualifier("moodThemeDataRepository")
-    @Autowired
-    private MoodThemeDataRepository emoticonDao;
+    private final MoodThemeDataRepository emoticonDao;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private SecurityDao securityDao;
+    private final SecurityDao securityDao;
+
+    private final RssSubscriptionsDAO rssSubscriptionsDAO;
+
+    private final UserImageService userImageService;
+
+    private final UserPicRepository userPicRepository;
+
+    private final BlogSearchService blogSearchService;
 
     @Autowired
-    private RssSubscriptionsDAO rssSubscriptionsDAO;
-
-    @Autowired
-    private UserImageService userImageService;
-
-    @Autowired
-    private UserPicRepository userPicRepository;
-
-    @Autowired
-    private BlogSearchService blogSearchService;
-
-    public void setEntryService(final EntryService entryService) {
+    public UsersController(final EntryService entryService, final @Qualifier("commentRepository") CommentRepository commentDao, final @Qualifier("entryRepository") EntryRepository entryDao, final FavoriteRepository favoriteRepository, final @Qualifier("moodThemeDataRepository") MoodThemeDataRepository emoticonDao, final UserRepository userRepository, final SecurityDao securityDao, final RssSubscriptionsDAO rssSubscriptionsDAO, final UserImageService userImageService, final UserPicRepository userPicRepository, final BlogSearchService blogSearchService) {
         this.entryService = entryService;
+        this.commentDao = commentDao;
+        this.entryDao = entryDao;
+        this.favoriteRepository = favoriteRepository;
+        this.emoticonDao = emoticonDao;
+        this.userRepository = userRepository;
+        this.securityDao = securityDao;
+        this.rssSubscriptionsDAO = rssSubscriptionsDAO;
+        this.userImageService = userImageService;
+        this.userPicRepository = userPicRepository;
+        this.blogSearchService = blogSearchService;
     }
 
     @Autowired
@@ -154,7 +151,7 @@ public class UsersController {
     private boolean avatar(final int userId) {
         // TOOD: very slow
         final UserPic userPic = userPicRepository.findOne(userId);
-        return (userPic != null);
+        return userPic != null;
     }
 
     @RequestMapping(value = "{username}", method = RequestMethod.GET, produces = "text/html")
@@ -251,7 +248,7 @@ public class UsersController {
           try {
               model.addAttribute(MODEL_FAVORITES, getFavorites(userc));
           } catch (final ServiceException se) {
-              log.error(se.getMessage());
+              log.error(se.getMessage(), se);
           }
           return VIEW_USERS;
       }
@@ -284,7 +281,7 @@ public class UsersController {
         try {
             model.addAttribute(MODEL_FRIENDS, getFriends(userc));
         } catch (final ServiceException se) {
-            log.error(se.getMessage());
+            log.error(se.getMessage(), se);
         }
         return VIEW_USERS;
     }
@@ -420,8 +417,8 @@ public class UsersController {
     }
 
     @RequestMapping(value = "{username}/atom", method = RequestMethod.GET, produces = "text/xml; charset=UTF-8")
-    public
     @ResponseBody
+    public
     String atom(@PathVariable(PATH_USERNAME) final String username, final HttpServletResponse response) {
         try {
             final User user = userRepository.findByUsername(username);
@@ -445,8 +442,8 @@ public class UsersController {
     }
 
     @RequestMapping(value = "{username}/rss", method = RequestMethod.GET, produces = "application/rss+xml; charset=ISO-8859-1")
-    public
     @ResponseBody
+    public
     String rss(@PathVariable(PATH_USERNAME) final String username, final HttpServletResponse response) {
         try {
             final User user = userRepository.findByUsername(username);
@@ -470,8 +467,8 @@ public class UsersController {
     }
 
     @RequestMapping(value = "{username}/rsspics", method = RequestMethod.GET, produces = "application/rss+xml; charset=ISO-8859-1")
-    public
     @ResponseBody
+    public
     String rssPictures(@PathVariable(PATH_USERNAME) final String username, final HttpServletResponse response) {
         try {
             final User user = userRepository.findByUsername(username);
@@ -499,8 +496,8 @@ public class UsersController {
         User authUser = null;
         try {
             authUser = userRepository.findByUsername(Login.currentLoginName(session));
-        } catch (final Exception ignored) {
-
+        } catch (final Exception e) {
+           log.trace(e.getMessage(), e);
         }
 
         try {
@@ -527,8 +524,8 @@ public class UsersController {
         User authUser = null;
         try {
             authUser = userRepository.findByUsername(Login.currentLoginName(session));
-        } catch (final Exception ignored) {
-
+        } catch (final Exception e) {
+            log.trace(e.getMessage(), e);
         }
 
         try {
@@ -648,8 +645,8 @@ public class UsersController {
         User authUser = null;
         try {
             authUser = userRepository.findByUsername(Login.currentLoginName(session));
-        } catch (final Exception ignored) {
-
+        } catch (final Exception e) {
+              log.trace(e.getMessage(), e);
         }
 
         try {
@@ -682,13 +679,14 @@ public class UsersController {
         User authUser = null;
         try {
             authUser = userRepository.findByUsername(Login.currentLoginName(session));
-        } catch (final Exception ignored) {
-
+        } catch (final Exception e) {
+            log.trace(e.getMessage(), e);
         }
 
         try {
             final User user = userRepository.findByUsername(username);
-            if (user == null || user.getId() == 0) return null;
+            if (user == null || user.getId() == 0)
+                return null;
 
             return new UserContext(user, authUser);
         } catch (final Exception e) {
@@ -708,22 +706,16 @@ public class UsersController {
             response.setHeader("Content-Disposition", "attachment; filename=" + uc.getBlogUser().getUsername() + ".pdf");
 
             final Document document = new Document();
-            //    final ByteArrayOutputStream baos = new ByteArrayOutputStream();
             PdfWriter.getInstance(document, response.getOutputStream());    // baos
             formatRTFPDF(uc, document);
             document.close();
-
-            //     response.setContentLength(baos.size()); /* required by IE */
-            //   final OutputStream out = response.getOutputStream();
-            //   baos.writeTo(out);
-            //   out.flush();
         } catch (final DocumentException e) {
-            log.error("Users.getPDF() DocumentException:" + e.getMessage());
+            log.error("Users.getPDF() DocumentException:" + e.getMessage(), e);
         } catch (final IOException e1) {
-            log.error("Users.getPDF() IOException:" + e1.getMessage());
+            log.error("Users.getPDF() IOException:" + e1.getMessage(), e1);
         } catch (final Exception e) {
             // user class caused this
-            log.error("Users.getPDF():" + e.getMessage());
+            log.error("Users.getPDF():" + e.getMessage(), e);
         }
     }
 
@@ -747,18 +739,16 @@ public class UsersController {
             out.flush();
             out.close();
         } catch (final DocumentException e) {
-            log.error("Users.getPDF() DocumentException:" + e.getMessage());
+            log.error("Users.getPDF() DocumentException:" + e.getMessage(), e);
         } catch (final IOException e1) {
-            log.error("Users.getPDF() IOException:" + e1.getMessage());
+            log.error("Users.getPDF() IOException:" + e1.getMessage(), e1);
         } catch (final Exception e) {
             // user class caused this
-            log.error("Users.getPDF():" + e.getMessage());
+            log.error("Users.getPDF():" + e.getMessage(), e);
         }
     }
 
-    private void formatRTFPDF(final UserContext uc, final Document document)
-            throws Exception {
-
+    private void formatRTFPDF(final UserContext uc, final Document document) throws Exception {
         document.open();
         document.add(new Paragraph(""));
         Chunk chunk = new Chunk(uc.getBlogUser().getJournals().get(0).getName());
@@ -781,7 +771,7 @@ public class UsersController {
         String lastDate = "";
         String curDate;
 
-        for (Entry o : entries) {
+        for (final Entry o : entries) {
             // Parse the previous string back into a Date.
             final ParsePosition pos = new ParsePosition(0);
             final Date currentDate = formatter.parse(o.getDate().toString(), pos);
@@ -824,9 +814,9 @@ public class UsersController {
         final StringBuilder sb = new StringBuilder();
 
         sb.append("<h2>RSS Reader</h2>");
-        sb.append(endl);
+        sb.append(ENDL);
         sb.append("<p><a href=\"javascript:sweeptoggle('contract')\">Contract All</a> | <a href=\"javascript:sweeptoggle('expand')\">Expand All</a></p>");
-        sb.append(endl);
+        sb.append(ENDL);
 
         final CachedHeadlineBean hb = new CachedHeadlineBean();
 
@@ -840,11 +830,11 @@ public class UsersController {
                 o = (RssSubscription) itr.next();
 
                 sb.append(hb.parse(o.getUri()));
-                sb.append(endl);
+                sb.append(ENDL);
             }
 
-        } catch (Exception e) {
-            log.error(e.getMessage());
+        } catch (final Exception e) {
+            log.error(e.getMessage(), e);
             return null;
         }
         return sb.toString();
@@ -905,12 +895,12 @@ public class UsersController {
                     sb.append("<h2>");
                     sb.append(curDate);
                     sb.append("</h2>");
-                    sb.append(endl);
+                    sb.append(ENDL);
 
                     sb.append(formatEntry(uc, o, o.getDate(), true));
                 }
             } catch (final Exception e1) {
-                log.error("getSingleEntry: " + e1.getMessage() + '\n' + e1.toString());
+                log.error("getSingleEntry: " + e1.getMessage() + '\n', e1);
 
                 ErrorPage.Display("Error",
                         "Unable to retrieve journal entry from data store.",
@@ -924,8 +914,8 @@ public class UsersController {
     private String search(final UserContext uc, final int maxResults, final String term) {
         final StringBuilder sb = new StringBuilder();
 
-        PageRequest page = new PageRequest(0, maxResults);
-        Page<BlogEntry> result;
+        final PageRequest page = new PageRequest(0, maxResults);
+        final Page<BlogEntry> result;
 
         if (term != null && term.length() > 0) {
             if (uc.isAuthBlog())
@@ -936,12 +926,12 @@ public class UsersController {
             try {
 
                 sb.append("<h2><img src=\"/images/icon_search.gif\" alt=\"Search Blog\" /></h2>");
-                sb.append(endl);
+                sb.append(ENDL);
                 sb.append("<p>Searching for <i>" + term + "</i></p>");
 
                 if (result == null || result.getTotalElements() == 0) {
                     sb.append("<p>No items were found matching your search criteria.</p>");
-                    sb.append(endl);
+                    sb.append(ENDL);
                 } else {
 
                     for (final BlogEntry blogEntry : result.getContent())
@@ -959,10 +949,10 @@ public class UsersController {
                         sb.append("<h2>");
                         sb.append(curDate);
                         sb.append("</h2>");
-                        sb.append(endl);
+                        sb.append(ENDL);
                          
                         sb.append("<div class=\"ebody\">");
-                        sb.append(endl);
+                        sb.append(ENDL);
 
                         sb.append("<h3>");
                         sb.append("<span class=\"time\">");
@@ -971,14 +961,14 @@ public class UsersController {
                                 .append(blogEntry.getAuthor()).append("/entry/").append(blogEntry.getId().toString()).append("\">");
                         sb.append(Xml.cleanString(blogEntry.getSubject()));
                         sb.append("</a></span></h3> ");
-                        sb.append(endl);
+                        sb.append(ENDL);
 
                         sb.append("<div class=\"ebody\">");
-                        sb.append(endl);
+                        sb.append(ENDL);
                         sb.append(blogEntry.getBody());
-                        sb.append(endl);
+                        sb.append(ENDL);
                         sb.append("</div>");
-                        sb.append(endl);
+                        sb.append(ENDL);
                     }
                 }
 
@@ -1027,24 +1017,20 @@ public class UsersController {
                     sb.append("\t\t<h2>");
                     sb.append(curDate);
                     sb.append("</h2>");
-                    sb.append(endl);
+                    sb.append(ENDL);
                     lastDate = curDate;
                 }
 
                 sb.append(formatEntry(uc, o, currentDate, false));
             }
         } catch (final Exception e1) {
-            ErrorPage.Display("Error",
-                    "Unable to retrieve journal entries from data store.",
-                    sb);
-
-            log.error("getEntries: Exception is " + e1.getMessage() + '\n' + e1.toString());
+            ErrorPage.Display("Error", "Unable to retrieve journal entries from data store.", sb);
+            log.error("getEntries: Exception is " + e1.getMessage(), e1);
         }
         return sb.toString();
     }
 
     private String getFavorites(final UserContext uc) throws ServiceException {
-
         final StringBuffer sb = new StringBuffer();
         final Collection<Entry> entries = new ArrayList<Entry>();
 
@@ -1062,7 +1048,7 @@ public class UsersController {
         }
 
           sb.append("<h2>Favorites</h2>");
-          sb.append(endl);
+          sb.append(ENDL);
 
           try {
               log.trace("getFavorites: Init Date Parsers.");
@@ -1096,19 +1082,19 @@ public class UsersController {
                       sb.append("<h2>");
                       sb.append(curDate);
                       sb.append("</h2>");
-                      sb.append(endl);
+                      sb.append(ENDL);
                       lastDate = curDate;
                   }
 
                   sb.append("<div class=\"ebody\">");
-                  sb.append(endl);
+                  sb.append(ENDL);
 
                   // final User p = o.getUser();
                   //  if (p.showAvatar()) {   TODO: avatar?
                   sb.append("<img alt=\"avatar\" style=\"float: right\" src=\"/image?id=");
                   sb.append(o.getUser().getId());
                   sb.append("\"/>");
-                  sb.append(endl);
+                  sb.append(ENDL);
                   //  }
 
                   sb.append("<h3>");
@@ -1125,10 +1111,10 @@ public class UsersController {
                   sb.append("</span> - <span class=\"subject\">");
                   sb.append(Xml.cleanString(o.getSubject()));
                   sb.append("</span></h3> ");
-                  sb.append(endl);
+                  sb.append(ENDL);
 
                   sb.append("<div class=\"ebody\">");
-                  sb.append(endl);
+                  sb.append(ENDL);
 
                   // Keep this synced with getEntries()
                   if (o.getAutoFormat() != null && o.getAutoFormat() == PrefBool.Y) {
@@ -1147,9 +1133,9 @@ public class UsersController {
                       sb.append(o.getBody());
                   }
 
-                  sb.append(endl);
+                  sb.append(ENDL);
                   sb.append("</div>");
-                  sb.append(endl);
+                  sb.append(ENDL);
 
                   sb.append("<p>");
 
@@ -1158,20 +1144,20 @@ public class UsersController {
                       sb.append("<img src=\"/img/icon_private.gif\" alt=\"private\" /> ");
                       sb.append("private");
                       sb.append("</span><br />");
-                      sb.append(endl);
+                      sb.append(ENDL);
                   } else if (o.getSecurity().getId() == 1) {
                       sb.append("<span class=\"security\">security: ");
                       sb.append("<img src=\"/img/icon_protected.gif\" alt=\"friends\" /> ");
                       sb.append("friends");
                       sb.append("</span><br />");
-                      sb.append(endl);
+                      sb.append(ENDL);
                   }
 
                   if (o.getLocation() != null && o.getLocation().getId() > 0) {
                       sb.append("<span class=\"location\">location: ");
                       sb.append(o.getLocation().getTitle());
                       sb.append("</span><br />");
-                      sb.append(endl);
+                      sb.append(ENDL);
                   }
 
                   if (o.getMood() != null && o.getMood().getTitle().length() > 0 && o.getMood().getId() != 12) {
@@ -1189,7 +1175,7 @@ public class UsersController {
                           sb.append("\" /> ");
                           sb.append(o.getMood().getTitle());
                           sb.append("</span><br>");
-                          sb.append(endl);
+                          sb.append(ENDL);
                       }
                   }
 
@@ -1197,11 +1183,11 @@ public class UsersController {
                       sb.append("<span class=\"music\">music: ");
                       sb.append(Xml.cleanString(o.getMusic()));
                       sb.append("</span><br>");
-                      sb.append(endl);
+                      sb.append(ENDL);
                   }
 
                   sb.append("</p>");
-                  sb.append(endl);
+                  sb.append(ENDL);
 
                   if (o.getTags() != null && !o.getTags().isEmpty()) {
                       sb.append("<p>tags:");
@@ -1210,34 +1196,34 @@ public class UsersController {
                           sb.append(s.getTag().getName());
                       }
                       sb.append("</p>");
-                      sb.append(endl);
+                      sb.append(ENDL);
                   }
 
                   sb.append("<div>");
-                  sb.append(endl);
+                  sb.append(ENDL);
                   sb.append("<table width=\"100%\"  border=\"0\">");
-                  sb.append(endl);
+                  sb.append(ENDL);
                   sb.append("<tr>");
-                  sb.append(endl);
+                  sb.append(ENDL);
 
                   if (uc.getAuthenticatedUser() != null && uc.getAuthenticatedUser().getId() == o.getUser().getId()) {
                       sb.append("<td width=\"30\"><a title=\"Edit Entry\" href=\"/#/entry/").append(o.getId());
                       sb.append("\"><i class=\"fa fa-pencil-square-o\"></i></a></td>");
-                      sb.append(endl);
+                      sb.append(ENDL);
                       sb.append("<td width=\"30\"><a title=\"Delete Entry\" onclick=\"return deleteEntry(").append(o.getId()).append(")\"");
                       sb.append("><i class=\"fa fa-trash-o\"></i></a>");
                       sb.append("</td>");
-                      sb.append(endl);
+                      sb.append(ENDL);
 
                       sb.append("<td width=\"30\"><a title=\"Remove Favorite\" onclick=\"return deleteFavorite(");
                       sb.append(o.getId());
                       sb.append(")\"><i class=\"fa fa-heart-o\"></i></a></td>");
-                      sb.append(endl);
+                      sb.append(ENDL);
                   } else if (uc.getAuthenticatedUser() != null) {
                       sb.append("<td width=\"30\"><a title=\"Add Favorite\" onclick=\"return addFavorite(");
                       sb.append(o.getId());
                       sb.append(")\"><i class=\"fa fa-heart\"></i></a></td>");
-                      sb.append(endl);
+                      sb.append(ENDL);
                   }
 
                   sb.append("<td><div style=\"float: right\"><a href=\"/users/").append(o.getUser().getUsername()).append("/entry/");
@@ -1266,23 +1252,21 @@ public class UsersController {
                   sb.append("\" title=\"Leave a comment on this entry\">comment on this</a>)");
 
                   sb.append("</div></td>");
-                  sb.append(endl);
+                  sb.append(ENDL);
                   sb.append("</tr>");
-                  sb.append(endl);
+                  sb.append(ENDL);
                   sb.append("</table>");
-                  sb.append(endl);
+                  sb.append(ENDL);
                   sb.append("</div>");
-                  sb.append(endl);
+                  sb.append(ENDL);
 
                   sb.append("</div>");
-                  sb.append(endl);
+                  sb.append(ENDL);
               }
 
           } catch (final Exception e1) {
-              log.error(e1.getMessage());
-              ErrorPage.Display(" Error",
-                      "Error retrieving favorite entries",
-                      sb);
+              log.error(e1.getMessage(), e1);
+              ErrorPage.Display(" Error", "Error retrieving favorite entries", sb);
           }
           return sb.toString();
       }
@@ -1293,7 +1277,6 @@ public class UsersController {
      * @param uc The UserContext we are working on including blog owner, authenticated user, and sb to write
      */
     private String getFriends(final UserContext uc) throws ServiceException {
-
         final StringBuffer sb = new StringBuffer();
         final Collection entries;
 
@@ -1304,7 +1287,7 @@ public class UsersController {
     */
         entries = entryService.getFriendsEntries(uc.getBlogUser().getUsername());
         sb.append("<h2>Friends</h2>");
-        sb.append(endl);
+        sb.append(ENDL);
 
         try {
             if (log.isDebugEnabled())
@@ -1339,19 +1322,19 @@ public class UsersController {
                     sb.append("<h2>");
                     sb.append(curDate);
                     sb.append("</h2>");
-                    sb.append(endl);
+                    sb.append(ENDL);
                     lastDate = curDate;
                 }
 
                 sb.append("<div class=\"ebody\">");
-                sb.append(endl);
+                sb.append(ENDL);
 
                 // final User p = o.getUser();
                 //  if (p.showAvatar()) {   TODO: avatar?
                 sb.append("<img alt=\"avatar\" style=\"float: right\" src=\"/image?id=");
                 sb.append(o.getUser().getId());
                 sb.append("\"/>");
-                sb.append(endl);
+                sb.append(ENDL);
                 //  }
 
                 sb.append("<h3>");
@@ -1368,10 +1351,10 @@ public class UsersController {
                 sb.append("</span> - <span class=\"subject\">");
                 sb.append(Xml.cleanString(o.getSubject()));
                 sb.append("</span></h3> ");
-                sb.append(endl);
+                sb.append(ENDL);
 
                 sb.append("<div class=\"ebody\">");
-                sb.append(endl);
+                sb.append(ENDL);
 
                 // Keep this synced with getEntries()
                 if (o.getAutoFormat() == PrefBool.Y) {
@@ -1390,9 +1373,9 @@ public class UsersController {
                     sb.append(o.getBody());
                 }
 
-                sb.append(endl);
+                sb.append(ENDL);
                 sb.append("</div>");
-                sb.append(endl);
+                sb.append(ENDL);
 
                 sb.append("<p>");
 
@@ -1401,20 +1384,20 @@ public class UsersController {
                     sb.append("<img src=\"/img/icon_private.gif\" alt=\"private\" /> ");
                     sb.append("private");
                     sb.append("</span><br />");
-                    sb.append(endl);
+                    sb.append(ENDL);
                 } else if (o.getSecurity().getId() == 1) {
                     sb.append("<span class=\"security\">security: ");
                     sb.append("<img src=\"/img/icon_protected.gif\" alt=\"friends\" /> ");
                     sb.append("friends");
                     sb.append("</span><br />");
-                    sb.append(endl);
+                    sb.append(ENDL);
                 }
 
                 if (o.getLocation().getId() > 0) {
                     sb.append("<span class=\"location\">location: ");
                     sb.append(o.getLocation().getTitle());
                     sb.append("</span><br />");
-                    sb.append(endl);
+                    sb.append(ENDL);
                 }
 
                 if (o.getMood().getTitle().length() > 0 && o.getMood().getId() != 12) {
@@ -1432,7 +1415,7 @@ public class UsersController {
                         sb.append("\" /> ");
                         sb.append(o.getMood().getTitle());
                         sb.append("</span><br>");
-                        sb.append(endl);
+                        sb.append(ENDL);
                     }
                 }
 
@@ -1440,11 +1423,11 @@ public class UsersController {
                     sb.append("<span class=\"music\">music: ");
                     sb.append(Xml.cleanString(o.getMusic()));
                     sb.append("</span><br>");
-                    sb.append(endl);
+                    sb.append(ENDL);
                 }
 
                 sb.append("</p>");
-                sb.append(endl);
+                sb.append(ENDL);
 
                 sb.append("<p>tags:");
                 for (final EntryTag s : o.getTags()) {
@@ -1452,33 +1435,33 @@ public class UsersController {
                     sb.append(s.getTag().getName());
                 }
                 sb.append("</p>");
-                sb.append(endl);
+                sb.append(ENDL);
 
                 sb.append("<div>");
-                sb.append(endl);
+                sb.append(ENDL);
                 sb.append("<table width=\"100%\"  border=\"0\">");
-                sb.append(endl);
+                sb.append(ENDL);
                 sb.append("<tr>");
-                sb.append(endl);
+                sb.append(ENDL);
 
                 if (uc.getAuthenticatedUser() != null && uc.getAuthenticatedUser().getId() == o.getUser().getId()) {
                     sb.append("<td width=\"30\"><a title=\"Edit Entry\" href=\"/#/entry/").append(o.getId());
                     sb.append("\"><i class=\"fa fa-pencil-square-o\"></i></a></td>");
-                    sb.append(endl);
+                    sb.append(ENDL);
                     sb.append("<td width=\"30\"><a title=\"Delete Entry\" onclick=\"return deleteEntry(").append(o.getId()).append(")\"");
                     sb.append("><i class=\"fa fa-trash-o\"></i></a>");
                     sb.append("</td>");
-                    sb.append(endl);
+                    sb.append(ENDL);
 
                     sb.append("<td width=\"30\"><a title=\"Add Favorite\" onclick=\"return addFavorite(\"");
                     sb.append(o.getId());
                     sb.append("\"><i class=\"fa fa-heart\"></i></a></td>");
-                    sb.append(endl);
+                    sb.append(ENDL);
                 } else if (uc.getAuthenticatedUser() != null) {
                     sb.append("<td width=\"30\"><a title=\"Add Favorite\" onclick=\"return addFavorite(\"");
                     sb.append(o.getId());
                     sb.append("\"><i class=\"fa fa-heart\"></i></a></td>");
-                    sb.append(endl);
+                    sb.append(ENDL);
                 }
 
                 sb.append("<td><div style=\"float: right\"><a href=\"/users/").append(o.getUser().getUsername()).append("/entry/");
@@ -1508,20 +1491,20 @@ public class UsersController {
                 sb.append("\" title=\"Leave a comment on this entry\">comment on this</a>)");
 
                 sb.append("</div></td>");
-                sb.append(endl);
+                sb.append(ENDL);
                 sb.append("</tr>");
-                sb.append(endl);
+                sb.append(ENDL);
                 sb.append("</table>");
-                sb.append(endl);
+                sb.append(ENDL);
                 sb.append("</div>");
-                sb.append(endl);
+                sb.append(ENDL);
 
                 sb.append("</div>");
-                sb.append(endl);
+                sb.append(ENDL);
             }
 
         } catch (final Exception e1) {
-            log.error(e1.getMessage());
+            log.error(e1.getMessage(), e1);
             ErrorPage.Display(" Error",
                     "Error retrieving the friends entries",
                     sb);
@@ -1547,10 +1530,10 @@ public class UsersController {
         sb.append("<h2>Calendar: ");
         sb.append(year);
         sb.append("</h2>");
-        sb.append(endl);
+        sb.append(ENDL);
 
         sb.append("<p>The calendar lists months with journal entries.</p>");
-        sb.append(endl);
+        sb.append(ENDL);
 
         // BEGIN: YEARS
         sb.append("<p>");
@@ -1571,7 +1554,7 @@ public class UsersController {
         }
 
         sb.append("</p>");
-        sb.append(endl);
+        sb.append(ENDL);
         // END: YEARS
 
         try {
@@ -1581,9 +1564,9 @@ public class UsersController {
             else
                 entries = entryDao.findByUsernameAndYearAndSecurity(uc.getBlogUser().getUsername(), year, securityDao.findOne(2));
 
-            if (entries == null || entries.size() == 0) {
+            if (entries == null || entries.isEmpty()) {
                 sb.append("<p>Calendar data not available.</p>");
-                sb.append(endl);
+                sb.append(ENDL);
             } else {
                 // we have calendar data!
                 final Cal mycal = new Cal(entries);
@@ -1591,9 +1574,8 @@ public class UsersController {
             }
 
         } catch (final Exception e1) {
-            ErrorPage.Display(" Error",
-                    "An error has occured rendering calendar.",
-                    sb);
+            log.trace(e1.getMessage(), e1);
+            ErrorPage.Display(" Error", "An error has occured rendering calendar.", sb);
         }
 
         return sb.toString();
@@ -1616,10 +1598,10 @@ public class UsersController {
         sb.append('/');
         sb.append(year);
         sb.append("</h2>");
-        sb.append(endl);
+        sb.append(ENDL);
 
         sb.append("<p>This page lists all of the journal entries for the month.</p>");
-        sb.append(endl);
+        sb.append(ENDL);
 
         try {
             final Collection<Entry> entries;
@@ -1628,9 +1610,9 @@ public class UsersController {
             else
                 entries = entryDao.findByUsernameAndYearAndMonthAndSecurity(uc.getBlogUser().getUsername(), year, month, securityDao.findOne(2));
 
-            if (entries.size() == 0) {
+            if (entries.isEmpty()) {
                 sb.append("<p>Calendar data not available.</p>");
-                sb.append(endl);
+                sb.append(ENDL);
             } else {
 
                 final SimpleDateFormat formatmydate = new SimpleDateFormat("dd");
@@ -1659,14 +1641,13 @@ public class UsersController {
                         sb.append('0');
 
                     sb.append(month).append('/').append(curDate).append("\">").append(Entry.getSubject()).append("</a></span></p> ");
-                    sb.append(endl);
+                    sb.append(ENDL);
                 }
             }
 
         } catch (final Exception e1) {
-            ErrorPage.Display(" Error",
-                    "An error has occured rendering calendar.",
-                    sb);
+            log.trace(e1.getMessage(), e1);
+            ErrorPage.Display(" Error", "An error has occured rendering calendar.", sb);
         }
         return sb.toString();
     }
@@ -1692,9 +1673,9 @@ public class UsersController {
                 entries = entryDao.findByUsernameAndYearAndMonthAndSecurity(uc.getBlogUser().getUsername(), year, month, securityDao.findOne(2));
 
 
-            if (entries.size() == 0) {
+            if (entries.isEmpty()) {
                 sb.append("\t<!-- could not render calendar -->");
-                sb.append(endl);
+                sb.append(ENDL);
             } else {
                 final Cal mycal = new Cal(entries);
                 mycal.setBaseUrl("/users/" + uc.getBlogUser().getUsername() + '/');
@@ -1723,10 +1704,8 @@ public class UsersController {
 
         final StringBuffer sb = new StringBuffer();
 
-        // sb.append("<h2>Calendar: " + day + "/" + month + "/" + year + "</h2>" );
-
         sb.append("<p>Lists all of the journal entries for the day.</p>");
-        sb.append(endl);
+        sb.append(ENDL);
 
         try {
 
@@ -1736,9 +1715,9 @@ public class UsersController {
             else
                 entries = entryDao.findByUsernameAndYearAndMonthAndDayAndSecurity(uc.getBlogUser().getUsername(), year, month, day, securityDao.findOne(2));
 
-            if (entries == null || entries.size() == 0) {
+            if (entries == null || entries.isEmpty()) {
                 sb.append("<p>Calendar data not available.</p>");
-                sb.append(endl);
+                sb.append(ENDL);
             } else {
                 final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm");
                 final SimpleDateFormat formatmydate = new SimpleDateFormat("EEE, d MMM yyyy");
@@ -1763,7 +1742,7 @@ public class UsersController {
                         sb.append("\t\t<h2>");
                         sb.append(curDate);
                         sb.append("</h2>");
-                        sb.append(endl);
+                        sb.append(ENDL);
                         lastDate = curDate;
                     }
 
@@ -1772,9 +1751,8 @@ public class UsersController {
             }
 
         } catch (final Exception e1) {
-            ErrorPage.Display(" Error",
-                    "An error has occurred rendering calendar.",
-                    sb);
+            log.trace(e1.getMessage(), e1);
+            ErrorPage.Display(" Error", "An error has occurred rendering calendar.", sb);
         }
 
         return sb.toString();
@@ -1807,7 +1785,7 @@ public class UsersController {
             try {
                 sb.append(entryDao.calendarCount(i, uc.getBlogUser().getUsername()));
             } catch (final Exception e) {
-                log.error("getArchive: could not fetch count for " + uc.getBlogUser().getUsername() + ": " + i + e.getMessage());
+                log.error("getArchive: could not fetch count for " + uc.getBlogUser().getUsername() + ": " + i + e.getMessage(), e);
                 sb.append("0");
             }
             sb.append(")</a></li> ");
@@ -1818,9 +1796,9 @@ public class UsersController {
         }
 
         sb.append("</ul>");
-        sb.append(endl);
+        sb.append(ENDL);
         sb.append("</div>");
-        sb.append(endl);
+        sb.append(ENDL);
         // END: YEARS
 
         return sb.toString();
@@ -1874,7 +1852,7 @@ public class UsersController {
         atom.setSelfLink("/users/" + user.getUsername() + "/atom");
         final Pageable page = new PageRequest(0, 15);
         atom.populate(entryDao.findByUserAndSecurityOrderByDateDesc(user, securityDao.findOne(2), page).getContent());
-        return (atom.toXml());
+        return atom.toXml();
     }
 
     /**
@@ -1900,7 +1878,7 @@ public class UsersController {
         // RSS advisory board format
         rss.setManagingEditor(user.getUserContact().getEmail() + " (" + user.getFirstName() + ")");
         rss.populateImageList(user.getId(), user.getUsername());
-        return (rss.toXml());
+        return rss.toXml();
     }
 
     /* TODO: finish this */
@@ -1945,7 +1923,7 @@ public class UsersController {
                         sb.append("\t\t<h2>");
                         sb.append(curDate);
                         sb.append("</h2>");
-                        sb.append(endl);
+                        sb.append(ENDL);
                         lastDate = curDate;
                     }
 
@@ -1953,7 +1931,7 @@ public class UsersController {
                 }
             }
         } catch (final Exception e1) {
-            log.error("getTags: Exception is " + e1.getMessage() + '\n' + e1.toString());
+            log.error("getTags: Exception is " + e1.getMessage() + '\n', e1);
         }
         return sb.toString();
     }
@@ -1972,7 +1950,7 @@ public class UsersController {
         final SimpleDateFormat formatmytime = new SimpleDateFormat("h:mm a");
 
         sb.append("\t\t<div class=\"ebody\">");
-        sb.append(endl);
+        sb.append(ENDL);
 
         if (single) {
             sb.append("<article><h3>");
@@ -1983,7 +1961,7 @@ public class UsersController {
             sb.append("\">");
             sb.append(Xml.cleanString(o.getSubject()));
             sb.append("</a></span></h3> ");
-            sb.append(endl);
+            sb.append(ENDL);
 
             sb.append("<rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" \n");
             sb.append("xmlns:dc=\"http://purl.org/dc/elements/1.1/\" \n");
@@ -2018,11 +1996,11 @@ public class UsersController {
             sb.append("\">");
             sb.append(Xml.cleanString(o.getSubject()));
             sb.append("</a></span></h3> ");
-            sb.append(endl);
+            sb.append(ENDL);
         }
 
         sb.append("\t\t\t<div class=\"ebody\">");
-        sb.append(endl);
+        sb.append(ENDL);
 
         /*
            autoformat controls whether new lines should be
@@ -2048,9 +2026,9 @@ public class UsersController {
             sb.append(o.getBody());
         }
 
-        sb.append(endl);
+        sb.append(ENDL);
         sb.append("\t\t\t</div>");
-        sb.append(endl);
+        sb.append(ENDL);
 
         sb.append("\t\t\t<p>");
 
@@ -2059,20 +2037,20 @@ public class UsersController {
             sb.append("<img src=\"/images/icon_private.gif\" alt=\"private\" /> ");
             sb.append("private");
             sb.append("</span><br />");
-            sb.append(endl);
+            sb.append(ENDL);
         } else if (o.getSecurity().getId() == 1) {
             sb.append("\t\t\t<span class=\"security\">security: ");
             sb.append("<img src=\"/images/icon_protected.gif\" alt=\"friends\" /> ");
             sb.append("friends");
             sb.append("</span><br />");
-            sb.append(endl);
+            sb.append(ENDL);
         }
 
         if (o.getLocation() != null && o.getLocation().getId() > 0) {
             sb.append("\t\t\t<span class=\"location\">location: ");
             sb.append(o.getLocation().getTitle());
             sb.append("</span><br />");
-            sb.append(endl);
+            sb.append(ENDL);
         }
 
         if (o.getMood() != null && o.getMood().getTitle().length() > 0 && o.getMood().getId() != 12) {
@@ -2090,7 +2068,7 @@ public class UsersController {
                 sb.append("\" /> ");
                 sb.append(o.getMood().getTitle());
                 sb.append("</span><br />");
-                sb.append(endl);
+                sb.append(ENDL);
             } else {
                 log.error("Couldn't get mood theme data for " + o.getMood().getId());
             }
@@ -2100,14 +2078,14 @@ public class UsersController {
             sb.append("\t\t\t<span class=\"music\">music: ");
             sb.append(Xml.cleanString(o.getMusic()));
             sb.append("</span><br />");
-            sb.append(endl);
+            sb.append(ENDL);
         }
 
         sb.append("\t\t\t</p>");
-        sb.append(endl);
+        sb.append(ENDL);
 
         final Collection<EntryTag> ob = o.getTags();
-        if (ob.size() > 0) {
+        if (! ob.isEmpty()) {
             sb.append("<p>tags:");
             for (final EntryTag tag : ob) {
                 sb.append(" ");
@@ -2120,30 +2098,30 @@ public class UsersController {
                 sb.append("</a>");
             }
             sb.append("</p>");
-            sb.append(endl);
+            sb.append(ENDL);
         }
 
         sb.append("\t\t\t<div>");
-        sb.append(endl);
+        sb.append(ENDL);
         sb.append("\t\t\t\t<table width=\"100%\"  border=\"0\">");
-        sb.append(endl);
+        sb.append(ENDL);
         sb.append("\t\t\t\t\t<tr>");
-        sb.append(endl);
+        sb.append(ENDL);
 
         if (uc.isAuthBlog()) {
             sb.append("<td style=\"width: 30px\"><a title=\"Edit Entry\" href=\"/#!/entry/");
             sb.append(o.getId());
             sb.append("\"><i class=\"fa fa-pencil-square-o\"></i></a></td>");
-            sb.append(endl);
+            sb.append(ENDL);
             sb.append("<td style=\"width: 30px\"><a title=\"Delete Entry\" onclick=\"return deleteEntry(" + o.getId() + ");\"");
             sb.append("><i class=\"fa fa-trash-o\"></i></a>");
             sb.append("</td>");
-            sb.append(endl);
+            sb.append(ENDL);
 
             sb.append("<td style=\"width: 30px\"><a title=\"Add Favorite\" onclick=\"return addFavorite(");
             sb.append(o.getId());
             sb.append(")\"><i class=\"fa fa-heart\"></i></a></td>");
-            sb.append(endl);
+            sb.append(ENDL);
         }
 
         if (single) {
@@ -2189,15 +2167,15 @@ public class UsersController {
             sb.append(o.getId());
             sb.append("\" title=\"Leave a comment on this entry\"><i class=\"fa fa-comment-o\"></i></a>)");
             sb.append("\t\t\t\t\t\t</div></td>");
-            sb.append(endl);
+            sb.append(ENDL);
         }
 
         sb.append("\t\t\t\t\t</tr>");
-        sb.append(endl);
+        sb.append(ENDL);
         sb.append("\t\t\t\t</table>");
-        sb.append(endl);
+        sb.append(ENDL);
         sb.append("\t\t\t</div>");
-        sb.append(endl);
+        sb.append(ENDL);
 
         if (single) {
             final List<Comment> comments = commentDao.findByEntryId(o.getId());
@@ -2253,7 +2231,7 @@ public class UsersController {
         }
 
         sb.append("\t\t</div></article>");
-        sb.append(endl);
+        sb.append(ENDL);
 
         return sb.toString();
     }
@@ -2262,7 +2240,7 @@ public class UsersController {
      * Represent the blog user and authenticated user in one package along with the output buffer.
      */
     @SuppressWarnings({"InstanceVariableOfConcreteClass"})
-    static private class UserContext {
+    private static class UserContext {
         private User blogUser;          // the blog owner
         private User authenticatedUser; // the logged in user
 
@@ -2282,7 +2260,7 @@ public class UsersController {
          *
          * @return blog owner
          */
-        public User getBlogUser() {
+        User getBlogUser() {
             return blogUser;
         }
 
@@ -2291,7 +2269,7 @@ public class UsersController {
          *
          * @return logged in user.
          */
-        public User getAuthenticatedUser() {
+        User getAuthenticatedUser() {
             return authenticatedUser;
         }
 
@@ -2300,7 +2278,7 @@ public class UsersController {
          *
          * @return true if blog owner = auth owner
          */
-        public boolean isAuthBlog() {
+        boolean isAuthBlog() {
             return authenticatedUser != null && blogUser != null
                     && authenticatedUser.getUsername().compareTo(blogUser.getUsername()) == 0;
         }
