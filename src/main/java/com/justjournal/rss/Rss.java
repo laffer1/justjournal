@@ -172,13 +172,13 @@ public final class Rss {
     }
 
     public void populateImageList(final int userid, final String userName) {
+        assert jdbcTemplate != null;
 
         RssItem item;
         String imageTitle;
         final String sqlStmt = "SELECT id, title, modified, mimetype, BIT_LENGTH(image) As imglen FROM user_images WHERE owner='" + userid + "' ORDER BY id DESC;";
 
         try {
-
             final List<Map<String, Object>> list = jdbcTemplate.queryForList(sqlStmt);
 
             if (list.isEmpty())

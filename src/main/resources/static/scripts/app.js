@@ -6,7 +6,8 @@ angular.module('wwwApp',
                     'ngResource',
                     'ngCookies',
                     'ngRoute',
-                    'ngSanitize'
+                    'ngSanitize',
+                    'ngFileUpload'
                 ])
         .config(function ($routeProvider, $locationProvider) {
             'use strict';
@@ -47,6 +48,10 @@ angular.module('wwwApp',
                     .when('/prefs/password', {
                         templateUrl: 'views/prefs/changePassword.html',
                         controller: 'PrefsChangePasswordCtrl'
+                    })
+                    .when('/prefs/image', {
+                        templateUrl: 'views/prefs/image.html',
+                        controller: 'PrefsImageCtrl'
                     })
                     .when('/privacy', {
                         templateUrl: 'views/privacy.html',

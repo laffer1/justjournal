@@ -1,6 +1,5 @@
 package com.justjournal;
 
-import com.justjournal.ctl.AddPicture;
 import com.justjournal.ctl.LoginAccount;
 import com.justjournal.ctl.UpdateJournal;
 import com.justjournal.ctl.XmlRpc;
@@ -72,16 +71,5 @@ public class Application {
     public ServletRegistrationBean xmlrpc() {
         return new ServletRegistrationBean(new XmlRpc(), "/xml-rpc/*");
     }
-
-    @Bean
-    public ServletRegistrationBean addPicture() {
-        return new ServletRegistrationBean(new AddPicture(), "/prefs/AddPicture");
-    }
-
-    @Bean
-    public ServletRegistrationBean deletePicture() {
-        return new ServletRegistrationBean(new AddPicture(), "/prefs/DeletePicture");
-    }
-
 
 }

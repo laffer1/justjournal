@@ -16,14 +16,15 @@
     "jquery": "2.1.1",
     "jquery-ui": "1.11.2",
     "jquery.validation": "1.11.1",
-    "lightbox2": "~2.7"
+    "lightbox2": "~2.7",
+    "ng-file-upload-shim": "^12.2.13"
   },
   "homepage": "https://github.com/laffer1/justjournal",
   "authors": [
     "Lucas Holt <luke@foolishgames.com>"
   ],
   "description": "JustJournal.com Blogging",
-  "directory" : "components",
+  "directory": "components",
   "componentsDirectory": "components",
   "license": "BSD",
   "private": true,

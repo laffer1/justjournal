@@ -1,0 +1,34 @@
+
+<form name="myForm">
+    <fieldset>
+        <legend>Add Picture</legend>
+        <p>Pictures can be uploaded in JPEG, GIF or PNG format. All pictures
+            are publicly accessible regardless of your journal security settings.
+            Pictures must not infringe on copyright nor be considered
+            &quot; indecent &quot; under United States law.</p>
+        
+        Title:
+        <input type="text" name="title" ng-model="title" size="31" required>
+        <i ng-show="myForm.title.$error.required">*required</i>
+        <br>Photo:
+        <input type="file" ngf-select ng-model="picFile" name="file"
+               accept="image/*" ngf-max-size="2MB" required
+               ngf-model-invalid="errorFile">
+        <i ng-show="myForm.file.$error.required">*required</i><br>
+        <i ng-show="myForm.file.$error.maxSize">File too large
+            {{errorFile.size / 1000000|number:1}}MB: max 2M</i>
+        <img ng-show="myForm.file.$valid" ngf-thumbnail="picFile" class="thumb">
+        <button ng-click="picFile = null" ng-show="picFile">Remove</button>
+        <p>
+        <button ng-disabled="!myForm.$valid"
+                ng-click="uploadPic(picFile)">Submit
+        </button>
+        <span class="progress" ng-show="picFile.progress >= 0">
+       <div style="width:{{picFile.progress}}%"
+            ng-bind="picFile.progress + '%'"></div>
+     </span>
+        <span ng-show="picFile.result">Upload Successful</span>
+        <span class="err" ng-show="errorMsg">{{errorMsg}}</span>
+    </fieldset>
+    <br>
+</form>
