@@ -54,7 +54,7 @@
                 <div class="form-group">
                     <label for="tags">Tags</label>
                     <input class="form-control" type="text" name="tags" id="tags" size="30" value=""
-                           trim="true" ng-model="entry.tag" data-ng-pattern="/^[a-z,\s]+$/">
+                           trim="true" ng-model="entry.tag" data-ng-pattern="/^[a-z,\s]+$/" data-ng-change="tagclean()">
 
                     <span style="color:red" ng-show="UpdateJournal.tags.$dirty && UpdateJournal.tags.$invalid">
                         <span ng-show="UpdateJournal.tags.$error.pattern">Must be a valid tag of lowercase letters</span>

@@ -65,50 +65,32 @@ angular.module('wwwApp').controller('EntryCtrl', ['$scope', '$routeParams', '$lo
         };
 
         $scope.save = function () {
-            if (jQuery('form#frmUpdateJournal').valid()) {
+            if (typeof $scope.entry === 'undefined') {
+                $scope.ErrorMessage = 'Unknown error occurred.';
+                return false;
+            }
 
-                if (typeof $scope.entry === 'undefined') {
-                    $scope.ErrorMessage = 'Unknown error occurred.';
-                    return false;
-                }
+            /*if (typeof $scope.entry.mood !== 'undefined' && typeof $scope.entry.mood.id !== 'undefined')
+             $scope.entry.mood = $scope.entry.mood.id;
 
-                /*if (typeof $scope.entry.mood !== 'undefined' && typeof $scope.entry.mood.id !== 'undefined')
-                 $scope.entry.mood = $scope.entry.mood.id;
+             if (typeof $scope.entry.location !== 'undefined' && typeof $scope.entry.location.id !== 'undefined')
+             $scope.entry.location = $scope.entry.location.id;
 
-                 if (typeof $scope.entry.location !== 'undefined' && typeof $scope.entry.location.id !== 'undefined')
-                 $scope.entry.location = $scope.entry.location.id;
+             if (typeof $scope.entry.security !== 'undefined' && typeof $scope.entry.security.id !== 'undefined')
+             $scope.entry.security = $scope.entry.security.id;  */
 
-                 if (typeof $scope.entry.security !== 'undefined' && typeof $scope.entry.security.id !== 'undefined')
-                 $scope.entry.security = $scope.entry.security.id;  */
+            $scope.entry.tags = [];
+            if (typeof $scope.entry.tag !== 'undefined' && $scope.entry.tag.length > 0) {
+                $scope.entry.tag = $scope.entry.tag.toLowerCase();
+                $scope.entry.tag = $scope.entry.tag.replace(' ', ',');
 
-                $scope.entry.tags = [];
-                if (typeof $scope.entry.tag !== 'undefined' && $scope.entry.tag.length > 0) {
-                    $scope.entry.tags = $scope.entry.tag.toLowerCase().split(", ");
-                }
+                $scope.entry.tags = $scope.entry.tag.split(',');
+            }
 
-                // EDIT case
-                if (typeof $routeParams.entryId !== 'undefined') {
-                    EntryService.update($scope.entry, function success() {
-                                alert('Blog Entry Updated');
-                                window.location.href = ('users/' + $scope.login.username);
-                            },
-                            function fail(response) {
-                                if (typeof(response.data.ModelState) !== 'undefined') {
-                                    $scope.ErrorMessage = response.data.Message + ' (' + response.status + ') ' + angular.toJson(response.data.ModelState);
-                                }
-                                else if (typeof(response.data.ExceptionMessage) !== 'undefined') {
-                                    $scope.ErrorMessage = response.data.Message + ' (' + response.status + ') ' + response.data.ExceptionMessage + ' ' + response.data.ExceptionType + ' ' + response.data.StackTrace;
-                                }
-                                else {
-                                    $scope.ErrorMessage = 'Unknown error occurred. Response was ' + angular.toJson(response);
-                                }
-                            }
-                    );
-                    return false;
-                }
-
-                EntryService.save($scope.entry, function success() {
-                            alert('Blog Entry Posted');
+            // EDIT case
+            if (typeof $routeParams.entryId !== 'undefined') {
+                EntryService.update($scope.entry, function success() {
+                            alert('Blog Entry Updated');
                             window.location.href = ('users/' + $scope.login.username);
                         },
                         function fail(response) {
@@ -123,8 +105,31 @@ angular.module('wwwApp').controller('EntryCtrl', ['$scope', '$routeParams', '$lo
                             }
                         }
                 );
+                return false;
             }
+
+            EntryService.save($scope.entry, function success() {
+                        alert('Blog Entry Posted');
+                        window.location.href = ('users/' + $scope.login.username);
+                    },
+                    function fail(response) {
+                        if (typeof(response.data.ModelState) !== 'undefined') {
+                            $scope.ErrorMessage = response.data.Message + ' (' + response.status + ') ' + angular.toJson(response.data.ModelState);
+                        }
+                        else if (typeof(response.data.ExceptionMessage) !== 'undefined') {
+                            $scope.ErrorMessage = response.data.Message + ' (' + response.status + ') ' + response.data.ExceptionMessage + ' ' + response.data.ExceptionType + ' ' + response.data.StackTrace;
+                        }
+                        else {
+                            $scope.ErrorMessage = 'Unknown error occurred. Response was ' + angular.toJson(response);
+                        }
+                    }
+            );
             return false;
+        };
+
+        $scope.tagclean = function () {
+            $scope.entry.tag = $scope.entry.tag.toLowerCase();
+            $scope.entry.tag = $scope.entry.tag.replace(' ', ',');
         };
 
         $scope.$on('$destroy', function finalize() {
@@ -134,15 +139,4 @@ angular.module('wwwApp').controller('EntryCtrl', ['$scope', '$routeParams', '$lo
             $scope.entry = null;
             $scope.ErrorMessage = null;
         });
-
-        $scope.init = function () {
-            jQuery("#frmUpdateJournal").validate();
-
-            jQuery('#tags').bind('change', function () {
-                if ($(this).value !== 'undefined') {
-                    $(this).value = $(this).val().toLowerCase();
-                }
-            });
-        };
-        $scope.init();
     }]);
