@@ -61,12 +61,16 @@ public final class Rss {
     private String managingEditor = "";
     private String selfLink = "";
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     private Date newestEntryDate = new Date();
 
     private List<RssItem> items = new ArrayList<RssItem>(MAX_LENGTH);
+
+    @Autowired
+    public Rss(final JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     public String getTitle() {
         return title;
@@ -174,6 +178,11 @@ public final class Rss {
     public void populateImageList(final int userid, final String userName) {
         assert jdbcTemplate != null;
 
+        if (userid < 1)
+            throw new IllegalArgumentException("userid");
+        if (userName == null || userName.isEmpty())
+            throw new IllegalArgumentException("userName");
+        
         RssItem item;
         String imageTitle;
         final String sqlStmt = "SELECT id, title, modified, mimetype, BIT_LENGTH(image) As imglen FROM user_images WHERE owner='" + userid + "' ORDER BY id DESC;";
@@ -181,8 +190,10 @@ public final class Rss {
         try {
             final List<Map<String, Object>> list = jdbcTemplate.queryForList(sqlStmt);
 
-            if (list.isEmpty())
-                log.debug("No images loaded from database for Rss Image List");
+            if (list == null || list.isEmpty()) {
+                log.warn("No images loaded from database for Rss Image List for " + userName);
+                return;
+            }
 
             for (final Map<String, Object> rs : list) {
                 final DateTimeBean dt = new DateTimeBean();
