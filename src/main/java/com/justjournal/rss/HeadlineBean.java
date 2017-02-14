@@ -35,7 +35,7 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.rss;
 
 import com.justjournal.utility.Xml;
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.w3c.dom.Document;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -64,10 +64,8 @@ import java.util.regex.Pattern;
  *        1.1 optimized code
  *        1.0 Initial release
  */
-
+@Slf4j
 public class HeadlineBean {
-
-    private static final Logger log = Logger.getLogger(HeadlineBean.class);
 
     private static final char endl = '\n';
 

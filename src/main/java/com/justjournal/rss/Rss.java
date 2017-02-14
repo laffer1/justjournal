@@ -34,7 +34,7 @@ import com.justjournal.utility.Xml;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 
@@ -45,7 +45,7 @@ import java.util.*;
  * @version $Id: Rss.java,v 1.13 2011/05/29 22:32:59 laffer1 Exp $
  */
 @Slf4j
-@Component
+@Service
 public final class Rss {
 
     private static final int MAX_LENGTH = 15; // max size of RSS content
@@ -175,6 +175,11 @@ public final class Rss {
         }
     }
 
+    /**
+     * Populate an rss feed with pictures for the given user.
+     * @param userid   userid for list
+     * @param userName  username for urls
+     */
     public void populateImageList(final int userid, final String userName) {
         assert jdbcTemplate != null;
 
