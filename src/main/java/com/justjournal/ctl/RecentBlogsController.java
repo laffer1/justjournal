@@ -67,11 +67,13 @@ public class RecentBlogsController {
     @Autowired
     private Settings set;
 
+    @Autowired
+    private Rss rss;
+
     @Cacheable("recentblogs")
     @RequestMapping(method = RequestMethod.GET, produces = "application/rss+xml")
-    public
     @ResponseBody
-    String get(HttpServletResponse response) {
+    public String get(final HttpServletResponse response) {
         response.setContentType("application/rss+xml;charset=UTF-8");
         response.setDateHeader("Expires", System.currentTimeMillis() + 1000 * 60);
         response.setHeader("Cache-Control", "max-age=60, private, proxy-revalidate");
@@ -80,7 +82,6 @@ public class RecentBlogsController {
         // properties (title, description language, url)
         // and write it to the sb output.
         try {
-            Rss rss = new Rss();
 
             final java.util.GregorianCalendar gregorianCalendar = new java.util.GregorianCalendar(java.util.TimeZone.getTimeZone("UTC"));
             gregorianCalendar.setTime(new java.util.Date());
@@ -94,16 +95,17 @@ public class RecentBlogsController {
             rss.setManagingEditor(set.getSiteAdminEmail() + " (" + set.getSiteAdmin() + ")");
             rss.setSelfLink(set.getBaseUri() + "RecentBlogs");
 
+            final Security security = securityDao.findOne(2); // public
+            final Pageable pageable = new PageRequest(1,15);
+            final Page<Entry> entries = entryRepository.findBySecurityOrderByDateDesc(security, pageable);
 
-            Security security = securityDao.findOne(2); // public
-            Pageable pageable = new PageRequest(1,15);
-            Page<Entry> entries = entryRepository.findBySecurityOrderByDateDesc(security, pageable);
-
-            Map<String, Entry> map = new HashMap<String, Entry>();
+            final Map<String, Entry> map = new HashMap<String, Entry>();
             int count = 0;
-            for (Entry e : entries) {
-                if (count == 15) break;
-                if (map.containsKey(e.getUser().getUsername())) continue;
+            for (final Entry e : entries) {
+                if (count == 15)
+                    break;
+                if (map.containsKey(e.getUser().getUsername()))
+                    continue;
 
                 map.put(e.getUser().getUsername(), e);
                 count++;
@@ -119,14 +121,14 @@ public class RecentBlogsController {
                 response.setDateHeader("Last-Modified", System.currentTimeMillis());
 
             return rss.toXml();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             // oops we goofed somewhere.  Its not in the original spec
             // how to handle error conditions with rss.
             // html back isn't good, but what do we do?
             log.debug(e);
             try {
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            } catch (IOException e1) {
+            } catch (final IOException e1) {
                 log.debug(e1);
             }
         }
