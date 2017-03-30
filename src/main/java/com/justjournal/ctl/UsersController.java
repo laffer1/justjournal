@@ -123,8 +123,17 @@ public class UsersController {
 
     private final BlogSearchService blogSearchService;
 
+    private final Rss rss;
+
     @Autowired
-    public UsersController(final EntryService entryService, final @Qualifier("commentRepository") CommentRepository commentDao, final @Qualifier("entryRepository") EntryRepository entryDao, final FavoriteRepository favoriteRepository, final @Qualifier("moodThemeDataRepository") MoodThemeDataRepository emoticonDao, final UserRepository userRepository, final SecurityDao securityDao, final RssSubscriptionsDAO rssSubscriptionsDAO, final UserImageService userImageService, final UserPicRepository userPicRepository, final BlogSearchService blogSearchService) {
+    public UsersController(final EntryService entryService,
+                           final @Qualifier("commentRepository") CommentRepository commentDao,
+                           final @Qualifier("entryRepository") EntryRepository entryDao,
+                           final FavoriteRepository favoriteRepository, final @Qualifier("moodThemeDataRepository") MoodThemeDataRepository emoticonDao,
+                           final UserRepository userRepository, final SecurityDao securityDao, final RssSubscriptionsDAO rssSubscriptionsDAO,
+                           final UserImageService userImageService, final UserPicRepository userPicRepository,
+                           final BlogSearchService blogSearchService,
+                            final Rss rss) {
         this.entryService = entryService;
         this.commentDao = commentDao;
         this.entryDao = entryDao;
@@ -136,6 +145,7 @@ public class UsersController {
         this.userImageService = userImageService;
         this.userPicRepository = userPicRepository;
         this.blogSearchService = blogSearchService;
+        this.rss = rss;
     }
 
     @Autowired
@@ -1811,8 +1821,6 @@ public class UsersController {
      */
     @Transactional(value = Transactional.TxType.REQUIRED)
     private String getRSS(final User user) {
-        final Rss rss = new Rss();
-
         final GregorianCalendar calendar = new GregorianCalendar();
         calendar.setTime(new Date());
 
@@ -1855,6 +1863,7 @@ public class UsersController {
         return atom.toXml();
     }
 
+    
     /**
      * List the pictures associated with a blog in RSS.  This should be compatible with iPhoto.
      *
@@ -1862,8 +1871,6 @@ public class UsersController {
      */
     @Transactional(value = Transactional.TxType.REQUIRED)
     private String getPicturesRSS(final User user) {
-
-        final Rss rss = new Rss();
 
         final GregorianCalendar calendarg = new GregorianCalendar();
         calendarg.setTime(new Date());

@@ -33,6 +33,7 @@ import com.justjournal.utility.HTMLUtil;
 import com.justjournal.utility.Xml;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
@@ -46,6 +47,7 @@ import java.util.*;
  */
 @Slf4j
 @Service
+@Scope("prototype")
 public final class Rss {
 
     private static final int MAX_LENGTH = 15; // max size of RSS content
