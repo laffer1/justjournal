@@ -56,10 +56,12 @@ public class RssTests {
     @Autowired
     private SecurityDao securityDao;
 
+    @Autowired
+    private Rss rss;
+
     @Test
     public void testPopulate() {
-        final Rss rss = new Rss();
-
+        
         final java.util.GregorianCalendar calendar = new java.util.GregorianCalendar();
         calendar.setTime(new java.util.Date());
         final Collection<Entry> entries = entryDao.findByUsernameAndSecurity(TEST_USER, securityDao.findOne(2));
@@ -75,7 +77,7 @@ public class RssTests {
     @Test
     public void testWebmaster() {
         final String webmaster = "test@test.com (test)";
-        final Rss rss = new Rss();
+
         rss.setWebMaster(webmaster);
         assertEquals(webmaster, rss.getWebMaster());
     }
