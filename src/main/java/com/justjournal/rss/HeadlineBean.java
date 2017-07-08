@@ -344,9 +344,14 @@ public class HeadlineBean {
             return sb.toString();
         } catch (final java.io.FileNotFoundException e404) {
             log.warn("Feed is not available " + url + e404.getMessage(), e404);
-            return "404 Not Found. The feed is no longer available. " + url + endl;
+            return "<p>404 Not Found. The feed is no longer available. " + url + endl;
+        } catch (final org.xml.sax.SAXParseException sp) {
+             if (sp.getMessage().contains("Premature end of file"))
+                 return "<p>Feed is empty at " + url;
+             else
+                 return "<p>Bad Feed " + sp.toString() + " for url: " + url + endl;
         } catch (final Exception e) {
-            return "Error, could not process request: " + e.toString() + " for url: " + url + endl;
+            return "<p>Error, could not process request: " + e.toString() + " for url: " + url + endl;
         }
     }
 
