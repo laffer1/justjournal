@@ -44,7 +44,7 @@ import java.util.Date;
 import java.util.List;
 
 @Repository
-public interface RssCacheDao extends JpaRepository<RssCache, Integer> {
+public interface RssCacheRepository extends JpaRepository<RssCache, Integer> {
 
     RssCache findByUri(String uri);
 

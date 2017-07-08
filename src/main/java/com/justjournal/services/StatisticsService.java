@@ -66,7 +66,6 @@ public class StatisticsService {
 
     @Transactional(value = Transactional.TxType.REQUIRED)
     public UserStatistics getUserStatistics(final String username) throws ServiceException {
-        if (userRepository == null) throw new AssertionError();
 
         try {
             final UserStatistics userStatistics = new UserStatistics();

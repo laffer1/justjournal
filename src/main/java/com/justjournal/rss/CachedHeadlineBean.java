@@ -37,7 +37,7 @@ package com.justjournal.rss;
 import com.justjournal.model.DateTime;
 import com.justjournal.model.DateTimeBean;
 import com.justjournal.model.RssCache;
-import com.justjournal.repository.RssCacheDao;
+import com.justjournal.repository.RssCacheRepository;
 import com.justjournal.repository.UserRepository;
 import com.justjournal.utility.StringUtil;
 import org.apache.log4j.Logger;
@@ -73,7 +73,7 @@ public final class CachedHeadlineBean
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private RssCacheDao rssCacheDao;
+    private RssCacheRepository rssCacheDao;
 
     protected void getRssDocument(final String uri)
             throws Exception {

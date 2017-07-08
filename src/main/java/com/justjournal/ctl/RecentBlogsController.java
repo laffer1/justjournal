@@ -31,6 +31,7 @@ import com.justjournal.model.Security;
 import com.justjournal.repository.EntryRepository;
 import com.justjournal.repository.SecurityDao;
 import com.justjournal.rss.Rss;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -55,15 +56,17 @@ import java.util.Map;
  * @author Lucas Holt
  * @version $Id: RecentBlogs.java,v 1.15 2011/07/01 11:54:31 laffer1 Exp $
  */
+@Slf4j
 @Controller
 @RequestMapping("/RecentBlogs")
 public class RecentBlogsController {
-    private static final Logger log = Logger.getLogger(RecentBlogsController.class);
-
+   
     @Autowired
     private EntryRepository entryRepository;
+
     @Autowired
     private SecurityDao securityDao;
+
     @Autowired
     private Settings set;
 
@@ -113,7 +116,7 @@ public class RecentBlogsController {
 
             rss.populate(map.values());
 
-            Date d = rss.getNewestEntryDate();
+            final Date d = rss.getNewestEntryDate();
 
             if (d != null)
                 response.setDateHeader("Last-Modified", d.getTime());
@@ -125,11 +128,11 @@ public class RecentBlogsController {
             // oops we goofed somewhere.  Its not in the original spec
             // how to handle error conditions with rss.
             // html back isn't good, but what do we do?
-            log.debug(e);
+            log.debug(e.getMessage(), e);
             try {
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             } catch (final IOException e1) {
-                log.debug(e1);
+                log.debug(e1.getMessage(), e1);
             }
         }
 

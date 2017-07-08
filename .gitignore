@@ -75,3 +75,7 @@ misc.xml
 node.lock
 data/elasticsearch/nodes
 src/main/webappold
+.idea/dataSources
+kotlinc.xml
+php.xml
+.idea/sonarlint

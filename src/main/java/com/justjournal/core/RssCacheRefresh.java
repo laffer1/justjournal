@@ -27,15 +27,17 @@
 package com.justjournal.core;
 
 import com.justjournal.model.RssCache;
-import com.justjournal.repository.RssCacheDao;
+import com.justjournal.repository.RssCacheRepository;
 import com.justjournal.utility.StringUtil;
+import io.reactivex.Observable;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -46,19 +48,17 @@ import java.io.InputStream;
 import java.util.Calendar;
 import java.util.List;
 
-import static java.lang.Thread.sleep;
-
 /**
  * Update the RSS cache
  *
  * @author Lucas Holt
  */
+@Slf4j
 @Component
 public class RssCacheRefresh {
-    private Logger log = LoggerFactory.getLogger(RssCacheRefresh.class);
 
     @Autowired
-    private RssCacheDao rssCacheDao;
+    private RssCacheRepository rssCacheDao;
 
     @Scheduled(fixedDelay = 1000 * 60 * 30, initialDelay = 60000)
     public void run() {
@@ -70,20 +70,26 @@ public class RssCacheRefresh {
 
             final List<RssCache> items = rssCacheDao.findByLastUpdatedBefore(yesterday.getTime());
 
-            for (final RssCache cache : items) {
-                try {
-                    if (!cache.getActive())
-                        continue;
 
-                    getRssDocument(cache);
-                    sleep(200);
-                } catch (final Exception e) {
-                    log.error(e.getMessage());
-                }
-            }
+            Observable.fromIterable(items)
+                    .subscribeOn(Schedulers.io())
+                    .map(new Function<RssCache, Object>() {
+
+                        @Override
+                        public Object apply(final RssCache cache) throws Exception {
+                            try {
+                                if (cache.getActive())
+                                    getRssDocument(cache);
+                            } catch (final Exception e) {
+                                log.error(e.getMessage(), e);
+                            }
+                            return cache;
+                        }
+                    })
+                    .subscribe();
 
         } catch (final Exception e) {
-            log.error(e.getMessage());
+            log.error(e.getMessage(), e);
         }
 
         log.trace("RssCache: Quit");
@@ -118,7 +124,7 @@ public class RssCacheRefresh {
                         }
                         bis.close();
                     } catch (final Exception e) {
-                        log.error(e.getMessage());
+                        log.error(e.getMessage(), e);
                     }
                 }
 
@@ -134,13 +140,15 @@ public class RssCacheRefresh {
 
                 rssCacheDao.saveAndFlush(rss);
             } else if (code == 404 || code == 410) {
-                log.warn("URL " + rss.getUri() + " is returning a 404. Removing from list");
+                if (log.isWarnEnabled())
+                    log.warn("URL " + rss.getUri() + " is returning a 404. Removing from list");
 
                 rss.setLastUpdated(Calendar.getInstance().getTime());
                 rss.setActive(false);
                 rssCacheDao.saveAndFlush(rss);
             } else {
-                log.warn("RssCache status code " + code + " for url " + rss.getUri());
+                if (log.isWarnEnabled())
+                    log.warn(String.format("RssCache status code %d for url %s", code, rss.getUri()));
             }
         }
     }

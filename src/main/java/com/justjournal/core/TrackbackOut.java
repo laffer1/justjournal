@@ -26,6 +26,7 @@
 
 package com.justjournal.core;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.log4j.Logger;
 
 import java.io.BufferedReader;
@@ -41,9 +42,9 @@ import java.net.URLEncoder;
  * Date: May 5, 2008
  * Time: 5:04:47 AM
  */
+@Slf4j
 public final class TrackbackOut {
-    private static Logger log = Logger.getLogger(TrackbackOut.class.getName());
-
+    
     private String entryUrl;
     private String targetUrl;
     private String title;

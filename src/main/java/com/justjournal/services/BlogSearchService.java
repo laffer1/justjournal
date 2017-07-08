@@ -165,7 +165,7 @@ public class BlogSearchService {
 
             Page<Entry> entries = entryRepository.findBySecurityOrderByDateDesc(sec, pageable);
             for (int i = 0; i < entries.getTotalPages(); i++) {
-                ArrayList<BlogEntry> items = new ArrayList<BlogEntry>();
+                final ArrayList<BlogEntry> items = new ArrayList<BlogEntry>();
 
                 for (final Entry entry : entries) {
                     items.add(convert(entry));
@@ -177,7 +177,7 @@ public class BlogSearchService {
                 entries = entryRepository.findBySecurityOrderByDateDesc(sec, pageable);
             }
         } catch (final Exception e) {
-            log.error(e.getMessage());
+            log.error(e.getMessage(), e);
         }
     }
 
@@ -192,7 +192,7 @@ public class BlogSearchService {
 
         Page<Entry> entries = entryRepository.findAll(pageable);
         for (int i = 0; i < entries.getTotalPages(); i++) {
-            ArrayList<BlogEntry> items = new ArrayList<BlogEntry>();
+            final ArrayList<BlogEntry> items = new ArrayList<BlogEntry>();
             for (final Entry entry : entries) {
                 if (entry.getDate().before(date)) {
                     if (!items.isEmpty())
