@@ -27,9 +27,8 @@
 package com.justjournal.ctl.api;
 
 import com.justjournal.model.Tag;
-import com.justjournal.services.EntryService;
-import com.justjournal.services.ServiceException;
-import org.apache.log4j.Logger;
+import com.justjournal.services.TagService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Controller;
@@ -40,60 +39,29 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.Collection;
+import java.util.Collections;
 
 /**
  * @author Lucas Holt
  */
+@Slf4j
 @Controller
 @RequestMapping("/api/tagcloud")
 public class TagCloudController {
-    private static final Logger log = Logger.getLogger(TagCloudController.class);
 
     @Autowired
-    private EntryService entryService;
-
-    public void setEntryService(final EntryService entryService) {
-        this.entryService = entryService;
-    }
+    private TagService tagService;
 
     @Cacheable(value = "tagcloud", key = "#username")
     @RequestMapping(value = "{username}", method = RequestMethod.GET, produces = "application/json")
     public
     @ResponseBody
     Collection<Tag> getTags(@PathVariable("username") final String username, final HttpServletResponse response) {
-        Collection<Tag> tags = null;
-        try {
-            tags = entryService.getEntryTags(username);
-        } catch (final ServiceException se) {
-            log.error(se.getMessage());
-        }
 
-        if (tags == null || tags.isEmpty()) {
+        final Collection<Tag> tags = tagService.getTags(username);
+        if (tags.isEmpty()) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            return null;
-        }
-
-        long largest = 0;
-        long smallest = 10;
-
-        for (final Tag tag : tags) {
-            if (tag.getCount() > largest)
-                largest = tag.getCount();
-
-            if (tag.getCount() < smallest)
-                smallest = tag.getCount();
-        }
-
-        final long cutSmall = largest / 3;
-        final long cutLarge = cutSmall * 2;
-
-        for (final Tag tag : tags) {
-            if (tag.getCount() > cutLarge)
-                tag.setType("TagCloudLarge");
-            else if (tag.getCount() < cutSmall)
-                tag.setType("TagCloudSmall");
-            else
-                tag.setType("TagCloudMedium");
+            return Collections.emptyList();
         }
 
         return tags;
