@@ -1,15 +1,12 @@
 package com.justjournal.services;
 
 import com.justjournal.model.Tag;
-import io.reactivex.Observable;
-import io.reactivex.functions.Function;
-import io.reactivex.schedulers.Schedulers;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.Collection;
+import java.util.Collections;
 
 /**
  * @author Lucas Holt
@@ -26,7 +23,8 @@ public class TagService {
         try {
             tags = entryService.getEntryTags(username);
         } catch (final ServiceException se) {
-            log.error(se.getMessage());
+            log.error(se.getMessage(), se);
+            tags = Collections.emptyList();
         }
 
         long largest = 0;
