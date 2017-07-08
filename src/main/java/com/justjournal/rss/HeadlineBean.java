@@ -35,6 +35,7 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.rss;
 
 import com.justjournal.utility.Xml;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.w3c.dom.Document;
 
@@ -79,9 +80,6 @@ public class HeadlineBean {
     protected void getRssDocument(final String uri)
             throws Exception {
 
-        if (log.isDebugEnabled())
-            log.debug("Starting getRssDocument()");
-
         //Open the file for reading:
         u = new URL(uri);
         inputXML = u.openStream();
@@ -94,12 +92,13 @@ public class HeadlineBean {
         document = builder.parse(inputXML);
     }
 
-    public String parse(final String url) {
+    public String parse(@NonNull final String url) {
+        
         try {
-            if (log.isDebugEnabled())
-                log.debug("Starting parse()");
-
+            log.info("Starting parse");
             getRssDocument(url);
+
+            log.info("Fetched, now create");
 
             // output variable
             final StringBuilder sb = new StringBuilder();
@@ -109,12 +108,11 @@ public class HeadlineBean {
             String contentDescription = "";
             String contentLastBuildDate = "";
             String contentGenerator = "";
+            
+            log.info("Prepare xml nodelists");
 
-            if (log.isDebugEnabled())
-                log.debug("Prepare xml nodelists");
-
-            org.w3c.dom.NodeList channelList = document.getElementsByTagName("channel");
-            org.w3c.dom.NodeList chnodes = channelList.item(0).getChildNodes();
+            final org.w3c.dom.NodeList channelList = document.getElementsByTagName("channel");
+            final org.w3c.dom.NodeList chnodes = channelList.item(0).getChildNodes();
 
             String imageUrl = null;
             String imageTitle = null;
@@ -122,11 +120,10 @@ public class HeadlineBean {
             String imageWidth = null;
             String imageHeight = null;
 
-            if (log.isDebugEnabled())
-                log.debug("Iterate through the nodelists");
+            log.debug("Iterate through the nodelists");
 
             for (int k = 0; k < chnodes.getLength(); k++) {
-                org.w3c.dom.Node curNode = chnodes.item(k);
+                final org.w3c.dom.Node curNode = chnodes.item(k);
 
                 if (curNode.getNodeName().equals("title")) {
                     contentTitle = curNode.getChildNodes().item(0).getNodeValue();
@@ -157,9 +154,8 @@ public class HeadlineBean {
                     }
                 }
             }
-
-            if (log.isDebugEnabled())
-                log.debug("Prepare HTML output");
+            
+            log.debug("Prepare HTML output");
 
             // create header!
             sb.append("<div style=\"width: 100%; padding: .1in; background: #F2F2F2;\" class=\"ljfhead\">");
@@ -323,13 +319,6 @@ public class HeadlineBean {
                         sb.append("</span>");
                         sb.append(endl);
                     }
-
-                    sb.append("<div class=\"RssTechnoratiTrack\"><a title=\"Technorati Trackback\"");
-                    sb.append(" href=\"http://www.technorati.com/cosmos/search.html?url=");
-                    sb.append(link);
-                    sb.append("\"><img src=\"/images/technorati.gif\" alt=\"Technorati Logo\" /></a>");
-                    sb.append("</div>");
-                    sb.append(endl);
 
                     sb.append("</div>");
                     sb.append(endl);
