@@ -28,13 +28,14 @@ package com.justjournal.repository;
 
 import com.justjournal.model.Settings;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 /**
  * @author Lucas Holt
  */
 @Repository
-public interface SettingsRepository extends CrudRepository<Settings, Integer> {
+public interface SettingsRepository extends PagingAndSortingRepository<Settings, Integer> {
 
     public Settings findByName(String name);
 }

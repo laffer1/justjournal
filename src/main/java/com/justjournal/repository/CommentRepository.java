@@ -29,6 +29,7 @@ package com.justjournal.repository;
 import com.justjournal.model.Comment;
 import com.justjournal.model.User;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -39,7 +40,7 @@ import java.util.List;
  * @author Lucas Holt
  */
 @Repository
-public interface CommentRepository extends CrudRepository<Comment, Integer> {
+public interface CommentRepository extends PagingAndSortingRepository<Comment, Integer> {
 
     List<Comment> findByEntryId(int entryId);
 

@@ -27,12 +27,12 @@
 package com.justjournal.repository;
 
 import com.justjournal.model.UserLocation;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 /**
  * @author Lucas Holt
  */
 @Repository
-public interface UserLocationRepository extends CrudRepository<UserLocation, Integer> {
+public interface UserLocationRepository extends PagingAndSortingRepository<UserLocation, Integer> {
 }

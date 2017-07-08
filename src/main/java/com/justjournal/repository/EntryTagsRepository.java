@@ -31,6 +31,7 @@ import com.justjournal.model.EntryTag;
 import com.justjournal.model.Tag;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -40,7 +41,7 @@ import java.util.List;
  * @author Lucas Holt
  */
 @Repository
-public interface EntryTagsRepository extends CrudRepository<EntryTag, Integer> {
+public interface EntryTagsRepository extends PagingAndSortingRepository<EntryTag, Integer> {
 
     @Query("select et from EntryTag et, Entry e, User u where et.entry = e and e.user = u and LOWER(u.username) = LOWER(:username)")
     List<EntryTag> findByUsername(@Param("username") String username);

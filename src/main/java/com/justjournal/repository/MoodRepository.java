@@ -36,6 +36,7 @@ package com.justjournal.repository;
 
 import com.justjournal.model.Mood;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 
@@ -45,5 +46,5 @@ import org.springframework.stereotype.Repository;
  * @author Lucas Holt
  */
 @Repository
-public interface MoodRepository extends CrudRepository<Mood, Integer> {
+public interface MoodRepository extends PagingAndSortingRepository<Mood, Integer> {
 }

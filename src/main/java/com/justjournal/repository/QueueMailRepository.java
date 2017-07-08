@@ -27,12 +27,12 @@
 package com.justjournal.repository;
 
 import com.justjournal.model.QueueMail;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 /**
  * @author Lucas Holt
  */
 @Repository
-public interface QueueMailRepository extends CrudRepository<QueueMail, Integer> {
+public interface QueueMailRepository extends PagingAndSortingRepository<QueueMail, Integer> {
 }

@@ -26,10 +26,9 @@
 
 package com.justjournal.repository;
 
-import com.justjournal.model.User;
 import com.justjournal.model.UserImage;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -39,7 +38,7 @@ import java.util.List;
  * @author Lucas Holt
  */
 @Repository
-public interface UserImageRepository extends CrudRepository<UserImage, Integer> {
+public interface UserImageRepository extends PagingAndSortingRepository<UserImage, Integer> {
     @Query("select ul from UserImage ul, User u where ul.user = u and LOWER(u.username) = LOWER(:username)")
     List<UserImage> findByUsername(@Param("username") String username);
 }

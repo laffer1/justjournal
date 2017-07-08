@@ -35,14 +35,14 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.repository;
 
 import com.justjournal.model.UserBio;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 /**
  * Manage biography for users
  */
 @Repository
-public interface UserBioRepository extends CrudRepository<UserBio, Integer> {
+public interface UserBioRepository extends PagingAndSortingRepository<UserBio, Integer> {
 
-    public UserBio findByUserId(int userId);
+    UserBio findByUserId(int userId);
 }

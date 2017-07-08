@@ -27,12 +27,12 @@
 package com.justjournal.repository;
 
 import com.justjournal.model.UserPref;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 /**
  * @author Lucas Holt
  */
 @Repository
-public interface UserPrefRepository extends CrudRepository<UserPref, Integer> {
+public interface UserPrefRepository extends PagingAndSortingRepository<UserPref, Integer> {
 }
