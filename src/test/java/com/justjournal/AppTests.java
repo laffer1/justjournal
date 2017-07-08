@@ -208,8 +208,8 @@ public class AppTests {
 
     @Test
     public void apiTagCloud() throws Exception {
-        mockMvc.perform(get("/api/tagcloud/root"))
-                .andExpect(status().isNotFound());
+        mockMvc.perform(get("/api/tagcloud/testuser"))
+                .andExpect(status().isOk());
     }
 
     @Ignore
