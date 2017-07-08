@@ -76,6 +76,7 @@ public final class RssCache implements Serializable {
 
     @JsonCreator
     public RssCache() {
+        super();
     }
 
     public int getId() {

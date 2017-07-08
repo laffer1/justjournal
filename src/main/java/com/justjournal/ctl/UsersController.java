@@ -34,6 +34,7 @@ import com.justjournal.model.*;
 import com.justjournal.model.search.BlogEntry;
 import com.justjournal.repository.*;
 import com.justjournal.rss.CachedHeadlineBean;
+import com.justjournal.rss.HeadlineBean;
 import com.justjournal.rss.Rss;
 import com.justjournal.services.BlogSearchService;
 import com.justjournal.services.EntryService;
@@ -50,6 +51,7 @@ import com.lowagie.text.rtf.RtfWriter2;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -811,6 +813,10 @@ public class UsersController {
         }
     }
 
+
+    @Autowired
+    private CachedHeadlineBean cachedHeadlineBean;
+
     private String getSubscriptions(final UserContext uc) {
         final StringBuilder sb = new StringBuilder();
 
@@ -819,7 +825,6 @@ public class UsersController {
         sb.append("<p><a href=\"javascript:sweeptoggle('contract')\">Contract All</a> | <a href=\"javascript:sweeptoggle('expand')\">Expand All</a></p>");
         sb.append(ENDL);
 
-        final CachedHeadlineBean hb = new CachedHeadlineBean();
 
         try {
             final Collection<RssSubscription> rssfeeds = rssSubscriptionsDAO.findByUser(uc.getBlogUser());
@@ -830,7 +835,8 @@ public class UsersController {
             for (int i = 0, n = rssfeeds.size(); i < n; i++) {
                 o = (RssSubscription) itr.next();
 
-                sb.append(hb.parse(o.getUri()));
+                log.info("Fetching RSS feed: " + o.getUri());
+                sb.append(cachedHeadlineBean.parse(o.getUri()));
                 sb.append(ENDL);
             }
 

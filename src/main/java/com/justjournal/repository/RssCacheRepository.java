@@ -36,7 +36,6 @@ package com.justjournal.repository;
 
 import com.justjournal.model.RssCache;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -46,7 +45,7 @@ import java.util.List;
 @Repository
 public interface RssCacheRepository extends JpaRepository<RssCache, Integer> {
 
-    RssCache findByUri(String uri);
+    RssCache findByUri(@Param("uri") String uri);
 
     List<RssCache> findByLastUpdatedBetween(@Param("begin") Date begin, @Param("end") Date end);
 
