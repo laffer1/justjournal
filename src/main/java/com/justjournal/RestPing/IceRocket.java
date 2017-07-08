@@ -1,6 +1,6 @@
 package com.justjournal.restping;
 
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -12,16 +12,16 @@ import java.net.URLEncoder;
  * @author Lucas Holt
  * @version $Id: IceRocket.java,v 1.4 2011/06/12 06:24:38 laffer1 Exp $
  */
+@Slf4j
 public class IceRocket extends BasePing {
-
-    private static final Logger log = Logger.getLogger(IceRocket.class);
 
     public IceRocket() {
         super("http://rpc.icerocket.com:10080");
     }
 
+    @Override
     public boolean ping() {
-        URLConnection uc;
+        final URLConnection uc;
 
         try {
             uc = createUrl(getUri()).openConnection();
@@ -32,9 +32,9 @@ public class IceRocket extends BasePing {
 
             uc.setRequestProperty("Content-Type", "text/xml");
 
-            DataOutputStream printout = new DataOutputStream(uc.getOutputStream());
+            final DataOutputStream printout = new DataOutputStream(uc.getOutputStream());
 
-            String output = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
+            final String output = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
                     "<methodCall>\n" +
                     "  <methodName>ping</methodName>\n" +
                     "    <params>\n" +
@@ -50,22 +50,22 @@ public class IceRocket extends BasePing {
             printout.flush();
             printout.close();
 
-            BufferedReader in = new BufferedReader(new InputStreamReader(
+            final BufferedReader in = new BufferedReader(new InputStreamReader(
                     uc.getInputStream()));
 
             String inputLine;
-            String input = "";
+            final StringBuilder input = new StringBuilder();
             while ((inputLine = in.readLine()) != null)
-                input += inputLine;
+                input.append(inputLine);
 
             in.close();
 
-            log.debug(uri + "\n" + input);
+            log.debug(uri + "\n" + input.toString());
 
             return true; // todo: parse result and adjust this as necessary.
 
-        } catch (Exception e) {
-            log.debug("IO Error: " + e.getMessage());
+        } catch (final Exception e) {
+            log.debug("IO Error: " + e.getMessage(), e);
             return false;
         }
     }

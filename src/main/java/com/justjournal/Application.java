@@ -35,16 +35,16 @@ public class Application {
     @Value("${tomcat.ajp.enabled}")
     private boolean tomcatAjpEnabled;
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         SpringApplication.run(Application.class, args);
     }
 
     @Bean
     public EmbeddedServletContainerFactory servletContainer() {
 
-        TomcatEmbeddedServletContainerFactory tomcat = new TomcatEmbeddedServletContainerFactory();
+        final TomcatEmbeddedServletContainerFactory tomcat = new TomcatEmbeddedServletContainerFactory();
         if (tomcatAjpEnabled) {
-            Connector ajpConnector = new Connector("AJP/1.3");
+            final Connector ajpConnector = new Connector("AJP/1.3");
             ajpConnector.setProtocol("AJP/1.3");
             ajpConnector.setPort(ajpPort);
             ajpConnector.setSecure(false);

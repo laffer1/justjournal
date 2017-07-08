@@ -1,5 +1,6 @@
 package com.justjournal.restping;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.log4j.Logger;
 
 import java.io.BufferedReader;
@@ -13,10 +14,9 @@ import java.net.URLEncoder;
 /**
  * User: laffer1 Date: Jul 27, 2008 Time: 5:50:49 AM
  */
+@Slf4j
 public class BasePing {
-
-    private static final Logger log = Logger.getLogger(BasePing.class);
-
+    
     protected String pingUri;
     protected String uri;
     protected String name;
@@ -27,39 +27,39 @@ public class BasePing {
     }
 
     protected URL createUrl(final String uri) throws Exception {
-        URI tmpuri = new URI(uri);
+        final URI tmpuri = new URI(uri);
         return tmpuri.toURL();
     }
 
     public boolean ping() {
-        URLConnection uc;
+        final URLConnection uc;
 
         try {
             uc = createUrl(getUri() + "?name=" + URLEncoder.encode(getName(), "UTF-8") +
                     "&url=" + URLEncoder.encode(getUri(), "UTF-8") +
                     "&changesUrl=" + URLEncoder.encode(getChangesURL(), "UTF-8")).openConnection();
-        } catch (Exception me) {
-            log.debug("Couldn't create URL. " + me.getMessage());
+        } catch (final Exception me) {
+            log.debug("Couldn't create URL. " + me.getMessage(), me);
             return false;
         }
 
         try {
-            BufferedReader in = new BufferedReader(new InputStreamReader(
+            final BufferedReader in = new BufferedReader(new InputStreamReader(
                     uc.getInputStream()));
 
             String inputLine;
-            String input = "";
+            final StringBuilder input = new StringBuilder();
             while ((inputLine = in.readLine()) != null)
-                input += inputLine;
+                input.append(inputLine);
 
             in.close();
 
-            log.debug(uri + "\n" + input);
+            log.debug(uri + "\n" + input.toString());
 
             return true; // todo: parse result and adjust this as necessary.
 
-        } catch (IOException e) {
-            log.debug("IO Error: " + e.getMessage());
+        } catch (final IOException e) {
+            log.debug("IO Error: " + e.getMessage(), e);
             return false;
         }
     }

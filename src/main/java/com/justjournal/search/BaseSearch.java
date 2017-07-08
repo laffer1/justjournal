@@ -65,17 +65,17 @@ public class BaseSearch {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public void setMaxResults(int results) {
+    public void setMaxResults(final int results) {
         maxresults = results;
     }
 
-    public void setBaseQuery(String base) {
+    public void setBaseQuery(final String base) {
         if (base != null && base.length() > 0)
             baseQuery = base;
     }
 
     public void setFields(final String fields) {
-        String q[] = fields.split("\\s");
+        final String q[] = fields.split("\\s");
         fieldlist.addAll(Arrays.asList(q));
     }
 
@@ -84,7 +84,7 @@ public class BaseSearch {
             sort = "ORDER BY " + field;
     }
 
-    public void setSortDescending(String field) {
+    public void setSortDescending(final String field) {
         if (field != null && field.length() > 0)
             sort = "ORDER BY " + field + " DESC";
     }
@@ -138,7 +138,7 @@ public class BaseSearch {
             return jdbcTemplate.queryForList(sqlStmt);
 
         } catch (final Exception e) {
-            log.error("Error executing search with query: " +  sqlStmt + "; and error " + e.getMessage());
+            log.error("Error executing search with query: " +  sqlStmt + "; and error " + e.getMessage(), e);
         }
 
         return null;

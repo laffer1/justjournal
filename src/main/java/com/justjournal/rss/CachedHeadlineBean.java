@@ -40,6 +40,7 @@ import com.justjournal.model.RssCache;
 import com.justjournal.repository.RssCacheRepository;
 import com.justjournal.repository.UserRepository;
 import com.justjournal.utility.StringUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -64,26 +65,24 @@ import java.net.URL;
  *          1.1 optimized code
  *          1.0 Initial release
  */
+@Slf4j
 @Component
-public final class CachedHeadlineBean
-        extends HeadlineBean {
-
-    private static final Logger log = Logger.getLogger(CachedHeadlineBean.class);
+public final class CachedHeadlineBean extends HeadlineBean {
 
     @Autowired
     private UserRepository userRepository;
+    
     @Autowired
     private RssCacheRepository rssCacheDao;
 
-    protected void getRssDocument(final String uri)
-            throws Exception {
+    protected void getRssDocument(final String uri) throws Exception {
 
         if (log.isDebugEnabled())
             log.debug("Starting getRssDocument()");
 
         RssCache rss;
         InputStreamReader ir;
-        StringBuilder sbx = new StringBuilder();
+        final StringBuilder sbx = new StringBuilder();
         BufferedReader buff;
         final java.util.GregorianCalendar calendarg = new java.util.GregorianCalendar();
 
@@ -93,7 +92,7 @@ public final class CachedHeadlineBean
             if (log.isDebugEnabled())
                 log.debug("Record found with uri: " + uri);
 
-            DateTime dt = new DateTimeBean(rss.getLastUpdated());
+            final DateTime dt = new DateTimeBean(rss.getLastUpdated());
 
             if (dt.getDay() != calendarg.get(java.util.Calendar.DATE)) {
                 if (log.isDebugEnabled())
@@ -159,9 +158,9 @@ public final class CachedHeadlineBean
                 if (rss.getContent().startsWith("<rss"))
                     rss.setContent("<?xml version=\"1.0\"?>\n" + rss.getContent());
                 rssCacheDao.save(rss);
-            } catch (java.lang.NullPointerException n) {
+            } catch (final java.lang.NullPointerException n) {
                 if (log.isDebugEnabled())
-                    log.debug("Null pointer exception creating/adding rss cache object to db.");
+                    log.debug("Null pointer exception creating/adding rss cache object to db.", n);
             }
         }
         if (log.isDebugEnabled())
@@ -169,9 +168,9 @@ public final class CachedHeadlineBean
 
         log.debug(sbx.toString());
 
-        StringReader sr = new StringReader(rss.getContent());
+        final StringReader sr = new StringReader(rss.getContent());
 
-        org.xml.sax.InputSource saxy = new org.xml.sax.InputSource(sr);
+        final org.xml.sax.InputSource saxy = new org.xml.sax.InputSource(sr);
         factory.setValidating(false);
         builder = factory.newDocumentBuilder();
         document = builder.parse(saxy);
