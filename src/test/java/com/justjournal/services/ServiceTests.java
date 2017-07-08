@@ -70,7 +70,7 @@ public class ServiceTests {
 
     @Test
     public void entryGetRecentEntriesPublic() throws ServiceException {
-        final List<RecentEntry> entryList = entryService.getRecentEntriesPublic(TEST_USER);
+        final List<RecentEntry> entryList = entryService.getRecentEntriesPublic(TEST_USER).toList().blockingGet();
         assertNotNull(entryList);
         assertTrue(entryList.size() > 2);
         final RecentEntry re = entryList.get(0);
@@ -80,7 +80,7 @@ public class ServiceTests {
 
     @Test
     public void entryGetRecentEntries() throws ServiceException {
-        final List<RecentEntry> entryList = entryService.getRecentEntries(TEST_USER);
+        final List<RecentEntry> entryList = entryService.getRecentEntries(TEST_USER).toList().blockingGet();
         assertNotNull(entryList);
         assertTrue(entryList.size() > 3);
         final RecentEntry re = entryList.get(0);

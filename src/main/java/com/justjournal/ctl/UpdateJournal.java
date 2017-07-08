@@ -124,10 +124,10 @@ public class UpdateJournal extends HttpServlet {
      * @param userName the blog owner
      * @param userID   the blog owner's id
      */
-    private void htmlOutput(final StringBuffer sb, final String userName, final int userID) {
+    private void htmlOutput(final StringBuilder sb, final String userName, final int userID) {
         /* Initialize Preferences Object */
         final User pf = userRepository.findByUsername(userName);
-        Journal journal = pf.getJournals().get(0);
+        final Journal journal = pf.getJournals().get(0);
 
         // Begin HTML document.
         // IE hates this.
@@ -292,7 +292,7 @@ public class UpdateJournal extends HttpServlet {
             throws java.io.IOException {
 
         boolean blnError = false;
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
 
         // start session if one does not exist.
         final HttpSession session = request.getSession(true);

@@ -30,7 +30,6 @@ import com.justjournal.Cal;
 import com.justjournal.ErrorPage;
 import com.justjournal.Login;
 import com.justjournal.atom.AtomFeed;
-import com.justjournal.core.Settings;
 import com.justjournal.model.*;
 import com.justjournal.model.search.BlogEntry;
 import com.justjournal.repository.*;
@@ -98,9 +97,6 @@ public class UsersController {
     private static final String PATH_MONTH = "month";
     private static final String MODEL_AVATAR = "avatar";
 
-    @SuppressWarnings({"InstanceVariableOfConcreteClass"})
-    private Settings settings = null;
-
     private final CommentRepository commentDao;
 
     private final EntryRepository entryDao;
@@ -146,11 +142,6 @@ public class UsersController {
         this.userPicRepository = userPicRepository;
         this.blogSearchService = blogSearchService;
         this.rss = rss;
-    }
-
-    @Autowired
-    public void setSettings(final Settings settings) {
-        this.settings = settings;
     }
 
     /**
@@ -893,7 +884,7 @@ public class UsersController {
 
     private String getSingleEntry(final Entry o, final UserContext uc) {
 
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
 
             try {
 
@@ -990,7 +981,7 @@ public class UsersController {
     }
 
     private String getEntries(final UserContext uc, final Pageable pageable) {
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         final Page<Entry> entries;
 
         try {
@@ -1041,7 +1032,7 @@ public class UsersController {
     }
 
     private String getFavorites(final UserContext uc) throws ServiceException {
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         final Collection<Entry> entries = new ArrayList<Entry>();
 
         final List<Favorite> favorites = favoriteRepository.findByUser(uc.getBlogUser());
@@ -1287,7 +1278,7 @@ public class UsersController {
      * @param uc The UserContext we are working on including blog owner, authenticated user, and sb to write
      */
     private String getFriends(final UserContext uc) throws ServiceException {
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         final Collection entries;
 
   /*      if (uc.getAuthenticatedUser() != null)
@@ -1532,7 +1523,7 @@ public class UsersController {
      */
     private String getCalendar(final int year,
                                final UserContext uc) {
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         final GregorianCalendar calendar = new GregorianCalendar();
         final int yearNow = calendar.get(Calendar.YEAR);
 
@@ -1601,7 +1592,7 @@ public class UsersController {
     private String getCalendarMonth(final int year,
                                     final int month,
                                     final UserContext uc) {
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
 
         sb.append("<h2>Calendar: ");
         sb.append(month);
@@ -1712,7 +1703,7 @@ public class UsersController {
                                   final int day,
                                   final UserContext uc) {
 
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
 
         sb.append("<p>Lists all of the journal entries for the day.</p>");
         sb.append(ENDL);

@@ -45,7 +45,11 @@ public final class ErrorPage {
     private final static String severeStyle =
             "width: 100%; height: 100px; margin-top: 1in; margin-left: 0; margin-right: 0; position relative; text-align: center; background: maroon; color: white;";
 
-    private static void headStyle(String title, final StringBuffer sb) {
+    private ErrorPage() {
+        
+    }
+
+    private static void headStyle(final String title, final StringBuilder sb) {
         sb.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n");
         sb.append("<html xmlns=\"http://www.w3.org/1999/xhtml\">\n");
         sb.append("<head>\n");
@@ -56,24 +60,24 @@ public final class ErrorPage {
         sb.append("<body style=\"margin: 0;\">\n");
     }
 
-    private static void footStyle(final StringBuffer sb) {
+    private static void footStyle(final StringBuilder sb) {
         sb.append("</body>\n");
         sb.append("</html>\n");
     }
 
     public static void Display(final String ErrTitle, final String ErrMsg, final PrintWriter ResponseWriter) {
-        StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
 
         Display(ErrTitle, ErrMsg, sb);  // call the other version
 
         ResponseWriter.write(sb.toString());
     }
 
-    public static void Display(final String ErrTitle, final String ErrMsg, final StringBuffer sb) {
+    public static void Display(final String ErrTitle, final String ErrMsg, final StringBuilder sb) {
         severe(ErrTitle, ErrMsg, sb);
     }
 
-    public static void severe(final String ErrTitle, final String ErrMsg, final StringBuffer sb) {
+    public static void severe(final String ErrTitle, final String ErrMsg, final StringBuilder sb) {
         if (sb.length() > 0) {
             // reset the output to display the error.
             sb.delete(0, sb.length() - 1);

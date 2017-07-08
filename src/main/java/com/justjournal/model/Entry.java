@@ -147,7 +147,14 @@ public class Entry implements Serializable {
 
     @JsonCreator
     public Entry() {
+        super();
+    }
 
+    public Entry(final int id, final String subject) {
+        super();
+        
+        this.id = id;
+        this.subject = subject;
     }
 
     public int getId() {

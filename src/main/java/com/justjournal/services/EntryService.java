@@ -29,7 +29,9 @@ package com.justjournal.services;
 import com.justjournal.model.*;
 import com.justjournal.repository.*;
 import com.justjournal.utility.Xml;
-import io.reactivex.*;
+import io.reactivex.Scheduler;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -40,7 +42,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.*;
-import java.util.Observable;
 
 /**
  * @author Lucas Holt
@@ -62,6 +63,21 @@ public class EntryService {
     @Autowired
     private EntryTagsRepository entryTagsRepository;
 
+    private io.reactivex.Observable<RecentEntry> getRecentEntryObservable(Page<Entry> entries) {
+        return io.reactivex.Observable.fromIterable(entries)
+                .observeOn(Schedulers.computation())
+                .map(new Function<Entry, RecentEntry>() {
+
+                    @Override
+                    public RecentEntry apply(final Entry o) throws Exception {
+                        final RecentEntry recentEntry = new RecentEntry();
+                        recentEntry.setId(o.getId());
+                        recentEntry.setSubject(Xml.cleanString(o.getSubject()));
+                        return recentEntry;
+                    }
+                });
+    }
+
     /**
      * Get the recent blog entries list for the sidebar, but only use public entries.
      *
@@ -69,37 +85,15 @@ public class EntryService {
      * @return subject & entry id data
      */
     @Transactional(value = Transactional.TxType.SUPPORTS)
-    public List<RecentEntry> getRecentEntriesPublic(final String username) throws ServiceException {
-        final User user = userRepository.findByUsername(username);
-        if (user == null) {
-            log.warn("username not found in getRecentEntriesPublic with %s", username);
-            return Collections.emptyList();
-        }
-
-        final Page<Entry> entries;
-        final ArrayList<RecentEntry> recentEntries = new ArrayList<RecentEntry>(MAX_RECENT_ENTRIES);
-
+    public io.reactivex.Observable<RecentEntry> getRecentEntriesPublic(final String username) throws ServiceException {
         try {
             final Pageable page = new PageRequest(0, MAX_RECENT_ENTRIES, new Sort(Sort.Direction.DESC, "date", "id"));
-            entries = entryDao.findByUserAndSecurityAndDraft(user, securityDao.findOne(2), PrefBool.N, page);
-
-            for (final Entry o : entries) {
-                // security safety net
-                if (! "public".equals(o.getSecurity().getName()) ||
-                        o.getDraft().equals(PrefBool.Y))
-                    continue;
-
-                final RecentEntry recentEntry = new RecentEntry();
-                recentEntry.setId(o.getId());
-                recentEntry.setSubject(Xml.cleanString(o.getSubject()));
-                recentEntries.add(recentEntry);
-            }
+            final Page<Entry> entries = entryDao.findByUserAndSecurityAndDraftWithSubjectOnly(username, securityDao.findByName("public"), PrefBool.N, page);
+            return getRecentEntryObservable(entries);
         } catch (final Exception e) {
             log.error(e.getMessage());
             throw new ServiceException("Unable to retrieve recent blog entries for " + username, e);
         }
-
-        return recentEntries;
     }
 
     /**
@@ -109,31 +103,21 @@ public class EntryService {
      * @return subject & entry id data
      */
     @Transactional(value = Transactional.TxType.SUPPORTS)
-    public List<RecentEntry> getRecentEntries(final String username) throws ServiceException {
+    public io.reactivex.Observable<RecentEntry> getRecentEntries(final String username) throws ServiceException {
         final User user = userRepository.findByUsername(username);
         if (user == null) {
-            return Collections.emptyList();
+            log.warn("username not found in getRecentEntrieswith %s", username);
+            return null;
         }
-
-        final Page<Entry> entries;
-        final List<RecentEntry> recentEntries = new ArrayList<RecentEntry>();
 
         try {
             final Pageable page = new PageRequest(0, MAX_RECENT_ENTRIES, Sort.Direction.DESC, "date", "id");
-            entries = entryDao.findByUserOrderByDateDesc(user, page);
-
-            for (final Entry o : entries) {
-                final RecentEntry recentEntry = new RecentEntry();
-                recentEntry.setId(o.getId());
-                recentEntry.setSubject(Xml.cleanString(o.getSubject()));
-                recentEntries.add(recentEntry);
-            }
+            final Page<Entry> entries = entryDao.findByUserOrderByDateDesc(user, page);
+            return getRecentEntryObservable(entries);
         } catch (final Exception e) {
             log.error(e.getMessage(), e);
             throw new ServiceException("Unable to retrieve recent blog entries for " + username);
         }
-
-        return recentEntries;
     }
 
     @Transactional(value = Transactional.TxType.SUPPORTS)
@@ -275,27 +259,28 @@ public class EntryService {
 
     /**
      * Add and remove tags on an entry from a list.
+     *
      * @param entry entry to modify
-     * @param tags tags that should be present (removes anything not listed)
+     * @param tags  tags that should be present (removes anything not listed)
      */
     public void applyTags(final Entry entry, final Set<String> tags) {
-       final List<EntryTag> entryTags = entryTagsRepository.findByEntry(entry);
+        final List<EntryTag> entryTags = entryTagsRepository.findByEntry(entry);
 
-       // find tags that are missing in the db and add them.
-       for (final String tag : tags) {
-           boolean found = false;
-           for (final EntryTag entryTag : entryTags) {
-               if (entryTag.getTag().getName().equalsIgnoreCase(tag)) {
-                   // in list
-                   found = true;
-                   break;
-               }
-           }
+        // find tags that are missing in the db and add them.
+        for (final String tag : tags) {
+            boolean found = false;
+            for (final EntryTag entryTag : entryTags) {
+                if (entryTag.getTag().getName().equalsIgnoreCase(tag)) {
+                    // in list
+                    found = true;
+                    break;
+                }
+            }
 
-           if (!found) {
-               addTagToEntry(entry, tag);
-           }
-       }
+            if (!found) {
+                addTagToEntry(entry, tag);
+            }
+        }
 
         for (final EntryTag entryTag : entryTags) {
             boolean found = false;
@@ -314,8 +299,9 @@ public class EntryService {
 
     /**
      * Add a tag to an entry
+     *
      * @param entry entry to add tags to
-     * @param tag tag name
+     * @param tag   tag name
      */
     public void addTagToEntry(final Entry entry, final String tag) {
         Tag t = tagDao.findByName(tag);
@@ -333,19 +319,20 @@ public class EntryService {
 
     /**
      * Remove tag from entry
+     *
      * @param entry entry to modify
-     * @param tag tag name
+     * @param tag   tag name
      */
     public void removeTagFromEntry(final Entry entry, final String tag) {
-         final Tag t = tagDao.findByName(tag);
-         if (t == null)
-             return;
+        final Tag t = tagDao.findByName(tag);
+        if (t == null)
+            return;
 
-         final EntryTag ets = entryTagsRepository.findByEntryAndTag(entry, t);
-         if (ets != null) {
+        final EntryTag ets = entryTagsRepository.findByEntryAndTag(entry, t);
+        if (ets != null) {
 
-             entryTagsRepository.delete(ets);
-         }
-     }
+            entryTagsRepository.delete(ets);
+        }
+    }
 
 }

@@ -62,7 +62,15 @@ public interface EntryRepository extends JpaRepository<Entry, Integer> {
 
     Page<Entry> findByUserAndSecurityOrderByDateDesc(@Param("user") User user, @Param("security") Security security, Pageable pageable);
 
-    Page<Entry> findByUserAndSecurityAndDraft(@Param("user") User user, @Param("security") Security security, @Param("draft") PrefBool draft, Pageable pageable);
+    Page<Entry> findByUserAndSecurityAndDraft(@Param("user") User user,
+                                              @Param("security") Security security,
+                                              @Param("draft") PrefBool draft, Pageable pageable);
+
+
+    @Query("select new Entry(e.id, e.subject) from Entry e, User u where e.user = u and LOWER(u.username) = LOWER(:username) and e.security = :security and e.draft = :draft")
+    Page<Entry> findByUserAndSecurityAndDraftWithSubjectOnly(@Param("username") String username,
+                                                             @Param("security") Security security,
+                                                             @Param("draft") PrefBool draft, Pageable pageable);
 
     Page<Entry> findByUserOrderByDateDesc(User user, Pageable pageable);
 

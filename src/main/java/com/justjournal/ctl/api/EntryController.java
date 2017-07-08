@@ -34,6 +34,7 @@ import com.justjournal.model.api.*;
 import com.justjournal.repository.*;
 import com.justjournal.services.EntryService;
 import com.justjournal.services.ServiceException;
+import io.reactivex.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -100,19 +101,15 @@ public class EntryController {
      public
      List<RecentEntry> getRecentEntries(@PathVariable("username") final String username,
                             final HttpServletResponse response, final HttpSession session) {
-         final  List<RecentEntry> entries;
+         final io.reactivex.Observable<RecentEntry> entries;
          try {
              if (Login.isAuthenticated(session) && Login.isUserName(username)) {
                  entries = entryService.getRecentEntries(username);
              } else {
                  entries = entryService.getRecentEntriesPublic(username);
              }
-
-             if (entries == null) {
-                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                 return Collections.emptyList();
-             }
-             return entries;
+             
+             return entries.toList().blockingGet();
          } catch (final ServiceException e) {
              log.error(e.getMessage(), e);
              response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
