@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2005, 2008 Lucas Holt
+Copyright (c) 2005, Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -34,15 +34,14 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.repository;
 
-import com.justjournal.model.UserBio;
+import com.justjournal.model.RssSubscription;
+import com.justjournal.model.User;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-/**
- * Manage biography for users
- */
-@Repository
-public interface UserBioDao extends CrudRepository<UserBio, Integer> {
+import java.util.List;
 
-    public UserBio findByUserId(int userId);
+@Repository
+public interface RssSubscriptionsRepository extends CrudRepository<RssSubscription, Integer> {
+    public List<RssSubscription> findByUser(User user);
 }

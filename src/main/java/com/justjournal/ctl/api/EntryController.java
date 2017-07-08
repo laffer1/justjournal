@@ -71,15 +71,15 @@ public class EntryController {
     @Qualifier("entryRepository")
     @Autowired
     private EntryRepository entryRepository = null;
-    @Qualifier("securityDao")
+    @Qualifier("securityRepository")
     @Autowired
-    private SecurityDao securityDao;
-    @Qualifier("locationDao")
+    private SecurityRepository securityDao;
+    @Qualifier("locationRepository")
     @Autowired
-    private LocationDao locationDao;
-    @Qualifier("moodDao")
+    private LocationRepository locationDao;
+    @Qualifier("moodRepository")
     @Autowired
-    private MoodDao moodDao;
+    private MoodRepository moodDao;
     @Qualifier("userRepository")
     @Autowired
     private UserRepository userRepository;

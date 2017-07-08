@@ -28,7 +28,7 @@ package com.justjournal.ctl.api;
 
 import com.justjournal.model.Tag;
 import com.justjournal.repository.EntryTagsRepository;
-import com.justjournal.repository.TagDao;
+import com.justjournal.repository.TagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Controller;
@@ -50,7 +50,7 @@ import java.util.Map;
 public class TagsController {
 
     @Autowired
-    private TagDao tagDao;
+    private TagRepository tagDao;
 
     @Autowired
     private EntryTagsRepository entryTagsRepository;

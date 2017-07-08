@@ -36,7 +36,7 @@ package com.justjournal.ctl;
 
 import com.justjournal.model.Trackback;
 import com.justjournal.model.TrackbackType;
-import com.justjournal.repository.TrackbackDao;
+import com.justjournal.repository.TrackbackRepository;
 import com.justjournal.utility.ServletUtilities;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,10 +71,10 @@ public class TrackbackPingController {
     private static final String MESSAGE = "<message>";
     private static final String END_MESSAGE = "</message>";
 
-    private final TrackbackDao trackbackDao;
+    private final TrackbackRepository trackbackDao;
 
     @Autowired
-    public TrackbackPingController(TrackbackDao trackbackDao) {
+    public TrackbackPingController(TrackbackRepository trackbackDao) {
         Assert.notNull(trackbackDao, "TrackbackDao must not be null");
         this.trackbackDao = trackbackDao;
     }

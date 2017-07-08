@@ -82,13 +82,13 @@ public class Blogger {
     private UserRepository userRepository;
 
     @Autowired
-    private MoodDao moodDao;
+    private MoodRepository moodDao;
 
     @Autowired
-    private LocationDao locationDao;
+    private LocationRepository locationDao;
 
     @Autowired
-    private SecurityDao securityDao;
+    private SecurityRepository securityDao;
 
     /**
      * Fetch the users personal information including their username, userid, email address and name.

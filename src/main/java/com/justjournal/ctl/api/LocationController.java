@@ -27,7 +27,7 @@
 package com.justjournal.ctl.api;
 
 import com.justjournal.model.Location;
-import com.justjournal.repository.LocationDao;
+import com.justjournal.repository.LocationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Controller;
@@ -44,7 +44,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class LocationController {
 
     @Autowired
-    private LocationDao locationDao;
+    private LocationRepository locationDao;
 
     @Cacheable(value = "location", key = "id")
     @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = "application/json")

@@ -44,5 +44,5 @@ import org.springframework.stereotype.Repository;
  * @author Lucas Holt
  */
 @Repository
-public interface TrackbackDao extends CrudRepository<Trackback, Integer> {
+public interface TrackbackRepository extends CrudRepository<Trackback, Integer> {
 }

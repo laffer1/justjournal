@@ -1,26 +1,13 @@
 package com.justjournal.core;
 
-import com.justjournal.model.Entry;
-import com.justjournal.model.Security;
-import com.justjournal.model.search.BlogEntry;
-import com.justjournal.model.search.Tag;
-import com.justjournal.repository.EntryRepository;
-import com.justjournal.repository.SecurityDao;
-import com.justjournal.repository.search.BlogEntryRepository;
 import com.justjournal.services.BlogSearchService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * Manage indexing blog entries into elasticsearch

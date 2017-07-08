@@ -29,7 +29,7 @@ package com.justjournal.ctl.api;
 import com.justjournal.Login;
 import com.justjournal.model.Friend;
 import com.justjournal.model.User;
-import com.justjournal.repository.FriendsDao;
+import com.justjournal.repository.FriendsRepository;
 import com.justjournal.repository.UserRepository;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +58,7 @@ public class FriendController {
     private UserRepository userRepository;
 
     @Autowired
-    private FriendsDao friendsDao;
+    private FriendsRepository friendsDao;
 
     // TODO: refactor to return user objects?
 

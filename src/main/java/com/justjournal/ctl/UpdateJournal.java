@@ -90,11 +90,11 @@ public class UpdateJournal extends HttpServlet {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private SecurityDao securityRepository;
+    private SecurityRepository securityRepository;
     @Autowired
-    private LocationDao locationDao;
+    private LocationRepository locationDao;
     @Autowired
-    private MoodDao moodDao;
+    private MoodRepository moodDao;
     @Autowired
     private Login webLogin;
 

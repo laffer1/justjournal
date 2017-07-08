@@ -40,7 +40,7 @@ import java.util.List;
  * @author Lucas Holt
  */
 @Repository
-public interface TagDao extends CrudRepository<Tag, Integer> {
+public interface TagRepository extends CrudRepository<Tag, Integer> {
     @Query("SELECT t FROM Tag t WHERE LOWER(t.name) = LOWER(:name)")
     public Tag findByName(@Param("name") String name);
 

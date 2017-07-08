@@ -1,6 +1,5 @@
 package com.justjournal.repository;
 
-import com.justjournal.Application;
 import com.justjournal.ApplicationTest;
 import com.justjournal.model.Location;
 import org.junit.Test;
@@ -27,7 +26,7 @@ import static org.junit.Assert.assertNotNull;
 public class LocationDaoTests {
 
     @Autowired
-    private LocationDao locationDao;
+    private LocationRepository locationDao;
 
     @Test
     public void list() throws Exception {

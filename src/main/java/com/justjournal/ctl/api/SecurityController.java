@@ -26,7 +26,7 @@
 
 package com.justjournal.ctl.api;
 
-import com.justjournal.repository.SecurityDao;
+import com.justjournal.repository.SecurityRepository;
 import com.justjournal.model.Security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -44,7 +44,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class SecurityController {
 
     @Autowired
-    private SecurityDao securityDao;
+    private SecurityRepository securityDao;
 
     @Cacheable(value = "security", key = "id")
     @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = "application/json")

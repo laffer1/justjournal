@@ -26,7 +26,6 @@
 
 package com.justjournal.repository;
 
-import com.justjournal.Application;
 import com.justjournal.ApplicationTest;
 import com.justjournal.model.Security;
 import org.junit.Test;
@@ -48,7 +47,7 @@ import static org.junit.Assert.assertNotNull;
 @WebAppConfiguration
 public class SecurityDaoTests {
     @Autowired
-    private SecurityDao securityDao;
+    private SecurityRepository securityDao;
 
     @Test
     public void list() {

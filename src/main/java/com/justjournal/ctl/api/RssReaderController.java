@@ -29,7 +29,7 @@ package com.justjournal.ctl.api;
 import com.justjournal.Login;
 import com.justjournal.model.RssSubscription;
 import com.justjournal.model.User;
-import com.justjournal.repository.RssSubscriptionsDAO;
+import com.justjournal.repository.RssSubscriptionsRepository;
 import com.justjournal.repository.UserRepository;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +52,7 @@ public class RssReaderController {
     public static final int RSS_URL_MIN_LENGTH = 10;
     private static final Logger log = Logger.getLogger(RssReaderController.class);
     @Autowired
-    private RssSubscriptionsDAO rssSubscriptionsDAO;
+    private RssSubscriptionsRepository rssSubscriptionsDAO;
     @Autowired
     private UserRepository userRepository;
 

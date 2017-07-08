@@ -53,9 +53,9 @@ public class EntryService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private SecurityDao securityDao;
+    private SecurityRepository securityDao;
     @Autowired
-    private TagDao tagDao;
+    private TagRepository tagDao;
 
     @Autowired
     private EntryTagsRepository entryTagsRepository;

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2005, Lucas Holt
+Copyright (c) 2005, 2008 Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -34,17 +34,15 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.repository;
 
-import com.justjournal.model.Friend;
+import com.justjournal.model.UserBio;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-
 /**
- * Friend Dao
- *
- * @author Lucas Holt
+ * Manage biography for users
  */
 @Repository
-public interface FriendsDao extends CrudRepository<Friend, Integer> {
+public interface UserBioRepository extends CrudRepository<UserBio, Integer> {
 
+    public UserBio findByUserId(int userId);
 }

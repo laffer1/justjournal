@@ -58,7 +58,7 @@ public class SignUpController {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private UserBioDao userBioDao;
+    private UserBioRepository userBioDao;
     @Autowired
     private UserContactRepository userContactRepository;
     @Autowired

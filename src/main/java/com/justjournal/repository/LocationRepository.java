@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2005, Lucas Holt
+Copyright (c) 2004, 2005, 2014 Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -34,14 +34,10 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.repository;
 
-import com.justjournal.model.RssSubscription;
-import com.justjournal.model.User;
+import com.justjournal.model.Location;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
-public interface RssSubscriptionsDAO extends CrudRepository<RssSubscription, Integer> {
-    public List<RssSubscription> findByUser(User user);
+public interface LocationRepository extends CrudRepository<Location, Integer> {
 }

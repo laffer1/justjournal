@@ -56,10 +56,10 @@ public class StatisticsService {
     private CommentRepository commentRepository;
 
     @Autowired
-    private TagDao tagDao;
+    private TagRepository tagDao;
 
     @Autowired
-    private SecurityDao securityDao;
+    private SecurityRepository securityDao;
 
     @Autowired
     private StyleRepository styleRepository;

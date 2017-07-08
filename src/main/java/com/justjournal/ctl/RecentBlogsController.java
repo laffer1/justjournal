@@ -29,10 +29,9 @@ import com.justjournal.core.Settings;
 import com.justjournal.model.Entry;
 import com.justjournal.model.Security;
 import com.justjournal.repository.EntryRepository;
-import com.justjournal.repository.SecurityDao;
+import com.justjournal.repository.SecurityRepository;
 import com.justjournal.rss.Rss;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -65,7 +64,7 @@ public class RecentBlogsController {
     private EntryRepository entryRepository;
 
     @Autowired
-    private SecurityDao securityDao;
+    private SecurityRepository securityDao;
 
     @Autowired
     private Settings set;

@@ -34,18 +34,16 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.repository;
 
-import com.justjournal.model.Security;
-import org.springframework.data.repository.PagingAndSortingRepository;
-import org.springframework.data.repository.query.Param;
+import com.justjournal.model.Mood;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 
 /**
- * Entry Security
+ * Retrieve and acquire mood's for use with journal entries.
+ *
+ * @author Lucas Holt
  */
 @Repository
-public interface SecurityDao extends PagingAndSortingRepository<Security, Integer> {
-
-    Security findByName(@Param("name") String name);
-
+public interface MoodRepository extends CrudRepository<Mood, Integer> {
 }

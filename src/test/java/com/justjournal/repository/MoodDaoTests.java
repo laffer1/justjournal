@@ -26,7 +26,6 @@
 
 package com.justjournal.repository;
 
-import com.justjournal.Application;
 import com.justjournal.ApplicationTest;
 import com.justjournal.model.Mood;
 import org.junit.Test;
@@ -50,7 +49,7 @@ import static org.junit.Assert.assertNotNull;
 
 public class MoodDaoTests {
     @Autowired
-    private MoodDao moodDao;
+    private MoodRepository moodDao;
 
     @Test
     public void list() {

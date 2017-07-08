@@ -113,9 +113,9 @@ public class UsersController {
 
     private final UserRepository userRepository;
 
-    private final SecurityDao securityDao;
+    private final SecurityRepository securityDao;
 
-    private final RssSubscriptionsDAO rssSubscriptionsDAO;
+    private final RssSubscriptionsRepository rssSubscriptionsDAO;
 
     private final UserImageService userImageService;
 
@@ -130,10 +130,10 @@ public class UsersController {
                            final @Qualifier("commentRepository") CommentRepository commentDao,
                            final @Qualifier("entryRepository") EntryRepository entryDao,
                            final FavoriteRepository favoriteRepository, final @Qualifier("moodThemeDataRepository") MoodThemeDataRepository emoticonDao,
-                           final UserRepository userRepository, final SecurityDao securityDao, final RssSubscriptionsDAO rssSubscriptionsDAO,
+                           final UserRepository userRepository, final SecurityRepository securityDao, final RssSubscriptionsRepository rssSubscriptionsDAO,
                            final UserImageService userImageService, final UserPicRepository userPicRepository,
                            final BlogSearchService blogSearchService,
-                            final Rss rss) {
+                           final Rss rss) {
         this.entryService = entryService;
         this.commentDao = commentDao;
         this.entryDao = entryDao;

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2004, 2005, 2014 Lucas Holt
+Copyright (c) 2005, Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -34,10 +34,17 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.repository;
 
-import com.justjournal.model.Location;
+import com.justjournal.model.Friend;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+
+/**
+ * Friend Dao
+ *
+ * @author Lucas Holt
+ */
 @Repository
-public interface LocationDao extends CrudRepository<Location, Integer> {
+public interface FriendsRepository extends CrudRepository<Friend, Integer> {
+
 }

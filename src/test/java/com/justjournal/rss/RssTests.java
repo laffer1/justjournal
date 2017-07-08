@@ -26,11 +26,10 @@
 
 package com.justjournal.rss;
 
-import com.justjournal.Application;
 import com.justjournal.ApplicationTest;
 import com.justjournal.model.Entry;
 import com.justjournal.repository.EntryRepository;
-import com.justjournal.repository.SecurityDao;
+import com.justjournal.repository.SecurityRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +53,7 @@ public class RssTests {
     @Autowired
     private EntryRepository entryDao;
     @Autowired
-    private SecurityDao securityDao;
+    private SecurityRepository securityDao;
 
     @Autowired
     private Rss rss;

@@ -72,13 +72,13 @@ public class MetaWeblog {
     @Autowired
     private Login webLogin;
     @Autowired
-    private SecurityDao securityDao;
+    private SecurityRepository securityDao;
     @Autowired
-    private LocationDao locationDao;
+    private LocationRepository locationDao;
     @Autowired
-    private MoodDao moodDao;
+    private MoodRepository moodDao;
     @Autowired
-    private TagDao tagDao;
+    private TagRepository tagDao;
     @Autowired
     private EntryTagsRepository entryTagsRepository;
 

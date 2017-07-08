@@ -39,7 +39,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.Serializable;
 import java.util.Map;
 
 /**
@@ -64,10 +63,10 @@ public class AccountController {
     private EntryRepository entryRepository;
 
     @Autowired
-    private FriendsDao friendsDao;
+    private FriendsRepository friendsDao;
 
     @Autowired
-    private UserBioDao userBioDao;
+    private UserBioRepository userBioDao;
 
     @Autowired
     private UserContactRepository userContactRepository;
@@ -79,7 +78,7 @@ public class AccountController {
     private UserLocationRepository userLocationRepository;
 
     @Autowired
-    private RssSubscriptionsDAO rssSubscriptionsDAO;
+    private RssSubscriptionsRepository rssSubscriptionsDAO;
 
     @Autowired
     private UserImageRepository userImageRepository;

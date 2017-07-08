@@ -35,7 +35,7 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.ctl.api;
 
 import com.justjournal.model.Mood;
-import com.justjournal.repository.MoodDao;
+import com.justjournal.repository.MoodRepository;
 import org.apache.commons.collections.IteratorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -59,7 +59,7 @@ import java.util.List;
 public class MoodController {
 
     @Autowired
-    private MoodDao moodDao;
+    private MoodRepository moodDao;
 
     @Cacheable(value = "mood", key = "id")
     @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = "application/json")

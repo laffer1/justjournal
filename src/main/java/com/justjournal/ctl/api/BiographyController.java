@@ -29,7 +29,7 @@ package com.justjournal.ctl.api;
 import com.justjournal.Login;
 import com.justjournal.model.User;
 import com.justjournal.model.UserBio;
-import com.justjournal.repository.UserBioDao;
+import com.justjournal.repository.UserBioRepository;
 import com.justjournal.repository.UserRepository;
 import com.justjournal.utility.StringUtil;
 import org.slf4j.LoggerFactory;
@@ -53,11 +53,11 @@ import java.util.Map;
 public class BiographyController {
     public static final int BIO_MAX_LENGTH = 150;
     private org.slf4j.Logger log = LoggerFactory.getLogger(BiographyController.class);
-    private UserBioDao bioDao = null;
+    private UserBioRepository bioDao = null;
     private UserRepository userDao;
 
     @Autowired
-    public void setBioDao(UserBioDao bioDao) {
+    public void setBioDao(UserBioRepository bioDao) {
         this.bioDao = bioDao;
     }
 

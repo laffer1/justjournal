@@ -5,7 +5,7 @@ import com.justjournal.model.Security;
 import com.justjournal.model.search.BlogEntry;
 import com.justjournal.model.search.Tag;
 import com.justjournal.repository.EntryRepository;
-import com.justjournal.repository.SecurityDao;
+import com.justjournal.repository.SecurityRepository;
 import com.justjournal.repository.search.BlogEntryRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.index.query.QueryBuilder;
@@ -36,10 +36,10 @@ public class BlogSearchService {
 
     private EntryRepository entryRepository;
 
-    private SecurityDao securityDao;
+    private SecurityRepository securityDao;
 
     @Autowired
-    public BlogSearchService(final BlogEntryRepository blogEntryRepository, final EntryRepository entryRepository, final SecurityDao securityDao) {
+    public BlogSearchService(final BlogEntryRepository blogEntryRepository, final EntryRepository entryRepository, final SecurityRepository securityDao) {
         this.blogEntryRepository = blogEntryRepository;
         this.entryRepository = entryRepository;
         this.securityDao = securityDao;
