@@ -29,6 +29,7 @@ package com.justjournal.services;
 import com.justjournal.model.*;
 import com.justjournal.repository.*;
 import com.justjournal.utility.Xml;
+import io.reactivex.*;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -39,6 +40,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.*;
+import java.util.Observable;
 
 /**
  * @author Lucas Holt
@@ -244,7 +246,7 @@ public class EntryService {
      * @return
      */
     @Transactional(value = Transactional.TxType.SUPPORTS)
-    public Collection<Tag> getEntryTags(final String username) throws ServiceException {
+    public io.reactivex.Observable<Tag> getEntryTags(final String username) throws ServiceException {
         try {
             assert entryDao != null;
             assert username != null;
@@ -263,7 +265,7 @@ public class EntryService {
                 }
             }
 
-            return tags.values();
+            return io.reactivex.Observable.fromIterable(tags.values());
         } catch (final Exception e) {
             log.error(e.getMessage());
             throw new ServiceException(e);

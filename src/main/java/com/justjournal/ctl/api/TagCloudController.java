@@ -27,19 +27,22 @@
 package com.justjournal.ctl.api;
 
 import com.justjournal.model.Tag;
+import com.justjournal.services.ServiceException;
 import com.justjournal.services.TagService;
+import io.reactivex.Observable;
+import io.reactivex.functions.Consumer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.request.async.DeferredResult;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.Collection;
-import java.util.Collections;
 
 /**
  * @author Lucas Holt
@@ -49,21 +52,19 @@ import java.util.Collections;
 @RequestMapping("/api/tagcloud")
 public class TagCloudController {
 
-    @Autowired
     private TagService tagService;
 
+    @Autowired
+    public TagCloudController(final TagService tagService) {
+        this.tagService = tagService;
+    }
+
     @Cacheable(value = "tagcloud", key = "#username")
-    @RequestMapping(value = "{username}", method = RequestMethod.GET, produces = "application/json")
-    public
+    @RequestMapping(value = "{username}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
-    Collection<Tag> getTags(@PathVariable("username") final String username, final HttpServletResponse response) {
+    public Collection<Tag> getTags(@PathVariable("username") final String username) throws ServiceException {
+        final Observable<Tag> o = tagService.getTags(username);
 
-        final Collection<Tag> tags = tagService.getTags(username);
-        if (tags.isEmpty()) {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            return Collections.emptyList();
-        }
-
-        return tags;
+        return o.toList().blockingGet();
     }
 }

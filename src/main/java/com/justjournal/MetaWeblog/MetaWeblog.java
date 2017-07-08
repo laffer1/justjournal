@@ -43,6 +43,7 @@ import com.justjournal.services.EntryService;
 import com.justjournal.services.ServiceException;
 import com.justjournal.utility.HTMLUtil;
 import com.justjournal.utility.StringUtil;
+import io.reactivex.functions.Function;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -583,12 +584,12 @@ public class MetaWeblog {
         return entry;
     }
 
-    public Cloneable getCategories(String blogid, String username, String password) {
-        int userId;
+    public Cloneable getCategories(final String blogid, final String username, final String password) {
+        final int userId;
         Boolean blnError = false;
-        HashMap<Object, Serializable> s = new HashMap<Object, Serializable>();
-        ArrayList<HashMap<Object, Serializable>> arr = new ArrayList<HashMap<Object, Serializable>>();
-        Map<String, Tag> tags = new HashMap<String, Tag>();
+        final HashMap<Object, Serializable> s = new HashMap<Object, Serializable>();
+        final ArrayList<HashMap<Object, Serializable>> arr = new ArrayList<HashMap<Object, Serializable>>();
+        final Map<String, Tag> tags = new HashMap<String, Tag>();
 
         if (!StringUtil.lengthCheck(username, 3, Login.USERNAME_MAX_LENGTH)) {
             blnError = true;
@@ -606,14 +607,21 @@ public class MetaWeblog {
         }
 
         try {
-            for (Tag curtag : entryService.getEntryTags(username)) {
-                HashMap<Object, Serializable> entry = new HashMap<Object, Serializable>();
-                entry.put("description", curtag.getName());
-                entry.put("title", curtag.getName());
-                arr.add(entry);
-            }
-        } catch (ServiceException se) {
-            log.error(se.getMessage());
+            entryService.getEntryTags(username)
+                    .map(new Function<Tag, Tag>() {
+
+                        @Override
+                        public Tag apply(final Tag curtag) throws Exception {
+                            final HashMap<Object, Serializable> entry = new HashMap<Object, Serializable>();
+                            entry.put("description", curtag.getName());
+                            entry.put("title", curtag.getName());
+                            arr.add(entry);
+
+                            return curtag;
+                        }
+                    }).subscribe();
+        } catch (final ServiceException se) {
+            log.error(se.getMessage(), se);
         }
         return arr;
     }
