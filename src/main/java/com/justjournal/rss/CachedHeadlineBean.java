@@ -38,17 +38,19 @@ import com.justjournal.model.DateTime;
 import com.justjournal.model.DateTimeBean;
 import com.justjournal.model.RssCache;
 import com.justjournal.repository.RssCacheRepository;
-import com.justjournal.repository.UserRepository;
 import com.justjournal.utility.StringUtil;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.URL;
+import java.util.Calendar;
 
 
 /**
@@ -67,38 +69,40 @@ import java.net.URL;
  */
 @Slf4j
 @Component
-public final class CachedHeadlineBean extends HeadlineBean {
+public class CachedHeadlineBean extends HeadlineBean {
+
+    private RssCacheRepository rssCacheRepository;
 
     @Autowired
-    private UserRepository userRepository;
-    
-    @Autowired
-    private RssCacheRepository rssCacheDao;
+    public CachedHeadlineBean(RssCacheRepository rssCacheRepository) {
+        this.rssCacheRepository = rssCacheRepository;
+    }
 
-    protected void getRssDocument(final String uri) throws Exception {
-
-        if (log.isDebugEnabled())
-            log.debug("Starting getRssDocument()");
-
-        RssCache rss;
+    @Override
+    protected HeadlineContext getRssDocument(@NonNull final String uri) throws Exception {
+        
+        log.info("Starting getRssDocument()");
+        HeadlineContext hc = new HeadlineContext();
+        
         InputStreamReader ir;
         final StringBuilder sbx = new StringBuilder();
         BufferedReader buff;
         final java.util.GregorianCalendar calendarg = new java.util.GregorianCalendar();
 
-        rss = rssCacheDao.findByUri(uri);
+        log.info("looking up rss cache repo uri");
+        RssCache rss = rssCacheRepository.findByUri(uri);
+        log.info("rss cache lookup done");
 
         if (rss != null && rss.getUri() != null && rss.getUri().length() > 10) {
-            if (log.isDebugEnabled())
-                log.debug("Record found with uri: " + uri);
+            log.info("Record found with uri: " + uri);
 
             final DateTime dt = new DateTimeBean(rss.getLastUpdated());
 
             if (dt.getDay() != calendarg.get(java.util.Calendar.DATE)) {
-                if (log.isDebugEnabled())
-                    log.debug("getRssDocument() Day doesn't match: " + uri);
-                u = new URL(uri);
-                ir = new InputStreamReader(u.openStream(), "UTF-8");
+
+                    log.info("getRssDocument() Day doesn't match: " + uri);
+                hc.u = new URL(uri);
+                ir = new InputStreamReader(hc.u.openStream(), "UTF-8");
                 buff = new BufferedReader(ir);
                 String input;
                 while ((input = buff.readLine()) != null) {
@@ -110,14 +114,13 @@ public final class CachedHeadlineBean extends HeadlineBean {
                 // sun can't make their own rss feeds complaint
                 if (rss.getContent().startsWith("<rss"))
                     rss.setContent("<?xml version=\"1.0\"?>\n" + rss.getContent());
-                rssCacheDao.save(rss);
-            } else if (rss.getContent() == null ||
-                    rss.getContent() != null && rss.getContent().equals("")) {
+                rssCacheRepository.saveAndFlush(rss);
+            } else if (rss.getContent() == null || rss.getContent().isEmpty()) {
                 // empty rss record in database.  error?
-                if (log.isDebugEnabled())
-                    log.debug("getRssDocument() Empty RSS data: " + uri);
-                u = new URL(uri);
-                ir = new InputStreamReader(u.openStream(), "UTF-8");
+               
+                log.info("getRssDocument() Empty RSS data: " + uri);
+                hc.u = new URL(uri);
+                ir = new InputStreamReader(hc.u.openStream(), "UTF-8");
                 buff = new BufferedReader(ir);
                 String input;
                 while ((input = buff.readLine()) != null) {
@@ -129,56 +132,54 @@ public final class CachedHeadlineBean extends HeadlineBean {
                 // sun can't make their own rss feeds complaint
                 if (rss.getContent().startsWith("<rss"))
                     rss.setContent("<?xml version=\"1.0\"?>\n" + rss.getContent());
-                rssCacheDao.save(rss);
+                rssCacheRepository.saveAndFlush(rss);
             } else {
-                if (log.isDebugEnabled())
-                    log.debug("Hit end.. no date change.");
+                    log.info("Hit end.. no date change.");
             }
 
         } else {
-            if (log.isDebugEnabled())
-                log.debug("Fetch uri: " + uri);
+     
+            log.info("Fetch uri: " + uri);
             rss = new RssCache();
             //Open the file for reading:
-            u = new URL(uri);
-            ir = new InputStreamReader(u.openStream(), "UTF-8");
+            hc.u = new URL(uri);
+            ir = new InputStreamReader(hc.u.openStream(), "UTF-8");
             buff = new BufferedReader(ir);
             String input;
             while ((input = buff.readLine()) != null) {
                 sbx.append(StringUtil.replace(input, '\'', "\\\'"));
             }
             buff.close();
+            ir.close();
             log.debug(sbx.toString());
 
             try {
                 rss.setUri(uri);
                 rss.setInterval(24);
                 rss.setContent(sbx.toString().trim());
+                rss.setLastUpdated(Calendar.getInstance().getTime());
                 // sun can't make their own rss feeds complaint
                 if (rss.getContent().startsWith("<rss"))
                     rss.setContent("<?xml version=\"1.0\"?>\n" + rss.getContent());
-                rssCacheDao.save(rss);
+                rssCacheRepository.saveAndFlush(rss);
             } catch (final java.lang.NullPointerException n) {
-                if (log.isDebugEnabled())
-                    log.debug("Null pointer exception creating/adding rss cache object to db.", n);
+                log.error("Null pointer exception creating/adding rss cache object to db.", n);
             }
         }
-        if (log.isDebugEnabled())
-            log.debug("getRssDocument() Retrieved uri from database: " + uri);
+
+        log.info("getRssDocument() Retrieved uri from database: " + uri);
 
         log.debug(sbx.toString());
 
         final StringReader sr = new StringReader(rss.getContent());
 
         final org.xml.sax.InputSource saxy = new org.xml.sax.InputSource(sr);
-        factory.setValidating(false);
-        builder = factory.newDocumentBuilder();
-        document = builder.parse(saxy);
+        hc.factory.setValidating(false);
+        hc.builder = hc.factory.newDocumentBuilder();
+        hc.document = hc.builder.parse(saxy);
 
-        if (log.isDebugEnabled())
-            log.debug("Hit end of getRssDocument() for " + uri);
-
-
+        log.debug("Hit end of getRssDocument() for " + uri);
+        return hc;
     }
 
 }

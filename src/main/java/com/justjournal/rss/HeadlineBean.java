@@ -37,6 +37,9 @@ package com.justjournal.rss;
 import com.justjournal.utility.Xml;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -66,37 +69,44 @@ import java.util.regex.Pattern;
  *        1.0 Initial release
  */
 @Slf4j
+@Component
 public class HeadlineBean {
 
     private static final char endl = '\n';
 
-    protected URL u;
-    protected InputStream inputXML;
-    protected DocumentBuilder builder;
-    protected Document document;
+    class HeadlineContext {
+        protected URL u;
+        protected InputStream inputXML;
+        protected DocumentBuilder builder;
+        protected Document document;
+        final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+    }
 
-    final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 
-    protected void getRssDocument(final String uri)
+    protected HeadlineContext getRssDocument(final String uri)
             throws Exception {
 
+        final HeadlineContext hc = new HeadlineContext();
+
         //Open the file for reading:
-        u = new URL(uri);
-        inputXML = u.openStream();
+        hc.u = new URL(uri);
+        hc.inputXML = hc.u.openStream();
 
         //Build document:
-        factory.setValidating(false);
-        factory.setIgnoringComments(true);
-        factory.setCoalescing(true);
-        builder = factory.newDocumentBuilder();
-        document = builder.parse(inputXML);
+        hc.factory.setValidating(false);
+        hc.factory.setIgnoringComments(true);
+        hc.factory.setCoalescing(true);
+        hc.builder = hc.factory.newDocumentBuilder();
+        hc.document = hc.builder.parse(hc.inputXML);
+
+        return hc;
     }
 
     public String parse(@NonNull final String url) {
         
         try {
             log.info("Starting parse");
-            getRssDocument(url);
+            HeadlineContext hc = getRssDocument(url);
 
             log.info("Fetched, now create");
 
@@ -111,7 +121,7 @@ public class HeadlineBean {
             
             log.info("Prepare xml nodelists");
 
-            final org.w3c.dom.NodeList channelList = document.getElementsByTagName("channel");
+            final org.w3c.dom.NodeList channelList = hc.document.getElementsByTagName("channel");
             final org.w3c.dom.NodeList chnodes = channelList.item(0).getChildNodes();
 
             String imageUrl = null;
@@ -241,7 +251,7 @@ public class HeadlineBean {
             sb.append(endl);
 
             //Generate the NodeList;
-            org.w3c.dom.NodeList nodeList = document.getElementsByTagName("item");
+            org.w3c.dom.NodeList nodeList = hc.document.getElementsByTagName("item");
 
             sb.append("<ol class=\"RssItems\">");
             sb.append(endl);
@@ -332,10 +342,11 @@ public class HeadlineBean {
             sb.append(endl);
 
             return sb.toString();
-        } catch (java.io.FileNotFoundException e404) {
+        } catch (final java.io.FileNotFoundException e404) {
+            log.warn("Feed is not available " + url + e404.getMessage(), e404);
             return "404 Not Found. The feed is no longer available. " + url + endl;
-        } catch (Exception e) {
-            return "Error, could not process request: " + e.toString() + endl;
+        } catch (final Exception e) {
+            return "Error, could not process request: " + e.toString() + " for url: " + url + endl;
         }
     }
 
