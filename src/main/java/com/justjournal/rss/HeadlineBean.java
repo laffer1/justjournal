@@ -348,8 +348,10 @@ public class HeadlineBean {
         } catch (final org.xml.sax.SAXParseException sp) {
              if (sp.getMessage().contains("Premature end of file"))
                  return "<p>Feed is empty at " + url;
-             else
+             else {
+                 log.error("Bad feed " + sp.getMessage() , sp);
                  return "<p>Bad Feed " + sp.toString() + " for url: " + url + endl;
+             }
         } catch (final Exception e) {
             return "<p>Error, could not process request: " + e.toString() + " for url: " + url + endl;
         }
