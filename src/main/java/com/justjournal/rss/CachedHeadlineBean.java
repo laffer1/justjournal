@@ -78,7 +78,7 @@ public class CachedHeadlineBean extends HeadlineBean {
     private RssCacheRepository rssCacheRepository;
 
     @Autowired
-    public CachedHeadlineBean(RssCacheRepository rssCacheRepository) {
+    public CachedHeadlineBean(final RssCacheRepository rssCacheRepository) {
         this.rssCacheRepository = rssCacheRepository;
     }
 
@@ -86,7 +86,7 @@ public class CachedHeadlineBean extends HeadlineBean {
     protected HeadlineContext getRssDocument(@NonNull final String uri) throws Exception {
         
         log.info("Starting getRssDocument()");
-        HeadlineContext hc = new HeadlineContext();
+        final HeadlineContext hc = new HeadlineContext();
         
         InputStreamReader ir;
         final StringBuilder sbx = new StringBuilder();
@@ -153,7 +153,7 @@ public class CachedHeadlineBean extends HeadlineBean {
                 final CloseableHttpResponse response1 = httpclient.execute(httpGet);
 
                 try {
-                    HttpEntity entity1 = response1.getEntity();
+                    final HttpEntity entity1 = response1.getEntity();
 
                     ir = new InputStreamReader(entity1.getContent(), "UTF-8");
                     buff = new BufferedReader(ir);
@@ -168,21 +168,20 @@ public class CachedHeadlineBean extends HeadlineBean {
                 } finally {
                     try {
                         response1.close();
-                    } catch (IOException io) {
+                    } catch (final IOException io) {
                         log.error(io.getMessage(), io);
                     }
                     try {
                         httpclient.close();
-                    } catch (IOException io) {
+                    } catch (final IOException io) {
                         log.error(io.getMessage(), io);
                     }
                 }
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 log.error(e.getMessage(), e);
                 try {
-                    if (httpclient != null)
                         httpclient.close();
-                } catch (IOException io) {
+                } catch (final IOException io) {
                     log.error(io.getMessage(), io);
                 }
             }
