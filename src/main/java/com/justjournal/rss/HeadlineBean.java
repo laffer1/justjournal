@@ -37,13 +37,17 @@ package com.justjournal.rss;
 import com.justjournal.utility.Xml;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.regex.Matcher;
@@ -83,21 +87,48 @@ public class HeadlineBean {
     }
 
 
-    protected HeadlineContext getRssDocument(final String uri)
-            throws Exception {
+    protected HeadlineContext getRssDocument(final String uri) throws Exception {
 
         final HeadlineContext hc = new HeadlineContext();
+        CloseableHttpClient httpclient = null;
 
-        //Open the file for reading:
-        hc.u = new URL(uri);
-        hc.inputXML = hc.u.openStream();
+        try {
+            httpclient = HttpClients.createDefault();
+            final HttpGet httpGet = new HttpGet(uri);
+            final CloseableHttpResponse response1 = httpclient.execute(httpGet);
 
-        //Build document:
-        hc.factory.setValidating(false);
-        hc.factory.setIgnoringComments(true);
-        hc.factory.setCoalescing(true);
-        hc.builder = hc.factory.newDocumentBuilder();
-        hc.document = hc.builder.parse(hc.inputXML);
+            try {
+                HttpEntity entity1 = response1.getEntity();
+
+                //Build document:
+                hc.factory.setValidating(false);
+                hc.factory.setIgnoringComments(true);
+                hc.factory.setCoalescing(true);
+                hc.builder = hc.factory.newDocumentBuilder();
+                hc.document = hc.builder.parse(entity1.getContent());
+
+                return hc;
+            } finally {
+                try {
+                    response1.close();
+                } catch (IOException io) {
+                    log.error(io.getMessage(), io);
+                }
+                try {
+                    httpclient.close();
+                } catch (IOException io) {
+                    log.error(io.getMessage(), io);
+                }
+            }
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+            try {
+                if (httpclient != null)
+                    httpclient.close();
+            } catch (IOException io) {
+                log.error(io.getMessage(), io);
+            }
+        }
 
         return hc;
     }

@@ -41,12 +41,16 @@ import com.justjournal.repository.RssCacheRepository;
 import com.justjournal.utility.StringUtil;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.URL;
@@ -138,20 +142,50 @@ public class CachedHeadlineBean extends HeadlineBean {
             }
 
         } else {
-     
             log.info("Fetch uri: " + uri);
             rss = new RssCache();
-            //Open the file for reading:
-            hc.u = new URL(uri);
-            ir = new InputStreamReader(hc.u.openStream(), "UTF-8");
-            buff = new BufferedReader(ir);
-            String input;
-            while ((input = buff.readLine()) != null) {
-                sbx.append(StringUtil.replace(input, '\'', "\\\'"));
+
+            CloseableHttpClient httpclient = null;
+
+            try {
+                httpclient = HttpClients.createDefault();
+                final HttpGet httpGet = new HttpGet(uri);
+                final CloseableHttpResponse response1 = httpclient.execute(httpGet);
+
+                try {
+                    HttpEntity entity1 = response1.getEntity();
+
+                    ir = new InputStreamReader(entity1.getContent(), "UTF-8");
+                    buff = new BufferedReader(ir);
+                    String input;
+                    while ((input = buff.readLine()) != null) {
+                        sbx.append(StringUtil.replace(input, '\'', "\\\'"));
+                    }
+                    buff.close();
+                    ir.close();
+                    log.debug(sbx.toString());
+
+                } finally {
+                    try {
+                        response1.close();
+                    } catch (IOException io) {
+                        log.error(io.getMessage(), io);
+                    }
+                    try {
+                        httpclient.close();
+                    } catch (IOException io) {
+                        log.error(io.getMessage(), io);
+                    }
+                }
+            } catch (IOException e) {
+                log.error(e.getMessage(), e);
+                try {
+                    if (httpclient != null)
+                        httpclient.close();
+                } catch (IOException io) {
+                    log.error(io.getMessage(), io);
+                }
             }
-            buff.close();
-            ir.close();
-            log.debug(sbx.toString());
 
             try {
                 rss.setUri(uri);
