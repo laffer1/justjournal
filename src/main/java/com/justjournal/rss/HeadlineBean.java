@@ -107,6 +107,8 @@ public class HeadlineBean {
                 hc.builder = hc.factory.newDocumentBuilder();
                 hc.document = hc.builder.parse(entity1.getContent());
 
+                httpclient.close();
+
                 return hc;
             } finally {
                 try {
