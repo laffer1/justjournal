@@ -72,13 +72,13 @@ public class RssCacheRefresh {
 
 
             Observable.fromIterable(items)
-                    .subscribeOn(Schedulers.io())
+                    .subscribeOn(Schedulers.computation())
                     .map(new Function<RssCache, Object>() {
 
                         @Override
                         public Object apply(final RssCache cache) throws Exception {
                             try {
-                                if (cache.getActive())
+                                if (cache.getActive() != null && cache.getActive())
                                     getRssDocument(cache);
                             } catch (final Exception e) {
                                 log.error(e.getMessage(), e);
