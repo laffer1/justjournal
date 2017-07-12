@@ -34,7 +34,6 @@ import com.justjournal.model.*;
 import com.justjournal.model.search.BlogEntry;
 import com.justjournal.repository.*;
 import com.justjournal.rss.CachedHeadlineBean;
-import com.justjournal.rss.HeadlineBean;
 import com.justjournal.rss.Rss;
 import com.justjournal.services.BlogSearchService;
 import com.justjournal.services.EntryService;
@@ -51,7 +50,6 @@ import com.lowagie.text.rtf.RtfWriter2;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -64,8 +62,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 import java.awt.*;
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -699,6 +699,7 @@ public class UsersController {
     }
 
     private void getPDF(final HttpServletResponse response, final UserContext uc) {
+        final Document document = new Document();
         try {
             response.resetBuffer();
             response.setContentType("application/pdf");
@@ -708,10 +709,14 @@ public class UsersController {
             // RFC 1806
             response.setHeader("Content-Disposition", "attachment; filename=" + uc.getBlogUser().getUsername() + ".pdf");
 
-            final Document document = new Document();
-            PdfWriter.getInstance(document, response.getOutputStream());    // baos
+            final ServletOutputStream os = response.getOutputStream();
+            final OutputStream out = new BufferedOutputStream(os);
+            PdfWriter.getInstance(document, out);
             formatRTFPDF(uc, document);
             document.close();
+            out.flush();
+            out.close();
+            os.close();
         } catch (final DocumentException e) {
             log.error("Users.getPDF() DocumentException:" + e.getMessage(), e);
         } catch (final IOException e1) {
@@ -752,12 +757,20 @@ public class UsersController {
     }
 
     private void formatRTFPDF(final UserContext uc, final Document document) throws Exception {
+        Font helvetica14 = new Font(Font.HELVETICA, 14.0F);
+        Font helvetica12 = new Font(Font.HELVETICA, 12.0F);
+        Font helvetica10 = new Font(Font.HELVETICA, FONT_10_POINT);
+        Font helvetica8 = new Font(Font.HELVETICA, 8.0F);
+        Font times11 = new Font(Font.TIMES_ROMAN, 11.0F);
+        Color black = new Color(0x00, 0x00, 0x00);
+        Color blue =  new Color(0x00, 0x00, 0xFF);
+        Color lightBlue = new Color(0xF,0xF2, 0xF2);
+
         document.open();
         document.add(new Paragraph(""));
         Chunk chunk = new Chunk(uc.getBlogUser().getJournals().get(0).getName());
-        chunk.setTextRenderMode(PdfContentByte.TEXT_RENDER_MODE_STROKE, 0.4f, new Color(0x00, 0x00, 0xFF));
+        chunk.setTextRenderMode(PdfContentByte.TEXT_RENDER_MODE_STROKE, 0.4f, blue);
         document.add(chunk);
-        document.add(new Paragraph(new Date().toString(), new Font(Font.HELVETICA, FONT_10_POINT)));
         document.add(Chunk.NEWLINE);
 
         final List<Entry> entries;
@@ -782,32 +795,32 @@ public class UsersController {
             curDate = formatmydate.format(currentDate);
 
             if (curDate.compareTo(lastDate) != 0) {
-                document.add(new Paragraph(curDate, new Font(Font.HELVETICA, 14.0F)));
+                document.add(new Paragraph(curDate, helvetica14));
                 lastDate = curDate;
             }
 
-            document.add(new Paragraph(formatmytime.format(currentDate), new Font(Font.HELVETICA, 12.0F)));
+            document.add(new Paragraph(formatmytime.format(currentDate), helvetica12));
             document.add(Chunk.NEWLINE);
             chunk = new Chunk(o.getSubject());
-            chunk.setTextRenderMode(PdfContentByte.TEXT_RENDER_MODE_FILL, 0.3F, new Color(0x00, 0x00, 0x00));
+            chunk.setTextRenderMode(PdfContentByte.TEXT_RENDER_MODE_FILL, 0.3F, lightBlue);
             document.add(chunk);
             document.add(Chunk.NEWLINE);
 
-            document.add(new Paragraph(HTMLUtil.textFromHTML(o.getBody()), new Font(Font.TIMES_ROMAN, 11.0F)));
+            document.add(new Paragraph(HTMLUtil.textFromHTML(o.getBody()), times11));
             document.add(Chunk.NEWLINE);
 
             if (o.getSecurity().getId() == 0)
-                document.add(new Paragraph("Security: " + "Private", new Font(Font.HELVETICA, 10.0F)));
+                document.add(new Paragraph("Security: " + "Private", helvetica8));
             else if (o.getSecurity().getId() == 1)
-                document.add(new Paragraph("Security: " + "Friends", new Font(Font.HELVETICA, 10.0F)));
+                document.add(new Paragraph("Security: " + "Friends", helvetica8));
             else
-                document.add(new Paragraph("Security: " + "Public", new Font(Font.HELVETICA, 10.0F)));
+                document.add(new Paragraph("Security: " + "Public", helvetica8));
 
-            document.add(new Chunk("Location: " + o.getLocation().getTitle()));
+            document.add(new Chunk("Location: " + o.getLocation().getTitle(), helvetica8));
             document.add(Chunk.NEWLINE);
-            document.add(new Chunk("Mood: " + o.getMood().getTitle()));
+            document.add(new Chunk("Mood: " + o.getMood().getTitle(), helvetica8));
             document.add(Chunk.NEWLINE);
-            document.add(new Chunk("Music: " + o.getMusic()));
+            document.add(new Chunk("Music: " + o.getMusic(), helvetica8));
             document.add(Chunk.NEWLINE);
             document.add(Chunk.NEWLINE);
         }
