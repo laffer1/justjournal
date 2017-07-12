@@ -7,6 +7,7 @@ import com.justjournal.model.search.Tag;
 import com.justjournal.repository.EntryRepository;
 import com.justjournal.repository.SecurityRepository;
 import com.justjournal.repository.search.BlogEntryRepository;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -246,7 +247,7 @@ public class BlogSearchService {
      * Index a single entry
      * @param entry
      */
-    public void index(final Entry entry) {
+    public void index(@NonNull final Entry entry) {
         this.blogEntryRepository.save(convert(entry));
     }
 
@@ -256,7 +257,7 @@ public class BlogSearchService {
      * @param entry entry domain object
      * @return blog entry for ES
      */
-    public BlogEntry convert(final Entry entry) {
+    public BlogEntry convert(@NonNull final Entry entry) {
         final BlogEntry blogEntry = new BlogEntry();
         blogEntry.setAuthor(entry.getUser().getUsername());
         blogEntry.setId(entry.getId());
