@@ -41,6 +41,8 @@ import com.justjournal.repository.UserRepository;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.CacheControl;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,6 +50,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.Collection;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * User Links that appear in their blog
@@ -74,8 +77,14 @@ public class LinkController {
     @Cacheable(value = "userlink", key = "#username")
     @RequestMapping(value = "user/{username}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public Collection<UserLink> getByUser(@PathVariable("username") String username) {
-        return userLinkDao.findByUsername(username);
+    public ResponseEntity<Collection<UserLink>> getByUser(@PathVariable("username") String username) {
+        final Collection<UserLink> links = userLinkDao.findByUsername(username);
+
+        return ResponseEntity
+                .ok()
+                .cacheControl(CacheControl.maxAge(1, TimeUnit.DAYS))
+                .eTag(Integer.toString(links.hashCode()))
+                .body(links);
     }
 
     @RequestMapping(method = RequestMethod.PUT)

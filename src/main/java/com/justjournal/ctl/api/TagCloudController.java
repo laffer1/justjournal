@@ -30,19 +30,20 @@ import com.justjournal.model.Tag;
 import com.justjournal.services.ServiceException;
 import com.justjournal.services.TagService;
 import io.reactivex.Observable;
-import io.reactivex.functions.Consumer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.context.request.async.DeferredResult;
 
 import java.util.Collection;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Lucas Holt
@@ -62,9 +63,14 @@ public class TagCloudController {
     @Cacheable(value = "tagcloud", key = "#username")
     @RequestMapping(value = "{username}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
-    public Collection<Tag> getTags(@PathVariable("username") final String username) throws ServiceException {
+    public ResponseEntity<Collection<Tag>> getTags(@PathVariable("username") final String username) throws ServiceException {
         final Observable<Tag> o = tagService.getTags(username);
+        final Collection<Tag> tags = o.toList().blockingGet();
 
-        return o.toList().blockingGet();
+        return ResponseEntity
+                .ok()
+                .cacheControl(CacheControl.maxAge(1, TimeUnit.DAYS))
+                .eTag(Integer.toString(tags.hashCode()))
+                .body(tags);
     }
 }

@@ -43,7 +43,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.CacheControl;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,6 +54,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Entry Controller, for managing blog entries
@@ -98,9 +102,8 @@ public class EntryController {
      */
      @RequestMapping(value = "{username}/recent", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
      @ResponseBody
-     public
-     List<RecentEntry> getRecentEntries(@PathVariable("username") final String username,
-                            final HttpServletResponse response, final HttpSession session) {
+     public ResponseEntity<List<RecentEntry>> getRecentEntries(@PathVariable("username") final String username,
+                                                               final HttpServletResponse response, final HttpSession session) {
          final io.reactivex.Observable<RecentEntry> entries;
          try {
              if (Login.isAuthenticated(session) && Login.isUserName(username)) {
@@ -109,11 +112,16 @@ public class EntryController {
                  entries = entryService.getRecentEntriesPublic(username);
              }
              
-             return entries.toList().blockingGet();
+             final List<RecentEntry> e = entries.toList().blockingGet();
+
+             return ResponseEntity
+                          .ok()
+                          .cacheControl(CacheControl.maxAge(1, TimeUnit.DAYS))
+                          .eTag(Integer.toString(e.hashCode()))
+                          .body(e);
          } catch (final ServiceException e) {
              log.error(e.getMessage(), e);
-             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-             return Collections.emptyList();
+             return new ResponseEntity<List<RecentEntry>>(HttpStatus.INTERNAL_SERVER_ERROR);
          }
      }
 

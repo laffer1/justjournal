@@ -26,28 +26,15 @@
 
 package com.justjournal.model;
 
+import lombok.Data;
+
 /**
  * Recent Entry list item for sidebar of blog
  *
  * @author Lucas Holt
  */
+@Data
 public class RecentEntry {
     private int id = 0;
     private String subject = null;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(final int id) {
-        this.id = id;
-    }
-
-    public String getSubject() {
-        return subject;
-    }
-
-    public void setSubject(final String subject) {
-        this.subject = subject;
-    }
 }
