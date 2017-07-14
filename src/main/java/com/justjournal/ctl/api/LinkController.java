@@ -38,32 +38,29 @@ import com.justjournal.Login;
 import com.justjournal.model.UserLink;
 import com.justjournal.repository.UserLinkRepository;
 import com.justjournal.repository.UserRepository;
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.Collection;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
+import java.util.*;
 
 /**
  * User Links that appear in their blog
  *
  * @author Lucas Holt
  */
+@Slf4j
 @Controller
 @RequestMapping("/api/link")
 public class LinkController {
-    private static final Logger log = Logger.getLogger(LinkController.class.getName());
 
     @Autowired
-    private UserLinkRepository userLinkDao;
+    private UserLinkRepository userLinkRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -71,25 +68,25 @@ public class LinkController {
     @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public UserLink getById(@PathVariable("id") Integer id) {
-        return userLinkDao.findOne(id);
+        return userLinkRepository.findOne(id);
     }
 
     @Cacheable(value = "userlink", key = "#username")
     @RequestMapping(value = "user/{username}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public ResponseEntity<Collection<UserLink>> getByUser(@PathVariable("username") String username) {
-        final Collection<UserLink> links = userLinkDao.findByUsername(username);
+    public ResponseEntity<List<UserLink>> getByUser(@PathVariable("username") String username) {
+        final List<UserLink> links = userLinkRepository.findByUsernameOrderByTitleTitleAsc(username);
 
         return ResponseEntity
                 .ok()
-                .cacheControl(CacheControl.maxAge(1, TimeUnit.DAYS))
-                .eTag(Integer.toString(links.hashCode()))
+               // .cacheControl(CacheControl.maxAge(1, TimeUnit.DAYS))
+            // TODO: etag code is not stable    .eTag(Integer.toString(links.hashCode()))
                 .body(links);
     }
 
     @RequestMapping(method = RequestMethod.PUT)
-    public
     @ResponseBody
+    public
     Map<String, String> create(@RequestBody UserLink link, HttpSession session, HttpServletResponse response) {
 
         if (!Login.isAuthenticated(session)) {
@@ -99,18 +96,18 @@ public class LinkController {
 
         try {
             link.setUser(userRepository.findOne(Login.currentLoginId(session)));
-            userLinkDao.save(link);
-            return java.util.Collections.singletonMap("id", ""); // XXX
-        } catch (Exception e) {
-            log.error(e);
+            final UserLink l = userLinkRepository.save(link);
+            return java.util.Collections.singletonMap("id", Integer.toString(l.getId()));
+        } catch (final Exception e) {
+            log.error(e.getMessage(), e);
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return java.util.Collections.singletonMap("error", "Error adding link.");
         }
     }
 
     @RequestMapping(method = RequestMethod.DELETE)
-    public
     @ResponseBody
+    public
     Map<String, String> delete(@RequestBody int linkId, HttpSession session, HttpServletResponse response) throws Exception {
 
 
@@ -121,9 +118,9 @@ public class LinkController {
 
         if (linkId > 0) {
             /* valid link id */
-            UserLink link = userLinkDao.findOne(linkId);
+            UserLink link = userLinkRepository.findOne(linkId);
             if (link.getUser().getId() == Login.currentLoginId(session)) {
-                userLinkDao.delete(linkId);
+                userLinkRepository.delete(linkId);
 
                 return java.util.Collections.singletonMap("id", Integer.toString(linkId));
             }
