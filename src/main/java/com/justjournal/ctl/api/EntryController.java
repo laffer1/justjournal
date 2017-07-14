@@ -116,7 +116,7 @@ public class EntryController {
 
              return ResponseEntity
                           .ok()
-                          .cacheControl(CacheControl.maxAge(1, TimeUnit.DAYS))
+                     //     .cacheControl(CacheControl.maxAge(1, TimeUnit.DAYS))
                           .eTag(Integer.toString(e.hashCode()))
                           .body(e);
          } catch (final ServiceException e) {

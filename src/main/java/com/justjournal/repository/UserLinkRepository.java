@@ -52,5 +52,5 @@ import java.util.List;
 public interface UserLinkRepository extends PagingAndSortingRepository<UserLink, Integer> {
 
     @Query("select ul from UserLink ul, User u where ul.user = u and LOWER(u.username) = LOWER(:username)")
-    public List<UserLink> findByUsername(@Param("username") String username);
+    public List<UserLink> findByUsernameOrderByTitleTitleAsc(@Param("username") String username);
 }
