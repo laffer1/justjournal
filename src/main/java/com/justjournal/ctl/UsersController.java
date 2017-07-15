@@ -81,7 +81,6 @@ import java.util.List;
 @RequestMapping("/users")
 public class UsersController {
     private static final int SEARCH_MAX_LENGTH = 20;
-    private static final float FONT_10_POINT = 10.0F;
     // constants
     private static final char ENDL = '\n';
     private static final Logger log = Logger.getLogger(UsersController.class);
@@ -98,6 +97,9 @@ public class UsersController {
     private static final String PATH_USERNAME = "username";
     private static final String PATH_MONTH = "month";
     private static final String MODEL_AVATAR = "avatar";
+
+    private static final String MEDIA_TYPE_RTF = "application/rtf";
+    private static final String MEDIA_TYPE_PDF = "application/pdf";
 
     private final CommentRepository commentDao;
 
@@ -148,13 +150,11 @@ public class UsersController {
 
     /**
      * Do we have an avatar?
-     * @param userId
+     * @param userId  user id
      * @return  true if avatar, false otherwise
      */
     private boolean avatar(final int userId) {
-        // TOOD: very slow
-        final UserPic userPic = userPicRepository.findOne(userId);
-        return userPic != null;
+        return userPicRepository.exists(userId);
     }
 
     @RequestMapping(value = "{username}", method = RequestMethod.GET, produces = "text/html")
@@ -494,7 +494,7 @@ public class UsersController {
         }
     }
 
-    @RequestMapping(value = "{username}/pdf", method = RequestMethod.GET, produces = "application/pdf")
+    @RequestMapping(value = "{username}/pdf", method = RequestMethod.GET, produces = MEDIA_TYPE_PDF)
     public void pdf(@PathVariable(PATH_USERNAME) final String username, final HttpServletResponse response, final HttpSession session) {
         User authUser = null;
         try {
@@ -522,7 +522,7 @@ public class UsersController {
         }
     }
 
-    @RequestMapping(value = "{username}/rtf", method = RequestMethod.GET, produces = "application/rtf")
+    @RequestMapping(value = "{username}/rtf", method = RequestMethod.GET, produces = MEDIA_TYPE_RTF)
     public void rtf(@PathVariable(PATH_USERNAME) final String username, final HttpServletResponse response, final HttpSession session) {
         User authUser = null;
         try {
@@ -702,7 +702,7 @@ public class UsersController {
         final Document document = new Document();
         try {
             response.resetBuffer();
-            response.setContentType("application/pdf");
+            response.setContentType(MEDIA_TYPE_PDF);
             response.setHeader("Expires", "0");
             response.setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
             response.setHeader("Pragma", "public");
@@ -735,7 +735,7 @@ public class UsersController {
             formatRTFPDF(uc, document);
             document.close();
 
-            response.setContentType("application/rtf");
+            response.setContentType(MEDIA_TYPE_RTF);
             response.setHeader("Expires", "0");
             response.setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
             response.setHeader("Pragma", "public");
@@ -747,24 +747,22 @@ public class UsersController {
             out.flush();
             out.close();
         } catch (final DocumentException e) {
-            log.error("Users.getPDF() DocumentException:" + e.getMessage(), e);
+            log.error("Users.getRDF() DocumentException:" + e.getMessage(), e);
         } catch (final IOException e1) {
-            log.error("Users.getPDF() IOException:" + e1.getMessage(), e1);
+            log.error("Users.getRDF() IOException:" + e1.getMessage(), e1);
         } catch (final Exception e) {
             // user class caused this
-            log.error("Users.getPDF():" + e.getMessage(), e);
+            log.error("Users.getRDF():" + e.getMessage(), e);
         }
     }
 
     private void formatRTFPDF(final UserContext uc, final Document document) throws Exception {
-        Font helvetica14 = new Font(Font.HELVETICA, 14.0F);
-        Font helvetica12 = new Font(Font.HELVETICA, 12.0F);
-        Font helvetica10 = new Font(Font.HELVETICA, FONT_10_POINT);
-        Font helvetica8 = new Font(Font.HELVETICA, 8.0F);
-        Font times11 = new Font(Font.TIMES_ROMAN, 11.0F);
-        Color black = new Color(0x00, 0x00, 0x00);
-        Color blue =  new Color(0x00, 0x00, 0xFF);
-        Color lightBlue = new Color(0xF,0xF2, 0xF2);
+        final Font helvetica14 = new Font(Font.HELVETICA, 14.0F);
+        final Font helvetica12 = new Font(Font.HELVETICA, 12.0F);
+        final Font helvetica8 = new Font(Font.HELVETICA, 8.0F);
+        final Font times11 = new Font(Font.TIMES_ROMAN, 11.0F);
+        final Color blue =  new Color(0x00, 0x00, 0xFF);
+        final Color lightBlue = new Color(0xF,0xF2, 0xF2);
 
         document.open();
         document.add(new Paragraph(""));
@@ -868,9 +866,10 @@ public class UsersController {
      * if private entry and logged in as owner of entry, return entry
      * if protected and owner, return entry
      * if protected and third party and in owner's friends list, return entry
-     * @param entryId
-     * @param uc
-     * @return
+     *
+     * @param entryId entry id
+     * @param uc user context
+     * @return blog entry
      */
     private Entry getEntry(final int entryId, final UserContext uc) {
         final Entry entry = entryDao.findOne(entryId);
@@ -2251,53 +2250,5 @@ public class UsersController {
         sb.append(ENDL);
 
         return sb.toString();
-    }
-
-    /**
-     * Represent the blog user and authenticated user in one package along with the output buffer.
-     */
-    @SuppressWarnings({"InstanceVariableOfConcreteClass"})
-    private static class UserContext {
-        private User blogUser;          // the blog owner
-        private User authenticatedUser; // the logged in user
-
-        /**
-         * Default constructor for User Context.  Creates a usable instance.
-         *
-         * @param currentBlogUser blog owner
-         * @param authUser        logged in user
-         */
-        UserContext(final User currentBlogUser, final User authUser) {
-            this.blogUser = currentBlogUser;
-            this.authenticatedUser = authUser;
-        }
-
-        /**
-         * Retrieve the blog owner
-         *
-         * @return blog owner
-         */
-        User getBlogUser() {
-            return blogUser;
-        }
-
-        /**
-         * Retrieve the authenticated aka logged in user.
-         *
-         * @return logged in user.
-         */
-        User getAuthenticatedUser() {
-            return authenticatedUser;
-        }
-
-        /**
-         * Check to see if the authenticated user is the blog owner also. Used for private information.
-         *
-         * @return true if blog owner = auth owner
-         */
-        boolean isAuthBlog() {
-            return authenticatedUser != null && blogUser != null
-                    && authenticatedUser.getUsername().compareTo(blogUser.getUsername()) == 0;
-        }
     }
 }
