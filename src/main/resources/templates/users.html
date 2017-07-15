@@ -193,7 +193,11 @@
                     </ul>
                 </div>
 
-                <div th:utext="${archive}"></div>
+                <div class="menuentity" id="archive" style="padding-top: 10px;">
+                    <strong style="text-transform: uppercase; letter-spacing: 2px; border: 0 none; border-bottom: 1px; border-style: dotted; border-color: #999999; margin-bottom: 5px; width: 100%; font-size: 10px;">Archive</strong>
+                    <ul class="list-group" id="userArchiveList">
+                    </ul>
+                </div>
 
                 <div class="menuentity" id="usertags" style="padding-top: 10px;">
                     <strong style="text-transform: uppercase; letter-spacing: 2px; border: 0 dotted #999999;border-bottom-width: 1px;margin-bottom: 5px; width: 100%; font-size: 10px;"><i
@@ -316,6 +320,7 @@
                     }
                 }
         );
+        
         $.get('/api/link/user/' + username,
                 function (data) {
                     for (var i = 0; i < data.length; i++) {
@@ -324,6 +329,17 @@
                     }
                 }
         );
+
+        $.get('/api/entry/' + username + '/statistics',
+                        function (data) {
+                            for (var i = 0; i < data.length; i++) {
+                                var count = '<li class="list-group-item"><a href="/users/' + username + '/' + data[i].year + '">' +
+                                        data[i].year + '(' + data[i].count + ')</a></li>';
+                                $('ul#userArchiveList').append(count);
+                            }
+                        }
+                );
+
         $.get('/api/tagcloud/' + username,
                 function (data) {
                     for (var i = 0; i < data.length; i++) {

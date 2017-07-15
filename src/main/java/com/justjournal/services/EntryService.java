@@ -29,11 +29,17 @@ package com.justjournal.services;
 import com.justjournal.model.*;
 import com.justjournal.repository.*;
 import com.justjournal.utility.Xml;
+import io.reactivex.ObservableSource;
 import io.reactivex.Scheduler;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -42,21 +48,25 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.*;
+import java.util.concurrent.Callable;
 
 /**
  * @author Lucas Holt
  */
+@Slf4j
 @Service
 public class EntryService {
     private static final int MAX_RECENT_ENTRIES = 5;
-    private static org.slf4j.Logger log = LoggerFactory.getLogger(EntryService.class);
 
     @Autowired
     private EntryRepository entryDao;
+
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private SecurityRepository securityDao;
+
     @Autowired
     private TagRepository tagDao;
 
@@ -335,4 +345,41 @@ public class EntryService {
         }
     }
 
+
+    @Transactional(value = Transactional.TxType.SUPPORTS)
+    public io.reactivex.Single<EntryCount> getEntryCount(String username, int year) {
+        log.trace("Fetching entry count for " + username + " and year " + year);
+        EntryCount ec = new EntryCount(entryDao.calendarCount(year, username), year);
+        return io.reactivex.Single.just(ec);
+    }
+
+    public io.reactivex.Single<List<EntryCount>> getEntryCounts(final String username, int startYear, int endYear) {
+        return io.reactivex.Observable.range(startYear, endYear - startYear + 1)
+                .flatMap(new Function<Integer, ObservableSource<EntryCount>>() {
+                    @Override
+                    public ObservableSource<EntryCount> apply(final Integer yr) throws Exception {
+                        return   io.reactivex.Observable.fromCallable(new Callable<EntryCount>() {
+                            @Override
+                            public EntryCount call() throws Exception {
+                                return getEntryCount(username, yr).blockingGet();
+                            }
+                        });
+                    }
+                }).subscribeOn(Schedulers.io())
+                .toSortedList();
+       }
+
+
+    @AllArgsConstructor
+    @Data
+    @EqualsAndHashCode
+    public class EntryCount implements Comparable<EntryCount> {
+        private long count;
+        private int year;
+
+        @Override
+        public int compareTo(final EntryCount o) {
+            return new Integer(o.getYear()).compareTo( year);
+        }
+    }
 }

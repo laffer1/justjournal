@@ -77,7 +77,6 @@ public class UsersController {
     private static final String MODEL_ENTRY = "entry";
     private static final String MODEL_CALENDAR_MINI = "calendarMini";
     private static final String MODEL_CALENDAR = "calendar";
-    private static final String MODEL_ARCHIVE = "archive";
     private static final String MODEL_PICTURES = "pictures";
     private static final String MODEL_FAVORITES = "favorites";
     private static final String MODEL_FRIENDS = "friends";
@@ -167,7 +166,6 @@ public class UsersController {
         }
 
         model.addAttribute(MODEL_CALENDAR_MINI, getCalendarMini(userContext));
-        model.addAttribute(MODEL_ARCHIVE, getArchive(userContext));
         model.addAttribute(MODEL_PICTURES, null);
 
         model.addAttribute(MODEL_AVATAR, avatar(userContext.getBlogUser().getId()));
@@ -199,7 +197,6 @@ public class UsersController {
         }
 
         model.addAttribute(MODEL_CALENDAR_MINI, getCalendarMini(userContext));
-        model.addAttribute(MODEL_ARCHIVE, getArchive(userContext));
         model.addAttribute(MODEL_PICTURES, null);
 
         final Entry entry = getEntry(id, userContext);
@@ -232,7 +229,6 @@ public class UsersController {
           }
 
           model.addAttribute(MODEL_CALENDAR_MINI, getCalendarMini(userc));
-          model.addAttribute(MODEL_ARCHIVE, getArchive(userc));
           model.addAttribute(MODEL_PICTURES, null);
         model.addAttribute(MODEL_AVATAR, avatar(userc.getBlogUser().getId()));
 
@@ -265,7 +261,6 @@ public class UsersController {
         }
 
         model.addAttribute(MODEL_CALENDAR_MINI, getCalendarMini(userc));
-        model.addAttribute(MODEL_ARCHIVE, getArchive(userc));
         model.addAttribute(MODEL_PICTURES, null);
         model.addAttribute(MODEL_AVATAR, avatar(userc.getBlogUser().getId()));
 
@@ -297,7 +292,6 @@ public class UsersController {
         }
 
         model.addAttribute(MODEL_CALENDAR_MINI, getCalendarMini(userContext));
-        model.addAttribute(MODEL_ARCHIVE, getArchive(userContext));
         model.addAttribute(MODEL_PICTURES, null);
         model.addAttribute(MODEL_AVATAR, avatar(userContext.getBlogUser().getId()));
 
@@ -337,7 +331,6 @@ public class UsersController {
         }
 
         model.addAttribute(MODEL_CALENDAR_MINI, getCalendarMini(userc));
-        model.addAttribute(MODEL_ARCHIVE, getArchive(userc));
         model.addAttribute(MODEL_PICTURES, null);
         model.addAttribute(MODEL_AVATAR, avatar(userc.getBlogUser().getId()));
 
@@ -368,7 +361,6 @@ public class UsersController {
         }
 
         model.addAttribute(MODEL_CALENDAR_MINI, getCalendarMini(userc));
-        model.addAttribute(MODEL_ARCHIVE, getArchive(userc));
         model.addAttribute(MODEL_PICTURES, null);
         model.addAttribute(MODEL_AVATAR, avatar(userc.getBlogUser().getId()));
 
@@ -398,7 +390,6 @@ public class UsersController {
         }
 
         model.addAttribute(MODEL_CALENDAR_MINI, getCalendarMini(userc));
-        model.addAttribute(MODEL_ARCHIVE, getArchive(userc));
         model.addAttribute(MODEL_PICTURES, null);
         model.addAttribute(MODEL_AVATAR, avatar(userc.getBlogUser().getId()));
 
@@ -555,7 +546,6 @@ public class UsersController {
         }
 
         model.addAttribute(MODEL_CALENDAR_MINI, getCalendarMini(userc));
-        model.addAttribute(MODEL_ARCHIVE, getArchive(userc));
 
         model.addAttribute(MODEL_PICTURES, userImageService.getUserImages(username));
 
@@ -582,7 +572,6 @@ public class UsersController {
         }
 
         model.addAttribute(MODEL_CALENDAR_MINI, getCalendarMini(userc));
-        model.addAttribute(MODEL_ARCHIVE, getArchive(userc));
         model.addAttribute(MODEL_PICTURES, null);
 
 
@@ -620,7 +609,6 @@ public class UsersController {
         }
 
         model.addAttribute(MODEL_CALENDAR_MINI, getCalendarMini(userc));
-        model.addAttribute(MODEL_ARCHIVE, getArchive(userc));
         model.addAttribute(MODEL_PICTURES, null);
 
         model.addAttribute("subscriptions", getSubscriptions(userc));
@@ -1688,51 +1676,6 @@ public class UsersController {
         return sb.toString();
     }
 
-    /**
-     * Print a list of months and years that users have blogged in as a history breadcrumb to access the calendar list
-     * of blog entries in HTML.
-     *
-     * @param uc User Context
-     */
-    @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
-    private String getArchive(final UserContext uc) {
-        final GregorianCalendar calendarg = new GregorianCalendar();
-        final int yearNow = calendarg.get(Calendar.YEAR);
-        final StringBuilder sb = new StringBuilder();
-
-        // BEGIN: YEARS
-        sb.append("\t<div class=\"menuentity\" id=\"archive\" style=\"padding-top: 10px;\"><strong style=\"text-transform: uppercase; letter-spacing: 2px; border: 0 none; border-bottom: 1px; border-style: dotted; border-color: #999999; margin-bottom: 5px; width: 100%; font-size: 10px;\">Archive</strong><ul class=\"list-group\">");
-
-        for (int i = yearNow; i >= uc.getBlogUser().getSince(); i--) {
-
-            sb.append("<li class=\"list-group-item\"><a href=\"/users/");
-            sb.append(uc.getBlogUser().getUsername());
-            sb.append('/');
-            sb.append(i);
-            sb.append("\">");
-            sb.append(i);
-            sb.append(" (");
-            try {
-                sb.append(entryDao.calendarCount(i, uc.getBlogUser().getUsername()));
-            } catch (final Exception e) {
-                log.error("getArchive: could not fetch count for " + uc.getBlogUser().getUsername() + ": " + i + e.getMessage(), e);
-                sb.append("0");
-            }
-            sb.append(")</a></li> ");
-
-            // just in case!
-            if (i == 2002)
-                break;
-        }
-
-        sb.append("</ul>");
-        sb.append(ENDL);
-        sb.append("</div>");
-        sb.append(ENDL);
-        // END: YEARS
-
-        return sb.toString();
-    }
 
     /**
      * Handles requests for syndication content (RSS). Only returns public journal entries for the specified user.

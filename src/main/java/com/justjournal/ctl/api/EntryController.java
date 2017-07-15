@@ -28,13 +28,10 @@ package com.justjournal.ctl.api;
 
 import com.justjournal.Login;
 import com.justjournal.model.*;
-import com.justjournal.model.Comment;
-
-import com.justjournal.model.api.*;
+import com.justjournal.model.api.EntryTo;
 import com.justjournal.repository.*;
 import com.justjournal.services.EntryService;
 import com.justjournal.services.ServiceException;
-import io.reactivex.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -43,7 +40,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -54,7 +50,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Entry Controller, for managing blog entries
@@ -90,6 +85,22 @@ public class EntryController {
     private UserRepository userRepository;
     @Autowired
     private EntryService entryService;
+
+    @RequestMapping(value = "{username}/statistics", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity<List<EntryService.EntryCount>> getStatistics(@PathVariable("username") final String username) {
+
+        final GregorianCalendar calendarg = new GregorianCalendar();
+        final int yearNow = calendarg.get(Calendar.YEAR);
+
+        final User u = userRepository.findByUsername(username);
+        List<EntryService.EntryCount> e = entryService.getEntryCounts(username, u.getSince(), yearNow).blockingGet();
+
+        return ResponseEntity
+                .ok()
+                .eTag(Integer.toString(e.hashCode()))
+                .body(e);
+    }
 
     /**
      * Get the private list of recent blog entries.
