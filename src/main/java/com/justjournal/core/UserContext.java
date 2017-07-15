@@ -1,4 +1,4 @@
-package com.justjournal.ctl;
+package com.justjournal.core;
 
 import com.justjournal.model.User;
 
@@ -6,7 +6,7 @@ import com.justjournal.model.User;
  * Represent the blog user and authenticated user in one package along with the output buffer.
  * @author Lucas Holt
  */
-class UserContext {
+public class UserContext {
      private User blogUser;          // the blog owner
      private User authenticatedUser; // the logged in user
 
@@ -16,7 +16,7 @@ class UserContext {
       * @param currentBlogUser blog owner
       * @param authUser        logged in user
       */
-     UserContext(final User currentBlogUser, final User authUser) {
+     public UserContext(final User currentBlogUser, final User authUser) {
          this.blogUser = currentBlogUser;
          this.authenticatedUser = authUser;
      }
@@ -26,7 +26,7 @@ class UserContext {
       *
       * @return blog owner
       */
-     User getBlogUser() {
+     public User getBlogUser() {
          return blogUser;
      }
 
@@ -35,7 +35,7 @@ class UserContext {
       *
       * @return logged in user.
       */
-     User getAuthenticatedUser() {
+     public User getAuthenticatedUser() {
          return authenticatedUser;
      }
 
@@ -44,7 +44,7 @@ class UserContext {
       *
       * @return true if blog owner = auth owner
       */
-     boolean isAuthBlog() {
+     public boolean isAuthBlog() {
          return authenticatedUser != null && blogUser != null
                  && authenticatedUser.getUsername().compareTo(blogUser.getUsername()) == 0;
      }

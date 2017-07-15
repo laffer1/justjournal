@@ -30,23 +30,15 @@ import com.justjournal.Cal;
 import com.justjournal.ErrorPage;
 import com.justjournal.Login;
 import com.justjournal.atom.AtomFeed;
+import com.justjournal.core.UserContext;
 import com.justjournal.model.*;
 import com.justjournal.model.search.BlogEntry;
 import com.justjournal.repository.*;
 import com.justjournal.rss.CachedHeadlineBean;
 import com.justjournal.rss.Rss;
-import com.justjournal.services.BlogSearchService;
-import com.justjournal.services.EntryService;
-import com.justjournal.services.ServiceException;
-import com.justjournal.services.UserImageService;
-import com.justjournal.utility.HTMLUtil;
+import com.justjournal.services.*;
 import com.justjournal.utility.StringUtil;
 import com.justjournal.utility.Xml;
-import com.lowagie.text.*;
-import com.lowagie.text.Font;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfWriter;
-import com.lowagie.text.rtf.RtfWriter2;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -61,15 +53,11 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
-import java.awt.*;
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.List;
 
 /**
  * Journal viewer for JustJournal.
@@ -698,27 +686,27 @@ public class UsersController {
         return null;
     }
 
+    @Autowired
+    private PdfFormatService pdfFormatService;
+
+    private void setCommonFileHeaders(final HttpServletResponse response, final UserContext uc, String contentType, String fileExtension) {
+        response.setContentType(contentType);
+        response.setHeader("Expires", "0");
+        response.setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
+        response.setHeader("Pragma", "public");
+        // RFC 1806
+        response.setHeader("Content-Disposition", "attachment; filename=" + uc.getBlogUser().getUsername() + fileExtension);
+    }
+
     private void getPDF(final HttpServletResponse response, final UserContext uc) {
-        final Document document = new Document();
+
         try {
             response.resetBuffer();
-            response.setContentType(MEDIA_TYPE_PDF);
-            response.setHeader("Expires", "0");
-            response.setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
-            response.setHeader("Pragma", "public");
-            // RFC 1806
-            response.setHeader("Content-Disposition", "attachment; filename=" + uc.getBlogUser().getUsername() + ".pdf");
-
+            setCommonFileHeaders(response, uc, MEDIA_TYPE_PDF, ".pdf");
+           
             final ServletOutputStream os = response.getOutputStream();
-            final OutputStream out = new BufferedOutputStream(os);
-            PdfWriter.getInstance(document, out);
-            formatRTFPDF(uc, document);
-            document.close();
-            out.flush();
-            out.close();
+            pdfFormatService.write(uc, os);
             os.close();
-        } catch (final DocumentException e) {
-            log.error("Users.getPDF() DocumentException:" + e.getMessage(), e);
         } catch (final IOException e1) {
             log.error("Users.getPDF() IOException:" + e1.getMessage(), e1);
         } catch (final Exception e) {
@@ -727,27 +715,19 @@ public class UsersController {
         }
     }
 
+    @Autowired
+    private RdfFormatService rdfFormatService;
+
     private void getRTF(final HttpServletResponse response, final UserContext uc) {
         try {
-            final Document document = new Document();
-            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            RtfWriter2.getInstance(document, baos);
-            formatRTFPDF(uc, document);
-            document.close();
+            final ByteArrayOutputStream baos = rdfFormatService.generate(uc);
 
-            response.setContentType(MEDIA_TYPE_RTF);
-            response.setHeader("Expires", "0");
-            response.setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
-            response.setHeader("Pragma", "public");
-            // RFC 1806
-            response.setHeader("Content-Disposition", "attachment; filename=" + uc.getBlogUser().getUsername() + ".rtf");
+            setCommonFileHeaders(response, uc, MEDIA_TYPE_RTF, ".rtf");
             response.setContentLength(baos.size()); /* required by IE */
             final ServletOutputStream out = response.getOutputStream();
             baos.writeTo(out);
             out.flush();
             out.close();
-        } catch (final DocumentException e) {
-            log.error("Users.getRDF() DocumentException:" + e.getMessage(), e);
         } catch (final IOException e1) {
             log.error("Users.getRDF() IOException:" + e1.getMessage(), e1);
         } catch (final Exception e) {
@@ -755,75 +735,6 @@ public class UsersController {
             log.error("Users.getRDF():" + e.getMessage(), e);
         }
     }
-
-    private void formatRTFPDF(final UserContext uc, final Document document) throws Exception {
-        final Font helvetica14 = new Font(Font.HELVETICA, 14.0F);
-        final Font helvetica12 = new Font(Font.HELVETICA, 12.0F);
-        final Font helvetica8 = new Font(Font.HELVETICA, 8.0F);
-        final Font times11 = new Font(Font.TIMES_ROMAN, 11.0F);
-        final Color blue =  new Color(0x00, 0x00, 0xFF);
-        final Color lightBlue = new Color(0xF,0xF2, 0xF2);
-
-        document.open();
-        document.add(new Paragraph(""));
-        Chunk chunk = new Chunk(uc.getBlogUser().getJournals().get(0).getName());
-        chunk.setTextRenderMode(PdfContentByte.TEXT_RENDER_MODE_STROKE, 0.4f, blue);
-        document.add(chunk);
-        document.add(Chunk.NEWLINE);
-
-        final List<Entry> entries;
-
-        if (uc.isAuthBlog())
-            entries = entryDao.findByUsername(uc.getBlogUser().getUsername());
-        else
-            entries = entryDao.findByUsernameAndSecurity(uc.getBlogUser().getUsername(), securityDao.findOne(2));
-
-        // Format the current time.
-        final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-        final SimpleDateFormat formatmydate = new SimpleDateFormat("EEE, d MMM yyyy");
-        final SimpleDateFormat formatmytime = new SimpleDateFormat("h:mm a");
-        String lastDate = "";
-        String curDate;
-
-        for (final Entry o : entries) {
-            // Parse the previous string back into a Date.
-            final ParsePosition pos = new ParsePosition(0);
-            final Date currentDate = formatter.parse(o.getDate().toString(), pos);
-
-            curDate = formatmydate.format(currentDate);
-
-            if (curDate.compareTo(lastDate) != 0) {
-                document.add(new Paragraph(curDate, helvetica14));
-                lastDate = curDate;
-            }
-
-            document.add(new Paragraph(formatmytime.format(currentDate), helvetica12));
-            document.add(Chunk.NEWLINE);
-            chunk = new Chunk(o.getSubject());
-            chunk.setTextRenderMode(PdfContentByte.TEXT_RENDER_MODE_FILL, 0.3F, lightBlue);
-            document.add(chunk);
-            document.add(Chunk.NEWLINE);
-
-            document.add(new Paragraph(HTMLUtil.textFromHTML(o.getBody()), times11));
-            document.add(Chunk.NEWLINE);
-
-            if (o.getSecurity().getId() == 0)
-                document.add(new Paragraph("Security: " + "Private", helvetica8));
-            else if (o.getSecurity().getId() == 1)
-                document.add(new Paragraph("Security: " + "Friends", helvetica8));
-            else
-                document.add(new Paragraph("Security: " + "Public", helvetica8));
-
-            document.add(new Chunk("Location: " + o.getLocation().getTitle(), helvetica8));
-            document.add(Chunk.NEWLINE);
-            document.add(new Chunk("Mood: " + o.getMood().getTitle(), helvetica8));
-            document.add(Chunk.NEWLINE);
-            document.add(new Chunk("Music: " + o.getMusic(), helvetica8));
-            document.add(Chunk.NEWLINE);
-            document.add(Chunk.NEWLINE);
-        }
-    }
-
 
     @Autowired
     private CachedHeadlineBean cachedHeadlineBean;
