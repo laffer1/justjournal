@@ -4,5 +4,5 @@ services:
   - mysql
 before_script:
   - mysql -e 'create database justjournal_test;'
-  - mysql --database=justjournal_test < database/jj_create.sql
+  - mysql --database=justjournal_test < src/main/resources/db/migration/V1_0__jj_create.sql
   - mysql --database=justjournal_test < database/jj_data_load.sql

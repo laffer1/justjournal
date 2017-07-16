@@ -25,9 +25,17 @@
         <hibernate.version>4.3.11.Final</hibernate.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jackson.version>2.5.5</jackson.version>
+        <flyway.version>4.0.3</flyway.version>
+        <mysql.driver.version>5.1.39</mysql.driver.version>
     </properties>
 
     <dependencies>
+        <dependency>
+                  <groupId>org.flywaydb</groupId>
+                  <artifactId>flyway-core</artifactId>
+                  <version>${flyway.version}</version>
+              </dependency>
+        
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
@@ -171,7 +179,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.39</version>
+            <version>${mysql.driver.version}</version>
         </dependency>
 
         <dependency>
