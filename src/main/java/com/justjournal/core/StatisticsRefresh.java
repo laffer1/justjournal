@@ -28,7 +28,7 @@ public class StatisticsRefresh {
 
         try {
             for (final User user : userRepository.findAll()) {
-                entryStatisticService.compute(user);
+                entryStatisticService.compute(user).blockingSubscribe();
             }
         } catch (final Exception e) {
             log.error(e.getMessage(), e);
