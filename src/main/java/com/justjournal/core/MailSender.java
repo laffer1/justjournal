@@ -64,7 +64,7 @@ public class MailSender {
 
     @Scheduled(fixedDelay = 120000, initialDelay = 30000)
     public void send() {
-        log.trace("MailSender: Init");
+        log.info("MailSender: Init");
 
         try {
             final Properties props = new Properties();

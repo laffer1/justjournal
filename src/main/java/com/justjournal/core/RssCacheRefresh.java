@@ -62,7 +62,7 @@ public class RssCacheRefresh {
 
     @Scheduled(fixedDelay = 1000 * 60 * 30, initialDelay = 60000)
     public void run() {
-        log.trace("RssCache: Init");
+        log.info("RssCache: Init");
 
         try {
             final Calendar yesterday = Calendar.getInstance();
@@ -92,7 +92,7 @@ public class RssCacheRefresh {
             log.error(e.getMessage(), e);
         }
 
-        log.trace("RssCache: Quit");
+        log.info("RssCache: Quit");
     }
 
     /**
