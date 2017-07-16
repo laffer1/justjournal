@@ -31,8 +31,11 @@ import com.justjournal.model.*;
 import com.justjournal.model.api.EntryTo;
 import com.justjournal.repository.*;
 import com.justjournal.services.EntryService;
+import com.justjournal.services.EntryStatisticService;
 import com.justjournal.services.ServiceException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.IteratorUtils;
+import org.apache.commons.collections.ListUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.annotation.CacheEvict;
@@ -86,15 +89,15 @@ public class EntryController {
     @Autowired
     private EntryService entryService;
 
+    @Autowired
+    private EntryStatisticService entryStatisticService;
+
     @RequestMapping(value = "{username}/statistics", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<List<EntryService.EntryCount>> getStatistics(@PathVariable("username") final String username) {
+    public ResponseEntity<List<EntryStatistic>> getStatistics(@PathVariable("username") final String username) {
 
-        final GregorianCalendar calendarg = new GregorianCalendar();
-        final int yearNow = calendarg.get(Calendar.YEAR);
-
-        final User u = userRepository.findByUsername(username);
-        List<EntryService.EntryCount> e = entryService.getEntryCounts(username, u.getSince(), yearNow).blockingGet();
+        Iterable<EntryStatistic> myIterator = entryStatisticService.getEntryCounts(username).blockingIterable();
+        List<EntryStatistic> e = IteratorUtils.toList(myIterator.iterator());
 
         return ResponseEntity
                 .ok()

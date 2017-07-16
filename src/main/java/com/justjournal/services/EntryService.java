@@ -344,42 +344,4 @@ public class EntryService {
             entryTagsRepository.delete(ets);
         }
     }
-
-
-    @Transactional(value = Transactional.TxType.SUPPORTS)
-    public io.reactivex.Single<EntryCount> getEntryCount(String username, int year) {
-        log.trace("Fetching entry count for " + username + " and year " + year);
-        EntryCount ec = new EntryCount(entryDao.calendarCount(year, username), year);
-        return io.reactivex.Single.just(ec);
-    }
-
-    public io.reactivex.Single<List<EntryCount>> getEntryCounts(final String username, int startYear, int endYear) {
-        return io.reactivex.Observable.range(startYear, endYear - startYear + 1)
-                .flatMap(new Function<Integer, ObservableSource<EntryCount>>() {
-                    @Override
-                    public ObservableSource<EntryCount> apply(final Integer yr) throws Exception {
-                        return   io.reactivex.Observable.fromCallable(new Callable<EntryCount>() {
-                            @Override
-                            public EntryCount call() throws Exception {
-                                return getEntryCount(username, yr).blockingGet();
-                            }
-                        });
-                    }
-                }).subscribeOn(Schedulers.io())
-                .toSortedList();
-       }
-
-
-    @AllArgsConstructor
-    @Data
-    @EqualsAndHashCode
-    public class EntryCount implements Comparable<EntryCount> {
-        private long count;
-        private int year;
-
-        @Override
-        public int compareTo(final EntryCount o) {
-            return new Integer(o.getYear()).compareTo( year);
-        }
-    }
 }
