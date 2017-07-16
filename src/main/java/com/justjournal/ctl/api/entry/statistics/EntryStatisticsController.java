@@ -1,0 +1,40 @@
+package com.justjournal.ctl.api.entry.statistics;
+
+import com.justjournal.model.EntryStatistic;
+import com.justjournal.services.EntryStatisticService;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.IteratorUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Collections;
+import java.util.List;
+
+/**
+ * Get entry statistics
+ * @author Lucas Holt
+ */
+@Slf4j
+@RestController
+@RequestMapping("/api/entry")
+public class EntryStatisticsController {
+
+    @Autowired
+    public EntryStatisticService entryStatisticService;
+
+    @RequestMapping(value = "{username}/statistics", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity<List<EntryStatistic>> getStatistics(@PathVariable("username") final String username) {
+
+        final Iterable<EntryStatistic> myIterator = entryStatisticService.getEntryCounts(username).blockingIterable();
+        final List<EntryStatistic> e = IteratorUtils.toList(myIterator.iterator());
+        Collections.sort(e);
+
+        return ResponseEntity
+                .ok()
+                .eTag(Integer.toString(e.hashCode()))
+                .body(e);
+    }
+}

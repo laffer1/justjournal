@@ -17,7 +17,7 @@ import java.util.Date;
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class , property = "id")
 @Entity
 @Table(name = "entry_statistics")
-public class EntryStatistic implements Serializable {
+public class EntryStatistic implements Serializable, Comparable<EntryStatistic> {
 
     private static final long serialVersionUID = 7280767109218766181L;
     
@@ -43,5 +43,10 @@ public class EntryStatistic implements Serializable {
     @JsonCreator
     public EntryStatistic() {
         super();
+    }
+
+    @Override
+    public int compareTo(final EntryStatistic o) {
+        return Integer.compare(o.getYear(), getYear());
     }
 }

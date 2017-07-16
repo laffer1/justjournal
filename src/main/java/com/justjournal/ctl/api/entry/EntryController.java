@@ -24,7 +24,7 @@
  * SUCH DAMAGE.
  */
 
-package com.justjournal.ctl.api;
+package com.justjournal.ctl.api.entry;
 
 import com.justjournal.Login;
 import com.justjournal.model.*;
@@ -88,22 +88,7 @@ public class EntryController {
     private UserRepository userRepository;
     @Autowired
     private EntryService entryService;
-
-    @Autowired
-    private EntryStatisticService entryStatisticService;
-
-    @RequestMapping(value = "{username}/statistics", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public ResponseEntity<List<EntryStatistic>> getStatistics(@PathVariable("username") final String username) {
-
-        Iterable<EntryStatistic> myIterator = entryStatisticService.getEntryCounts(username).blockingIterable();
-        List<EntryStatistic> e = IteratorUtils.toList(myIterator.iterator());
-
-        return ResponseEntity
-                .ok()
-                .eTag(Integer.toString(e.hashCode()))
-                .body(e);
-    }
+    
 
     /**
      * Get the private list of recent blog entries.
@@ -272,14 +257,6 @@ public class EntryController {
         return entries;
     }
 
-
-    public UserRepository getUserRepository() {
-        return userRepository;
-    }
-
-    public void setUserRepository(final UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     /**
      * Creates a new entry resource

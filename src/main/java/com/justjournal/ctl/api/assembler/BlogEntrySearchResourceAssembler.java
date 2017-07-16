@@ -1,6 +1,6 @@
 package com.justjournal.ctl.api.assembler;
 
-import com.justjournal.ctl.api.EntryController;
+import com.justjournal.ctl.api.entry.EntryController;
 import com.justjournal.ctl.api.SearchController;
 import com.justjournal.model.search.BlogEntry;
 import org.springframework.hateoas.Resource;
