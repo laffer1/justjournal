@@ -6,3 +6,6 @@ Disallow: /
 
 User-agent: psbot
 Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
