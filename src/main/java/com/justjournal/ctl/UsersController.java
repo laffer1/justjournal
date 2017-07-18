@@ -1773,10 +1773,10 @@ public class UsersController {
 
             log.trace("getTags: Begin Iteration of records.");
 
-            /* Iterator */
             Entry o;
             final Iterator itr = entries.iterator();
 
+            // TODO: this is incredibly stupid
             for (int i = 0, n = entries.size(); i < n; i++) {
                 o = (Entry) itr.next();
 
@@ -1786,9 +1786,17 @@ public class UsersController {
 
                 curDate = formatmydate.format(currentDate);
 
-                final Collection entryTags = o.getTags();
+                final Collection<EntryTag> entryTags = o.getTags();
 
-                if (entryTags.contains(tag.toLowerCase())) {
+                boolean found = false;
+                for (final EntryTag entryTag : entryTags) {
+                    if (entryTag.getTag().getName().equalsIgnoreCase(tag)) {
+                       found = true;
+                       break;
+                    }
+                }
+
+                if (found) {
                     if (curDate.compareTo(lastDate) != 0) {
                         sb.append("\t\t<h2>");
                         sb.append(curDate);
