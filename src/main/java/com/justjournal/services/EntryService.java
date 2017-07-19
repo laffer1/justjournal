@@ -45,6 +45,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 
 import javax.transaction.Transactional;
 import java.util.*;
@@ -72,7 +73,7 @@ public class EntryService {
 
     @Autowired
     private EntryTagsRepository entryTagsRepository;
-
+    
     private io.reactivex.Observable<RecentEntry> getRecentEntryObservable(Page<Entry> entries) {
         return io.reactivex.Observable.fromIterable(entries)
                 .observeOn(Schedulers.computation())
@@ -94,7 +95,7 @@ public class EntryService {
      * @param username blog user
      * @return subject & entry id data
      */
-    @Transactional(value = Transactional.TxType.SUPPORTS)
+    @org.springframework.transaction.annotation.Transactional(readOnly = true, isolation = Isolation.READ_UNCOMMITTED)
     public io.reactivex.Observable<RecentEntry> getRecentEntriesPublic(final String username) throws ServiceException {
         try {
             final Pageable page = new PageRequest(0, MAX_RECENT_ENTRIES, new Sort(Sort.Direction.DESC, "date", "id"));
@@ -112,7 +113,7 @@ public class EntryService {
      * @param username blog username
      * @return subject & entry id data
      */
-    @Transactional(value = Transactional.TxType.SUPPORTS)
+    @org.springframework.transaction.annotation.Transactional(readOnly = true, isolation = Isolation.READ_UNCOMMITTED)
     public io.reactivex.Observable<RecentEntry> getRecentEntries(final String username) throws ServiceException {
         final User user = userRepository.findByUsername(username);
         if (user == null) {
@@ -130,7 +131,7 @@ public class EntryService {
         }
     }
 
-    @Transactional(value = Transactional.TxType.SUPPORTS)
+    @org.springframework.transaction.annotation.Transactional(readOnly = true, isolation = Isolation.READ_UNCOMMITTED)
     public Entry getPublicEntry(final int id, final String username) throws ServiceException {
         try {
             final Entry entry = entryDao.findOne(id);
@@ -171,7 +172,7 @@ public class EntryService {
         }
     }
 
-    @Transactional(value = Transactional.TxType.SUPPORTS)
+    @org.springframework.transaction.annotation.Transactional(readOnly = true, isolation = Isolation.READ_UNCOMMITTED)
     public Page<Entry> getEntries(final String username, final Pageable pageable) throws ServiceException {
         try {
             final User user = userRepository.findByUsername(username);
@@ -191,42 +192,13 @@ public class EntryService {
      * @param username
      * @return
      */
-    @Transactional(value = Transactional.TxType.SUPPORTS)
+    @org.springframework.transaction.annotation.Transactional(readOnly = true, isolation = Isolation.READ_UNCOMMITTED)
     public List<Entry> getFriendsEntries(final String username) throws ServiceException {
         try {
-            final User user = userRepository.findByUsername(username);
-            final List<Friend> friends = user.getFriends();
+            final Pageable page = new PageRequest(0, 20, Sort.Direction.DESC, "date", "id");
+            final Page<Entry> fe = entryDao.findByUserFriends(username, PrefBool.N, page);
 
-            final List<Entry> list = new ArrayList<Entry>();
-
-            final Security security = securityDao.findByName("public");
-
-            for (final Friend friend : friends) {
-                final Pageable page = new PageRequest(0, 20, Sort.Direction.DESC, "date", "id");
-                final Page<Entry> fe = entryDao.findByUserAndSecurityOrderByDateDesc(friend.getFriend(), security, page);
-
-                for (final Entry entry : fe) {
-                    if (entry.getSecurity().getId() == 2 && entry.getDraft().equals(PrefBool.N))
-                        list.add(entry);
-                }
-            }
-
-            Collections.sort(list, new Comparator<Entry>() {
-                @Override
-                public int compare(final Entry m1, final Entry m2) {
-                    return m1.getDate().compareTo(m2.getDate());
-                }
-            });
-
-            if (list.isEmpty())
-                return list;
-
-            final int end = list.size() - 1;
-            int start = 0;
-            if (end > 20)
-                start = end - 20;
-
-            return list.subList(start, end);
+           return fe.getContent();
         } catch (final Exception e) {
             log.error(e.getMessage());
             throw new ServiceException(e);
@@ -239,7 +211,7 @@ public class EntryService {
      * @param username
      * @return
      */
-    @Transactional(value = Transactional.TxType.SUPPORTS)
+    @org.springframework.transaction.annotation.Transactional(readOnly = true, isolation = Isolation.READ_UNCOMMITTED)
     public io.reactivex.Observable<Tag> getEntryTags(final String username) throws ServiceException {
         try {
             assert entryDao != null;
