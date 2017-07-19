@@ -199,7 +199,7 @@ public class EntryService {
 
             final List<Entry> list = new ArrayList<Entry>();
 
-            Security security = securityDao.findByName("public");
+            final Security security = securityDao.findByName("public");
 
             for (final Friend friend : friends) {
                 final Pageable page = new PageRequest(0, 20, Sort.Direction.DESC, "date", "id");

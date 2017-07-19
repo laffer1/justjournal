@@ -654,7 +654,7 @@ public class UsersController {
     }
 
     @Transactional(value = Transactional.TxType.SUPPORTS)
-    private UserContext getUserContext(final String username, final HttpSession session) {
+    protected UserContext getUserContext(final String username, final HttpSession session) {
         User authUser = null;
         try {
             authUser = userRepository.findByUsername(Login.currentLoginName(session));
@@ -1577,7 +1577,7 @@ public class UsersController {
      */
     @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
     @Transactional(value = Transactional.TxType.SUPPORTS)
-    private String getCalendarMini(final UserContext uc) {
+    protected String getCalendarMini(final UserContext uc) {
         final StringBuilder sb = new StringBuilder();
         try {
             final Calendar cal = new GregorianCalendar(TimeZone.getDefault());
@@ -1615,7 +1615,7 @@ public class UsersController {
      * @param uc    The UserContext we are working on including blog owner, authenticated user, and sb to write
      */
     @Transactional(value = Transactional.TxType.REQUIRED)
-    private String getCalendarDay(final int year,
+    protected String getCalendarDay(final int year,
                                   final int month,
                                   final int day,
                                   final UserContext uc) {
@@ -1683,7 +1683,7 @@ public class UsersController {
      * @param user
      */
     @Transactional(value = Transactional.TxType.REQUIRED)
-    private String getRSS(final User user) {
+    protected String getRSS(final User user) {
         final GregorianCalendar calendar = new GregorianCalendar();
         calendar.setTime(new Date());
 
@@ -1708,7 +1708,7 @@ public class UsersController {
      * @param user blog user
      */
     @Transactional(value = Transactional.TxType.REQUIRED)
-    private String getAtom(final User user) {
+    protected String getAtom(final User user) {
         final AtomFeed atom = new AtomFeed();
 
         final GregorianCalendar calendarg = new GregorianCalendar();
@@ -1733,7 +1733,7 @@ public class UsersController {
      * @param user blog user
      */
     @Transactional(value = Transactional.TxType.REQUIRED)
-    private String getPicturesRSS(final User user) {
+    protected String getPicturesRSS(final User user) {
 
         final GregorianCalendar calendarg = new GregorianCalendar();
         calendarg.setTime(new Date());
@@ -1751,9 +1751,9 @@ public class UsersController {
         return rss.toXml();
     }
 
-    /* TODO: finish this */
+
     @Transactional(value = Transactional.TxType.REQUIRED)
-    private String getTags(final UserContext uc, final String tag) {
+    protected String getTags(final UserContext uc, final String tag) {
         final StringBuilder sb = new StringBuilder();
         final Collection entries;
 
