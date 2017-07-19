@@ -53,6 +53,13 @@ public interface EntryRepository extends JpaRepository<Entry, Integer> {
     @Query("select e from Entry e, User u where e.user = u and LOWER(u.username) = LOWER(:username)")
     List<Entry> findByUsername(@Param("username") String username);
 
+    @Query("select e from Entry e, User u, EntryTag et, Tag t where e.user = u and LOWER(u.username) = LOWER(:username) and t.name = LOWER(:tag) and et.tag = t and et.entry = e")
+    List<Entry> findByUsernameAndTag(@Param("username") String username, @Param("tag") String tag);
+    
+    @Query("select e from Entry e, User u, EntryTag et, Tag t where e.user = u and LOWER(u.username) = LOWER(:username) and e.security = :security" +
+            " and t.name = LOWER(:tag) and et.tag = t and et.entry = e")
+    List<Entry> findByUsernameAndSecurityAndTag(@Param("username") String username, @Param("security") Security security, @Param("tag") String tag);
+
     @Query("select e from Entry e, User u where e.user = u and LOWER(u.username) = LOWER(:username) and e.security = :security")
     List<Entry> findByUsernameAndSecurity(@Param("username") String username, @Param("security") Security security);
 
