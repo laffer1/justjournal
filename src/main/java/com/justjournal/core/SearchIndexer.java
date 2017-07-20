@@ -3,6 +3,7 @@ package com.justjournal.core;
 import com.justjournal.services.BlogSearchService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +17,7 @@ import java.util.Calendar;
  */
 @Slf4j
 @Component
+@Profile("!test")
 public class SearchIndexer {
     private final BlogSearchService blogSearchService;
 

@@ -33,9 +33,11 @@ package com.justjournal.core;
 import com.justjournal.model.QueueMail;
 import com.justjournal.repository.QueueMailRepository;
 import com.justjournal.utility.ForcedAuthenticator;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -52,9 +54,10 @@ import java.util.Properties;
  * @author Lucas Holt
  * @version $Id: MailSender.java,v 1.8 2009/03/16 22:10:31 laffer1 Exp $
  */
+@Slf4j
 @Component
+@Profile("!test")
 public class MailSender {
-    private Logger log = LoggerFactory.getLogger(MailSender.class);
 
     @Autowired
     private QueueMailRepository queueMailRepository;
