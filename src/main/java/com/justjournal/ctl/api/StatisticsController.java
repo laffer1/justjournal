@@ -30,28 +30,27 @@ import com.justjournal.model.Statistics;
 import com.justjournal.model.UserStatistics;
 import com.justjournal.services.ServiceException;
 import com.justjournal.services.StatisticsService;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 
 /**
  * Generate Global and per user statistics on blogging entries and comments.
  *
  * @author Lucas Holt
  */
-@Slf4j
 @Controller
 @RequestMapping("/api/statistics")
 public class StatisticsController {
+    private static final Logger log = Logger.getLogger(StatisticsController.class);
 
     @Autowired
     private StatisticsService statisticsService;
@@ -61,18 +60,18 @@ public class StatisticsController {
      *
      * @return statistics
      */
-    @Transactional(readOnly = true, isolation = Isolation.READ_UNCOMMITTED)
+    @Transactional(value= Transactional.TxType.REQUIRED)
     @Cacheable("statistics")
     @RequestMapping(method = RequestMethod.GET, headers = "Accept=*/*", produces = "application/json")
     public
     @ResponseBody
-    Statistics get(final HttpServletResponse response) {
+    Statistics get(HttpServletResponse response) {
         if ((statisticsService == null)) throw new AssertionError();
 
         try {
             return statisticsService.getStatistics();
-        } catch (final ServiceException e) {
-            log.warn("Statistics not available", e);
+        } catch (ServiceException e) {
+            log.warn("Statistics not available");
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return null;
         }
@@ -85,7 +84,7 @@ public class StatisticsController {
      * @param response Servlet response
      * @return stats
      */
-    @Transactional(readOnly = true, isolation = Isolation.READ_UNCOMMITTED)
+    @Transactional(value= Transactional.TxType.REQUIRED)
     @Cacheable(value = "userstatistics", key = "username")
     @RequestMapping(value = "{username}", method = RequestMethod.GET, headers = "Accept=*/*", produces = "application/json")
     @ResponseBody
@@ -98,13 +97,13 @@ public class StatisticsController {
                 return new UserStatistics();
             }
 
-            final UserStatistics us = statisticsService.getUserStatistics(username);
+            UserStatistics us = statisticsService.getUserStatistics(username);
             if (us == null) {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             }
             return us;
-        } catch (final ServiceException e) {
-            log.warn("User Statistics error: (" + username + "), " + e.getMessage(), e);
+        } catch (ServiceException e) {
+            log.warn("User Statistics error: (" + username + "), " + e.getMessage());
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return new UserStatistics();
         }
