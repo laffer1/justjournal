@@ -47,20 +47,20 @@ import static org.junit.Assert.assertNotNull;
 @SpringApplicationConfiguration(classes = ApplicationTest.class)
 @WebAppConfiguration
 
-public class MoodDaoTests {
+public class MoodRepositoryTests {
     @Autowired
-    private MoodRepository moodDao;
+    private MoodRepository moodRepository;
 
     @Test
     public void list() {
-        Iterable<Mood> list = moodDao.findAll();
+        Iterable<Mood> list = moodRepository.findAll();
         assertNotNull(list);
-        assertTrue(moodDao.count() > 100);
+        assertTrue(moodRepository.count() > 100);
     }
 
     @Test
     public void get() {
-        Mood moodTo = moodDao.findOne(1);
+        Mood moodTo = moodRepository.findOne(1);
         assertNotNull(moodTo);
         assertEquals(1, moodTo.getId());
         assertNotNull(moodTo.getTitle());
