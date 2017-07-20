@@ -3,25 +3,19 @@ package com.justjournal.config;
 import com.justjournal.model.*;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
-import org.springframework.data.rest.webmvc.config.RepositoryRestMvcConfiguration;
+import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurerAdapter;
 
 /**
  * Expose ids for some classes
+ *
  * @author Lucas Holt
  */
 @Configuration
-public class JustJournalRepositoryRestConfiguration extends RepositoryRestMvcConfiguration {
+public class JustJournalRepositoryRestConfiguration extends RepositoryRestConfigurerAdapter {
 
-    /** {@inheritDoc} */
     @Override
-    protected void configureRepositoryRestConfiguration(RepositoryRestConfiguration config) {
-        super.configureRepositoryRestConfiguration(config);
+    public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config) {
 
-        config.exposeIdsFor(Comment.class);
-        config.exposeIdsFor(Entry.class);
-        config.exposeIdsFor(Mood.class);
-        config.exposeIdsFor(Location.class);
-        config.exposeIdsFor(Security.class);
-
+        config.exposeIdsFor(Comment.class, Entry.class, Mood.class, Location.class, Security.class);
     }
 }
