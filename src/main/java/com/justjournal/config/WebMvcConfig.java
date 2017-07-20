@@ -9,7 +9,6 @@ import org.springframework.boot.autoconfigure.web.WebMvcAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.Resource;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -94,7 +93,6 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
        *
        * @return a {@link com.fasterxml.jackson.databind.ObjectMapper} object.
        */
-      @Primary
       @Bean
       public ObjectMapper objectMapper() {
           final ObjectMapper objMapper = new ObjectMapper();
