@@ -170,7 +170,7 @@
     <orderEntry type="library" name="Maven: org.codehaus.groovy:groovy:2.4.7" level="project" />
     <orderEntry type="library" name="Maven: net.sf.jtidy:jtidy:r938" level="project" />
     <orderEntry type="library" name="Maven: net.sf.jazzy:jazzy-core:0.5.2" level="project" />
-    <orderEntry type="library" name="Maven: mysql:mysql-connector-java:5.1.39" level="project" />
+    <orderEntry type="library" name="Maven: mysql:mysql-connector-java:5.1.41" level="project" />
     <orderEntry type="library" name="Maven: com.googlecode.json-simple:json-simple:1.1.1" level="project" />
     <orderEntry type="library" name="Maven: com.lowagie:itext:2.1.7" level="project" />
     <orderEntry type="library" name="Maven: bouncycastle:bcmail-jdk14:138" level="project" />
