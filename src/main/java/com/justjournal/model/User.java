@@ -309,7 +309,7 @@ public class User implements Serializable {
      *
      * @return username
      */
-    public final String getUsername() {
+    public String getUsername() {
         return this.username;
     }
 
