@@ -12,8 +12,9 @@ import io.reactivex.schedulers.Schedulers;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.concurrent.Callable;
@@ -32,7 +33,7 @@ public class EntryStatisticService {
     @Autowired
     private EntryRepository entryRepository;
 
-    @Transactional(value = Transactional.TxType.SUPPORTS)
+    @Transactional(readOnly = true, isolation = Isolation.READ_UNCOMMITTED)
     public Maybe<EntryStatistic> getEntryCount(final String username, final int year) {
         log.trace("Fetching entry count for " + username + " and year " + year);
 

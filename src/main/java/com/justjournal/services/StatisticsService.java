@@ -31,21 +31,22 @@ import com.justjournal.model.StatisticsImpl;
 import com.justjournal.model.User;
 import com.justjournal.model.UserStatistics;
 import com.justjournal.repository.*;
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 
 /**
  * Provide Statistics Services for Just Journal
  *
  * @author Lucas Holt
  */
+@Slf4j
 @Service
-@Transactional(Transactional.TxType.REQUIRED)
+@Transactional
 public class StatisticsService {
-    private static final Logger log = Logger.getLogger(StatisticsService.class);
 
     @Autowired
     private EntryRepository entryRepository;
@@ -64,7 +65,7 @@ public class StatisticsService {
     @Autowired
     private StyleRepository styleRepository;
 
-    @Transactional(value = Transactional.TxType.REQUIRED)
+    @Transactional(readOnly = true, isolation = Isolation.READ_UNCOMMITTED)
     public UserStatistics getUserStatistics(final String username) throws ServiceException {
 
         try {
@@ -83,12 +84,13 @@ public class StatisticsService {
 
             return userStatistics;
         } catch (final Exception e) {
-            log.error(e);
+            log.error(e.getMessage(), e);
             throw new ServiceException(e);
         }
     }
 
 
+    @Transactional(readOnly = true, isolation = Isolation.READ_UNCOMMITTED)
     public Statistics getStatistics() throws ServiceException {
         try {
             final Statistics statistics = new StatisticsImpl();
@@ -106,7 +108,7 @@ public class StatisticsService {
 
             return statistics;
         } catch (final Exception e) {
-            log.error(e);
+            log.error(e.getMessage(), e);
             throw new ServiceException(e);
         }
     }

@@ -32,13 +32,13 @@ import com.justjournal.model.*;
 import com.justjournal.model.api.NewUser;
 import com.justjournal.repository.*;
 import com.justjournal.utility.StringUtil;
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.transaction.Transactional;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
@@ -49,11 +49,11 @@ import java.util.Map;
  * @author Lucas Holt
  * @see com.justjournal.ctl.api.AccountController
  */
+@Slf4j
 @Transactional
 @Controller
 @RequestMapping("/api/signup")
 public class SignUpController {
-    private static final Logger log = Logger.getLogger(SignUpController.class);
 
     @Autowired
     private UserRepository userRepository;
@@ -148,7 +148,7 @@ public class SignUpController {
 
             return java.util.Collections.singletonMap("id", Integer.toString(user.getId()));
         } catch (final Exception e) {
-            log.error(e);
+            log.error(e.getMessage(), e);
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return java.util.Collections.singletonMap("error", "Could not add user");
         }

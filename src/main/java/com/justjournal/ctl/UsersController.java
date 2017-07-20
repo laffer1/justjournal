@@ -46,13 +46,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.transaction.Transactional;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.ParsePosition;
@@ -652,8 +652,7 @@ public class UsersController {
 
         return VIEW_USERS;
     }
-
-    @Transactional(value = Transactional.TxType.SUPPORTS)
+    
     protected UserContext getUserContext(final String username, final HttpSession session) {
         User authUser = null;
         try {
@@ -1576,7 +1575,6 @@ public class UsersController {
      * @param uc User Context
      */
     @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
-    @Transactional(value = Transactional.TxType.SUPPORTS)
     protected String getCalendarMini(final UserContext uc) {
         final StringBuilder sb = new StringBuilder();
         try {
@@ -1614,7 +1612,6 @@ public class UsersController {
      * @param day   the day we are interested in
      * @param uc    The UserContext we are working on including blog owner, authenticated user, and sb to write
      */
-    @Transactional(value = Transactional.TxType.REQUIRED)
     protected String getCalendarDay(final int year,
                                   final int month,
                                   final int day,
@@ -1682,7 +1679,6 @@ public class UsersController {
      *
      * @param user
      */
-    @Transactional(value = Transactional.TxType.REQUIRED)
     protected String getRSS(final User user) {
         final GregorianCalendar calendar = new GregorianCalendar();
         calendar.setTime(new Date());
@@ -1707,7 +1703,6 @@ public class UsersController {
      *
      * @param user blog user
      */
-    @Transactional(value = Transactional.TxType.REQUIRED)
     protected String getAtom(final User user) {
         final AtomFeed atom = new AtomFeed();
 
@@ -1732,7 +1727,6 @@ public class UsersController {
      *
      * @param user blog user
      */
-    @Transactional(value = Transactional.TxType.REQUIRED)
     protected String getPicturesRSS(final User user) {
 
         final GregorianCalendar calendarg = new GregorianCalendar();
@@ -1752,7 +1746,6 @@ public class UsersController {
     }
 
 
-    @Transactional(value = Transactional.TxType.REQUIRED)
     protected String getTags(final UserContext uc, final String tag) {
         final StringBuilder sb = new StringBuilder();
         final Collection entries;
