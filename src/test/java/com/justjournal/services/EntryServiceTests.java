@@ -49,13 +49,11 @@ import static org.junit.Assert.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = ApplicationTest.class)
 @WebAppConfiguration
-public class ServiceTests {
+public class EntryServiceTests {
 
     private static final String TEST_USER = "testuser";
     private static final int PUBLIC_ENTRY_ID = 33661;
 
-    @Autowired
-    private StatisticsService statisticsService;
     @Autowired
     private EntryService entryService;
 
@@ -95,31 +93,4 @@ public class ServiceTests {
         assertTrue(entryList.size() > 0);
     }
 
-    @Test
-    public void testGetStatistics() throws ServiceException {
-        final Statistics statistics = statisticsService.getStatistics();
-        assertNotNull(statistics);
-        assertTrue(statistics.getComments() > 0);
-        assertTrue(statistics.getEntries() > 0);
-        //assertTrue(statistics.getTags() > 0);
-        // assertTrue(statistics.getStyles() > 0);
-        // assertTrue(statistics.getPrivateEntries() > 0);
-        assertTrue(statistics.getPublicEntries() > 0);
-        // assertTrue(statistics.getFriendsEntries() > 0);
-    }
-
-    @Test
-    public void testGetUserStatistics() throws ServiceException {
-        final UserStatistics statistics = statisticsService.getUserStatistics(TEST_USER);
-        assertNotNull(statistics);
-        assertEquals("testuser", statistics.getUsername());
-        assertTrue(statistics.getEntryCount() > 0);
-        assertTrue(statistics.getCommentCount() > 0);
-    }
-
-    @Test
-    public void testGetUserStatisticsBadUser() throws ServiceException {
-        final UserStatistics statistics = statisticsService.getUserStatistics("root");
-        assertNull(statistics);
-    }
 }
