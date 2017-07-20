@@ -64,6 +64,13 @@ public class EntryStatisticService {
     public io.reactivex.Observable<EntryStatistic> compute(final User user, final int startYear, final int endYear) {
         final GregorianCalendar calendarg = new GregorianCalendar();
 
+        if (endYear < startYear)
+            throw new IllegalArgumentException("endYear");
+        if (endYear < 2003)
+                 throw new IllegalArgumentException("endYear");
+        if (startYear < 2003)
+            throw new IllegalArgumentException("startYear");
+
         return io.reactivex.Observable.range(startYear, endYear - startYear + 1)
                 .flatMap(new Function<Integer, ObservableSource<EntryStatistic>>() {
                     @Override
@@ -72,6 +79,7 @@ public class EntryStatisticService {
                             @Override
                             public EntryStatistic call() throws Exception {
 
+                                log.warn("testing");
                                 EntryStatistic es = entryStatisticRepository.findByUserAndYear(user, yr);
                                 final long count = entryRepository.calendarCount(yr, user.getUsername());
 
