@@ -50,7 +50,7 @@ import java.util.Map;
  * @see com.justjournal.ctl.api.AccountController
  */
 @Transactional
-@Controller
+@RestController
 @RequestMapping("/api/signup")
 public class SignUpController {
     private static final Logger log = Logger.getLogger(SignUpController.class);

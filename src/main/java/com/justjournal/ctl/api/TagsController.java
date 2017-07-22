@@ -34,7 +34,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -68,8 +67,7 @@ public class TagsController {
     @Cacheable("tags")
     @RequestMapping(value = "", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public
-    ResponseEntity<Collection<Tag>> getTags() {
+    public ResponseEntity<Collection<Tag>> getTags() {
 
         final Map<String, Tag> tags = new HashMap<String, Tag>();
 
@@ -104,7 +102,7 @@ public class TagsController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
         return ResponseEntity.ok()
-                    .eTag(Integer.toString(tag.hashCode()))
-                    .body(tag);
+                .eTag(Integer.toString(tag.hashCode()))
+                .body(tag);
     }
 }

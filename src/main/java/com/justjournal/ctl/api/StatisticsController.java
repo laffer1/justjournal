@@ -37,10 +37,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
@@ -51,7 +48,7 @@ import javax.transaction.Transactional;
  * @author Lucas Holt
  */
 @Slf4j
-@Controller
+@RestController
 @RequestMapping("/api/statistics")
 public class StatisticsController {
 

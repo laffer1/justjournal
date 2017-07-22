@@ -45,6 +45,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -144,7 +145,7 @@ public class UsersController {
         return userPicRepository.exists(userId);
     }
 
-    @RequestMapping(value = "{username}", method = RequestMethod.GET, produces = "text/html")
+    @RequestMapping(value = "{username}", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
     public String entries(@PathVariable(PATH_USERNAME) final String username,
                           final Pageable pageable,
                           final Model model,
@@ -176,7 +177,7 @@ public class UsersController {
         return VIEW_USERS;
     }
 
-    @RequestMapping(value = "{username}/entry/{id}", method = RequestMethod.GET, produces = "text/html")
+    @RequestMapping(value = "{username}/entry/{id}", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
     public String entry(@PathVariable(PATH_USERNAME) final String username,
                         @PathVariable("id") final int id,
                         final Model model, final HttpSession session, final HttpServletResponse response) {

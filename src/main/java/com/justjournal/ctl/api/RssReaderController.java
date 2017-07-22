@@ -31,10 +31,10 @@ import com.justjournal.model.RssSubscription;
 import com.justjournal.model.User;
 import com.justjournal.repository.RssSubscriptionsRepository;
 import com.justjournal.repository.UserRepository;
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -45,18 +45,24 @@ import java.util.Map;
 /**
  * @author Lucas Holt
  */
-@Controller
+@Slf4j
+@RestController
 @RequestMapping("/api/rssreader")
 public class RssReaderController {
     public static final int RSS_URL_MAX_LENGTH = 1024;
     public static final int RSS_URL_MIN_LENGTH = 10;
-    private static final Logger log = Logger.getLogger(RssReaderController.class);
-    @Autowired
-    private RssSubscriptionsRepository rssSubscriptionsDAO;
-    @Autowired
-    private UserRepository userRepository;
 
-    @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = "application/json")
+    private final RssSubscriptionsRepository rssSubscriptionsDAO;
+
+    private final UserRepository userRepository;
+
+    @Autowired
+    public RssReaderController(final RssSubscriptionsRepository rssSubscriptionsDAO, final UserRepository userRepository) {
+        this.rssSubscriptionsDAO = rssSubscriptionsDAO;
+        this.userRepository = userRepository;
+    }
+
+    @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public RssSubscription getById(@PathVariable("id") Integer id) {
         return rssSubscriptionsDAO.findOne(id);
@@ -66,7 +72,7 @@ public class RssReaderController {
     @RequestMapping(value = "user/{username}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public Collection<RssSubscription> getByUser(@PathVariable("username") String username) {
-        User user = userRepository.findByUsername(username);
+        final User user = userRepository.findByUsername(username);
         return rssSubscriptionsDAO.findByUser(user);
     }
 
@@ -82,31 +88,31 @@ public class RssReaderController {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 return java.util.Collections.singletonMap("error", "Error adding link.");
             }
-            User user = userRepository.findOne(Login.currentLoginId(session));
+            
+            final User user = userRepository.findOne(Login.currentLoginId(session));
             to.setUser(user);
             to.setUri(uri);
             rssSubscriptionsDAO.save(to);
 
             return java.util.Collections.singletonMap("id", ""); // XXX
-        } catch (Exception e) {
-            log.error(e);
+        } catch (final Exception e) {
+            log.error(e.getMessage(), e);
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return java.util.Collections.singletonMap("error", "Error adding link.");
         }
     }
 
     @RequestMapping(method = RequestMethod.DELETE)
-    public
     @ResponseBody
-    Map<String, String> delete(@RequestBody int subId, HttpSession session, HttpServletResponse response) throws Exception {
+    public Map<String, String> delete(@RequestBody int subId, HttpSession session, HttpServletResponse response) throws Exception {
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
         }
 
         if (subId > 0) {
-            User user = userRepository.findOne(Login.currentLoginId(session));
-            RssSubscription to = rssSubscriptionsDAO.findOne(subId);
+            final User user = userRepository.findOne(Login.currentLoginId(session));
+            final RssSubscription to = rssSubscriptionsDAO.findOne(subId);
 
             if (user.getId() == to.getUser().getId()) {
                 rssSubscriptionsDAO.delete(to);
