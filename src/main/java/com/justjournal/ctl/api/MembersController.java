@@ -27,33 +27,36 @@
 package com.justjournal.ctl.api;
 
 import com.justjournal.model.Journal;
-import com.justjournal.model.PrefBool;
 import com.justjournal.model.User;
 import com.justjournal.repository.UserRepository;
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceContextType;
 import java.util.ArrayList;
 import java.util.Collection;
 
 /**
  * @author Lucas Holt
  */
-@Controller
+@Slf4j
+@RestController
 @RequestMapping("/api/members")
 public class MembersController {
-    private static final Logger log = Logger.getLogger(MembersController.class);
+
+    private final UserRepository userRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    public MembersController(final UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     /**
      * All moods usable by blogs
@@ -62,34 +65,31 @@ public class MembersController {
      */
     @Transactional
     @Cacheable("members")
-    @RequestMapping(method = RequestMethod.GET, headers = "Accept=*/*", produces = "application/json")
-    public
+    @RequestMapping(method = RequestMethod.GET, headers = "Accept=*/*", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    Collection<User> list() {
-        if ((userRepository == null)) throw new AssertionError();
+    public ResponseEntity<Collection<User>> list() {
 
-        Collection<User> publicMembers = new ArrayList<User>();
+        final Collection<User> publicMembers = new ArrayList<User>();
 
         try {
-            Iterable<User> members = userRepository.findAll();
+            final Iterable<User> members = userRepository.findAll();
 
-            if ((members == null)) throw new AssertionError();
-
-            for (User member : members) {
+            for (final User member : members) {
                 boolean stealth = false;
-                for (Journal journal : member.getJournals()) {
-                   if (journal.isOwnerViewOnly()) {
-                       stealth = true;
-                       break;
-                   }
+                for (final Journal journal : member.getJournals()) {
+                    if (journal.isOwnerViewOnly()) {
+                        stealth = true;
+                        break;
+                    }
                 }
                 if (!stealth) {
                     publicMembers.add(member);
                 }
             }
-        } catch (Exception e) {
-            log.error(e.getMessage());
+        } catch (final Exception e) {
+            log.error(e.getMessage(), e);
         }
-        return publicMembers;
+
+        return ResponseEntity.ok().eTag(Integer.toString(publicMembers.hashCode())).body(publicMembers);
     }
 }
