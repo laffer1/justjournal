@@ -36,11 +36,11 @@ package com.justjournal.ctl.api;
 
 import com.justjournal.model.Mood;
 import com.justjournal.repository.MoodRepository;
-import org.apache.commons.collections.IteratorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
@@ -66,8 +66,12 @@ public class MoodController {
     @Cacheable(value = "mood", key = "id")
     @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Mood getById(@PathVariable("id") Integer id) {
-        return moodDao.findOne(id);
+    public ResponseEntity<Mood> getById(@PathVariable("id") final Integer id) {
+        final Mood m = moodDao.findOne(id);
+        if (m == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        return ResponseEntity.ok().eTag(Integer.toString(m.hashCode())).body(m);
     }
 
     /**
@@ -76,14 +80,12 @@ public class MoodController {
      * @return mood list
      */
     @Cacheable("mood")
-    @RequestMapping(method = RequestMethod.GET, headers = "Accept=*/*", produces =  MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.GET, headers = "Accept=*/*", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public
-    Iterable<Mood> getMoodList() {
-        Iterable iter = moodDao.findAll();
-        List list = IteratorUtils.toList(iter.iterator());
+    public ResponseEntity<List<Mood>> getMoodList() {
+        final List<Mood> list = moodDao.findAll();
         Collections.sort(list);
-        return list;
+        return ResponseEntity.ok().eTag(Integer.toString(list.hashCode())).body(list);
     }
 
 }
