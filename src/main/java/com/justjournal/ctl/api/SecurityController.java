@@ -33,17 +33,16 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 /**
  * @author Lucas Holt
  */
-@Controller
+@RestController
 @RequestMapping("/api/security")
 public class SecurityController {
 
@@ -68,8 +67,13 @@ public class SecurityController {
     @Cacheable("security")
     @RequestMapping(method = RequestMethod.GET, headers = "Accept=*/*", produces = APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Iterable<Security> getSecurityList() {
-        return securityDao.findAll();
+    public ResponseEntity<List<Security>> getSecurityList() {
+        final List<Security> securities = securityDao.findAll();
+
+        return ResponseEntity
+                .ok()
+                .eTag(Integer.toString(securities.hashCode()))
+                .body(securities);
     }
 
 }
