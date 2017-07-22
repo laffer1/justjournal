@@ -39,6 +39,8 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 
 /**
  * Retrieve and acquire mood's for use with journal entries.
@@ -47,4 +49,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface MoodRepository extends PagingAndSortingRepository<Mood, Integer> {
+    List<Mood> findAll();
 }
