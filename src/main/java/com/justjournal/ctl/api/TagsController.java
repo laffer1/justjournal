@@ -31,12 +31,16 @@ import com.justjournal.repository.EntryTagsRepository;
 import com.justjournal.repository.TagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,11 +53,15 @@ import java.util.Map;
 @RequestMapping("/api/tags")
 public class TagsController {
 
-    @Autowired
-    private TagRepository tagDao;
+    private final TagRepository tagDao;
+
+    private final EntryTagsRepository entryTagsRepository;
 
     @Autowired
-    private EntryTagsRepository entryTagsRepository;
+    public TagsController(final TagRepository tagDao, final EntryTagsRepository entryTagsRepository) {
+        this.tagDao = tagDao;
+        this.entryTagsRepository = entryTagsRepository;
+    }
 
     /**
      * Get the tag list for the whole site
@@ -61,10 +69,10 @@ public class TagsController {
      * @return tag list
      */
     @Cacheable("tags")
-    @RequestMapping(value = "", method = RequestMethod.GET, produces = "application/json")
-    public
+    @RequestMapping(value = "", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    Iterable<Tag> getTags() {
+    public
+    ResponseEntity<Collection<Tag>> getTags() {
 
         final Map<String, Tag> tags = new HashMap<String, Tag>();
 
@@ -77,7 +85,9 @@ public class TagsController {
             }
         }
 
-        return tags.values();
+        return ResponseEntity.ok()
+                .eTag(Integer.toString(tags.values().hashCode()))
+                .body(tags.values());
     }
 
     /**
@@ -87,9 +97,17 @@ public class TagsController {
      * @return tag list
      */
     @Cacheable(value = "tags", key = "#id")
-    @RequestMapping(value = "/api/tags/{id}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/api/tags/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Tag getById(@PathVariable("id") final Integer id) {
-        return tagDao.findOne(id);
+    public ResponseEntity<Tag> getById(@PathVariable("id") final Integer id) {
+
+        final Tag tag = tagDao.findOne(id);
+
+        if (tag == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        return ResponseEntity.ok()
+                    .eTag(Integer.toString(tag.hashCode()))
+                    .body(tag);
     }
 }

@@ -27,6 +27,7 @@
 package com.justjournal.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import lombok.EqualsAndHashCode;
 import org.springframework.stereotype.Component;
 
 /**
@@ -34,8 +35,9 @@ import org.springframework.stereotype.Component;
  *
  * @author Lucas Holt
  */
+@EqualsAndHashCode
 @Component
-final public class StatisticsImpl implements Statistics {
+public final class StatisticsImpl implements Statistics {
 
     private long users = 0;
     private long entries = 0;
@@ -48,7 +50,7 @@ final public class StatisticsImpl implements Statistics {
 
     @JsonCreator
     public StatisticsImpl() {
-
+        super();
     }
 
     public long getPublicEntries() {

@@ -30,9 +30,12 @@ import com.justjournal.model.Statistics;
 import com.justjournal.model.UserStatistics;
 import com.justjournal.services.ServiceException;
 import com.justjournal.services.StatisticsService;
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,65 +50,71 @@ import javax.transaction.Transactional;
  *
  * @author Lucas Holt
  */
+@Slf4j
 @Controller
 @RequestMapping("/api/statistics")
 public class StatisticsController {
-    private static final Logger log = Logger.getLogger(StatisticsController.class);
+
+    private final StatisticsService statisticsService;
 
     @Autowired
-    private StatisticsService statisticsService;
+    public StatisticsController(final StatisticsService statisticsService) {
+        this.statisticsService = statisticsService;
+    }
 
     /**
      * Get Site statistics
      *
      * @return statistics
      */
-    @Transactional(value= Transactional.TxType.REQUIRED)
+    @Transactional(value = Transactional.TxType.REQUIRED)
     @Cacheable("statistics")
-    @RequestMapping(method = RequestMethod.GET, headers = "Accept=*/*", produces = "application/json")
-    public
+    @RequestMapping(method = RequestMethod.GET, headers = "Accept=*/*", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    Statistics get(HttpServletResponse response) {
-        if ((statisticsService == null)) throw new AssertionError();
+    public ResponseEntity<Statistics> get() {
 
         try {
-            return statisticsService.getStatistics();
-        } catch (ServiceException e) {
-            log.warn("Statistics not available");
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            return null;
+            final Statistics s = statisticsService.getStatistics();
+            return ResponseEntity
+                    .ok()
+                    .eTag(Integer.toString(s.hashCode()))
+                    .body(s);
+        } catch (final ServiceException e) {
+            log.warn("Statistics not available", e);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     /**
      * Get statistics for a specific user
      *
-     * @param username       username
-     * @param response Servlet response
+     * @param username username
      * @return stats
      */
-    @Transactional(value= Transactional.TxType.REQUIRED)
+    @Transactional(value = Transactional.TxType.REQUIRED)
     @Cacheable(value = "userstatistics", key = "username")
-    @RequestMapping(value = "{username}", method = RequestMethod.GET, headers = "Accept=*/*", produces = "application/json")
+    @RequestMapping(value = "{username}", method = RequestMethod.GET, headers = "Accept=*/*", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public UserStatistics getById(@PathVariable("username") String username, HttpServletResponse response) {
-        if (statisticsService == null) throw new AssertionError();
+    public ResponseEntity<UserStatistics> getById(@PathVariable("username") String username) {
 
         try {
             if (username == null || username.equals("") || username.length() < 3) {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                return new UserStatistics();
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
 
-            UserStatistics us = statisticsService.getUserStatistics(username);
+            final UserStatistics us = statisticsService.getUserStatistics(username);
             if (us == null) {
-                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
-            return us;
-        } catch (ServiceException e) {
-            log.warn("User Statistics error: (" + username + "), " + e.getMessage());
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            return new UserStatistics();
+
+            return ResponseEntity
+                    .ok()
+                    .eTag(Integer.toString(us.hashCode()))
+                    .body(us);
+
+        } catch (final ServiceException e) {
+            log.warn("User Statistics error: (" + username + "), " + e.getMessage(), e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

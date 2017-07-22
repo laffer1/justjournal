@@ -26,15 +26,19 @@
 
 package com.justjournal.ctl.api;
 
-import com.justjournal.repository.SecurityRepository;
 import com.justjournal.model.Security;
+import com.justjournal.repository.SecurityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 /**
  * @author Lucas Holt
@@ -43,21 +47,28 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/api/security")
 public class SecurityController {
 
+    private final SecurityRepository securityDao;
+
     @Autowired
-    private SecurityRepository securityDao;
+    public SecurityController(final SecurityRepository securityDao) {
+        this.securityDao = securityDao;
+    }
 
     @Cacheable(value = "security", key = "id")
-    @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Security getById(@PathVariable("id") Integer id) {
-        return securityDao.findOne(id);
+    public ResponseEntity<Security> getById(@PathVariable("id") final Integer id) {
+        final Security s = securityDao.findOne(id);
+        if (s == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        return ResponseEntity.ok().eTag(Integer.toString(s.hashCode())).body(s);
     }
 
     @Cacheable("security")
-    @RequestMapping(method = RequestMethod.GET, headers = "Accept=*/*", produces = "application/json")
-    public
+    @RequestMapping(method = RequestMethod.GET, headers = "Accept=*/*", produces = APPLICATION_JSON_VALUE)
     @ResponseBody
-    Iterable<Security> getSecurityList() {
+    public Iterable<Security> getSecurityList() {
         return securityDao.findAll();
     }
 
