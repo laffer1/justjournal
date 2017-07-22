@@ -60,6 +60,7 @@ public class EntryStatisticService {
     }
 
 
+
     @Transactional(isolation = Isolation.READ_UNCOMMITTED)
     public io.reactivex.Observable<EntryStatistic> compute(final User user, final int startYear, final int endYear) {
         final GregorianCalendar calendarg = new GregorianCalendar();
@@ -79,11 +80,12 @@ public class EntryStatisticService {
                             @Override
                             public EntryStatistic call() throws Exception {
 
-                                log.warn("testing");
+                                log.debug("testing with year: " + yr + " user: " + user.getUsername() );
                                 EntryStatistic es = entryStatisticRepository.findByUserAndYear(user, yr);
                                 final long count = entryRepository.calendarCount(yr, user.getUsername());
 
                                 if (es == null) {
+                                    log.trace("Creating new entry statistic");
                                     es = new EntryStatistic();
                                     es.setUser(user);
                                 }
@@ -92,6 +94,7 @@ public class EntryStatisticService {
                                 es.setYear(yr);
                                 es.setModified(calendarg.getTime());
 
+                                log.trace("save and flush time");
                                 return entryStatisticRepository.saveAndFlush(es);
 
                             }
@@ -99,4 +102,5 @@ public class EntryStatisticService {
                     }
                 }).subscribeOn(Schedulers.io());
     }
+       
 }
