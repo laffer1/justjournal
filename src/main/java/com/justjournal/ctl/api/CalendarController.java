@@ -30,6 +30,7 @@ import com.justjournal.model.CalendarCount;
 import com.justjournal.model.User;
 import com.justjournal.repository.EntryRepository;
 import com.justjournal.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,21 +52,23 @@ import java.util.GregorianCalendar;
  *
  * @author Lucas Holt
  */
+@Slf4j
 @Controller
 @RequestMapping("/api/calendar")
 public class CalendarController {
 
     private static final int MONTHS = 12;
-    private Logger log = LoggerFactory.getLogger(AccountController.class);
+
     @Autowired
     private UserRepository userRepository;
+    
     @Qualifier("entryRepository")
     @Autowired
     private EntryRepository entryRepository;
 
     @RequestMapping(value = "/counts/{username}", method = RequestMethod.GET, produces = "application/json")
-    public
     @ResponseBody
+    public
     Collection<CalendarCount> getYearCounts(@PathVariable("username") String username, HttpServletResponse response) {
 
         User user = userRepository.findByUsername(username);
@@ -99,8 +102,8 @@ public class CalendarController {
     }
 
     @RequestMapping(value = "/counts/{username}/{year}", method = RequestMethod.GET, produces = "application/json")
-    public
     @ResponseBody
+    public
     Collection<CalendarCount> getMonthCounts(@PathVariable("username") String username, @PathVariable("year") int year, HttpServletResponse response) {
 
         User user = userRepository.findByUsername(username);

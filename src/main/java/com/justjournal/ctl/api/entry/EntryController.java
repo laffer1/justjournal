@@ -31,11 +31,8 @@ import com.justjournal.model.*;
 import com.justjournal.model.api.EntryTo;
 import com.justjournal.repository.*;
 import com.justjournal.services.EntryService;
-import com.justjournal.services.EntryStatisticService;
 import com.justjournal.services.ServiceException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.IteratorUtils;
-import org.apache.commons.collections.ListUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.annotation.CacheEvict;
@@ -88,50 +85,49 @@ public class EntryController {
     private UserRepository userRepository;
     @Autowired
     private EntryService entryService;
-    
+
 
     /**
-     * Get the private list of recent blog entries.
-     * If logged in, get the private list otherwise only public entries.
+     * Get the private list of recent blog entries. If logged in, get the private list otherwise only public entries.
      * /api/entry/{username}/recent
+     *
      * @param username username
      * @param response HttpResponse
      * @param session  HttpSession
      * @return list of recent entries
      */
-     @RequestMapping(value = "{username}/recent", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-     @ResponseBody
-     public ResponseEntity<List<RecentEntry>> getRecentEntries(@PathVariable("username") final String username,
-                                                               final HttpServletResponse response, final HttpSession session) {
-         final io.reactivex.Observable<RecentEntry> entries;
-         try {
-             if (Login.isAuthenticated(session) && Login.isUserName(username)) {
-                 entries = entryService.getRecentEntries(username);
-             } else {
-                 entries = entryService.getRecentEntriesPublic(username);
-             }
-             
-             final List<RecentEntry> e = entries.toList().blockingGet();
+    @RequestMapping(value = "{username}/recent", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity<List<RecentEntry>> getRecentEntries(@PathVariable("username") final String username,
+                                                              final HttpServletResponse response, final HttpSession session) {
+        final io.reactivex.Observable<RecentEntry> entries;
+        try {
+            if (Login.isAuthenticated(session) && Login.isUserName(username)) {
+                entries = entryService.getRecentEntries(username);
+            } else {
+                entries = entryService.getRecentEntriesPublic(username);
+            }
 
-             return ResponseEntity
-                          .ok()
-                     //     .cacheControl(CacheControl.maxAge(1, TimeUnit.DAYS))
-                          .eTag(Integer.toString(e.hashCode()))
-                          .body(e);
-         } catch (final ServiceException e) {
-             log.error(e.getMessage(), e);
-             return new ResponseEntity<List<RecentEntry>>(HttpStatus.INTERNAL_SERVER_ERROR);
-         }
-     }
+            final List<RecentEntry> e = entries.toList().blockingGet();
+
+            return ResponseEntity
+                    .ok()
+                    //     .cacheControl(CacheControl.maxAge(1, TimeUnit.DAYS))
+                    .eTag(Integer.toString(e.hashCode()))
+                    .body(e);
+        } catch (final ServiceException e) {
+            log.error(e.getMessage(), e);
+            return new ResponseEntity<List<RecentEntry>>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 
     @RequestMapping(value = "{username}/size/{size}/page/{page}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public
-    Page<Entry> getEntries(@PathVariable("username") final String username,
-                           @PathVariable("size") final int size,
-                           @PathVariable("page") final int page,
-                           final HttpServletResponse response, final HttpSession session) {
+    public Page<Entry> getEntries(@PathVariable("username") final String username,
+                                  @PathVariable("size") final int size,
+                                  @PathVariable("page") final int page,
+                                  final HttpServletResponse response, final HttpSession session) {
         final Page<Entry> entries;
         final Pageable pageable = new PageRequest(page, size, new Sort(
                 new Sort.Order(Sort.Direction.DESC, "date")
@@ -157,9 +153,8 @@ public class EntryController {
 
     @RequestMapping(value = "{username}/page/{page}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public
-    Page<Entry> getEntries(@PathVariable("username") final String username, @PathVariable("page") final int page,
-                           final HttpServletResponse response, final HttpSession session) {
+    public Page<Entry> getEntries(@PathVariable("username") final String username, @PathVariable("page") final int page,
+                                  final HttpServletResponse response, final HttpSession session) {
 
         return getEntries(username, DEFAULT_SIZE, page, response, session);
     }
@@ -210,9 +205,8 @@ public class EntryController {
      */
     @RequestMapping(value = "{username}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public
-    Collection<Entry> getEntries(@PathVariable("username") final String username,
-                                 final HttpServletResponse response) {
+    public Collection<Entry> getEntries(@PathVariable("username") final String username,
+                                        final HttpServletResponse response) {
         Collection<Entry> entries = null;
         try {
             entries = entryService.getPublicEntries(username);
@@ -231,9 +225,8 @@ public class EntryController {
     @Transactional(Transactional.TxType.REQUIRED)
     @RequestMapping(value = "", params = "username", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public
-    Collection<Entry> getEntriesByUsername(@RequestParam("username") final String username,
-                                           final HttpServletResponse response) {
+    public Collection<Entry> getEntriesByUsername(@RequestParam("username") final String username,
+                                                  final HttpServletResponse response) {
         Collection<Entry> entries = new ArrayList<Entry>();
         log.warn("in entriesByUsername with " + username);
 
@@ -261,7 +254,7 @@ public class EntryController {
     /**
      * Creates a new entry resource
      *
-     * @param entryTo    EntryTo
+     * @param entryTo  EntryTo
      * @param session  HttpSession
      * @param response HttpServletResponse
      * @return status ok or error
@@ -270,11 +263,10 @@ public class EntryController {
     @RequestMapping(method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public
-    Map<String, String> post(@RequestBody final EntryTo entryTo,
-                             final HttpSession session,
-                             final HttpServletResponse response,
-                             final Model model) {
+    public Map<String, String> post(@RequestBody final EntryTo entryTo,
+                                    final HttpSession session,
+                                    final HttpServletResponse response,
+                                    final Model model) {
 
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -314,7 +306,7 @@ public class EntryController {
             entry.setDate(new Date());
         else
             entry.setDate(entryTo.getDate());
-        
+
         final Entry saved = entryRepository.saveAndFlush(entry);
 
         if (saved.getId() < 1) {
@@ -336,7 +328,7 @@ public class EntryController {
     /**
      * PUT generally allows for add or edit in REST.
      *
-     * @param entryTo    User's Blog entry
+     * @param entryTo  User's Blog entry
      * @param session  HttpSession
      * @param response HttpServletResponse
      * @return
@@ -346,8 +338,7 @@ public class EntryController {
             consumes = "application/json",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public
-    Map<String, String> put(@RequestBody EntryTo entryTo, HttpSession session, HttpServletResponse response) {
+    public Map<String, String> put(@RequestBody EntryTo entryTo, HttpSession session, HttpServletResponse response) {
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return Collections.singletonMap(ERR_TYPE, ERR_INVALID_LOGIN);
@@ -359,21 +350,21 @@ public class EntryController {
         entry.setSubject(entryTo.getSubject());
         entry.setBody(entryTo.getBody());
 
-            entry.setLocation(locationDao.findOne(entryTo.getLocation()));
-            entry.setSecurity(securityDao.findOne(entryTo.getSecurity()));
-            entry.setMood(moodDao.findOne(entryTo.getMood()));
+        entry.setLocation(locationDao.findOne(entryTo.getLocation()));
+        entry.setSecurity(securityDao.findOne(entryTo.getSecurity()));
+        entry.setMood(moodDao.findOne(entryTo.getMood()));
 
         if (entryTo.getDate() == null)
             entry.setDate(Calendar.getInstance().getTime());
         else
             entry.setDate(entryTo.getDate());
-        
+
         final Entry entry2 = entryRepository.findOne(entryTo.getId());
 
         if (entry2 != null && entry2.getId() > 0 && entry2.getUser().getId() == user.getId()) {
             entry.setId(entry2.getId());
         }
-        
+
         entry = entryRepository.save(entry);
         entryService.applyTags(entry, entryTo.getTags());
 
@@ -389,9 +380,8 @@ public class EntryController {
     @CacheEvict(value = "recentblogs")
     @RequestMapping(value = "/{entryId}", method = RequestMethod.DELETE)
     @ResponseBody
-    public
-    Map<String, String> delete(@PathVariable("entryId") final int entryId,
-                               final HttpSession session, final HttpServletResponse response) {
+    public Map<String, String> delete(@PathVariable("entryId") final int entryId,
+                                      final HttpSession session, final HttpServletResponse response) {
 
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -410,7 +400,7 @@ public class EntryController {
                 commentDao.delete(comments);
                 entryRepository.delete(entryId);
             } else {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);    
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 return Collections.singletonMap(ERR_TYPE, "Could not delete entry.");
             }
 

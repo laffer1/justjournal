@@ -31,10 +31,12 @@ import com.justjournal.model.Friend;
 import com.justjournal.model.User;
 import com.justjournal.repository.FriendsRepository;
 import com.justjournal.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,16 +51,20 @@ import java.util.Map;
  *
  * @author Lucas Holt
  */
-@Controller
+@Slf4j
+@RestController
 @RequestMapping("/api/friend")
 public class FriendController {
-    private static final Logger log = Logger.getLogger(FriendController.class);
+
+    private final UserRepository userRepository;
+
+    private final FriendsRepository friendsDao;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private FriendsRepository friendsDao;
+    public FriendController(final UserRepository userRepository, final FriendsRepository friendsDao) {
+        this.userRepository = userRepository;
+        this.friendsDao = friendsDao;
+    }
 
     // TODO: refactor to return user objects?
 
@@ -68,7 +74,7 @@ public class FriendController {
      * @return List of usernames as strings
      */
     @Cacheable(value = "friends", key = "id")
-    @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Collection<User> getById(@PathVariable("id") String id, HttpServletResponse response) {
         try {
@@ -79,14 +85,14 @@ public class FriendController {
                 friends.add(friend.getFriend());
             }
             return friends;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return null;
         }
     }
 
     @CacheEvict(value = "friends", key = "friend")
-    @RequestMapping(method = RequestMethod.PUT, produces = "application/json")
+    @RequestMapping(method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Map<String, String> put(@RequestParam String friend, HttpSession session, HttpServletResponse response) {
         if (!Login.isAuthenticated(session)) {
@@ -122,8 +128,8 @@ public class FriendController {
     // TODO: api makes it hard to selectively delete cache entries
     @CacheEvict(value = "friends", allEntries = true)
     @RequestMapping(method = RequestMethod.DELETE)
-    public
     @ResponseBody
+    public
     Map<String, String> delete(@RequestBody Friend friend, HttpSession session, HttpServletResponse response) throws Exception {
 
 
@@ -133,13 +139,13 @@ public class FriendController {
         }
 
         try {
-            User user = userRepository.findOne(Login.currentLoginId(session));
+            final User user = userRepository.findOne(Login.currentLoginId(session));
             friend.setUser(user);
 
             friendsDao.delete(friend);
             return java.util.Collections.singletonMap("status", "success");
-        } catch (Exception e) {
-            log.error(e.getMessage());
+        } catch (final Exception e) {
+            log.error(e.getMessage(), e);
         }
 
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

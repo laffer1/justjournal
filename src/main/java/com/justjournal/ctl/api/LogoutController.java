@@ -39,8 +39,8 @@ import javax.servlet.http.HttpSession;
 @RequestMapping("/api/logout")
 public class LogoutController {
 
-    public
     @ResponseBody
+    public
     String get(HttpSession session) {
         session.invalidate();
         return "LOGOUT";

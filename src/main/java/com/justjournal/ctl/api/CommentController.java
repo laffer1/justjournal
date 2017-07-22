@@ -37,6 +37,7 @@ package com.justjournal.ctl.api;
 import com.justjournal.Login;
 import com.justjournal.model.*;
 import com.justjournal.repository.*;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -48,10 +49,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-@Controller
+@Slf4j
+@RestController
 @RequestMapping("/api/comment")
 public class CommentController {
-    private org.slf4j.Logger log = LoggerFactory.getLogger(CommentController.class);
 
     private CommentRepository commentDao;
     private EntryRepository entryDao;
@@ -79,9 +80,9 @@ public class CommentController {
         return commentDao.findOne(id);
     }
 
+    @ResponseBody
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public
-    @ResponseBody
     List<Comment> getComments(@RequestParam("entryId") final Integer entryId, final HttpServletResponse response) throws Exception {
         final Entry entry = entryDao.findOne(entryId);
 
@@ -100,8 +101,8 @@ public class CommentController {
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
-    public
     @ResponseBody
+    public
     Map<String, String> delete(@PathVariable("id") final int id, final HttpSession session, final HttpServletResponse response) throws Exception {
 
         if (!Login.isAuthenticated(session)) {
@@ -130,8 +131,8 @@ public class CommentController {
     }
 
     @RequestMapping(method = RequestMethod.PUT, produces = "application/json")
-    public
     @ResponseBody
+    public
     Map<String, String> put(@RequestBody final Comment comment, final HttpSession session, final HttpServletResponse response) {
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);

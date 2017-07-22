@@ -32,6 +32,7 @@ import com.justjournal.model.UserBio;
 import com.justjournal.repository.UserBioRepository;
 import com.justjournal.repository.UserRepository;
 import com.justjournal.utility.StringUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -48,11 +49,12 @@ import java.util.Map;
  *
  * @author Lucas Holt
  */
-@Controller
+@Slf4j
+@RestController
 @RequestMapping("/api/biography")
 public class BiographyController {
     public static final int BIO_MAX_LENGTH = 150;
-    private org.slf4j.Logger log = LoggerFactory.getLogger(BiographyController.class);
+
     private UserBioRepository bioDao = null;
     private UserRepository userDao;
 

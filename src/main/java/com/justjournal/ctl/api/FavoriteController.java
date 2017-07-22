@@ -40,8 +40,10 @@ import com.justjournal.model.User;
 import com.justjournal.repository.EntryRepository;
 import com.justjournal.repository.FavoriteRepository;
 import com.justjournal.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -62,19 +64,23 @@ import java.util.Map;
  * <p/>
  * Created: Date: Dec 10, 2005 Time: 8:44:39 PM
  */
-@Controller
+@Slf4j
+@RestController
 @RequestMapping("/api/favorite")
 public class FavoriteController {
-    private static final Logger log = Logger.getLogger(FavoriteController.class.getName());
+
+    private final FavoriteRepository favoriteRepository;
+
+    private final EntryRepository entryRepository;
+
+    private final UserRepository userRepository;
 
     @Autowired
-    private FavoriteRepository favoriteRepository;
-
-    @Autowired
-    private EntryRepository entryRepository;
-
-    @Autowired
-    private UserRepository userRepository;
+    public FavoriteController(final FavoriteRepository favoriteRepository, final EntryRepository entryRepository, final UserRepository userRepository) {
+        this.favoriteRepository = favoriteRepository;
+        this.entryRepository = entryRepository;
+        this.userRepository = userRepository;
+    }
 
 
     /**
@@ -83,7 +89,7 @@ public class FavoriteController {
      * @return an arraylist containing EntryTo objects
      */
 
-    @RequestMapping(method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
     Collection<Entry> getFavorites(final HttpSession session, final HttpServletResponse response) {
@@ -105,8 +111,8 @@ public class FavoriteController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/{entryId}")
-    public
     @ResponseBody
+    public
     Map<String, String> create(@PathVariable("entryId") final int entryId,
                                final HttpSession session,
                                final HttpServletResponse response) {

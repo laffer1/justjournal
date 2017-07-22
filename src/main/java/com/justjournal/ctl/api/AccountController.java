@@ -30,6 +30,7 @@ import com.justjournal.Login;
 import com.justjournal.model.*;
 import com.justjournal.model.api.PasswordChange;
 import com.justjournal.repository.*;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,11 +45,10 @@ import java.util.Map;
 /**
  * @author Lucas Holt
  */
-@Controller
+@Slf4j
+@RestController
 @RequestMapping("/api/account")
 public class AccountController {
-
-    private Logger log = LoggerFactory.getLogger(AccountController.class);
 
     @Autowired
     private UserRepository userDao;

@@ -30,15 +30,14 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.justjournal.Login;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -49,7 +48,8 @@ import java.io.Serializable;
  *
  * @author Lucas Holt
  */
-@Controller
+@Slf4j
+@RestController
 @RequestMapping("/api/login")
 public class LoginController {
 
@@ -57,7 +57,6 @@ public class LoginController {
     private static final String JJ_LOGIN_FAIL = "JJ.LOGIN.FAIL";
     private static final String JJ_LOGIN_NONE = "JJ.LOGIN.NONE";
 
-    private static final Logger log = Logger.getLogger(LoginController.class);
     @Autowired
     private com.justjournal.Login webLogin;
 
@@ -70,13 +69,14 @@ public class LoginController {
 
         @JsonCreator
         public LoginResponse() {
+            super();
         }
 
         public String getUsername() {
             return username;
         }
 
-        public void setUsername(String username) {
+        public void setUsername(final String username) {
             this.username = username;
         }
 
@@ -84,7 +84,7 @@ public class LoginController {
             return status;
         }
 
-        public void setStatus(String status) {
+        public void setStatus(final String status) {
             this.status = status;
         }
 
@@ -104,24 +104,24 @@ public class LoginController {
      * @param session HttpSession
      * @return LoginResponse with login OK or NONE
      */
-    @RequestMapping(method = RequestMethod.GET, headers = "Accept=*/*", produces = "application/json;charset=UTF-8")
-    public
+    @RequestMapping(method = RequestMethod.GET, headers = "Accept=*/*", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
-    LoginResponse getLoginStatus(HttpSession session) {
-        LoginResponse response = new LoginResponse();
-        String username = (String) session.getAttribute("auth.user");
+    public
+    LoginResponse getLoginStatus(final HttpSession session) {
+        final LoginResponse response = new LoginResponse();
+        final String username = (String) session.getAttribute("auth.user");
         response.setUsername(username);
         response.setStatus(username == null ? JJ_LOGIN_NONE : JJ_LOGIN_OK);
         return response;
     }
 
 
-    @RequestMapping(method = RequestMethod.POST, consumes = "application/json;charset=UTF-8",
-            produces = "application/json;charset=UTF-8", headers = {"Accept=*/*", "content-type=application/json"})
-    public
+    @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE, headers = {"Accept=*/*", "content-type=application/json"})
     @ResponseBody
-    ResponseEntity<LoginResponse> post(@RequestBody com.justjournal.core.Login login, HttpServletRequest request) {
-        LoginResponse loginResponse = new LoginResponse();
+    public
+    ResponseEntity<LoginResponse> post(@RequestBody final com.justjournal.core.Login login, final HttpServletRequest request) {
+        final LoginResponse loginResponse = new LoginResponse();
 
         try {
             // Current authentication needs to get whacked
@@ -131,7 +131,7 @@ public class LoginController {
                 session = request.getSession(true); // reset
             }
 
-            int userID = webLogin.validate(login.getUsername(), login.getPassword());
+            final int userID = webLogin.validate(login.getUsername(), login.getPassword());
             if (userID > Login.BAD_USER_ID) {
                 log.debug("LoginController.post(): Username is " + login.getUsername());
                 session.setAttribute("auth.uid", userID);
@@ -146,8 +146,8 @@ public class LoginController {
             loginResponse.setUsername(login.getUsername());
             loginResponse.setStatus(JJ_LOGIN_OK);
             return new ResponseEntity<LoginResponse>(loginResponse, HttpStatus.OK);
-        } catch (Exception e) {
-            log.error(e);
+        } catch (final Exception e) {
+            log.error(e.getMessage(), e);
             return new ResponseEntity<LoginResponse>(loginResponse, HttpStatus.BAD_REQUEST);
         }
     }

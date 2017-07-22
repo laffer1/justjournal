@@ -55,7 +55,7 @@ import java.util.*;
  * @author Lucas Holt
  */
 @Slf4j
-@Controller
+@RestController
 @RequestMapping("/api/link")
 public class LinkController {
 

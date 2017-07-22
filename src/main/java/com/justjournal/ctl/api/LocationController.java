@@ -30,34 +30,45 @@ import com.justjournal.model.Location;
 import com.justjournal.repository.LocationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author Lucas Holt
  */
-@Controller
+@RestController
 @RequestMapping("/api/location")
 public class LocationController {
 
+    private final LocationRepository locationDao;
+
     @Autowired
-    private LocationRepository locationDao;
+    public LocationController(final LocationRepository locationDao) {
+        this.locationDao = locationDao;
+    }
 
     @Cacheable(value = "location", key = "id")
-    @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Location getById(@PathVariable("id") Integer id) {
-        return locationDao.findOne(id);
+    public ResponseEntity<Location> getById(@PathVariable("id") final Integer id) {
+
+        final Location location = locationDao.findOne(id);
+        if (location == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        return ResponseEntity.ok().eTag(Integer.toString(location.hashCode())).body(location);
     }
 
     @Cacheable("location")
-    @RequestMapping(method = RequestMethod.GET, headers = "Accept=*/*", produces = "application/json")
-    public
+    @RequestMapping(method = RequestMethod.GET, headers = "Accept=*/*", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    Iterable<Location> getLocationList() {
-        return locationDao.findAll();
+    public ResponseEntity<List<Location>> getLocationList() {
+
+        final List<Location> locations = locationDao.findAll();
+        return ResponseEntity.ok().eTag(Integer.toString(locations.hashCode())).body(locations);
     }
 }
