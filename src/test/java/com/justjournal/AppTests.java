@@ -195,8 +195,7 @@ public class AppTests {
     @Test
     public void apiStatisticsInvalid() throws Exception {
         mockMvc.perform(get("/api/statistics/r"))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentTypeCompatibleWith("application/json;charset=UTF-8"));
+                .andExpect(status().isBadRequest());
     }
 
     @Test
