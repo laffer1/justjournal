@@ -276,6 +276,14 @@ public class Entry implements Serializable {
     public PrefBool getAutoFormat() {
         return autoFormat;
     }
+  
+    public FormatType getFormat() {
+      return format;
+    }
+  
+    public void setFormat(final FormatType format) {
+      this.format = format;
+    }
 
     public void setAutoFormat(final PrefBool autoFormat) {
         this.autoFormat = autoFormat;
