@@ -34,6 +34,7 @@ angular.module('wwwApp').controller('EntryCtrl', ['$scope', '$routeParams', '$lo
             autoFormat: true,
             // date: new Date(), // TODO: is this the right format?
             emailComments: true,
+            format: 'TEXT',
             subject: '',
             body: '',
             tag: '',
@@ -53,6 +54,7 @@ angular.module('wwwApp').controller('EntryCtrl', ['$scope', '$routeParams', '$lo
                 autoFormat: true,
                 // date: new Date(), // TODO: is this the right format?
                 emailComments: true,
+                format: 'TEXT',
                 subject: '',
                 body: '',
                 tag: '',
