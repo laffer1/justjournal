@@ -83,6 +83,9 @@ public class EntryTo implements Serializable {
 
     @Getter @Setter 
     private String music = "";
+  
+    @Getter @Setter
+    private String format = "TEXT";
 
     @Getter @Setter
     @JsonProperty("autoFormat")
