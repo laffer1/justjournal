@@ -301,7 +301,13 @@ public class EntryController {
         entry.setAutoFormat(entryTo.getAutoFormat() ? PrefBool.Y : PrefBool.N);
         entry.setDraft(entryTo.getDraft() ? PrefBool.Y : PrefBool.N);
         entry.setAllowComments(entryTo.getAllowComments() ? PrefBool.Y : PrefBool.N);
-
+        if (entryTo.getFormat().equals("MARKDOWN")) 
+            entry.setFormat(FormatType.MARKDOWN);
+        else if (entryTo.getFormat().equals("HTML"))
+            entry.setFormat(FormatType.HTML);
+        else
+            entry.setFormat(FormatType.TEXT);
+     
         if (entryTo.getDate() == null)
             entry.setDate(new Date());
         else
@@ -353,6 +359,13 @@ public class EntryController {
         entry.setLocation(locationDao.findOne(entryTo.getLocation()));
         entry.setSecurity(securityDao.findOne(entryTo.getSecurity()));
         entry.setMood(moodDao.findOne(entryTo.getMood()));
+        
+        if (entryTo.getFormat().equals("MARKDOWN")) 
+            entry.setFormat(FormatType.MARKDOWN);
+        else if (entryTo.getFormat().equals("HTML"))
+            entry.setFormat(FormatType.HTML);
+        else
+            entry.setFormat(FormatType.TEXT);
 
         if (entryTo.getDate() == null)
             entry.setDate(Calendar.getInstance().getTime());
