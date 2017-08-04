@@ -21,9 +21,21 @@
                                                   ng-model="entry.body" required></textarea>
                 </div>
 
-                <div class="form-group" id="newlinetext">
+                <div class="form-group">
+                    <label for="security">Format</label>
+                    <select class="form-control" id="format" name="format" size="1"
+                            ng-model="entry.format"
+                            adfng-init="entry.format = entry.format || options[0].value">
+                        <option>TEXT</option>
+                        <option>HTML</option>
+                        <option>MARKDOWN</option>
+                    </select>
+                </div>
+                
+                <div class="form-group" id="newlinetext" data-ng-disabled="entry.format != 'TEXT'">
                     by default, newlines will be auto-formatted to &lt;br&gt;
                 </div>
+                
             </fieldset>
 
             <fieldset>
