@@ -114,6 +114,11 @@ public class Entry implements Serializable {
     @Column(name = "autoformat", nullable = false, length = 1)
     @Enumerated(EnumType.STRING)
     private PrefBool autoFormat = PrefBool.Y;
+  
+    @JsonProperty("format")
+    @Column(name = "format", nullable = false, length = 8)
+    @Enumerated(EnumType.STRING)
+    private FormatType format = FormatType.TEXT;
 
     @JsonProperty("allowComments")
     @Column(name = "allow_comments", nullable = false, length = 1)
