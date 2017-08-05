@@ -1036,7 +1036,7 @@ public class UsersController {
                   sb.append(ENDL);
 
                   // Keep this synced with getEntries()
-                  if (o.getAutoFormat() != null && o.getAutoFormat() == PrefBool.Y) {
+                  if (o.getFormat().equals(FormatType.TEXT)) {
                       sb.append("<p>");
                       if (o.getBody().contains("\n"))
                           sb.append(StringUtil.replace(o.getBody(), '\n', "<br />"));
@@ -1048,12 +1048,11 @@ public class UsersController {
                           sb.append(o.getBody());
 
                       sb.append("</p>");
-                  } else {
-                      if (o.getFormat().equals(FormatType.MARKDOWN))
-                          sb.append(markdownService.convertToHtml(o.getBody()));
-                      else
-                          sb.append(o.getBody());
-                  }
+                  } else if (o.getFormat().equals(FormatType.MARKDOWN))
+                      sb.append(markdownService.convertToHtml(o.getBody()));
+                  else
+                      sb.append(o.getBody());
+
 
                   sb.append(ENDL);
                   sb.append("</div>");
@@ -1279,7 +1278,7 @@ public class UsersController {
                 sb.append(ENDL);
 
                 // Keep this synced with getEntries()
-                if (o.getAutoFormat() == PrefBool.Y) {
+                if (o.getFormat().equals(FormatType.TEXT)) {
                     sb.append("<p>");
                     if (o.getBody().contains("\n"))
                         sb.append(StringUtil.replace(o.getBody(), '\n', "<br />"));
@@ -1291,12 +1290,11 @@ public class UsersController {
                         sb.append(o.getBody());
 
                     sb.append("</p>");
-                } else {
-                    if (o.getFormat().equals(FormatType.MARKDOWN))
-                        sb.append(markdownService.convertToHtml(o.getBody()));
-                    else
-                        sb.append(o.getBody());
-                }
+                } else if (o.getFormat().equals(FormatType.MARKDOWN))
+                    sb.append(markdownService.convertToHtml(o.getBody()));
+                else
+                    sb.append(o.getBody());
+
 
                 sb.append(ENDL);
                 sb.append("</div>");
@@ -1883,8 +1881,7 @@ public class UsersController {
            converted to br's.  If someone used html, we don't want autoformat!
            We handle Windows/UNIX with the \n case and Mac OS Classic with \r
          */
-        // TODO: this will go away in favor of format = FormatType.TEXT
-        if (o.getAutoFormat() != null && o.getAutoFormat() == PrefBool.Y) {
+        if (o.getFormat().equals(FormatType.TEXT)) {
 
             if (o.getBody() != null) {
                 sb.append("\t\t\t\t<p>");
@@ -1899,12 +1896,10 @@ public class UsersController {
 
                 sb.append("</p>");
             }
-        } else {
-            if (o.getFormat().equals(FormatType.MARKDOWN))
+        } else if (o.getFormat().equals(FormatType.MARKDOWN))
                 sb.append(markdownService.convertToHtml(o.getBody()));
-            else
+        else
                 sb.append(o.getBody());
-        }
 
         sb.append(ENDL);
         sb.append("\t\t\t</div>");

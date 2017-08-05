@@ -448,10 +448,12 @@ public class UpdateJournal extends HttpServlet {
                 et.setDraft(PrefBool.N);
 
                 // the check box says disable auto format
-                if ((aformat.equals("checked")) || myclient == ClientType.dashboard || myclient == ClientType.mobile)
+                if ((aformat.equals("checked")) || myclient == ClientType.dashboard || myclient == ClientType.mobile) {
                     et.setAutoFormat(PrefBool.Y);
-                else {
+                    et.setFormat(FormatType.TEXT);
+                } else {
                     et.setAutoFormat(PrefBool.N);
+                    et.setFormat(FormatType.HTML);
                     // probably HTML, run jtidy on it
                     body = HTMLUtil.clean(body, false);
                 }
@@ -474,14 +476,14 @@ public class UpdateJournal extends HttpServlet {
                     et.setEmailComments(PrefBool.N);
 
 
-            } catch (IllegalArgumentException e1) {
+            } catch (final IllegalArgumentException e1) {
                 if (myclient == ClientType.web)
                     ErrorPage.Display("Input Error", e1.getMessage(), sb);
                 else
                     sb.append("JJ.JOURNAL.UPDATE.FAIL");
 
                 blnError = true;
-            } catch (ParseException e) {
+            } catch (final ParseException e) {
                 log.error(e.getMessage());
                 if (myclient == ClientType.web)
                     ErrorPage.Display("Input Error", "Date Parse failure", sb);
