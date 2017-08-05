@@ -1,8 +1,14 @@
 package com.justjournal.atom;
 
 import com.justjournal.model.Entry;
+import com.justjournal.model.FormatType;
+import com.justjournal.services.MarkdownService;
 import com.justjournal.utility.DateConvert;
 import com.justjournal.utility.Xml;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 
@@ -12,7 +18,10 @@ import java.util.*;
  * @author Lucas Holt
  * @version $Id: AtomFeed.java,v 1.5 2011/05/29 22:32:59 laffer1 Exp $
  */
-public final class AtomFeed {
+@Slf4j
+@Service
+@Scope("prototype")
+public class AtomFeed {
 
     /*
     <feed xmlns="http://www.w3.org/2005/Atom"
@@ -40,7 +49,9 @@ public final class AtomFeed {
     </feed>
     */
 
-    private final static int MAX_LENGTH = 15;
+    private MarkdownService markdownService;
+
+    private static final int MAX_LENGTH = 15;
 
     private String id;
     private String title;
@@ -51,6 +62,11 @@ public final class AtomFeed {
     private String userName;
 
     private List<AtomEntry> items = new ArrayList<AtomEntry>(MAX_LENGTH);
+
+    @Autowired
+    public AtomFeed(final MarkdownService markdownService) {
+      this.markdownService = markdownService;
+    }
 
     public void populate(Collection<Entry> entries) {
         AtomEntry item;
@@ -66,7 +82,11 @@ public final class AtomFeed {
                 item.setId("urn:jj:justjournal.com:atom1:" + o.getUser().getUsername()
                         + ":" + o.getId());
                 item.setTitle(o.getSubject());
-                item.setContent(o.getBody());
+
+                if (o.getFormat().equals(FormatType.MARKDOWN))
+                    item.setContent(markdownService.convertToText(o.getBody()));
+                else
+                    item.setContent(o.getBody());
                 item.setLink("http://www.justjournal.com/users/" + o.getUser().getUsername() + "/entry/" + o.getId());
                 item.setPublished(DateConvert.encode3339(o.getDate()));
                 item.setUpdated(DateConvert.encode3339(o.getDate()));

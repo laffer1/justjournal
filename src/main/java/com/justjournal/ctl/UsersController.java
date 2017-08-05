@@ -1709,6 +1709,9 @@ public class UsersController {
         return rss.toXml();
     }
 
+    @Autowired
+    private AtomFeed atom;
+
     /**
      * Handles requests for syndication content (Atom). Only returns public journal entries for the specified user.
      *
@@ -1716,8 +1719,6 @@ public class UsersController {
      */
     @Transactional(value = Transactional.TxType.REQUIRED)
     protected String getAtom(final User user) {
-        final AtomFeed atom = new AtomFeed();
-
         final GregorianCalendar calendarg = new GregorianCalendar();
         calendarg.setTime(new Date());
 

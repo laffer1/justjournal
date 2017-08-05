@@ -50,7 +50,7 @@ import java.util.*;
 @Slf4j
 @Service
 @Scope("prototype")
-public final class Rss {
+public class Rss {
 
     @Autowired
     private MarkdownService markdownService;
