@@ -36,6 +36,7 @@ import com.justjournal.utility.Xml;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
@@ -49,7 +50,7 @@ import java.util.*;
  */
 @Slf4j
 @Service
-@Scope("prototype")
+@Scope(value = "request", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class Rss {
 
     @Autowired
@@ -168,7 +169,7 @@ public class Rss {
                 // RSS feeds don't like &apos; and friends.  try to go unicode
                 final String descUnicode;
                 if (o.getFormat().equals(FormatType.MARKDOWN))
-                    descUnicode = markdownService.convertToHtml(o.getBody());
+                    descUnicode = markdownService.convertToText(o.getBody());
                 else if (o.getFormat().equals(FormatType.HTML))
                   descUnicode = HTMLUtil.clean(o.getBody(), false);
                 else
