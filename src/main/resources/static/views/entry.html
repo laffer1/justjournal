@@ -32,7 +32,7 @@
                     </select>
                 </div>
                 
-                <div class="form-group" id="newlinetext" data-ng-disabled="entry.format != 'TEXT'">
+                <div class="form-group" id="newlinetext" data-ng-hide="entry.format != 'TEXT'">
                     by default, newlines will be auto-formatted to &lt;br&gt;
                 </div>
                 
@@ -97,12 +97,6 @@
                            value="checked" checked="checked" ng-model="entry.emailComments">
                     <label for="email_comment">Email comments to me</label>
 
-                </div>
-
-                <div class="form-group" id="aformatrow">
-                    <input type="checkbox" name="aformat" id="aformat" ng-model="entry.autoFormat"
-                           value="checked" checked="checked">
-                    <label for="aformat">Auto-formatting</label>
                 </div>
             </fieldset>
 
