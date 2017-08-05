@@ -1,0 +1,1 @@
+UPDATE entry set format='HTML' where autoformat = 'Y';

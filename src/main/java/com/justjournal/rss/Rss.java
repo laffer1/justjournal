@@ -28,6 +28,8 @@ package com.justjournal.rss;
 
 import com.justjournal.model.DateTimeBean;
 import com.justjournal.model.Entry;
+import com.justjournal.model.FormatType;
+import com.justjournal.services.MarkdownService;
 import com.justjournal.utility.DateConvert;
 import com.justjournal.utility.HTMLUtil;
 import com.justjournal.utility.Xml;
@@ -49,6 +51,9 @@ import java.util.*;
 @Service
 @Scope("prototype")
 public final class Rss {
+
+    @Autowired
+    private MarkdownService markdownService;
 
     private static final int MAX_LENGTH = 15; // max size of RSS content
     private static final String USER_BASE_URL = "http://www.justjournal.com/users/";
@@ -161,7 +166,13 @@ public final class Rss {
                 item.setTitle(o.getSubject());
                 item.setLink(USER_BASE_URL + o.getUser().getUsername());
                 // RSS feeds don't like &apos; and friends.  try to go unicode
-                final String descUnicode = HTMLUtil.clean(o.getBody(), false);
+                final String descUnicode;
+                if (o.getFormat().equals(FormatType.MARKDOWN))
+                    descUnicode = markdownService.convertToHtml(o.getBody());
+                else if (o.getFormat().equals(FormatType.HTML))
+                  descUnicode = HTMLUtil.clean(o.getBody(), false);
+                else
+                    descUnicode = o.getBody();
                 item.setDescription(HTMLUtil.convertCharacterEntities(descUnicode));
                 item.setGuid(USER_BASE_URL + o.getUser().getUsername() + "/entry/" + o.getId());
                 item.setPubDate(new DateTimeBean(o.getDate()).toPubDate());

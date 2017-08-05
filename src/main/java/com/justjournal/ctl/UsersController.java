@@ -1049,7 +1049,10 @@ public class UsersController {
 
                       sb.append("</p>");
                   } else {
-                      sb.append(o.getBody());
+                      if (o.getFormat().equals(FormatType.MARKDOWN))
+                          sb.append(markdownService.convertToHtml(o.getBody()));
+                      else
+                          sb.append(o.getBody());
                   }
 
                   sb.append(ENDL);
@@ -1289,7 +1292,10 @@ public class UsersController {
 
                     sb.append("</p>");
                 } else {
-                    sb.append(o.getBody());
+                    if (o.getFormat().equals(FormatType.MARKDOWN))
+                        sb.append(markdownService.convertToHtml(o.getBody()));
+                    else
+                        sb.append(o.getBody());
                 }
 
                 sb.append(ENDL);
@@ -1802,6 +1808,9 @@ public class UsersController {
         return sb.toString();
     }
 
+    @Autowired
+    private MarkdownService markdownService;
+
     /**
      * Format a blog entry in HTML
      *
@@ -1873,6 +1882,7 @@ public class UsersController {
            converted to br's.  If someone used html, we don't want autoformat!
            We handle Windows/UNIX with the \n case and Mac OS Classic with \r
          */
+        // TODO: this will go away in favor of format = FormatType.TEXT
         if (o.getAutoFormat() != null && o.getAutoFormat() == PrefBool.Y) {
 
             if (o.getBody() != null) {
@@ -1889,7 +1899,10 @@ public class UsersController {
                 sb.append("</p>");
             }
         } else {
-            sb.append(o.getBody());
+            if (o.getFormat().equals(FormatType.MARKDOWN))
+                sb.append(markdownService.convertToHtml(o.getBody()));
+            else
+                sb.append(o.getBody());
         }
 
         sb.append(ENDL);
