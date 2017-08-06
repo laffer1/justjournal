@@ -154,7 +154,9 @@ public class Login {
             return BAD_USER_ID; // bad password
 
         try {
-            return lookupUserId(userName, SHA1(password));
+            final int userId = lookupUserId(userName, SHA1(password));
+            setLastLogin(userId);
+            return userId;
         } catch (Exception e) {
             log.error("validate(): " + e.getMessage());
         }
