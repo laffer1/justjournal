@@ -28,6 +28,8 @@ package com.justjournal.model.api;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -51,6 +53,10 @@ public final class Comment implements Serializable {
     private String subject = "";
 
     private String body = "";
+
+    @Getter
+    @Setter
+    private String format = "TEXT";
 
     @JsonCreator
     public Comment() {

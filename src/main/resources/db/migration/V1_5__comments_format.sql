@@ -1,0 +1,1 @@
+alter table comments add column `format` ENUM ('TEXT', 'MARKDOWN') NOT NULL DEFAULT 'TEXT';

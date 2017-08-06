@@ -2099,9 +2099,15 @@ public class UsersController {
                 }
                 sb.append("</div>\n");
 
-                sb.append("<p>");
-                sb.append(Xml.cleanString(o.getBody()));
-                sb.append("</p>\n</div>\n");
+                if (co.getFormat().equals(FormatType.MARKDOWN)) {
+                    sb.append(markdownService.convertToHtml(co.getBody()));
+                } else {
+                    sb.append("<p>");
+                    sb.append(Xml.cleanString(co.getBody()));
+                    sb.append("</p>");
+                }
+                sb.append("\n</div>\n");
+                
             }
         }
 

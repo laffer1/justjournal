@@ -28,6 +28,8 @@ package com.justjournal.model;
 
 import com.fasterxml.jackson.annotation.*;
 import com.justjournal.utility.HTMLUtil;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -78,6 +80,13 @@ public final class Comment implements Serializable {
     @Column(name = "body")
     @Lob
     private String body = "";
+
+    @Getter
+    @Setter 
+    @JsonProperty("format")
+    @Column(name = "format", nullable = false, length = 8)
+    @Enumerated(EnumType.STRING)
+    private FormatType format = FormatType.TEXT;
 
     @JsonCreator
     public Comment() {

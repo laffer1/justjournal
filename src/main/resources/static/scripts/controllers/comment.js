@@ -4,6 +4,8 @@ angular.module('wwwApp').controller('CommentCtrl', ['$scope', '$routeParams', '$
               EntryService, LoginService) {
         'use strict';
 
+        CKEDITOR.replace( 'commentbody' );
+
         $scope.login = LoginService.get({}, function () {
                     if (typeof $routeParams.commentId !== 'undefined') {
                         $scope.comment = CommentService.get({Id: $routeParams.commentId, User: $scope.login.username},
@@ -15,13 +17,19 @@ angular.module('wwwApp').controller('CommentCtrl', ['$scope', '$routeParams', '$
                         $scope.comment = {
                             subject: '',
                             body: '',
-                            eid: $routeParams.entryId
+                            eid: $routeParams.entryId,
+                            format: 'MARKDOWN'
                         };
                     }
                 }
         );
 
         $scope.ErrorMessage = '';
+
+        $scope.markitup = function () {
+            var data = CKEDITOR.instances.commentbody.getData();
+            $scope.comment.body = toMarkdown(data);
+        };
 
         $scope.cancel = function () {
             // TODO: what about angular stuff?
@@ -41,8 +49,9 @@ angular.module('wwwApp').controller('CommentCtrl', ['$scope', '$routeParams', '$
                     return false;
                 }
 
+                $scope.markitup();
+
                 CommentService.save($scope.comment, function success() {
-                            alert('Comment Posted');
                             window.location.href = ('users/' + $scope.login.username);
                         },
                         function fail(response) {
