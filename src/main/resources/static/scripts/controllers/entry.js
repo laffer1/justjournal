@@ -3,6 +3,8 @@ angular.module('wwwApp').controller('EntryCtrl', ['$scope', '$routeParams', '$lo
     function ($scope, $routeParams, $location, MoodService, LocationService, SecurityService, EntryService, LoginService) {
         'use strict';
 
+        CKEDITOR.replace( 'body' );
+
         $scope.login = LoginService.get({}, function () {
                     if (typeof $routeParams.entryId !== 'undefined') {
                         $scope.entry = EntryService.get({Id: $routeParams.entryId, User: $scope.login.username},
@@ -18,8 +20,6 @@ angular.module('wwwApp').controller('EntryCtrl', ['$scope', '$routeParams', '$lo
 
                                     $scope.entry.allowComments = $scope.entry.allowComments == 'Y';
 
-                                    $scope.entry.autoFormat = $scope.entry.autoFormat == 'Y';
-
                                     $scope.entry.emailComments = $scope.entry.emailComments == 'Y';
                                 }
                         );
@@ -34,7 +34,7 @@ angular.module('wwwApp').controller('EntryCtrl', ['$scope', '$routeParams', '$lo
             autoFormat: true,
             // date: new Date(), // TODO: is this the right format?
             emailComments: true,
-            format: 'TEXT',
+            format: 'MARKDOWN',
             subject: '',
             body: '',
             tag: '',
@@ -54,7 +54,7 @@ angular.module('wwwApp').controller('EntryCtrl', ['$scope', '$routeParams', '$lo
                 autoFormat: true,
                 // date: new Date(), // TODO: is this the right format?
                 emailComments: true,
-                format: 'TEXT',
+                format: 'MARKDOWN',
                 subject: '',
                 body: '',
                 tag: '',
@@ -64,6 +64,11 @@ angular.module('wwwApp').controller('EntryCtrl', ['$scope', '$routeParams', '$lo
                 mood: 12,
                 location: 0
             };
+        };
+
+        $scope.markitup = function() {
+            var data = CKEDITOR.instances.body.getData();
+            $scope.entry.body = toMarkdown(data);
         };
 
         $scope.save = function () {
@@ -81,6 +86,8 @@ angular.module('wwwApp').controller('EntryCtrl', ['$scope', '$routeParams', '$lo
              if (typeof $scope.entry.security !== 'undefined' && typeof $scope.entry.security.id !== 'undefined')
              $scope.entry.security = $scope.entry.security.id;  */
 
+            $scope.markitup();
+
             $scope.entry.tags = [];
             if (typeof $scope.entry.tag !== 'undefined' && $scope.entry.tag.length > 0) {
                 $scope.entry.tag = $scope.entry.tag.toLowerCase();
@@ -92,7 +99,6 @@ angular.module('wwwApp').controller('EntryCtrl', ['$scope', '$routeParams', '$lo
             // EDIT case
             if (typeof $routeParams.entryId !== 'undefined') {
                 EntryService.update($scope.entry, function success() {
-                            alert('Blog Entry Updated');
                             window.location.href = ('users/' + $scope.login.username);
                         },
                         function fail(response) {
@@ -111,7 +117,6 @@ angular.module('wwwApp').controller('EntryCtrl', ['$scope', '$routeParams', '$lo
             }
 
             EntryService.save($scope.entry, function success() {
-                        alert('Blog Entry Posted');
                         window.location.href = ('users/' + $scope.login.username);
                     },
                     function fail(response) {
