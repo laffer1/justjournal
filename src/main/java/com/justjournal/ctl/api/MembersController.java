@@ -26,9 +26,10 @@
 
 package com.justjournal.ctl.api;
 
-import com.justjournal.model.Journal;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.justjournal.model.User;
 import com.justjournal.repository.UserRepository;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -41,8 +42,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -70,15 +71,35 @@ public class MembersController {
     @Cacheable("members")
     @RequestMapping(method = RequestMethod.GET, headers = "Accept=*/*", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<List<User>> list() {
+    public ResponseEntity<List<PublicMember>> list() {
 
         try {
-            final List<User> publicMembers = userRepository.getPublicUsers();
+            final List<User> users = userRepository.getPublicUsers();
+            final List<PublicMember> publicMembers = new ArrayList<>();
+            for (final User user : users) {
+                publicMembers.add(new PublicMember(user.getUsername(), user.getFirstName(), user.getSince()));
+            }
+
             return ResponseEntity.ok().eTag(Integer.toString(publicMembers.hashCode())).body(publicMembers);
         } catch (final Exception e) {
             log.error(e.getMessage(), e);
         }
 
-         return new ResponseEntity<>(Collections.<User>emptyList(), HttpStatus.INTERNAL_SERVER_ERROR);
+         return new ResponseEntity<>(Collections.<PublicMember>emptyList(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @EqualsAndHashCode
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    class PublicMember implements Serializable {
+
+        @JsonIgnore
+        private static final long serialVersionUID = -877596710940098083L;
+
+        private String username;
+        private String name;
+        private int since;
     }
 }
