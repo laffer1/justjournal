@@ -28,7 +28,9 @@ package com.justjournal.ctl.api;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.justjournal.model.User;
+import com.justjournal.model.api.PublicMember;
 import com.justjournal.repository.UserRepository;
+import com.justjournal.services.UserService;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,8 +44,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -55,11 +55,11 @@ import java.util.List;
 @RequestMapping("/api/members")
 public class MembersController {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @Autowired
-    public MembersController(final UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public MembersController(final UserService userService) {
+        this.userService = userService;
     }
 
     /**
@@ -67,19 +67,13 @@ public class MembersController {
      *
      * @return mood list
      */
-    @Transactional
-    @Cacheable("members")
+
     @RequestMapping(method = RequestMethod.GET, headers = "Accept=*/*", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<List<PublicMember>> list() {
 
         try {
-            final List<User> users = userRepository.getPublicUsers();
-            final List<PublicMember> publicMembers = new ArrayList<>();
-            for (final User user : users) {
-                publicMembers.add(new PublicMember(user.getUsername(), user.getFirstName(), user.getSince()));
-            }
-
+            final List<PublicMember> publicMembers = userService.getPublicMembers();
             return ResponseEntity.ok().eTag(Integer.toString(publicMembers.hashCode())).body(publicMembers);
         } catch (final Exception e) {
             log.error(e.getMessage(), e);
@@ -88,18 +82,5 @@ public class MembersController {
          return new ResponseEntity<>(Collections.<PublicMember>emptyList(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @EqualsAndHashCode
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    class PublicMember implements Serializable {
 
-        @JsonIgnore
-        private static final long serialVersionUID = -877596710940098083L;
-
-        private String username;
-        private String name;
-        private int since;
-    }
 }
