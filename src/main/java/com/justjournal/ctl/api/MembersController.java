@@ -32,6 +32,7 @@ import com.justjournal.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,6 +43,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Lucas Holt
@@ -67,29 +70,15 @@ public class MembersController {
     @Cacheable("members")
     @RequestMapping(method = RequestMethod.GET, headers = "Accept=*/*", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<Collection<User>> list() {
-
-        final Collection<User> publicMembers = new ArrayList<User>();
+    public ResponseEntity<List<User>> list() {
 
         try {
-            final Iterable<User> members = userRepository.findAll();
-
-            for (final User member : members) {
-                boolean stealth = false;
-                for (final Journal journal : member.getJournals()) {
-                    if (journal.isOwnerViewOnly()) {
-                        stealth = true;
-                        break;
-                    }
-                }
-                if (!stealth) {
-                    publicMembers.add(member);
-                }
-            }
+            final List<User> publicMembers = userRepository.getPublicUsers();
+            return ResponseEntity.ok().eTag(Integer.toString(publicMembers.hashCode())).body(publicMembers);
         } catch (final Exception e) {
             log.error(e.getMessage(), e);
         }
 
-        return ResponseEntity.ok().eTag(Integer.toString(publicMembers.hashCode())).body(publicMembers);
+         return new ResponseEntity<>(Collections.<User>emptyList(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

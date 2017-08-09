@@ -35,11 +35,15 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.repository;
 
 import com.justjournal.model.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 
 /**
@@ -51,8 +55,11 @@ import org.springframework.stereotype.Repository;
 public interface UserRepository extends JpaRepository<User, Integer> {
 
     @Query("SELECT u FROM User u WHERE LOWER(u.username) = LOWER(:username)")
-    public User findByUsername(@Param("username") String username);
+    User findByUsername(@Param("username") String username);
 
     @Query("SELECT u FROM User u WHERE LOWER(u.username) = LOWER(:username) and u.password = :password")
-    public User findByUsernameAndPassword(@Param("username") String username, @Param("password") String password);
+    User findByUsernameAndPassword(@Param("username") String username, @Param("password") String password);
+
+    @Query("SELECT u FROM User u, Journal j where j.user = u and j.ownerViewOnly = false")
+    List<User> getPublicUsers();
 }
