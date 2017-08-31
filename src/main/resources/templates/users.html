@@ -8,12 +8,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta property="og:site_name" content="Just Journal" />
     <meta property="og:type" content="article" />
-    <meta property="og:image" th:content="@{'http://www.justjournal.com/image?id=' + ${user.id}}" />
+    <meta property="og:image" th:content="@{'https://www.justjournal.com/image?id=' + ${user.id}}" />
 
-    <meta th:if="${entry != null}" property="og:url"   th:content="@{'http://www.justjournal.com/users/' + ${user.username} + '/entry/' + ${entry.getId()}}" />
+    <meta th:if="${entry != null}" property="og:url"   th:content="@{'https://www.justjournal.com/users/' + ${user.username} + '/entry/' + ${entry.getId()}}" />
     <meta th:if="${entry != null}" property="og:title" th:content="${entry.getSubject()}" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="amphtml"  th:content="@{'https://www.justjournal.com/users/' + ${user.username} + '/entry/' + ${entry.getId()} + '/amp'}" />
+
     <link rel="stylesheet" href="/static/styles/bootstrap.min.css" th:href="@{/static/styles/bootstrap.min.css}"/>
     <link rel="stylesheet" type="text/css" href="/static/styles/users.css" th:href="@{/static/styles/users.css}"/>
 
@@ -24,11 +27,11 @@
     <link rel="stylesheet" type="text/css" media="screen"
           href="/static/components/lightbox2/css/lightbox.css" th:href="@{/components/lightbox2/css/lightbox.css}" />
     <link rel="alternate" type="application/rss+xml" title="RSS"
-          th:href="@{'http://www.justjournal.com/users/' + ${user.username} +'/rss'}" />
+          th:href="@{'https://www.justjournal.com/users/' + ${user.username} +'/rss'}" />
     <link rel="alternate" type="application/atom+xml" title="Atom"
-          th:href="@{'http://www.justjournal.com/users/' + ${user.username} +'/atom'}" />
+          th:href="@{'https://www.justjournal.com/users/' + ${user.username} +'/atom'}" />
     <link rel="EditURI" type="application/rsd+xml" title="RSD"
-          th:href="@{'http://www.justjournal.com/rsd?blogID=' + ${user.username}}" />
+          th:href="@{'https://www.justjournal.com/rsd?blogID=' + ${user.username}}" />
 </head>
 
 <body>
@@ -255,7 +258,6 @@
                 </div>
 
                 <div th:utext="${entry_format}" th:if="${entry != null}"></div>
-
 
                 <div th:utext="${friends}"></div>
 
