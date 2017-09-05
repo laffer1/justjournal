@@ -15,7 +15,7 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <link rel="amphtml"  th:href="@{'https://www.justjournal.com/users/' + ${user.username} + '/entry/' + ${entry.getId()} + '/amp'}" />
+    <link rel="amphtml"  th:content="@{'https://www.justjournal.com/users/' + ${user.username} + '/entry/' + ${entry.getId()} + '/amp'}" />
 
     <link rel="stylesheet" href="/static/styles/bootstrap.min.css" th:href="@{/static/styles/bootstrap.min.css}"/>
     <link rel="stylesheet" type="text/css" href="/static/styles/users.css" th:href="@{/static/styles/users.css}"/>
