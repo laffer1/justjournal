@@ -33,6 +33,16 @@ public class SitemapController {
         final XmlUrlSet xmlUrlSet = new XmlUrlSet();
         create(xmlUrlSet, baseUri.getValue(), XmlUrl.Priority.HIGH, XmlUrl.ChangeFreqency.MONTHLY);
 
+        create(xmlUrlSet, baseUri.getValue() + "/RecentBlogs", XmlUrl.Priority.LOW, XmlUrl.ChangeFreqency.DAILY);
+        create(xmlUrlSet, baseUri.getValue() + "/#!/sitemap", XmlUrl.Priority.LOW, XmlUrl.ChangeFreqency.YEARLY);
+        create(xmlUrlSet, baseUri.getValue() + "/#!/sitemap", XmlUrl.Priority.LOW, XmlUrl.ChangeFreqency.YEARLY);
+        create(xmlUrlSet, baseUri.getValue() + "/#!/search", XmlUrl.Priority.LOW, XmlUrl.ChangeFreqency.YEARLY);
+        create(xmlUrlSet, baseUri.getValue() + "/#!/privacy", XmlUrl.Priority.LOW, XmlUrl.ChangeFreqency.YEARLY);
+        create(xmlUrlSet, baseUri.getValue() + "/#!/members", XmlUrl.Priority.LOW, XmlUrl.ChangeFreqency.DAILY);
+        create(xmlUrlSet, baseUri.getValue() + "/#!/support", XmlUrl.Priority.LOW, XmlUrl.ChangeFreqency.YEARLY);
+        create(xmlUrlSet, baseUri.getValue() + "/#!/support/bugs", XmlUrl.Priority.LOW, XmlUrl.ChangeFreqency.YEARLY);
+        create(xmlUrlSet, baseUri.getValue() + "/#!/moodlist", XmlUrl.Priority.LOW, XmlUrl.ChangeFreqency.YEARLY);
+
         for (final User user : userRepository.findAll()) {
             for (final Journal journal : user.getJournals()) {
                 if (journal.isAllowSpider()) {
