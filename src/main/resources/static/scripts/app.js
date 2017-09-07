@@ -45,6 +45,10 @@ angular.module('wwwApp',
                         templateUrl: 'views/moodlist.html',
                         controller: 'MoodListCtrl'
                     })
+                    .when('/prefs/avatar', {
+                        templateUrl: 'views/prefs/avatar.html',
+                        controller: 'PrefsAvatarCtrl'
+                    })
                     .when('/prefs/password', {
                         templateUrl: 'views/prefs/changePassword.html',
                         controller: 'PrefsChangePasswordCtrl'
