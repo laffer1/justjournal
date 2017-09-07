@@ -274,7 +274,7 @@
                                     <img th:src="@{'/AlbumImage/' + ${pic.id} + '/thumbnail'}" th:alt="${pic.title}"/>
                                 </a>
                                 <div class="caption"><span th:text="${pic.title}"></span>
-                                    <a class="btn btn-primary" role="button" th:if="${authenticatedUsername != null}"
+                                    <a class="btn btn-danger btn-xs" role="button" th:if="${authenticatedUsername != null}"
                                        th:onclick="'javascript:deleteImage(\'' + ${pic.id} + '\');'"><i
                                             class="fa fa-remove"></i></a>
                                 </div>
