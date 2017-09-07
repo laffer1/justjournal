@@ -37,9 +37,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.sql.Connection;
@@ -155,7 +159,10 @@ public class ImageController {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
 
-        byte[] data = file.getBytes();
+        BufferedImage avatar = resizeAvatar(file.getBytes());
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(avatar, "jpg", baos);
+        byte[] data = baos.toByteArray();
 
         Connection conn = null;
         PreparedStatement stmt = null; // create statement
@@ -190,9 +197,7 @@ public class ImageController {
             stmtOn.close();
 
             conn.close();
-
-            conn.close();
-
+            
             log.info("RowsAffected: " + rowsAffected);
             if (rowsAffected == 1)
                 return new ResponseEntity(HttpStatus.CREATED);
@@ -214,15 +219,17 @@ public class ImageController {
             }
 
             try {
-                stmtOn.close();
-            } catch (SQLException sqlEx) {
+                if (stmtOn != null)
+                  stmtOn.close();
+            } catch (final SQLException sqlEx) {
                 // ignore -- as we can't do anything about it here
                 log.debug(sqlEx.getMessage());
             }
 
             try {
-                stmtRemove.close();
-            } catch (SQLException sqlEx) {
+                if (stmtRemove != null)
+                   stmtRemove.close();
+            } catch (final SQLException sqlEx) {
                 // ignore -- as we can't do anything about it here
                 log.debug(sqlEx.getMessage());
             }
@@ -265,4 +272,39 @@ public class ImageController {
 
         return new ResponseEntity(HttpStatus.OK);
     }
+
+    private BufferedImage resizeAvatar(final byte[] data) throws IOException {
+        final ByteArrayInputStream bis = new ByteArrayInputStream(data);
+        return scaleImage(ImageIO.read(bis), 100);
+    }
+
+    private BufferedImage scaleImage(final BufferedImage bufferedImage, final int boundSize) {
+          final int origWidth = bufferedImage.getWidth();
+          final int origHeight = bufferedImage.getHeight();
+          final double scale;
+
+          if (origHeight > origWidth)
+              scale =  boundSize / (double) origHeight;
+          else
+              scale = boundSize / (double) origWidth;
+
+          // Don't scale up small images.
+          if (scale > 1.0)
+              return bufferedImage;
+
+          final int scaledWidth = (int) (scale * origWidth);
+          final int scaledHeight = (int) (scale * origHeight);
+
+          final Image scaledImage = bufferedImage.getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
+
+          final BufferedImage scaledBI = new BufferedImage(scaledWidth, scaledHeight, BufferedImage.TYPE_INT_RGB);
+
+          final Graphics2D g = scaledBI.createGraphics();
+
+          g.drawImage(scaledImage, 0, 0, null);
+
+          g.dispose();
+
+          return scaledBI;
+      }
 }
