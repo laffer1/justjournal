@@ -25,6 +25,7 @@
  */
 package com.justjournal.ctl;
 
+import com.justjournal.services.ImageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -66,6 +67,9 @@ public class ImageController {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private ImageService imageService;
 
     @RequestMapping("/{id}")
     public ResponseEntity<byte[]> getByPath(@PathVariable("id") final int id) throws IOException {
@@ -159,10 +163,7 @@ public class ImageController {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
 
-        BufferedImage avatar = resizeAvatar(file.getBytes());
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ImageIO.write(avatar, "jpg", baos);
-        byte[] data = baos.toByteArray();
+        BufferedImage avatar = imageService.resizeAvatar(file.getBytes());
 
         Connection conn = null;
         PreparedStatement stmt = null; // create statement
@@ -181,7 +182,7 @@ public class ImageController {
             stmt = conn.prepareStatement("INSERT INTO user_pic (id,date_modified,mimetype,image) VALUES(?,now(),?,?)");
             stmt.setInt(1, userID);
             stmt.setString(2, contentType);
-            stmt.setBytes(3, data);
+            stmt.setBytes(3, imageService.convertBufferedImageToJpeg(avatar));
             stmt.execute();
             rowsAffected = stmt.getUpdateCount();
             stmt.close();
@@ -273,38 +274,5 @@ public class ImageController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    private BufferedImage resizeAvatar(final byte[] data) throws IOException {
-        final ByteArrayInputStream bis = new ByteArrayInputStream(data);
-        return scaleImage(ImageIO.read(bis), 100);
-    }
 
-    private BufferedImage scaleImage(final BufferedImage bufferedImage, final int boundSize) {
-          final int origWidth = bufferedImage.getWidth();
-          final int origHeight = bufferedImage.getHeight();
-          final double scale;
-
-          if (origHeight > origWidth)
-              scale =  boundSize / (double) origHeight;
-          else
-              scale = boundSize / (double) origWidth;
-
-          // Don't scale up small images.
-          if (scale > 1.0)
-              return bufferedImage;
-
-          final int scaledWidth = (int) (scale * origWidth);
-          final int scaledHeight = (int) (scale * origHeight);
-
-          final Image scaledImage = bufferedImage.getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
-
-          final BufferedImage scaledBI = new BufferedImage(scaledWidth, scaledHeight, BufferedImage.TYPE_INT_RGB);
-
-          final Graphics2D g = scaledBI.createGraphics();
-
-          g.drawImage(scaledImage, 0, 0, null);
-
-          g.dispose();
-
-          return scaledBI;
-      }
 }
