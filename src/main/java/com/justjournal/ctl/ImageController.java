@@ -117,17 +117,17 @@ public class ImageController {
                 stmt.close();
                 conn.close();
 
-                return new ResponseEntity<byte[]>(byteArrayOutputStream.toByteArray(), headers, HttpStatus.OK);
+                return new ResponseEntity<>(byteArrayOutputStream.toByteArray(), headers, HttpStatus.OK);
             }
 
             rs.close();
             stmt.close();
             conn.close();
 
-            return new ResponseEntity<byte[]>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             log.warn("Could not load image: " + e.toString());
-            return new ResponseEntity<byte[]>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         } finally {
             try {
                 if (stmt != null)
