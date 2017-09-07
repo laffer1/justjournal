@@ -158,10 +158,12 @@
                                         <i class="fa fa-picture-o"></i> Add Pictures</a></li>
 
                                     <li th:if="${authenticatedUsername != null}"><a href="/#!/prefs/avatar">
-                                        <i class="fa fa-picture-o"></i> Upload Avatar</a></li>
+                                        <i class="fa fa-picture-o"></i> Avatar</a></li>
 
-                                    <li th:if="${authenticatedUsername != null}"><a href="/logout"><i
-                                        class="fa fa-sign-out"></i>
+                                    <li th:if="${authenticatedUsername != null}"><a href="/#!/prefs/biography">
+                                                                         <i class="fa fa-picture-o"></i> Biography</a></li>
+
+                                    <li th:if="${authenticatedUsername != null}"><a href="/logout"><i class="fa fa-sign-out"></i>
                                     Log Out</a></li>
                                 </ul>
                             </li>
