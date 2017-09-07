@@ -25,18 +25,19 @@
  */
 package com.justjournal.ctl;
 
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -44,23 +45,20 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 
 /**
- * Image viewer servlet to display user pics and other images
- * from the database.
+ * Image viewer servlet to display user pics (avatars)
  * <p/>
- * User: laffer1
- * Date: Nov 22, 2005
- * Time: 9:31:28 PM
+ * User: laffer1 Date: Nov 22, 2005 Time: 9:31:28 PM
  *
- * @version $Id: Image.java,v 1.12 2011/07/02 01:30:53 laffer1 Exp $
+ * @version $Id$
  */
+@Slf4j
 @RequestMapping("/image")
 @Controller
 public class ImageController {
-
-    private static final Logger log = Logger.getLogger(ImageController.class);
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -76,7 +74,7 @@ public class ImageController {
 
         DataSource ds;
         Connection conn;
-        PreparedStatement stmt;
+        PreparedStatement stmt = null;
 
         if (id < 1) {
             return new ResponseEntity<byte[]>(HttpStatus.BAD_REQUEST);
@@ -85,7 +83,7 @@ public class ImageController {
         try {
             ds = jdbcTemplate.getDataSource();
             conn = ds.getConnection();
-            stmt = conn.prepareStatement("call getimage(?)");
+            stmt = conn.prepareStatement("CALL getimage(?)");
             stmt.setInt(1, id);
             final ResultSet rs = stmt.executeQuery();
 
@@ -101,7 +99,7 @@ public class ImageController {
 
                 final String t = rs.getString("mimetype").trim();
                 if (t.equalsIgnoreCase(MediaType.IMAGE_GIF_VALUE))
-                         headers.setContentType(MediaType.IMAGE_GIF);
+                    headers.setContentType(MediaType.IMAGE_GIF);
                 else if (t.equalsIgnoreCase(MediaType.IMAGE_JPEG_VALUE))
                     headers.setContentType(MediaType.IMAGE_JPEG);
                 else if (t.equalsIgnoreCase(MediaType.IMAGE_PNG_VALUE))
@@ -111,7 +109,7 @@ public class ImageController {
                 stmt.close();
                 conn.close();
 
-                return new ResponseEntity<byte[]>( byteArrayOutputStream.toByteArray(), headers, HttpStatus.OK);
+                return new ResponseEntity<byte[]>(byteArrayOutputStream.toByteArray(), headers, HttpStatus.OK);
             }
 
             rs.close();
@@ -122,7 +120,149 @@ public class ImageController {
         } catch (Exception e) {
             log.warn("Could not load image: " + e.toString());
             return new ResponseEntity<byte[]>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } finally {
+            try {
+                if (stmt != null)
+                    stmt.close();
+            } catch (final SQLException sqlEx) {
+                // ignore -- as we can't do anything about it here
+                log.error(sqlEx.getMessage(), sqlEx);
+            }
         }
     }
 
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    public ResponseEntity upload(@RequestPart("file") MultipartFile file, HttpSession session) throws IOException {
+        assert jdbcTemplate != null;
+        final int rowsAffected;
+
+        final Integer userIDasi = (Integer) session.getAttribute("auth.uid");
+        int userID = 0;
+        if (userIDasi != null) {
+            userID = userIDasi;
+        }
+
+          /* Make sure we are logged in */
+        if (userID < 1) {
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+        }
+
+        final String contentType = file.getContentType();
+        final long sizeInBytes = file.getSize();
+
+        // must be large enough
+        if (file.isEmpty() || sizeInBytes < 500) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+
+        byte[] data = file.getBytes();
+
+        Connection conn = null;
+        PreparedStatement stmt = null; // create statement
+        PreparedStatement stmtOn = null; // turn on avatar preference.
+        PreparedStatement stmtRemove = null; // delete old ones
+
+        try {
+            // TODO: make this spring friendly
+            conn = jdbcTemplate.getDataSource().getConnection();
+
+            stmtRemove = conn.prepareStatement("DELETE FROM user_pic WHERE id=? LIMIT 1");
+            stmtRemove.setInt(1, userID);
+            stmtRemove.execute();
+
+            // do the create of the image
+            stmt = conn.prepareStatement("INSERT INTO user_pic (id,date_modified,mimetype,image) VALUES(?,now(),?,?)");
+            stmt.setInt(1, userID);
+            stmt.setString(2, contentType);
+            stmt.setBytes(3, data);
+            stmt.execute();
+            rowsAffected = stmt.getUpdateCount();
+            stmt.close();
+
+            // turn on avatars.
+            stmtOn = conn.prepareStatement("UPDATE user_pref SET show_avatar=? WHERE id=? LIMIT 1");
+            stmtOn.setString(1, "Y");
+            stmtOn.setInt(2, userID);
+            stmtOn.execute();
+
+            if (stmtOn.getUpdateCount() != 1)
+                log.debug("error turning on avatar.");
+            stmtOn.close();
+
+            conn.close();
+
+            conn.close();
+
+            log.info("RowsAffected: " + rowsAffected);
+            if (rowsAffected == 1)
+                return new ResponseEntity(HttpStatus.CREATED);
+        } catch (final Exception e) {
+            log.error("Error on database connection inserting avatar.", e);
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        } finally {
+             /*
+              * Close any JDBC instances here that weren't
+              * explicitly closed during normal code path, so
+              * that we don't 'leak' resources...
+              */
+            try {
+                if (stmt != null)
+                    stmt.close();
+            } catch (final SQLException sqlEx) {
+                // ignore -- as we can't do anything about it here
+                log.error(sqlEx.getMessage(), sqlEx);
+            }
+
+            try {
+                stmtOn.close();
+            } catch (SQLException sqlEx) {
+                // ignore -- as we can't do anything about it here
+                log.debug(sqlEx.getMessage());
+            }
+
+            try {
+                stmtRemove.close();
+            } catch (SQLException sqlEx) {
+                // ignore -- as we can't do anything about it here
+                log.debug(sqlEx.getMessage());
+            }
+
+            try {
+                if (conn != null)
+                    conn.close();
+            } catch (final SQLException sqlEx) {
+                // ignore -- as we can't do anything about it here
+                log.error(sqlEx.getMessage(), sqlEx);
+            }
+        }
+
+        return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity delete(@PathVariable("id") final int id, final HttpSession session) {
+
+        // Retreive user id
+        final Integer userIDasi = (Integer) session.getAttribute("auth.uid");
+        // convert Integer to int type
+        int userID = 0;
+        if (userIDasi != null) {
+            userID = userIDasi;
+        }
+
+        /* Make sure we are logged in */
+        if (userID < 1) {
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+        }
+
+        try {
+            jdbcTemplate.execute("DELETE FROM user_pic WHERE id='" + id + "';");
+            jdbcTemplate.execute("UPDATE user_pref SET show_avatar='N' WHERE id='" + id + "' LIMIT 1");
+        } catch (final DataAccessException dae) {
+            log.error(dae.getMessage(), dae);
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity(HttpStatus.OK);
+    }
 }
