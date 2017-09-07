@@ -22,7 +22,6 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="JustJournal" target="1.7" />
-      <module name="justjournal" target="1.6" />
     </bytecodeTargetLevel>
   </component>
 </project>
