@@ -264,7 +264,7 @@ public class UpdateJournal extends HttpServlet {
         sb.append(endl);
         sb.append("\t<div id=\"footer\">");
         sb.append(endl);
-        sb.append("\t\t<a href=\"/index.jsp\" title=\"");
+        sb.append("\t\t<a href=\"/\" title=\"");
         sb.append(settings.getSiteName());
         sb.append("\">");
         sb.append(settings.getSiteName());
