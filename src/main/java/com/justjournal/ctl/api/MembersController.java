@@ -48,6 +48,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * Get the list of site members/users that are public. 
  * @author Lucas Holt
  */
 @Slf4j
@@ -63,11 +64,10 @@ public class MembersController {
     }
 
     /**
-     * All moods usable by blogs
+     * All members of the site that are public
      *
-     * @return mood list
+     * @return member list
      */
-
     @RequestMapping(method = RequestMethod.GET, headers = "Accept=*/*", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<List<PublicMember>> list() {
