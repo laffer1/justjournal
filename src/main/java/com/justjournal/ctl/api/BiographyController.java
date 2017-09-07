@@ -70,9 +70,8 @@ public class BiographyController {
 
     @Cacheable(value = "biography", key = "username")
     @RequestMapping(value = "{username}", method = RequestMethod.GET, headers = "Accept=*/*", produces = "application/json")
-    public
     @ResponseBody
-    UserBio get(@PathVariable("username") String username, HttpServletResponse response) {
+    public UserBio get(@PathVariable("username") String username, HttpServletResponse response) {
         User user = userDao.findByUsername(username);
         if (user == null) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -84,9 +83,8 @@ public class BiographyController {
     // TODO: API is bad for caching.
     @CacheEvict(value = "biography", allEntries = true)
     @RequestMapping(method = RequestMethod.POST, produces = "application/json")
-    public
     @ResponseBody
-    Map<String, String> post(@RequestBody String bio, HttpServletResponse response, HttpSession session) {
+    public Map<String, String> post(@RequestBody String bio, HttpServletResponse response, HttpSession session) {
 
         int userID = Login.currentLoginId(session);
 
