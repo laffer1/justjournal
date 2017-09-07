@@ -1,10 +1,13 @@
-angular.module('wwwApp').controller('PrefsBiographyCtrl', ['$scope', 'AccountService', 'BiographyService',
-    function ($scope, AccountService, BiographyService) {
+angular.module('wwwApp').controller('PrefsBiographyCtrl', ['$scope', 'LoginService', 'BiographyService',
+    function ($scope, LoginService, BiographyService) {
         'use strict';
 
         $scope.ErrorMessage = '';
-
         $scope.biography = '';
+
+        $scope.login = LoginService.get(null, function (login) {
+            $scope.biography = BiographyService.get({id: login.username});
+        });
 
         $scope.save = function () {
             $scope.result = BiographyService.save($scope.biography,
