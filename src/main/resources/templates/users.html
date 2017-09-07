@@ -266,17 +266,22 @@
 
                 <div th:if="${pictures} != null and ${pictures.size()} > 0">
                     <h2>Pictures</h2>
-                    <ul class="fa-ul">
-                        <li th:each="pic : ${pictures}">
-                            <a th:if="${authenticatedUsername != null}"
-                               th:onclick="'javascript:deleteImage(\'' + ${pic.id} + '\');'"><i
-                                    class="fa fa-remove"></i></a>
+                    
+                    <div class="row">
+                        <div th:each="pic : ${pictures}" class="col-sm-6 col-md-4">
+                            <div class="thumbnail">
+                                <a th:href="@{'/AlbumImage/' + ${pic.id}}" rel="lightbox">
+                                    <img th:src="@{'/AlbumImage/' + ${pic.id} + '/thumbnail'}" th:alt="${pic.title}"/>
+                                </a>
+                                <div class="caption"><span th:text="${pic.title}"></span>
+                                    <a class="btn btn-primary" role="button" th:if="${authenticatedUsername != null}"
+                                       th:onclick="'javascript:deleteImage(\'' + ${pic.id} + '\');'"><i
+                                            class="fa fa-remove"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                            <i class="fa-li fa fa-picture-o"></i>
-                            <a th:href="@{'/AlbumImage?id=' + ${pic.id}}"
-                               rel="lightbox" th:text="${pic.title}"></a>
-                        </li>
-                    </ul>
                     <p>Subscribe to pictures <a th:href="@{'/users/' + ${user.username} + '/rsspics'}">feed</a>.</p>
 
                     <p th:if="${authenticatedUsername != null}"><a href="/#!/prefs/image">Add more pictures</a></p>

@@ -52,7 +52,7 @@ public class UserImageService {
 
         Collections.sort(images, new Comparator<UserImage>() {
             public int compare(final UserImage o1, final UserImage o2) {
-                return o2.getTitle().compareTo(o1.getTitle());
+                return o2.getTitle().compareToIgnoreCase(o1.getTitle());
             }
         });
 

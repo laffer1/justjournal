@@ -26,6 +26,7 @@
 
 package com.justjournal.ctl;
 
+import com.justjournal.services.ImageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -40,6 +41,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
+import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -60,10 +62,26 @@ import java.sql.SQLException;
 public class AlbumImageController {
 
     private final JdbcTemplate jdbcTemplate;
+    private final ImageService imageService;
 
     @Autowired
-    public AlbumImageController(final JdbcTemplate jdbcTemplate) {
+    public AlbumImageController(final JdbcTemplate jdbcTemplate, ImageService imageService) {
         this.jdbcTemplate = jdbcTemplate;
+        this.imageService = imageService;
+    }
+
+    @RequestMapping(value = "/{id}/thumbnail", method = RequestMethod.GET)
+    public ResponseEntity<byte[]> getThumbnail(@PathVariable("id") final int id) throws IOException {
+
+        // TODO: refactor into service
+        ResponseEntity<byte[]> out = get(id);
+        BufferedImage image = imageService.resizeAvatar(out.getBody());
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.setExpires(180);
+        headers.setContentType(MediaType.IMAGE_JPEG);
+
+        return new ResponseEntity<byte[]>(imageService.convertBufferedImageToJpeg(image), headers, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
