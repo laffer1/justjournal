@@ -4,13 +4,16 @@ import com.justjournal.Login;
 import com.justjournal.model.Journal;
 import com.justjournal.repository.JournalRepository;
 import com.justjournal.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.validation.constraints.Size;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -18,9 +21,9 @@ import java.util.Map;
  *
  * @author Lucas Holt
  */
+@Slf4j
 @RestController("/api/journal")
 public class JournalController {
-    private static final Logger log = Logger.getLogger(JournalController.class.getName());
 
     private JournalRepository journalRepository;
     private UserRepository userRepository;
@@ -29,6 +32,12 @@ public class JournalController {
     public JournalController(final JournalRepository journalRepository, final UserRepository userRepository) {
         this.journalRepository = journalRepository;
         this.userRepository = userRepository;
+    }
+
+    @RequestMapping(value = "user/{username}", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public List<Journal> listByUser(@PathVariable("username") final String username) {
+        return journalRepository.findByUsername(username);
     }
 
     @RequestMapping(value = "{slug}", method = RequestMethod.GET, produces = "application/json")
