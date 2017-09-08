@@ -5,13 +5,11 @@ import com.justjournal.model.Journal;
 import com.justjournal.repository.JournalRepository;
 import com.justjournal.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.validation.constraints.Size;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
@@ -89,7 +87,7 @@ public class JournalController {
             return java.util.Collections.singletonMap("error", "Error adding journal.");
 
         } catch (final Exception e) {
-            log.error(e);
+            log.error(e.getMessage(), e);
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return java.util.Collections.singletonMap("error", "Error adding journal.");
         }
