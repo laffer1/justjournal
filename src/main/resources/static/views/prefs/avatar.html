@@ -1,34 +1,40 @@
-<form name="myForm">
-    <fieldset>
-        <legend>Upload Avatar</legend>
+<div class="row">
+    <div class="col-md-12">
+        <h2>Preferences</h2>
 
-        <p>An avatar is a picture that represents your account. You can upload a gif,
-            png, or jpeg image up to 10KB in size. Each account may have 1 avatar. Often
-            users choose pictures of themselves, athletic icons, etc. There are no limits
-            on dimensions of the image, but 100 x 100 pixels would be large.</p>
+        <form name="myForm">
+            <fieldset>
+                <legend>Upload Avatar</legend>
 
-        <p>Avatars are publicly accessible regardless of your journal security settings.
-            Avatars must not infringe on copyright nor be considered
-            &quot; indecent &quot; under United States law.</p>
+                <p>An avatar is a picture that represents your account. You can upload a gif,
+                    png, or jpeg image up to 10KB in size. Each account may have 1 avatar. Often
+                    users choose pictures of themselves, athletic icons, etc. There are no limits
+                    on dimensions of the image, but 100 x 100 pixels would be large.</p>
 
-        <input type="file" ngf-select ng-model="picFile" name="file"
-               accept="image/*" ngf-max-size="2MB" required
-               ngf-model-invalid="errorFile">
-        <i ng-show="myForm.file.$error.required">*required</i><br>
-        <i ng-show="myForm.file.$error.maxSize">File too large
-            {{errorFile.size / 1000000|number:1}}MB: max 2M</i>
-        <img ng-show="myForm.file.$valid" ngf-thumbnail="picFile" class="thumb">
-        <button ng-click="picFile = null" ng-show="picFile">Remove</button>
-        <p>
-        <button ng-disabled="!myForm.$valid"
-                ng-click="uploadPic(picFile)">Submit
-        </button>
-        <span class="progress" ng-show="picFile.progress >= 0">
+                <p>Avatars are publicly accessible regardless of your journal security settings.
+                    Avatars must not infringe on copyright nor be considered
+                    &quot; indecent &quot; under United States law.</p>
+
+                <input type="file" ngf-select ng-model="picFile" name="file"
+                       accept="image/*" ngf-max-size="2MB" required
+                       ngf-model-invalid="errorFile">
+                <i ng-show="myForm.file.$error.required">*required</i><br>
+                <i ng-show="myForm.file.$error.maxSize">File too large
+                    {{errorFile.size / 1000000|number:1}}MB: max 2M</i>
+                <img ng-show="myForm.file.$valid" ngf-thumbnail="picFile" class="thumb">
+                <button ng-click="picFile = null" ng-show="picFile">Remove</button>
+                <p>
+                    <button ng-disabled="!myForm.$valid"
+                            ng-click="uploadPic(picFile)">Submit
+                    </button>
+                    <span class="progress" ng-show="picFile.progress >= 0">
        <div style="width:{{picFile.progress}}%"
             ng-bind="picFile.progress + '%'"></div>
      </span>
-        <span ng-show="picFile.result">Upload Successful</span>
-        <span class="err" ng-show="errorMsg">{{errorMsg}}</span>
-    </fieldset>
-    <br>
-</form>
+                    <span ng-show="picFile.result">Upload Successful</span>
+                    <span class="err" ng-show="errorMsg">{{errorMsg}}</span>
+            </fieldset>
+            <br>
+        </form>
+    </div>
+</div>

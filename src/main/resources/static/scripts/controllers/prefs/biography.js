@@ -6,7 +6,9 @@ angular.module('wwwApp').controller('PrefsBiographyCtrl', ['$scope', 'LoginServi
         $scope.biography = '';
 
         $scope.login = LoginService.get(null, function (login) {
-            $scope.biography = BiographyService.get({id: login.username});
+             BiographyService.get({Id: login.username}, function(bio) {
+                 $scope.biography = bio.bio;
+             });
         });
 
         $scope.save = function () {

@@ -6,6 +6,9 @@ import com.justjournal.repository.JournalRepository;
 import com.justjournal.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -20,7 +23,8 @@ import java.util.Map;
  * @author Lucas Holt
  */
 @Slf4j
-@RestController("/api/journal")
+@RestController
+@RequestMapping("/api/journal")
 public class JournalController {
 
     private JournalRepository journalRepository;
@@ -32,24 +36,34 @@ public class JournalController {
         this.userRepository = userRepository;
     }
 
-    @RequestMapping(value = "user/{username}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "user/{username}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
-    public List<Journal> listByUser(@PathVariable("username") final String username) {
-        return journalRepository.findByUsername(username);
+    public ResponseEntity<List<Journal>> listByUser(@PathVariable("username") final String username) {
+        try {
+            return ResponseEntity.ok(journalRepository.findByUsername(username));
+        } catch (final Exception e) {
+            log.error(e.getMessage(), e);
+        }
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @RequestMapping(value = "{slug}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "{slug}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
-    public Journal get(@PathVariable("slug") final String slug) {
-        return journalRepository.findOneBySlug(slug);
+    public ResponseEntity<Journal> get(@PathVariable("slug") final String slug) {
+        try {
+            return ResponseEntity.ok(journalRepository.findOneBySlug(slug));
+        } catch (final Exception e) {
+            log.error(e.getMessage(), e);
+        }
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @RequestMapping(value = "{slug}", method = RequestMethod.PUT)
-    public
+
+    @RequestMapping(value = "{slug}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
-    Map<String, String> put(@PathVariable("slug") final String slug,
-                            @RequestBody Journal journal,
-                            final HttpSession session, final HttpServletResponse response) {
+    public Map<String, String> put(@PathVariable("slug") final String slug,
+                                   @RequestBody Journal journal,
+                                   final HttpSession session, final HttpServletResponse response) {
 
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -93,12 +107,11 @@ public class JournalController {
         }
     }
 
-    @RequestMapping(value = "{slug}", method = RequestMethod.DELETE)
-    public
+    @RequestMapping(value = "{slug}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
-    Map<String, String> delete(@PathVariable("slug") final String slug,
-                               final HttpSession session,
-                               final HttpServletResponse response) throws Exception {
+    public Map<String, String> delete(@PathVariable("slug") final String slug,
+                                      final HttpSession session,
+                                      final HttpServletResponse response) throws Exception {
 
 
         if (!Login.isAuthenticated(session)) {
