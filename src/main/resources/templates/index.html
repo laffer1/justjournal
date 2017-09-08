@@ -9,36 +9,10 @@
     <meta name="viewport" content="width=device-width" />
     <meta name="msvalidate.01" content="D1E040678EBA2490CC51CABAABCE7928" />
     <meta name="google-site-verification" content="DTrNXBvTzRjd3Rl622MXUgtYzEJv2Dz6Mp5GBfVOo9Y" />
-    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <link rel="stylesheet" href="static/styles/bootstrap.min.css" th:href="@{static/styles/bootstrap.min.css}" />
-    <!-- build:css styles/main.css -->
+
     <link rel="stylesheet" href="static/components/angular-ui/build/angular-ui.css" th:href="@{components/angular-ui/build/angular-ui.css}"/>
     <link rel="stylesheet" href="static/styles/main.css" th:href="@{static/styles/main.css}" />
-    <!-- endbuild -->
-    <!-- IE 10 support -->
-    <style type="text/css">
-        /*noinspection ALL*/
-        @-webkit-viewport   { width: device-width; }
-        /*noinspection ALL*/
-        @-moz-viewport      { width: device-width; }
-        /*noinspection ALL*/
-        @-ms-viewport       { width: device-width; }
-        /*noinspection ALL*/
-        @-o-viewport        { width: device-width; }
-        /*noinspection ALL*/
-        @viewport           { width: device-width; }
-    </style>
-    <script type="text/javascript">
-        if (navigator.userAgent.match(/IEMobile\/10\.0/)) {
-          var msViewportStyle = document.createElement("style");
-          msViewportStyle.appendChild(
-            document.createTextNode(
-              "@-ms-viewport{width:auto!important}"
-            )
-          );
-          document.getElementsByTagName("head")[0].appendChild(msViewportStyle);
-        }
-    </script>
 </head>
 
 <body data-ng-controller="wwwAppCtrl">
@@ -171,8 +145,7 @@
     ga('create', 'UA-560995-1', 'justjournal.com');
     ga('require', 'linkid', 'linkid.js');
     ga('send', 'pageview');
-</script>
-<script type="text/javascript">
+
     (function () {
         var po = document.createElement('script');
         po.type = 'text/javascript';
