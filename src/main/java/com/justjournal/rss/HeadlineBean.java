@@ -265,11 +265,6 @@ public class HeadlineBean {
                 sb.append("<p>");
             }
 
-            /* if (contentDescription != null) {
-                sb.append(contentDescription);
-                sb.append("<br />");
-            }*/
-
             if (contentLink != null) {
                 sb.append("<a href=\"").append(contentLink).append("\">[").append(contentLink).append("]</a>");
             }
@@ -286,8 +281,7 @@ public class HeadlineBean {
             //Generate the NodeList;
             org.w3c.dom.NodeList nodeList = hc.document.getElementsByTagName("item");
 
-            sb.append("<ol class=\"RssItems\">");
-            sb.append(endl);
+            sb.append("<div class=\"panel-group\" id=\"accordion\" role=\"tablist\" aria-multiselectable=\"true\">");
 
             for (int i = 0; i < nodeList.getLength() && i < 16; i++) {
                 org.w3c.dom.NodeList childList = nodeList.item(i).getChildNodes();
@@ -317,40 +311,35 @@ public class HeadlineBean {
 
                 // assert the basic properties are there.
                 if (link != null && title != null) {
-                    sb.append("<li class=\"RssItem\">");
+                    sb.append("<div class=\"panel panel-default\"><div class=\"panel-heading\" role=\"tab\" id=\"heading");
+                    sb.append(i + "_" + guid.hashCode());
+                    sb.append("\">");
 
-                    sb.append("<span onclick=\"expandcontent(this, 'r").append(url.hashCode()).append("_").append(i).append("')\" class=\"RssItemTitle\">");
-                    sb.append("<span class=\"showstate\"></span> ");
-                    sb.append("<!-- guid: ");
-                    sb.append(guid);
-                    sb.append(" -->");
-                    sb.append("<a href=\"");
-                    sb.append(link);
-                    sb.append("\" title=\"");
+                    sb.append("<h4 class=\"panel-title\">");
+                    sb.append("<a role=\"button\" data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#collapse");
+                    sb.append(i + "_" + guid.hashCode());
+                    sb.append("\" aria-expanded=\"").append(i == 0 ? "true" : "false").append("\" aria-controls=\"collapse").append(i + "_" + guid.hashCode()).append("\">");
                     sb.append(Xml.cleanString(title));
-                    sb.append("\" >");
-                    sb.append(Xml.cleanString(title));
-                    sb.append("</a>");
-                    sb.append("</span>");
-                    sb.append(endl);
-
-                    sb.append("<div id=\"r").append(url.hashCode()).append("_").append(i).append("\" class=\"switchcontent\">");
-
-                    sb.append("<br />");
-                    sb.append("<span class=\"RssItemDesc\">");
+                    sb.append("</a></h4></div>");
+                    sb.append("<div id=\"collapse").append(i + "_" + guid.hashCode()).append("\" class=\"panel-collapse collapse");
+                    if (i == 0)
+                        sb.append("in");
+                    sb.append("\" role=\"tabpanel\" aria-labelledby=\"heading");
+                    sb.append(i + "_" + guid.hashCode());
+                    sb.append("\">");
+                    sb.append("<div class=\"panel-body\">");
                     /*
-                      /<(script|noscript|object|embed|style|frameset|frame|iframe)[>\s\S]*<\/\\1>/i /<\/?!?(param|link|meta|doctype|div|font)[^>]*>/i /(class|style|id)=\"[^\"]*\"/i
-                    */
+                        /<(script|noscript|object|embed|style|frameset|frame|iframe)[>\s\S]*<\/\\1>/i /<\/?!?(param|link|meta|doctype|div|font)[^>]*>/i /(class|style|id)=\"[^\"]*\"/i
+                     */
                     Pattern p = Pattern.compile("/<(script|noscript|object|embed|style|frameset|frame|iframe|link)[>\\s\\S]*<\\/\\1>/i");
                     Matcher m = p.matcher(description);
                     String result = m.replaceAll("");
 
                     sb.append(result);
-                    sb.append("</span>");
 
                     sb.append(" <span class=\"RssReadMore\">");
                     sb.append("<a href=\"");
-                    sb.append(link); // TODO: was guid ... why
+                    sb.append(link);
                     sb.append("\">");
                     sb.append("Read More</a></span>");
                     sb.append(endl);
@@ -362,16 +351,12 @@ public class HeadlineBean {
                         sb.append("</span>");
                         sb.append(endl);
                     }
-
-                    sb.append("</div>");
-                    sb.append(endl);
-
-                    sb.append("</li>");
+                    sb.append("</div></div></div>");
                     sb.append(endl);
                 }
             }
 
-            sb.append("</ol>");
+            sb.append("</div>");
             sb.append(endl);
 
             return sb.toString();
