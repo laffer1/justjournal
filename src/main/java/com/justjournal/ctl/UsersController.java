@@ -733,9 +733,6 @@ public class UsersController {
 
         sb.append("<h2>RSS Reader</h2>");
         sb.append(ENDL);
-        sb.append("<p><a href=\"javascript:sweeptoggle('contract')\">Contract All</a> | <a href=\"javascript:sweeptoggle('expand')\">Expand All</a></p>");
-        sb.append(ENDL);
-
 
         try {
             final Collection<RssSubscription> rssfeeds = rssSubscriptionsDAO.findByUser(uc.getBlogUser());
