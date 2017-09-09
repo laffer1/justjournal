@@ -32,6 +32,7 @@ import com.justjournal.model.*;
 import com.justjournal.model.api.NewUser;
 import com.justjournal.repository.*;
 import com.justjournal.utility.StringUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -49,29 +50,36 @@ import java.util.Map;
  * @author Lucas Holt
  * @see com.justjournal.ctl.api.AccountController
  */
+@Slf4j
 @Transactional
 @RestController
 @RequestMapping("/api/signup")
 public class SignUpController {
-    private static final Logger log = Logger.getLogger(SignUpController.class);
 
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private UserBioRepository userBioDao;
+
     @Autowired
     private UserContactRepository userContactRepository;
+
     @Autowired
     private UserPrefRepository userPrefRepository;
+    
     @Autowired
     private JournalRepository journalRepository;
+
+    @Autowired
+    private StyleRepository styleRepository;
 
     @Autowired
     private Settings settings;
 
     @RequestMapping(method = RequestMethod.POST, produces = "application/json")
-    public
     @ResponseBody
+    public
     Map<String, String> post(@RequestBody final NewUser user, final HttpServletResponse response) {
 
         if (!settings.isUserAllowNew()) {
@@ -84,12 +92,14 @@ public class SignUpController {
         }
 
         if (!Login.isUserName(user.getUsername())) {
+            log.warn("Username used for signup is invalid: " + user.getUsername());
 
             throw new IllegalArgumentException(
                     "Username must be letters and numbers only");
         }
 
         if (!Login.isPassword(user.getPassword())) {
+            log.warn("Password for signup is invalid");
 
             throw new IllegalArgumentException(
                     "Password must be 5-18 characters.");
@@ -101,6 +111,8 @@ public class SignUpController {
     private Map<String, String> newUser(final NewUser newUser, final HttpServletResponse response) {
 
         try {
+            final Style style = styleRepository.findOneByTitle("Journal"); // TODO: our default for now
+
             User user = new User();
             user.setName(newUser.getFirstName());
             user.setLastName(newUser.getLastName());
@@ -114,6 +126,8 @@ public class SignUpController {
                 throw new Exception("Unable to save user");
 
             Journal journal = new Journal();
+            journal.setStyle(style);
+            journal.setUser(user);
             journal.setSlug(newUser.getUsername());
             journal.setAllowSpider(true);
             journal.setOwnerViewOnly(false);
@@ -148,7 +162,7 @@ public class SignUpController {
 
             return java.util.Collections.singletonMap("id", Integer.toString(user.getId()));
         } catch (final Exception e) {
-            log.error(e);
+            log.error(e.getMessage(), e);
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return java.util.Collections.singletonMap("error", "Could not add user");
         }
