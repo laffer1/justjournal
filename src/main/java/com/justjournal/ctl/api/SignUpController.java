@@ -28,20 +28,16 @@ package com.justjournal.ctl.api;
 
 import com.justjournal.Login;
 import com.justjournal.core.Settings;
-import com.justjournal.model.*;
+import com.justjournal.model.User;
 import com.justjournal.model.api.NewUser;
-import com.justjournal.repository.*;
+import com.justjournal.services.AccountService;
 import com.justjournal.utility.StringUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Map;
 
 /**
@@ -57,30 +53,14 @@ import java.util.Map;
 public class SignUpController {
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private UserBioRepository userBioDao;
-
-    @Autowired
-    private UserContactRepository userContactRepository;
-
-    @Autowired
-    private UserPrefRepository userPrefRepository;
-    
-    @Autowired
-    private JournalRepository journalRepository;
-
-    @Autowired
-    private StyleRepository styleRepository;
+    private AccountService accountService;
 
     @Autowired
     private Settings settings;
 
     @RequestMapping(method = RequestMethod.POST, produces = "application/json")
     @ResponseBody
-    public
-    Map<String, String> post(@RequestBody final NewUser user, final HttpServletResponse response) {
+    public Map<String, String> post(@RequestBody final NewUser user, final HttpServletResponse response) {
 
         if (!settings.isUserAllowNew()) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -111,59 +91,12 @@ public class SignUpController {
     private Map<String, String> newUser(final NewUser newUser, final HttpServletResponse response) {
 
         try {
-            final Style style = styleRepository.findOneByTitle("Journal"); // TODO: our default for now
-
-            User user = new User();
-            user.setName(newUser.getFirstName());
-            user.setLastName(newUser.getLastName());
-            user.setUsername(newUser.getUsername());
-            user.setPassword(Login.SHA1(newUser.getPassword()));
-            user.setType(0);
-            user.setSince(Calendar.getInstance().get(Calendar.YEAR));
-            user.setLastLogin(new Date());
-            user = userRepository.saveAndFlush(user);
-            if (user == null)
-                throw new Exception("Unable to save user");
-
-            Journal journal = new Journal();
-            journal.setStyle(style);
-            journal.setUser(user);
-            journal.setSlug(newUser.getUsername());
-            journal.setAllowSpider(true);
-            journal.setOwnerViewOnly(false);
-            journal.setPingServices(true);
-            journal.setName(user.getName() + "\'s Journal");
-            journal.setSince(Calendar.getInstance().getTime());
-            journal.setModified(Calendar.getInstance().getTime());
-            journal = journalRepository.saveAndFlush(journal);
-            if (journal == null)
-                throw new Exception("Unable to save journal");
-
-            UserPref userPref = new UserPref();
-            userPref.setShowAvatar(PrefBool.N);
-            userPref.setUser(user);
-            userPref = userPrefRepository.save(userPref);
-            if (userPref == null)
-                throw new Exception("Unable to save user preferences");
-
-            UserContact userContact = new UserContact();
-            userContact.setEmail(newUser.getEmail());
-            userContact.setUser(user);
-            userContact = userContactRepository.save(userContact);
-            if (userContact == null)
-                throw new Exception("Unable to save user contact");
-
-            UserBio userBio = new UserBio();
-            userBio.setBio("");
-            userBio.setUser(user);
-            userBio = userBioDao.save(userBio);
-            if (userBio == null)
-                throw new Exception("Unable to save user bio");
+            User user = accountService.signup(newUser);
 
             return java.util.Collections.singletonMap("id", Integer.toString(user.getId()));
         } catch (final Exception e) {
             log.error(e.getMessage(), e);
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return java.util.Collections.singletonMap("error", "Could not add user");
         }
     }
