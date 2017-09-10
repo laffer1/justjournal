@@ -16,6 +16,6 @@ public class JustJournalRepositoryRestConfiguration extends RepositoryRestConfig
     @Override
     public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config) {
 
-        config.exposeIdsFor(Comment.class, Entry.class, Mood.class, Location.class, Security.class);
+        config.exposeIdsFor(Comment.class, Entry.class, Mood.class, Location.class, Security.class, Style.class);
     }
 }
