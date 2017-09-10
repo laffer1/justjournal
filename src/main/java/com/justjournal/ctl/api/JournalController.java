@@ -59,6 +59,13 @@ public class JournalController {
     }
 
 
+    @RequestMapping(value = "", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ResponseBody
+    public Map<String, String> post(@RequestBody Journal journal, final HttpSession session, final HttpServletResponse response) {
+        return put(journal.getSlug(), journal, session, response);
+    }
+
+
     @RequestMapping(value = "{slug}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
     public Map<String, String> put(@PathVariable("slug") final String slug,
