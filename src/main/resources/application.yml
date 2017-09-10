@@ -1,0 +1,62 @@
+spring:
+  profiles.default: default
+---
+spring:
+  profiles: default
+  datasource:
+    url: jdbc:mysql://localhost:3306/jj
+    username: jj
+    password: 
+    max-active: 10
+    initial-size: 5
+    max-idle: 5
+    min-idle: 1
+    test-while-idle: true
+    test-on-borrow: true
+    validation-query: SELECT 1
+  jpa:
+    database: MYSQL
+    hibernate:
+      ddl-auto: none
+      naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+    generate-ddl: false
+    show-sql: false
+    properties:
+     dialect: org.hibernate.dialect.MySQL5Dialect
+     hibernate:
+       temp:
+         use_jdbc_metadata_defaults: false
+       cache:
+         provider_class: org.hibernate.cache.EhCacheProvider
+         use_second_level_cache: true
+         use_query_cache: true
+         region:
+            factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
+            prefix: hibernate
+     javax:
+       persistence:
+         sharedCache:
+           mode: ALL
+
+multipart:
+  maxFileSize: 10MB
+
+endpoints:
+  hypermedia:
+    enabled: true
+
+eureka:
+  client:
+    serviceUrl:
+     defaultZone: http://127.0.0.1:8761/eureka/
+
+flyway:
+  baseline-on-migrate: true
+
+---
+spring:
+  profiles: test
+  datasource:
+    url: jdbc:mysql://localhost:3306/justjournal_test
+    username: travis
+    password:
