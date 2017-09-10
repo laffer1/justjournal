@@ -26,8 +26,8 @@
 
 package com.justjournal.rss;
 
-import com.justjournal.ApplicationTest;
-import com.justjournal.model.Entry;
+import com.justjournal.Application;
+import com.justjournal.model.*;
 import com.justjournal.repository.EntryRepository;
 import com.justjournal.repository.SecurityRepository;
 import org.junit.Test;
@@ -37,6 +37,7 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import static org.junit.Assert.assertEquals;
@@ -46,25 +47,35 @@ import static org.junit.Assert.assertTrue;
  * @author Lucas Holt
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = ApplicationTest.class)
+@SpringApplicationConfiguration(classes = Application.class)
 @WebAppConfiguration
 public class RssTests {
-    private final static String TEST_USER = "testuser";
-    @Autowired
-    private EntryRepository entryDao;
-    @Autowired
-    private SecurityRepository securityDao;
 
     @Autowired
     private Rss rss;
 
     @Test
     public void testPopulate() {
-        
+
         final java.util.GregorianCalendar calendar = new java.util.GregorianCalendar();
         calendar.setTime(new java.util.Date());
-        final Collection<Entry> entries = entryDao.findByUsernameAndSecurity(TEST_USER, securityDao.findOne(2));
-        assertTrue(entries.size() > 0);
+
+        Collection<Entry> entries = new ArrayList<>();
+
+        User user = new User();
+        user.setUsername("testuser");
+        user.setSince(2003);
+
+        Entry entry = new Entry();
+        entry.setId(1);
+        entry.setFormat(FormatType.TEXT);
+        entry.setBody("Foo Bar");
+        entry.setDraft(PrefBool.N);
+        entry.setAutoFormat(PrefBool.Y);
+        entry.setSubject("Test Blog Post");
+        entry.setUser(user);
+        entries.add(entry);
+        
         rss.populate(entries);
 
         assertTrue(rss.size() > 0);
