@@ -21,15 +21,15 @@
                     <label for="style" class="col-sm-2 control-label">Theme</label>
 
                     <div class="col-sm-4">
-                        <select name="style" id="style" data-ng-model="journal.style" ng-options="x for x in styles"></select>
+                        <select name="style" id="style" data-ng-model="journal.style" ng-options="x as x.title for x in styles" required></select>
                     </div>
-                </div>
+                </div>                                                 
 
 
                 <div class="form-group">
                     <div class="col-sm-4 col-sm-offset-2">
                         <label><input type="checkbox" name="allowSpider" id="allowSpider"  class="form-control input-sm"
-                              data-ng-model="journal.allowSpider" required> Allow Search Engine indexing</label>
+                              data-ng-model="journal.allowSpider" > Allow Search Engine indexing</label>
                     </div>
                 </div>
 
@@ -37,7 +37,7 @@
                     <div class="col-sm-4 col-sm-offset-2">
                         <label><input type="checkbox" name="pingServices" id="pingServices"
                                       class="form-control input-sm"
-                                      data-ng-model="journal.pingServices" required> Allow ping services to get notifications on
+                                      data-ng-model="journal.pingServices" > Allow ping services to get notifications on
                             blog updates</label>
                     </div>
                 </div>
@@ -46,7 +46,7 @@
                     <div class="col-sm-4 col-sm-offset-2">
                         <label><input type="checkbox" name="ownerViewOnly" id="ownerViewOnly"
                                       class="form-control input-sm"
-                                      data-ng-model="journal.ownerViewOnly" required> Only allow blog owner to view
+                                      data-ng-model="journal.ownerViewOnly" > Only allow blog owner to view
                             journal</label>
                     </div>
                 </div>

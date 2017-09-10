@@ -3,19 +3,27 @@ angular.module('wwwApp').controller('PrefsJournalCtrl', ['$scope', 'LoginService
         'use strict';
 
         $scope.ErrorMessage = '';
-        $scope.journal = {
-            
-        };
+        $scope.journal = {};
 
         $scope.login = LoginService.get(null, function (login) {
-             JournalService.get({Id: login.username}, function(journal) {
-                 $scope.journal = journal;
-             });
+            $scope.styles = StyleService.query(null, function(style) {
+                JournalService.get({Id: login.username}, function (journal) {
+                    $scope.journal = journal;
+
+                    for (var i = 0; i < $scope.styles.length; i++) {
+                        if ($scope.styles[i].id === journal.styleId) {
+                            $scope.journal.style = $scope.styles[i];
+                            break;
+                        }
+                    }
+                });
+            });
         });
 
-        $scope.styles = StyleService.query();
 
         $scope.save = function () {
+            $scope.journal.styleId = $scope.journal.style.id;
+            
             $scope.result = JournalService.save($scope.journal,
                     function success() {
                         alert('Journal Changed');
@@ -34,5 +42,5 @@ angular.module('wwwApp').controller('PrefsJournalCtrl', ['$scope', 'LoginService
                             $scope.ErrorMessage = 'Unknown error occurred. Response was ' + angular.toJson(response);
                         }
                     })
-        }
+        };
     }]);

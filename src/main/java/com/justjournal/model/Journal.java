@@ -41,6 +41,9 @@ public class Journal implements Serializable {
     @JoinColumn(name = "style")
     private Style style;
 
+    @Column(name="style", updatable=false, insertable = false)
+    private int styleId;
+
     @Column(name = "owner_view_only", nullable = false, length = 1)
     private boolean ownerViewOnly = false;
 
@@ -93,6 +96,14 @@ public class Journal implements Serializable {
 
     public void setAllowSpider(final boolean allowSpider) {
         this.allowSpider = allowSpider;
+    }
+
+    public int getStyleId() {
+        return this.styleId;
+    }
+
+    public void setStyleId(int styleId) {
+        
     }
 
     public Style getStyle() {
