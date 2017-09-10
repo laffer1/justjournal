@@ -31,6 +31,7 @@ import com.justjournal.model.StatisticsImpl;
 import com.justjournal.model.User;
 import com.justjournal.model.UserStatistics;
 import com.justjournal.repository.*;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,13 +43,14 @@ import javax.transaction.Transactional;
  *
  * @author Lucas Holt
  */
+@Slf4j
 @Service
 @Transactional(Transactional.TxType.REQUIRED)
 public class StatisticsService {
-    private static final Logger log = Logger.getLogger(StatisticsService.class);
 
     @Autowired
     private EntryRepository entryRepository;
+    
     @Autowired
     private UserRepository userRepository;
 
@@ -83,7 +85,7 @@ public class StatisticsService {
 
             return userStatistics;
         } catch (final Exception e) {
-            log.error(e);
+            log.error(e.getMessage(), e);
             throw new ServiceException(e);
         }
     }
@@ -106,7 +108,7 @@ public class StatisticsService {
 
             return statistics;
         } catch (final Exception e) {
-            log.error(e);
+            log.error(e.getMessage(), e);
             throw new ServiceException(e);
         }
     }
