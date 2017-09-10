@@ -11,6 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
 import org.springframework.boot.context.embedded.ServletRegistrationBean;
 import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +19,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+@EnableEurekaClient
 @Configuration
 @EnableScheduling
 @EnableAsync
@@ -26,6 +28,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @ComponentScan
 @SpringBootApplication
 public class Application {
+    
     @Value("${tomcat.ajp.port}")
     int ajpPort;
 
