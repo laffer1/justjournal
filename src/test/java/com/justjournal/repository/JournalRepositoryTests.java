@@ -1,6 +1,6 @@
 package com.justjournal.repository;
 
-import com.justjournal.ApplicationTest;
+import com.justjournal.Application;
 import com.justjournal.model.Journal;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,7 +15,7 @@ import static org.junit.Assert.assertNotNull;
  * @author Lucas Holt
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = ApplicationTest.class)
+@SpringApplicationConfiguration(classes = Application.class)
 @WebAppConfiguration
 public class JournalRepositoryTests {
     @Autowired

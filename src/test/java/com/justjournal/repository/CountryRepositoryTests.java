@@ -27,7 +27,6 @@
 package com.justjournal.repository;
 
 import com.justjournal.Application;
-import com.justjournal.ApplicationTest;
 import com.justjournal.model.Country;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,7 +43,7 @@ import static org.junit.Assert.assertNotNull;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@SpringApplicationConfiguration(classes = ApplicationTest.class)
+@SpringApplicationConfiguration(classes = Application.class)
 public class CountryRepositoryTests {
     @Autowired
     private CountryRepository countryRepository;

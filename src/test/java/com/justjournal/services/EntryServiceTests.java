@@ -27,11 +27,8 @@
 package com.justjournal.services;
 
 import com.justjournal.Application;
-import com.justjournal.ApplicationTest;
 import com.justjournal.model.Entry;
 import com.justjournal.model.RecentEntry;
-import com.justjournal.model.Statistics;
-import com.justjournal.model.UserStatistics;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +44,7 @@ import static org.junit.Assert.*;
  * @author Lucas Holt
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = ApplicationTest.class)
+@SpringApplicationConfiguration(classes = Application.class)
 @WebAppConfiguration
 public class EntryServiceTests {
 

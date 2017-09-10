@@ -1,6 +1,6 @@
 package com.justjournal.services;
 
-import com.justjournal.ApplicationTest;
+import com.justjournal.Application;
 import com.justjournal.model.Statistics;
 import com.justjournal.model.UserStatistics;
 import org.junit.Test;
@@ -16,7 +16,7 @@ import static org.junit.Assert.*;
  * @author Lucas Holt
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = ApplicationTest.class)
+@SpringApplicationConfiguration(classes = Application.class)
 @WebAppConfiguration
 public class StatisticsServiceTests {
     private static final String TEST_USER = "testuser";

@@ -91,7 +91,7 @@ public class SignUpController {
     private Map<String, String> newUser(final NewUser newUser, final HttpServletResponse response) {
 
         try {
-            User user = accountService.signup(newUser);
+            final User user = accountService.signup(newUser);
 
             return java.util.Collections.singletonMap("id", Integer.toString(user.getId()));
         } catch (final Exception e) {
