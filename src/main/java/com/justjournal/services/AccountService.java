@@ -36,13 +36,12 @@ public class AccountService {
     private JournalRepository journalRepository;
 
     @Autowired
-    private StyleRepository styleRepository;
+    private StyleService styleService;
 
-    private static final String DEFAULT_JOURNAL_THEME = "Journal"; // TODO: our default for now
 
 
     public User signup(final NewUser newUser) throws ServiceException, UnsupportedEncodingException, NoSuchAlgorithmException {
-        final Style style = styleRepository.findOneByTitle(DEFAULT_JOURNAL_THEME);
+        final Style style = styleService.getDefaultStyle();
 
         User user = new User();
         user.setName(newUser.getFirstName());

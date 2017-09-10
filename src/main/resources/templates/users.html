@@ -20,7 +20,7 @@
     <link rel="stylesheet" type="text/css" media="screen"
           th:href="${user.journals.get(0).style.id > 16} ? '/static/styles/' + ${user.journals.get(0).style.id} + '.css' : '/static/styles/bootstrap-theme.min.css'" />
 
-    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" media="screen"
           href="/static/components/lightbox2/css/lightbox.css" th:href="@{/components/lightbox2/css/lightbox.css}" />
     <link rel="alternate" type="application/rss+xml" title="RSS"
@@ -158,10 +158,13 @@
                                         <i class="fa fa-picture-o"></i> Add Pictures</a></li>
 
                                     <li th:if="${authenticatedUsername != null}"><a href="/#!/prefs/avatar">
-                                        <i class="fa fa-picture-o"></i> Avatar</a></li>
+                                        <i class="fa fa-address-card-o"></i> Avatar</a></li>
 
                                     <li th:if="${authenticatedUsername != null}"><a href="/#!/prefs/biography">
-                                                                         <i class="fa fa-picture-o"></i> Biography</a></li>
+                                                                         <i class="fa fa-book"></i> Biography</a></li>
+                                    
+                                    <li th:if="${authenticatedUsername != null}"><a href="/#!/prefs/journal">
+                                           <i class="fa fa-sliders"></i> Journal</a></li>
 
                                     <li th:if="${authenticatedUsername != null}"><a href="/logout"><i class="fa fa-sign-out"></i>
                                     Log Out</a></li>

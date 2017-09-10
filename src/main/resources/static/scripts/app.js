@@ -1,14 +1,14 @@
 angular.module('wwwApp',
-                [
-                    'ui',
-                    'ui.bootstrap.pagination',
-                    'ngRoute',
-                    'ngResource',
-                    'ngCookies',
-                    'ngRoute',
-                    'ngSanitize',
-                    'ngFileUpload'
-                ])
+        [
+            'ui',
+            'ui.bootstrap.pagination',
+            'ngRoute',
+            'ngResource',
+            'ngCookies',
+            'ngRoute',
+            'ngSanitize',
+            'ngFileUpload'
+        ])
         .config(function ($routeProvider, $locationProvider) {
             'use strict';
 
@@ -24,7 +24,7 @@ angular.module('wwwApp',
                     .when('/comment/:entryId/edit/:commentId', {
                         templateUrl: 'views/comment.html',
                         controller: 'CommentCtrl'
-                     })
+                    })
                     .when('/comment/:entryId', {
                         templateUrl: 'views/comment.html',
                         controller: 'CommentCtrl'
@@ -41,7 +41,7 @@ angular.module('wwwApp',
                         templateUrl: 'views/members.html',
                         controller: 'MembersCtrl'
                     })
-                    .when('/moodlist',{
+                    .when('/moodlist', {
                         templateUrl: 'views/moodlist.html',
                         controller: 'MoodListCtrl'
                     })
@@ -60,6 +60,10 @@ angular.module('wwwApp',
                     .when('/prefs/image', {
                         templateUrl: 'views/prefs/image.html',
                         controller: 'PrefsImageCtrl'
+                    })
+                    .when('/prefs/journal', {
+                        templateUrl: 'views/prefs/journal.html',
+                        controller: 'PrefsJournalCtrl'
                     })
                     .when('/privacy', {
                         templateUrl: 'views/privacy.html',
@@ -113,9 +117,7 @@ angular.module('wwwApp',
                         templateUrl: 'views/tags.html',
                         controller: 'TagsCtrl'
                     })
-                    .when('/users', {
-
-                    })
+                    .when('/users', {})
                     .otherwise({
                         redirectTo: '/'
                     });
