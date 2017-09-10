@@ -1,7 +1,6 @@
 package com.justjournal.services;
 
-import com.justjournal.ApplicationTest;
-import com.justjournal.TrampolineSchedulerRule;
+import com.justjournal.Application;
 import com.justjournal.model.EntryStatistic;
 import com.justjournal.model.User;
 import com.justjournal.repository.EntryRepository;
@@ -9,19 +8,9 @@ import com.justjournal.repository.EntryStatisticRepository;
 import com.justjournal.repository.UserRepository;
 import io.reactivex.Maybe;
 import io.reactivex.Observable;
-import io.reactivex.Scheduler;
-import io.reactivex.functions.Function;
-import io.reactivex.functions.Predicate;
-import io.reactivex.observers.TestObserver;
-import io.reactivex.plugins.RxJavaPlugins;
-import io.reactivex.schedulers.Schedulers;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TestRule;
-import org.junit.runner.Description;
 import org.junit.runner.RunWith;
-import org.junit.runners.model.Statement;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -31,7 +20,6 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -40,7 +28,7 @@ import static org.mockito.Mockito.*;
  * @author Lucas Holt
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = ApplicationTest.class)
+@SpringApplicationConfiguration(classes = Application.class)
 @WebAppConfiguration
 public class EntryStatisticsServiceTests {
 
@@ -116,12 +104,12 @@ public class EntryStatisticsServiceTests {
 
     @Test(expected = IllegalArgumentException.class)
     public void computeBadStartYear() {
-        entryStatisticService.compute(user, 0, TEST_YEAR );
+        entryStatisticService.compute(user, 0, TEST_YEAR);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void computeBadEndYear() {
-        entryStatisticService.compute(user, TEST_YEAR, 0 );
+        entryStatisticService.compute(user, TEST_YEAR, 0);
     }
 
     /*   TODO: not working due to rxjava scheduler io multithreading.
@@ -153,6 +141,6 @@ public class EntryStatisticsServiceTests {
     }
              */
 
-   // @Rule
-  //  public TrampolineSchedulerRule rule = new TrampolineSchedulerRule();
+    // @Rule
+    //  public TrampolineSchedulerRule rule = new TrampolineSchedulerRule();
 }

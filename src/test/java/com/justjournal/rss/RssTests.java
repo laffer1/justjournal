@@ -60,13 +60,13 @@ public class RssTests {
         final java.util.GregorianCalendar calendar = new java.util.GregorianCalendar();
         calendar.setTime(new java.util.Date());
 
-        Collection<Entry> entries = new ArrayList<>();
+        final Collection<Entry> entries = new ArrayList<>();
 
-        User user = new User();
+        final User user = new User();
         user.setUsername("testuser");
         user.setSince(2003);
 
-        Entry entry = new Entry();
+        final Entry entry = new Entry();
         entry.setId(1);
         entry.setFormat(FormatType.TEXT);
         entry.setBody("Foo Bar");
