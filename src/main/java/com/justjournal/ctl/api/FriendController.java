@@ -144,13 +144,12 @@ public class FriendController {
         }
 
     }
-
-    // TODO: api makes it hard to selectively delete cache entries
+    
     @CacheEvict(value = "friends", allEntries = true)
-    @RequestMapping(method = RequestMethod.DELETE)
+    @RequestMapping(method = RequestMethod.DELETE, value="{friend}")
     @ResponseBody
     public
-    Map<String, String> delete(@RequestBody Friend friend, HttpSession session, HttpServletResponse response) throws Exception {
+    Map<String, String> delete(@PathVariable("friend") String friend, HttpSession session, HttpServletResponse response) throws Exception {
 
 
         if (!Login.isAuthenticated(session)) {
@@ -159,16 +158,22 @@ public class FriendController {
         }
 
         try {
+            final User friendUser = userRepository.findByUsername(friend);
             final User user = userRepository.findOne(Login.currentLoginId(session));
-            friend.setUser(user);
 
-            friendsDao.delete(friend);
-            return java.util.Collections.singletonMap("status", "success");
+            final Friend f = friendsDao.findOneByUserAndFriend(user, friendUser);
+            if (f != null) {
+                friendsDao.delete(f);
+                return java.util.Collections.singletonMap("status", "success");
+            } else {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                   return java.util.Collections.singletonMap("error", "Error deleting friend");
+            }
         } catch (final Exception e) {
             log.error(e.getMessage(), e);
         }
 
-        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         return java.util.Collections.singletonMap("error", "Error deleting friend");
     }
 }
