@@ -22,6 +22,24 @@ function follow(friend) {
         });
 }
 
+function unfollow(friend) {
+    'use strict';
+
+        var request = jQuery.ajax({
+            url: "/api/friend/" + friend,
+            type: "DELETE",
+            data: {}
+        });
+
+        request.done(function () {
+            window.alert('Unfollowing ' + friend);
+        });
+
+        request.fail(function (jqXHR, textStatus) {
+            window.alert("Could not unfollow friend. Request failed: " + textStatus);
+        });
+}
+
 function addFavorite(entryId) {
     'use strict';
 
