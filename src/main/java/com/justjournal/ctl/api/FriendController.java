@@ -69,7 +69,7 @@ public class FriendController {
     // TODO: refactor to return user objects?
 
 
-    @RequestMapping(value = "{username}/friendof/{other}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "{username}/friendswith/{other}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<Boolean> areWeFriends(@PathVariable("username") String username, @PathVariable("other") String otherUsername) {
         try {
