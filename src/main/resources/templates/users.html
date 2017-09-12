@@ -3,8 +3,8 @@
 
 <head>
     <title th:text="${user.journals.get(0).name}"></title>
-    <meta th:if="${user.journals.get(0).allowSpider}" name="robots" content="noindex, nofollow, noarchive" />
-    <meta th:if="${user.journals.get(0).allowSpider}" name="googlebot" content="nosnippet" />
+    <meta th:if="${user.journals.get(0).allowSpider == false}" name="robots" content="noindex, nofollow, noarchive" />
+    <meta th:if="${user.journals.get(0).allowSpider == false}" name="googlebot" content="nosnippet" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta property="og:site_name" content="Just Journal" />
     <meta property="og:type" content="article" />
@@ -233,6 +233,11 @@
                         <span id="follow" th:if="${authenticatedUsername != user.username}">
                             <a class="btn btn-sm btn-default" th:onclick="'javascript:follow(\'' + ${user.username} + '\');'">Follow  <span th:text="${user.username}"></span></a>
                         </span>
+                        <span id="unfollow" th:if="${authenticatedUsername != user.username}">
+                                                 <a class="btn btn-sm btn-default"
+                                                    th:onclick="'javascript:unfollow(\'' + ${user.username} + '\');'">Unfollow  <span
+                                                         th:text="${user.username}"></span></a>
+                                             </span>
                     </p>
 
                    <ul class="pager" th:if="${pageable != null}">
@@ -371,6 +376,8 @@
                     function (data) {
                         if (data === true)
                             $('#follow').hide();
+                        else
+                            $('#unfollow').hide();
                     }
             );
         }
