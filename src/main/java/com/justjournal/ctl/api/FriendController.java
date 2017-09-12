@@ -32,12 +32,12 @@ import com.justjournal.model.User;
 import com.justjournal.repository.FriendsRepository;
 import com.justjournal.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -68,19 +68,39 @@ public class FriendController {
 
     // TODO: refactor to return user objects?
 
+
+    @RequestMapping(value = "{username}/friendof/{other}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity<Boolean> areWeFriends(@PathVariable("username") String username, @PathVariable("other") String otherUsername) {
+        try {
+            User user = userRepository.findByUsername(username);
+            if (user == null)
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            
+            for (Friend friend : user.getFriends()) {
+
+                if (otherUsername.equalsIgnoreCase(friend.getFriend().getUsername()))
+                    return ResponseEntity.ok(true);
+            }
+            return ResponseEntity.ok(false);
+        } catch (final Exception e) {
+            return ResponseEntity.badRequest().body(false);
+        }
+    }
+
     /**
-     * @param id       username
+     * @param username       username
      * @param response http response
      * @return List of usernames as strings
      */
-    @Cacheable(value = "friends", key = "id")
-    @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Cacheable(value = "friends", key = "username")
+    @RequestMapping(value = "{username}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Collection<User> getById(@PathVariable("id") String id, HttpServletResponse response) {
+    public Collection<User> getByUsername(@PathVariable("username") String username, HttpServletResponse response) {
         try {
             ArrayList<User> friends = new ArrayList<User>();
 
-            User user = userRepository.findByUsername(id);
+            User user = userRepository.findByUsername(username);
             for (Friend friend : user.getFriends()) {
                 friends.add(friend.getFriend());
             }
@@ -92,9 +112,9 @@ public class FriendController {
     }
 
     @CacheEvict(value = "friends", key = "friend")
-    @RequestMapping(method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value="{friend}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Map<String, String> put(@RequestParam String friend, HttpSession session, HttpServletResponse response) {
+    public Map<String, String> put(@PathVariable("friend") String friend, HttpSession session, HttpServletResponse response) {
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
