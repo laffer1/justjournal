@@ -4,6 +4,24 @@
     date created: June 10, 2007
 */
 
+function follow(friend) {
+    'use strict';
+
+        var request = jQuery.ajax({
+            url: "/api/friend/" + friend,
+            type: "PUT",
+            data: {}
+        });
+
+        request.done(function () {
+            window.alert('Now following ' + friend);
+        });
+
+        request.fail(function (jqXHR, textStatus) {
+            window.alert("Could not follow friend. Request failed: " + textStatus);
+        });
+}
+
 function addFavorite(entryId) {
     'use strict';
 

@@ -226,9 +226,13 @@
                 </div>
 
                     <p th:if="${authenticatedUsername != null}">You are logged in as <a
-                            th:href="@{'/users/' + ${user.username}}"><img
+                            th:href="@{'/users/' + ${authenticatedUsername}}"><img
                             src="/images/userclass_16.png"
-                            alt="user" /> <span th:text="${user.username}"></span></a>
+                            alt="user" /> <span th:text="${authenticatedUsername}"></span></a>
+
+                        <span id="follow" th:if="${authenticatedUsername != user.username}">
+                            <a th:onclick="'javascript:follow(\'' + ${user.username} + '\');'">Follow  <span th:text="${user.username}"></span></a>
+                        </span>
                     </p>
 
                    <ul class="pager" th:if="${pageable != null}">
