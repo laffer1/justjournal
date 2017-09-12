@@ -2,8 +2,10 @@ package com.justjournal.ctl.api;
 
 import com.justjournal.Login;
 import com.justjournal.model.Journal;
+import com.justjournal.model.Style;
 import com.justjournal.repository.JournalRepository;
 import com.justjournal.repository.UserRepository;
+import com.justjournal.services.StyleService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,11 +31,13 @@ public class JournalController {
 
     private JournalRepository journalRepository;
     private UserRepository userRepository;
+    private StyleService styleService;
 
     @Autowired
-    public JournalController(final JournalRepository journalRepository, final UserRepository userRepository) {
+    public JournalController(final JournalRepository journalRepository, final UserRepository userRepository, final StyleService styleService) {
         this.journalRepository = journalRepository;
         this.userRepository = userRepository;
+        this.styleService = styleService;
     }
 
     @RequestMapping(value = "user/{username}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -97,7 +101,13 @@ public class JournalController {
             j.setName(journal.getName());
             j.setOwnerViewOnly(journal.isOwnerViewOnly());
             j.setPingServices(journal.isPingServices());
-            j.setStyle(journal.getStyle());
+            if (journal.getStyleId() > 0) {
+                final Style s = styleService.get(journal.getStyleId());
+                j.setStyle(s);
+            } else {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                return java.util.Collections.singletonMap("error", "Missing style id.");
+            }
             j.setModified(Calendar.getInstance().getTime());
 
             j = journalRepository.saveAndFlush(j);

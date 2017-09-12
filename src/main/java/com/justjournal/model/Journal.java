@@ -103,7 +103,7 @@ public class Journal implements Serializable {
     }
 
     public void setStyleId(int styleId) {
-        
+      this.styleId = styleId;
     }
 
     public Style getStyle() {
