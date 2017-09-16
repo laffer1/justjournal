@@ -14,6 +14,8 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -27,17 +29,12 @@ import static org.mockito.Mockito.*;
 /**
  * @author Lucas Holt
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = Application.class)
-@WebAppConfiguration
+@RunWith(MockitoJUnitRunner.class)
 public class EntryStatisticsServiceTests {
 
     private static final String TEST_USER = "testuser";
     private static final int TEST_YEAR = 2003;
-
-    @InjectMocks
-    private EntryStatisticService entryStatisticService;
-
+    
     @Mock
     private UserRepository userRepository;
 
@@ -47,26 +44,28 @@ public class EntryStatisticsServiceTests {
     @Mock
     private EntryRepository entryRepository;
 
-    @Mock
-    private EntryStatistic entryStatistic;
+    @InjectMocks
+    private EntryStatisticService entryStatisticService;
 
-    @Mock
+
+    private EntryStatistic entryStatistic;
     private User user;
 
 
     @Before
     public void setupMock() {
-        MockitoAnnotations.initMocks(this);
+        user = new User();
+        user.setUsername(TEST_USER);
+
+        entryStatistic = new EntryStatistic();
+        entryStatistic.setUser(user);
+        entryStatistic.setCount(1L);
+        entryStatistic.setYear(TEST_YEAR);
     }
 
     @Test
     public void getEntryCounts() {
         when(entryStatisticRepository.findByUsernameOrderByYearDesc(TEST_USER)).thenReturn(Collections.singletonList(entryStatistic));
-        when(entryStatistic.getUser()).thenReturn(user);
-        when(entryStatistic.getCount()).thenReturn(1L);
-        when(entryStatistic.getYear()).thenReturn(TEST_YEAR);
-        when(user.getUsername()).thenReturn(TEST_USER);
-
         Observable<EntryStatistic> o = entryStatisticService.getEntryCounts(TEST_USER);
         final Iterable<EntryStatistic> myIterator = o.blockingIterable();
 
@@ -89,11 +88,7 @@ public class EntryStatisticsServiceTests {
     @Test
     public void getEntryCount() {
         when(entryStatisticRepository.findByUsernameAndYear(TEST_USER, TEST_YEAR)).thenReturn(entryStatistic);
-        when(entryStatistic.getUser()).thenReturn(user);
-        when(entryStatistic.getCount()).thenReturn(1L);
-        when(entryStatistic.getYear()).thenReturn(TEST_YEAR);
-        when(user.getUsername()).thenReturn(TEST_USER);
-
+        
         Maybe<EntryStatistic> o = entryStatisticService.getEntryCount(TEST_USER, TEST_YEAR);
 
         EntryStatistic es = o.blockingGet();
