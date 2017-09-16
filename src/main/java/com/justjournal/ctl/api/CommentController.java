@@ -45,6 +45,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -87,7 +88,7 @@ public class CommentController {
         final Entry entry = entryDao.findOne(entryId);
 
         try {
-            if (entry.getUser().getJournals().get(0).isOwnerViewOnly()  ||
+            if (new ArrayList<Journal>(entry.getUser().getJournals()).get(0).isOwnerViewOnly()  ||
                     entry.getAllowComments() == PrefBool.N ||
                     entry.getSecurity().getId() == 0) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);

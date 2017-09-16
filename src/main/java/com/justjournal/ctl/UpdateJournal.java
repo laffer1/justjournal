@@ -127,7 +127,7 @@ public class UpdateJournal extends HttpServlet {
     private void htmlOutput(final StringBuilder sb, final String userName, final int userID) {
         /* Initialize Preferences Object */
         final User pf = userRepository.findByUsername(userName);
-        final Journal journal = pf.getJournals().get(0);
+        final Journal journal = new ArrayList<Journal>(pf.getJournals()).get(0);
 
         // Begin HTML document.
         // IE hates this.
@@ -593,7 +593,7 @@ public class UpdateJournal extends HttpServlet {
                     if (et.getSecurity().getId() == 2) {
                         /* Initialize Preferences Object */
                         User pf = userRepository.findByUsername(userName);
-                        Journal journal = pf.getJournals().get(0);
+                        Journal journal = new ArrayList<Journal>(pf.getJournals()).get(0);
 
                         if (pf != null && !journal.isOwnerViewOnly() && journal.isPingServices()) {
                             log.debug("Ping weblogs");

@@ -81,7 +81,6 @@ public class User implements Serializable {
     @Column(name = "password", length = 40, nullable = false)
     private String password = "";
 
-
     @Column(name = "since", nullable = false)
     private Integer since = 2003;
 
@@ -100,7 +99,7 @@ public class User implements Serializable {
     @JsonIgnore
     @Basic(fetch = FetchType.LAZY)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private List<Journal> journals = new ArrayList<Journal>();
+    private Set<Journal> journals = new HashSet<>();
 
     @JsonManagedReference(value="entry-user")
     @JsonIgnore
@@ -112,24 +111,24 @@ public class User implements Serializable {
     @JsonIgnore
     @Basic(fetch = FetchType.LAZY)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private List<Comment> comments = new ArrayList<Comment>();
+    private Set<Comment> comments = new HashSet<>();
 
     @JsonManagedReference
     @JsonIgnore
     @Basic(fetch = FetchType.LAZY)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private List<Friend> friends = new ArrayList<Friend>();
+    private Set<Friend> friends = new HashSet<>();
 
     @JsonManagedReference
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER) // TODO: Lazy fetch type
-    private List<UserLink> links = new ArrayList<UserLink>();
+    private Set<UserLink> links = new HashSet<>();
 
     @JsonManagedReference
     @JsonIgnore
     @Basic(fetch = FetchType.LAZY)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private List<UserImage> images = new ArrayList<UserImage>();
+    private Set<UserImage> images = new HashSet<UserImage>();
 
     @JsonManagedReference
     @JsonIgnore
@@ -188,11 +187,11 @@ public class User implements Serializable {
         this.entries = entries;
     }
 
-    public List<Comment> getComments() {
+    public Set<Comment> getComments() {
         return comments;
     }
 
-    public void setComments(final List<Comment> comments) {
+    public void setComments(final Set<Comment> comments) {
         this.comments = comments;
     }
 
@@ -347,35 +346,35 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    public List<Friend> getFriends() {
+    public Set<Friend> getFriends() {
         return friends;
     }
 
-    public void setFriends(final List<Friend> friends) {
+    public void setFriends(final Set<Friend> friends) {
         this.friends = friends;
     }
 
-    public List<UserLink> getLinks() {
+    public Set<UserLink> getLinks() {
         return links;
     }
 
-    public void setLinks(final List<UserLink> links) {
+    public void setLinks(final Set<UserLink> links) {
         this.links = links;
     }
 
-    public List<UserImage> getImages() {
+    public Set<UserImage> getImages() {
         return images;
     }
 
-    public void setImages(final List<UserImage> images) {
+    public void setImages(final Set<UserImage> images) {
         this.images = images;
     }
 
-    public List<Journal> getJournals() {
+    public Set<Journal> getJournals() {
         return journals;
     }
 
-    public void setJournals(final List<Journal> journals) {
+    public void setJournals(final Set<Journal> journals) {
         this.journals = journals;
     }
 

@@ -174,12 +174,12 @@ public class Blogger {
 
         if (!blnError)
             try {
-                User user = userRepository.findOne(userId);
+                final User user = userRepository.findOne(userId);
 
                 s.put("url", "http://www.justjournal.com/users/" + user.getUsername());
                 s.put("blogid", userId);
-                s.put("blogName", user.getJournals().get(0).getName());
-            } catch (Exception e) {
+                s.put("blogName", new ArrayList<Journal>(user.getJournals()).get(0).getName());
+            } catch (final Exception e) {
                 blnError = true;
                 log.debug(e.getMessage());
             }
@@ -269,7 +269,7 @@ public class Blogger {
                 et2 = entryRepository.findOne(et.getId()); // TODO: this is wrong.
                 result = Integer.toString(et2.getId());
 
-                Journal journal = user.getJournals().get(0);
+                Journal journal = new ArrayList<Journal>(user.getJournals()).get(0);
                 if (!journal.isOwnerViewOnly() && journal.isPingServices()) {
                     log.debug("Ping weblogs");
                     /* WebLogs, Google, blo.gs */

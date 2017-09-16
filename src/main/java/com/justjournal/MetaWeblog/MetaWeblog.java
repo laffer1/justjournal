@@ -174,7 +174,7 @@ public class MetaWeblog {
         if (!blnError)
             try {
                 User user = userRepository.findOne(userId);
-                Journal journal = user.getJournals().get(0);
+                Journal journal = new ArrayList<Journal>(user.getJournals()).get(0);
 
                 s.put("url", "http://www.justjournal.com/users/" + user.getUsername());
                 s.put("blogid", userId);
@@ -248,7 +248,7 @@ public class MetaWeblog {
                 result = Integer.toString(et.getId());
                 log.debug("Result is: " + result);
 
-                Journal journal = user.getJournals().get(0);
+                Journal journal = new ArrayList<Journal>(user.getJournals()).get(0);
 
                 if (!journal.isOwnerViewOnly() && journal.isPingServices()) {
                     log.debug("Ping weblogs");

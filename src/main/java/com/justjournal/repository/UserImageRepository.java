@@ -41,4 +41,7 @@ import java.util.List;
 public interface UserImageRepository extends PagingAndSortingRepository<UserImage, Integer> {
     @Query("select ul from UserImage ul, User u where ul.user = u and LOWER(u.username) = LOWER(:username)")
     List<UserImage> findByUsername(@Param("username") String username);
+
+    @Query("select ul from UserImage ul, User u where ul.user = u and LOWER(u.username) = LOWER(:username) order by ul.title")
+    List<UserImage> findByUsernameOrderByTitleTitleAsc(@Param("username") String username);
 }

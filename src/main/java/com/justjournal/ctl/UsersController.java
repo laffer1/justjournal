@@ -74,6 +74,7 @@ public class UsersController {
     private static final char ENDL = '\n';
     private static final Logger log = Logger.getLogger(UsersController.class);
     private static final String MODEL_USER = "user";
+    private static final String MODEL_JOURNAL = "journal";
     private static final String MODEL_AUTHENTICATED_USER = "authenticatedUsername";
     private static final String MODEL_ENTRY = "entry";
     private static final String MODEL_CALENDAR_MINI = "calendarMini";
@@ -158,10 +159,13 @@ public class UsersController {
             return "";
         }
 
+        Journal journal = new ArrayList<Journal>(userContext.getBlogUser().getJournals()).get(0);
+        model.addAttribute(MODEL_JOURNAL, journal);
+
         model.addAttribute(MODEL_AUTHENTICATED_USER, Login.currentLoginName(session));
         model.addAttribute(MODEL_USER, userContext.getBlogUser());
 
-        if (userContext.getBlogUser().getJournals().get(0).isOwnerViewOnly() && !userContext.isAuthBlog()) {
+        if (journal.isOwnerViewOnly() && !userContext.isAuthBlog()) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return "";
         }
@@ -189,10 +193,13 @@ public class UsersController {
             return "";
         }
 
+        Journal journal = new ArrayList<Journal>(userContext.getBlogUser().getJournals()).get(0);
+        model.addAttribute(MODEL_JOURNAL, journal);
+
         model.addAttribute(MODEL_AUTHENTICATED_USER, Login.currentLoginName(session));
         model.addAttribute(MODEL_USER, userContext.getBlogUser());
 
-        if (userContext.getBlogUser().getJournals().get(0).isOwnerViewOnly() && !userContext.isAuthBlog()) {
+        if (journal.isOwnerViewOnly() && !userContext.isAuthBlog()) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return "";
         }
@@ -221,10 +228,13 @@ public class UsersController {
               return "";
           }
 
+        Journal journal = new ArrayList<Journal>(userc.getBlogUser().getJournals()).get(0);
+        model.addAttribute(MODEL_JOURNAL, journal);
+                
           model.addAttribute(MODEL_AUTHENTICATED_USER, Login.currentLoginName(session));
           model.addAttribute(MODEL_USER, userc.getBlogUser());
 
-          if (userc.getBlogUser().getJournals().get(0).isOwnerViewOnly() && !userc.isAuthBlog()) {
+          if (journal.isOwnerViewOnly() && !userc.isAuthBlog()) {
               response.setStatus(HttpServletResponse.SC_FORBIDDEN);
               return "";
           }
@@ -253,10 +263,13 @@ public class UsersController {
             return "";
         }
 
+        Journal journal = new ArrayList<Journal>(userc.getBlogUser().getJournals()).get(0);
+                model.addAttribute(MODEL_JOURNAL, journal);
+
         model.addAttribute(MODEL_AUTHENTICATED_USER, Login.currentLoginName(session));
         model.addAttribute(MODEL_USER, userc.getBlogUser());
 
-        if (userc.getBlogUser().getJournals().get(0).isOwnerViewOnly() && !userc.isAuthBlog()) {
+        if (journal.isOwnerViewOnly() && !userc.isAuthBlog()) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return "";
         }
@@ -284,10 +297,13 @@ public class UsersController {
             return "";
         }
 
+        Journal journal = new ArrayList<Journal>(userContext.getBlogUser().getJournals()).get(0);
+                model.addAttribute(MODEL_JOURNAL, journal);
+
         model.addAttribute(MODEL_AUTHENTICATED_USER, Login.currentLoginName(session));
         model.addAttribute(MODEL_USER, userContext.getBlogUser());
 
-        if (userContext.getBlogUser().getJournals().get(0).isOwnerViewOnly() && !userContext.isAuthBlog()) {
+        if (journal.isOwnerViewOnly() && !userContext.isAuthBlog()) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return "";
         }
@@ -323,10 +339,13 @@ public class UsersController {
             return "";
         }
 
+        Journal journal = new ArrayList<Journal>(userc.getBlogUser().getJournals()).get(0);
+                model.addAttribute(MODEL_JOURNAL, journal);
+
         model.addAttribute(MODEL_AUTHENTICATED_USER, Login.currentLoginName(session));
         model.addAttribute(MODEL_USER, userc.getBlogUser());
 
-        if (userc.getBlogUser().getJournals().get(0).isOwnerViewOnly() && !userc.isAuthBlog()) {
+        if (journal.isOwnerViewOnly() && !userc.isAuthBlog()) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return "";
         }
@@ -353,10 +372,13 @@ public class UsersController {
             return "";
         }
 
+        Journal journal = new ArrayList<Journal>(userc.getBlogUser().getJournals()).get(0);
+                model.addAttribute(MODEL_JOURNAL, journal);
+
         model.addAttribute(MODEL_AUTHENTICATED_USER, Login.currentLoginName(session));
         model.addAttribute(MODEL_USER, userc.getBlogUser());
 
-        if (userc.getBlogUser().getJournals().get(0).isOwnerViewOnly() && !userc.isAuthBlog()) {
+        if (journal.isOwnerViewOnly() && !userc.isAuthBlog()) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return "";
         }
@@ -382,10 +404,13 @@ public class UsersController {
             return "";
         }
 
+        Journal journal = new ArrayList<Journal>(userc.getBlogUser().getJournals()).get(0);
+                model.addAttribute(MODEL_JOURNAL, journal);
+
         model.addAttribute(MODEL_AUTHENTICATED_USER, Login.currentLoginName(session));
         model.addAttribute(MODEL_USER, userc.getBlogUser());
 
-        if (userc.getBlogUser().getJournals().get(0).isOwnerViewOnly() && !userc.isAuthBlog()) {
+        if (journal.isOwnerViewOnly() && !userc.isAuthBlog()) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return "";
         }
@@ -411,7 +436,7 @@ public class UsersController {
                 return "";
             }
 
-            if (user.getJournals().get(0).isOwnerViewOnly()) {
+            if (new ArrayList<Journal>(user.getJournals()).get(0).isOwnerViewOnly()) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 return "";
             }
@@ -436,7 +461,7 @@ public class UsersController {
                 return "";
             }
 
-            if (user.getJournals().get(0).isOwnerViewOnly()) {
+            if (new ArrayList<Journal>(user.getJournals()).get(0).isOwnerViewOnly()) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 return "";
             }
@@ -461,7 +486,7 @@ public class UsersController {
                 return "";
             }
 
-            if (user.getJournals().get(0).isOwnerViewOnly()) {
+            if (new ArrayList<Journal>(user.getJournals()).get(0).isOwnerViewOnly()) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 return "";
             }
@@ -492,7 +517,7 @@ public class UsersController {
             }
 
             final UserContext userc = new UserContext(user, authUser);
-            if (! user.getJournals().get(0).isOwnerViewOnly() || userc.isAuthBlog()) {
+            if (! new ArrayList<Journal>(user.getJournals()).get(0).isOwnerViewOnly() || userc.isAuthBlog()) {
                 getPDF(response, userc);
             } else
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -518,7 +543,7 @@ public class UsersController {
                 return;
             }
             final UserContext userc = new UserContext(user, authUser);
-            if (!user.getJournals().get(0).isOwnerViewOnly() || userc.isAuthBlog())
+            if (!new ArrayList<Journal>(user.getJournals()).get(0).isOwnerViewOnly() || userc.isAuthBlog())
                 getRTF(response, userc);
             else
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -538,10 +563,13 @@ public class UsersController {
             return "";
         }
 
+        Journal journal = new ArrayList<Journal>(userc.getBlogUser().getJournals()).get(0);
+                model.addAttribute(MODEL_JOURNAL, journal);
+
         model.addAttribute(MODEL_AUTHENTICATED_USER, Login.currentLoginName(session));
         model.addAttribute(MODEL_USER, userc.getBlogUser());
 
-        if (userc.getBlogUser().getJournals().get(0).isOwnerViewOnly() && !userc.isAuthBlog()) {
+        if (journal.isOwnerViewOnly() && !userc.isAuthBlog()) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return "";
         }
@@ -564,17 +592,19 @@ public class UsersController {
             return "";
         }
 
+        Journal journal = new ArrayList<Journal>(userc.getBlogUser().getJournals()).get(0);
+                model.addAttribute(MODEL_JOURNAL, journal);
+
         model.addAttribute(MODEL_AUTHENTICATED_USER, Login.currentLoginName(session));
         model.addAttribute(MODEL_USER, userc.getBlogUser());
 
-        if (userc.getBlogUser().getJournals().get(0).isOwnerViewOnly() && !userc.isAuthBlog()) {
+        if (journal.isOwnerViewOnly() && !userc.isAuthBlog()) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return "";
         }
 
         model.addAttribute(MODEL_CALENDAR_MINI, getCalendarMini(userc));
         model.addAttribute(MODEL_PICTURES, null);
-
 
         int maxr = SEARCH_MAX_LENGTH;
 
@@ -601,10 +631,13 @@ public class UsersController {
             return "";
         }
 
+        Journal journal = new ArrayList<Journal>(userc.getBlogUser().getJournals()).get(0);
+                model.addAttribute(MODEL_JOURNAL, journal);
+
         model.addAttribute(MODEL_AUTHENTICATED_USER, Login.currentLoginName(session));
         model.addAttribute(MODEL_USER, userc.getBlogUser());
 
-        if (userc.getBlogUser().getJournals().get(0).isOwnerViewOnly() && !userc.isAuthBlog()) {
+        if (journal.isOwnerViewOnly() && !userc.isAuthBlog()) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return "";
         }
@@ -639,10 +672,13 @@ public class UsersController {
 
             final UserContext userc = new UserContext(user, authUser);
 
+            Journal journal = new ArrayList<Journal>(userc.getBlogUser().getJournals()).get(0);
+                    model.addAttribute(MODEL_JOURNAL, journal);
+
             model.addAttribute(MODEL_USER, user);
             model.addAttribute(MODEL_AUTHENTICATED_USER, Login.currentLoginName(session));
 
-            if (! userc.getBlogUser().getJournals().get(0).isOwnerViewOnly() || userc.isAuthBlog())
+            if (! new ArrayList<Journal>(userc.getBlogUser().getJournals()).get(0).isOwnerViewOnly() || userc.isAuthBlog())
                 model.addAttribute("tags", getTags(userc, tag));
             else
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -1721,7 +1757,7 @@ public class UsersController {
         atom.setAlternateLink("http://www.justjournal.com/users/" + user.getUsername());
         atom.setAuthorName(user.getFirstName());
         atom.setUpdated(calendarg.toString());
-        atom.setTitle(user.getJournals().get(0).getName());
+        atom.setTitle(new ArrayList<Journal>(user.getJournals()).get(0).getName());
         atom.setId("http://www.justjournal.com/users/" + user.getUsername() + "/atom");
         atom.setSelfLink("/users/" + user.getUsername() + "/atom");
         final Pageable page = new PageRequest(0, 15);

@@ -2,6 +2,7 @@ package com.justjournal.services;
 
 import com.justjournal.core.UserContext;
 import com.justjournal.model.Entry;
+import com.justjournal.model.Journal;
 import com.justjournal.repository.EntryRepository;
 import com.justjournal.repository.SecurityRepository;
 import com.justjournal.utility.HTMLUtil;
@@ -42,7 +43,7 @@ public class AbstractFormatService {
         try {
             document.open();
             document.add(new Paragraph(""));
-            Chunk chunk = new Chunk(uc.getBlogUser().getJournals().get(0).getName());
+            Chunk chunk = new Chunk(new ArrayList<Journal>(uc.getBlogUser().getJournals()).get(0).getName());
             chunk.setTextRenderMode(PdfContentByte.TEXT_RENDER_MODE_STROKE, 0.4f, blue);
             document.add(chunk);
             document.add(Chunk.NEWLINE);

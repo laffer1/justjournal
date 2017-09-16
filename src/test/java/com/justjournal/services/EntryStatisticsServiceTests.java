@@ -69,7 +69,7 @@ public class EntryStatisticsServiceTests {
 
         Observable<EntryStatistic> o = entryStatisticService.getEntryCounts(TEST_USER);
         final Iterable<EntryStatistic> myIterator = o.blockingIterable();
-        verify(entryStatisticRepository, atLeastOnce()).findByUsernameOrderByYearDesc(TEST_USER);
+
 
         assertNotNull(myIterator);
 
@@ -77,6 +77,8 @@ public class EntryStatisticsServiceTests {
         assertTrue(iterator.hasNext());
 
         EntryStatistic es = iterator.next();
+
+        verify(entryStatisticRepository, atLeastOnce()).findByUsernameOrderByYearDesc(TEST_USER);
 
         assertEquals(TEST_USER, es.getUser().getUsername());
         assertEquals(TEST_YEAR, es.getYear());

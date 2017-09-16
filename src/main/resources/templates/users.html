@@ -2,9 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title th:text="${user.journals.get(0).name}"></title>
-    <meta th:if="${user.journals.get(0).allowSpider == false}" name="robots" content="noindex, nofollow, noarchive" />
-    <meta th:if="${user.journals.get(0).allowSpider == false}" name="googlebot" content="nosnippet" />
+    <title th:text="${journal.name}"></title>
+    <meta th:if="${journal.allowSpider == false}" name="robots" content="noindex, nofollow, noarchive" />
+    <meta th:if="${journal.allowSpider == false}" name="googlebot" content="nosnippet" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta property="og:site_name" content="Just Journal" />
     <meta property="og:type" content="article" />
@@ -18,7 +18,7 @@
     <link rel="stylesheet" type="text/css" href="/static/styles/users.css" th:href="@{/static/styles/users.css}"/>
 
     <link rel="stylesheet" type="text/css" media="screen"
-          th:href="${user.journals.get(0).style.id > 16} ? '/static/styles/' + ${user.journals.get(0).style.id} + '.css' : '/static/styles/bootstrap-theme.min.css'" />
+          th:href="${journal.style.id > 16} ? '/static/styles/' + ${journal.style.id} + '.css' : '/static/styles/bootstrap-theme.min.css'" />
 
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" media="screen"
@@ -222,7 +222,7 @@
         <section>
             <div id="content" class="col-xs-12 col-md-8 col-md-offset-1">
                 <div class="page-header">
-                    <h1 th:text="${user.journals.get(0).name}"></h1>
+                    <h1 th:text="${journal.name}"></h1>
                 </div>
 
                     <p th:if="${authenticatedUsername != null}">You are logged in as <a

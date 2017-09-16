@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.web.WebMvcAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.Resource;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -74,33 +75,6 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
                 */
     }
 
-    /**
-       * <p>mappingJackson2HttpMessageConverter.</p>
-       *
-       * @return a {@link org.springframework.http.converter.json.MappingJackson2HttpMessageConverter} object.
-       */
-      @Bean
-      public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
-          final MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter();
-          mappingJackson2HttpMessageConverter.setPrefixJson(false);
-          mappingJackson2HttpMessageConverter.setObjectMapper(objectMapper());
-          mappingJackson2HttpMessageConverter.setPrettyPrint(false);
-          return mappingJackson2HttpMessageConverter;
-      }
-
-      /**
-       * <p>objectMapper.</p>
-       *
-       * @return a {@link com.fasterxml.jackson.databind.ObjectMapper} object.
-       */
-      @Bean
-      public ObjectMapper objectMapper() {
-          final ObjectMapper objMapper = new ObjectMapper();
-          objMapper.enable(SerializationFeature.INDENT_OUTPUT);
-          objMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-          objMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false); // attempt to write dates as a string!
-          return objMapper;
-      }
 
       /** {@inheritDoc} */
       @Override
@@ -108,7 +82,6 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
           super.configureMessageConverters(converters);
           converters.add(new StringHttpMessageConverter());
           converters.add(new ByteArrayHttpMessageConverter());
-          converters.add(mappingJackson2HttpMessageConverter());
       }
 
 }

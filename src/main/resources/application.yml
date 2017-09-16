@@ -3,6 +3,9 @@ spring:
 ---
 spring:
   profiles: default
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
   datasource:
     url: jdbc:mysql://localhost:3306/jj
     username: jj
