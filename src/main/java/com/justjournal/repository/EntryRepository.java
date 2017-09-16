@@ -128,4 +128,7 @@ public interface EntryRepository extends JpaRepository<Entry, Integer> {
                                                                @Param("security") Security security);
 
     Long countBySecurity(@Param("security") Security security);
+
+    @Query("SELECT count(eh) FROM User us, Entry eh WHERE LOWER(us.username) = LOWER(:username) AND us = eh.user")
+    Long countByUsername(@Param("username") String username);
 }

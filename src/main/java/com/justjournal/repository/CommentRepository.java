@@ -28,8 +28,9 @@ package com.justjournal.repository;
 
 import com.justjournal.model.Comment;
 import com.justjournal.model.User;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -45,4 +46,7 @@ public interface CommentRepository extends PagingAndSortingRepository<Comment, I
     List<Comment> findByEntryId(int entryId);
 
     List<Comment> findByUser(User user);
+
+    @Query("SELECT count(eh) FROM User us, Comment eh WHERE LOWER(us.username) = LOWER(:username) AND us = eh.user")
+    Long countByUsername(@Param("username") String username);
 }

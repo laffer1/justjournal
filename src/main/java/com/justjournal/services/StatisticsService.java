@@ -80,8 +80,9 @@ public class StatisticsService {
                 return null;
 
             userStatistics.setUsername(username);
-            userStatistics.setEntryCount(user.getEntries().size()); // TODO: slow
-            userStatistics.setCommentCount(user.getComments().size()); // TODO: slow!!!!
+            
+            userStatistics.setEntryCount(entryRepository.countByUsername(username).intValue());
+            userStatistics.setCommentCount(commentRepository.countByUsername(username).intValue());
 
             return userStatistics;
         } catch (final Exception e) {
