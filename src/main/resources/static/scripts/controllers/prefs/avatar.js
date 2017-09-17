@@ -3,6 +3,8 @@ angular.module('wwwApp').controller('PrefsAvatarCtrl', ['$scope', 'Upload', '$ti
         'use strict';
 
         $scope.uploadPic = function(file) {
+            ga('send', 'event', 'Preferences', 'AvatarUpload');
+            
             file.upload = Upload.upload({
               url: '/image',
               data: {file: file}

@@ -8,6 +8,7 @@ angular.module('wwwApp').controller('PrefsChangePasswordCtrl', ['$scope', 'Accou
         $scope.newPassword = '';
 
         $scope.save = function () {
+            ga('send', 'event', 'Authentication', 'PasswordReset');
             $scope.result = AccountService.password({
                         passCurrent: $scope.password,
                         passNew: $scope.newPassword

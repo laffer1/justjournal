@@ -22,6 +22,7 @@ angular.module('wwwApp').controller('PrefsJournalCtrl', ['$scope', 'LoginService
 
 
         $scope.save = function () {
+            ga('send', 'event', 'Preferences', 'Journal');
             $scope.journal.styleId = $scope.journal.style.id;
             
             $scope.result = JournalService.save($scope.journal,

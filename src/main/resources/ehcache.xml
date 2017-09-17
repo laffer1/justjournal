@@ -38,7 +38,7 @@
         <persistence strategy="localTempSwap"/>
     </cache>
 
-    <cache name="members" maxEntriesLocalHeap="3000" maxEntriesLocalDisk="10000" eternal="false" diskSpoolBufferSizeMB="20"
+    <cache name="members" maxEntriesLocalHeap="5000" maxEntriesLocalDisk="10000" eternal="false" diskSpoolBufferSizeMB="20"
             timeToIdleSeconds="300" timeToLiveSeconds="600" memoryStoreEvictionPolicy="LFU" transactionalMode="off">
          <persistence strategy="localTempSwap"/>
      </cache>

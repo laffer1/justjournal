@@ -3,6 +3,7 @@ angular.module('wwwApp').controller('PrefsImageCtrl', ['$scope', 'Upload', '$tim
         'use strict';
 
         $scope.uploadPic = function(file) {
+            ga('send', 'event', 'Preferences', 'ImageUpload');
             file.upload = Upload.upload({
               url: '/AlbumImage',
               data: {title: $scope.title, file: file}

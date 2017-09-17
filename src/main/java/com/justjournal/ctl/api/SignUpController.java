@@ -93,6 +93,7 @@ public class SignUpController {
         try {
             final User user = accountService.signup(newUser);
 
+            response.setStatus(HttpServletResponse.SC_CREATED);
             return java.util.Collections.singletonMap("id", Integer.toString(user.getId()));
         } catch (final Exception e) {
             log.error(e.getMessage(), e);

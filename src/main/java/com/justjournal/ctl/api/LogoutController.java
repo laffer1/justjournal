@@ -26,7 +26,10 @@
 
 package com.justjournal.ctl.api;
 
+import com.justjournal.Login;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -39,10 +42,13 @@ import javax.servlet.http.HttpSession;
 @RequestMapping("/api/logout")
 public class LogoutController {
 
-    @ResponseBody
-    public
-    String get(HttpSession session) {
+    private static final String MODEL_AUTHENTICATED_USER = "authenticatedUsername";
+    private static final String VIEW_LOGOUT = "logout";
+
+    @GetMapping
+    public String get(Model model, HttpSession session) {
+        model.addAttribute(MODEL_AUTHENTICATED_USER, Login.currentLoginName(session));
         session.invalidate();
-        return "LOGOUT";
+        return VIEW_LOGOUT;
     }
 }

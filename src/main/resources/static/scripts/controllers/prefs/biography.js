@@ -14,6 +14,7 @@ angular.module('wwwApp').controller('PrefsBiographyCtrl', ['$scope', 'LoginServi
         $scope.save = function () {
             $scope.result = BiographyService.save($scope.biography,
                     function success() {
+                        ga('send', 'event', 'Preferences', 'BiographyUpdate');
                         alert('Biography Changed');
                     },
                     function fail(response) {

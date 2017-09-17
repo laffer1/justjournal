@@ -23,7 +23,7 @@ public class UserService {
 
 
     @Transactional(readOnly = true, isolation = Isolation.READ_UNCOMMITTED)
-    @Cacheable("members")
+    @Cacheable(cacheNames = "members", value="members")
     public List<PublicMember> getPublicMembers() {
         final List<User> users = userRepository.getPublicUsers();
         final List<PublicMember> publicMembers = new ArrayList<>();

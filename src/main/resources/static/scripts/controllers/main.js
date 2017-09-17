@@ -15,29 +15,39 @@ angular.module('wwwApp').controller('MainCtrl', ['$scope', '$http', function ($s
             return;
         }
 
-        var data = { username: $scope.username, password: $scope.password };
-        $http.post('api/login', data).success(function(data, status) {
-              if (status == 200 && data.status == 'JJ.LOGIN.OK') {
-                  window.location.href = '/users/' + data.username;
-                  return false;
-              } else {
-                  alert("Your login information was invalid. Please try again");
-                  return false;
-              }
-        }).error(function() {
-              alert("Your login information was invalid. Please try again");
-              return false;
-        });
+        $scope.performLogin($scope.username, $scope.password);
+    };
+
+    $scope.performLogin = function(username, password) {
+        var data = { username: username, password: password };
+         $http.post('api/login', data).success(function(data, status) {
+               if (status == 200 && data.status == 'JJ.LOGIN.OK') {
+                   ga('send', 'event', 'Authentication', 'Login');
+                   
+                   window.location.href = '/users/' + data.username;
+                   return false;
+               } else {
+                   alert("Your login information was invalid. Please try again");
+                   return false;
+               }
+         }).error(function() {
+               alert("Your login information was invalid. Please try again");
+               return false;
+         });
     };
 
     $scope.CreateAccount = function() {
         var data = $scope.create;
         $http.post('api/signup', data).success(function() {
-            alert('Your account has been created. You may login after responding to the verification email.');
+            ga('send', 'event', 'Account', 'Signup');
+            
+            $scope.performLogin($scope.create.username, $scope.create.password);
+
+        //    alert('Your account has been created. You may login after responding to the verification email.');
             return false;
-        }.fail(function() {
+        }).error(function() {
             alert('Unable to create this account. Please verify all fields and try again');
             return false;
-        }));
+        });
     };
 }]);
