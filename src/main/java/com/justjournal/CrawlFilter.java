@@ -80,25 +80,24 @@ public final class CrawlFilter implements Filter {
             queryString = rewriteQueryString(queryString);
             pageNameSb.append(queryString);
 
-            final WebClient webClient = new WebClient(BrowserVersion.CHROME);
-            webClient.setAjaxController(new NicelyResynchronizingAjaxController());
-            webClient.getOptions().setJavaScriptEnabled(true);
-            String pageName = pageNameSb.toString();
-            HtmlPage page = webClient.getPage(pageName);
-            webClient.waitForBackgroundJavaScriptStartingBefore(2000);
-            webClient.waitForBackgroundJavaScript(8000);
+           try (WebClient webClient = new WebClient(BrowserVersion.CHROME);
+                PrintWriter out = res.getWriter()) {
+               webClient.setAjaxController(new NicelyResynchronizingAjaxController());
+               webClient.getOptions().setJavaScriptEnabled(true);
+               String pageName = pageNameSb.toString();
+               HtmlPage page = webClient.getPage(pageName);
+               webClient.waitForBackgroundJavaScriptStartingBefore(2000);
+               webClient.waitForBackgroundJavaScript(8000);
 
-            res.setContentType("text/html;charset=UTF-8");
-            PrintWriter out = res.getWriter();
-            out.println("<hr>");
-            out.println("<center><h3>You are viewing a non-interactive page that is intended for the crawler.  You probably want to see this page: <a href=\""
-                    + pageName + "\">" + pageName + "</a></h3></center>");
-            out.println("<hr>");
+               res.setContentType("text/html;charset=UTF-8");
+              
+               out.println("<hr>");
+               out.println("<center><h3>You are viewing a non-interactive page that is intended for the crawler.  You probably want to see this page: <a href=\""
+                       + pageName + "\">" + pageName + "</a></h3></center>");
+               out.println("<hr>");
 
-            out.println(page.asXml());
-            webClient.closeAllWindows();
-            out.close();
-
+               out.println(page.asXml());
+           }
         } else {
             try {
                 chain.doFilter(request, response);
@@ -151,19 +150,20 @@ public final class CrawlFilter implements Filter {
                          /*
                           * Use the headless browser (HtmlUnit) to obtain an HTML snapshot.
                           */
-            final WebClient webClient = new WebClient();
-            HtmlPage page = webClient.getPage(urlWithHashFragment);
+             try (WebClient webClient = new WebClient(); ) {
+                 HtmlPage page = webClient.getPage(urlWithHashFragment);
 
                          /*
                           * Give the headless browser enough time to execute JavaScript. The
                           * exact time to wait may depend on your application.
                           */
-            webClient.waitForBackgroundJavaScript(2000);
+                 webClient.waitForBackgroundJavaScript(2000);
 
                          /*
                           * Return the snapshot.
                           */
-            out.println(page.asXml());
+                 out.println(page.asXml());
+             }
         } else {
             try {
                                  /*

@@ -59,6 +59,7 @@ import java.io.IOException;
 public class JustJournalBaseServlet extends HttpServlet {
     protected static final char endl = '\n';  /* end of line character for output */
     public static final int BUFFER_SIZE = 8192;
+
     @Autowired
     protected Settings set;
 
@@ -68,6 +69,7 @@ public class JustJournalBaseServlet extends HttpServlet {
      * @param request  servlet request
      * @param response servlet response
      */
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws java.io.IOException {
         processRequest(request, response, false);
@@ -79,11 +81,13 @@ public class JustJournalBaseServlet extends HttpServlet {
      * @param request  servlet request
      * @param response servlet response
      */
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws java.io.IOException {
         processRequest(request, response, false);
     }
 
+    @Override
     protected void doHead(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ServletException, IOException {
         processRequest(httpServletRequest, httpServletResponse, true);
     }
@@ -119,6 +123,7 @@ public class JustJournalBaseServlet extends HttpServlet {
         }
     }
 
+    @Override
     public long getLastModified(HttpServletRequest request) {
         return new java.util.Date().getTime() / 1000 * 1000;
     }

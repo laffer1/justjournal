@@ -40,7 +40,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
-import javax.sql.DataSource;
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -81,7 +80,7 @@ public class AlbumImageController {
         headers.setExpires(180);
         headers.setContentType(MediaType.IMAGE_JPEG);
 
-        return new ResponseEntity<byte[]>(imageService.convertBufferedImageToJpeg(image), headers, HttpStatus.OK);
+        return new ResponseEntity<>(imageService.convertBufferedImageToJpeg(image), headers, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
@@ -93,58 +92,42 @@ public class AlbumImageController {
     public ResponseEntity<byte[]> get(@RequestParam("id") final int id) throws IOException {
         final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
-        final DataSource ds;
-        Connection conn = null;
-        PreparedStatement stmt = null;
-
         if (id < 1) {
-            return new ResponseEntity<byte[]>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        try {
-            ds = jdbcTemplate.getDataSource();
-            conn = ds.getConnection();
-            stmt = conn.prepareStatement("CALL getalbumimage(?)");
+        try (Connection conn = jdbcTemplate.getDataSource().getConnection();
+             PreparedStatement stmt = conn.prepareStatement("CALL getalbumimage(?)");) {
             stmt.setInt(1, id);
-            final ResultSet rs = stmt.executeQuery();
 
-            if (rs.next()) {
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
 
-                final BufferedInputStream img = new BufferedInputStream(rs.getBinaryStream("image"));
-                byte[] buf = new byte[4 * 1024]; // 4k buffer
-                int len;
-                while ((len = img.read(buf, 0, buf.length)) != -1)
-                    byteArrayOutputStream.write(buf, 0, len);
+                    final BufferedInputStream img = new BufferedInputStream(rs.getBinaryStream("image"));
+                    byte[] buf = new byte[4 * 1024]; // 4k buffer
+                    int len;
+                    while ((len = img.read(buf, 0, buf.length)) != -1)
+                        byteArrayOutputStream.write(buf, 0, len);
 
-                final HttpHeaders headers = new HttpHeaders();
-                headers.setExpires(180);
+                    final HttpHeaders headers = new HttpHeaders();
+                    headers.setExpires(180);
 
-                final String t = rs.getString("mimetype").trim();
-                if (t.equalsIgnoreCase(MediaType.IMAGE_GIF_VALUE))
-                    headers.setContentType(MediaType.IMAGE_GIF);
-                else if (t.equalsIgnoreCase(MediaType.IMAGE_JPEG_VALUE))
-                    headers.setContentType(MediaType.IMAGE_JPEG);
-                else if (t.equalsIgnoreCase(MediaType.IMAGE_PNG_VALUE))
-                    headers.setContentType(MediaType.IMAGE_PNG);
+                    final String t = rs.getString("mimetype").trim();
+                    if (t.equalsIgnoreCase(MediaType.IMAGE_GIF_VALUE))
+                        headers.setContentType(MediaType.IMAGE_GIF);
+                    else if (t.equalsIgnoreCase(MediaType.IMAGE_JPEG_VALUE))
+                        headers.setContentType(MediaType.IMAGE_JPEG);
+                    else if (t.equalsIgnoreCase(MediaType.IMAGE_PNG_VALUE))
+                        headers.setContentType(MediaType.IMAGE_PNG);
 
-                rs.close();
-
-                return new ResponseEntity<byte[]>(byteArrayOutputStream.toByteArray(), headers, HttpStatus.OK);
+                    return new ResponseEntity<>(byteArrayOutputStream.toByteArray(), headers, HttpStatus.OK);
+                }
             }
 
-            return new ResponseEntity<byte[]>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (final Exception e) {
             log.warn("Could not load image: ", e);
-            return new ResponseEntity<byte[]>(HttpStatus.INTERNAL_SERVER_ERROR);
-        } finally {
-            try {
-                if (stmt != null)
-                    stmt.close();
-                if (conn != null)
-                    conn.close();
-            } catch (final Exception e) {
-                log.error("Error closing statement or connection", e);
-            }
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

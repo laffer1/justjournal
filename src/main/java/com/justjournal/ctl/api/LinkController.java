@@ -42,12 +42,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 /**
  * User Links that appear in their blog
@@ -108,7 +108,7 @@ public class LinkController {
     @RequestMapping(method = RequestMethod.DELETE)
     @ResponseBody
     public
-    Map<String, String> delete(@RequestBody int linkId, HttpSession session, HttpServletResponse response) throws Exception {
+    Map<String, String> delete(@RequestBody int linkId, HttpSession session, HttpServletResponse response) {
 
 
         if (!Login.isAuthenticated(session)) {

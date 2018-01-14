@@ -73,7 +73,7 @@ public class Rss {
 
     private Date newestEntryDate = new Date();
 
-    private List<RssItem> items = new ArrayList<RssItem>(MAX_LENGTH);
+    private List<RssItem> items = new ArrayList<>(MAX_LENGTH);
 
     @Autowired
     public Rss(final JdbcTemplate jdbcTemplate) {

@@ -38,13 +38,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.imageio.ImageIO;
 import javax.servlet.http.HttpSession;
-import javax.sql.DataSource;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.sql.Connection;
@@ -79,63 +75,44 @@ public class ImageController {
     @RequestMapping("")
     public ResponseEntity<byte[]> get(@RequestParam("id") final int id) throws IOException {
         final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-
-        DataSource ds;
-        Connection conn;
-        PreparedStatement stmt = null;
-
+        
         if (id < 1) {
-            return new ResponseEntity<byte[]>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        try {
-            ds = jdbcTemplate.getDataSource();
-            conn = ds.getConnection();
-            stmt = conn.prepareStatement("CALL getimage(?)");
+        try (
+                Connection conn = jdbcTemplate.getDataSource().getConnection();
+                PreparedStatement stmt = conn.prepareStatement("CALL getimage(?)");
+        ) {
             stmt.setInt(1, id);
-            final ResultSet rs = stmt.executeQuery();
+            try (ResultSet rs = stmt.executeQuery()) {
 
-            if (rs.next()) {
-                final BufferedInputStream img = new BufferedInputStream(rs.getBinaryStream("image"));
-                byte[] buf = new byte[4 * 1024]; // 4k buffer
-                int len;
-                while ((len = img.read(buf, 0, buf.length)) != -1)
-                    byteArrayOutputStream.write(buf, 0, len);
+                if (rs.next()) {
+                    final BufferedInputStream img = new BufferedInputStream(rs.getBinaryStream("image"));
+                    byte[] buf = new byte[4 * 1024]; // 4k buffer
+                    int len;
+                    while ((len = img.read(buf, 0, buf.length)) != -1)
+                        byteArrayOutputStream.write(buf, 0, len);
 
-                final HttpHeaders headers = new HttpHeaders();
-                headers.setExpires(180);
+                    final HttpHeaders headers = new HttpHeaders();
+                    headers.setExpires(180);
 
-                final String t = rs.getString("mimetype").trim();
-                if (t.equalsIgnoreCase(MediaType.IMAGE_GIF_VALUE))
-                    headers.setContentType(MediaType.IMAGE_GIF);
-                else if (t.equalsIgnoreCase(MediaType.IMAGE_JPEG_VALUE))
-                    headers.setContentType(MediaType.IMAGE_JPEG);
-                else if (t.equalsIgnoreCase(MediaType.IMAGE_PNG_VALUE))
-                    headers.setContentType(MediaType.IMAGE_PNG);
-
-                rs.close();
-                stmt.close();
-                conn.close();
-
-                return new ResponseEntity<>(byteArrayOutputStream.toByteArray(), headers, HttpStatus.OK);
+                    final String t = rs.getString("mimetype").trim();
+                    if (t.equalsIgnoreCase(MediaType.IMAGE_GIF_VALUE))
+                        headers.setContentType(MediaType.IMAGE_GIF);
+                    else if (t.equalsIgnoreCase(MediaType.IMAGE_JPEG_VALUE))
+                        headers.setContentType(MediaType.IMAGE_JPEG);
+                    else if (t.equalsIgnoreCase(MediaType.IMAGE_PNG_VALUE))
+                        headers.setContentType(MediaType.IMAGE_PNG);
+                    
+                    return new ResponseEntity<>(byteArrayOutputStream.toByteArray(), headers, HttpStatus.OK);
+                }
             }
-
-            rs.close();
-            stmt.close();
-            conn.close();
 
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             log.warn("Could not load image: " + e.toString());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        } finally {
-            try {
-                if (stmt != null)
-                    stmt.close();
-            } catch (final SQLException sqlEx) {
-                // ignore -- as we can't do anything about it here
-                log.error(sqlEx.getMessage(), sqlEx);
-            }
         }
     }
 

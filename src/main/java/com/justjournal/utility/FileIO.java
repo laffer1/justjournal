@@ -45,48 +45,47 @@ import java.io.*;
 public final class FileIO {
 
     public
-    static String ReadTextFile(String FilePath)
+    static String readTextFile(final String filePath)
             throws IOException {
         int myC;
-        StringWriter myInput = new StringWriter();
-        FileReader myFR = new FileReader(FilePath);
-        myC = myFR.read();
-
-        while (myC != -1) {
-            myInput.write(myC);
-            // System.out.print( myC );  // debug
+        final StringWriter myInput = new StringWriter();
+        try (FileReader myFR = new FileReader(filePath)) {
             myC = myFR.read();
-        }
 
-        myFR.close();
+            while (myC != -1) {
+                myInput.write(myC);
+                // System.out.print( myC );  // debug
+                myC = myFR.read();
+            }
+        }
 
         return myInput.toString();
     }
 
-    public static void writeTextFile(String FilePath, String DataToWrite)
+    public static void writeTextFile(final String filePath, final String dataToWrite)
             throws IOException {
-        FileWriter myFW = new FileWriter(FilePath, false);
-        myFW.write(DataToWrite);
-        myFW.close();
+        try (FileWriter myFW = new FileWriter(filePath, false)) {
+            myFW.write(dataToWrite);
+        }
     }
 
-    public boolean makeDirectory(String path) {
-        File dir = new File(path);
+    public boolean makeDirectory(final String path) {
+        final File dir = new File(path);
         return dir.mkdir();
     }
 
     public boolean deleteDirectory(String path) {
-        File dir = new File(path);
+        final File dir = new File(path);
         return dir.isDirectory() && dir.delete();
     }
 
     public boolean deleteFile(String path) {
-        File f = new File(path);
+        final File f = new File(path);
         return f.isFile() && f.delete();
     }
 
     public boolean touchFile(String path) {
-        File f = new File(path);
+        final File f = new File(path);
 
         try {
             return f.createNewFile();
@@ -96,24 +95,24 @@ public final class FileIO {
     }
 
     public long fileLength(String path) {
-        File f = new File(path);
+        final File f = new File(path);
         return f.length();
     }
 
     public long fileLastModified(String path) {
-        File f = new File(path);
+        final File f = new File(path);
         return f.lastModified();
     }
 
     public boolean renameFile(String source, String destination) {
-        File s = new File(source);
-        File d = new File(destination);
+        final File s = new File(source);
+        final File d = new File(destination);
 
         return s.renameTo(d);
     }
 
     public String[] listFiles(String path) {
-        File dir = new File(path);
+        final File dir = new File(path);
         return dir.list();
     }
 }

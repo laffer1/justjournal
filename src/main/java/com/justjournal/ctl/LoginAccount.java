@@ -57,6 +57,7 @@ public class LoginAccount extends JustJournalBaseServlet {
     @Autowired
     private Login webLogin;
 
+    @Override
     protected void execute(HttpServletRequest request, HttpServletResponse response, HttpSession session, StringBuffer sb) {
         boolean blnError = false;
         int userID;
@@ -129,6 +130,7 @@ public class LoginAccount extends JustJournalBaseServlet {
     /**
      * Returns a short description of the servlet.
      */
+    @Override
     public String getServletInfo() {
         return "login to journal service";
     }

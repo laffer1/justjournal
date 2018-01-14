@@ -76,7 +76,7 @@ import java.util.regex.Pattern;
 @Component
 public class HeadlineBean {
 
-    private static final char endl = '\n';
+    private static final char ENDL = '\n';
 
     class HeadlineContext {
         protected URL u;
@@ -90,15 +90,12 @@ public class HeadlineBean {
     protected HeadlineContext getRssDocument(final String uri) throws Exception {
 
         final HeadlineContext hc = new HeadlineContext();
-        CloseableHttpClient httpclient = null;
 
-        try {
-            httpclient = HttpClients.createDefault();
+        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             final HttpGet httpGet = new HttpGet(uri);
-            final CloseableHttpResponse response1 = httpclient.execute(httpGet);
 
-            try {
-                HttpEntity entity1 = response1.getEntity();
+            try (final CloseableHttpResponse response1 = httpClient.execute(httpGet)) {
+                final HttpEntity entity1 = response1.getEntity();
 
                 //Build document:
                 hc.factory.setValidating(false);
@@ -107,29 +104,10 @@ public class HeadlineBean {
                 hc.builder = hc.factory.newDocumentBuilder();
                 hc.document = hc.builder.parse(entity1.getContent());
 
-                httpclient.close();
-
                 return hc;
-            } finally {
-                try {
-                    response1.close();
-                } catch (IOException io) {
-                    log.error(io.getMessage(), io);
-                }
-                try {
-                    httpclient.close();
-                } catch (IOException io) {
-                    log.error(io.getMessage(), io);
-                }
             }
-        } catch (IOException e) {
+        } catch (final IOException e) {
             log.error(e.getMessage(), e);
-            try {
-                if (httpclient != null)
-                    httpclient.close();
-            } catch (IOException io) {
-                log.error(io.getMessage(), io);
-            }
         }
 
         return hc;
@@ -139,7 +117,7 @@ public class HeadlineBean {
         
         try {
             log.info("Starting parse");
-            HeadlineContext hc = getRssDocument(url);
+            final HeadlineContext hc = getRssDocument(url);
 
             log.info("Fetched, now create");
 
@@ -202,12 +180,12 @@ public class HeadlineBean {
 
             // create header!
             sb.append("<div style=\"width: 100%; padding: .1in; background: #F2F2F2;\" class=\"ljfhead\">");
-            sb.append(endl);
+            sb.append(ENDL);
 
             sb.append("<!-- Generator: ");
             sb.append(contentGenerator);
             sb.append(" -->");
-            sb.append(endl);
+            sb.append(ENDL);
 
             if (imageUrl != null) {
                 sb.append("<span style=\"padding: 5px; float:left; ");
@@ -242,7 +220,7 @@ public class HeadlineBean {
                 sb.append("\" title=\"");
                 sb.append(imageTitle);
                 sb.append("\" /></a></span>");
-                sb.append(endl);
+                sb.append(ENDL);
             }
 
             sb.append("<h3 ");
@@ -254,7 +232,7 @@ public class HeadlineBean {
             sb.append(">");
             sb.append(contentTitle);
             sb.append("</h3>");
-            sb.append(endl);
+            sb.append(ENDL);
 
             // some rss feeds don't have a last build date
             if (contentLastBuildDate != null && contentLastBuildDate.length() > 0) {
@@ -269,14 +247,14 @@ public class HeadlineBean {
                 sb.append("<a href=\"").append(contentLink).append("\">[").append(contentLink).append("]</a>");
             }
             sb.append("</p>");
-            sb.append(endl);
+            sb.append(ENDL);
 
 
             sb.append("<div style=\"clear: both;\">&nbsp;</div>");
-            sb.append(endl);
+            sb.append(ENDL);
 
             sb.append("</div>");
-            sb.append(endl);
+            sb.append(ENDL);
 
             //Generate the NodeList;
             org.w3c.dom.NodeList nodeList = hc.document.getElementsByTagName("item");
@@ -342,36 +320,36 @@ public class HeadlineBean {
                     sb.append(link);
                     sb.append("\">");
                     sb.append("Read More</a></span>");
-                    sb.append(endl);
+                    sb.append(ENDL);
 
                     // some rss versions don't have a pub date per entry
                     if (pubDate != null) {
                         sb.append(" <br /><span class=\"RssItemPubDate\">");
                         sb.append(pubDate);
                         sb.append("</span>");
-                        sb.append(endl);
+                        sb.append(ENDL);
                     }
                     sb.append("</div></div></div>");
-                    sb.append(endl);
+                    sb.append(ENDL);
                 }
             }
 
             sb.append("</div>");
-            sb.append(endl);
+            sb.append(ENDL);
 
             return sb.toString();
         } catch (final java.io.FileNotFoundException e404) {
             log.warn("Feed is not available " + url + e404.getMessage(), e404);
-            return "<p>404 Not Found. The feed is no longer available. " + url + endl;
+            return "<p>404 Not Found. The feed is no longer available. " + url + ENDL;
         } catch (final org.xml.sax.SAXParseException sp) {
              if (sp.getMessage().contains("Premature end of file"))
                  return "<p>Feed is empty at " + url;
              else {
                  log.error("Bad feed " + sp.getMessage() , sp);
-                 return "<p>Bad Feed " + sp.toString() + " for url: " + url + endl;
+                 return "<p>Bad Feed " + sp.toString() + " for url: " + url + ENDL;
              }
         } catch (final Exception e) {
-            return "<p>Error, could not process request: " + e.toString() + " for url: " + url + endl;
+            return "<p>Error, could not process request: " + e.toString() + " for url: " + url + ENDL;
         }
     }
 

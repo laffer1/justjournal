@@ -83,7 +83,7 @@ public class TrackbackPingController {
     public
     @ResponseBody
     String get(HttpServletRequest request, HttpServletResponse response) {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
 
         try {
             response.setContentType("text/xml; charset=utf-8");

@@ -39,11 +39,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
-import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Lucas Holt
@@ -53,8 +49,8 @@ import java.util.Map;
 public class BaseSearch {
     private static final Logger log = Logger.getLogger(BaseSearch.class);
 
-    protected ArrayList<String> terms = new ArrayList<String>();
-    protected ArrayList<String> fieldlist = new ArrayList<String>();
+    protected ArrayList<String> terms = new ArrayList<>();
+    protected ArrayList<String> fieldlist = new ArrayList<>();
     protected int maxresults = 30;
     protected String baseQuery;
     protected String sort;
@@ -75,7 +71,7 @@ public class BaseSearch {
     }
 
     public void setFields(final String fields) {
-        final String q[] = fields.split("\\s");
+        final String[] q = fields.split("\\s");
         fieldlist.addAll(Arrays.asList(q));
     }
 
@@ -102,7 +98,7 @@ public class BaseSearch {
     }
 
     protected void parseQuery(final String query) {
-        final String q[] = query.split("\\s");
+        final String[] q = query.split("\\s");
         final int qLen = java.lang.reflect.Array.getLength(q);
 
         for (int i = 0; i < qLen; i++) {
@@ -116,31 +112,31 @@ public class BaseSearch {
 
     protected List<Map<String, Object>> realSearch(final List<String> terms) {
 
-        String sqlStmt = baseQuery;
+        StringBuilder sqlStmt = new StringBuilder(baseQuery);
 
         for (int i = 0; i < terms.size(); i++) {
-            sqlStmt += " (";
+            sqlStmt.append(" (");
             for (int y = 0; y < fieldlist.size(); y++) {
                 if (y != 0)
-                    sqlStmt += " or ";
-                sqlStmt += fieldlist.get(y) + " like '%" + terms.get(i) + "%'";
+                    sqlStmt.append(" or ");
+                sqlStmt.append(fieldlist.get(y) + " like '%" + terms.get(i) + "%'");
             }
-            sqlStmt += ") and ";
+            sqlStmt.append(") and ");
         }
 
-        sqlStmt += " 1=1 " + sort + " LIMIT 0," + maxresults + ";";
+        sqlStmt.append(" 1=1 " + sort + " LIMIT 0," + maxresults + ";");
 
         try {
             if (log.isDebugEnabled()) {
                 log.debug("realSearch() called on " + sqlStmt);
             }
 
-            return jdbcTemplate.queryForList(sqlStmt);
+            return jdbcTemplate.queryForList(sqlStmt.toString());
 
         } catch (final Exception e) {
-            log.error("Error executing search with query: " +  sqlStmt + "; and error " + e.getMessage(), e);
+            log.error("Error executing search with query: " + sqlStmt + "; and error " + e.getMessage(), e);
         }
 
-        return null;
+        return Collections.emptyList();
     }
 }

@@ -22,7 +22,7 @@ import java.util.List;
 @Service
 public class MarkdownService {
 
-    // TODO: figure out extensions we want https://github.com/atlassian/commonmark-java
+    // extensions we want https://github.com/atlassian/commonmark-java
 
     public String convertToHtml(final String markdown) {
         final HtmlRenderer renderer = HtmlRenderer.builder().extensions(extensions()).build();
@@ -40,7 +40,6 @@ public class MarkdownService {
     }
 
     public List<Extension> extensions() {
-        List<Extension> extensions = Arrays.asList(TablesExtension.create(), AutolinkExtension.create());
-        return extensions;
+        return Arrays.asList(TablesExtension.create(), AutolinkExtension.create());
     }
 }

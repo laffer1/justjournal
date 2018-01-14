@@ -29,17 +29,10 @@ package com.justjournal.services;
 import com.justjournal.model.*;
 import com.justjournal.repository.*;
 import com.justjournal.utility.Xml;
-import io.reactivex.ObservableSource;
-import io.reactivex.Scheduler;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -49,7 +42,6 @@ import org.springframework.transaction.annotation.Isolation;
 
 import javax.transaction.Transactional;
 import java.util.*;
-import java.util.concurrent.Callable;
 
 /**
  * @author Lucas Holt
@@ -187,7 +179,7 @@ public class EntryService {
     }
 
     /**
-     * Get Friend public blog entries. TODO: Eventually, we'll want security and performance taken into account.
+     * Get Friend public blog entries.
      *
      * @param username
      * @return
@@ -217,7 +209,7 @@ public class EntryService {
             assert entryDao != null;
             assert username != null;
 
-            final Map<String, Tag> tags = new HashMap<String, Tag>();
+            final Map<String, Tag> tags = new HashMap<>();
 
             final List<Tag> tagList = tagDao.findByUsername(username);
             for (final Tag t : tagList) {

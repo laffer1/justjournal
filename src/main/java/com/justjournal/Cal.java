@@ -160,8 +160,8 @@ public final class Cal {
                 sb.append("\t<td class=\"fullcalendaroffrow\" colspan=\"").append(o.getFirstDayInWeek() - 1).append("\"></td>");
 
             dayinweek = o.getFirstDayInWeek() - 1;
-
-            for (int y = 0; y < java.lang.reflect.Array.getLength(o.storage); y++) {
+            
+            for (int y = 0; y < o.getStorage().length; y++) {
                 if (dayinweek == 0 && !blnFirstTime) {
                     sb.append("<tr>\n");
                 }
@@ -169,7 +169,7 @@ public final class Cal {
                 sb.append("\t<td class=\"fullcalendarrow\"><strong>");
                 sb.append(y + 1);
                 sb.append("</strong><br /><span style=\"float: right;\">");
-                if (o.storage[y] == 0) {
+                if (o.getStorage()[y] == 0) {
                     sb.append("&nbsp;");
                 } else {
                     sb.append("<a href=\"");
@@ -191,7 +191,7 @@ public final class Cal {
                     }
                     sb.append(y + 1);
                     sb.append("\">");
-                    sb.append(o.storage[y]);
+                    sb.append(o.getStorage()[y]);
                     sb.append("</a>");
                 }
                 sb.append("</span></td>\n");
@@ -261,14 +261,14 @@ public final class Cal {
 
             dayinweek = o.getFirstDayInWeek() - 1;
 
-            for (int y = 0; y < Array.getLength(o.storage); y++) {
+            for (int y = 0; y < o.getStorage().length; y++) {
                 if (dayinweek == 0 && !blnFirstTime) {
                     sb.append("\t\t<tr>\n");
                 }
 
                 sb.append("\t\t<td class=\"minicalendarrow\">");
 
-                if (o.storage[y] == 0) {
+                if (o.getStorage()[y] == 0) {
                     sb.append(y + 1);
                 } else {
                     sb.append("<a href=\"");

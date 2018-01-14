@@ -1,7 +1,6 @@
 package com.justjournal.services;
 
 import com.justjournal.Login;
-import com.justjournal.core.Settings;
 import com.justjournal.model.*;
 import com.justjournal.model.api.NewUser;
 import com.justjournal.repository.*;

@@ -31,12 +31,10 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.justjournal.Login;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -140,15 +138,15 @@ public class LoginController {
                 log.error("Login attempt failed with user: " + login.getUsername());
 
                 loginResponse.setStatus(JJ_LOGIN_FAIL);
-                return new ResponseEntity<LoginResponse>(loginResponse, HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<>(loginResponse, HttpStatus.UNAUTHORIZED);
             }
 
             loginResponse.setUsername(login.getUsername());
             loginResponse.setStatus(JJ_LOGIN_OK);
-            return new ResponseEntity<LoginResponse>(loginResponse, HttpStatus.OK);
+            return new ResponseEntity<>(loginResponse, HttpStatus.OK);
         } catch (final Exception e) {
             log.error(e.getMessage(), e);
-            return new ResponseEntity<LoginResponse>(loginResponse, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(loginResponse, HttpStatus.BAD_REQUEST);
         }
     }
 }

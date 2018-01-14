@@ -26,19 +26,13 @@
 
 package com.justjournal.ctl.api;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.justjournal.model.User;
 import com.justjournal.model.api.PublicMember;
-import com.justjournal.repository.UserRepository;
 import com.justjournal.services.UserService;
-import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;

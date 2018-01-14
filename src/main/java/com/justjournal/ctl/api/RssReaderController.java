@@ -104,7 +104,7 @@ public class RssReaderController {
 
     @RequestMapping(method = RequestMethod.DELETE)
     @ResponseBody
-    public Map<String, String> delete(@RequestBody int subId, HttpSession session, HttpServletResponse response) throws Exception {
+    public Map<String, String> delete(@RequestBody int subId, HttpSession session, HttpServletResponse response) {
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");

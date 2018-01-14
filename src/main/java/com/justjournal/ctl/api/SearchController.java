@@ -80,7 +80,7 @@ public class SearchController {
             log.error(e.getMessage());
         }
 
-        return new ResponseEntity<PagedResources<BlogEntry>>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @RequestMapping(value = "/{username}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -101,6 +101,6 @@ public class SearchController {
             log.error(e.getMessage());
         }
 
-        return new ResponseEntity<PagedResources<BlogEntry>>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 }

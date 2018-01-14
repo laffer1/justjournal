@@ -47,11 +47,10 @@ import java.util.GregorianCalendar;
  * @version $Id: CalMonth.java,v 1.4 2006/07/28 14:01:06 laffer1 Exp $
  */
 public final class CalMonth {
-    public int[] storage = null;
-    public int monthid = 0;
+    private int[] storage = null;
+    int monthid = 0;
     private Date baseDate;
     private final GregorianCalendar calendarG = new java.util.GregorianCalendar();
-    //private final Calendar calendarB = Calendar.getInstance();
 
     /**
      * Creates an instance with all the required properties set.

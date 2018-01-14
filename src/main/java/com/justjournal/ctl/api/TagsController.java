@@ -69,7 +69,7 @@ public class TagsController {
     @ResponseBody
     public ResponseEntity<Collection<Tag>> getTags() {
 
-        final Map<String, Tag> tags = new HashMap<String, Tag>();
+        final Map<String, Tag> tags = new HashMap<>();
 
         final Iterable<Tag> tagList = tagDao.findAll();
         for (final Tag t : tagList) {

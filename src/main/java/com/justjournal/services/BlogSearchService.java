@@ -136,7 +136,7 @@ public class BlogSearchService {
 
             Page<Entry> entries = entryRepository.findAll(pageable);
             for (int i = 0; i < entries.getTotalPages(); i++) {
-                ArrayList<BlogEntry> items = new ArrayList<BlogEntry>();
+                ArrayList<BlogEntry> items = new ArrayList<>();
 
                 for (final Entry entry : entries) {
                     items.add(convert(entry));
@@ -166,7 +166,7 @@ public class BlogSearchService {
 
             Page<Entry> entries = entryRepository.findBySecurityOrderByDateDesc(sec, pageable);
             for (int i = 0; i < entries.getTotalPages(); i++) {
-                final ArrayList<BlogEntry> items = new ArrayList<BlogEntry>();
+                final ArrayList<BlogEntry> items = new ArrayList<>();
 
                 for (final Entry entry : entries) {
                     items.add(convert(entry));
@@ -193,7 +193,7 @@ public class BlogSearchService {
 
         Page<Entry> entries = entryRepository.findAll(pageable);
         for (int i = 0; i < entries.getTotalPages(); i++) {
-            final ArrayList<BlogEntry> items = new ArrayList<BlogEntry>();
+            final ArrayList<BlogEntry> items = new ArrayList<>();
             for (final Entry entry : entries) {
                 if (entry.getDate().before(date)) {
                     if (!items.isEmpty())
@@ -224,7 +224,7 @@ public class BlogSearchService {
 
         Page<Entry> entries = entryRepository.findBySecurityOrderByDateDesc(sec, pageable);
         for (int i = 0; i < entries.getTotalPages(); i++) {
-            ArrayList<BlogEntry> items = new ArrayList<BlogEntry>();
+            ArrayList<BlogEntry> items = new ArrayList<>();
             for (final Entry entry : entries) {
                 if (entry.getDate().before(date)) {
                     if (!items.isEmpty())
@@ -266,14 +266,14 @@ public class BlogSearchService {
         blogEntry.setBody(entry.getBody());
         blogEntry.setDate(entry.getDate());
 
-        final HashMap<String, Object> tags = new HashMap<String, Object>();
+        final HashMap<String, Object> tags = new HashMap<>();
         for (final com.justjournal.model.EntryTag tag : entry.getTags()) {
             final String tagName = tag.getTag().getName();
             if (!tags.containsKey(tagName))
                 tags.put(tagName, null);
         }
 
-        final List<Tag> targetList = new ArrayList<Tag>();
+        final List<Tag> targetList = new ArrayList<>();
         for (final String t : tags.keySet()) {
             final Tag tag = new Tag();
             tag.setName(t);

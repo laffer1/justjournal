@@ -34,8 +34,6 @@ import com.justjournal.model.QueueMail;
 import com.justjournal.repository.QueueMailRepository;
 import com.justjournal.utility.ForcedAuthenticator;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -105,7 +103,6 @@ public class MailSender {
                     t.connect();
                     t.sendMessage(message, a);
                     t.close();
-                    //Transport.send(message);
                 } catch (AddressException e) {
                     sentok = false;
                     log.error("MailSender: Invalid address. " + e.getMessage());
