@@ -184,7 +184,7 @@ public class EntryService {
      * @param username
      * @return
      */
-    @org.springframework.transaction.annotation.Transactional(readOnly = true, isolation = Isolation.READ_UNCOMMITTED)
+    @Transactional(readOnly = true, isolation = Isolation.READ_UNCOMMITTED)
     public List<Entry> getFriendsEntries(final String username) throws ServiceException {
         try {
             final Pageable page = new PageRequest(0, 20, Sort.Direction.DESC, "date", "id");

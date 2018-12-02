@@ -3,6 +3,7 @@ package com.justjournal.config;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.ResourceProperties;
 import org.springframework.boot.autoconfigure.web.WebMvcAutoConfiguration;
@@ -29,8 +30,14 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
     @Autowired
     private ResourceProperties resourceProperties = new ResourceProperties();
 
-    public WebMvcConfig() {
+    private ObjectMapper mapper;
+
+    @Autowired
+    public WebMvcConfig(ObjectMapper mapper) {
         super();
+
+        this.mapper = mapper;
+        mapper.registerModule(new Hibernate5Module());
     }
 
     /**
