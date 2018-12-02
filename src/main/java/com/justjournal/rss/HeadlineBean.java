@@ -256,7 +256,7 @@ public class HeadlineBean {
             sb.append("</div>");
             sb.append(ENDL);
 
-            //Generate the NodeList;
+            //Generate the NodeList
             org.w3c.dom.NodeList nodeList = hc.document.getElementsByTagName("item");
 
             sb.append("<div class=\"panel-group\" id=\"accordion\" role=\"tablist\" aria-multiselectable=\"true\">");

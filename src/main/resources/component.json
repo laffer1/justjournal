@@ -1,6 +1,6 @@
 {
   "name": "JustJournal",
-  "version": "2.3.3",
+  "version": "2.5.0",
   "dependencies": {
     "angular": "1.2.32",
     "json3": "~3.2.4",

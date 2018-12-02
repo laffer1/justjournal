@@ -90,7 +90,6 @@ public class CachedHeadlineBean extends HeadlineBean {
         
         InputStreamReader ir;
         final StringBuilder sbx = new StringBuilder();
-        BufferedReader buff;
         final java.util.GregorianCalendar calendarg = new java.util.GregorianCalendar();
 
         log.info("looking up rss cache repo uri");
@@ -104,15 +103,15 @@ public class CachedHeadlineBean extends HeadlineBean {
 
             if (dt.getDay() != calendarg.get(java.util.Calendar.DATE)) {
 
-                    log.info("getRssDocument() Day doesn't match: " + uri);
+                log.info("getRssDocument() Day doesn't match: " + uri);
                 hc.u = new URL(uri);
                 ir = new InputStreamReader(hc.u.openStream(), "UTF-8");
-                buff = new BufferedReader(ir);
-                String input;
-                while ((input = buff.readLine()) != null) {
-                    sbx.append(StringUtil.replace(input, '\'', "\\\'"));
+                try (BufferedReader bufferedReader = new BufferedReader(ir)) {
+                    String input;
+                    while ((input = bufferedReader.readLine()) != null) {
+                        sbx.append(StringUtil.replace(input, '\'', "\\\'"));
+                    }
                 }
-                buff.close();
 
                 rss.setContent(sbx.toString().trim());
                 // sun can't make their own rss feeds complaint
@@ -125,13 +124,12 @@ public class CachedHeadlineBean extends HeadlineBean {
                 log.info("getRssDocument() Empty RSS data: " + uri);
                 hc.u = new URL(uri);
                 ir = new InputStreamReader(hc.u.openStream(), "UTF-8");
-                buff = new BufferedReader(ir);
-                String input;
-                while ((input = buff.readLine()) != null) {
-                    sbx.append(StringUtil.replace(input, '\'', "\\\'"));
+                try (BufferedReader bufferedReader = new BufferedReader(ir)) {
+                    String input;
+                    while ((input = bufferedReader.readLine()) != null) {
+                        sbx.append(StringUtil.replace(input, '\'', "\\\'"));
+                    }
                 }
-                buff.close();
-
                 rss.setContent(sbx.toString().trim());
                 // sun can't make their own rss feeds complaint
                 if (rss.getContent().startsWith("<rss"))
@@ -145,45 +143,30 @@ public class CachedHeadlineBean extends HeadlineBean {
             log.info("Fetch uri: " + uri);
             rss = new RssCache();
 
-            CloseableHttpClient httpclient = null;
-
-            try {
-                httpclient = HttpClients.createDefault();
+            try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+               
                 final HttpGet httpGet = new HttpGet(uri);
-                final CloseableHttpResponse response1 = httpclient.execute(httpGet);
+                final CloseableHttpResponse response1 = httpClient.execute(httpGet);
 
                 try {
                     final HttpEntity entity1 = response1.getEntity();
 
-                    ir = new InputStreamReader(entity1.getContent(), "UTF-8");
-                    buff = new BufferedReader(ir);
-                    String input;
-                    while ((input = buff.readLine()) != null) {
-                        sbx.append(StringUtil.replace(input, '\'', "\\\'"));
+                    try (BufferedReader buff = new BufferedReader(new InputStreamReader(entity1.getContent(), "UTF-8")); ){
+                        String input;
+                        while ((input = buff.readLine()) != null) {
+                            sbx.append(StringUtil.replace(input, '\'', "\\\'"));
+                        }
+                        log.debug(sbx.toString());
                     }
-                    buff.close();
-                    ir.close();
-                    log.debug(sbx.toString());
-
                 } finally {
                     try {
                         response1.close();
                     } catch (final IOException io) {
                         log.error(io.getMessage(), io);
                     }
-                    try {
-                        httpclient.close();
-                    } catch (final IOException io) {
-                        log.error(io.getMessage(), io);
-                    }
                 }
             } catch (final IOException e) {
                 log.error(e.getMessage(), e);
-                try {
-                        httpclient.close();
-                } catch (final IOException io) {
-                    log.error(io.getMessage(), io);
-                }
             }
 
             try {
