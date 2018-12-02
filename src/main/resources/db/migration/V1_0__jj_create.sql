@@ -883,8 +883,7 @@ CREATE TABLE IF NOT EXISTS `v_entry_new_unique` (
 DROP TABLE IF EXISTS `v_entry_new_unique`;
 
 CREATE ALGORITHM = UNDEFINED
-  DEFINER =`laffer1`@`70.91.226.204`
-  SQL SECURITY DEFINER VIEW `v_entry_new_unique` AS
+ VIEW `v_entry_new_unique` AS
   SELECT max(`entry`.`id`) AS `id`
   FROM `entry`
   WHERE (`entry`.`security` = 2)
