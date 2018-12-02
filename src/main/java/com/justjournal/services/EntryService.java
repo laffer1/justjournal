@@ -39,8 +39,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.*;
 
 /**
@@ -87,7 +87,7 @@ public class EntryService {
      * @param username blog user
      * @return subject & entry id data
      */
-    @org.springframework.transaction.annotation.Transactional(readOnly = true, isolation = Isolation.READ_UNCOMMITTED)
+    @Transactional(readOnly = true, isolation = Isolation.READ_UNCOMMITTED)
     public io.reactivex.Observable<RecentEntry> getRecentEntriesPublic(final String username) throws ServiceException {
         try {
             final Pageable page = new PageRequest(0, MAX_RECENT_ENTRIES, new Sort(Sort.Direction.DESC, "date", "id"));
@@ -105,7 +105,7 @@ public class EntryService {
      * @param username blog username
      * @return subject & entry id data
      */
-    @org.springframework.transaction.annotation.Transactional(readOnly = true, isolation = Isolation.READ_UNCOMMITTED)
+    @Transactional(readOnly = true, isolation = Isolation.READ_UNCOMMITTED)
     public io.reactivex.Observable<RecentEntry> getRecentEntries(final String username) throws ServiceException {
         final User user = userRepository.findByUsername(username);
         if (user == null) {
@@ -123,7 +123,7 @@ public class EntryService {
         }
     }
 
-    @org.springframework.transaction.annotation.Transactional(readOnly = true, isolation = Isolation.READ_UNCOMMITTED)
+    @Transactional(readOnly = true, isolation = Isolation.READ_UNCOMMITTED)
     public Entry getPublicEntry(final int id, final String username) throws ServiceException {
         try {
             final Entry entry = entryDao.findOne(id);
@@ -136,7 +136,7 @@ public class EntryService {
         }
     }
 
-    @Transactional(value = Transactional.TxType.SUPPORTS)
+    @Transactional
     public List<Entry> getPublicEntries(final String username) throws ServiceException {
         try {
             final User user = userRepository.findByUsername(username);
@@ -150,7 +150,7 @@ public class EntryService {
         }
     }
 
-    @Transactional(value = Transactional.TxType.SUPPORTS)
+    @Transactional
     public Page<Entry> getPublicEntries(final String username, final Pageable pageable) throws ServiceException {
         try {
             final User user = userRepository.findByUsername(username);
@@ -203,7 +203,7 @@ public class EntryService {
      * @param username
      * @return
      */
-    @org.springframework.transaction.annotation.Transactional(readOnly = true, isolation = Isolation.READ_UNCOMMITTED)
+    @Transactional(readOnly = true, isolation = Isolation.READ_UNCOMMITTED)
     public io.reactivex.Observable<Tag> getEntryTags(final String username) throws ServiceException {
         try {
             assert entryDao != null;

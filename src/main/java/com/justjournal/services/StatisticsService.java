@@ -32,11 +32,10 @@ import com.justjournal.model.User;
 import com.justjournal.model.UserStatistics;
 import com.justjournal.repository.*;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Provide Statistics Services for Just Journal
@@ -45,7 +44,7 @@ import javax.transaction.Transactional;
  */
 @Slf4j
 @Service
-@Transactional(Transactional.TxType.REQUIRED)
+@Transactional
 public class StatisticsService {
 
     @Autowired
@@ -66,7 +65,7 @@ public class StatisticsService {
     @Autowired
     private StyleRepository styleRepository;
 
-    @Transactional(value = Transactional.TxType.REQUIRED)
+    @Transactional
     public UserStatistics getUserStatistics(final String username) throws ServiceException {
 
         try {
