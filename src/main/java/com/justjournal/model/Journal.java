@@ -1,8 +1,6 @@
 package com.justjournal.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -13,6 +11,9 @@ import java.util.Date;
  * Represent individual journal.  This allows multiple journals to be associated with one login.
  * @author Lucas Holt
  */
+@JsonIdentityInfo(
+  generator = ObjectIdGenerators.PropertyGenerator.class,
+  property = "id")
 @Entity
 @Table(name = "journal")
 public class Journal implements Serializable {

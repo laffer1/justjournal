@@ -49,6 +49,9 @@ import java.util.Set;
  * @version 1.0
  * @see com.justjournal.repository.EntryRepository
  */
+@JsonIdentityInfo(
+  generator = ObjectIdGenerators.PropertyGenerator.class,
+  property = "id")
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity

@@ -34,10 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.model;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.*;
 import com.justjournal.Login;
 import com.justjournal.utility.StringUtil;
 
@@ -54,6 +51,9 @@ import java.util.*;
  *          <p/>
  *          TODO: add the rest of the properties.
  */
+@JsonIdentityInfo(
+  generator = ObjectIdGenerators.PropertyGenerator.class,
+  property = "id")
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @Entity
 @Table(name = "user")
