@@ -1,6 +1,5 @@
 package com.justjournal.services;
 
-import com.justjournal.Application;
 import com.justjournal.model.EntryStatistic;
 import com.justjournal.model.User;
 import com.justjournal.repository.EntryRepository;
@@ -13,12 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnit;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -34,7 +28,7 @@ public class EntryStatisticsServiceTests {
 
     private static final String TEST_USER = "testuser";
     private static final int TEST_YEAR = 2003;
-    
+
     @Mock
     private UserRepository userRepository;
 
@@ -88,7 +82,7 @@ public class EntryStatisticsServiceTests {
     @Test
     public void getEntryCount() {
         when(entryStatisticRepository.findByUsernameAndYear(TEST_USER, TEST_YEAR)).thenReturn(entryStatistic);
-        
+
         Maybe<EntryStatistic> o = entryStatisticService.getEntryCount(TEST_USER, TEST_YEAR);
 
         EntryStatistic es = o.blockingGet();

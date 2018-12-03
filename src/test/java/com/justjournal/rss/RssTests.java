@@ -27,14 +27,15 @@
 package com.justjournal.rss;
 
 import com.justjournal.Application;
-import com.justjournal.model.*;
-import com.justjournal.repository.EntryRepository;
-import com.justjournal.repository.SecurityRepository;
+import com.justjournal.model.Entry;
+import com.justjournal.model.FormatType;
+import com.justjournal.model.PrefBool;
+import com.justjournal.model.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.util.ArrayList;
@@ -46,8 +47,8 @@ import static org.junit.Assert.assertTrue;
 /**
  * @author Lucas Holt
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = Application.class)
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = Application.class)
 @WebAppConfiguration
 public class RssTests {
 
@@ -75,7 +76,7 @@ public class RssTests {
         entry.setSubject("Test Blog Post");
         entry.setUser(user);
         entries.add(entry);
-        
+
         rss.populate(entries);
 
         assertTrue(rss.size() > 0);
