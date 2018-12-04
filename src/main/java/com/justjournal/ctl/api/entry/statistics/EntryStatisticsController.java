@@ -3,7 +3,7 @@ package com.justjournal.ctl.api.entry.statistics;
 import com.justjournal.model.EntryStatistic;
 import com.justjournal.services.EntryStatisticService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.IteratorUtils;
+import org.apache.commons.collections4.IteratorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

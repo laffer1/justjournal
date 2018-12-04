@@ -212,12 +212,19 @@
             <version>1.1.1</version>
         </dependency>
 
+        <dependency>
+          <groupId>org.apache.commons</groupId>
+          <artifactId>commons-collections4</artifactId>
+          <version>4.1</version>
+        </dependency>
+
         <!-- new versions are under AGPL, this version appears to be a mix of MPL/lgpl/apache (up to 4.2.0)-->
         <dependency>
-            <groupId>com.lowagie</groupId>
-            <artifactId>itext</artifactId>
-            <version>2.1.7</version>
-        </dependency>
+              <groupId>com.github.librepdf</groupId>
+              <artifactId>openpdf</artifactId>
+              <version>1.2.7</version>
+          </dependency>
+
         <!-- https://mvnrepository.com/artifact/com.lowagie/itext-rtf -->
         <dependency>
             <groupId>com.lowagie</groupId>
@@ -319,7 +326,7 @@
         <dependency>
             <groupId>net.sourceforge.htmlunit</groupId>
             <artifactId>htmlunit</artifactId>
-            <version>2.18</version>
+            <version>2.21</version>
         </dependency>
 
         <!-- For unit testing -->
