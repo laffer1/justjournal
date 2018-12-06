@@ -40,7 +40,8 @@ public class BlogSearchService {
     private SecurityRepository securityDao;
 
     @Autowired
-    public BlogSearchService(final BlogEntryRepository blogEntryRepository, final EntryRepository entryRepository, final SecurityRepository securityDao) {
+    public BlogSearchService(final BlogEntryRepository blogEntryRepository, final EntryRepository entryRepository,
+                             final SecurityRepository securityDao) {
         this.blogEntryRepository = blogEntryRepository;
         this.entryRepository = entryRepository;
         this.securityDao = securityDao;

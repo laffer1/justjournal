@@ -13,6 +13,7 @@ spring:
       uri: http://localhost:9200
   datasource:
     url: jdbc:mysql://localhost:3306/jj
+    driver-class-name: com.mysql.jdbc.Driver
     username: jj
     password: 
     max-active: 10
@@ -22,6 +23,10 @@ spring:
     test-while-idle: true
     test-on-borrow: true
     validation-query: SELECT 1
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 1
   jpa:
     database: MYSQL
     hibernate:
@@ -49,10 +54,6 @@ spring:
 multipart:
   maxFileSize: 10MB
 
-endpoints:
-  hypermedia:
-    enabled: true
-
 eureka:
   client:
     serviceUrl:
@@ -68,5 +69,9 @@ spring:
     url: jdbc:mysql://localhost:3306/justjournal_test
     username: travis
     password:
+    hikari:
+      jdbc-url: jdbc:mysql://localhost:3306/justjournal_test
+      maximum-pool-size: 10
+      minimum-idle: 1
   flyway:
     baseline-on-migrate: true

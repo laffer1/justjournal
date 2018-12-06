@@ -46,7 +46,7 @@ public class BlogEntry implements Serializable, Comparable<BlogEntry> {
     @Field(type = FieldType.Nested)
     @Getter
     @Setter
-    private List<Tag> tags = new ArrayList<Tag>();
+    private List<Tag> tags = new ArrayList<>();
 
     @Getter
     @Setter
