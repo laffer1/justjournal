@@ -142,7 +142,7 @@ public class BlogSearchService {
                     items.add(convert(entry));
                 }
 
-                blogEntryRepository.save(items);
+                blogEntryRepository.saveAll(items);
 
                 pageable = new PageRequest(i + 1, 100);
                 entries = entryRepository.findAll(pageable);
@@ -172,7 +172,7 @@ public class BlogSearchService {
                     items.add(convert(entry));
                 }
 
-                blogEntryRepository.save(items);
+                blogEntryRepository.saveAll(items);
 
                 pageable = new PageRequest(i + 1, 100);
                 entries = entryRepository.findBySecurityOrderByDateDesc(sec, pageable);
@@ -197,7 +197,7 @@ public class BlogSearchService {
             for (final Entry entry : entries) {
                 if (entry.getDate().before(date)) {
                     if (!items.isEmpty())
-                        blogEntryRepository.save(items);
+                        blogEntryRepository.saveAll(items);
                     // stop processing items.
                     return;
                 }
@@ -205,7 +205,7 @@ public class BlogSearchService {
                 items.add(convert(entry));
             }
 
-            blogEntryRepository.save(items);
+            blogEntryRepository.saveAll(items);
 
             pageable = new PageRequest(i + 1, 100);
             entries = entryRepository.findAll(pageable);
@@ -228,7 +228,7 @@ public class BlogSearchService {
             for (final Entry entry : entries) {
                 if (entry.getDate().before(date)) {
                     if (!items.isEmpty())
-                        blogEntryRepository.save(items);
+                        blogEntryRepository.saveAll(items);
                     // stop processing items.
                     return;
                 }
@@ -236,7 +236,7 @@ public class BlogSearchService {
                 items.add(convert(entry));
             }
 
-            blogEntryRepository.save(items);
+            blogEntryRepository.saveAll(items);
 
             pageable = new PageRequest(i + 1, 100);
             entries = entryRepository.findBySecurityOrderByDateDesc(sec, pageable);

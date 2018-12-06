@@ -56,7 +56,7 @@ public class EntryRepositoryTests {
 
     @Test
     public void get() {
-        Entry entry = entryRepository.findOne(33661);
+        Entry entry = entryRepository.findById(33661).orElse(null);
         assertNotNull(entry);
         assertEquals(33661, entry.getId());
         assertNotNull(entry.getSubject());

@@ -60,7 +60,7 @@ public class MoodRepositoryTests {
 
     @Test
     public void get() {
-        Mood moodTo = moodRepository.findOne(1);
+        Mood moodTo = moodRepository.findById(1).orElse(null);
         assertNotNull(moodTo);
         assertEquals(1, moodTo.getId());
         assertNotNull(moodTo.getTitle());

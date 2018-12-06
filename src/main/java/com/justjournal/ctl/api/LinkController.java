@@ -68,7 +68,7 @@ public class LinkController {
     @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public UserLink getById(@PathVariable("id") Integer id) {
-        return userLinkRepository.findOne(id);
+        return userLinkRepository.findById(id).orElse(null);
     }
 
     @Cacheable(value = "userlink", key = "#username")
@@ -95,7 +95,7 @@ public class LinkController {
         }
 
         try {
-            link.setUser(userRepository.findOne(Login.currentLoginId(session)));
+            link.setUser(userRepository.findById(Login.currentLoginId(session)).orElse(null));
             final UserLink l = userLinkRepository.save(link);
             return java.util.Collections.singletonMap("id", Integer.toString(l.getId()));
         } catch (final Exception e) {
@@ -118,9 +118,9 @@ public class LinkController {
 
         if (linkId > 0) {
             /* valid link id */
-            UserLink link = userLinkRepository.findOne(linkId);
+            final UserLink link = userLinkRepository.findById(linkId).orElse(null);
             if (link.getUser().getId() == Login.currentLoginId(session)) {
-                userLinkRepository.delete(linkId);
+                userLinkRepository.deleteById(linkId);
 
                 return java.util.Collections.singletonMap("id", Integer.toString(linkId));
             }

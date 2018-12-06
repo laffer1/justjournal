@@ -56,7 +56,7 @@ public class UserRepositoryTests {
 
     @Test
     public void getById() throws Exception {
-        final User user = userRepository.findOne(1);
+        final User user = userRepository.findById(1).orElse(null);
         assertNotNull(user);
         assertEquals(1, user.getId());
     }
@@ -82,6 +82,6 @@ public class UserRepositoryTests {
 
     @Test
     public void exists() {
-        assertTrue(userRepository.exists(1));
+        assertTrue(userRepository.existsById(1));
     }
 }

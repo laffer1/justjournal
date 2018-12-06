@@ -57,7 +57,7 @@ public class CommentRepositoryTests {
 
     @Test
     public void getById() {
-        Comment comment = commentRepository.findOne(1);
+        Comment comment = commentRepository.findById(1).orElse(null);
         assertNotNull(comment);
         assertEquals(1, comment.getId());
     }

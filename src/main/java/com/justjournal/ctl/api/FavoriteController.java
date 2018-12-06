@@ -41,10 +41,8 @@ import com.justjournal.repository.EntryRepository;
 import com.justjournal.repository.FavoriteRepository;
 import com.justjournal.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -93,10 +91,10 @@ public class FavoriteController {
     public
     @ResponseBody
     Collection<Entry> getFavorites(final HttpSession session, final HttpServletResponse response) {
-        final Collection<Entry> entries = new ArrayList<Entry>();
+        final Collection<Entry> entries = new ArrayList<>();
 
         try {
-            final User user = userRepository.findOne(Login.currentLoginId(session));
+            final User user = userRepository.findById(Login.currentLoginId(session)).orElse(null);
             final List<Favorite> favoriteList = favoriteRepository.findByUser(user);
 
             for (final Favorite f : favoriteList) {
@@ -118,8 +116,8 @@ public class FavoriteController {
                                final HttpServletResponse response) {
 
         try {
-            final User user = userRepository.findOne(Login.currentLoginId(session));
-            final Entry e = entryRepository.findOne(entryId);
+            final User user = userRepository.findById(Login.currentLoginId(session)).orElse(null);
+            final Entry e = entryRepository.findById(entryId).orElse(null);
 
             final Favorite f = new Favorite();
             f.setUser(user);
@@ -149,8 +147,8 @@ public class FavoriteController {
         }
 
         try {
-            final User user = userRepository.findOne(Login.currentLoginId(session));
-            final Entry e = entryRepository.findOne(entryId);
+            final User user = userRepository.findById(Login.currentLoginId(session)).orElse(null);
+            final Entry e = entryRepository.findById(entryId).orElse(null);
             final Favorite f = favoriteRepository.findByUserAndEntry(user, e);
             favoriteRepository.delete(f);
             favoriteRepository.flush();

@@ -28,7 +28,7 @@ package com.justjournal.ctl;
 
 import com.justjournal.Login;
 import com.justjournal.utility.StringUtil;
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -48,9 +48,9 @@ import javax.servlet.http.HttpSession;
  *         Mon Sep 19 2005 1.3 added JJ.LOGIN.FAIL and JJ.LOGIN.OK for desktop clients.
  *         <p/>
  */
+@Slf4j
 @Component
 public class LoginAccount extends JustJournalBaseServlet {
-    private static final Logger log = Logger.getLogger(LoginAccount.class);
     private static final String JJ_LOGIN_OK = "JJ.LOGIN.OK";
     private static final String JJ_LOGIN_FAIL = "JJ.LOGIN.FAIL";
 
@@ -110,7 +110,6 @@ public class LoginAccount extends JustJournalBaseServlet {
                 }
 
                 if (userID > 0) {
-
                         sb.append(JJ_LOGIN_OK);
                         webLogin.setLastLogin(userID);
                 } else {
@@ -118,13 +117,9 @@ public class LoginAccount extends JustJournalBaseServlet {
                 }
             } catch (final Exception e3) {
                     sb.append(JJ_LOGIN_FAIL);
-                log.error(e3);
+                log.error("Login failed: {}", userName, e3);
             }
         }
-
-        if (log.isDebugEnabled())
-            log.debug("Write out Response  ");
-
     }
 
     /**

@@ -97,11 +97,11 @@ public class RecentBlogsController {
             rss.setManagingEditor(set.getSiteAdminEmail() + " (" + set.getSiteAdmin() + ")");
             rss.setSelfLink(set.getBaseUri() + "RecentBlogs");
 
-            final Security security = securityDao.findOne(2); // public
+            final Security security = securityDao.findById(2).orElse(null); // public
             final Pageable pageable = new PageRequest(1,15);
             final Page<Entry> entries = entryRepository.findBySecurityOrderByDateDesc(security, pageable);
 
-            final Map<String, Entry> map = new HashMap<String, Entry>();
+            final Map<String, Entry> map = new HashMap<>();
             int count = 0;
             for (final Entry e : entries) {
                 if (count == 15)

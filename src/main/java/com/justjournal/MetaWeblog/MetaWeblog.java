@@ -44,7 +44,7 @@ import com.justjournal.services.ServiceException;
 import com.justjournal.utility.HTMLUtil;
 import com.justjournal.utility.StringUtil;
 import io.reactivex.functions.Function;
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -62,9 +62,9 @@ import java.util.*;
  *          TODO: Implement the media method
  */
 @SuppressWarnings({"UnusedParameters"})
+@Slf4j
 @Component
 public class MetaWeblog {
-    private static final Logger log = Logger.getLogger(MetaWeblog.class);
 
     @Autowired
     private EntryRepository entryRepository;
@@ -119,7 +119,7 @@ public class MetaWeblog {
 
         if (!blnError)
             try {
-                User user = userRepository.findOne(userId);
+                User user = userRepository.findById(userId).orElse(null);
 
                 s.put("nickname", user.getUsername());
                 s.put("userid", userId);
@@ -173,13 +173,13 @@ public class MetaWeblog {
 
         if (!blnError)
             try {
-                User user = userRepository.findOne(userId);
-                Journal journal = new ArrayList<Journal>(user.getJournals()).get(0);
+                final User user = userRepository.findById(userId).orElse(null);
+                final Journal journal = new ArrayList<Journal>(user.getJournals()).get(0);
 
                 s.put("url", "http://www.justjournal.com/users/" + user.getUsername());
                 s.put("blogid", userId);
                 s.put("blogName", journal.getName());
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 blnError = true;
                 log.debug(e.getMessage());
             }
@@ -228,7 +228,7 @@ public class MetaWeblog {
 
         if (!blnError)
             try {
-                User user = userRepository.findOne(userId);
+                User user = userRepository.findById(userId).orElse(null);
                 et.setUser(user);
                 et.setDate(new java.util.Date());
                 et.setSubject((String) content.get("title"));
@@ -236,9 +236,9 @@ public class MetaWeblog {
                 et.setBody(StringUtil.replace((String) content.get("description"), '\'', "\\\'"));
                 //et.setMusic(StringUtil.replace(music, '\'', "\\\'"));
                 et.setMusic("");
-                et.setSecurity(securityDao.findOne(2));   // public
-                et.setLocation(locationDao.findOne(0)); // not specified
-                et.setMood(moodDao.findOne(12));    // not specified
+                et.setSecurity(securityDao.findById(2).orElse(null));   // public
+                et.setLocation(locationDao.findById(0).orElse(null)); // not specified
+                et.setMood(moodDao.findById(12).orElse(null));    // not specified
                 et.setAutoFormat(PrefBool.N);
                 et.setAllowComments(PrefBool.Y);
                 et.setEmailComments(PrefBool.Y);
@@ -326,9 +326,9 @@ public class MetaWeblog {
 
         if (!blnError && eid > 0) {
             try {
-                Entry entry = entryRepository.findOne(eid);
+                Entry entry = entryRepository.findById(eid).orElse(null);
                 if (entry.getUser().getId() == userId)
-                    entryRepository.delete(eid);
+                    entryRepository.deleteById(eid);
             } catch (Exception e) {
                 blnError = true;
                 log.debug(e.getMessage());
@@ -390,7 +390,7 @@ public class MetaWeblog {
             try {
                 /* we're just updating the content aka body as this is the
            only thing the protocol supports. */
-                Entry et2 = entryRepository.findOne(eid);
+                Entry et2 = entryRepository.findById(eid).orElse(null);
                 if (et2.getUser().getId() == userId) {
                     et2.setSubject((String) content.get("title"));
                     et2.setBody(StringUtil.replace((String) content.get("description"), '\'', "\\\'"));
@@ -553,7 +553,7 @@ public class MetaWeblog {
             return s;
         }
 
-        e = entryRepository.findOne(Integer.parseInt(postid));
+        e = entryRepository.findById(Integer.parseInt(postid)).orElse(null);
         if (e.getUser().getId() != userId) {
             s.put("faultCode", 4);
             s.put("faultString", "User authentication failed: " + username);

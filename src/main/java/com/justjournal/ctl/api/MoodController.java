@@ -67,7 +67,7 @@ public class MoodController {
     @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<Mood> getById(@PathVariable("id") final Integer id) {
-        final Mood m = moodDao.findOne(id);
+        final Mood m = moodDao.findById(id).orElse(null);
         if (m == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 

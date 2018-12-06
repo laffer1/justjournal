@@ -27,7 +27,7 @@
 package com.justjournal.core;
 
 import com.justjournal.repository.SettingsRepository;
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
@@ -40,10 +40,10 @@ import org.springframework.util.Assert;
  *
  * @author Lucas Holt
  */
+@Slf4j
 @Component
 @Deprecated
 public class Settings {
-    private static Logger log = Logger.getLogger(Settings.class.getName());
 
     private final SettingsRepository settingsDao;
 
@@ -160,8 +160,8 @@ public class Settings {
                     userAllowNew = value.equalsIgnoreCase("true");
                 }
             }
-        } catch (Exception e) {
-            log.error(e);
+        } catch (final Exception e) {
+            log.error(e.getMessage(), e);
         }
     }
 

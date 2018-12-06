@@ -34,7 +34,6 @@ import com.justjournal.repository.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -102,9 +101,9 @@ public class StatisticsService {
 
             statistics.setStyles(styleRepository.count());
 
-            statistics.setPublicEntries(entryRepository.countBySecurity(securityDao.findOne(2)));
-            statistics.setPrivateEntries(entryRepository.countBySecurity(securityDao.findOne(0)));
-            statistics.setFriendsEntries(entryRepository.countBySecurity(securityDao.findOne(1)));
+            statistics.setPublicEntries(entryRepository.countBySecurity(securityDao.findById(2).orElse(null)));
+            statistics.setPrivateEntries(entryRepository.countBySecurity(securityDao.findById(0).orElse(null)));
+            statistics.setFriendsEntries(entryRepository.countBySecurity(securityDao.findById(1).orElse(null)));
 
             return statistics;
         } catch (final Exception e) {

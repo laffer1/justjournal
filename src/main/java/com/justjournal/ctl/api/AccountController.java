@@ -27,16 +27,30 @@
 package com.justjournal.ctl.api;
 
 import com.justjournal.Login;
-import com.justjournal.model.*;
+import com.justjournal.model.Journal;
+import com.justjournal.model.User;
 import com.justjournal.model.api.PasswordChange;
-import com.justjournal.repository.*;
+import com.justjournal.repository.CommentRepository;
+import com.justjournal.repository.EntryRepository;
+import com.justjournal.repository.FavoriteRepository;
+import com.justjournal.repository.FriendsRepository;
+import com.justjournal.repository.RssSubscriptionsRepository;
+import com.justjournal.repository.UserBioRepository;
+import com.justjournal.repository.UserContactRepository;
+import com.justjournal.repository.UserImageRepository;
+import com.justjournal.repository.UserLinkRepository;
+import com.justjournal.repository.UserLocationRepository;
+import com.justjournal.repository.UserPrefRepository;
+import com.justjournal.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -140,35 +154,35 @@ public class AccountController {
         final int userID = Login.currentLoginId(session);
 
         try {
-            final User user = userDao.findOne(userID);
-            commentRepository.delete(commentRepository.findByUser(user));
+            final User user = userDao.findById(userID).get();
+            commentRepository.deleteAll(commentRepository.findByUser(user));
             entryRepository.deleteInBatch(entryRepository.findByUser(user));
             entryRepository.flush();
 
             favoriteRepository.deleteInBatch(favoriteRepository.findByUser(user));
             favoriteRepository.flush();
 
-            friendsDao.delete(userID);
+            friendsDao.deleteById(userID);
 
             jdbcTemplate.execute("DELETE FROM friends_lj WHERE id=" + userID + ";");
 
-            rssSubscriptionsDAO.delete(rssSubscriptionsDAO.findByUser(user));
+            rssSubscriptionsDAO.deleteAll(rssSubscriptionsDAO.findByUser(user));
 
             jdbcTemplate.execute("DELETE FROM user_files WHERE ownerid=" + userID + ";");
 
-            userImageRepository.delete(userImageRepository.findByUsername(user.getUsername()));
+            userImageRepository.deleteAll(userImageRepository.findByUsername(user.getUsername()));
             jdbcTemplate.execute("DELETE FROM user_images_album WHERE owner=" + userID + ";");
             jdbcTemplate.execute("DELETE FROM user_images_album_map WHERE owner=" + userID + ";");
             jdbcTemplate.execute("DELETE FROM user_pic WHERE id=" + userID + ";");
-            userPrefRepository.delete(userID);
+            userPrefRepository.deleteById(userID);
             jdbcTemplate.execute("DELETE FROM user_style WHERE id=" + userID + ";");
 
             jdbcTemplate.execute("DELETE FROM journal WHERE user_id=" + userID + ";");
 
-            userLinkRepository.delete(userID);
-            userLocationRepository.delete(userID);
-            userBioDao.delete(userID);
-            userContactRepository.delete(userID);
+            userLinkRepository.deleteById(userID);
+            userLocationRepository.deleteById(userID);
+            userBioDao.deleteById(userID);
+            userContactRepository.deleteById(userID);
             userDao.delete(user);
         } catch (final Exception e) {
             log.error(e.getMessage());
@@ -178,19 +192,19 @@ public class AccountController {
         return java.util.Collections.singletonMap("status", "Account Deleted");
     }
 
-     @RequestMapping(value="/password", method = RequestMethod.POST, produces = "application/json")
-     public
-     @ResponseBody
-     Map<String, String> post(@RequestBody PasswordChange passwordChange,
-                              HttpSession session, HttpServletResponse response) {
+    @RequestMapping(value = "/password", method = RequestMethod.POST, produces = "application/json")
+    public
+    @ResponseBody
+    Map<String, String> post(@RequestBody PasswordChange passwordChange,
+                             HttpSession session, HttpServletResponse response) {
 
-         if (!Login.isAuthenticated(session)) {
-             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-             return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
-         }
+        if (!Login.isAuthenticated(session)) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
+        }
 
-         return changePassword(passwordChange, session, response);
-     }
+        return changePassword(passwordChange, session, response);
+    }
 
     @RequestMapping(method = RequestMethod.POST, produces = "application/json")
     public

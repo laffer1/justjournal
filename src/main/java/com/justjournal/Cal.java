@@ -35,7 +35,7 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal;
 
 import com.justjournal.model.Entry;
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Array;
 import java.text.ParsePosition;
@@ -52,10 +52,10 @@ import java.util.List;
  * @version $Id: Cal.java,v 1.12 2012/07/04 18:48:53 laffer1 Exp $
  * @see CalMonth
  */
+@Slf4j
 public final class Cal {
     public static final int MONTHS_IN_YEAR = 12;
     private final List<CalMonth> Months = new ArrayList<CalMonth>(MONTHS_IN_YEAR);
-    private static final Logger log = Logger.getLogger(Cal.class);
     private final SimpleDateFormat shortDate = new SimpleDateFormat("yyyy-MM-dd");
     private final String[] days = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
     private final String[] daysSmall = {"S", "M", "T", "W", "R", "F", "S"};

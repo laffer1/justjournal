@@ -34,6 +34,6 @@ public class StyleService {
     }
 
     public Style get(final int id) {
-        return styleRepository.findOne(id);
+        return styleRepository.findById(id).orElse(null);
     }
 }

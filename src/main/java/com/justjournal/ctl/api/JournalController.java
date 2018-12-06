@@ -84,7 +84,7 @@ public class JournalController {
         try {
             Journal j = journalRepository.findOneBySlug(slug);
             if (j == null) {
-                journal.setUser(userRepository.findOne(Login.currentLoginId(session)));
+                journal.setUser(userRepository.findById(Login.currentLoginId(session)).orElse(null));
                 journal.setSince(Calendar.getInstance().getTime());
                 journal.setModified(Calendar.getInstance().getTime());
                 journal = journalRepository.saveAndFlush(journal);

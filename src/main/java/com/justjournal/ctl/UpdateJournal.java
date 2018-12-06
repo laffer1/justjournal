@@ -45,7 +45,7 @@ import com.justjournal.restping.IceRocket;
 import com.justjournal.utility.HTMLUtil;
 import com.justjournal.utility.Spelling;
 import com.justjournal.utility.StringUtil;
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -75,13 +75,14 @@ import java.util.regex.Pattern;
  * 1.4 Changed default behavior for allow comments flag.  Assumes the user will uncheck a box to disable comments.  auto
  * formatting was changed in a similar manner for usability.
  */
+@Slf4j
 @Component
 public class UpdateJournal extends HttpServlet {
 
     public static final int DEFAULT_BUFFER_SIZE = 8192;
     private static final char endl = '\n';
-    private static final Logger log = Logger.getLogger(UpdateJournal.class);
     private static final long serialVersionUID = -6905389941955230503L;
+
     @SuppressWarnings({"InstanceVariableOfConcreteClass"})
     @Autowired
     private Settings settings;
@@ -363,7 +364,7 @@ public class UpdateJournal extends HttpServlet {
         if (userID > 0) {
             // We authenticated OK.  Continue...
 
-            User user = userRepository.findOne(userID);
+            User user = userRepository.findById(userID).orElse(null);
             Entry et = new Entry();
 
             // Get the user input
@@ -439,10 +440,10 @@ public class UpdateJournal extends HttpServlet {
                 et.setSubject(subject);
                 et.setMusic(StringUtil.replace(music, '\'', "\\\'"));
 
-                et.setSecurity(securityRepository.findOne(security));
+                et.setSecurity(securityRepository.findById(security).orElse(null));
 
-                et.setLocation(locationDao.findOne(location));
-                et.setMood(moodDao.findOne(mood));
+                et.setLocation(locationDao.findById(location).orElse(null));
+                et.setMood(moodDao.findById(mood).orElse(null));
 
                 // assume it's not a draft for the old submit code.
                 et.setDraft(PrefBool.N);
@@ -563,7 +564,7 @@ public class UpdateJournal extends HttpServlet {
                         // lookup the tag id
                         if (t.size() > 0) {
                             // TODO: is this right?
-                            Entry et2 = entryRepository.findOne(et.getId());
+                            Entry et2 = entryRepository.findById(et.getId()).orElse(null);
                             //    entryDao.setTags(et2.getId(), t);
                         }
                     }
@@ -617,7 +618,7 @@ public class UpdateJournal extends HttpServlet {
 
                             /* do trackback */
                             if (trackback.length() > 0) {
-                                final Entry et2 = entryRepository.findOne(et.getId());
+                                final Entry et2 = entryRepository.findById(et.getId()).orElse(null);
                                 final TrackbackOut tbout = new TrackbackOut(trackback,
                                         settings.getBaseUri() + "users/" + userName + "/entry/" + et2.getId(),
                                         et.getSubject(), et.getBody(), journal.getName());

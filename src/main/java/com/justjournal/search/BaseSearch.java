@@ -34,7 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.search;
 
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -45,9 +45,9 @@ import java.util.*;
  * @author Lucas Holt
  * @version $Id: BaseSearch.java,v 1.6 2009/05/16 03:15:27 laffer1 Exp $
  */
+@Slf4j
 @Component
 public class BaseSearch {
-    private static final Logger log = Logger.getLogger(BaseSearch.class);
 
     protected ArrayList<String> terms = new ArrayList<>();
     protected ArrayList<String> fieldlist = new ArrayList<>();

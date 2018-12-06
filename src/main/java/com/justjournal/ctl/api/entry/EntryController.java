@@ -173,7 +173,7 @@ public class EntryController {
                          @PathVariable("id") final int id,
                          final HttpServletResponse response) {
         try {
-            final Entry entry = entryRepository.findOne(id);
+            final Entry entry = entryRepository.findById(id).orElse(null);
 
             if (entry == null) {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -274,7 +274,7 @@ public class EntryController {
             return Collections.singletonMap(ERR_TYPE, "The login timed out or is invalid.");
         }
 
-        final User user = userRepository.findOne(Login.currentLoginId(session));
+        final User user = userRepository.findById(Login.currentLoginId(session)).orElse(null);
         if (user == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return Collections.singletonMap(ERR_TYPE, "User not found");
@@ -292,12 +292,12 @@ public class EntryController {
 
         entry.setUser(user);
 
-        entry.setLocation(locationDao.findOne(entryTo.getLocation()));
-        entry.setSecurity(securityDao.findOne(entryTo.getSecurity()));
+        entry.setLocation(locationDao.findById(entryTo.getLocation()).orElse(null));
+        entry.setSecurity(securityDao.findById(entryTo.getSecurity()).orElse(null));
 
         if (entryTo.getMood() == 0)
             entryTo.setMood(12); // DEFAULT NOT SPECIFIED
-        entry.setMood(moodDao.findOne(entryTo.getMood()));
+        entry.setMood(moodDao.findById(entryTo.getMood()).orElse(null));
 
         entry.setDraft(entryTo.getDraft() ? PrefBool.Y : PrefBool.N);
         entry.setAllowComments(entryTo.getAllowComments() ? PrefBool.Y : PrefBool.N);
@@ -353,16 +353,16 @@ public class EntryController {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return Collections.singletonMap(ERR_TYPE, ERR_INVALID_LOGIN);
         }
-        final User user = userRepository.findOne(Login.currentLoginId(session));
+        final User user = userRepository.findById(Login.currentLoginId(session)).orElse(null);
         Entry entry = new Entry();
         entry.setUser(user);
 
         entry.setSubject(entryTo.getSubject());
         entry.setBody(entryTo.getBody());
 
-        entry.setLocation(locationDao.findOne(entryTo.getLocation()));
-        entry.setSecurity(securityDao.findOne(entryTo.getSecurity()));
-        entry.setMood(moodDao.findOne(entryTo.getMood()));
+        entry.setLocation(locationDao.findById(entryTo.getLocation()).orElse(null));
+        entry.setSecurity(securityDao.findById(entryTo.getSecurity()).orElse(null));
+        entry.setMood(moodDao.findById(entryTo.getMood()).orElse(null));
 
         if (entryTo.getFormat().equals("MARKDOWN")) {
             entry.setFormat(FormatType.MARKDOWN);
@@ -380,7 +380,7 @@ public class EntryController {
         else
             entry.setDate(entryTo.getDate());
 
-        final Entry entry2 = entryRepository.findOne(entryTo.getId());
+        final Entry entry2 = entryRepository.findById(entryTo.getId()).orElse(null);
 
         if (entry2 != null && entry2.getId() > 0 && entry2.getUser().getId() == user.getId()) {
             entry.setId(entry2.getId());
@@ -413,13 +413,13 @@ public class EntryController {
             return Collections.singletonMap(ERR_TYPE, "The entry id was invalid.");
 
         try {
-            final User user = userRepository.findOne(Login.currentLoginId(session));
-            final Entry entry = entryRepository.findOne(entryId);
+            final User user = userRepository.findById(Login.currentLoginId(session)).orElse(null);
+            final Entry entry = entryRepository.findById(entryId).orElse(null);
 
             if (user.getId() == entry.getUser().getId()) {
                 final Iterable<Comment> comments = entry.getComments();
-                commentDao.delete(comments);
-                entryRepository.delete(entryId);
+                commentDao.deleteAll(comments);
+                entryRepository.deleteById(entryId);
             } else {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 return Collections.singletonMap(ERR_TYPE, "Could not delete entry.");

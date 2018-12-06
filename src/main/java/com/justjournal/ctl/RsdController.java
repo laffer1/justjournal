@@ -2,7 +2,7 @@ package com.justjournal.ctl;
 
 import com.justjournal.model.User;
 import com.justjournal.repository.UserRepository;
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,11 +25,11 @@ import javax.servlet.http.HttpServletResponse;
  *          <p/>
  *          User: laffer1 Date: Apr 26, 2008 Time: 10:22:20 AM
  */
+@Slf4j
 @Controller
 @RequestMapping("/rsd")
 public class RsdController {
-
-    private static final Logger log = Logger.getLogger(RsdController.class.getName());
+    
     private static final String XML_HEADER =
             "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     private static final String RSD_HEADER =
@@ -41,9 +41,8 @@ public class RsdController {
     private UserRepository userRepository;
 
     @RequestMapping(method = RequestMethod.GET, produces = "application/rsd+xml")
-    public
     @ResponseBody
-    String get(HttpServletRequest request, HttpServletResponse response) {
+    public String get(HttpServletRequest request, HttpServletResponse response) {
         StringBuilder sb = new StringBuilder();
         try {
             response.setContentType("application/rsd+xml; charset=utf-8");
@@ -76,7 +75,7 @@ public class RsdController {
             sb.append(RSD_FOOTER);
 
         } catch (Exception e) {
-            log.error(e);
+            log.error("Error generating RSD", e);
             sb.delete(0, sb.length() - 1);
             sb.append(XML_HEADER);
             sb.append(RSD_HEADER);

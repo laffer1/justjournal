@@ -38,17 +38,12 @@ import com.justjournal.Login;
 import com.justjournal.model.*;
 import com.justjournal.repository.*;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @RestController
@@ -78,17 +73,23 @@ public class CommentController {
     @RequestMapping("/api/comment/{id}")
     @ResponseBody
     public Comment getById(@PathVariable("id") final Integer id) {
-        return commentDao.findOne(id);
+        return commentDao.findById(id).orElse(null);
     }
 
     @ResponseBody
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public
-    List<Comment> getComments(@RequestParam("entryId") final Integer entryId, final HttpServletResponse response) throws Exception {
-        final Entry entry = entryDao.findOne(entryId);
+    List<Comment> getComments(@RequestParam("entryId") final Integer entryId, final HttpServletResponse response)
+            throws Exception {
+        final Entry entry = entryDao.findById(entryId).orElse(null);
+
+        if (entry == null) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return Collections.emptyList();
+        }
 
         try {
-            if (new ArrayList<Journal>(entry.getUser().getJournals()).get(0).isOwnerViewOnly()  ||
+            if (new ArrayList<>(entry.getUser().getJournals()).get(0).isOwnerViewOnly()  ||
                     entry.getAllowComments() == PrefBool.N ||
                     entry.getSecurity().getId() == 0) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -104,7 +105,8 @@ public class CommentController {
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
     @ResponseBody
     public
-    Map<String, String> delete(@PathVariable("id") final int id, final HttpSession session, final HttpServletResponse response) throws Exception {
+    Map<String, String> delete(@PathVariable("id") final int id, final HttpSession session,
+                               final HttpServletResponse response) throws Exception {
 
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -112,9 +114,9 @@ public class CommentController {
         }
 
         try {
-            final Comment comment = commentDao.findOne(id);
+            final Comment comment = commentDao.findById(id).orElse(null);
             if (comment.getUser().getId() == Login.currentLoginId(session))
-                commentDao.delete(id);
+                commentDao.deleteById(id);
 
             return java.util.Collections.singletonMap("id", Integer.toString(comment.getId()));
         } catch (final Exception e) {
@@ -141,8 +143,8 @@ public class CommentController {
         }
 
         try {
-            final User user = userRepository.findOne(Login.currentLoginId(session));
-            final Entry et = entryDao.findOne(comment.getEid());
+            final User user = userRepository.findById(Login.currentLoginId(session)).orElse(null);
+            final Entry et = entryDao.findById(comment.getEid()).orElse(null);
 
             if (et.getAllowComments().equals(PrefBool.N)) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -159,7 +161,7 @@ public class CommentController {
                 saved = commentDao.save(comment);
             } else {
                 update = true;
-                final Comment c = commentDao.findOne(comment.getId());
+                final Comment c = commentDao.findById(comment.getId()).orElse(null);
                 if (c.getEntry().getId() != et.getId()) {
                     response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                     String error = "Error saving comment. Entry id does not match original on comment.";

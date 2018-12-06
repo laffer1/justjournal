@@ -39,6 +39,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Tags
@@ -96,13 +97,13 @@ public class TagsController {
     @ResponseBody
     public ResponseEntity<Tag> getById(@PathVariable("id") final Integer id) {
 
-        final Tag tag = tagDao.findOne(id);
+        final Optional<Tag> tag = tagDao.findById(id);
 
-        if (tag == null)
+        if (!tag.isPresent())
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
         return ResponseEntity.ok()
-                .eTag(Integer.toString(tag.hashCode()))
-                .body(tag);
+                .eTag(Integer.toString(tag.get().hashCode()))
+                .body(tag.get());
     }
 }

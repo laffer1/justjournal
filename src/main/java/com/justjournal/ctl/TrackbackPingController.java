@@ -38,7 +38,7 @@ import com.justjournal.model.Trackback;
 import com.justjournal.model.TrackbackType;
 import com.justjournal.repository.TrackbackRepository;
 import com.justjournal.utility.ServletUtilities;
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
@@ -56,11 +56,10 @@ import javax.servlet.http.HttpServletResponse;
  * @version $Id: TrackbackPing.java,v 1.5 2009/05/16 03:13:12 laffer1 Exp $ User: laffer1 Date: Aug 10, 2006 Time:
  *          8:25:03 PM
  */
+@Slf4j
 @Controller
 @RequestMapping("/trackback")
 public class TrackbackPingController {
-
-    private static final Logger log = Logger.getLogger(TrackbackPingController.class);
 
     private static final String XML_HEADER =
             "<?xml version=\"1.0\" encoding=\"utf-8\"?>";

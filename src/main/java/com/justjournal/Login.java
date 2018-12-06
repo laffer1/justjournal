@@ -202,10 +202,10 @@ public class Login {
             return;
 
         try {
-            com.justjournal.model.User user = userRepository.findOne(id);
+            final com.justjournal.model.User user = userRepository.findById(id).orElse(null);
             user.setLastLogin(new java.util.Date());
             userRepository.save(user);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             log.error("setLastLogin(): " + e.getMessage());
         }
     }

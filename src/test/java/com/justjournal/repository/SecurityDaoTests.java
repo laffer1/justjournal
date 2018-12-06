@@ -58,7 +58,7 @@ public class SecurityDaoTests {
 
     @Test
     public void get() {
-        Security securityTo = securityDao.findOne(1);
+        Security securityTo = securityDao.findById(1).orElse(null);
         assertNotNull(securityTo);
         assertEquals(1, securityTo.getId());
         assertNotNull(securityTo.getName());

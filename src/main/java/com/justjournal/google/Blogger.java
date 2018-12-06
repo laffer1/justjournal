@@ -45,7 +45,7 @@ import com.justjournal.restping.IceRocket;
 import com.justjournal.utility.DateConvert;
 import com.justjournal.utility.HTMLUtil;
 import com.justjournal.utility.StringUtil;
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -67,10 +67,9 @@ import java.util.regex.Pattern;
  * or archive index template of a given blog.
  */
 @SuppressWarnings({"UnusedParameters"})
+@Slf4j
 @Component
 public class Blogger {
-
-    private static final Logger log = Logger.getLogger(Blogger.class);
 
     @Autowired
     private EntryRepository entryRepository;
@@ -100,10 +99,10 @@ public class Blogger {
      * @param password the account secret
      * @return A HashMap of the users personal info or an error code as a hashmap
      */
-    public HashMap<String, Serializable> getUsersInfo(String appkey, String username, String password) {
+    public HashMap<String, Serializable> getUsersInfo(final String appkey, final String username, final String password) {
         int userId;
         boolean blnError = false;
-        HashMap<String, Serializable> s = new HashMap<String, Serializable>();
+        HashMap<String, Serializable> s = new HashMap<>();
 
 
         if (!StringUtil.lengthCheck(username, 3, Login.USERNAME_MAX_LENGTH)) {
@@ -120,16 +119,16 @@ public class Blogger {
 
         if (!blnError)
             try {
-                User user = userRepository.findOne(userId);
+                User user = userRepository.findById(userId).orElse(null);
 
                 s.put("nickname", user.getUsername());
                 s.put("userid", userId);
                 s.put("url", "http://www.justjournal.com/users/" + user.getUsername());
                 s.put("email", user.getUserContact().getEmail());
                 s.put("firstname", user.getFirstName());
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 blnError = true;
-                log.debug(e.getMessage());
+                log.debug(e.getMessage(), e);
             }
 
         if (blnError) {
@@ -174,7 +173,7 @@ public class Blogger {
 
         if (!blnError)
             try {
-                final User user = userRepository.findOne(userId);
+                final User user = userRepository.findById(userId).orElse(null);
 
                 s.put("url", "http://www.justjournal.com/users/" + user.getUsername());
                 s.put("blogid", userId);
@@ -229,7 +228,7 @@ public class Blogger {
 
         if (!blnError)
             try {
-                com.justjournal.model.User user = userRepository.findOne(userId);
+                com.justjournal.model.User user = userRepository.findById(userId).orElse(null);
                 et.setUser(user);
                 et.setDate(new java.util.Date());
 
@@ -257,16 +256,16 @@ public class Blogger {
                     music = "";
                 et.setMusic(StringUtil.replace(music, '\'', "\\\'"));
 
-                et.setSecurity(securityDao.findOne(2));   // public
-                et.setLocation(locationDao.findOne(0)); // not specified
-                et.setMood(moodDao.findOne(12));    // not specified
+                et.setSecurity(securityDao.findById(2).orElse(null));   // public
+                et.setLocation(locationDao.findById(0).orElse(null)); // not specified
+                et.setMood(moodDao.findById(12).orElse(null));    // not specified
                 et.setAutoFormat(PrefBool.Y);
                 et.setAllowComments(PrefBool.Y);
                 et.setEmailComments(PrefBool.Y);
-                et.setUser(userRepository.findOne(userId));
+                et.setUser(userRepository.findById(userId).orElse(null));
 
                 entryRepository.save(et);
-                et2 = entryRepository.findOne(et.getId()); // TODO: this is wrong.
+                et2 = entryRepository.findById(et.getId()).orElse(null); // TODO: this is wrong.
                 result = Integer.toString(et2.getId());
 
                 Journal journal = new ArrayList<Journal>(user.getJournals()).get(0);
@@ -284,13 +283,13 @@ public class Blogger {
                     rp.ping();
 
                     /* IceRocket */
-                    IceRocket ice = new IceRocket();
+                    final IceRocket ice = new IceRocket();
                     ice.setName(journal.getName());
                     ice.setUri("http://www.justjournal.com/" + "users/" + user.getUsername());
                     ice.ping();
                 }
 
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 blnError = true;
                 log.debug(e.getMessage());
             }
@@ -322,7 +321,7 @@ public class Blogger {
     public Serializable deletePost(String appkey, String postid, String username, String password, boolean publish) {
         int userId;
         boolean blnError = false;
-        HashMap<String, Serializable> s = new HashMap<String, Serializable>();
+        HashMap<String, Serializable> s = new HashMap<>();
 
         int eid = 0;
 
@@ -346,10 +345,10 @@ public class Blogger {
 
         if (!blnError && eid > 0) {
             try {
-                Entry entry = entryRepository.findOne(eid);
+                Entry entry = entryRepository.findById(eid).orElse(null);
                 if (entry.getUser().getId() == userId)
-                    entryRepository.delete(eid);
-            } catch (Exception e) {
+                    entryRepository.deleteById(eid);
+            } catch (final Exception e) {
                 blnError = true;
                 log.debug(e.getMessage());
             }
@@ -411,7 +410,7 @@ public class Blogger {
             try {
                 /* we're just updating the content aka body as this is the
            only thing the protocol supports. */
-                Entry et2 = entryRepository.findOne(eid);
+                Entry et2 = entryRepository.findById(eid).orElse(null);
                 if (userId == et2.getUser().getId()) {
                     et2.setBody(StringUtil.replace(content, '\'', "\\\'"));
                     entryRepository.save(et2);
@@ -556,7 +555,7 @@ public class Blogger {
             return s;
         }
 
-        e = entryRepository.findOne(Integer.parseInt(postid));
+        e = entryRepository.findById(Integer.parseInt(postid)).orElse(null);
         if (userId != e.getUser().getId()) {
             s.put("faultCode", 4);
             s.put("faultString", "User authentication failed: " + username);

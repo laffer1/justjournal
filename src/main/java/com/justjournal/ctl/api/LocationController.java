@@ -56,7 +56,7 @@ public class LocationController {
     @ResponseBody
     public ResponseEntity<Location> getById(@PathVariable("id") final Integer id) {
 
-        final Location location = locationDao.findOne(id);
+        final Location location = locationDao.findById(id).orElse(null);
         if (location == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 

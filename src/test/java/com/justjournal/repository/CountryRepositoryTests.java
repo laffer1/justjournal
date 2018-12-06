@@ -32,6 +32,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
@@ -41,6 +42,7 @@ import static org.junit.Assert.assertNotNull;
 /**
  * @author Lucas Holt
  */
+@ActiveProfiles("test")
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
 @WebAppConfiguration
@@ -58,7 +60,7 @@ public class CountryRepositoryTests {
 
     @Test
     public void get() {
-        Country country = countryRepository.findOne(1);
+        Country country = countryRepository.findById(1).orElse(null);
         assertNotNull(country);
         assertEquals(1, country.getId());
         assertNotNull(country.getTitle());

@@ -65,7 +65,7 @@ public class RssReaderController {
     @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public RssSubscription getById(@PathVariable("id") Integer id) {
-        return rssSubscriptionsDAO.findOne(id);
+        return rssSubscriptionsDAO.findById(id).orElse(null);
     }
 
     @Cacheable(value = "rsssubscription", key = "username")
@@ -89,7 +89,7 @@ public class RssReaderController {
                 return java.util.Collections.singletonMap("error", "Error adding link.");
             }
             
-            final User user = userRepository.findOne(Login.currentLoginId(session));
+            final User user = userRepository.findById(Login.currentLoginId(session)).orElse(null);
             to.setUser(user);
             to.setUri(uri);
             rssSubscriptionsDAO.save(to);
@@ -111,8 +111,8 @@ public class RssReaderController {
         }
 
         if (subId > 0) {
-            final User user = userRepository.findOne(Login.currentLoginId(session));
-            final RssSubscription to = rssSubscriptionsDAO.findOne(subId);
+            final User user = userRepository.findById(Login.currentLoginId(session)).orElse(null);
+            final RssSubscription to = rssSubscriptionsDAO.findById(subId).orElse(null);
 
             if (user.getId() == to.getUser().getId()) {
                 rssSubscriptionsDAO.delete(to);

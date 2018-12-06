@@ -126,7 +126,7 @@ public class EntryService {
     @Transactional(readOnly = true, isolation = Isolation.READ_UNCOMMITTED)
     public Entry getPublicEntry(final int id, final String username) throws ServiceException {
         try {
-            final Entry entry = entryDao.findOne(id);
+            final Entry entry = entryDao.findById(id).orElse(null);
             if (entry.getUser().getUsername().equalsIgnoreCase(username) && entry.getSecurity().getId() == 2 && entry.getDraft().equals(PrefBool.N)) // public
                 return entry;
             return null;
@@ -143,7 +143,7 @@ public class EntryService {
             if (user == null) {
                 return Collections.emptyList();
             }
-            return entryDao.findByUserAndSecurityAndDraftOrderByDateDesc(user, securityDao.findOne(2), PrefBool.N);
+            return entryDao.findByUserAndSecurityAndDraftOrderByDateDesc(user, securityDao.findById(2).orElse(null), PrefBool.N);
         } catch (Exception e) {
             log.error(e.getMessage());
             throw new ServiceException(e);
@@ -157,7 +157,7 @@ public class EntryService {
             if (user == null) {
                 return null;
             }
-            return entryDao.findByUserAndSecurityAndDraft(user, securityDao.findOne(2), PrefBool.N, pageable);
+            return entryDao.findByUserAndSecurityAndDraft(user, securityDao.findById(2).orElse(null), PrefBool.N, pageable);
         } catch (final Exception e) {
             log.error(e.getMessage());
             throw new ServiceException(e);

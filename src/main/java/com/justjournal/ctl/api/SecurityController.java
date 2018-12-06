@@ -56,7 +56,7 @@ public class SecurityController {
     @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<Security> getById(@PathVariable("id") final Integer id) {
-        final Security s = securityDao.findOne(id);
+        final Security s = securityDao.findById(id).orElse(null);
         if (s == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 

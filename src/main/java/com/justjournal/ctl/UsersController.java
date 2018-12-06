@@ -39,7 +39,7 @@ import com.justjournal.rss.Rss;
 import com.justjournal.services.*;
 import com.justjournal.utility.StringUtil;
 import com.justjournal.utility.Xml;
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -66,6 +66,7 @@ import java.util.*;
  *
  * @author Lucas Holt
  */
+@Slf4j
 @Transactional
 @Controller
 @RequestMapping("/users")
@@ -73,7 +74,6 @@ public class UsersController {
     private static final int SEARCH_MAX_LENGTH = 20;
     // constants
     private static final char ENDL = '\n';
-    private static final Logger log = Logger.getLogger(UsersController.class);
     private static final String MODEL_USER = "user";
     private static final String MODEL_JOURNAL = "journal";
     private static final String MODEL_AUTHENTICATED_USER = "authenticatedUsername";
@@ -144,7 +144,7 @@ public class UsersController {
      * @return  true if avatar, false otherwise
      */
     private boolean avatar(final int userId) {
-        return userPicRepository.exists(userId);
+        return userPicRepository.existsById(userId);
     }
 
     @RequestMapping(value = "{username}", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
@@ -405,7 +405,7 @@ public class UsersController {
             return "";
         }
 
-        Journal journal = new ArrayList<Journal>(userc.getBlogUser().getJournals()).get(0);
+        final Journal journal = new ArrayList<>(userc.getBlogUser().getJournals()).get(0);
                 model.addAttribute(MODEL_JOURNAL, journal);
 
         model.addAttribute(MODEL_AUTHENTICATED_USER, Login.currentLoginName(session));
@@ -437,14 +437,14 @@ public class UsersController {
                 return "";
             }
 
-            if (new ArrayList<Journal>(user.getJournals()).get(0).isOwnerViewOnly()) {
+            if (new ArrayList<>(user.getJournals()).get(0).isOwnerViewOnly()) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 return "";
             }
 
             return getAtom(user);
         } catch (final Exception e) {
-            log.error(e);
+            log.error("Unable to generate ATOM", e);
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return "";
         }
@@ -469,7 +469,7 @@ public class UsersController {
 
             return getRSS(user);
         } catch (final Exception e) {
-            log.error(e);
+            log.error("Unable to generate RSS", e);
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return "";
         }
@@ -494,7 +494,7 @@ public class UsersController {
 
             return getPicturesRSS(user);
         } catch (final Exception e) {
-            log.error(e);
+            log.error("Unable to generate RSS picture feed", e);
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return "";
         }
@@ -518,16 +518,17 @@ public class UsersController {
             }
 
             final UserContext userc = new UserContext(user, authUser);
-            if (! new ArrayList<Journal>(user.getJournals()).get(0).isOwnerViewOnly() || userc.isAuthBlog()) {
+            if (! new ArrayList<>(user.getJournals()).get(0).isOwnerViewOnly() || userc.isAuthBlog()) {
                 getPDF(response, userc);
             } else
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         } catch (final Exception e) {
-            log.error(e);
+            log.error("unable to generate pdf", e);
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
 
+    @Deprecated
     @RequestMapping(value = "{username}/rtf", method = RequestMethod.GET, produces = MEDIA_TYPE_RTF)
     public void rtf(@PathVariable(PATH_USERNAME) final String username, final HttpServletResponse response, final HttpSession session) {
         User authUser = null;
@@ -549,7 +550,7 @@ public class UsersController {
             else
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         } catch (final Exception e) {
-            log.error(e);
+            log.error("Unable to generate RTF", e);
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
@@ -673,18 +674,18 @@ public class UsersController {
 
             final UserContext userc = new UserContext(user, authUser);
 
-            Journal journal = new ArrayList<Journal>(userc.getBlogUser().getJournals()).get(0);
+            final Journal journal = new ArrayList<>(userc.getBlogUser().getJournals()).get(0);
                     model.addAttribute(MODEL_JOURNAL, journal);
 
             model.addAttribute(MODEL_USER, user);
             model.addAttribute(MODEL_AUTHENTICATED_USER, Login.currentLoginName(session));
 
-            if (! new ArrayList<Journal>(userc.getBlogUser().getJournals()).get(0).isOwnerViewOnly() || userc.isAuthBlog())
+            if (! new ArrayList<>(userc.getBlogUser().getJournals()).get(0).isOwnerViewOnly() || userc.isAuthBlog())
                 model.addAttribute("tags", getTags(userc, tag));
             else
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         } catch (final Exception e) {
-            log.error(e);
+            log.error("unable to get tag", e);
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
 
@@ -707,7 +708,7 @@ public class UsersController {
 
             return new UserContext(user, authUser);
         } catch (final Exception e) {
-            log.error(e);
+            log.error("Unable to get user context", e);
         }
         return null;
     }
@@ -806,7 +807,7 @@ public class UsersController {
      * @return blog entry
      */
     private Entry getEntry(final int entryId, final UserContext uc) {
-        final Entry entry = entryDao.findOne(entryId);
+        final Entry entry = entryDao.findById(entryId).orElse(null);
         final int entryUserId = entry.getUser().getId();
 
         // only show blog entries for the owner of the blog
@@ -945,7 +946,8 @@ public class UsersController {
                 log.debug("getEntries: User is logged in.");
             } else {
                 entries = //entryService.getPublicEntries(uc.getBlogUser().getUsername(), pageable);
-                       entryDao.findByUserAndSecurityOrderByDateDesc(uc.getBlogUser(), securityDao.findOne(2), pageable);
+                       entryDao.findByUserAndSecurityOrderByDateDesc(uc.getBlogUser(),
+                               securityDao.findById(2).orElse(null), pageable);
 
                 log.debug("getEntries: User is not logged in.");
             }
@@ -1519,7 +1521,7 @@ public class UsersController {
             if (uc.isAuthBlog())
                 entries = entryDao.findByUsernameAndYear(uc.getBlogUser().getUsername(), year);
             else
-                entries = entryDao.findByUsernameAndYearAndSecurity(uc.getBlogUser().getUsername(), year, securityDao.findOne(2));
+                entries = entryDao.findByUsernameAndYearAndSecurity(uc.getBlogUser().getUsername(), year, securityDao.findById(2).orElse(null));
 
             if (entries == null || entries.isEmpty()) {
                 sb.append("<p>Calendar data not available.</p>");
@@ -1565,7 +1567,8 @@ public class UsersController {
             if (uc.isAuthBlog())
                 entries = entryDao.findByUsernameAndYearAndMonth(uc.getBlogUser().getUsername(), year, month);
             else
-                entries = entryDao.findByUsernameAndYearAndMonthAndSecurity(uc.getBlogUser().getUsername(), year, month, securityDao.findOne(2));
+                entries = entryDao.findByUsernameAndYearAndMonthAndSecurity(uc.getBlogUser().getUsername(),
+                        year, month, securityDao.findById(2).orElse(null));
 
             if (entries.isEmpty()) {
                 sb.append("<p>Calendar data not available.</p>");
@@ -1627,7 +1630,8 @@ public class UsersController {
             if (uc.isAuthBlog())
                 entries = entryDao.findByUsernameAndYearAndMonth(uc.getBlogUser().getUsername(), year, month);
             else
-                entries = entryDao.findByUsernameAndYearAndMonthAndSecurity(uc.getBlogUser().getUsername(), year, month, securityDao.findOne(2));
+                entries = entryDao.findByUsernameAndYearAndMonthAndSecurity(uc.getBlogUser().getUsername(), year, month,
+                        securityDao.findById(2).orElse(null));
 
 
             if (entries.isEmpty()) {
@@ -1639,7 +1643,7 @@ public class UsersController {
                 sb.append(mycal.renderMini());
             }
         } catch (final Exception ex) {
-            log.debug(ex);
+            log.debug(ex.getMessage(), ex);
         }
         return sb.toString();
     }
@@ -1670,7 +1674,8 @@ public class UsersController {
             if (uc.isAuthBlog())
                 entries = entryDao.findByUsernameAndYearAndMonthAndDay(uc.getBlogUser().getUsername(), year, month, day);
             else
-                entries = entryDao.findByUsernameAndYearAndMonthAndDayAndSecurity(uc.getBlogUser().getUsername(), year, month, day, securityDao.findOne(2));
+                entries = entryDao.findByUsernameAndYearAndMonthAndDayAndSecurity(uc.getBlogUser().getUsername(),
+                        year, month, day, securityDao.findById(2).orElse(null));
 
             if (entries == null || entries.isEmpty()) {
                 sb.append("<p>Calendar data not available.</p>");
@@ -1737,7 +1742,8 @@ public class UsersController {
         rss.setManagingEditor(user.getUserContact().getEmail() + " (" + user.getFirstName() + ")");
 
         final Pageable page = new PageRequest(0, 15);
-        rss.populate(entryDao.findByUserAndSecurityOrderByDateDesc(user, securityDao.findOne(2), page).getContent());
+        rss.populate(entryDao.findByUserAndSecurityOrderByDateDesc(user, securityDao.findById(2).orElse(null),
+                page).getContent());
         return rss.toXml();
     }
 
@@ -1762,7 +1768,8 @@ public class UsersController {
         atom.setId("http://www.justjournal.com/users/" + user.getUsername() + "/atom");
         atom.setSelfLink("/users/" + user.getUsername() + "/atom");
         final Pageable page = new PageRequest(0, 15);
-        atom.populate(entryDao.findByUserAndSecurityOrderByDateDesc(user, securityDao.findOne(2), page).getContent());
+        atom.populate(entryDao.findByUserAndSecurityOrderByDateDesc(user,
+                securityDao.findById(2).orElse(null), page).getContent());
         return atom.toXml();
     }
 
@@ -1801,7 +1808,8 @@ public class UsersController {
             if (uc.isAuthBlog()) {
                 entries = entryDao.findByUsernameAndTag(uc.getBlogUser().getUsername(), tag);
             } else {
-                entries = entryDao.findByUsernameAndSecurityAndTag(uc.getBlogUser().getUsername(), securityDao.findOne(2), tag);
+                entries = entryDao.findByUsernameAndSecurityAndTag(uc.getBlogUser().getUsername(),
+                        securityDao.findById(2).orElse(null), tag);
             }
 
             // Format the current time.

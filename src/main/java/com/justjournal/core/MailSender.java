@@ -112,7 +112,7 @@ public class MailSender {
                 }
 
                 if (sentok) {
-                    queueMailRepository.delete(item.getId());
+                    queueMailRepository.deleteById(item.getId());
                 }
 
             }

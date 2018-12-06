@@ -122,7 +122,7 @@ public class FriendController {
 
         try {
             final User friendUser = userRepository.findByUsername(friend);
-            final User owner = userRepository.findOne(Login.currentLoginId(session));
+            final User owner = userRepository.findById(Login.currentLoginId(session)).orElse(null);
 
             if (friendUser == null)
                 return java.util.Collections.singletonMap("error", "Could not find friend's username");
@@ -159,7 +159,7 @@ public class FriendController {
 
         try {
             final User friendUser = userRepository.findByUsername(friend);
-            final User user = userRepository.findOne(Login.currentLoginId(session));
+            final User user = userRepository.findById(Login.currentLoginId(session)).orElse(null);
 
             final Friend f = friendsDao.findOneByUserAndFriend(user, friendUser);
             if (f != null) {

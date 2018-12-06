@@ -3,9 +3,14 @@ spring:
 ---
 spring:
   profiles: default
+  flyway:
+    baseline-on-migrate: true
   jackson:
     serialization:
       write-dates-as-timestamps: false
+  data:
+    jest:
+      uri: http://localhost:9200
   datasource:
     url: jdbc:mysql://localhost:3306/jj
     username: jj
@@ -53,16 +58,15 @@ eureka:
     serviceUrl:
      defaultZone: http://127.0.0.1:8761/eureka/
 
-flyway:
-  baseline-on-migrate: true
-
 ---
 spring:
   profiles: test
+  data:
+    jest:
+      uri: http://ds9.midnightbsd.org:9200
   datasource:
     url: jdbc:mysql://localhost:3306/justjournal_test
     username: travis
     password:
-
-flyway:
-  baseline-on-migrate: true
+  flyway:
+    baseline-on-migrate: true
