@@ -8,19 +8,13 @@
 
 -- --------------------------------------------------------
 
---
--- Table structure for table `comments`
---
--- Creation: Feb 14, 2014 at 02:40 AM
---
-
 CREATE TABLE IF NOT EXISTS `comments` (
   `id`       SMALLINT(4) UNSIGNED NOT NULL AUTO_INCREMENT,
   `eid`      INT(10) UNSIGNED     NOT NULL DEFAULT '0',
   `uid`      INT(10) UNSIGNED     NOT NULL DEFAULT '0',
   `subject`  VARCHAR(150)
              CHARACTER SET latin1          DEFAULT NULL,
-  `date`     DATETIME             NOT NULL,
+  `date`     DATETIME             NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `body`     TEXT
              CHARACTER SET latin1 NOT NULL,
   `modified` TIMESTAMP            NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -93,7 +87,7 @@ CREATE TABLE IF NOT EXISTS `country` (
 CREATE TABLE IF NOT EXISTS `entry` (
   `id`             INT(10) UNSIGNED    NOT NULL AUTO_INCREMENT,
   `uid`            INT(10) UNSIGNED    NOT NULL DEFAULT '0',
-  `date`           DATETIME            NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `date`           DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `modified`       TIMESTAMP           NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `subject`        VARCHAR(255)                 DEFAULT NULL,
   `mood`           TINYINT(3) UNSIGNED          DEFAULT NULL,
@@ -222,7 +216,7 @@ CREATE TABLE IF NOT EXISTS `friends_lj` (
 CREATE TABLE IF NOT EXISTS `friends_lj_cache` (
   `ljusername`  VARCHAR(15)     NOT NULL DEFAULT '',
   `community`   ENUM ('Y', 'N') NOT NULL DEFAULT 'N',
-  `lastupdated` DATETIME        NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `lastupdated` DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `content`     TEXT,
   PRIMARY KEY (`ljusername`)
 )
@@ -384,7 +378,7 @@ CREATE TABLE IF NOT EXISTS `resources` (
 CREATE TABLE IF NOT EXISTS `rss_cache` (
   `id`          INT(10) UNSIGNED     NOT NULL AUTO_INCREMENT,
   `interval`    TINYINT(10) UNSIGNED NOT NULL DEFAULT '0',
-  `lastupdated` DATETIME             NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `lastupdated` DATETIME             NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `uri`         TINYTEXT             NOT NULL,
   `content`     MEDIUMTEXT,
   active        BOOLEAN                       DEFAULT TRUE,
@@ -523,7 +517,7 @@ CREATE TABLE IF NOT EXISTS `trackback` (
   `id`           INT(10) UNSIGNED                         NOT NULL AUTO_INCREMENT,
   `eid`          INT(10) UNSIGNED                         NOT NULL
   COMMENT 'Entry ID',
-  `date`         DATETIME                                 NOT NULL
+  `date`         DATETIME                                 NOT NULL DEFAULT CURRENT_TIMESTAMP
   COMMENT 'Trackback Date',
   `type`         ENUM ('trackback', 'pingback', 'postit') NOT NULL DEFAULT 'trackback',
   `url`          VARCHAR(150)                             NOT NULL,
@@ -777,7 +771,7 @@ CREATE TABLE IF NOT EXISTS `user_location` (
 
 CREATE TABLE IF NOT EXISTS `user_pic` (
   `id`            INT(10) UNSIGNED NOT NULL DEFAULT '0',
-  `date_modified` DATETIME                  DEFAULT NULL,
+  `date_modified` DATETIME                  DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `mimetype`      VARCHAR(75)
                   CHARACTER SET utf8
                   COLLATE utf8_bin NOT NULL,
@@ -854,7 +848,7 @@ CREATE TABLE IF NOT EXISTS `journal` (
   `slug`            VARCHAR(15)         NOT NULL DEFAULT '',
   `name`            VARCHAR(150)
                     CHARACTER SET utf8           DEFAULT NULL,
-  `since`           DATETIME            NOT NULL,
+  `since`           DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `style`           TINYINT(6) UNSIGNED NOT NULL DEFAULT '1',
   `allow_spider`    BOOLEAN                      DEFAULT TRUE,
   `owner_view_only` BOOLEAN                      DEFAULT FALSE,
