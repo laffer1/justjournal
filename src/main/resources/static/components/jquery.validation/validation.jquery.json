@@ -7,7 +7,6 @@
 		"validation",
 		"validate"
 	],
-	"version": "1.11.1",
 	"author": {
 		"name": "Jörn Zaefferer",
 		"email": "joern.zaefferer@gmail.com",
@@ -19,11 +18,12 @@
 			"url": "http://www.opensource.org/licenses/MIT"
 		}
 	],
-	"bugs": "https://github.com/jzaefferer/jquery-validation/issues",
-	"homepage": "https://github.com/jzaefferer/jquery-validation",
-	"docs": "http://docs.jquery.com/Plugins/Validation",
-	"download": "http://bassistance.de/jquery-plugins/jquery-plugin-validation/",
+	"bugs": "https://github.com/jquery-validation/jquery-validation/issues",
+	"homepage": "https://github.com/jquery-validation/jquery-validation",
+	"docs": "http://jqueryvalidation.org/documentation/",
+	"download": "https://github.com/jquery-validation/jquery-validation/releases",
 	"dependencies": {
 		"jquery": ">=1.4.4"
-	}
+	},
+	"version": "1.19.0"
 }

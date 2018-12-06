@@ -10,7 +10,7 @@
     <meta property="og:type" content="article" />
     <meta property="og:image" th:content="@{'http://www.justjournal.com/image?id=' + ${user.id}}" />
 
-    <meta th:if="${entry != null}" property="og:url"   th:content="@{'http://www.justjournal.com/users/' + ${user.username} + '/entry/' + ${entry.getId()}}" />
+    <meta th:if="${entry != null}" property="og:url"   th:content="@{'https://www.justjournal.com/users/' + ${user.username} + '/entry/' + ${entry.getId()}}" />
     <meta th:if="${entry != null}" property="og:title" th:content="${entry.getSubject()}" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -20,15 +20,16 @@
     <link rel="stylesheet" type="text/css" media="screen"
           th:href="${journal.style.id > 16} ? '/static/styles/' + ${journal.style.id} + '.css' : '/static/styles/bootstrap-theme.min.css'" />
 
-    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="//use.fontawesome.com/releases/v5.5.0/css/all.css" />
+    <link rel="stylesheet" type="text/css" href="//use.fontawesome.com/releases/v5.5.0/css/v4-shims.css" />
     <link rel="stylesheet" type="text/css" media="screen"
-          href="/static/components/lightbox2/css/lightbox.css" th:href="@{/components/lightbox2/css/lightbox.css}" />
+          href="/static/components/lightbox2/dist/css/lightbox.css" th:href="@{/components/lightbox2/dist/css/lightbox.css}" />
     <link rel="alternate" type="application/rss+xml" title="RSS"
-          th:href="@{'http://www.justjournal.com/users/' + ${user.username} +'/rss'}" />
+          th:href="@{'https://www.justjournal.com/users/' + ${user.username} +'/rss'}" />
     <link rel="alternate" type="application/atom+xml" title="Atom"
-          th:href="@{'http://www.justjournal.com/users/' + ${user.username} +'/atom'}" />
+          th:href="@{'https://www.justjournal.com/users/' + ${user.username} +'/atom'}" />
     <link rel="EditURI" type="application/rsd+xml" title="RSD"
-          th:href="@{'http://www.justjournal.com/rsd?blogID=' + ${user.username}}" />
+          th:href="@{'https://www.justjournal.com/rsd?blogID=' + ${user.username}}" />
 </head>
 
 <body>
@@ -323,8 +324,8 @@
 <script type="text/javascript" src="/static/components/jquery/dist/jquery.min.js" th:src="@{/components/jquery/dist/jquery.min.js}"></script>
 <script type="text/javascript" src="/static/js/jj.js" th:src="@{/js/jj.js}" defer="defer"></script>
 <script type="text/javascript" src="/static/components/jquery-ui/jquery-ui.min.js" th:src="@{/components/jquery-ui/jquery-ui.min.js}"></script>
-<script type="text/javascript"  th:src="@{/components/lightbox2/js/lightbox.min.js}"
-        src="/static/components/lightbox2/js/lightbox.min.js" defer="defer"></script>
+<script type="text/javascript"  th:src="@{/components/lightbox2/dist/js/lightbox.min.js}"
+        src="/static/components/lightbox2/dist/js/lightbox.min.js" defer="defer"></script>
 <script type="text/javascript" src="/static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
 <script type="text/javascript" src="//apis.google.com/js/platform.js" async="async" defer="defer"></script>
 <script th:inline="javascript">
