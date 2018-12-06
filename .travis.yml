@@ -1,8 +1,8 @@
 language: java
 dist: xenial
 jdk:
-  - oraclejdk9
   - openjdk8
+  - openjdk10
 services:
   - mysql
   - elasticsearch
