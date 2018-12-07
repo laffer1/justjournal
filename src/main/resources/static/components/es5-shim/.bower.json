@@ -1,14 +1,43 @@
 {
   "name": "es5-shim",
-  "homepage": "https://github.com/kriskowal/es5-shim",
-  "version": "2.0.12",
-  "_release": "2.0.12",
+  "main": "es5-shim.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/es-shims/es5-shim"
+  },
+  "homepage": "https://github.com/es-shims/es5-shim",
+  "authors": [
+    "Kris Kowal <kris@cixar.com> (http://github.com/kriskowal/)",
+    "Sami Samhuri <sami.samhuri@gmail.com> (http://samhuri.net/)",
+    "Florian Schäfer <florian.schaefer@gmail.com> (http://github.com/fschaefer)",
+    "Irakli Gozalishvili <rfobic@gmail.com> (http://jeditoolkit.com)",
+    "Kit Cambridge <kitcambridge@gmail.com> (http://kitcambridge.github.com)",
+    "Jordan Harband <ljharb@gmail.com> (https://github.com/ljharb/)"
+  ],
+  "description": "ECMAScript 5 compatibility shims for legacy JavaScript engines",
+  "keywords": [
+    "shim",
+    "es5",
+    "es5 shim",
+    "javascript",
+    "ecmascript",
+    "polyfill"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "tests"
+  ],
+  "version": "4.5.12",
+  "_release": "4.5.12",
   "_resolution": {
     "type": "version",
-    "tag": "v2.0.12",
-    "commit": "892efc8ed2184d8bf1432d175ba36ec863fb0edc"
+    "tag": "v4.5.12",
+    "commit": "508dcbe79446cb7fce3400674b57719bd1cf6e11"
   },
-  "_source": "git://github.com/kriskowal/es5-shim.git",
-  "_target": "~2.0.12",
+  "_source": "https://github.com/es-shims/es5-shim.git",
+  "_target": "~4.5.12",
   "_originalSource": "es5-shim"
 }
