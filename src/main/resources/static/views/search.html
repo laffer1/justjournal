@@ -13,7 +13,7 @@
             <p>Displays first 20 public entries containing the search terms.</p>
         </fieldset>
 
-        <div data-ng-repeat="entry in results.content">
+        <div data-ng-repeat="entry in results._embedded.blogEntries">
             <h4 style="color: orange;">{{ entry.date }}</h4>
             <div>
                 <h5><img src="/images/userclass_16.png" alt="user"/> <a href="/users/{{entry.author}}"
