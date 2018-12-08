@@ -54,7 +54,7 @@ public final class RssCache implements Serializable {
     private static final long serialVersionUID = 7699995609479936367L;
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     // reserved keyword

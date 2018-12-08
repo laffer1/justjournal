@@ -47,7 +47,7 @@ import java.util.Date;
 public class UserImage implements Serializable {
     private static final long serialVersionUID = 6356304916167520629L;
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
 

@@ -55,7 +55,7 @@ import java.io.Serializable;
 public class UserLink implements Serializable, Comparable<UserLink> {
     private static final long serialVersionUID = 6356304916167520610L;
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "linkid")
     private int id;
 

@@ -41,7 +41,7 @@ public class State implements Serializable {
     private static final long serialVersionUID = 7308393000204318100L;
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(name = "title", length = 100)

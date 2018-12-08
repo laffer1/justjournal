@@ -22,7 +22,7 @@ public class EntryStatistic implements Serializable, Comparable<EntryStatistic> 
     private static final long serialVersionUID = 7280767109218766181L;
     
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @JsonProperty("user")

@@ -48,7 +48,7 @@ public final class Comment implements Serializable {
     private static final long serialVersionUID = 3594701186407268256L;
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id = 0;
 
     @JsonBackReference(value = "entry-comment")

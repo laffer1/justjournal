@@ -43,8 +43,9 @@ import java.io.Serializable;
 public class Mood implements Serializable, Comparable<Mood> {
 
     private static final long serialVersionUID = 6121574687739275660L;
+
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id = 0;
 
     @Column(name = "parentmood")

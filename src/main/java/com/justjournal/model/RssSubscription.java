@@ -54,7 +54,7 @@ public class RssSubscription implements Serializable {
     private String uri;
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "subid")
     private int subscriptionId;
 

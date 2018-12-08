@@ -58,8 +58,9 @@ import java.util.Set;
 @Table(name = "entry")
 public class Entry implements Serializable {
     private static final long serialVersionUID = 6558001750470601772L;
+
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id = 0;
 
     @Column(name = "date")

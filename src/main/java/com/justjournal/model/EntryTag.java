@@ -44,7 +44,7 @@ public class EntryTag implements Serializable {
     private static final long serialVersionUID = -1338174937085787799L;
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @JsonProperty("entry")

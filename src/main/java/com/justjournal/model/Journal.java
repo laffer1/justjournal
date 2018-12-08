@@ -20,7 +20,7 @@ public class Journal implements Serializable {
     private static final long serialVersionUID = 9106701690730308047L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(name = "slug", length = 15, nullable = false)

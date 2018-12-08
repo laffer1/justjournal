@@ -51,8 +51,9 @@ import java.io.Serializable;
 public class Security implements Serializable {
 
     private static final long serialVersionUID = -3247158592308509915L;
+
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id = 0;
 
     @Column(length = 7, nullable = false, name = "title", unique = true)

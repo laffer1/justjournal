@@ -16,7 +16,7 @@ public class Favorite implements Serializable {
     private static final long serialVersionUID = 4304617243861178238L;
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @JsonProperty("user")

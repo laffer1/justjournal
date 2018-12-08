@@ -56,7 +56,7 @@ public class Tag implements Serializable {
      */
     @JsonProperty("id")
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     /**

@@ -39,7 +39,7 @@ public class Settings implements Serializable {
     private static final long serialVersionUID = -7137678422555117028L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(name = "name", length = 25, nullable = false)

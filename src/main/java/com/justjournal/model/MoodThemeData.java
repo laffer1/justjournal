@@ -52,7 +52,7 @@ public class MoodThemeData implements Serializable {
     private static final long serialVersionUID = 8664963658480263224L;
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(name = "picurl", length = 100)

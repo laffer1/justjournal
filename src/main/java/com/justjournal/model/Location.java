@@ -43,8 +43,9 @@ import java.io.Serializable;
 public class Location implements Serializable {
 
     private static final long serialVersionUID = 4847945847367026222L;
+
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(length = 15, nullable = false, name = "title", unique = true)

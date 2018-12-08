@@ -42,8 +42,9 @@ import java.io.Serializable;
 @Table(name = "user_contact")
 public class UserContact implements Serializable {
     private static final long serialVersionUID = 1152818084136626047L;
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column

@@ -9,7 +9,7 @@ import java.util.Collection;
 public class XmlUrlSet {
 
     @XmlElements({@XmlElement(name = "url", type = XmlUrl.class)})
-    private Collection<XmlUrl> xmlUrls = new ArrayList<XmlUrl>();
+    private Collection<XmlUrl> xmlUrls = new ArrayList<>();
 
     public void addUrl(final XmlUrl xmlUrl) {
         xmlUrls.add(xmlUrl);

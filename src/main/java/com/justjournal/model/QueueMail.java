@@ -39,7 +39,7 @@ public class QueueMail implements Serializable {
     private static final long serialVersionUID = -243775616584090923L;
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(length = 100)

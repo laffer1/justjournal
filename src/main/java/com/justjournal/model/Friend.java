@@ -46,7 +46,7 @@ public class Friend implements Serializable {
     private static final long serialVersionUID = 7855723158129346426L;
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int pk;
 
     @JsonBackReference

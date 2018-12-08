@@ -45,7 +45,7 @@ public class UserLocation implements Serializable {
     private static final long serialVersionUID = -5429965410191859512L;
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column

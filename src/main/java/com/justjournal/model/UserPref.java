@@ -43,7 +43,7 @@ public class UserPref implements Serializable {
     private static final long serialVersionUID = -4301597963273403598L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id = 0;
 
     @Column(name = "show_avatar", nullable = false, length = 1)

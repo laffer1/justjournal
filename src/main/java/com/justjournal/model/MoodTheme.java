@@ -38,7 +38,7 @@ public class MoodTheme implements Serializable {
     private static final long serialVersionUID = -3177089710241240593L;
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
 

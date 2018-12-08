@@ -51,7 +51,7 @@ public class UserBio implements Serializable {
 
     private static final long serialVersionUID = 3877987531776135807L;
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id = 0;
 
     @Column(length = 65535, nullable = false, name = "content", columnDefinition = "TEXT")
