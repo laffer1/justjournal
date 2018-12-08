@@ -64,17 +64,17 @@ public class AlbumImageController {
     private final ImageService imageService;
 
     @Autowired
-    public AlbumImageController(final JdbcTemplate jdbcTemplate, ImageService imageService) {
+    public AlbumImageController(final JdbcTemplate jdbcTemplate, final ImageService imageService) {
         this.jdbcTemplate = jdbcTemplate;
         this.imageService = imageService;
     }
 
-    @RequestMapping(value = "/{id}/thumbnail", method = RequestMethod.GET)
+    @GetMapping(value = "/{id}/thumbnail")
     public ResponseEntity<byte[]> getThumbnail(@PathVariable("id") final int id) throws IOException {
 
         // TODO: refactor into service
-        ResponseEntity<byte[]> out = get(id);
-        BufferedImage image = imageService.resizeAvatar(out.getBody());
+        final ResponseEntity<byte[]> out = get(id);
+        final BufferedImage image = imageService.resizeAvatar(out.getBody());
 
         final HttpHeaders headers = new HttpHeaders();
         headers.setExpires(180);
@@ -83,12 +83,12 @@ public class AlbumImageController {
         return new ResponseEntity<>(imageService.convertBufferedImageToJpeg(image), headers, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @GetMapping(value = "/{id}")
     public ResponseEntity<byte[]> getByPath(@PathVariable("id") final int id) throws IOException {
         return get(id);
     }
 
-    @RequestMapping(value = "", method = RequestMethod.GET)
+    @GetMapping(value = "")
     public ResponseEntity<byte[]> get(@RequestParam("id") final int id) throws IOException {
         final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
@@ -96,9 +96,10 @@ public class AlbumImageController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        try (Connection conn = jdbcTemplate.getDataSource().getConnection();
-             PreparedStatement stmt = conn.prepareStatement("CALL getalbumimage(?)");) {
-            stmt.setInt(1, id);
+        try (final Connection conn = jdbcTemplate.getDataSource().getConnection();
+             final PreparedStatement stmt = conn.prepareStatement("CALL getalbumimage(?)");
+             ) {
+             stmt.setInt(1, id);
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
@@ -132,8 +133,10 @@ public class AlbumImageController {
     }
 
 
-    @RequestMapping(value = "", method = RequestMethod.POST)
-    public ResponseEntity upload(@RequestPart("file") MultipartFile file, @RequestParam(value = "title", defaultValue = "untitled") String title, HttpSession session) throws IOException {
+    @PostMapping(value = "")
+    public ResponseEntity upload(@RequestPart("file") MultipartFile file,
+                                 @RequestParam(value = "title", defaultValue = "untitled") String title,
+                                 HttpSession session) throws IOException {
         assert jdbcTemplate != null;
         final int rowsAffected;
 
@@ -211,7 +214,7 @@ public class AlbumImageController {
         return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @DeleteMapping(value = "/{id}")
     public ResponseEntity delete(@PathVariable("id") final int id, final HttpSession session) {
 
         // Retreive user id

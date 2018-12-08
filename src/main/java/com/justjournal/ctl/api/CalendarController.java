@@ -31,20 +31,19 @@ import com.justjournal.model.User;
 import com.justjournal.repository.EntryRepository;
 import com.justjournal.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 
 /**
@@ -66,26 +65,27 @@ public class CalendarController {
     @Autowired
     private EntryRepository entryRepository;
 
-    @RequestMapping(value = "/counts/{username}", method = RequestMethod.GET, produces = "application/json")
+    @GetMapping(value = "/counts/{username}", produces = "application/json")
     @ResponseBody
     public
-    Collection<CalendarCount> getYearCounts(@PathVariable("username") String username, HttpServletResponse response) {
+    Collection<CalendarCount> getYearCounts(@PathVariable("username") final String username,
+                                            final HttpServletResponse response) {
 
-        User user = userRepository.findByUsername(username);
+        final User user = userRepository.findByUsername(username);
         if (user == null) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            return null;
+            return Collections.emptyList();
         }
 
         final GregorianCalendar calendarg = new GregorianCalendar();
-        int yearNow = calendarg.get(Calendar.YEAR);
-        Collection<CalendarCount> counts = new ArrayList<CalendarCount>();
+        final int yearNow = calendarg.get(Calendar.YEAR);
+        final Collection<CalendarCount> counts = new ArrayList<>();
 
         for (int i = yearNow; i >= user.getSince(); i--) {
-            CalendarCount count = new CalendarCount();
+            final CalendarCount count = new CalendarCount();
             try {
                 count.setCount(entryRepository.calendarCount(i, username));
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 count.setCount(0);
                 log.error(e.getMessage());
             }
@@ -101,24 +101,26 @@ public class CalendarController {
         return counts;
     }
 
-    @RequestMapping(value = "/counts/{username}/{year}", method = RequestMethod.GET, produces = "application/json")
+    @GetMapping(value = "/counts/{username}/{year}", produces = "application/json")
     @ResponseBody
     public
-    Collection<CalendarCount> getMonthCounts(@PathVariable("username") String username, @PathVariable("year") int year, HttpServletResponse response) {
+    Collection<CalendarCount> getMonthCounts(@PathVariable("username") final String username,
+                                             @PathVariable("year") final int year,
+                                             final HttpServletResponse response) {
 
-        User user = userRepository.findByUsername(username);
+        final User user = userRepository.findByUsername(username);
         if (user == null) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            return null;
+            return Collections.emptyList();
         }
 
-        Collection<CalendarCount> counts = new ArrayList<CalendarCount>();
+        final Collection<CalendarCount> counts = new ArrayList<>();
 
         for (int i = 1; i < MONTHS; i++) {
-            CalendarCount count = new CalendarCount();
+            final CalendarCount count = new CalendarCount();
             try {
                 count.setCount(entryRepository.calendarCount(year, i, username));
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 count.setCount(0);
                 log.error(e.getMessage());
             }

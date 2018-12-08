@@ -43,6 +43,8 @@ import java.net.URLEncoder;
  */
 @Slf4j
 public final class TrackbackOut {
+
+    private static final String UTF8_ENCODING = "UTF-8";
     
     private String entryUrl;
     private String targetUrl;
@@ -57,7 +59,8 @@ public final class TrackbackOut {
 &blog_name=Foo
 */
 
-    public TrackbackOut(String targetUrl, String entryUrl, String title, String excerpt, String blogName) {
+    public TrackbackOut(final String targetUrl, final String entryUrl, final String title,
+                        final String excerpt, final String blogName) {
         this.targetUrl = targetUrl;
         this.title = title;
         this.excerpt = excerpt;
@@ -69,7 +72,7 @@ public final class TrackbackOut {
         return entryUrl;
     }
 
-    public void setEntryUrl(String entryUrl) {
+    public void setEntryUrl(final String entryUrl) {
         this.entryUrl = entryUrl;
     }
 
@@ -77,7 +80,7 @@ public final class TrackbackOut {
         return targetUrl;
     }
 
-    public void setTargetUrl(String targetUrl) {
+    public void setTargetUrl(final String targetUrl) {
         this.targetUrl = targetUrl;
     }
 
@@ -85,7 +88,7 @@ public final class TrackbackOut {
         return title;
     }
 
-    public void setTitle(String title) {
+    public void setTitle(final String title) {
         this.title = title;
     }
 
@@ -93,7 +96,7 @@ public final class TrackbackOut {
         return excerpt;
     }
 
-    public void setExcerpt(String excerpt) {
+    public void setExcerpt(final String excerpt) {
         this.excerpt = excerpt;
     }
 
@@ -101,7 +104,7 @@ public final class TrackbackOut {
         return blogName;
     }
 
-    public void setBlogName(String blogName) {
+    public void setBlogName(final String blogName) {
         this.blogName = blogName;
     }
 
@@ -113,14 +116,14 @@ public final class TrackbackOut {
         // TODO: switch to POST request!
         try {
             // build uri
-            address = targetUrl + "?title=" + URLEncoder.encode(title, "UTF-8") +
-                    "&url=" + URLEncoder.encode(entryUrl, "UTF-8") +
-                    "&blog_name=" + URLEncoder.encode(blogName, "UTF-8") +
-                    "&excerpt=" + URLEncoder.encode(excerpt, "UTF-8");
+            address = targetUrl + "?title=" + URLEncoder.encode(title, UTF8_ENCODING) +
+                    "&url=" + URLEncoder.encode(entryUrl, UTF8_ENCODING) +
+                    "&blog_name=" + URLEncoder.encode(blogName, UTF8_ENCODING) +
+                    "&excerpt=" + URLEncoder.encode(excerpt, UTF8_ENCODING);
 
-            URI tmpuri = new URI(address);
+            final URI tmpuri = new URI(address);
             u = tmpuri.toURL();
-        } catch (Exception me) {
+        } catch (final Exception me) {
             log.error("Couldn't create URL. " + me.getMessage());
             return false;
         }
@@ -129,20 +132,21 @@ public final class TrackbackOut {
 
         try {
             uc = u.openConnection();
-            BufferedReader in = new BufferedReader(new InputStreamReader(
+            final BufferedReader in = new BufferedReader(new InputStreamReader(
                     uc.getInputStream()));
 
             String inputLine;
-            String input = "";
+            final StringBuilder input = new StringBuilder();
             while ((inputLine = in.readLine()) != null)
-                input += inputLine;
+                input.append(inputLine);
 
             in.close();
 
-            log.debug(entryUrl + "\n" + input);
+            if (log.isDebugEnabled())
+                log.debug(entryUrl + "\n" + input.toString());
 
             return true; // todo: parse result and adjust this as necessary.
-        } catch (IOException e) {
+        } catch (final IOException e) {
             log.debug("IO Error: " + e.getMessage());
             return false;
         }

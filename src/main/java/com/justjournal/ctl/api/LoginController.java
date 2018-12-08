@@ -102,7 +102,7 @@ public class LoginController {
      * @param session HttpSession
      * @return LoginResponse with login OK or NONE
      */
-    @RequestMapping(method = RequestMethod.GET, headers = "Accept=*/*", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(headers = "Accept=*/*", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
     public
     LoginResponse getLoginStatus(final HttpSession session) {
@@ -114,11 +114,12 @@ public class LoginController {
     }
 
 
-    @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE, headers = {"Accept=*/*", "content-type=application/json"})
     @ResponseBody
     public
-    ResponseEntity<LoginResponse> post(@RequestBody final com.justjournal.core.Login login, final HttpServletRequest request) {
+    ResponseEntity<LoginResponse> post(@RequestBody final com.justjournal.core.Login login,
+                                       final HttpServletRequest request) {
         final LoginResponse loginResponse = new LoginResponse();
 
         try {

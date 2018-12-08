@@ -69,7 +69,7 @@ public class RssReaderController {
     }
 
     @Cacheable(value = "rsssubscription", key = "username")
-    @RequestMapping(value = "user/{username}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "user/{username}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Collection<RssSubscription> getByUser(@PathVariable("username") String username) {
         final User user = userRepository.findByUsername(username);

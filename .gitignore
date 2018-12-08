@@ -79,3 +79,5 @@ src/main/webappold
 kotlinc.xml
 php.xml
 .idea/sonarlint
+codeStyleConfig.xml
+sonarlint.xml

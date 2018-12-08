@@ -24,7 +24,7 @@ public class EntryStatisticsController {
     @Autowired
     public EntryStatisticService entryStatisticService;
 
-    @RequestMapping(value = "{username}/statistics", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "{username}/statistics", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<List<EntryStatistic>> getStatistics(@PathVariable("username") final String username) {
 

@@ -33,11 +33,10 @@ import com.justjournal.repository.UserBioRepository;
 import com.justjournal.repository.UserRepository;
 import com.justjournal.utility.StringUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -59,7 +58,7 @@ public class BiographyController {
     private UserRepository userDao;
 
     @Autowired
-    public void setBioDao(UserBioRepository bioDao) {
+    public void setBioDao(final UserBioRepository bioDao) {
         this.bioDao = bioDao;
     }
 
@@ -69,7 +68,7 @@ public class BiographyController {
     }
 
     @Cacheable(value = "biography", key = "username")
-    @RequestMapping(value = "{username}", method = RequestMethod.GET, headers = "Accept=*/*", produces = "application/json")
+    @GetMapping(value = "{username}", headers = "Accept=*/*", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public UserBio get(@PathVariable("username") String username, HttpServletResponse response) {
         User user = userDao.findByUsername(username);
@@ -82,7 +81,7 @@ public class BiographyController {
 
     // TODO: API is bad for caching.
     @CacheEvict(value = "biography", allEntries = true)
-    @RequestMapping(method = RequestMethod.POST, produces = "application/json")
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Map<String, String> post(@RequestBody String bio, HttpServletResponse response, HttpSession session) {
 

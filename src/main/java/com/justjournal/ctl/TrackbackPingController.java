@@ -42,8 +42,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
@@ -78,10 +78,9 @@ public class TrackbackPingController {
         this.trackbackDao = trackbackDao;
     }
 
-    @RequestMapping(method = RequestMethod.GET, produces = "text/xml")
-    public
+    @GetMapping(produces = "text/xml")
     @ResponseBody
-    String get(HttpServletRequest request, HttpServletResponse response) {
+    public String get(HttpServletRequest request, HttpServletResponse response) {
         final StringBuilder sb = new StringBuilder();
 
         try {
@@ -132,7 +131,7 @@ public class TrackbackPingController {
 
             tb.setEntryId(postId);
 
-            java.sql.Date now = new java.sql.Date(System.currentTimeMillis());
+            final java.sql.Date now = new java.sql.Date(System.currentTimeMillis());
             tb.setDate(now);
 
             trackbackDao.save(tb);
@@ -144,7 +143,7 @@ public class TrackbackPingController {
             sb.append(END_ERROR);
             sb.append(END_RESPONSE);
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             log.error("TrackbackPing exception: " + e.getMessage());
             sb.delete(0, sb.length() - 1);
             sb.append(XML_HEADER);

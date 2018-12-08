@@ -147,7 +147,7 @@ public class UsersController {
         return userPicRepository.existsById(userId);
     }
 
-    @RequestMapping(value = "{username}", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
+    @GetMapping(value = "{username}", produces = MediaType.TEXT_HTML_VALUE)
     public String entries(@PathVariable(PATH_USERNAME) final String username,
                           final Pageable pageable,
                           final Model model,
@@ -182,7 +182,7 @@ public class UsersController {
         return VIEW_USERS;
     }
 
-    @RequestMapping(value = "{username}/entry/{id}", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
+    @GetMapping(value = "{username}/entry/{id}", produces = MediaType.TEXT_HTML_VALUE)
     public String entry(@PathVariable(PATH_USERNAME) final String username,
                         @PathVariable("id") final int id,
                         final Model model, final HttpSession session, final HttpServletResponse response) {
@@ -217,7 +217,7 @@ public class UsersController {
         return VIEW_USERS;
     }
 
-    @RequestMapping(value = "{username}/favorites", method = RequestMethod.GET, produces = "text/html")
+    @GetMapping(value = "{username}/favorites", produces = "text/html")
       public String favorites(@PathVariable(PATH_USERNAME) final String username,
                             final Model model,
                             final HttpSession session,
@@ -252,7 +252,7 @@ public class UsersController {
           return VIEW_USERS;
       }
 
-    @RequestMapping(value = "{username}/friends", method = RequestMethod.GET, produces = "text/html")
+    @GetMapping(value = "{username}/friends", produces = "text/html")
     public String friends(@PathVariable(PATH_USERNAME) final String username,
                           final Model model,
                           final HttpSession session,
@@ -287,7 +287,7 @@ public class UsersController {
         return VIEW_USERS;
     }
 
-    @RequestMapping(value = "{username}/calendar", method = RequestMethod.GET, produces = "text/html")
+    @GetMapping(value = "{username}/calendar", produces = "text/html")
     public String calendar(@PathVariable(PATH_USERNAME) final String username,
                            final Model model, final HttpSession session, final HttpServletResponse response) {
 
@@ -318,7 +318,7 @@ public class UsersController {
 
         model.addAttribute("startYear", userContext.getBlogUser().getSince());
         model.addAttribute("currentYear", year);
-        final List<Integer> years = new ArrayList<Integer>();
+        final List<Integer> years = new ArrayList<>();
         for (int i = userContext.getBlogUser().getSince(); i <= year; i++) {
             years.add(i);
         }
@@ -327,7 +327,7 @@ public class UsersController {
         return VIEW_USERS;
     }
 
-    @RequestMapping(value = "{username}/{year}", method = RequestMethod.GET, produces = "text/html")
+    @GetMapping(value = "{username}/{year}", produces = "text/html")
     public String calendarYear(@PathVariable(PATH_USERNAME) final String username,
                                @PathVariable("year") final int year,
                                final Model model,
@@ -360,7 +360,7 @@ public class UsersController {
         return VIEW_USERS;
     }
 
-    @RequestMapping(value = "{username}/{year}/{month}", method = RequestMethod.GET, produces = "text/html")
+    @GetMapping(value = "{username}/{year}/{month}", produces = "text/html")
     public String calendarMonth(@PathVariable(PATH_USERNAME) final String username,
                                 @PathVariable("year") final int year,
                                 @PathVariable(PATH_MONTH) final int month,
@@ -393,7 +393,7 @@ public class UsersController {
         return VIEW_USERS;
     }
 
-    @RequestMapping(value = "{username}/{year}/{month}/{day}", method = RequestMethod.GET, produces = "text/html")
+    @GetMapping(value = "{username}/{year}/{month}/{day}", produces = "text/html")
     public String calendarDay(@PathVariable(PATH_USERNAME) final String username,
                               @PathVariable("year") final int year,
                               @PathVariable(PATH_MONTH) final int month,
@@ -425,7 +425,7 @@ public class UsersController {
         return VIEW_USERS;
     }
 
-    @RequestMapping(value = "{username}/atom", method = RequestMethod.GET, produces = "text/xml; charset=UTF-8")
+    @GetMapping(value = "{username}/atom", produces = "text/xml; charset=UTF-8")
     @ResponseBody
     public
     String atom(@PathVariable(PATH_USERNAME) final String username, final HttpServletResponse response) {
@@ -450,7 +450,7 @@ public class UsersController {
         }
     }
 
-    @RequestMapping(value = "{username}/rss", method = RequestMethod.GET, produces = "application/rss+xml; charset=ISO-8859-1")
+    @GetMapping(value = "{username}/rss", produces = "application/rss+xml; charset=ISO-8859-1")
     @ResponseBody
     public
     String rss(@PathVariable(PATH_USERNAME) final String username, final HttpServletResponse response) {
@@ -475,7 +475,7 @@ public class UsersController {
         }
     }
 
-    @RequestMapping(value = "{username}/rsspics", method = RequestMethod.GET, produces = "application/rss+xml; charset=ISO-8859-1")
+    @GetMapping(value = "{username}/rsspics", produces = "application/rss+xml; charset=ISO-8859-1")
     @ResponseBody
     public
     String rssPictures(@PathVariable(PATH_USERNAME) final String username, final HttpServletResponse response) {
@@ -500,7 +500,7 @@ public class UsersController {
         }
     }
 
-    @RequestMapping(value = "{username}/pdf", method = RequestMethod.GET, produces = MEDIA_TYPE_PDF)
+    @GetMapping(value = "{username}/pdf", produces = MEDIA_TYPE_PDF)
     public void pdf(@PathVariable(PATH_USERNAME) final String username, final HttpServletResponse response, final HttpSession session) {
         User authUser = null;
         try {
@@ -528,8 +528,15 @@ public class UsersController {
         }
     }
 
+    /**
+     *
+     * @param username
+     * @param response
+     * @param session
+     * @deprecated Library is old and will be removed.
+     */
     @Deprecated
-    @RequestMapping(value = "{username}/rtf", method = RequestMethod.GET, produces = MEDIA_TYPE_RTF)
+    @GetMapping(value = "{username}/rtf", produces = MEDIA_TYPE_RTF)
     public void rtf(@PathVariable(PATH_USERNAME) final String username, final HttpServletResponse response, final HttpSession session) {
         User authUser = null;
         try {
@@ -555,7 +562,7 @@ public class UsersController {
         }
     }
 
-    @RequestMapping(value = "{username}/pictures", method = RequestMethod.GET, produces = "text/html")
+    @GetMapping(value = "{username}/pictures", produces = "text/html")
     public String pictures(@PathVariable(PATH_USERNAME) final String username, final Model model,
                            final HttpSession session, final HttpServletResponse response) {
         final UserContext userc = getUserContext(username, session);
@@ -583,7 +590,7 @@ public class UsersController {
         return VIEW_USERS;
     }
 
-    @RequestMapping(value = "{username}/search", method = RequestMethod.GET, produces = "text/html")
+    @GetMapping(value = "{username}/search", produces = "text/html")
     public String search(@PathVariable(PATH_USERNAME) final String username,
                          @RequestParam("max") final String max,
                          @RequestParam("bquery") final String bquery,
@@ -623,7 +630,7 @@ public class UsersController {
         return VIEW_USERS;
     }
 
-    @RequestMapping(value = "{username}/subscriptions", method = RequestMethod.GET, produces = "text/html")
+    @GetMapping(value = "{username}/subscriptions", produces = "text/html")
     public String subscriptions(@PathVariable(PATH_USERNAME) final String username,
                                 final Model model, final HttpSession session, final HttpServletResponse response) {
         final UserContext userc = getUserContext(username, session);
@@ -652,7 +659,7 @@ public class UsersController {
         return VIEW_USERS;
     }
 
-    @RequestMapping(value = "{username}/tag/{tag}", method = RequestMethod.GET, produces = "text/html")
+    @GetMapping(value = "{username}/tag/{tag}", produces = "text/html")
     public String tag(@PathVariable(PATH_USERNAME) final String username,
                       @PathVariable("tag") final String tag,
                       final Model model, final HttpSession session, final HttpServletResponse response) {
@@ -987,7 +994,7 @@ public class UsersController {
 
     private String getFavorites(final UserContext uc) throws ServiceException {
         final StringBuilder sb = new StringBuilder();
-        final Collection<Entry> entries = new ArrayList<Entry>();
+        final Collection<Entry> entries = new ArrayList<>();
 
         final List<Favorite> favorites = favoriteRepository.findByUser(uc.getBlogUser());
         final boolean auth = uc.getAuthenticatedUser() != null;

@@ -45,7 +45,7 @@ public class LogoutController {
     private static final String VIEW_LOGOUT = "logout";
 
     @GetMapping
-    public String get(Model model, HttpSession session) {
+    public String get(final Model model, final HttpSession session) {
         model.addAttribute(MODEL_AUTHENTICATED_USER, Login.currentLoginName(session));
         session.invalidate();
         return VIEW_LOGOUT;

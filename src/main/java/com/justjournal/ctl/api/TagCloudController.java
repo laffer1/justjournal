@@ -55,9 +55,10 @@ public class TagCloudController {
     }
 
     @Cacheable(value = "tagcloud", key = "#username")
-    @RequestMapping(value = "{username}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "{username}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
-    public ResponseEntity<Collection<Tag>> getTags(@PathVariable("username") final String username) throws ServiceException {
+    public ResponseEntity<Collection<Tag>> getTags(@PathVariable("username") final String username)
+            throws ServiceException {
         final Observable<Tag> o = tagService.getTags(username);
         final Collection<Tag> tags = o.toList().blockingGet();
 

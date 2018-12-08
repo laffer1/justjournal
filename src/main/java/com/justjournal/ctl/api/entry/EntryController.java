@@ -43,7 +43,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -69,21 +68,27 @@ public class EntryController {
     @Qualifier("commentRepository")
     @Autowired
     private CommentRepository commentDao = null;
+
     @Qualifier("entryRepository")
     @Autowired
     private EntryRepository entryRepository = null;
+
     @Qualifier("securityRepository")
     @Autowired
     private SecurityRepository securityDao;
+
     @Qualifier("locationRepository")
     @Autowired
     private LocationRepository locationDao;
+
     @Qualifier("moodRepository")
     @Autowired
     private MoodRepository moodDao;
+
     @Qualifier("userRepository")
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private EntryService entryService;
 
@@ -97,7 +102,7 @@ public class EntryController {
      * @param session  HttpSession
      * @return list of recent entries
      */
-    @RequestMapping(value = "{username}/recent", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "{username}/recent", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<List<RecentEntry>> getRecentEntries(@PathVariable("username") final String username,
                                                               final HttpServletResponse response, final HttpSession session) {
@@ -118,12 +123,12 @@ public class EntryController {
                     .body(e);
         } catch (final ServiceException e) {
             log.error(e.getMessage(), e);
-            return new ResponseEntity<List<RecentEntry>>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
 
-    @RequestMapping(value = "{username}/size/{size}/page/{page}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "{username}/size/{size}/page/{page}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Page<Entry> getEntries(@PathVariable("username") final String username,
                                   @PathVariable("size") final int size,
@@ -152,7 +157,7 @@ public class EntryController {
         }
     }
 
-    @RequestMapping(value = "{username}/page/{page}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "{username}/page/{page}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Page<Entry> getEntries(@PathVariable("username") final String username, @PathVariable("page") final int page,
                                   final HttpServletResponse response, final HttpSession session) {
@@ -167,7 +172,7 @@ public class EntryController {
      * @return entry
      */
 
-    @RequestMapping(value = "{username}/eid/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "{username}/eid/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Entry getById(@PathVariable("username") final String username,
                          @PathVariable("id") final int id,
@@ -204,7 +209,7 @@ public class EntryController {
      * @param response
      * @return
      */
-    @RequestMapping(value = "{username}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "{username}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Collection<Entry> getEntries(@PathVariable("username") final String username,
                                         final HttpServletResponse response) {
@@ -224,11 +229,11 @@ public class EntryController {
     }
 
     @Transactional
-    @RequestMapping(value = "", params = "username", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "", params = "username", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Collection<Entry> getEntriesByUsername(@RequestParam("username") final String username,
                                                   final HttpServletResponse response) {
-        Collection<Entry> entries = new ArrayList<Entry>();
+        Collection<Entry> entries = new ArrayList<>();
         log.warn("in entriesByUsername with " + username);
 
         if (username == null || username.isEmpty()) {
@@ -261,8 +266,7 @@ public class EntryController {
      * @return status ok or error
      */
     @CacheEvict(value = "recentblogs", allEntries = true)
-    @RequestMapping(method = RequestMethod.POST,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Map<String, String> post(@RequestBody final EntryTo entryTo,
                                     final HttpSession session,
@@ -329,7 +333,7 @@ public class EntryController {
         model.addAttribute("status", "ok");
         model.addAttribute("id", saved.getId());
 
-        final HashMap<String, String> map = new HashMap<String, String>();
+        final HashMap<String, String> map = new HashMap<>();
         map.put("status", "ok");
         map.put("id", Integer.toString(saved.getId()));
         return map;
@@ -344,9 +348,7 @@ public class EntryController {
      * @return
      */
     @CacheEvict(value = "recentblogs")
-    @RequestMapping(method = RequestMethod.PUT,
-            consumes = "application/json",
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Map<String, String> put(@RequestBody EntryTo entryTo, HttpSession session, HttpServletResponse response) {
         if (!Login.isAuthenticated(session)) {
@@ -399,7 +401,7 @@ public class EntryController {
      * @return errors or entry id if success
      */
     @CacheEvict(value = "recentblogs")
-    @RequestMapping(value = "/{entryId}", method = RequestMethod.DELETE)
+    @DeleteMapping(value = "/{entryId}")
     @ResponseBody
     public Map<String, String> delete(@PathVariable("entryId") final int entryId,
                                       final HttpSession session, final HttpServletResponse response) {
@@ -416,7 +418,7 @@ public class EntryController {
             final User user = userRepository.findById(Login.currentLoginId(session)).orElse(null);
             final Entry entry = entryRepository.findById(entryId).orElse(null);
 
-            if (user.getId() == entry.getUser().getId()) {
+            if (user != null && entry != null && user.getId() == entry.getUser().getId()) {
                 final Iterable<Comment> comments = entry.getComments();
                 commentDao.deleteAll(comments);
                 entryRepository.deleteById(entryId);

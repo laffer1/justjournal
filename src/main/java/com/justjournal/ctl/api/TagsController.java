@@ -66,7 +66,7 @@ public class TagsController {
      * @return tag list
      */
     @Cacheable("tags")
-    @RequestMapping(value = "", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<Collection<Tag>> getTags() {
 
@@ -93,7 +93,7 @@ public class TagsController {
      * @return tag list
      */
     @Cacheable(value = "tags", key = "#id")
-    @RequestMapping(value = "/api/tags/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/api/tags/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<Tag> getById(@PathVariable("id") final Integer id) {
 

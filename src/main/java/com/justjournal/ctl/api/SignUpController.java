@@ -58,7 +58,7 @@ public class SignUpController {
     @Autowired
     private Settings settings;
 
-    @RequestMapping(method = RequestMethod.POST, produces = "application/json")
+    @PostMapping(produces = "application/json")
     @ResponseBody
     public Map<String, String> post(@RequestBody final NewUser user, final HttpServletResponse response) {
 

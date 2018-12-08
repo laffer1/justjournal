@@ -52,7 +52,7 @@ public class LocationController {
     }
 
     @Cacheable(value = "location", key = "id")
-    @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<Location> getById(@PathVariable("id") final Integer id) {
 
@@ -64,7 +64,7 @@ public class LocationController {
     }
 
     @Cacheable("location")
-    @RequestMapping(method = RequestMethod.GET, headers = "Accept=*/*", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(headers = "Accept=*/*", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<List<Location>> getLocationList() {
 

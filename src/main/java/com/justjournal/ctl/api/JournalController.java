@@ -11,7 +11,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -40,7 +48,7 @@ public class JournalController {
         this.styleService = styleService;
     }
 
-    @RequestMapping(value = "user/{username}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "user/{username}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
     public ResponseEntity<List<Journal>> listByUser(@PathVariable("username") final String username) {
         try {
@@ -51,7 +59,7 @@ public class JournalController {
         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @RequestMapping(value = "{slug}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "{slug}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
     public ResponseEntity<Journal> get(@PathVariable("slug") final String slug) {
         try {
@@ -63,14 +71,15 @@ public class JournalController {
     }
 
 
-    @RequestMapping(value = "", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
-    public Map<String, String> post(@RequestBody Journal journal, final HttpSession session, final HttpServletResponse response) {
+    public Map<String, String> post(@RequestBody final Journal journal,
+                                    final HttpSession session, final HttpServletResponse response) {
         return put(journal.getSlug(), journal, session, response);
     }
 
 
-    @RequestMapping(value = "{slug}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PutMapping(value = "{slug}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
     public Map<String, String> put(@PathVariable("slug") final String slug,
                                    @RequestBody Journal journal,
@@ -124,11 +133,11 @@ public class JournalController {
         }
     }
 
-    @RequestMapping(value = "{slug}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @DeleteMapping(value = "{slug}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
     public Map<String, String> delete(@PathVariable("slug") final String slug,
                                       final HttpSession session,
-                                      final HttpServletResponse response) throws Exception {
+                                      final HttpServletResponse response) {
 
 
         if (!Login.isAuthenticated(session)) {

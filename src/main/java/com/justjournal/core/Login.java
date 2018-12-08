@@ -35,14 +35,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author Lucas Holt
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-final public class Login {
+public final class Login {
+
     @JsonProperty("username")
     private String username;
+
     @JsonProperty("password")
     private String password;
 
     @JsonCreator
     public Login() {
+        super();
     }
 
     public String getUsername() {
@@ -53,11 +56,11 @@ final public class Login {
         return password;
     }
 
-    public void setUsername(String username) {
+    public void setUsername(final String username) {
         this.username = username;
     }
 
-    public void setPassword(String password) {
+    public void setPassword(final String password) {
         this.password = password;
     }
 }

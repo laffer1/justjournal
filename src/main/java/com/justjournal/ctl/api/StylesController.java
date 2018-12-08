@@ -18,11 +18,15 @@ import java.util.List;
 @RequestMapping("/api/styles")
 public class StylesController {
 
+    private final StyleService styleService;
+
     @Autowired
-    private StyleService styleService;
+    public StylesController(final StyleService styleService) {
+        this.styleService = styleService;
+    }
 
     @Cacheable("styles")
-    @RequestMapping(value = "", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<List<Style>> getStyles() {
 
@@ -34,7 +38,7 @@ public class StylesController {
     }
 
     @Cacheable(value = "styles", key = "#id")
-    @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<Style> getById(@PathVariable("id") final Integer id) {
 

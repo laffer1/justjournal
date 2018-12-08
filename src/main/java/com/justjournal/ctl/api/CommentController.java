@@ -77,10 +77,9 @@ public class CommentController {
     }
 
     @ResponseBody
-    @RequestMapping(method = RequestMethod.GET, produces = "application/json")
+    @GetMapping(produces = "application/json")
     public
-    List<Comment> getComments(@RequestParam("entryId") final Integer entryId, final HttpServletResponse response)
-            throws Exception {
+    List<Comment> getComments(@RequestParam("entryId") final Integer entryId, final HttpServletResponse response) {
         final Entry entry = entryDao.findById(entryId).orElse(null);
 
         if (entry == null) {
@@ -102,11 +101,11 @@ public class CommentController {
         return commentDao.findByEntryId(entryId);
     }
 
-    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
+    @DeleteMapping(value = "{id}")
     @ResponseBody
     public
     Map<String, String> delete(@PathVariable("id") final int id, final HttpSession session,
-                               final HttpServletResponse response) throws Exception {
+                               final HttpServletResponse response) {
 
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -126,14 +125,14 @@ public class CommentController {
         }
     }
 
-    @RequestMapping(method = RequestMethod.POST, produces = "application/json")
-    public
+    @PostMapping(produces = "application/json")
     @ResponseBody
+    public
     Map<String, String> post(@RequestBody final Comment comment, final HttpSession session, final HttpServletResponse response) {
         return put(comment, session, response);
     }
 
-    @RequestMapping(method = RequestMethod.PUT, produces = "application/json")
+    @PutMapping(produces = "application/json")
     @ResponseBody
     public
     Map<String, String> put(@RequestBody final Comment comment, final HttpSession session, final HttpServletResponse response) {

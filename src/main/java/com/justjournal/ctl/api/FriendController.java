@@ -44,6 +44,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -69,9 +70,10 @@ public class FriendController {
     // TODO: refactor to return user objects?
 
 
-    @RequestMapping(value = "{username}/friendswith/{other}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "{username}/friendswith/{other}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<Boolean> areWeFriends(@PathVariable("username") String username, @PathVariable("other") String otherUsername) {
+    public ResponseEntity<Boolean> areWeFriends(@PathVariable("username") String username,
+                                                @PathVariable("other") String otherUsername) {
         try {
             User user = userRepository.findByUsername(username);
             if (user == null)
@@ -94,27 +96,29 @@ public class FriendController {
      * @return List of usernames as strings
      */
     @Cacheable(value = "friends", key = "username")
-    @RequestMapping(value = "{username}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "{username}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Collection<User> getByUsername(@PathVariable("username") String username, HttpServletResponse response) {
         try {
-            ArrayList<User> friends = new ArrayList<User>();
+            final ArrayList<User> friends = new ArrayList<>();
 
-            User user = userRepository.findByUsername(username);
-            for (Friend friend : user.getFriends()) {
+            final User user = userRepository.findByUsername(username);
+            for (final Friend friend : user.getFriends()) {
                 friends.add(friend.getFriend());
             }
             return friends;
         } catch (final Exception e) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            return null;
+            return Collections.emptyList();
         }
     }
 
     @CacheEvict(value = "friends", key = "friend")
-    @RequestMapping(value="{friend}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value="{friend}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Map<String, String> put(@PathVariable("friend") String friend, HttpSession session, HttpServletResponse response) {
+    public Map<String, String> put(@PathVariable("friend") final String friend,
+                                   final HttpSession session,
+                                   final HttpServletResponse response) {
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
@@ -146,10 +150,11 @@ public class FriendController {
     }
     
     @CacheEvict(value = "friends", allEntries = true)
-    @RequestMapping(method = RequestMethod.DELETE, value="{friend}")
+    @DeleteMapping(value="{friend}")
     @ResponseBody
     public
-    Map<String, String> delete(@PathVariable("friend") String friend, HttpSession session, HttpServletResponse response) throws Exception {
+    Map<String, String> delete(@PathVariable("friend") final String friend,
+                               final HttpSession session, final HttpServletResponse response) {
 
 
         if (!Login.isAuthenticated(session)) {

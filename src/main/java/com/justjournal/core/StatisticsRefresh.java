@@ -17,11 +17,15 @@ import org.springframework.stereotype.Component;
 @Profile("!test")
 public class StatisticsRefresh {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    private final EntryStatisticService entryStatisticService;
 
     @Autowired
-    private EntryStatisticService entryStatisticService;
+    public StatisticsRefresh(final UserRepository userRepository, final EntryStatisticService entryStatisticService) {
+        this.userRepository = userRepository;
+        this.entryStatisticService = entryStatisticService;
+    }
 
     // Every six hours?
     @Scheduled(fixedDelay = 1000 * 60 * 60 * 6, initialDelay = 30000)

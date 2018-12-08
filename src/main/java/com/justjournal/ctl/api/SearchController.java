@@ -63,7 +63,7 @@ public class SearchController {
         this.blogSearchService = blogSearchService;
     }
 
-    @RequestMapping(value = "", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PagedResources<BlogEntry>> search(
             @RequestParam("term") final String term,
             final Pageable page,
@@ -83,7 +83,7 @@ public class SearchController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @RequestMapping(value = "/{username}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PagedResources<BlogEntry>> search(
             @PathVariable("username") final String username,
             @RequestParam("term") final String term,

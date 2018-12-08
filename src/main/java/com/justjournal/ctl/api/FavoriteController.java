@@ -87,7 +87,7 @@ public class FavoriteController {
      * @return an arraylist containing EntryTo objects
      */
 
-    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
     Collection<Entry> getFavorites(final HttpSession session, final HttpServletResponse response) {
@@ -108,7 +108,7 @@ public class FavoriteController {
         return entries;
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/{entryId}")
+    @PostMapping(value = "/{entryId}")
     @ResponseBody
     public
     Map<String, String> create(@PathVariable("entryId") final int entryId,
@@ -134,12 +134,12 @@ public class FavoriteController {
         }
     }
 
-    @RequestMapping(method = RequestMethod.DELETE, value = "/{entryId}")
-    public
+    @DeleteMapping(value = "/{entryId}")
     @ResponseBody
+    public
     Map<String, String> delete(@PathVariable("entryId") final int entryId,
                                final HttpSession session,
-                               final HttpServletResponse response) throws Exception {
+                               final HttpServletResponse response) {
 
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

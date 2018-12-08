@@ -106,52 +106,58 @@ public class RssCacheRefresh {
     void getRssDocument(final RssCache rss) throws IOException {
         final StringBuilder sbx = new StringBuilder();
 
-        if (rss != null && rss.getUri() != null && rss.getUri().length() > 10) {
-            final HttpClient client = HttpClientBuilder.create().build();
-            final HttpGet request = new HttpGet(rss.getUri());
-            final HttpResponse response = client.execute(request);
+        if (rss == null || rss.getUri() == null || rss.getUri().length() < 11)
+            return;
 
-            final int code = response.getStatusLine().getStatusCode();
-            if (code == 200) {
-                final HttpEntity entity = response.getEntity();
-                final byte[] buffer = new byte[1024];
-                if (entity != null) {
-                    final InputStream inputStream = entity.getContent();
-                    try {
-                        int bytesRead;
-                        final BufferedInputStream bis = new BufferedInputStream(inputStream);
-                        while ((bytesRead = bis.read(buffer)) != -1) {
-                            final String chunk = new String(buffer, 0, bytesRead);
-                            sbx.append(StringUtil.replace(chunk, '\'', "\\\'"));
-                        }
-                        bis.close();
-                    } catch (final Exception e) {
-                        log.error(e.getMessage(), e);
+        final HttpClient client = HttpClientBuilder.create().build();
+        final HttpGet request = new HttpGet(rss.getUri());
+        final HttpResponse response = client.execute(request);
+
+        final int code = response.getStatusLine().getStatusCode();
+        if (code == 200) {
+            final HttpEntity entity = response.getEntity();
+            final byte[] buffer = new byte[1024];
+            if (entity != null) {
+                final InputStream inputStream = entity.getContent();
+                try {
+                    int bytesRead;
+                    final BufferedInputStream bis = new BufferedInputStream(inputStream);
+                    while ((bytesRead = bis.read(buffer)) != -1) {
+                        final String chunk = new String(buffer, 0, bytesRead);
+                        sbx.append(StringUtil.replace(chunk, '\'', "\\\'"));
                     }
+                    bis.close();
+                } catch (final Exception e) {
+                    log.error(e.getMessage(), e);
                 }
-
-                rss.setLastUpdated(Calendar.getInstance().getTime());
-                rss.setContent(sbx.toString().trim());
-                // sun can't make their own rss feeds complaint
-                if (rss.getContent().startsWith("<rss"))
-                    rss.setContent("<?xml version=\"1.0\"?>\n" + rss.getContent());
-
-                // TODO: we should remove it if this keeps happening somehow.
-                if (rss.getContent().startsWith("<html") || rss.getContent().startsWith("<!DOCTYPE HTML"))
-                    rss.setContent(""); // it's an html page.. bad
-
-                rssCacheDao.saveAndFlush(rss);
-            } else if (code == 404 || code == 410) {
-                if (log.isWarnEnabled())
-                    log.warn("URL " + rss.getUri() + " is returning a 404. Removing from list");
-
-                rss.setLastUpdated(Calendar.getInstance().getTime());
-                rss.setActive(false);
-                rssCacheDao.saveAndFlush(rss);
-            } else {
-                if (log.isWarnEnabled())
-                    log.warn(String.format("RssCache status code %d for url %s", code, rss.getUri()));
             }
+
+            rss.setLastUpdated(Calendar.getInstance().getTime());
+            rss.setContent(cleanContent(sbx.toString())); // it's an html page.. bad
+
+            rssCacheDao.saveAndFlush(rss);
+        } else if (code == 404 || code == 410) {
+            log.warn("URL {} is returning a 404. Removing from list", rss.getUri());
+
+            rss.setLastUpdated(Calendar.getInstance().getTime());
+            rss.setActive(false);
+            rssCacheDao.saveAndFlush(rss);
+        } else {
+            log.warn(String.format("RssCache status code %d for url %s", code, rss.getUri()));
         }
+    }
+
+    private String cleanContent(final String content) {
+        if (content == null)
+            return "";
+
+        if (content.startsWith("<rss"))
+            return ("<?xml version=\"1.0\"?>\n" + content.trim());
+
+        if (content.startsWith("<html") || content.startsWith("<!DOCTYPE HTML"))
+            return ""; // it's an html page.. bad
+
+        return content.trim();
+
     }
 }

@@ -44,17 +44,21 @@ import com.justjournal.repository.UserPrefRepository;
 import com.justjournal.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author Lucas Holt
@@ -63,6 +67,8 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/account")
 public class AccountController {
+
+    private static final String ERROR = "error";
 
     @Autowired
     private UserRepository userDao;
@@ -115,13 +121,13 @@ public class AccountController {
                 passCurrent.length() < 5 ||
                 passCurrent.length() > 15) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return java.util.Collections.singletonMap("error", "The current password is invalid.");
+            return java.util.Collections.singletonMap(ERROR, "The current password is invalid.");
         }
         if (passNew == null ||
                 passNew.length() < 5 ||
                 passNew.length() > 15) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return java.util.Collections.singletonMap("error", "The new password is invalid.");
+            return java.util.Collections.singletonMap(ERROR, "The new password is invalid.");
         }
 
         // TODO: Refactor change pass
@@ -129,7 +135,7 @@ public class AccountController {
 
         if (!result) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return java.util.Collections.singletonMap("error", "Error changing password.  Did you type in your old password correctly?");
+            return java.util.Collections.singletonMap(ERROR, "Error changing password.  Did you type in your old password correctly?");
         }
         return java.util.Collections.singletonMap("status", "Password Changed.");
     }
@@ -141,36 +147,39 @@ public class AccountController {
             return java.util.Collections.singletonMap("id", Integer.toString(user.getId()));
         }
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        return java.util.Collections.singletonMap("error", "Could not edit account.");
+        return java.util.Collections.singletonMap(ERROR, "Could not edit account.");
     }
 
-    @RequestMapping(method = RequestMethod.DELETE)
+    @DeleteMapping
     public Map<String, String> delete(final HttpServletResponse response, final HttpSession session) {
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
+            return java.util.Collections.singletonMap(ERROR, "The login timed out or is invalid.");
         }
 
         final int userID = Login.currentLoginId(session);
 
         try {
-            final User user = userDao.findById(userID).get();
-            commentRepository.deleteAll(commentRepository.findByUser(user));
-            entryRepository.deleteInBatch(entryRepository.findByUser(user));
+            final Optional<User> user = userDao.findById(userID);
+            if (!user.isPresent()) {
+                throw new RuntimeException("User should always exist at this point");
+            }
+            commentRepository.deleteAll(commentRepository.findByUser(user.get()));
+            entryRepository.deleteInBatch(entryRepository.findByUser(user.get()));
             entryRepository.flush();
 
-            favoriteRepository.deleteInBatch(favoriteRepository.findByUser(user));
+            favoriteRepository.deleteInBatch(favoriteRepository.findByUser(user.get()));
             favoriteRepository.flush();
 
             friendsDao.deleteById(userID);
 
             jdbcTemplate.execute("DELETE FROM friends_lj WHERE id=" + userID + ";");
 
-            rssSubscriptionsDAO.deleteAll(rssSubscriptionsDAO.findByUser(user));
+            rssSubscriptionsDAO.deleteAll(rssSubscriptionsDAO.findByUser(user.get()));
 
             jdbcTemplate.execute("DELETE FROM user_files WHERE ownerid=" + userID + ";");
 
-            userImageRepository.deleteAll(userImageRepository.findByUsername(user.getUsername()));
+            userImageRepository.deleteAll(userImageRepository.findByUsername(user.get().getUsername()));
             jdbcTemplate.execute("DELETE FROM user_images_album WHERE owner=" + userID + ";");
             jdbcTemplate.execute("DELETE FROM user_images_album_map WHERE owner=" + userID + ";");
             jdbcTemplate.execute("DELETE FROM user_pic WHERE id=" + userID + ";");
@@ -183,45 +192,43 @@ public class AccountController {
             userLocationRepository.deleteById(userID);
             userBioDao.deleteById(userID);
             userContactRepository.deleteById(userID);
-            userDao.delete(user);
+            userDao.deleteById(userID);
         } catch (final Exception e) {
             log.error(e.getMessage());
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            return java.util.Collections.singletonMap("error", "Error deleting account");
+            return java.util.Collections.singletonMap(ERROR, "Error deleting account");
         }
         return java.util.Collections.singletonMap("status", "Account Deleted");
     }
 
-    @RequestMapping(value = "/password", method = RequestMethod.POST, produces = "application/json")
-    public
+    @PostMapping(value = "/password", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    Map<String, String> post(@RequestBody PasswordChange passwordChange,
-                             HttpSession session, HttpServletResponse response) {
+    public Map<String, String> post(@RequestBody PasswordChange passwordChange,
+                                    HttpSession session, HttpServletResponse response) {
 
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
+            return java.util.Collections.singletonMap(ERROR, "The login timed out or is invalid.");
         }
 
         return changePassword(passwordChange, session, response);
     }
 
-    @RequestMapping(method = RequestMethod.POST, produces = "application/json")
-    public
+    @PostMapping(produces = "application/json")
     @ResponseBody
-    Map<String, String> post(@RequestBody final User user,
-                             final HttpSession session,
-                             final HttpServletResponse response) {
+    public Map<String, String> post(@RequestBody final User user,
+                                    final HttpSession session,
+                                    final HttpServletResponse response) {
 
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
+            return java.util.Collections.singletonMap(ERROR, "The login timed out or is invalid.");
         }
 
         return updateUser(user, session, response);
     }
 
-    @RequestMapping(value = "{username}", method = RequestMethod.GET, produces = "application/json")
+    @GetMapping(value = "{username}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public User getByUsername(@PathVariable("username") final String username,
                               final HttpSession session,
@@ -231,12 +238,10 @@ public class AccountController {
 
             // TODO: we should handle this per journal rather than globally if one is there. Be conservative for now
             for (final Journal journal : user.getJournals()) {
-                if (journal.isOwnerViewOnly()) {
-                    if (
-                            !Login.isAuthenticated(session) || user.getUsername().equals(Login.currentLoginName(session))) {
-                        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                        return null;
-                    }
+                if (journal.isOwnerViewOnly() &&
+                        (!Login.isAuthenticated(session) || user.getUsername().equals(Login.currentLoginName(session)))) {
+                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                    return null;
                 }
             }
 

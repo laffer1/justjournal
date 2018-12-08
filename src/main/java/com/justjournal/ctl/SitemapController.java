@@ -5,6 +5,7 @@ import com.justjournal.repository.SettingsRepository;
 import com.justjournal.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -24,7 +25,7 @@ public class SitemapController {
     @Autowired
     private UserRepository userRepository;
 
-    @RequestMapping(value = "/sitemap.xml", method = RequestMethod.GET)
+    @GetMapping(value = "/sitemap.xml")
     @ResponseBody
     public XmlUrlSet main() {
 

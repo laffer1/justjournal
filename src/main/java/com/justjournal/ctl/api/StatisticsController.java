@@ -63,7 +63,7 @@ public class StatisticsController {
      */
     @Transactional
     @Cacheable("statistics")
-    @RequestMapping(method = RequestMethod.GET, headers = "Accept=*/*", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(headers = "Accept=*/*", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<Statistics> get() {
 
@@ -87,7 +87,7 @@ public class StatisticsController {
      */
     @Transactional
     @Cacheable(value = "userstatistics", key = "username")
-    @RequestMapping(value = "{username}", method = RequestMethod.GET, headers = "Accept=*/*", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "{username}", headers = "Accept=*/*", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<UserStatistics> getById(@PathVariable("username") String username) {
 

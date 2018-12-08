@@ -86,16 +86,22 @@ public class UpdateJournal extends HttpServlet {
     @SuppressWarnings({"InstanceVariableOfConcreteClass"})
     @Autowired
     private Settings settings;
+
     @Autowired
     private EntryRepository entryRepository;
+
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private SecurityRepository securityRepository;
+
     @Autowired
     private LocationRepository locationDao;
+
     @Autowired
     private MoodRepository moodDao;
+
     @Autowired
     private Login webLogin;
 
@@ -547,7 +553,7 @@ public class UpdateJournal extends HttpServlet {
                 if (!blnError) {
                     log.debug("Add Tags");
                     if (tags.length() > 0) {
-                        final Collection<String> t = new ArrayList<String>();
+                        final Collection<String> t = new ArrayList<>();
                         final StringTokenizer st = new StringTokenizer(tags, " :,;");
                         while (st.hasMoreTokens()) {
                             String tok = st.nextToken();
