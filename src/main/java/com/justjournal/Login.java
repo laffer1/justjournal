@@ -26,9 +26,10 @@
 
 package com.justjournal;
 
+import com.justjournal.model.PasswordType;
 import com.justjournal.repository.UserRepository;
 import com.justjournal.utility.StringUtil;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -46,15 +47,17 @@ import java.util.regex.Pattern;
  *
  * @author Lucas Holt
  */
+@Slf4j
 @Component
 public class Login {
     public static final int USERNAME_MAX_LENGTH = 15;
     public static final int PASSWORD_MAX_LENGTH = 18;
     public static final int SHA1_HASH_LENGTH = 40;
+    public static final int SHA256_HASH_LENGTH = 64;
     public static final int BAD_USER_ID = 0;
     protected static final String LOGIN_ATTRNAME = "auth.user";
     protected static final String LOGIN_ATTRID = "auth.uid";
-    private static org.slf4j.Logger log = LoggerFactory.getLogger(Login.class);
+
     @Autowired
     private UserRepository userRepository;
 
@@ -119,11 +122,8 @@ public class Login {
         return buf.toString();
     }
 
-    public
-
-    static String SHA1(final String text)
-            throws NoSuchAlgorithmException, UnsupportedEncodingException {
-        MessageDigest md = MessageDigest.getInstance("SHA-1");
+    public static String sha1(final String text) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+        final MessageDigest md = MessageDigest.getInstance("SHA-1");
         byte[] sha1hash;
 
         md.update(text.getBytes("iso-8859-1"), 0, text.length());
@@ -131,15 +131,24 @@ public class Login {
         return convertToHex(sha1hash);
     }
 
+    public static String sha256(final String text) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+        final MessageDigest md = MessageDigest.getInstance("SHA-256");
+        byte[] sha2hash;
+
+        md.update(text.getBytes("iso-8859-1"), 0, text.length());
+        sha2hash = md.digest();
+        return convertToHex(sha2hash);
+    }
+
     /**
      * Authenticate the user using clear text username and password.
      *
      * @param userName Three to Fifteen characters...
      * @param password Clear text password
-     * @return userid of the user who logged in or 0 if the login failed.
+     * @return user id of the user who logged in or 0 if the login failed.
      */
     public int validate(final String userName, final String password) {
-        // the password is SHA1 encrypted in the sql server
+        // the password is sha1 encrypted in the sql server
 
         if (!StringUtil.lengthCheck(userName, 3, USERNAME_MAX_LENGTH))
             return BAD_USER_ID; // bad username
@@ -154,46 +163,20 @@ public class Login {
             return BAD_USER_ID; // bad password
 
         try {
-            final int userId = lookupUserId(userName, SHA1(password));
+            final int userId = lookupUserId(userName, password);
             setLastLogin(userId);
             return userId;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             log.error("validate(): " + e.getMessage());
         }
         return BAD_USER_ID;
     }
 
-    private int lookupUserId(final String userName, final String passwordHash) {
-        final com.justjournal.model.User user = lookupUser(userName, passwordHash);
-        if (user == null) return BAD_USER_ID;
-        return user.getId();
-    }
-
-    /**
-     * Validate credentials using SHA1 hash algorithm
-     *
-     * @param userName username
-     * @param password password (hashed)
-     * @return > 0 on success
-     */
-    public int validateSHA1(final String userName, final String password) {
-        // the password is SHA1 encrypted in the sql server
-
-        if (!StringUtil.lengthCheck(userName, 3, USERNAME_MAX_LENGTH))
-            return BAD_USER_ID; // bad username
-
-        if (!isUserName(userName))
-            return BAD_USER_ID; // bad username
-
-        if (!StringUtil.lengthCheck(password, SHA1_HASH_LENGTH, SHA1_HASH_LENGTH))
+    private int lookupUserId(final String userName, final String password) {
+        final com.justjournal.model.User user = lookupUser(userName, password);
+        if (user == null)
             return BAD_USER_ID;
-
-        try {
-            return lookupUserId(userName, password);
-        } catch (Exception e) {
-            log.error("validateSHA1(): " + e.getMessage());
-        }
-        return BAD_USER_ID;
+        return user.getId();
     }
 
     public void setLastLogin(final int id) {
@@ -203,6 +186,9 @@ public class Login {
 
         try {
             final com.justjournal.model.User user = userRepository.findById(id).orElse(null);
+            if (user == null)
+                throw new IllegalArgumentException("id");
+
             user.setLastLogin(new java.util.Date());
             userRepository.save(user);
         } catch (final Exception e) {
@@ -228,8 +214,9 @@ public class Login {
             uid = validate(userName, password);
 
             if (uid > BAD_USER_ID && isPassword(newPass)) {
-                final com.justjournal.model.User user = lookupUser(userName, SHA1(password));
-                user.setPassword(SHA1(newPass));
+                final com.justjournal.model.User user = lookupUser(userName, password);
+                user.setPassword(getHashedPassword(userName, password));
+                user.setPasswordType(PasswordType.SHA256);
                 userRepository.save(user);
 
                 return true;
@@ -241,8 +228,26 @@ public class Login {
         return false;
     }
 
-    private com.justjournal.model.User lookupUser(final String userName, final String passwordHash) {
+    public static String getHashedPassword(final String userName, final String password) {
+        try {
+            return sha256(userName + password);
+        } catch (final Exception e) {
+            log.error("Invalid password hash algorithm?", e);
+            throw new RuntimeException("Password hash not supported");
+        }
+    }
 
-        return userRepository.findByUsernameAndPassword(userName, passwordHash);
+    private com.justjournal.model.User lookupUser(final String userName, final String password) {
+        try {
+            com.justjournal.model.User user;
+            user = userRepository.findByUsernameAndPassword(userName, getHashedPassword(userName, password));
+            if (user == null)
+                user = userRepository.findByUsernameAndPassword(userName, sha1(password));
+
+            return user;
+        } catch (final Exception e) {
+            log.error("Invalid password hash algorithm?", e);
+            throw new RuntimeException("Password hash not supported");
+        }
     }
 }

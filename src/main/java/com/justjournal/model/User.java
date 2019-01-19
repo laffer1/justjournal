@@ -34,14 +34,36 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.model;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.justjournal.Login;
 import com.justjournal.utility.StringUtil;
 
-import javax.persistence.*;
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Represents a user most basic properties.
@@ -68,8 +90,7 @@ public class User implements Serializable {
 
     @Column(name = "username", length = 15, nullable = false)
     private String username = "";
-
-
+    
     @Column(name = "name", length = 20, nullable = false)
     private String name = "";
 
@@ -80,6 +101,10 @@ public class User implements Serializable {
     @Basic(fetch = FetchType.LAZY)
     @Column(name = "password", length = 40, nullable = false)
     private String password = "";
+
+    @Column(name = "password_type", length = 10)
+    @Enumerated(EnumType.STRING)
+    private PasswordType passwordType = null;
 
     @Column(name = "since", nullable = false)
     private Integer since = 2003;
@@ -105,7 +130,7 @@ public class User implements Serializable {
     @JsonIgnore
     @Basic(fetch = FetchType.LAZY)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private Set<Entry> entries = new HashSet<Entry>();
+    private Set<Entry> entries = new HashSet<>();
 
     @JsonManagedReference(value="comment-user")
     @JsonIgnore
@@ -128,7 +153,7 @@ public class User implements Serializable {
     @JsonIgnore
     @Basic(fetch = FetchType.LAZY)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private Set<UserImage> images = new HashSet<UserImage>();
+    private Set<UserImage> images = new HashSet<>();
 
     @JsonManagedReference
     @JsonIgnore
@@ -154,9 +179,9 @@ public class User implements Serializable {
     private UserLocation userLocation;
 
     @JsonIgnore
-    	@ManyToMany(fetch = FetchType.EAGER)
-    	@JoinTable(name = "user_role", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = { @JoinColumn(name = "role_id") })
-    	private Set<Role> roles = new HashSet<Role>();
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_role", joinColumns = {@JoinColumn(name = "user_id")}, inverseJoinColumns = {@JoinColumn(name = "role_id")})
+    private Set<Role> roles = new HashSet<>();
 
     @JsonCreator
     public User() {
@@ -168,6 +193,7 @@ public class User implements Serializable {
     		this.name = user.getName();
     		this.username = user.getUsername();
     		this.password = user.getPassword();
+    		this.passwordType = user.getPasswordType();
     		this.roles = user.getRoles();
     	}
 
@@ -340,10 +366,18 @@ public class User implements Serializable {
 
     public final void setPassword(final String password) {
 
-        if (!StringUtil.lengthCheck(password, 5, 40)) {
+        if (!StringUtil.lengthCheck(password, 5, 64)) {
             throw new IllegalArgumentException("Invalid password");
         }
         this.password = password;
+    }
+
+    public final PasswordType getPasswordType() {
+        return this.passwordType;
+    }
+
+    public final void setPasswordType(final PasswordType passwordType) {
+        this.passwordType = passwordType;
     }
 
     public Set<Friend> getFriends() {

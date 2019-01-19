@@ -46,7 +46,8 @@ public class AccountService {
         user.setName(newUser.getFirstName());
         user.setLastName(newUser.getLastName());
         user.setUsername(newUser.getUsername());
-        user.setPassword(Login.SHA1(newUser.getPassword()));
+        user.setPassword(Login.getHashedPassword( newUser.getUsername(), newUser.getPassword()));
+        user.setPasswordType(PasswordType.SHA256);
         user.setType(0);
         user.setSince(Calendar.getInstance().get(Calendar.YEAR));
         user.setLastLogin(new Date());

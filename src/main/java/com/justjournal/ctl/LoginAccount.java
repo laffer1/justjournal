@@ -63,17 +63,11 @@ public class LoginAccount extends JustJournalBaseServlet {
         int userID;
         String userName = fixInput(request, "username");
         String password = fixInput(request, "password");
-        String passwordHash = fixInput(request, "password_hash");
         String userAgent = fixHeaderInput(request, "User-Agent");
         String mobile = fixInput(request, "mobile");
 
         // adjust the case
         userName = userName.toLowerCase();
-        passwordHash = passwordHash.toLowerCase();
-
-        // validate user input
-        //   if (userAgent.toLowerCase().contains("justjournal"))
-        //    webClient = false; // desktop client.. win/mac/java
 
         if (log.isDebugEnabled()) {
             log.debug("User Agent is: " + userAgent + endl);
@@ -86,7 +80,7 @@ public class LoginAccount extends JustJournalBaseServlet {
                 sb.append(JJ_LOGIN_FAIL);
         }
 
-        if (passwordHash.compareTo("") == 0 && !StringUtil.lengthCheck(password, 5, Login.PASSWORD_MAX_LENGTH)) {
+        if (!StringUtil.lengthCheck(password, 5, Login.PASSWORD_MAX_LENGTH)) {
             blnError = true;
 
                 sb.append(JJ_LOGIN_FAIL);
@@ -97,17 +91,7 @@ public class LoginAccount extends JustJournalBaseServlet {
                 if (log.isDebugEnabled())
                     log.debug("Attempting Login Validation  ");
 
-                if (passwordHash.compareTo("") != 0) {
-                    if (log.isDebugEnabled())
-                        log.debug("Using SHA1 pass=" + passwordHash);
-
-                    userID = webLogin.validateSHA1(userName, passwordHash);
-                } else {
-                    if (log.isDebugEnabled())
-                        log.debug("Using clear pass=" + password);
-
-                    userID = webLogin.validate(userName, password);
-                }
+                userID = webLogin.validate(userName, password);
 
                 if (userID > 0) {
                         sb.append(JJ_LOGIN_OK);
