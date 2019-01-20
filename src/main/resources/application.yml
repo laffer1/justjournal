@@ -64,7 +64,7 @@ spring:
   profiles: test
   data:
     jest:
-      uri: http://ds9.midnightbsd.org:9200
+      uri: http://localhost:9200
   datasource:
     url: jdbc:mysql://localhost:3306/justjournal_test
     username: travis
