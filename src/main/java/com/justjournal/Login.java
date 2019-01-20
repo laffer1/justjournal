@@ -52,8 +52,6 @@ import java.util.regex.Pattern;
 public class Login {
     public static final int USERNAME_MAX_LENGTH = 15;
     public static final int PASSWORD_MAX_LENGTH = 18;
-    public static final int SHA1_HASH_LENGTH = 40;
-    public static final int SHA256_HASH_LENGTH = 64;
     public static final int BAD_USER_ID = 0;
     protected static final String LOGIN_ATTRNAME = "auth.user";
     protected static final String LOGIN_ATTRID = "auth.uid";
@@ -97,6 +95,11 @@ public class Login {
         return m.matches(); // valid on true
     }
 
+    /**
+     * Check if a password is valid in terms of characters used.
+     * @param input
+     * @return
+     */
     public static boolean isPassword(final CharSequence input) {
         final Pattern p = Pattern.compile("[A-Za-z0-9_@.#$ ]+");
         final Matcher m = p.matcher(input);
@@ -215,7 +218,7 @@ public class Login {
 
             if (uid > BAD_USER_ID && isPassword(newPass)) {
                 final com.justjournal.model.User user = lookupUser(userName, password);
-                user.setPassword(getHashedPassword(userName, password));
+                user.setPassword(getHashedPassword(userName, newPass));
                 user.setPasswordType(PasswordType.SHA256);
                 userRepository.saveAndFlush(user);
 
