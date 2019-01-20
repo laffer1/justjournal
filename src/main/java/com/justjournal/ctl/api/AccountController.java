@@ -119,13 +119,13 @@ public class AccountController {
 
         if (passCurrent == null ||
                 passCurrent.length() < 5 ||
-                passCurrent.length() > 15) {
+                passCurrent.length() > 18) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return java.util.Collections.singletonMap(ERROR, "The current password is invalid.");
         }
         if (passNew == null ||
                 passNew.length() < 5 ||
-                passNew.length() > 15) {
+                passNew.length() > 18) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return java.util.Collections.singletonMap(ERROR, "The new password is invalid.");
         }

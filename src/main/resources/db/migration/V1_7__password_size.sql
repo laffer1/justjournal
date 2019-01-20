@@ -1,0 +1,1 @@
+alter table `user` modify column `password` VARCHAR(64) NOT NULL;
