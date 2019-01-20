@@ -190,7 +190,7 @@ public class Login {
                 throw new IllegalArgumentException("id");
 
             user.setLastLogin(new java.util.Date());
-            userRepository.save(user);
+            userRepository.saveAndFlush(user);
         } catch (final Exception e) {
             log.error("setLastLogin(): " + e.getMessage());
         }
@@ -217,7 +217,7 @@ public class Login {
                 final com.justjournal.model.User user = lookupUser(userName, password);
                 user.setPassword(getHashedPassword(userName, password));
                 user.setPasswordType(PasswordType.SHA256);
-                userRepository.save(user);
+                userRepository.saveAndFlush(user);
 
                 return true;
             }
