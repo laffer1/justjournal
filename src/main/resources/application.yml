@@ -65,6 +65,10 @@ app:
     accessKey:
     secretKey:
 
+bucket:
+  avatar: jjavatar
+  images: jjimages
+
 ---
 spring:
   profiles: test

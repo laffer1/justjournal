@@ -26,19 +26,31 @@
 
 package com.justjournal.ctl;
 
+import com.justjournal.model.ImageStorageService;
+import com.justjournal.services.ImageService;
+import com.justjournal.services.ServiceException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
+import javax.servlet.http.HttpSession;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.net.URI;
 
 /**
  * @author Lucas Holt
@@ -48,161 +60,63 @@ import java.io.IOException;
 @RequestMapping("/Avatar")
 public class AvatarController {
 
-    @PostMapping(value = "")
-    public ResponseEntity processUpload(@RequestParam MultipartFile file) {
-        String orgFileName = file.getOriginalFilename();
-        String filePath = "data/input" + orgFileName;
-        File destinationFile = new File(filePath);
+    @Autowired
+    private ImageStorageService imageStorageService;
+
+    @Autowired
+    private ImageService imageService;
+
+    @RequestMapping("/{id}")
+    public ResponseEntity<Resource> getByPath(@PathVariable("id") final int id) throws IOException {
         try {
-            file.transferTo(destinationFile);
+            return ResponseEntity.ok()
+                    .contentType(MediaType.IMAGE_JPEG)
+                    .header(HttpHeaders.EXPIRES, "180")
+                    .body(new InputStreamResource(imageStorageService.downloadAvatar(id)));
+        } catch (ServiceException se) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping(value = "")
+    public ResponseEntity processUpload(@RequestParam MultipartFile file, HttpSession session, HttpRequest request) {
+
+        final Integer userIDasi = (Integer) session.getAttribute("auth.uid");
+        int userID = 0;
+        if (userIDasi != null) {
+            userID = userIDasi;
+        }
+
+        /* Make sure we are logged in */
+        if (userID < 1) {
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+        }
+
+        final String contentType = file.getContentType();
+        final long sizeInBytes = file.getSize();
+
+        // must be large enough
+        if (file.isEmpty() || sizeInBytes < 500) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+            BufferedImage avatar = imageService.resizeAvatar(file.getBytes());
+
+            byte[] buffer = ((DataBufferByte) (avatar).getRaster().getDataBuffer()).getData();
+            imageStorageService.uploadAvatar(userID, MediaType.IMAGE_JPEG_VALUE, new ByteArrayInputStream(buffer));
+
         } catch (final IllegalStateException e) {
             log.error(e.getMessage(), e);
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        } catch (final IOException e) {
+        } catch (final IOException | ServiceException e) {
             log.error(e.getMessage(), e);
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        
-        return new ResponseEntity(HttpStatus.CREATED);
-    }
 
-    /*
-    @RequestMapping(method = RequestMethod.POST)
-    public
-    @ResponseBody
-    Model post(Model model, HttpSession session, HttpServletRequest req , HttpServletResponse response) throws Exception {
-        log.debug("Begin inside perform");
-        int RowsAffected = 0;
-        boolean isMultipart = FileUpload.isMultipartContent(req);
-
-        if (isMultipart) {
-            log.debug("we have a multipart file upload");
-            DiskFileUpload upload = new DiskFileUpload();
-
-            // set limits
-            upload.setSizeMax(15 * 1024);
-            upload.setSizeThreshold(15 * 1024);
-            upload.setRepositoryPath("/tmp");  // should be changed.
-
-            // process request
-            List items = upload.parseRequest(req);
-
-            for (Object item1 : items) {
-                FileItem item = (FileItem) item1;
-
-                if (!item.isFormField()) {
-                    // we're a file
-                    //String fieldName = item.getFieldName();
-                    //String fileName = item.getName();
-                    String contentType = item.getContentType();
-                    //boolean isInMemory = item.isInMemory();
-                    long sizeInBytes = item.getSize();
-
-                    // must be large enough
-                    if (sizeInBytes > 500) {
-                        byte[] data = item.get();
-
-                        Context ctx;
-                        DataSource ds;
-                        Connection conn = null;
-                        PreparedStatement stmt = null; // create statement
-                        PreparedStatement stmtOn = null; // turn on avatar preference.
-                        PreparedStatement stmtRemove = null; // delete old ones
-
-                        try {
-                            ctx = new InitialContext();
-                            ds = (DataSource) ctx.lookup("java:comp/env/jdbc/jjDB");
-                        } catch (Exception e) {
-                            log.error(e.getMessage());
-                            //response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                            return result(model, "ERROR", "Could not retrieve database connection");
-                        }
-
-                        try {
-                            conn = ds.getConnection();
-
-                            stmtRemove = conn.prepareStatement("DELETE FROM user_pic WHERE id=? LIMIT 1");
-                            stmtRemove.setInt(1, WebLogin.currentLoginId(session));
-                            stmtRemove.execute();
-
-                            // do the create of the image
-                            stmt = conn.prepareStatement("INSERT INTO user_pic (id, date_modified, mimetype, image) VALUES(?,Now(),?,?)");
-                            stmt.setInt(1, WebLogin.currentLoginId(session));
-                            stmt.setString(2, contentType);
-                            stmt.setBytes(3, data);
-                            stmt.execute();
-                            RowsAffected = stmt.getUpdateCount();
-                            stmt.close();
-
-                            // turn on avatars.
-                            stmtOn = conn.prepareStatement("UPDATE user_pref SET show_avatar=? WHERE id=? LIMIT 1");
-                            stmtOn.setString(1, "Y");
-                            stmtOn.setInt(2, WebLogin.currentLoginId(session));
-                            stmtOn.execute();
-
-                            if (stmtOn.getUpdateCount() != 1)
-                                log.debug("error turning on avatar.");
-                            stmtOn.close();
-
-                            conn.close();
-                        } catch (Exception e) {
-                            log.debug(e.getMessage());
-                            throw new Exception("Error getting connect or executing it", e);
-                        } finally {
-                               *
-                               * Close any JDBC instances here that weren't
-                               * explicitly closed during normal code path, so
-                               * that we don't 'leak' resources...
-                               *
-
-                            try {
-                                stmt.close();
-                            } catch (SQLException sqlEx) {
-                                // ignore -- as we can't do anything about it here
-                                log.debug(sqlEx.getMessage());
-                            }
-
-                            try {
-                                stmtOn.close();
-                            } catch (SQLException sqlEx) {
-                                // ignore -- as we can't do anything about it here
-                                log.debug(sqlEx.getMessage());
-                            }
-
-                            try {
-                                stmtRemove.close();
-                            } catch (SQLException sqlEx) {
-                                // ignore -- as we can't do anything about it here
-                                log.debug(sqlEx.getMessage());
-                            }
-
-                            try {
-                                conn.close();
-                            } catch (SQLException sqlEx) {
-                                // ignore -- as we can't do anything about it here
-                                log.debug(sqlEx.getMessage());
-                            }
-                        }
-                    } else {
-                        log.error("File size is too small");
-                      //  response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                        return result(model, "Error", "File size is too small.");
-                    }
-                }
-            }
-        }
-
-        if (RowsAffected != 1) {
-          //  response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return result(model, "Error", "Error Saving Document");
-        } else
-            return result(model, "OK", "");
-    }
-    */
-
-    private Model result(Model model, String status, String message) {
-        model.addAttribute("status", status);
-        model.addAttribute("error", message);
-        return model;
+        return ResponseEntity
+                .created(URI.create(request.getURI()
+                        .toString() + "/" + userID))
+                .build();
     }
 }
