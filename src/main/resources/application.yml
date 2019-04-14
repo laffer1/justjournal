@@ -85,8 +85,13 @@ spring:
       minimum-idle: 1
   flyway:
     baseline-on-migrate: true
+
 app:
   minio:
     host: http://localhost:9000/
     accessKey:
     secretKey:
+
+bucket:
+  avatar: jjqaavatar
+  image: jjqaimages

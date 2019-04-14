@@ -1,5 +1,7 @@
-package com.justjournal.model;
+package com.justjournal.services;
 
+import com.justjournal.model.AvatarSource;
+import com.justjournal.model.UserPic;
 import com.justjournal.repository.UserPicRepository;
 import com.justjournal.services.ServiceException;
 import com.justjournal.services.UserImageService;
@@ -47,7 +49,7 @@ public class ImageStorageService {
     @Autowired
     private UserPicRepository userPicRepository;
 
-    public void uploadAvatar(int userId, @NonNull String mimeType, @NonNull InputStream is)
+    public void uploadAvatar(int userId, @NonNull String mimeType, @NonNull AvatarSource source, @NonNull InputStream is)
             throws ServiceException {
         try {
             Optional<UserPic> userPic = userPicRepository.findById(userId);
@@ -55,21 +57,27 @@ public class ImageStorageService {
                 userPic = Optional.of(new UserPic());
             }
 
-            userPic.get().setMimeType(mimeType);
-            userPic.get().setModified(Calendar.getInstance().getTime());
+            UserPic entity = userPic.get();
+            entity.setMimeType(mimeType);
+            entity.setModified(Calendar.getInstance().getTime());
+            entity.setSource(source);
+            entity.setFilename(getAvatarFileName(userId, mimeType));
 
-            userPicRepository.save(userPic.get());
+            userPicRepository.save(entity);
 
-            uploadFile(avatarBucket, getAvatarFileName(userId, mimeType), mimeType, is);
+            uploadFile(avatarBucket, entity.getFilename(), mimeType, is);
         } catch (Exception e) {
             log.error("Could not upload avatar", e);
             throw new ServiceException("Unable to save avatar");
         }
     }
 
-    public InputStream downloadAvatar(int userId) throws ServiceException {
+    public InputStream downloadAvatar(final int userId) throws ServiceException {
         try {
-            Optional<UserPic> userPic = userPicRepository.findById(userId);
+            final Optional<UserPic> userPic = userPicRepository.findById(userId);
+            if (!userPic.isPresent()) {
+                throw new IllegalArgumentException("userId");
+            }
             return downloadFile(avatarBucket, getAvatarFileName(userId, userPic.get().getMimeType()));
         } catch (final Exception e) {
             log.error("Could not fetch avatar", e);
@@ -77,13 +85,15 @@ public class ImageStorageService {
         }
     }
 
-    private String getAvatarFileName(int id, @NonNull String mimeType) {
+    private String getAvatarFileName(final int id, @NonNull final String mimeType) {
         final String name = "avatar_" + id;
 
         if (mimeType.contains("jpeg") || mimeType.contains("jpg")) {
             return name + ".jpg";
         } else if (mimeType.contains("png") || mimeType.contains("ping")) {
             return name + ".png";
+        } else if (mimeType.contains("gif")) {
+            return name + ".gif";
         }
 
         return name;

@@ -26,7 +26,8 @@
 
 package com.justjournal.ctl;
 
-import com.justjournal.model.ImageStorageService;
+import com.justjournal.model.AvatarSource;
+import com.justjournal.services.ImageStorageService;
 import com.justjournal.services.ImageService;
 import com.justjournal.services.ServiceException;
 import lombok.extern.slf4j.Slf4j;
@@ -104,7 +105,8 @@ public class AvatarController {
             BufferedImage avatar = imageService.resizeAvatar(file.getBytes());
 
             byte[] buffer = ((DataBufferByte) (avatar).getRaster().getDataBuffer()).getData();
-            imageStorageService.uploadAvatar(userID, MediaType.IMAGE_JPEG_VALUE, new ByteArrayInputStream(buffer));
+            imageStorageService.uploadAvatar(userID, MediaType.IMAGE_JPEG_VALUE,
+                    AvatarSource.UPLOAD, new ByteArrayInputStream(buffer));
 
         } catch (final IllegalStateException e) {
             log.error(e.getMessage(), e);
