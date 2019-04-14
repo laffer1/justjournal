@@ -21,7 +21,7 @@ public class UserPic implements Serializable {
     private static final long serialVersionUID = -180763510438968573L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+   // @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     /*

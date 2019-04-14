@@ -76,6 +76,10 @@ public class ImageStorageService {
 
     public void uploadAvatar(int userId, @NonNull String mimeType, @NonNull AvatarSource source, @NonNull InputStream is)
             throws ServiceException {
+
+        if (userId < 1)
+            throw new IllegalArgumentException("userId");
+
         try {
             Optional<UserPic> userPic = userPicRepository.findById(userId);
             if (!userPic.isPresent()) {
