@@ -47,8 +47,8 @@ public class GravatarFetcher {
                 if (!userPicRepository.existsById(user.getId())) {
                     log.info("Attempting fetch of gravatar for " + user.getUsername());
 
-                    final Gravatar gravatar = new Gravatar(100,GravatarRating.GENERAL_AUDIENCES ,
-                            GravatarDefaultImage.IDENTICON);
+                    final Gravatar gravatar = new Gravatar(100, GravatarRating.RESTRICTED,
+                            GravatarDefaultImage.HTTP_404);
                     byte[] jpg = gravatar.download(user.getUserContact().getEmail());
 
                     if (jpg != null) {
@@ -57,7 +57,7 @@ public class GravatarFetcher {
                                 new ByteArrayInputStream(jpg));
                     }
 
-                    Thread.sleep(2000);
+                    Thread.sleep(10000);
                 }
             } catch (final Exception e) {
                 log.warn("Could not fetch gravatar for user {}", user.getUsername(), e);
