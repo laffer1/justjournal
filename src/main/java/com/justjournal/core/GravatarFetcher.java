@@ -65,6 +65,11 @@ public class GravatarFetcher {
 
             /*   convert existing db files   */
             for (final UserPic userPic : userPicRepository.findAll()) {
+                if (userPic.getFilename() != null)
+                    continue;
+                if (userPic.getSource() != AvatarSource.UPLOAD)
+                    continue;
+                
                 try {
                     imageStorageService.uploadAvatar(userPic.getId(), userPic.getMimeType(),  AvatarSource.UPLOAD,
 
