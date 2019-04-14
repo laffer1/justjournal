@@ -34,12 +34,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -67,7 +70,7 @@ public class AvatarController {
     @Autowired
     private ImageService imageService;
 
-    @RequestMapping("/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Resource> getByPath(@PathVariable("id") final int id) throws IOException {
         try {
             return ResponseEntity.ok()
@@ -121,4 +124,31 @@ public class AvatarController {
                         .toString() + "/" + userID))
                 .build();
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity delete(@PathVariable("id") final int id, final HttpSession session) {
+
+          // Retreive user id
+          final Integer userIDasi = (Integer) session.getAttribute("auth.uid");
+          // convert Integer to int type
+          int userID = 0;
+          if (userIDasi != null) {
+              userID = userIDasi;
+          }
+  
+          /* Make sure we are logged in */
+          if (userID < 1) {
+              return new ResponseEntity(HttpStatus.FORBIDDEN);
+          }
+
+          try {
+                imageStorageService.deleteAvatar(userID);
+          } catch (final Exception dae) {
+              log.error(dae.getMessage(), dae);
+              return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+          }
+
+          return new ResponseEntity(HttpStatus.OK);
+      }
+
 }

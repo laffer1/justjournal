@@ -1,10 +1,11 @@
 package com.justjournal.services;
 
 import com.justjournal.model.AvatarSource;
+import com.justjournal.model.PrefBool;
 import com.justjournal.model.UserPic;
+import com.justjournal.model.UserPref;
 import com.justjournal.repository.UserPicRepository;
-import com.justjournal.services.ServiceException;
-import com.justjournal.services.UserImageService;
+import com.justjournal.repository.UserPrefRepository;
 import io.minio.MinioClient;
 import io.minio.errors.ErrorResponseException;
 import io.minio.errors.InsufficientDataException;
@@ -25,6 +26,7 @@ import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Optional;
 
 /**
@@ -48,6 +50,29 @@ public class ImageStorageService {
 
     @Autowired
     private UserPicRepository userPicRepository;
+
+    @Autowired
+    private UserPrefRepository userPrefRepository;
+
+    public void deleteAvatar(int userId) {
+        final Optional<UserPref> pref = userPrefRepository.findById(userId);
+        if (!pref.isPresent()) {
+            throw new IllegalArgumentException("userId");
+        }
+
+        final Optional<UserPic> userPic = userPicRepository.findById(userId);
+        if (userPic.isPresent()) {
+
+            String filename =  userPic.get().getFilename();
+            if (filename == null)
+                filename = getAvatarFileName(userId, userPic.get().getMimeType());
+            deleteFile(avatarBucket, filename);
+            userPicRepository.deleteById(userId);
+
+            pref.get().setShowAvatar(PrefBool.N);
+            userPrefRepository.save(pref.get());
+        }
+    }
 
     public void uploadAvatar(int userId, @NonNull String mimeType, @NonNull AvatarSource source, @NonNull InputStream is)
             throws ServiceException {
@@ -78,7 +103,7 @@ public class ImageStorageService {
             if (!userPic.isPresent()) {
                 throw new IllegalArgumentException("userId");
             }
-            return downloadFile(avatarBucket, getAvatarFileName(userId, userPic.get().getMimeType()));
+            return downloadFile(avatarBucket, userPic.get().getFilename());
         } catch (final Exception e) {
             log.error("Could not fetch avatar", e);
             throw new ServiceException("Unable to download avatar");
@@ -120,5 +145,9 @@ public class ImageStorageService {
             NoResponseException, InvalidBucketNameException, XmlPullParserException, ErrorResponseException {
 
         return minioClient.getObject(bucketName, objectName);
+    }
+
+    public void deleteFile(@NonNull String bucketName, @NonNull String objectName) {
+          minioClient.removeObject(bucketName, Collections.singletonList(objectName));
     }
 }
