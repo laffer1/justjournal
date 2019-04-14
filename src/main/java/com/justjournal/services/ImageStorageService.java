@@ -86,7 +86,7 @@ public class ImageStorageService {
                 userPic = Optional.of(new UserPic());
             }
 
-            UserPic entity = userPic.get();
+            final UserPic entity = userPic.get();
             entity.setId(userId);
             entity.setMimeType(mimeType);
             entity.setModified(Calendar.getInstance().getTime());
@@ -96,7 +96,14 @@ public class ImageStorageService {
             userPicRepository.save(entity);
 
             uploadFile(avatarBucket, entity.getFilename(), mimeType, is);
-        } catch (Exception e) {
+
+            final Optional<UserPref> pref = userPrefRepository.findById(userId);
+            if (!pref.isPresent()) {
+                throw new IllegalArgumentException("userId");
+            }
+            pref.get().setShowAvatar(PrefBool.N);
+            userPrefRepository.save(pref.get());
+        } catch (final Exception e) {
             log.error("Could not upload avatar", e);
             throw new ServiceException("Unable to save avatar");
         }
