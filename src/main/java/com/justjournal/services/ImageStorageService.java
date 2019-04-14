@@ -83,6 +83,7 @@ public class ImageStorageService {
             }
 
             UserPic entity = userPic.get();
+            entity.setId(userId);
             entity.setMimeType(mimeType);
             entity.setModified(Calendar.getInstance().getTime());
             entity.setSource(source);
