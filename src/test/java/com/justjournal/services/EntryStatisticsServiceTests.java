@@ -4,10 +4,10 @@ import com.justjournal.model.EntryStatistic;
 import com.justjournal.model.User;
 import com.justjournal.repository.EntryRepository;
 import com.justjournal.repository.EntryStatisticRepository;
-import com.justjournal.repository.UserRepository;
 import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -29,9 +29,6 @@ public class EntryStatisticsServiceTests {
 
     private static final String TEST_USER = "testuser";
     private static final int TEST_YEAR = 2003;
-
-    @Mock
-    private UserRepository userRepository;
 
     @Mock
     private EntryStatisticRepository entryStatisticRepository;
@@ -63,7 +60,6 @@ public class EntryStatisticsServiceTests {
         when(entryStatisticRepository.findByUsernameOrderByYearDesc(TEST_USER)).thenReturn(Collections.singletonList(entryStatistic));
         Observable<EntryStatistic> o = entryStatisticService.getEntryCounts(TEST_USER);
         final Iterable<EntryStatistic> myIterator = o.blockingIterable();
-
 
         assertNotNull(myIterator);
 
