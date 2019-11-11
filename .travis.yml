@@ -3,7 +3,7 @@ dist: bionic
 jdk:
   - openjdk9
   - openjdk11
-node_js: "0.10"
+node_js: "4"
 services:
   - mysql
   - elasticsearch
