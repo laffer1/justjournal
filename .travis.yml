@@ -7,7 +7,7 @@ services:
   - mysql
   - elasticsearch
 before_script:
-  - "curl -H 'Cache-Control: no-cache' https://raw.githubuserconte
+  - "curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install.sh | bash"
   - mysql -e 'create database justjournal_test;'
   - mysql --database=justjournal_test < src/main/resources/db/migration/V1_0__jj_create.sql
   - mysql --database=justjournal_test < database/jj_data_load.sql
