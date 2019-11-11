@@ -1,7 +1,8 @@
 language: java
-dist: xenial
+dist: bionic
 jdk:
   - openjdk8
+  - openjdk11
 services:
   - mysql
   - elasticsearch
