@@ -35,8 +35,12 @@ POSSIBILITY OF SUCH DAMAGE.
 */
 
 import com.fasterxml.jackson.annotation.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.hateoas.Resources;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -49,13 +53,15 @@ import java.util.Set;
  * @author Lucas Holt
  * @version 1.0
  */
+@AllArgsConstructor
+@Builder
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class EntryTo implements Serializable {
+public class EntryTo extends Resources implements Serializable {
     private static final long serialVersionUID = 6558001750470601777L;
 
     @Getter @Setter 
-    private int id = 0;
+    private int entryId = 0;
 
     @Getter @Setter
     private Date date = new Date();
@@ -109,7 +115,6 @@ public class EntryTo implements Serializable {
     @Getter @Setter 
     @JsonProperty("comments")
     private Set<Comment> comments = new HashSet<Comment>();
-
     
     @JsonCreator
     public EntryTo() {

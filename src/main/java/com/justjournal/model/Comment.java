@@ -173,4 +173,17 @@ public final class Comment implements Serializable {
     public void setUser(final User user) {
         this.user = user;
     }
+
+    public com.justjournal.model.api.Comment toCommentTo() {
+        com.justjournal.model.api.Comment comment = new com.justjournal.model.api.Comment();
+        comment.setBody(getBody()); // TODO: which body type
+        comment.setDate(getDate());
+        comment.setFormat(getFormat().toString());
+        comment.setSubject(getSubject());
+        comment.setId(getId());
+        if (this.getUser() != null)
+            comment.setUsername(getUser().getUsername());
+
+        return comment;
+    }
 }

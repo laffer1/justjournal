@@ -18,9 +18,14 @@ angular.module('wwwApp').controller('EntryCtrl', ['$scope', '$routeParams', '$lo
                                     if (typeof $scope.entry.security !== 'undefined' && typeof $scope.entry.security.id !== 'undefined')
                                         $scope.entry.security = $scope.entry.security.id;
 
-                                    $scope.entry.allowComments = $scope.entry.allowComments == 'Y';
-
-                                    $scope.entry.emailComments = $scope.entry.emailComments == 'Y';
+                                   // if (typeof $scope.entry.tags !== 'undefined') {
+                                        $scope.entry.tag = '';
+                                        
+                                        for (var x = 0; x < $scope.entry.tags.length; x++) {
+                                            $scope.entry.tag += $scope.entry.tags[x] + ' ';
+                                        }
+                                        $scope.entry.tag.trim();
+                                   // }
                                 }
                         );
                     }
@@ -34,6 +39,7 @@ angular.module('wwwApp').controller('EntryCtrl', ['$scope', '$routeParams', '$lo
             autoFormat: true,
             // date: new Date(), // TODO: is this the right format?
             emailComments: true,
+            draft: false,
             format: 'MARKDOWN',
             subject: '',
             body: '',
@@ -52,6 +58,7 @@ angular.module('wwwApp').controller('EntryCtrl', ['$scope', '$routeParams', '$lo
             $scope.entry = {
                 allowComments: true,
                 autoFormat: true,
+                draft: false,
                 // date: new Date(), // TODO: is this the right format?
                 emailComments: true,
                 format: 'MARKDOWN',

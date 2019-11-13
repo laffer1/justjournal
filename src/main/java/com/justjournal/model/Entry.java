@@ -34,13 +34,39 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.model;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.justjournal.model.api.EntryTo;
 
-import javax.persistence.*;
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Journal entry transfer object.  Contains one journal entry. Maps relationship between table "entry" and java.
@@ -50,8 +76,8 @@ import java.util.Set;
  * @see com.justjournal.repository.EntryRepository
  */
 @JsonIdentityInfo(
-  generator = ObjectIdGenerators.PropertyGenerator.class,
-  property = "id")
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
@@ -76,7 +102,7 @@ public class Entry implements Serializable {
     @JoinColumn(name = "location")
     private Location location;
 
-    @Column(name="location", nullable = true, insertable = false, updatable = false)
+    @Column(name = "location", nullable = true, insertable = false, updatable = false)
     private int locationId = 0;
 
     @JsonProperty("mood")
@@ -84,7 +110,7 @@ public class Entry implements Serializable {
     @JoinColumn(name = "mood", nullable = true)
     private Mood mood;
 
-    @Column(name="mood", nullable = true, insertable = false, updatable = false)
+    @Column(name = "mood", nullable = true, insertable = false, updatable = false)
     private int moodId = 0;
 
     @JsonProperty("user")
@@ -97,7 +123,7 @@ public class Entry implements Serializable {
     @JoinColumn(name = "security")
     private Security security;
 
-    @Column(name="security", nullable = true, insertable = false, updatable = false)
+    @Column(name = "security", nullable = true, insertable = false, updatable = false)
     private int securityId = 0;
 
     @JsonProperty("subject")
@@ -118,7 +144,7 @@ public class Entry implements Serializable {
     @Column(name = "autoformat", nullable = false, length = 1)
     @Enumerated(EnumType.STRING)
     private PrefBool autoFormat = PrefBool.Y;
-  
+
     @JsonProperty("format")
     @Column(name = "format", nullable = false, length = 8)
     @Enumerated(EnumType.STRING)
@@ -144,12 +170,12 @@ public class Entry implements Serializable {
     @JsonIgnore
     transient private int attachFile = 0;
 
-    @JsonManagedReference(value="entry-entrytag")
+    @JsonManagedReference(value = "entry-entrytag")
     @JsonProperty("tags")
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "entry", fetch = FetchType.EAGER) // TODO: why!
     private Set<EntryTag> tags = new HashSet<EntryTag>();
 
-    @JsonManagedReference(value="entry-comment")
+    @JsonManagedReference(value = "entry-comment")
     @JsonProperty("comments")
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "entry", fetch = FetchType.EAGER)
     private Set<Comment> comments = new HashSet<Comment>();
@@ -161,7 +187,7 @@ public class Entry implements Serializable {
 
     public Entry(final int id, final String subject) {
         super();
-        
+
         this.id = id;
         this.subject = subject;
     }
@@ -280,13 +306,13 @@ public class Entry implements Serializable {
     public PrefBool getAutoFormat() {
         return autoFormat;
     }
-  
+
     public FormatType getFormat() {
-      return format;
+        return format;
     }
-  
+
     public void setFormat(final FormatType format) {
-      this.format = format;
+        this.format = format;
     }
 
     public void setAutoFormat(final PrefBool autoFormat) {
@@ -347,5 +373,73 @@ public class Entry implements Serializable {
 
     public void setComments(final Set<Comment> comments) {
         this.comments = comments;
+    }
+
+    public Entry(final EntryTo entryTo) {
+        if (entryTo.getMood() == 0)
+            entryTo.setMood(12); // DEFAULT NOT SPECIFIED
+
+        if (entryTo.getDate() == null)
+            entryTo.setDate(Calendar.getInstance().getTime());
+
+        setDate(entryTo.getDate());
+        setBody(entryTo.getBody());
+        setSubject(entryTo.getSubject());
+
+        setLocationId(entryTo.getLocation());
+        setMoodId(entryTo.getMood());
+
+        setMusic(entryTo.getMusic());
+        setModified(Calendar.getInstance().getTime());
+        
+        setAllowComments(entryTo.getAllowComments() ? PrefBool.Y : PrefBool.N);
+        setDraft(entryTo.getDraft() ? PrefBool.Y : PrefBool.N);
+        setEmailComments(entryTo.getEmailComments() ? PrefBool.Y : PrefBool.N);
+
+        if (entryTo.getFormat().equals("MARKDOWN")) {
+            setFormat(FormatType.MARKDOWN);
+            setAutoFormat(PrefBool.N);
+        } else if (entryTo.getFormat().equals("HTML")) {
+            setFormat(FormatType.HTML);
+            setAutoFormat(PrefBool.N);
+        } else {
+            setFormat(FormatType.TEXT);
+            setAutoFormat(PrefBool.Y);
+        }
+    }
+
+    public EntryTo toEntryTo() {
+        final EntryTo entryTo = EntryTo.builder()
+                .subject(getSubject())
+                .body(getBody())
+                .location(getLocationId())
+                .security(getSecurityId())
+                .mood(getMoodId())
+                .format(getFormat().toString())
+                .date(getDate())
+                .entryId(getId())
+                .music(getMusic())
+                .modified(getModified())
+                .allowComments(getAllowComments() == PrefBool.Y)
+                .autoFormat(getAutoFormat() == PrefBool.Y)
+                .draft(getDraft() == PrefBool.Y)
+                .emailComments(getEmailComments() == PrefBool.Y)
+                .build();
+        
+        if (entryTo.getDate() == null)
+            entryTo.setDate(Calendar.getInstance().getTime());
+
+        if (getUser() != null) {
+            entryTo.setUser(getUser().getUsername());
+        }
+
+        if (getTags() != null) {
+            final Set<String> tags = getTags().stream().map(t -> t.getTag().getName()).collect(Collectors.toSet());
+            entryTo.setTags(tags);
+        }
+
+        // TODO: needed? entryTo.setComments(getComments().stream().map(Comment::toCommentTo).collect(Collectors.toSet()));
+        
+        return entryTo;
     }
 }

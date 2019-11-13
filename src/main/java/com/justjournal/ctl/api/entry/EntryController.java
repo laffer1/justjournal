@@ -27,9 +27,17 @@
 package com.justjournal.ctl.api.entry;
 
 import com.justjournal.Login;
-import com.justjournal.model.*;
+import com.justjournal.model.Comment;
+import com.justjournal.model.Entry;
+import com.justjournal.model.RecentEntry;
+import com.justjournal.model.User;
 import com.justjournal.model.api.EntryTo;
-import com.justjournal.repository.*;
+import com.justjournal.repository.CommentRepository;
+import com.justjournal.repository.EntryRepository;
+import com.justjournal.repository.LocationRepository;
+import com.justjournal.repository.MoodRepository;
+import com.justjournal.repository.SecurityRepository;
+import com.justjournal.repository.UserRepository;
 import com.justjournal.services.EntryService;
 import com.justjournal.services.ServiceException;
 import lombok.extern.slf4j.Slf4j;
@@ -40,16 +48,34 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.PagedResources;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Entry Controller, for managing blog entries
@@ -92,7 +118,6 @@ public class EntryController {
     @Autowired
     private EntryService entryService;
 
-
     /**
      * Get the private list of recent blog entries. If logged in, get the private list otherwise only public entries.
      * /api/entry/{username}/recent
@@ -105,7 +130,8 @@ public class EntryController {
     @GetMapping(value = "{username}/recent", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<List<RecentEntry>> getRecentEntries(@PathVariable("username") final String username,
-                                                              final HttpServletResponse response, final HttpSession session) {
+                                                              final HttpServletResponse response,
+                                                              final HttpSession session) {
         final io.reactivex.Observable<RecentEntry> entries;
         try {
             if (Login.isAuthenticated(session) && Login.isUserName(username)) {
@@ -130,10 +156,11 @@ public class EntryController {
 
     @GetMapping(value = "{username}/size/{size}/page/{page}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Page<Entry> getEntries(@PathVariable("username") final String username,
-                                  @PathVariable("size") final int size,
-                                  @PathVariable("page") final int page,
-                                  final HttpServletResponse response, final HttpSession session) {
+    public PagedResources<EntryTo> getEntries(@PathVariable("username") final String username,
+                                              @PathVariable("size") final int size,
+                                              @PathVariable("page") final int page,
+                                              final HttpServletRequest request,
+                                              final HttpServletResponse response, final HttpSession session) {
         final Page<Entry> entries;
         final Pageable pageable = new PageRequest(page, size, new Sort(
                 new Sort.Order(Sort.Direction.DESC, "date")
@@ -149,7 +176,13 @@ public class EntryController {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
                 return null;
             }
-            return entries;
+
+            PagedResources.PageMetadata metadata =
+                    new PagedResources.PageMetadata(entries.getSize(), entries.getNumber(), entries.getTotalElements(),
+                            entries.getTotalPages());
+
+            Link link = new Link(request.getRequestURI());
+            return new PagedResources<EntryTo>(entries.stream().map(Entry::toEntryTo).collect(Collectors.toList()), metadata, link);
         } catch (final ServiceException e) {
             log.error(e.getMessage(), e);
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -159,10 +192,12 @@ public class EntryController {
 
     @GetMapping(value = "{username}/page/{page}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Page<Entry> getEntries(@PathVariable("username") final String username, @PathVariable("page") final int page,
-                                  final HttpServletResponse response, final HttpSession session) {
+    public PagedResources<EntryTo> getEntries(@PathVariable("username") final String username,
+                                              @PathVariable("page") final int page,
+                                              final HttpServletRequest request,
+                                              final HttpServletResponse response, final HttpSession session) {
 
-        return getEntries(username, DEFAULT_SIZE, page, response, session);
+        return getEntries(username, DEFAULT_SIZE, page, request, response, session);
     }
 
     /**
@@ -174,9 +209,10 @@ public class EntryController {
 
     @GetMapping(value = "{username}/eid/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Entry getById(@PathVariable("username") final String username,
-                         @PathVariable("id") final int id,
-                         final HttpServletResponse response) {
+    public EntryTo getById(@PathVariable("username") final String username,
+                           @PathVariable("id") final int id,
+                           final HttpServletResponse response,
+                           final HttpSession session) {
         try {
             final Entry entry = entryRepository.findById(id).orElse(null);
 
@@ -187,9 +223,15 @@ public class EntryController {
 
             if (entry.getUser().getUsername().equalsIgnoreCase(username)) {
                 if (entry.getSecurity().getId() == 2) // public
-                    return entry;
-                else
+                    return entry.toEntryTo();
+                else {
+                    if (!Login.isAuthenticated(session)) {
+                        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                    } else if (username.equalsIgnoreCase(Login.currentLoginName(session))) {
+                        return entry.toEntryTo();
+                    }
                     response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                }
                 return null;
             } else {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -211,13 +253,16 @@ public class EntryController {
      */
     @GetMapping(value = "{username}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Collection<Entry> getEntries(@PathVariable("username") final String username,
-                                        final HttpServletResponse response) {
-        Collection<Entry> entries = null;
+    public Collection<EntryTo> getEntries(@PathVariable("username") final String username,
+                                          final HttpServletResponse response) {
+        Collection<EntryTo> entries = null;
         try {
-            entries = entryService.getPublicEntries(username);
+            entries = entryService.getPublicEntries(username)
+                    .stream()
+                    .map(Entry::toEntryTo)
+                    .collect(Collectors.toList());
 
-            if (entries == null || entries.isEmpty()) {
+            if (entries.isEmpty()) {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
                 return Collections.emptyList();
             }
@@ -231,9 +276,9 @@ public class EntryController {
     @Transactional
     @GetMapping(value = "", params = "username", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Collection<Entry> getEntriesByUsername(@RequestParam("username") final String username,
-                                                  final HttpServletResponse response) {
-        Collection<Entry> entries = new ArrayList<>();
+    public Collection<EntryTo> getEntriesByUsername(@RequestParam("username") final String username,
+                                                    final HttpServletResponse response) {
+        Collection<EntryTo> entries = new ArrayList<>();
         log.warn("in entriesByUsername with " + username);
 
         if (username == null || username.isEmpty()) {
@@ -243,9 +288,12 @@ public class EntryController {
         }
 
         try {
-            entries = entryService.getPublicEntries(username);
+            entries = entryService.getPublicEntries(username)
+                    .stream()
+                    .map(e -> e.toEntryTo())
+                    .collect(Collectors.toList());
 
-            if (entries == null || entries.isEmpty()) {
+            if (entries.isEmpty()) {
                 log.warn("entries is null or empty");
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             }
@@ -284,42 +332,16 @@ public class EntryController {
             return Collections.singletonMap(ERR_TYPE, "User not found");
         }
 
-        final Entry entry = new Entry();
         if (entryTo.getBody() == null || entryTo.getBody().isEmpty()) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return Collections.singletonMap(ERR_TYPE, "Entry does not contain a body.");
         }
-        entry.setBody(entryTo.getBody());
-        log.trace("Entry contains body " + entryTo.getBody());
 
-        entry.setSubject(entryTo.getSubject());
-
+        final Entry entry = new Entry(entryTo);
         entry.setUser(user);
-
         entry.setLocation(locationDao.findById(entryTo.getLocation()).orElse(null));
         entry.setSecurity(securityDao.findById(entryTo.getSecurity()).orElse(null));
-
-        if (entryTo.getMood() == 0)
-            entryTo.setMood(12); // DEFAULT NOT SPECIFIED
-        entry.setMood(moodDao.findById(entryTo.getMood()).orElse(null));
-
-        entry.setDraft(entryTo.getDraft() ? PrefBool.Y : PrefBool.N);
-        entry.setAllowComments(entryTo.getAllowComments() ? PrefBool.Y : PrefBool.N);
-        if (entryTo.getFormat().equals("MARKDOWN")) {
-            entry.setFormat(FormatType.MARKDOWN);
-            entry.setAutoFormat(PrefBool.N);
-        } else if (entryTo.getFormat().equals("HTML")) {
-            entry.setFormat(FormatType.HTML);
-            entry.setAutoFormat(PrefBool.N);
-        } else {
-            entry.setFormat(FormatType.TEXT);
-            entry.setAutoFormat(PrefBool.Y);
-        }
-     
-        if (entryTo.getDate() == null)
-            entry.setDate(new Date());
-        else
-            entry.setDate(entryTo.getDate());
+        entry.setMood(moodDao.findById(entry.getMoodId()).orElse(null));
 
         final Entry saved = entryRepository.saveAndFlush(entry);
 
@@ -356,33 +378,14 @@ public class EntryController {
             return Collections.singletonMap(ERR_TYPE, ERR_INVALID_LOGIN);
         }
         final User user = userRepository.findById(Login.currentLoginId(session)).orElse(null);
-        Entry entry = new Entry();
+        Entry entry = new Entry(entryTo);
         entry.setUser(user);
-
-        entry.setSubject(entryTo.getSubject());
-        entry.setBody(entryTo.getBody());
 
         entry.setLocation(locationDao.findById(entryTo.getLocation()).orElse(null));
         entry.setSecurity(securityDao.findById(entryTo.getSecurity()).orElse(null));
         entry.setMood(moodDao.findById(entryTo.getMood()).orElse(null));
 
-        if (entryTo.getFormat().equals("MARKDOWN")) {
-            entry.setFormat(FormatType.MARKDOWN);
-            entry.setAutoFormat(PrefBool.N);
-        } else if (entryTo.getFormat().equals("HTML")) {
-            entry.setFormat(FormatType.HTML);
-            entry.setAutoFormat(PrefBool.N);
-        } else {
-            entry.setFormat(FormatType.TEXT);
-            entry.setAutoFormat(PrefBool.Y);
-        }
-
-        if (entryTo.getDate() == null)
-            entry.setDate(Calendar.getInstance().getTime());
-        else
-            entry.setDate(entryTo.getDate());
-
-        final Entry entry2 = entryRepository.findById(entryTo.getId()).orElse(null);
+        final Entry entry2 = entryRepository.findById(entryTo.getEntryId()).orElse(null);
 
         if (entry2 != null && entry2.getId() > 0 && entry2.getUser().getId() == user.getId()) {
             entry.setId(entry2.getId());
