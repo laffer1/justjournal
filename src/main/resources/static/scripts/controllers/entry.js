@@ -3,7 +3,7 @@ angular.module('wwwApp').controller('EntryCtrl', ['$scope', '$routeParams', '$lo
     function ($scope, $routeParams, $location, MoodService, LocationService, SecurityService, EntryService, LoginService) {
         'use strict';
 
-        CKEDITOR.replace( 'body' );
+        CKEDITOR.replace('body');
 
         $scope.login = LoginService.get({}, function () {
                     if (typeof $routeParams.entryId !== 'undefined') {
@@ -18,14 +18,12 @@ angular.module('wwwApp').controller('EntryCtrl', ['$scope', '$routeParams', '$lo
                                     if (typeof $scope.entry.security !== 'undefined' && typeof $scope.entry.security.id !== 'undefined')
                                         $scope.entry.security = $scope.entry.security.id;
 
-                                   // if (typeof $scope.entry.tags !== 'undefined') {
-                                        $scope.entry.tag = '';
-                                        
-                                        for (var x = 0; x < $scope.entry.tags.length; x++) {
-                                            $scope.entry.tag += $scope.entry.tags[x] + ' ';
-                                        }
-                                        $scope.entry.tag.trim();
-                                   // }
+                                    $scope.entry.tag = '';
+
+                                    for (var x = 0; x < $scope.entry.tags.length; x++) {
+                                        $scope.entry.tag += $scope.entry.tags[x] + ' ';
+                                    }
+                                    $scope.entry.tag.trim();
                                 }
                         );
                     }
