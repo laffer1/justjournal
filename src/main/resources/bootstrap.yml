@@ -1,6 +1,8 @@
 spring:
   application:
     name: justjournal
+  main:
+    allow-bean-definition-overriding: true
 
 server:
   port: ${port:8200}
