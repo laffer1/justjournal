@@ -232,11 +232,12 @@
                             alt="user" /> <span th:text="${authenticatedUsername}"></span></a>.
 
                         <span id="follow" th:if="${authenticatedUsername != user.username}">
-                            <a class="btn btn-sm btn-default" th:onclick="'javascript:follow(\'' + ${user.username} + '\');'">Follow  <span th:text="${user.username}"></span></a>
+                            <a class="btn btn-sm btn-default"    th:data1="${user.username}"
+                               th:onclick="javascript:follow(this.getAttribute('data1'));">Follow <span th:text="${user.username}"></span></a>
                         </span>
                         <span id="unfollow" th:if="${authenticatedUsername != user.username}">
-                                                 <a class="btn btn-sm btn-default"
-                                                    th:onclick="'javascript:unfollow(\'' + ${user.username} + '\');'">Unfollow  <span
+                                                 <a class="btn btn-sm btn-default" th:data2="${user.username}"
+                                                    th:onclick="javascript:unfollow(this.getAttribute('data2'));">Unfollow  <span
                                                          th:text="${user.username}"></span></a>
                                              </span>
                     </p>
