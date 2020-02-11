@@ -388,18 +388,18 @@
         <repository>
             <id>springsource-repo</id>
             <name>SpringSource Repository</name>
-            <url>http://repo.springsource.org/release</url>
+            <url>https://repo.springsource.org/release</url>
         </repository>
 
         <repository>
             <id>spring-snnapshot</id>
             <name>Spring Maven SNAPSHOT Repository</name>
-            <url>http://maven.springframework.org/snapshot</url>
+            <url>https://maven.springframework.org/snapshot</url>
         </repository>
         <repository>
             <id>spring-milestone</id>
             <name>Spring Maven MILESTONE Repository</name>
-            <url>http://maven.springframework.org/milestone</url>
+            <url>https://maven.springframework.org/milestone</url>
         </repository>
 
         <repository>
@@ -410,7 +410,7 @@
         <repository>
             <id>gemfire-repository</id>
             <name>Gemfire Repository</name>
-            <url>http://dist.gemstone.com/maven/release</url>
+            <url>https://dist.gemstone.com/maven/release</url>
         </repository>
 
         <repository>
@@ -420,7 +420,7 @@
         <repository>
             <name>central</name>
             <id>central</id>
-            <url>http://repo1.maven.org/maven2/</url>
+            <url>https://repo1.maven.org/maven2/</url>
         </repository>
     </repositories>
 
