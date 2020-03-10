@@ -4,20 +4,18 @@ import com.justjournal.model.EntryStatistic;
 import com.justjournal.model.User;
 import com.justjournal.repository.EntryRepository;
 import com.justjournal.repository.EntryStatisticRepository;
-import io.reactivex.Maybe;
-import io.reactivex.Observable;
-import io.reactivex.ObservableSource;
-import io.reactivex.functions.Function;
-import io.reactivex.schedulers.Schedulers;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.concurrent.Callable;
+import java.util.function.Function;
 
 /**
  * Compute yearly entry statistics
@@ -40,19 +38,19 @@ public class EntryStatisticService {
 
 
     @Transactional(readOnly = true, isolation = Isolation.READ_UNCOMMITTED)
-    public Maybe<EntryStatistic> getEntryCount(final String username, final int year) {
+    public Mono<EntryStatistic> getEntryCount(final String username, final int year) {
         log.trace("Fetching entry count for " + username + " and year " + year);
 
-        return Maybe.just(entryStatisticRepository.findByUsernameAndYear(username, year));
+        return Mono.justOrEmpty(entryStatisticRepository.findByUsernameAndYear(username, year));
     }
 
     @Transactional(readOnly = true, isolation = Isolation.READ_UNCOMMITTED)
-    public Observable<EntryStatistic> getEntryCounts(final String username) {
-        return Observable.fromIterable(entryStatisticRepository.findByUsernameOrderByYearDesc(username));
+    public Flux<EntryStatistic> getEntryCounts(final String username) {
+        return Flux.fromIterable(entryStatisticRepository.findByUsernameOrderByYearDesc(username));
     }
 
     @Transactional(isolation = Isolation.READ_UNCOMMITTED)
-    public io.reactivex.Observable<EntryStatistic> compute(final User user) {
+    public Flux<EntryStatistic> compute(final User user) {
         final GregorianCalendar calendarg = new GregorianCalendar();
         final int yearNow = calendarg.get(Calendar.YEAR);
 
@@ -60,47 +58,38 @@ public class EntryStatisticService {
     }
 
 
-
     @Transactional(isolation = Isolation.READ_UNCOMMITTED)
-    public io.reactivex.Observable<EntryStatistic> compute(final User user, final int startYear, final int endYear) {
+    public Flux<EntryStatistic> compute(final User user, final int startYear, final int endYear) {
         final GregorianCalendar calendarg = new GregorianCalendar();
 
         if (endYear < startYear)
             throw new IllegalArgumentException("endYear");
         if (endYear < 2003)
-                 throw new IllegalArgumentException("endYear");
+            throw new IllegalArgumentException("endYear");
         if (startYear < 2003)
             throw new IllegalArgumentException("startYear");
 
-        return io.reactivex.Observable.range(startYear, endYear - startYear + 1)
-                .flatMap(new Function<Integer, ObservableSource<EntryStatistic>>() {
-                    @Override
-                    public ObservableSource<EntryStatistic> apply(final Integer yr) throws Exception {
-                        return io.reactivex.Observable.fromCallable(new Callable<EntryStatistic>() {
-                            @Override
-                            public EntryStatistic call() throws Exception {
+        return Flux.range(startYear, endYear - startYear + 1)
+                .flatMap((Function<Integer, Mono<EntryStatistic>>) yr -> Mono.fromCallable(() -> {
 
-                                log.debug("testing with year: " + yr + " user: " + user.getUsername() );
-                                EntryStatistic es = entryStatisticRepository.findByUserAndYear(user, yr);
-                                final long count = entryRepository.calendarCount(yr, user.getUsername());
+                    log.debug("testing with year: " + yr + " user: " + user.getUsername());
+                    EntryStatistic es = entryStatisticRepository.findByUserAndYear(user, yr);
+                    final long count = entryRepository.calendarCount(yr, user.getUsername());
 
-                                if (es == null) {
-                                    log.trace("Creating new entry statistic");
-                                    es = new EntryStatistic();
-                                    es.setUser(user);
-                                }
-
-                                es.setCount(count);
-                                es.setYear(yr);
-                                es.setModified(calendarg.getTime());
-
-                                log.trace("save and flush time");
-                                return entryStatisticRepository.saveAndFlush(es);
-
-                            }
-                        });
+                    if (es == null) {
+                        log.trace("Creating new entry statistic");
+                        es = new EntryStatistic();
+                        es.setUser(user);
                     }
-                }).subscribeOn(Schedulers.io());
+
+                    es.setCount(count);
+                    es.setYear(yr);
+                    es.setModified(calendarg.getTime());
+
+                    log.trace("save and flush time");
+                    return entryStatisticRepository.saveAndFlush(es);
+
+                })).subscribeOn(Schedulers.boundedElastic());
     }
-       
+
 }

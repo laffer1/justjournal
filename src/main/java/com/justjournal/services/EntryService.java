@@ -29,8 +29,6 @@ package com.justjournal.services;
 import com.justjournal.model.*;
 import com.justjournal.repository.*;
 import com.justjournal.utility.Xml;
-import io.reactivex.functions.Function;
-import io.reactivex.schedulers.Schedulers;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -40,8 +38,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
+import rx.schedulers.Schedulers;
 
 import java.util.*;
+import java.util.function.Function;
 
 /**
  * @author Lucas Holt
@@ -66,18 +67,13 @@ public class EntryService {
     @Autowired
     private EntryTagsRepository entryTagsRepository;
     
-    private io.reactivex.Observable<RecentEntry> getRecentEntryObservable(Page<Entry> entries) {
-        return io.reactivex.Observable.fromIterable(entries)
-                .observeOn(Schedulers.computation())
-                .map(new Function<Entry, RecentEntry>() {
-
-                    @Override
-                    public RecentEntry apply(final Entry o) throws Exception {
-                        final RecentEntry recentEntry = new RecentEntry();
-                        recentEntry.setId(o.getId());
-                        recentEntry.setSubject(Xml.cleanString(o.getSubject()));
-                        return recentEntry;
-                    }
+    private Flux<RecentEntry> getRecentEntryObservable(Page<Entry> entries) {
+        return Flux.fromIterable(entries)
+                .map(o -> {
+                    final RecentEntry recentEntry = new RecentEntry();
+                    recentEntry.setId(o.getId());
+                    recentEntry.setSubject(Xml.cleanString(o.getSubject()));
+                    return recentEntry;
                 });
     }
 
@@ -88,9 +84,9 @@ public class EntryService {
      * @return subject & entry id data
      */
     @Transactional(readOnly = true, isolation = Isolation.READ_UNCOMMITTED)
-    public io.reactivex.Observable<RecentEntry> getRecentEntriesPublic(final String username) throws ServiceException {
+    public Flux<RecentEntry> getRecentEntriesPublic(final String username) throws ServiceException {
         try {
-            final Pageable page = new PageRequest(0, MAX_RECENT_ENTRIES, new Sort(Sort.Direction.DESC, "date", "id"));
+            final Pageable page = PageRequest.of(0, MAX_RECENT_ENTRIES, Sort.by(Sort.Direction.DESC, "date", "id"));
             final Page<Entry> entries = entryDao.findByUserAndSecurityAndDraftWithSubjectOnly(username, securityDao.findByName("public"), PrefBool.N, page);
             return getRecentEntryObservable(entries);
         } catch (final Exception e) {
@@ -106,7 +102,7 @@ public class EntryService {
      * @return subject & entry id data
      */
     @Transactional(readOnly = true, isolation = Isolation.READ_UNCOMMITTED)
-    public io.reactivex.Observable<RecentEntry> getRecentEntries(final String username) throws ServiceException {
+    public Flux<RecentEntry> getRecentEntries(final String username) throws ServiceException {
         final User user = userRepository.findByUsername(username);
         if (user == null) {
             log.warn("username not found in getRecentEntrieswith %s", username);
@@ -114,7 +110,7 @@ public class EntryService {
         }
 
         try {
-            final Pageable page = new PageRequest(0, MAX_RECENT_ENTRIES, Sort.Direction.DESC, "date", "id");
+            final Pageable page = PageRequest.of(0, MAX_RECENT_ENTRIES, Sort.Direction.DESC, "date", "id");
             final Page<Entry> entries = entryDao.findByUserOrderByDateDesc(user, page);
             return getRecentEntryObservable(entries);
         } catch (final Exception e) {
@@ -187,7 +183,7 @@ public class EntryService {
     @Transactional(readOnly = true, isolation = Isolation.READ_UNCOMMITTED)
     public List<Entry> getFriendsEntries(final String username) throws ServiceException {
         try {
-            final Pageable page = new PageRequest(0, 20, Sort.Direction.DESC, "date", "id");
+            final Pageable page = PageRequest.of(0, 20, Sort.Direction.DESC, "date", "id");
             final Page<Entry> fe = entryDao.findByUserFriends(username, PrefBool.N, page);
 
            return fe.getContent();
@@ -204,7 +200,7 @@ public class EntryService {
      * @return
      */
     @Transactional(readOnly = true, isolation = Isolation.READ_UNCOMMITTED)
-    public io.reactivex.Observable<Tag> getEntryTags(final String username) throws ServiceException {
+    public Flux<Tag> getEntryTags(final String username) throws ServiceException {
         try {
             assert entryDao != null;
             assert username != null;
@@ -223,7 +219,7 @@ public class EntryService {
                 }
             }
 
-            return io.reactivex.Observable.fromIterable(tags.values());
+            return Flux.fromIterable(tags.values());
         } catch (final Exception e) {
             log.error(e.getMessage());
             throw new ServiceException(e);

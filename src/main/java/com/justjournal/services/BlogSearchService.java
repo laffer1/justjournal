@@ -133,7 +133,7 @@ public class BlogSearchService {
     @Async
     public void indexAllBlogEntries() {
         try {
-            Pageable pageable = new PageRequest(0, 100);
+            Pageable pageable = PageRequest.of(0, 100);
 
             Page<Entry> entries = entryRepository.findAll(pageable);
             for (int i = 0; i < entries.getTotalPages(); i++) {
@@ -145,7 +145,7 @@ public class BlogSearchService {
 
                 blogEntryRepository.saveAll(items);
 
-                pageable = new PageRequest(i + 1, 100);
+                pageable = PageRequest.of(i + 1, 100);
                 entries = entryRepository.findAll(pageable);
             }
         } catch (final Exception e) {
@@ -163,7 +163,7 @@ public class BlogSearchService {
             // since i can't use java 8 on this project, i don't have streams.
 
             final Security sec = securityDao.findByName("public");
-            Pageable pageable = new PageRequest(0, 100);
+            Pageable pageable = PageRequest.of(0, 100);
 
             Page<Entry> entries = entryRepository.findBySecurityOrderByDateDesc(sec, pageable);
             for (int i = 0; i < entries.getTotalPages(); i++) {
@@ -175,7 +175,7 @@ public class BlogSearchService {
 
                 blogEntryRepository.saveAll(items);
 
-                pageable = new PageRequest(i + 1, 100);
+                pageable = PageRequest.of(i + 1, 100);
                 entries = entryRepository.findBySecurityOrderByDateDesc(sec, pageable);
             }
         } catch (final Exception e) {
@@ -190,7 +190,7 @@ public class BlogSearchService {
      */
     @Async
     public void indexBlogEntriesSince(final Date date) {
-        Pageable pageable = new PageRequest(0, 100);
+        Pageable pageable = PageRequest.of(0, 100);
 
         Page<Entry> entries = entryRepository.findAll(pageable);
         for (int i = 0; i < entries.getTotalPages(); i++) {
@@ -208,7 +208,7 @@ public class BlogSearchService {
 
             blogEntryRepository.saveAll(items);
 
-            pageable = new PageRequest(i + 1, 100);
+            pageable = PageRequest.of(i + 1, 100);
             entries = entryRepository.findAll(pageable);
         }
     }
@@ -221,7 +221,7 @@ public class BlogSearchService {
     @Async
     public void indexPublicBlogEntriesSince(final Date date) {
         final Security sec = securityDao.findByName("public");
-        Pageable pageable = new PageRequest(0, 100);
+        Pageable pageable = PageRequest.of(0, 100);
 
         Page<Entry> entries = entryRepository.findBySecurityOrderByDateDesc(sec, pageable);
         for (int i = 0; i < entries.getTotalPages(); i++) {
@@ -239,7 +239,7 @@ public class BlogSearchService {
 
             blogEntryRepository.saveAll(items);
 
-            pageable = new PageRequest(i + 1, 100);
+            pageable = PageRequest.of(i + 1, 100);
             entries = entryRepository.findBySecurityOrderByDateDesc(sec, pageable);
         }
     }
