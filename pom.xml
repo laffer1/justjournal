@@ -24,7 +24,7 @@
         <hibernate.version>5.2.1.Final</hibernate.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jackson.version>2.10.0</jackson.version>
-        <flyway.version>5.2.4</flyway.version>
+        <flyway.version>6.2.3</flyway.version>
         <mysql.driver.version>8.0.18</mysql.driver.version>
     </properties>
 
