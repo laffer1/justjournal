@@ -206,8 +206,7 @@
 
         <dependency>
             <groupId>com.sun.mail</groupId>
-            <artifactId>javax.mail</artifactId>
-            <version>1.5.5</version>
+            <artifactId>jakarta.mail</artifactId>
         </dependency>
 
         <dependency>
@@ -257,6 +256,10 @@
             <version>1</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-hibernate5</artifactId>
+        </dependency>
         <!-- needed for post java 8 support -->
         <dependency>
             <groupId>javax.xml.bind</groupId>

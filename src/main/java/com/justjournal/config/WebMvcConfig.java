@@ -25,7 +25,7 @@ import java.time.temporal.TemporalUnit;
 import java.util.List;
 
 @Configuration
-@EnableConfigurationProperties({ ResourceProperties.class })
+@EnableConfigurationProperties({ResourceProperties.class})
 public class WebMvcConfig extends WebMvcConfigurerAdapter {
 
     @Autowired
@@ -42,31 +42,31 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
     }
 
     /**
-     * Override default handlers.
-     * see http://stackoverflow.com/questions/24837715/spring-boot-with-angularjs-html5mode
+     * Override default handlers. see http://stackoverflow.com/questions/24837715/spring-boot-with-angularjs-html5mode
+     *
      * @param registry
      */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         super.addResourceHandlers(registry);
         int cachePeriod = 300;
-        
-        registry.addResourceHandler("/robots.txt")
-                     .addResourceLocations("classpath:/static/robots.txt")
-                     .setCachePeriod(cachePeriod);
 
-       registry.addResourceHandler("/static/**")
+        registry.addResourceHandler("/robots.txt")
+                .addResourceLocations("classpath:/static/robots.txt")
+                .setCachePeriod(cachePeriod);
+
+        registry.addResourceHandler("/static/**")
                 .addResourceLocations("classpath:/static/")
                 .setCachePeriod(cachePeriod);
 
         registry.addResourceHandler("/static/styles/**", "/styles/*.css", "/styles/*.map")
-                        .addResourceLocations("classpath:/static/styles/")
-                        .setCachePeriod(cachePeriod);
+                .addResourceLocations("classpath:/static/styles/")
+                .setCachePeriod(cachePeriod);
 
         // todo: move these files to an external source
         registry.addResourceHandler("/software/*.zip", "/software/*.bz2", "/software/*.gz", "/software/unix/**")
-                      .addResourceLocations("classpath:/static/software/")
-                      .setCachePeriod(cachePeriod);
+                .addResourceLocations("classpath:/static/software/")
+                .setCachePeriod(cachePeriod);
 
         /* one possible html5 mode solution.
         registry.addResourceHandler("/**")
@@ -84,12 +84,14 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
     }
 
 
-      /** {@inheritDoc} */
-      @Override
-      public void configureMessageConverters(final List<HttpMessageConverter<?>> converters) {
-          super.configureMessageConverters(converters);
-          converters.add(new StringHttpMessageConverter());
-          converters.add(new ByteArrayHttpMessageConverter());
-      }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void configureMessageConverters(final List<HttpMessageConverter<?>> converters) {
+        super.configureMessageConverters(converters);
+        converters.add(new StringHttpMessageConverter());
+        converters.add(new ByteArrayHttpMessageConverter());
+    }
 
 }

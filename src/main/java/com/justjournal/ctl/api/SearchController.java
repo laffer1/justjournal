@@ -34,15 +34,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
-import org.springframework.hateoas.PagedResources;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 /**
  * @author Lucas Holt
@@ -64,7 +65,7 @@ public class SearchController {
     }
 
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PagedResources<BlogEntry>> search(
+    public ResponseEntity<PagedModel<BlogEntry>> search(
             @RequestParam("term") final String term,
             final Pageable page,
             final PagedResourcesAssembler<BlogEntry> assembler) {
@@ -74,8 +75,8 @@ public class SearchController {
 
             final Link link = linkTo(methodOn(SearchController.class).search(term, page, assembler)).withSelfRel();
 
-            final PagedResources resources = assembler.toResource(entries, blogEntrySearchResourceAssembler, link);
-            return new ResponseEntity<PagedResources<BlogEntry>>(resources, HttpStatus.OK);
+            final PagedModel<EntityModel<BlogEntry>> resources = assembler.toModel(entries, blogEntrySearchResourceAssembler, link);
+            return new ResponseEntity(resources, HttpStatus.OK);
         } catch (final Exception e) {
             log.error(e.getMessage());
         }
@@ -84,7 +85,7 @@ public class SearchController {
     }
 
     @GetMapping(value = "/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PagedResources<BlogEntry>> search(
+    public ResponseEntity<PagedModel<BlogEntry>> search(
             @PathVariable("username") final String username,
             @RequestParam("term") final String term,
             final Pageable page,
@@ -95,8 +96,8 @@ public class SearchController {
 
             final Link link = linkTo(methodOn(SearchController.class).search(username, term, page, assembler)).withSelfRel();
 
-            final PagedResources resources = assembler.toResource(entries, blogEntrySearchResourceAssembler, link);
-            return new ResponseEntity<PagedResources<BlogEntry>>(resources, HttpStatus.OK);
+            final PagedModel<EntityModel<BlogEntry>> resources = assembler.toModel(entries, blogEntrySearchResourceAssembler, link);
+            return new ResponseEntity(resources, HttpStatus.OK);
         } catch (final Exception e) {
             log.error(e.getMessage());
         }

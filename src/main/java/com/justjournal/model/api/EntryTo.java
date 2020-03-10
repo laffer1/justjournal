@@ -40,7 +40,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.EntityModel;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -57,7 +57,7 @@ import java.util.Set;
 @Builder
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class EntryTo extends Resources implements Serializable {
+public class EntryTo extends EntityModel<EntryTo> implements Serializable {
     private static final long serialVersionUID = 6558001750470601777L;
 
     @Getter @Setter 

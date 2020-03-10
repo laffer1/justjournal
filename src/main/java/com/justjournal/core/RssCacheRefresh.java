@@ -29,9 +29,6 @@ package com.justjournal.core;
 import com.justjournal.model.RssCache;
 import com.justjournal.repository.RssCacheRepository;
 import com.justjournal.utility.StringUtil;
-import io.reactivex.Observable;
-import io.reactivex.functions.Function;
-import io.reactivex.schedulers.Schedulers;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -42,6 +39,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -72,21 +72,17 @@ public class RssCacheRefresh {
 
             final List<RssCache> items = rssCacheDao.findByLastUpdatedBefore(yesterday.getTime());
 
-
-            Observable.fromIterable(items)
-                    .subscribeOn(Schedulers.computation())
-                    .map(new Function<RssCache, Object>() {
-
-                        @Override
-                        public Object apply(final RssCache cache) throws Exception {
-                            try {
-                                if (cache.getActive() != null && cache.getActive())
-                                    getRssDocument(cache);
-                            } catch (final Exception e) {
-                                log.error(e.getMessage(), e);
-                            }
-                            return cache;
+            Flux.fromIterable(items)
+                    .parallel()
+                    .runOn(Schedulers.newParallel("rsscache", 2))
+                    .map(cache -> {
+                        try {
+                            if (cache.getActive() != null && cache.getActive())
+                                return Mono.fromCallable(() -> getRssDocument(cache));
+                        } catch (final Exception e) {
+                            log.error(e.getMessage(), e);
                         }
+                        return Mono.empty();
                     })
                     .subscribe();
 
@@ -103,11 +99,11 @@ public class RssCacheRefresh {
      * @param rss
      * @throws IOException
      */
-    void getRssDocument(final RssCache rss) throws IOException {
+    RssCache getRssDocument(final RssCache rss) throws IOException {
         final StringBuilder sbx = new StringBuilder();
 
         if (rss == null || rss.getUri() == null || rss.getUri().length() < 11)
-            return;
+            return null;
 
         final HttpClient client = HttpClientBuilder.create().build();
         final HttpGet request = new HttpGet(rss.getUri());
@@ -135,16 +131,18 @@ public class RssCacheRefresh {
             rss.setLastUpdated(Calendar.getInstance().getTime());
             rss.setContent(cleanContent(sbx.toString())); // it's an html page.. bad
 
-            rssCacheDao.saveAndFlush(rss);
+            return rssCacheDao.saveAndFlush(rss);
         } else if (code == 404 || code == 410) {
             log.warn("URL {} is returning a 404. Removing from list", rss.getUri());
 
             rss.setLastUpdated(Calendar.getInstance().getTime());
             rss.setActive(false);
-            rssCacheDao.saveAndFlush(rss);
+            return rssCacheDao.saveAndFlush(rss);
         } else {
             log.warn(String.format("RssCache status code %d for url %s", code, rss.getUri()));
         }
+
+        return rss;
     }
 
     private String cleanContent(final String content) {

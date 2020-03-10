@@ -29,15 +29,17 @@ package com.justjournal.ctl.api;
 import com.justjournal.model.Tag;
 import com.justjournal.services.ServiceException;
 import com.justjournal.services.TagService;
-import io.reactivex.Observable;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.ParallelFlux;
+import rx.Observable;
 
 import java.util.Collection;
+import java.util.Comparator;
 
 /**
  * @author Lucas Holt
@@ -59,8 +61,9 @@ public class TagCloudController {
     @ResponseBody
     public ResponseEntity<Collection<Tag>> getTags(@PathVariable("username") final String username)
             throws ServiceException {
-        final Observable<Tag> o = tagService.getTags(username);
-        final Collection<Tag> tags = o.toList().blockingGet();
+        final ParallelFlux<Tag> o = tagService.getTags(username);
+        final Collection<Tag> tags = o.collectSortedList(
+                Comparator.comparingLong(Tag::getCount)).block();
 
         return ResponseEntity
                 .ok()

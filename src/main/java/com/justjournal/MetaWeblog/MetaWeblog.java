@@ -43,7 +43,6 @@ import com.justjournal.services.EntryService;
 import com.justjournal.services.ServiceException;
 import com.justjournal.utility.HTMLUtil;
 import com.justjournal.utility.StringUtil;
-import io.reactivex.functions.Function;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -608,18 +607,14 @@ public class MetaWeblog {
 
         try {
             entryService.getEntryTags(username)
-                    .map(new Function<Tag, Tag>() {
-
-                        @Override
-                        public Tag apply(final Tag curtag) throws Exception {
+                    .map(curtag -> {
                             final HashMap<Object, Serializable> entry = new HashMap<Object, Serializable>();
                             entry.put("description", curtag.getName());
                             entry.put("title", curtag.getName());
                             arr.add(entry);
 
                             return curtag;
-                        }
-                    }).subscribe();
+                        }).subscribe();
         } catch (final ServiceException se) {
             log.error(se.getMessage(), se);
         }

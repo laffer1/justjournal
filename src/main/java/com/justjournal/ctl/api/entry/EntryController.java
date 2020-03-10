@@ -49,7 +49,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.hateoas.Link;
-import org.springframework.hateoas.PagedResources;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -65,6 +65,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -129,10 +130,10 @@ public class EntryController {
      */
     @GetMapping(value = "{username}/recent", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<List<RecentEntry>> getRecentEntries(@PathVariable("username") final String username,
+    public ResponseEntity<Iterable<RecentEntry>> getRecentEntries(@PathVariable("username") final String username,
                                                               final HttpServletResponse response,
                                                               final HttpSession session) {
-        final io.reactivex.Observable<RecentEntry> entries;
+        final Flux<RecentEntry> entries;
         try {
             if (Login.isAuthenticated(session) && Login.isUserName(username)) {
                 entries = entryService.getRecentEntries(username);
@@ -140,7 +141,7 @@ public class EntryController {
                 entries = entryService.getRecentEntriesPublic(username);
             }
 
-            final List<RecentEntry> e = entries.toList().blockingGet();
+            final Iterable<RecentEntry> e = entries.toIterable();
 
             return ResponseEntity
                     .ok()
@@ -156,13 +157,13 @@ public class EntryController {
 
     @GetMapping(value = "{username}/size/{size}/page/{page}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public PagedResources<EntryTo> getEntries(@PathVariable("username") final String username,
-                                              @PathVariable("size") final int size,
-                                              @PathVariable("page") final int page,
-                                              final HttpServletRequest request,
-                                              final HttpServletResponse response, final HttpSession session) {
+    public PagedModel<EntryTo> getEntries(@PathVariable("username") final String username,
+                                          @PathVariable("size") final int size,
+                                          @PathVariable("page") final int page,
+                                          final HttpServletRequest request,
+                                          final HttpServletResponse response, final HttpSession session) {
         final Page<Entry> entries;
-        final Pageable pageable = new PageRequest(page, size, new Sort(
+        final Pageable pageable = PageRequest.of(page, size, Sort.by(
                 new Sort.Order(Sort.Direction.DESC, "date")
         ));
         try {
@@ -177,12 +178,12 @@ public class EntryController {
                 return null;
             }
 
-            PagedResources.PageMetadata metadata =
-                    new PagedResources.PageMetadata(entries.getSize(), entries.getNumber(), entries.getTotalElements(),
+            PagedModel.PageMetadata metadata =
+                    new PagedModel.PageMetadata(entries.getSize(), entries.getNumber(), entries.getTotalElements(),
                             entries.getTotalPages());
 
             Link link = new Link(request.getRequestURI());
-            return new PagedResources<EntryTo>(entries.stream().map(Entry::toEntryTo).collect(Collectors.toList()), metadata, link);
+            return new PagedModel<EntryTo>(entries.stream().map(Entry::toEntryTo).collect(Collectors.toList()), metadata, link);
         } catch (final ServiceException e) {
             log.error(e.getMessage(), e);
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -192,7 +193,7 @@ public class EntryController {
 
     @GetMapping(value = "{username}/page/{page}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public PagedResources<EntryTo> getEntries(@PathVariable("username") final String username,
+    public PagedModel<EntryTo> getEntries(@PathVariable("username") final String username,
                                               @PathVariable("page") final int page,
                                               final HttpServletRequest request,
                                               final HttpServletResponse response, final HttpSession session) {
