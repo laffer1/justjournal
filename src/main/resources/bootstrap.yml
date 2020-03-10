@@ -3,15 +3,11 @@ spring:
     name: justjournal
   main:
     allow-bean-definition-overriding: true
+  jmx:
+    enabled: true
 
 server:
   port: ${port:8200}
   compression:
     enabled: true
     mime-types: application/json,application/xml,text/html,text/xml,text/plain
-
-tomcat:
-  ajp:
-    port: ${ajp-port:8201}
-    remoteauthentication: ${ajp-auth:false}
-    enabled: ${ajp-on:true}

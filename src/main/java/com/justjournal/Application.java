@@ -3,8 +3,6 @@ package com.justjournal;
 import com.justjournal.ctl.LoginAccount;
 import com.justjournal.ctl.UpdateJournal;
 import com.justjournal.ctl.XmlRpc;
-import org.apache.catalina.connector.Connector;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.data.mongo.MongoRepositoriesAutoConfiguration;
@@ -13,7 +11,6 @@ import org.springframework.boot.autoconfigure.data.solr.SolrRepositoriesAutoConf
 import org.springframework.boot.autoconfigure.gson.GsonAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.XADataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.solr.SolrAutoConfiguration;
-import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
@@ -34,41 +31,15 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
         SolrRepositoriesAutoConfiguration.class, Neo4jRepositoriesAutoConfiguration.class,
         MongoRepositoriesAutoConfiguration.class})
 public class Application extends SpringBootServletInitializer {
-    
-    @Value("${tomcat.ajp.port:8201}")
-    int ajpPort;
-
-    @Value("${tomcat.ajp.remoteauthentication}")
-    private boolean remoteAuthentication;
-
-    @Value("${tomcat.ajp.enabled:true}")
-    private boolean tomcatAjpEnabled;
 
     public static void main(final String[] args) {
         SpringApplication.run(Application.class, args);
     }
 
     @Bean
-     public TomcatServletWebServerFactory servletContainer() {
-
-         final TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory();
-         if (tomcatAjpEnabled) {
-             final Connector ajpConnector = new Connector("AJP/1.3");
-             ajpConnector.setPort(ajpPort);
-             ajpConnector.setSecure(false);
-             ajpConnector.setAllowTrace(false);
-             ajpConnector.setScheme("http");
-             ajpConnector.setAttribute("tomcatAuthentication", !remoteAuthentication);
-             tomcat.addAdditionalTomcatConnectors(ajpConnector);
-         }
-
-         return tomcat;
-     }
-
-    @Bean
     public ServletRegistrationBean updateJournalServlet() {
         return new ServletRegistrationBean(new UpdateJournal(), "/updateJournal");
-    } 
+    }
 
     @Bean
     public ServletRegistrationBean loginAccountServlet() {
