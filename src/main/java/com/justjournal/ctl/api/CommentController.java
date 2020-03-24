@@ -35,6 +35,7 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.ctl.api;
 
 import com.justjournal.Login;
+import com.justjournal.ctl.error.ErrorHandler;
 import com.justjournal.model.Comment;
 import com.justjournal.model.Entry;
 import com.justjournal.model.PrefBool;
@@ -129,7 +130,7 @@ public class CommentController {
 
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
+            return ErrorHandler.modelError(  "The login timed out or is invalid.");
         }
 
         try {
@@ -144,7 +145,7 @@ public class CommentController {
         } catch (final Exception e) {
             log.error(e.getMessage());
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return java.util.Collections.singletonMap("error", "Could not delete the comment.");
+            return ErrorHandler.modelError(  "Could not delete the comment.");
         }
     }
 
@@ -161,7 +162,7 @@ public class CommentController {
                                    final HttpServletResponse response) {
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
+            return ErrorHandler.modelError(  "The login timed out or is invalid.");
         }
 
         try {
@@ -170,12 +171,12 @@ public class CommentController {
 
             if (et == null) {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                return java.util.Collections.singletonMap("error", "No entry for this comment");
+                return ErrorHandler.modelError(  "No entry for this comment");
             }
 
             if (et.getAllowComments().equals(PrefBool.N)) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                return java.util.Collections.singletonMap("error", "Comments blocked by owner of this blog entry.");
+                return ErrorHandler.modelError(  "Comments blocked by owner of this blog entry.");
             }
 
             // new case
@@ -189,20 +190,20 @@ public class CommentController {
                     log.error("Could not add comment", e);
                     response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                     final String error = "Error adding comment";
-                    return java.util.Collections.singletonMap("error", error);
+                    return ErrorHandler.modelError(  error);
                 }
             } else {
                 final Comment c = commentDao.findById(comment.getId()).orElse(null);
 
                 if (c == null) {
                     response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                    return java.util.Collections.singletonMap("error", "No comment found");
+                    return ErrorHandler.modelError(  "No comment found");
                 }
 
                 if (c.getEntry().getId() != et.getId()) {
                     response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                     String error = "Error saving comment. Entry id does not match original on comment.";
-                    return java.util.Collections.singletonMap("error", error);
+                    return ErrorHandler.modelError(  error);
                 }
                 c.setUser(user);
                 c.setBody(comment.getBody());
@@ -212,7 +213,7 @@ public class CommentController {
                 } catch (final Exception e) {
                     log.error("Could not update comment", e);
                     final String error = "Error editing comment";
-                    return java.util.Collections.singletonMap("error", error);
+                    return ErrorHandler.modelError(  error);
                 }
             }
 
@@ -245,7 +246,7 @@ public class CommentController {
         } catch (final Exception e) {
             log.error(e.getMessage());
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return java.util.Collections.singletonMap("error", "Error adding comment");
+            return ErrorHandler.modelError(  "Error adding comment");
         }
     }
 

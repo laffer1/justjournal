@@ -27,6 +27,7 @@
 package com.justjournal.ctl.api;
 
 import com.justjournal.Login;
+import com.justjournal.ctl.error.ErrorHandler;
 import com.justjournal.model.Friend;
 import com.justjournal.model.User;
 import com.justjournal.repository.FriendsRepository;
@@ -86,7 +87,6 @@ public class FriendController {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
             for (final Friend friend : user.getFriends()) {
-
                 if (otherUsername.equalsIgnoreCase(friend.getFriend().getUsername()))
                     return ResponseEntity.ok(true);
             }
@@ -127,7 +127,7 @@ public class FriendController {
                                    final HttpServletResponse response) {
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
+            return ErrorHandler.modelError(  "The login timed out or is invalid.");
         }
 
         try {
@@ -135,10 +135,10 @@ public class FriendController {
             final User owner = userRepository.findById(Login.currentLoginId(session)).orElse(null);
 
             if (friendUser == null)
-                return java.util.Collections.singletonMap("error", "Could not find friend's username");
+                return ErrorHandler.modelError(  "Could not find friend's username");
 
             if (owner == null)
-                return java.util.Collections.singletonMap("error", "Could not find logged in user account.");
+                return ErrorHandler.modelError(  "Could not find logged in user account.");
 
             final Friend f = new Friend();
             f.setFriend(friendUser);
@@ -148,7 +148,7 @@ public class FriendController {
             return java.util.Collections.singletonMap("status", "success");
         } catch (final Exception e) {
             log.error(e.getMessage());
-            return java.util.Collections.singletonMap("error", "Could not find friend's username");
+            return ErrorHandler.modelError(  "Could not find friend's username");
         }
 
     }
@@ -162,7 +162,7 @@ public class FriendController {
 
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
+            return ErrorHandler.modelError(  "The login timed out or is invalid.");
         }
 
         try {
@@ -175,13 +175,13 @@ public class FriendController {
                 return java.util.Collections.singletonMap("status", "success");
             } else {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                return java.util.Collections.singletonMap("error", "Error deleting friend");
+                return ErrorHandler.modelError(  "Error deleting friend");
             }
         } catch (final Exception e) {
             log.error(e.getMessage(), e);
         }
 
         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        return java.util.Collections.singletonMap("error", "Error deleting friend");
+        return ErrorHandler.modelError(  "Error deleting friend");
     }
 }

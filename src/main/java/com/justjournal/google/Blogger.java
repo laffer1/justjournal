@@ -35,6 +35,7 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.google;
 
 import com.justjournal.Login;
+import com.justjournal.core.Settings;
 import com.justjournal.model.Entry;
 import com.justjournal.model.Journal;
 import com.justjournal.model.PrefBool;
@@ -89,6 +90,9 @@ public class Blogger {
     @Autowired
     private SecurityRepository securityDao;
 
+    @Autowired
+    private Settings settings;
+
     /**
      * Fetch the users personal information including their username, userid, email address and name.
      * <p/>
@@ -100,9 +104,9 @@ public class Blogger {
      * @return A HashMap of the users personal info or an error code as a hashmap
      */
     public HashMap<String, Serializable> getUsersInfo(final String appkey, final String username, final String password) {
-        int userId;
+        final int userId;
         boolean blnError = false;
-        HashMap<String, Serializable> s = new HashMap<>();
+        final HashMap<String, Serializable> s = new HashMap<>();
 
 
         if (!StringUtil.lengthCheck(username, 3, Login.USERNAME_MAX_LENGTH)) {
@@ -119,13 +123,17 @@ public class Blogger {
 
         if (!blnError)
             try {
-                User user = userRepository.findById(userId).orElse(null);
+                final User user = userRepository.findById(userId).orElse(null);
 
-                s.put("nickname", user.getUsername());
-                s.put("userid", userId);
-                s.put("url", "http://www.justjournal.com/users/" + user.getUsername());
-                s.put("email", user.getUserContact().getEmail());
-                s.put("firstname", user.getFirstName());
+                if (user != null) {
+                    s.put("nickname", user.getUsername());
+                    s.put("userid", userId);
+                    s.put("url", settings.getBaseUri() + "users/" + user.getUsername());
+                    s.put("email", user.getUserContact().getEmail());
+                    s.put("firstname", user.getFirstName());
+                } else {
+                    blnError = true;
+                }
             } catch (final Exception e) {
                 blnError = true;
                 log.debug(e.getMessage(), e);
@@ -136,7 +144,6 @@ public class Blogger {
             s.put("faultCode", 4);
             s.put("faultString", "User authentication failed: " + username);
         }
-
 
         return s;
     }
@@ -155,8 +162,8 @@ public class Blogger {
     public ArrayList<HashMap<Object, Serializable>> getUsersBlogs(String appkey, String username, String password) {
         int userId;
         boolean blnError = false;
-        ArrayList<HashMap<Object, Serializable>> a = new ArrayList<HashMap<Object, Serializable>>();
-        HashMap<Object, Serializable> s = new HashMap<Object, Serializable>();
+        ArrayList<HashMap<Object, Serializable>> a = new ArrayList<>();
+        HashMap<Object, Serializable> s = new HashMap<>();
 
 
         if (!StringUtil.lengthCheck(username, 3, 15)) {
@@ -175,9 +182,13 @@ public class Blogger {
             try {
                 final User user = userRepository.findById(userId).orElse(null);
 
-                s.put("url", "http://www.justjournal.com/users/" + user.getUsername());
-                s.put("blogid", userId);
-                s.put("blogName", new ArrayList<Journal>(user.getJournals()).get(0).getName());
+                if (user != null) {
+                    s.put("url", settings.getBaseUri() + "users/"  + user.getUsername());
+                    s.put("blogid", userId);
+                    s.put("blogName", new ArrayList<Journal>(user.getJournals()).get(0).getName());
+                } else {
+                    blnError = true;
+                }
             } catch (final Exception e) {
                 blnError = true;
                 log.debug(e.getMessage());
@@ -210,9 +221,8 @@ public class Blogger {
         String result = "";
         int userId;
         boolean blnError = false;
-        final Entry et = new Entry();
-        Entry et2;
-        HashMap<String, Serializable> s = new HashMap<String, Serializable>();
+        Entry et = new Entry();
+        HashMap<String, Serializable> s = new HashMap<>();
 
         if (!StringUtil.lengthCheck(username, 3, Login.USERNAME_MAX_LENGTH)) {
             blnError = true;
@@ -228,12 +238,16 @@ public class Blogger {
 
         if (!blnError)
             try {
-                com.justjournal.model.User user = userRepository.findById(userId).orElse(null);
+                final com.justjournal.model.User user = userRepository.findById(userId).orElse(null);
+                if (user == null) {
+                    throw new IllegalArgumentException("userId");
+                }
+                
                 et.setUser(user);
                 et.setDate(new java.util.Date());
 
                 /* Allow html style title tag to set subject, used by many clients */
-                String subject;
+                final String subject;
                 final Pattern p = Pattern.compile("(<title>)(.*?)(</title>)");
                 final Matcher m = p.matcher(content);
                 if (m.find()) {
@@ -246,7 +260,7 @@ public class Blogger {
                 et.setBody(StringUtil.replace(content, '\'', "\\\'"));
 
                 /* Allow html style music tag to set music, used by few clients */
-                String music;
+                final String music;
                 final Pattern p2 = Pattern.compile("(<music>)(.*?)(</music>)");
                 final Matcher m2 = p2.matcher(content);
                 if (m2.find()) {
@@ -264,18 +278,17 @@ public class Blogger {
                 et.setEmailComments(PrefBool.Y);
                 et.setUser(userRepository.findById(userId).orElse(null));
 
-                entryRepository.save(et);
-                et2 = entryRepository.findById(et.getId()).orElse(null); // TODO: this is wrong.
-                result = Integer.toString(et2.getId());
+                et = entryRepository.save(et);
+                result = Integer.toString(et.getId());
 
-                Journal journal = new ArrayList<Journal>(user.getJournals()).get(0);
+                final Journal journal = new ArrayList<>(user.getJournals()).get(0);
                 if (!journal.isOwnerViewOnly() && journal.isPingServices()) {
                     log.debug("Ping weblogs");
                     /* WebLogs, Google, blo.gs */
-                    BasePing rp = new BasePing("http://rpc.weblogs.com/pingSiteForm");
+                    final BasePing rp = new BasePing("http://rpc.weblogs.com/pingSiteForm");
                     rp.setName(journal.getName());
-                    rp.setUri("http://www.justjournal.com/" + "users/" + user.getUsername());
-                    rp.setChangesURL("http://www.justjournal.com" + "/users/" + user.getUsername() + "/rss");
+                    rp.setUri(settings.getBaseUri() + "users/"  + user.getUsername());
+                    rp.setChangesURL(settings.getBaseUri() + "users/"  + user.getUsername() + "/rss");
                     rp.ping();
                     rp.setPingUri("http://blogsearch.google.com/ping");
                     rp.ping();
@@ -285,7 +298,7 @@ public class Blogger {
                     /* IceRocket */
                     final IceRocket ice = new IceRocket();
                     ice.setName(journal.getName());
-                    ice.setUri("http://www.justjournal.com/" + "users/" + user.getUsername());
+                    ice.setUri(settings.getBaseUri() + "users/"  + user.getUsername());
                     ice.ping();
                 }
 
@@ -295,7 +308,6 @@ public class Blogger {
             }
 
         if (blnError) {
-            s.clear();
             s.put("faultCode", 4);
             s.put("faultString", "User authentication failed: " + username);
             return s;
@@ -345,7 +357,11 @@ public class Blogger {
 
         if (!blnError && eid > 0) {
             try {
-                Entry entry = entryRepository.findById(eid).orElse(null);
+                final Entry entry = entryRepository.findById(eid).orElse(null);
+                if (entry == null) {
+                    throw new IllegalArgumentException("eid");
+                }
+                
                 if (entry.getUser().getId() == userId)
                     entryRepository.deleteById(eid);
             } catch (final Exception e) {
@@ -359,7 +375,6 @@ public class Blogger {
             s.put("faultString", "Invalid entry id " + postid);
 
         } else if (blnError) {
-            s.clear();
             s.put("faultCode", 4);
             s.put("faultString", "User authentication failed: " + username);
 
@@ -384,7 +399,7 @@ public class Blogger {
     public Serializable editPost(String appkey, String postid, String username, String password, String content, Boolean publish) {
         int userId;
         boolean blnError = false;
-        HashMap<String, Serializable> s = new HashMap<String, Serializable>();
+        HashMap<String, Serializable> s = new HashMap<>();
 
         int eid = 0;
 
@@ -402,7 +417,7 @@ public class Blogger {
 
         try {
             eid = Integer.parseInt(postid);
-        } catch (IllegalFormatException ex) {
+        } catch (final IllegalFormatException ex) {
             blnError = true;
         }
 
@@ -410,14 +425,14 @@ public class Blogger {
             try {
                 /* we're just updating the content aka body as this is the
            only thing the protocol supports. */
-                Entry et2 = entryRepository.findById(eid).orElse(null);
-                if (userId == et2.getUser().getId()) {
+                final Entry et2 = entryRepository.findById(eid).orElse(null);
+                if (et2 != null && userId == et2.getUser().getId()) {
                     et2.setBody(StringUtil.replace(content, '\'', "\\\'"));
                     entryRepository.save(et2);
                 } else blnError = true;
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 blnError = true;
-                log.debug(e.getMessage());
+                log.error("Unable to update body for entry {}", eid, e);
             }
         }
 
@@ -426,7 +441,6 @@ public class Blogger {
             s.put("faultString", "Invalid entry id " + postid);
 
         } else if (blnError) {
-            s.clear();
             s.put("faultCode", 4);
             s.put("faultString", "User authentication failed: " + username);
 
@@ -475,11 +489,11 @@ public class Blogger {
      * @return An arraylist of posts or a hashmap of error info.
      */
     public Cloneable getRecentPosts(String appkey, String blogid, String username, String password, int numberOfPosts) {
-        ArrayList<HashMap<Object, Serializable>> arr = new ArrayList<HashMap<Object, Serializable>>(numberOfPosts);
+        ArrayList<HashMap<Object, Serializable>> arr = new ArrayList<>(numberOfPosts);
         Collection<Entry> total;
-        Boolean blnError = false;
+        boolean blnError = false;
         int userId;
-        HashMap<String, Serializable> s = new HashMap<String, Serializable>();
+        HashMap<String, Serializable> s = new HashMap<>();
 
         if (!StringUtil.lengthCheck(username, 3, Login.USERNAME_MAX_LENGTH)) {
             blnError = true;
@@ -502,7 +516,7 @@ public class Blogger {
 
         for (int i = 0; i < numberOfPosts; i++)
             if (it.hasNext()) {
-                HashMap<Object, Serializable> entry = new HashMap<Object, Serializable>();
+                HashMap<Object, Serializable> entry = new HashMap<>();
                 Entry e = it.next();
                 entry.put("link", "http://www.justjournal.com/users/" + username + "/entry/" + e.getId());
                 entry.put("permaLink", "http://www.justjournal.com/users/" + username + "/entry/" + e.getId());
@@ -534,10 +548,10 @@ public class Blogger {
      * @return a signle entry as a hashmap for consumption by xml-rpc
      */
     public HashMap<Object, Serializable> getPost(String appkey, String postid, String username, String password) {
-        Boolean blnError = false;
+        boolean blnError = false;
         int userId;
-        HashMap<Object, Serializable> s = new HashMap<Object, Serializable>();
-        HashMap<Object, Serializable> entry = new HashMap<Object, Serializable>();
+        HashMap<Object, Serializable> s = new HashMap<>();
+        HashMap<Object, Serializable> entry = new HashMap<>();
         Entry e;
 
         if (!StringUtil.lengthCheck(username, 3, 15)) {
@@ -556,14 +570,14 @@ public class Blogger {
         }
 
         e = entryRepository.findById(Integer.parseInt(postid)).orElse(null);
-        if (userId != e.getUser().getId()) {
+        if (e == null || userId != e.getUser().getId()) {
             s.put("faultCode", 4);
             s.put("faultString", "User authentication failed: " + username);
             return s;
         }
 
-        entry.put("link", "http://www.justjournal.com/users/" + e.getUser().getUsername() + "/entry/" + e.getId());
-        entry.put("permaLink", "http://www.justjournal.com/users/" + e.getUser().getUsername() + "/entry/" + e.getId());
+        entry.put("link", settings.getBaseUri() + "users/"  + e.getUser().getUsername() + "/entry/" + e.getId());
+        entry.put("permaLink", settings.getBaseUri() + "users/"  + e.getUser().getUsername() + "/entry/" + e.getId());
         entry.put("userid", Integer.toString(userId));
         entry.put("mt_allow_pings", 0);     /* TODO: on or off? */
         entry.put("mt_allow_comments", 1);  /* TODO: on or off? */

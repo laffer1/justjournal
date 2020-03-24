@@ -1,6 +1,7 @@
 package com.justjournal.ctl.api;
 
 import com.justjournal.Login;
+import com.justjournal.ctl.error.ErrorHandler;
 import com.justjournal.model.Journal;
 import com.justjournal.model.Style;
 import com.justjournal.repository.JournalRepository;
@@ -88,7 +89,7 @@ public class JournalController {
 
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
+            return ErrorHandler.modelError(  "The login timed out or is invalid.");
         }
 
         try {
@@ -104,7 +105,7 @@ public class JournalController {
 
             if (j.getUser().getId() != Login.currentLoginId(session)) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                return java.util.Collections.singletonMap("error", "You do not have permission to update this journal.");
+                return ErrorHandler.modelError(  "You do not have permission to update this journal.");
             }
 
             j.setAllowSpider(journal.isAllowSpider());
@@ -116,7 +117,7 @@ public class JournalController {
                 j.setStyle(s);
             } else {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                return java.util.Collections.singletonMap("error", "Missing style id.");
+                return ErrorHandler.modelError(  "Missing style id.");
             }
             
             j.setModified(Calendar.getInstance().getTime());
@@ -126,7 +127,7 @@ public class JournalController {
         } catch (final Exception e) {
             log.error(e.getMessage(), e);
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return java.util.Collections.singletonMap("error", "Error adding journal.");
+            return ErrorHandler.modelError(  "Error adding journal.");
         }
     }
 
@@ -139,14 +140,14 @@ public class JournalController {
 
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
+            return ErrorHandler.modelError(  "The login timed out or is invalid.");
         }
 
         final Journal journal = journalRepository.findOneBySlug(slug);
         if (slug != null) {
             if (journal.getUser().getId() != Login.currentLoginId(session)) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                return java.util.Collections.singletonMap("error", "You do not have permission to delete this journal.");
+                return ErrorHandler.modelError(  "You do not have permission to delete this journal.");
             }
 
             journalRepository.delete(journal);
@@ -155,7 +156,7 @@ public class JournalController {
         }
 
         response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-        return java.util.Collections.singletonMap("error", "Error deleting your journal. Bad slug");
+        return ErrorHandler.modelError(  "Error deleting your journal. Bad slug");
     }
 
 }

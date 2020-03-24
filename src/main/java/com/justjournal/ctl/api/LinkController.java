@@ -35,6 +35,7 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.ctl.api;
 
 import com.justjournal.Login;
+import com.justjournal.ctl.error.ErrorHandler;
 import com.justjournal.model.UserLink;
 import com.justjournal.repository.UserLinkRepository;
 import com.justjournal.repository.UserRepository;
@@ -47,6 +48,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -93,7 +95,7 @@ public class LinkController {
 
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
+            return ErrorHandler.modelError(  "The login timed out or is invalid.");
         }
 
         try {
@@ -103,7 +105,7 @@ public class LinkController {
         } catch (final Exception e) {
             log.error(e.getMessage(), e);
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return java.util.Collections.singletonMap("error", "Error adding link.");
+            return ErrorHandler.modelError(  "Error adding link.");
         }
     }
 
@@ -112,16 +114,21 @@ public class LinkController {
     public
     Map<String, String> delete(@RequestBody final int linkId, final HttpSession session,
                                final HttpServletResponse response) {
-
-
+        
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
+            return ErrorHandler.modelError(  "The login timed out or is invalid.");
         }
 
         if (linkId > 0) {
             /* valid link id */
             final UserLink link = userLinkRepository.findById(linkId).orElse(null);
+
+            if (link == null) {
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                return Collections.emptyMap();
+            }
+
             if (link.getUser().getId() == Login.currentLoginId(session)) {
                 userLinkRepository.deleteById(linkId);
 
@@ -129,6 +136,6 @@ public class LinkController {
             }
         }
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        return java.util.Collections.singletonMap("error", "Error deleting your link. Bad link id.");
+        return ErrorHandler.modelError(  "Error deleting your link. Bad link id.");
     }
 }

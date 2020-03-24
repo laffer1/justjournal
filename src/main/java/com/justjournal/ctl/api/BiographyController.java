@@ -27,6 +27,7 @@
 package com.justjournal.ctl.api;
 
 import com.justjournal.Login;
+import com.justjournal.ctl.error.ErrorHandler;
 import com.justjournal.model.User;
 import com.justjournal.model.UserBio;
 import com.justjournal.repository.UserBioRepository;
@@ -91,7 +92,7 @@ public class BiographyController {
 
         if (!StringUtil.lengthCheck(bio, 5, BIO_MAX_LENGTH)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return java.util.Collections.singletonMap("error", "Biography must be > 5 characters");
+            return ErrorHandler.modelError(  "Biography must be > 5 characters");
         }
 
         try {
@@ -103,14 +104,14 @@ public class BiographyController {
                 return java.util.Collections.singletonMap("status", "success");
             } else {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                return java.util.Collections.singletonMap("error", "Authentication Error");
+                return ErrorHandler.modelError(  "Authentication Error");
             }
         } catch (final Exception e3) {
             log.error(e3.getMessage());
         }
 
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        return java.util.Collections.singletonMap("error", "Unable to save biography");
+        return ErrorHandler.modelError(  "Unable to save biography");
     }
 
 }

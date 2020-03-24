@@ -34,6 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.ctl.api;
 
 import com.justjournal.Login;
+import com.justjournal.ctl.error.ErrorHandler;
 import com.justjournal.model.Entry;
 import com.justjournal.model.Favorite;
 import com.justjournal.model.User;
@@ -43,12 +44,19 @@ import com.justjournal.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -74,12 +82,13 @@ public class FavoriteController {
     private final UserRepository userRepository;
 
     @Autowired
-    public FavoriteController(final FavoriteRepository favoriteRepository, final EntryRepository entryRepository, final UserRepository userRepository) {
+    public FavoriteController(final FavoriteRepository favoriteRepository, final EntryRepository entryRepository,
+                              final UserRepository userRepository) {
         this.favoriteRepository = favoriteRepository;
         this.entryRepository = entryRepository;
         this.userRepository = userRepository;
     }
-    
+
     /**
      * Retrieve the collection of favorite entries
      *
@@ -94,6 +103,12 @@ public class FavoriteController {
 
         try {
             final User user = userRepository.findById(Login.currentLoginId(session)).orElse(null);
+
+            if (user == null) {
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                return Collections.emptyList();
+            }
+
             final List<Favorite> favoriteList = favoriteRepository.findByUser(user);
 
             for (final Favorite f : favoriteList) {
@@ -109,11 +124,9 @@ public class FavoriteController {
 
     @PostMapping(value = "/{entryId}")
     @ResponseBody
-    public
-    Map<String, String> create(@PathVariable("entryId") final int entryId,
-                               final HttpSession session,
-                               final HttpServletResponse response) {
-
+    public Map<String, String> create(@PathVariable("entryId") final int entryId,
+                                      final HttpSession session,
+                                      final HttpServletResponse response) {
         try {
             final User user = userRepository.findById(Login.currentLoginId(session)).orElse(null);
             final Entry e = entryRepository.findById(entryId).orElse(null);
@@ -121,28 +134,25 @@ public class FavoriteController {
             final Favorite f = new Favorite();
             f.setUser(user);
             f.setEntry(e);
-            if (favoriteRepository.saveAndFlush(f) == null) {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                return java.util.Collections.singletonMap("error", "Error adding your favorite.  Perhaps its already a favorite?");
-            }
-            return java.util.Collections.singletonMap("id", ""); // XXX
+
+            favoriteRepository.saveAndFlush(f);
+            return java.util.Collections.singletonMap("id", Integer.toString(entryId));
         } catch (final Exception e) {
             log.error(e.getMessage());
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return java.util.Collections.singletonMap("error", "Could not add the favorite.");
+            return ErrorHandler.modelError("Could not add the favorite.");
         }
     }
 
     @DeleteMapping(value = "/{entryId}")
     @ResponseBody
-    public
-    Map<String, String> delete(@PathVariable("entryId") final int entryId,
-                               final HttpSession session,
-                               final HttpServletResponse response) {
+    public Map<String, String> delete(@PathVariable("entryId") final int entryId,
+                                      final HttpSession session,
+                                      final HttpServletResponse response) {
 
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
+            return ErrorHandler.modelError("The login timed out or is invalid.");
         }
 
         try {
@@ -156,7 +166,7 @@ public class FavoriteController {
         } catch (final Exception e) {
             log.error(e.getMessage());
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return java.util.Collections.singletonMap("error", "Could not delete the favorite.");
+            return ErrorHandler.modelError("Could not delete the favorite.");
         }
     }
 }

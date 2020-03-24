@@ -27,6 +27,7 @@
 package com.justjournal.ctl.api;
 
 import com.justjournal.Login;
+import com.justjournal.ctl.error.ErrorHandler;
 import com.justjournal.model.Journal;
 import com.justjournal.model.User;
 import com.justjournal.model.api.PasswordChange;
@@ -121,13 +122,13 @@ public class AccountController {
                 passCurrent.length() < 5 ||
                 passCurrent.length() > 18) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return java.util.Collections.singletonMap(ERROR, "The current password is invalid.");
+            return ErrorHandler.modelError(  "The current password is invalid.");
         }
         if (passNew == null ||
                 passNew.length() < 5 ||
                 passNew.length() > 18) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return java.util.Collections.singletonMap(ERROR, "The new password is invalid.");
+            return ErrorHandler.modelError(  "The new password is invalid.");
         }
 
         // TODO: Refactor change pass
@@ -135,7 +136,7 @@ public class AccountController {
 
         if (!result) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return java.util.Collections.singletonMap(ERROR, "Error changing password.  Did you type in your old password correctly?");
+            return ErrorHandler.modelError(  "Error changing password.  Did you type in your old password correctly?");
         }
         return java.util.Collections.singletonMap("status", "Password Changed.");
     }
@@ -147,14 +148,14 @@ public class AccountController {
             return java.util.Collections.singletonMap("id", Integer.toString(user.getId()));
         }
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        return java.util.Collections.singletonMap(ERROR, "Could not edit account.");
+        return ErrorHandler.modelError(  "Could not edit account.");
     }
 
     @DeleteMapping
     public Map<String, String> delete(final HttpServletResponse response, final HttpSession session) {
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            return java.util.Collections.singletonMap(ERROR, "The login timed out or is invalid.");
+            return ErrorHandler.modelError(  "The login timed out or is invalid.");
         }
 
         final int userID = Login.currentLoginId(session);
@@ -196,7 +197,7 @@ public class AccountController {
         } catch (final Exception e) {
             log.error(e.getMessage());
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            return java.util.Collections.singletonMap(ERROR, "Error deleting account");
+            return ErrorHandler.modelError(  "Error deleting account");
         }
         return java.util.Collections.singletonMap("status", "Account Deleted");
     }
@@ -208,7 +209,7 @@ public class AccountController {
 
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return java.util.Collections.singletonMap(ERROR, "The login timed out or is invalid.");
+            return ErrorHandler.modelError(  "The login timed out or is invalid.");
         }
 
         return changePassword(passwordChange, session, response);
@@ -222,7 +223,7 @@ public class AccountController {
 
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return java.util.Collections.singletonMap(ERROR, "The login timed out or is invalid.");
+            return ErrorHandler.modelError(  "The login timed out or is invalid.");
         }
 
         return updateUser(user, session, response);

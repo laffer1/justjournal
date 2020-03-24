@@ -42,7 +42,6 @@ import org.springframework.util.Assert;
  */
 @Slf4j
 @Component
-@Deprecated
 public class Settings {
 
     private final SettingsRepository settingsDao;

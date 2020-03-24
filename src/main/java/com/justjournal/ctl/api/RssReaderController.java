@@ -27,6 +27,7 @@
 package com.justjournal.ctl.api;
 
 import com.justjournal.Login;
+import com.justjournal.ctl.error.ErrorHandler;
 import com.justjournal.model.RssSubscription;
 import com.justjournal.model.User;
 import com.justjournal.repository.RssSubscriptionsRepository;
@@ -87,7 +88,7 @@ public class RssReaderController {
 
             if (uri == null || uri.length() < RSS_URL_MIN_LENGTH || uri.length() > RSS_URL_MAX_LENGTH) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                return java.util.Collections.singletonMap("error", "Error adding link.");
+                return ErrorHandler.modelError(  "Error adding link.");
             }
             
             final User user = userRepository.findById(Login.currentLoginId(session)).orElse(null);
@@ -99,7 +100,7 @@ public class RssReaderController {
         } catch (final Exception e) {
             log.error(e.getMessage(), e);
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return java.util.Collections.singletonMap("error", "Error adding link.");
+            return ErrorHandler.modelError(  "Error adding link.");
         }
     }
 
@@ -109,7 +110,7 @@ public class RssReaderController {
                                       final HttpServletResponse response) {
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
+            return ErrorHandler.modelError(  "The login timed out or is invalid.");
         }
 
         if (subId > 0) {
@@ -123,6 +124,6 @@ public class RssReaderController {
         }
 
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        return java.util.Collections.singletonMap("error", "Error deleting the subscription. Bad id.");
+        return ErrorHandler.modelError(  "Error deleting the subscription. Bad id.");
     }
 }

@@ -28,6 +28,7 @@ package com.justjournal.ctl.api;
 
 import com.justjournal.Login;
 import com.justjournal.core.Settings;
+import com.justjournal.ctl.error.ErrorHandler;
 import com.justjournal.model.User;
 import com.justjournal.model.api.NewUser;
 import com.justjournal.services.AccountService;
@@ -64,7 +65,7 @@ public class SignUpController {
 
         if (!settings.isUserAllowNew()) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            return java.util.Collections.singletonMap("error", "Could not add user");
+            return ErrorHandler.modelError(  "Could not add user");
         }
 
         if (!StringUtil.lengthCheck(user.getEmail(), 6, 100)) {
@@ -98,7 +99,7 @@ public class SignUpController {
         } catch (final Exception e) {
             log.error(e.getMessage(), e);
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            return java.util.Collections.singletonMap("error", "Could not add user");
+            return ErrorHandler.modelError(  "Could not add user");
         }
     }
 }
