@@ -35,6 +35,7 @@ import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.regex.Matcher;
@@ -129,7 +130,7 @@ public class Login {
         final MessageDigest md = MessageDigest.getInstance("SHA-1");
         byte[] sha1hash;
 
-        md.update(text.getBytes("iso-8859-1"), 0, text.length());
+        md.update(text.getBytes( StandardCharsets.ISO_8859_1), 0, text.length());
         sha1hash = md.digest();
         return convertToHex(sha1hash);
     }
@@ -138,7 +139,7 @@ public class Login {
         final MessageDigest md = MessageDigest.getInstance("SHA-256");
         byte[] sha2hash;
 
-        md.update(text.getBytes("iso-8859-1"), 0, text.length());
+        md.update(text.getBytes( StandardCharsets.ISO_8859_1), 0, text.length());
         sha2hash = md.digest();
         return convertToHex(sha2hash);
     }

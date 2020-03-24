@@ -82,6 +82,7 @@ public class UpdateJournal extends HttpServlet {
     public static final int DEFAULT_BUFFER_SIZE = 8192;
     private static final char endl = '\n';
     private static final long serialVersionUID = -6905389941955230503L;
+    private static final String USERS_PATH = "users/";
 
     @SuppressWarnings({"InstanceVariableOfConcreteClass"})
     @Autowired
@@ -370,13 +371,13 @@ public class UpdateJournal extends HttpServlet {
         if (userID > 0) {
             // We authenticated OK.  Continue...
 
-            User user = userRepository.findById(userID).orElse(null);
-            Entry et = new Entry();
+            final User user = userRepository.findById(userID).orElse(null);
+            final Entry et = new Entry();
 
             // Get the user input
-            final int security = Integer.valueOf(request.getParameter("security"));
-            final int location = Integer.valueOf(request.getParameter("location"));
-            final int mood = Integer.valueOf(request.getParameter("mood"));
+            final int security = Integer.parseInt(request.getParameter("security"));
+            final int location = Integer.parseInt(request.getParameter("location"));
+            final int mood = Integer.parseInt(request.getParameter("mood"));
             String music = request.getParameter("music");
             String aformat = request.getParameter("aformat");
             String allowcomment = request.getParameter("allow_comment");
@@ -568,11 +569,11 @@ public class UpdateJournal extends HttpServlet {
                         }
 
                         // lookup the tag id
-                        if (t.size() > 0) {
+                       // if (t.size() > 0) {
                             // TODO: is this right?
-                            Entry et2 = entryRepository.findById(et.getId()).orElse(null);
+                            // Entry et2 = entryRepository.findById(et.getId()).orElse(null);
                             //    entryDao.setTags(et2.getId(), t);
-                        }
+                      //  }
                     }
                 }
 
@@ -599,16 +600,16 @@ public class UpdateJournal extends HttpServlet {
 
                     if (et.getSecurity().getId() == 2) {
                         /* Initialize Preferences Object */
-                        User pf = userRepository.findByUsername(userName);
-                        Journal journal = new ArrayList<Journal>(pf.getJournals()).get(0);
+                        final User pf = userRepository.findByUsername(userName);
+                        final Journal journal = new ArrayList<Journal>(pf.getJournals()).get(0);
 
                         if (pf != null && !journal.isOwnerViewOnly() && journal.isPingServices()) {
                             log.debug("Ping weblogs");
                             /* WebLogs, Google, blo.gs */
                             final BasePing rp = new BasePing("http://rpc.weblogs.com/pingSiteForm");
                             rp.setName(journal.getName());
-                            rp.setUri(settings.getBaseUri() + "users/" + userName);
-                            rp.setChangesURL(settings.getBaseUri() + "/users/" + userName + "/rss");
+                            rp.setUri(settings.getBaseUri() + USERS_PATH + userName);
+                            rp.setChangesURL(settings.getBaseUri() + USERS_PATH + userName + "/rss");
                             rp.ping();
                             rp.setPingUri("http://blogsearch.google.com/ping");
                             rp.ping();
@@ -618,17 +619,19 @@ public class UpdateJournal extends HttpServlet {
                             /* IceRocket */
                             final IceRocket ice = new IceRocket();
                             ice.setName(journal.getName());
-                            ice.setUri(settings.getBaseUri() + "users/" + userName);
+                            ice.setUri(settings.getBaseUri() + USERS_PATH + userName);
                             ice.ping();
 
 
                             /* do trackback */
                             if (trackback.length() > 0) {
                                 final Entry et2 = entryRepository.findById(et.getId()).orElse(null);
-                                final TrackbackOut tbout = new TrackbackOut(trackback,
-                                        settings.getBaseUri() + "users/" + userName + "/entry/" + et2.getId(),
-                                        et.getSubject(), et.getBody(), journal.getName());
-                                tbout.ping();
+                                if (et2 != null) {
+                                    final TrackbackOut tbout = new TrackbackOut(trackback,
+                                            settings.getBaseUri() + USERS_PATH + userName + "/entry/" + et2.getId(),
+                                            et.getSubject(), et.getBody(), journal.getName());
+                                    tbout.ping();
+                                }
                             }
                         }
                     }
@@ -663,6 +666,7 @@ public class UpdateJournal extends HttpServlet {
      * @param request  servlet request
      * @param response servlet response
      */
+    @Override
     protected void doGet(final HttpServletRequest request, final HttpServletResponse response)
             throws java.io.IOException {
         processRequest(request, response);
@@ -674,6 +678,7 @@ public class UpdateJournal extends HttpServlet {
      * @param request  servlet request
      * @param response servlet response
      */
+    @Override
     protected void doPost(final HttpServletRequest request, final HttpServletResponse response)
             throws java.io.IOException {
         processRequest(request, response);
@@ -682,6 +687,7 @@ public class UpdateJournal extends HttpServlet {
     /**
      * Returns a short description of the servlet.
      */
+    @Override
     public String getServletInfo() {
         return "add a journal entry";
     }
