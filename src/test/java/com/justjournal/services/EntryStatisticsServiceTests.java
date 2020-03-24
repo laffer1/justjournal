@@ -5,8 +5,6 @@ import com.justjournal.model.EntryStatistic;
 import com.justjournal.model.User;
 import com.justjournal.repository.EntryRepository;
 import com.justjournal.repository.EntryStatisticRepository;
-import io.reactivex.Maybe;
-import io.reactivex.Observable;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -17,6 +15,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import rx.Observable;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -62,8 +63,8 @@ public class EntryStatisticsServiceTests {
     @Test
     public void getEntryCounts() {
         when(entryStatisticRepository.findByUsernameOrderByYearDesc(TEST_USER)).thenReturn(Collections.singletonList(entryStatistic));
-        Observable<EntryStatistic> o = entryStatisticService.getEntryCounts(TEST_USER);
-        final Iterable<EntryStatistic> myIterator = o.blockingIterable();
+        Flux<EntryStatistic> o = entryStatisticService.getEntryCounts(TEST_USER);
+        final Iterable<EntryStatistic> myIterator = o.toIterable();
 
         assertNotNull(myIterator);
 
@@ -84,9 +85,9 @@ public class EntryStatisticsServiceTests {
     public void getEntryCount() {
         when(entryStatisticRepository.findByUsernameAndYear(TEST_USER, TEST_YEAR)).thenReturn(entryStatistic);
 
-        Maybe<EntryStatistic> o = entryStatisticService.getEntryCount(TEST_USER, TEST_YEAR);
+        Mono<EntryStatistic> o = entryStatisticService.getEntryCount(TEST_USER, TEST_YEAR);
 
-        EntryStatistic es = o.blockingGet();
+        EntryStatistic es = o.block();
         verify(entryStatisticRepository, atLeastOnce()).findByUsernameAndYear(TEST_USER, TEST_YEAR);
 
         assertEquals(TEST_USER, es.getUser().getUsername());

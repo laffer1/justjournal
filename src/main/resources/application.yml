@@ -5,6 +5,7 @@ spring:
   profiles: default
   flyway:
     baseline-on-migrate: true
+    table: schema_version
   jackson:
     serialization:
       write-dates-as-timestamps: false
@@ -86,6 +87,7 @@ spring:
       minimum-idle: 1
   flyway:
     baseline-on-migrate: true
+    table: schema_version
 
 app:
   minio:

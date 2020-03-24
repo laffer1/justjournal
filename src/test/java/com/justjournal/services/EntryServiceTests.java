@@ -37,6 +37,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 
@@ -65,7 +66,7 @@ public class EntryServiceTests {
 
     @Test
     public void entryGetRecentEntriesPublic() throws ServiceException {
-        final List<RecentEntry> entryList = entryService.getRecentEntriesPublic(TEST_USER).toList().blockingGet();
+        final List<RecentEntry> entryList = entryService.getRecentEntriesPublic(TEST_USER).collect(Collectors.toList()).block();
         assertNotNull(entryList);
         assertTrue(entryList.size() > 2);
         final RecentEntry re = entryList.get(0);
@@ -75,7 +76,7 @@ public class EntryServiceTests {
 
     @Test
     public void entryGetRecentEntries() throws ServiceException {
-        final List<RecentEntry> entryList = entryService.getRecentEntries(TEST_USER).toList().blockingGet();
+        final List<RecentEntry> entryList = entryService.getRecentEntries(TEST_USER).collectList().block();
         assertNotNull(entryList);
         assertTrue(entryList.size() > 3);
         final RecentEntry re = entryList.get(0);

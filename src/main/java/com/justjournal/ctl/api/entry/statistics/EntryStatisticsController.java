@@ -28,7 +28,7 @@ public class EntryStatisticsController {
     @ResponseBody
     public ResponseEntity<List<EntryStatistic>> getStatistics(@PathVariable("username") final String username) {
 
-        final Iterable<EntryStatistic> myIterator = entryStatisticService.getEntryCounts(username).blockingIterable();
+        final Iterable<EntryStatistic> myIterator = entryStatisticService.getEntryCounts(username).toIterable();
         final List<EntryStatistic> e = IteratorUtils.toList(myIterator.iterator());
         Collections.sort(e);
 

@@ -875,7 +875,7 @@ public class UsersController {
     private String search(final UserContext uc, final int maxResults, final String term) {
         final StringBuilder sb = new StringBuilder();
 
-        final PageRequest page = new PageRequest(0, maxResults);
+        final PageRequest page = PageRequest.of(0, maxResults);
         final Page<BlogEntry> result;
 
         if (term != null && term.length() > 0) {
@@ -1748,7 +1748,7 @@ public class UsersController {
         // RSS advisory board format
         rss.setManagingEditor(user.getUserContact().getEmail() + " (" + user.getFirstName() + ")");
 
-        final Pageable page = new PageRequest(0, 15);
+        final Pageable page = PageRequest.of(0, 15);
         rss.populate(entryDao.findByUserAndSecurityOrderByDateDesc(user, securityDao.findById(2).orElse(null),
                 page).getContent());
         return rss.toXml();
@@ -1774,7 +1774,7 @@ public class UsersController {
         atom.setTitle(new ArrayList<Journal>(user.getJournals()).get(0).getName());
         atom.setId("http://www.justjournal.com/users/" + user.getUsername() + "/atom");
         atom.setSelfLink("/users/" + user.getUsername() + "/atom");
-        final Pageable page = new PageRequest(0, 15);
+        final Pageable page = PageRequest.of(0, 15);
         atom.populate(entryDao.findByUserAndSecurityOrderByDateDesc(user,
                 securityDao.findById(2).orElse(null), page).getContent());
         return atom.toXml();

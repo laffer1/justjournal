@@ -38,6 +38,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -73,7 +74,7 @@ public class RecentBlogsController {
     private Rss rss;
 
     @Cacheable("recentblogs")
-    @RequestMapping(method = RequestMethod.GET, produces = "application/rss+xml")
+    @GetMapping(produces = "application/rss+xml")
     @ResponseBody
     public String get(final HttpServletResponse response) {
         response.setContentType("application/rss+xml;charset=UTF-8");
@@ -98,16 +99,19 @@ public class RecentBlogsController {
             rss.setSelfLink(set.getBaseUri() + "RecentBlogs");
 
             final Security security = securityDao.findById(2).orElse(null); // public
-            final Pageable pageable = new PageRequest(1,15);
+            final Pageable pageable = PageRequest.of(1,15);
             final Page<Entry> entries = entryRepository.findBySecurityOrderByDateDesc(security, pageable);
 
             final Map<String, Entry> map = new HashMap<>();
             int count = 0;
             for (final Entry e : entries) {
-                if (count == 15)
+                if (count == 15) {
                     break;
-                if (map.containsKey(e.getUser().getUsername()))
+                }
+
+                if (map.containsKey(e.getUser().getUsername())) {
                     continue;
+                }
 
                 map.put(e.getUser().getUsername(), e);
                 count++;
