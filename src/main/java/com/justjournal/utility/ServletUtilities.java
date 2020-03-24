@@ -61,7 +61,7 @@ public final class ServletUtilities {
      * @param title HTML Document Title
      * @return A preformatted header
      */
-    public static String headWithTitle(String title) {
+    public static String headWithTitle(final String title) {
         return (DOCTYPE + "\n" +
                 "<html>\n" +
                 "<head>\n<title>" + title +
@@ -79,14 +79,14 @@ public final class ServletUtilities {
      * @return default value on err or correct value
      */
 
-    public static int getIntParameter(HttpServletRequest request,
-                                      String paramName,
-                                      int defaultValue) {
+    public static int getIntParameter(final HttpServletRequest request,
+                                      final String paramName,
+                                      final int defaultValue) {
         final String paramString = request.getParameter(paramName);
         int paramValue;
         try {
             paramValue = Integer.parseInt(paramString);
-        } catch (NumberFormatException nfe) { // Handles null and bad format
+        } catch (final NumberFormatException nfe) { // Handles null and bad format
             paramValue = defaultValue;
         }
         return (paramValue);
@@ -100,10 +100,10 @@ public final class ServletUtilities {
      * @param defaultValue value for errors or not founds.
      * @return The value of the cookie or a default on err
      */
-    public static String getCookieValue(Cookie[] cookies,
-                                        String cookieName,
-                                        String defaultValue) {
-        for (Cookie cookie : cookies) {
+    public static String getCookieValue(final Cookie[] cookies,
+                                        final String cookieName,
+                                        final String defaultValue) {
+        for (final Cookie cookie : cookies) {
             if (cookieName.equals(cookie.getName()))
                 return (cookie.getValue());
         }
@@ -118,7 +118,7 @@ public final class ServletUtilities {
      * @param minutes add n minutes to current date
      * @return expires header
      */
-    public static String createExpiresHeader(int minutes) {
+    public static String createExpiresHeader(final int minutes) {
         final Calendar cal = Calendar.getInstance();
 
         cal.add(Calendar.MINUTE, minutes);
@@ -137,7 +137,7 @@ public final class ServletUtilities {
      * @param d Date to use
      * @return expires header
      */
-    public static String createExpiresHeaderFromDate(Date d) {
+    public static String createExpiresHeaderFromDate(final Date d) {
         final SimpleDateFormat sdf = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z", Locale.US);
         return sdf.format(d);
     }

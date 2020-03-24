@@ -53,7 +53,8 @@ public class AbstractFormatService {
             if (uc.isAuthBlog())
                 entries = entryRepository.findByUsername(uc.getBlogUser().getUsername());
             else
-                entries = entryRepository.findByUsernameAndSecurity(uc.getBlogUser().getUsername(), securityRepository.findByName("public"));
+                entries = entryRepository.findByUsernameAndSecurity(uc.getBlogUser().getUsername(),
+                        securityRepository.findByName("public"));
 
             // Format the current time.
             final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm");

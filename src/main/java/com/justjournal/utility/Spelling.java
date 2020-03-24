@@ -82,7 +82,7 @@ public final class Spelling
      *
      * @param event A reference to the spell check event (word)
      */
-    public void spellingError(SpellCheckEvent event) {
+    public void spellingError(final SpellCheckEvent event) {
         final List suggestions = event.getSuggestions();
         if (suggestions.size() > 0) {
             sb.append("<p><span style=\"color:red\">");
@@ -114,12 +114,12 @@ public final class Spelling
      * @param inText Text to check
      * @return String containing errors found in document.
      */
-    public String checkSpelling(String inText) {
+    public String checkSpelling(final String inText) {
         sb = new StringBuilder();
 
         try {
             spellCheck.checkSpelling(new StringWordTokenizer(inText));
-        } catch (Exception e) {
+        } catch (final Exception e) {
             log.error(e.getMessage());
         }
 

@@ -7,6 +7,7 @@ import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author Lucas Holt
@@ -39,10 +40,10 @@ public class IceRocket extends BasePing {
                     "  <methodName>ping</methodName>\n" +
                     "    <params>\n" +
                     "      <param>\n" +
-                    "        <value>" + URLEncoder.encode(name, "UTF-8") + "</value>\n" +
+                    "        <value>" + URLEncoder.encode(name, StandardCharsets.UTF_8.displayName()) + "</value>\n" +
                     "      </param>\n" +
                     "      <param>\n" +
-                    "        <value>" + URLEncoder.encode(uri, "UTF-8") + "</value>\n" +
+                    "        <value>" + URLEncoder.encode(uri, StandardCharsets.UTF_8.displayName()) + "</value>\n" +
                     "      </param>\n" +
                     "    </params>\n" +
                     "</methodCall>\n";

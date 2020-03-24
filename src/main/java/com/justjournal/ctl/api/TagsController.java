@@ -99,11 +99,9 @@ public class TagsController {
 
         final Optional<Tag> tag = tagDao.findById(id);
 
-        if (!tag.isPresent())
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return tag.map(value -> ResponseEntity.ok()
+                .eTag(Integer.toString(value.hashCode()))
+                .body(value)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
 
-        return ResponseEntity.ok()
-                .eTag(Integer.toString(tag.get().hashCode()))
-                .body(tag.get());
     }
 }

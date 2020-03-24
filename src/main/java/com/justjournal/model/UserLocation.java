@@ -75,7 +75,7 @@ public class UserLocation implements Serializable {
 
     @JsonCreator
     public UserLocation() {
-
+      super();
     }
 
     public int getId() {

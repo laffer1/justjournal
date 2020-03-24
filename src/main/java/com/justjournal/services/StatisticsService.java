@@ -88,8 +88,7 @@ public class StatisticsService {
             throw new ServiceException(e);
         }
     }
-
-
+    
     public Statistics getStatistics() throws ServiceException {
         try {
             final Statistics statistics = new StatisticsImpl();

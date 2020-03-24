@@ -88,6 +88,9 @@ public class UsersController {
     private static final String PATH_MONTH = "month";
     private static final String MODEL_AVATAR = "avatar";
 
+    private static final String ENTRY_DATE_FORMAT = "EEE, d MMM yyyy";
+    private static final String ENTRY_DATE_TIME_FORMAT = "yyyy-MM-dd hh:mm";
+
     private static final String MEDIA_TYPE_RTF = "application/rtf";
     private static final String MEDIA_TYPE_PDF = "application/pdf";
 
@@ -700,7 +703,7 @@ public class UsersController {
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
-    protected UserContext getUserContext(final String username, final HttpSession session) {
+    public UserContext getUserContext(final String username, final HttpSession session) {
         User authUser = null;
         try {
             authUser = userRepository.findByUsername(Login.currentLoginName(session));
@@ -815,6 +818,9 @@ public class UsersController {
      */
     private Entry getEntry(final int entryId, final UserContext uc) {
         final Entry entry = entryDao.findById(entryId).orElse(null);
+        if (entry == null)
+            return null;
+        
         final int entryUserId = entry.getUser().getId();
 
         // only show blog entries for the owner of the blog
@@ -849,7 +855,7 @@ public class UsersController {
             try {
 
                 if (o != null && o.getId() > 0) {
-                    final SimpleDateFormat formatmydate = new SimpleDateFormat("EEE, d MMM yyyy");
+                    final SimpleDateFormat formatmydate = new SimpleDateFormat(ENTRY_DATE_FORMAT);
 
                     final String curDate = formatmydate.format(o.getDate());
 
@@ -898,7 +904,7 @@ public class UsersController {
                     for (final BlogEntry blogEntry : result.getContent())
                      {
                         // Format the current time.
-                        final SimpleDateFormat formatmydate = new SimpleDateFormat("EEE, d MMM yyyy");
+                        final SimpleDateFormat formatmydate = new SimpleDateFormat(ENTRY_DATE_FORMAT);
                         final SimpleDateFormat formatmytime = new SimpleDateFormat("h:mm a");
                          String curDate = "";
 
@@ -946,22 +952,19 @@ public class UsersController {
 
         try {
             if (uc.isAuthBlog()) {
-                entries =
-                       // entryService.getEntries(uc.getBlogUser().getUsername(), pageable);
-                        entryDao.findByUserOrderByDateDesc(uc.getBlogUser(), pageable);
+                entries = entryDao.findByUserOrderByDateDesc(uc.getBlogUser(), pageable);
 
                 log.debug("getEntries: User is logged in.");
             } else {
-                entries = //entryService.getPublicEntries(uc.getBlogUser().getUsername(), pageable);
-                       entryDao.findByUserAndSecurityOrderByDateDesc(uc.getBlogUser(),
+                entries = entryDao.findByUserAndSecurityOrderByDateDesc(uc.getBlogUser(),
                                securityDao.findById(2).orElse(null), pageable);
 
                 log.debug("getEntries: User is not logged in.");
             }
 
             // Format the current time.
-            final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-            final SimpleDateFormat formatmydate = new SimpleDateFormat("EEE, d MMM yyyy");
+            final SimpleDateFormat formatter = new SimpleDateFormat(ENTRY_DATE_TIME_FORMAT);
+            final SimpleDateFormat formatmydate = new SimpleDateFormat(ENTRY_DATE_FORMAT);
 
             String lastDate = "";
             String curDate;
@@ -1016,8 +1019,8 @@ public class UsersController {
               log.trace("getFavorites: Init Date Parsers.");
 
               // Format the current time.
-              final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-              final SimpleDateFormat formatmydate = new SimpleDateFormat("EEE, d MMM yyyy");
+              final SimpleDateFormat formatter = new SimpleDateFormat(ENTRY_DATE_TIME_FORMAT);
+              final SimpleDateFormat formatmydate = new SimpleDateFormat(ENTRY_DATE_FORMAT);
               final SimpleDateFormat formatmytime = new SimpleDateFormat("h:mm a");
               String lastDate = "";
               String curDate;
@@ -1112,7 +1115,7 @@ public class UsersController {
                   } else if (o.getSecurity().getId() == 1) {
                       sb.append("<span class=\"security\">security: ");
                       sb.append("<img src=\"/img/icon_protected.gif\" alt=\"friends\" /> ");
-                      sb.append("friends");
+                      sb.append(MODEL_FRIENDS);
                       sb.append("</span><br />");
                       sb.append(ENDL);
                   }
@@ -1258,8 +1261,8 @@ public class UsersController {
                 log.debug("getFriends: Init Date Parsers.");
 
             // Format the current time.
-            final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-            final SimpleDateFormat formatmydate = new SimpleDateFormat("EEE, d MMM yyyy");
+            final SimpleDateFormat formatter = new SimpleDateFormat(ENTRY_DATE_TIME_FORMAT);
+            final SimpleDateFormat formatmydate = new SimpleDateFormat(ENTRY_DATE_FORMAT);
             final SimpleDateFormat formatmytime = new SimpleDateFormat("h:mm a");
             String lastDate = "";
             String curDate;
@@ -1354,7 +1357,7 @@ public class UsersController {
                 } else if (o.getSecurity().getId() == 1) {
                     sb.append("<span class=\"security\">security: ");
                     sb.append("<img src=\"/img/icon_protected.gif\" alt=\"friends\" /> ");
-                    sb.append("friends");
+                    sb.append(MODEL_FRIENDS);
                     sb.append("</span><br />");
                     sb.append(ENDL);
                 }
@@ -1626,7 +1629,7 @@ public class UsersController {
      */
     @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
     @Transactional
-    protected String getCalendarMini(final UserContext uc) {
+    public String getCalendarMini(final UserContext uc) {
         final StringBuilder sb = new StringBuilder();
         try {
             final Calendar cal = new GregorianCalendar(TimeZone.getDefault());
@@ -1665,7 +1668,7 @@ public class UsersController {
      * @param uc    The UserContext we are working on including blog owner, authenticated user, and sb to write
      */
     @Transactional
-    protected String getCalendarDay(final int year,
+    public String getCalendarDay(final int year,
                                   final int month,
                                   final int day,
                                   final UserContext uc) {
@@ -1689,7 +1692,7 @@ public class UsersController {
                 sb.append(ENDL);
             } else {
                 final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-                final SimpleDateFormat formatmydate = new SimpleDateFormat("EEE, d MMM yyyy");
+                final SimpleDateFormat formatmydate = new SimpleDateFormat(ENTRY_DATE_FORMAT);
 
                 String lastDate = "";
                 String curDate;
@@ -1734,7 +1737,7 @@ public class UsersController {
      * @param user
      */
     @Transactional
-    protected String getRSS(final User user) {
+    public String getRSS(final User user) {
         final GregorianCalendar calendar = new GregorianCalendar();
         calendar.setTime(new Date());
 
@@ -1763,7 +1766,7 @@ public class UsersController {
      * @param user blog user
      */
     @Transactional
-    protected String getAtom(final User user) {
+    public String getAtom(final User user) {
         final GregorianCalendar calendarg = new GregorianCalendar();
         calendarg.setTime(new Date());
 
@@ -1787,7 +1790,7 @@ public class UsersController {
      * @param user blog user
      */
     @Transactional
-    protected String getPicturesRSS(final User user) {
+    public String getPicturesRSS(final User user) {
 
         final GregorianCalendar calendarg = new GregorianCalendar();
         calendarg.setTime(new Date());
@@ -1807,7 +1810,7 @@ public class UsersController {
 
 
     @Transactional
-    protected String getTags(final UserContext uc, final String tag) {
+    public String getTags(final UserContext uc, final String tag) {
         final StringBuilder sb = new StringBuilder();
         final Collection entries;
 
@@ -1821,7 +1824,7 @@ public class UsersController {
 
             // Format the current time.
             final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-            final SimpleDateFormat formatmydate = new SimpleDateFormat("EEE, d MMM yyyy");
+            final SimpleDateFormat formatmydate = new SimpleDateFormat(ENTRY_DATE_FORMAT);
 
             String lastDate = "";
             String curDate;

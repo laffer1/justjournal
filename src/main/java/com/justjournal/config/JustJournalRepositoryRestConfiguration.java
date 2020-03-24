@@ -14,7 +14,7 @@ import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurerAdapt
 public class JustJournalRepositoryRestConfiguration extends RepositoryRestConfigurerAdapter {
 
     @Override
-    public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config) {
+    public void configureRepositoryRestConfiguration(final RepositoryRestConfiguration config) {
 
         config.exposeIdsFor(Comment.class, Entry.class, Mood.class, Location.class, Security.class, Style.class);
     }

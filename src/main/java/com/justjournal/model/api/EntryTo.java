@@ -110,11 +110,11 @@ public class EntryTo extends EntityModel<EntryTo> implements Serializable {
 
     @Getter @Setter 
     @JsonProperty("tags")
-    private Set<String> tags = new HashSet<String>();
+    private Set<String> tags = new HashSet<>();
     
     @Getter @Setter 
     @JsonProperty("comments")
-    private Set<Comment> comments = new HashSet<Comment>();
+    private Set<Comment> comments = new HashSet<>();
     
     @JsonCreator
     public EntryTo() {

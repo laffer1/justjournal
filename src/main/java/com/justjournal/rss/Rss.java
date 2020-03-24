@@ -209,7 +209,7 @@ public class Rss {
         try {
             final List<Map<String, Object>> list = jdbcTemplate.queryForList(sqlStmt);
 
-            if (list == null || list.isEmpty()) {
+            if (list.isEmpty()) {
                 log.warn("No images loaded from database for Rss Image List for " + userName);
                 return;
             }

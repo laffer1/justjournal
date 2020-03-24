@@ -74,44 +74,44 @@ public final class FileIO {
         return dir.mkdir();
     }
 
-    public boolean deleteDirectory(String path) {
+    public boolean deleteDirectory(final String path) {
         final File dir = new File(path);
         return dir.isDirectory() && dir.delete();
     }
 
-    public boolean deleteFile(String path) {
+    public boolean deleteFile(final String path) {
         final File f = new File(path);
         return f.isFile() && f.delete();
     }
 
-    public boolean touchFile(String path) {
+    public boolean touchFile(final String path) {
         final File f = new File(path);
 
         try {
             return f.createNewFile();
-        } catch (IOException ef) {
+        } catch (final IOException ef) {
             return false;
         }
     }
 
-    public long fileLength(String path) {
+    public long fileLength(final String path) {
         final File f = new File(path);
         return f.length();
     }
 
-    public long fileLastModified(String path) {
+    public long fileLastModified(final String path) {
         final File f = new File(path);
         return f.lastModified();
     }
 
-    public boolean renameFile(String source, String destination) {
+    public boolean renameFile(final String source, final String destination) {
         final File s = new File(source);
         final File d = new File(destination);
 
         return s.renameTo(d);
     }
 
-    public String[] listFiles(String path) {
+    public String[] listFiles(final String path) {
         final File dir = new File(path);
         return dir.list();
     }

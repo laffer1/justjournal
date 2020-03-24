@@ -32,11 +32,15 @@ import com.justjournal.services.TagService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.ParallelFlux;
-import rx.Observable;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -57,13 +61,17 @@ public class TagCloudController {
     }
 
     @Cacheable(value = "tagcloud", key = "#username")
-    @GetMapping(value = "{username}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "{username}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<Collection<Tag>> getTags(@PathVariable("username") final String username)
             throws ServiceException {
         final ParallelFlux<Tag> o = tagService.getTags(username);
         final Collection<Tag> tags = o.collectSortedList(
                 Comparator.comparingLong(Tag::getCount)).block();
+
+        if (tags == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
 
         return ResponseEntity
                 .ok()

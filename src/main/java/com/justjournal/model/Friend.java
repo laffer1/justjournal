@@ -63,7 +63,7 @@ public class Friend implements Serializable {
 
     @JsonCreator
     public Friend() {
-
+       super();
     }
 
     public int getPk() {

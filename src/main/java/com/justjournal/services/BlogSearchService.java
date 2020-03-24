@@ -137,7 +137,7 @@ public class BlogSearchService {
 
             Page<Entry> entries = entryRepository.findAll(pageable);
             for (int i = 0; i < entries.getTotalPages(); i++) {
-                ArrayList<BlogEntry> items = new ArrayList<>();
+                final ArrayList<BlogEntry> items = new ArrayList<>();
 
                 for (final Entry entry : entries) {
                     items.add(convert(entry));

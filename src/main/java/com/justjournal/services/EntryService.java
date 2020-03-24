@@ -26,9 +26,19 @@
 
 package com.justjournal.services;
 
-import com.justjournal.model.*;
-import com.justjournal.repository.*;
+import com.justjournal.model.Entry;
+import com.justjournal.model.EntryTag;
+import com.justjournal.model.PrefBool;
+import com.justjournal.model.RecentEntry;
+import com.justjournal.model.Tag;
+import com.justjournal.model.User;
+import com.justjournal.repository.EntryRepository;
+import com.justjournal.repository.EntryTagsRepository;
+import com.justjournal.repository.SecurityRepository;
+import com.justjournal.repository.TagRepository;
+import com.justjournal.repository.UserRepository;
 import com.justjournal.utility.Xml;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -39,10 +49,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
-import rx.schedulers.Schedulers;
 
-import java.util.*;
-import java.util.function.Function;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Lucas Holt
@@ -66,7 +78,7 @@ public class EntryService {
 
     @Autowired
     private EntryTagsRepository entryTagsRepository;
-    
+
     private Flux<RecentEntry> getRecentEntryObservable(Page<Entry> entries) {
         return Flux.fromIterable(entries)
                 .map(o -> {
@@ -86,8 +98,10 @@ public class EntryService {
     @Transactional(readOnly = true, isolation = Isolation.READ_UNCOMMITTED)
     public Flux<RecentEntry> getRecentEntriesPublic(final String username) throws ServiceException {
         try {
-            final Pageable page = PageRequest.of(0, MAX_RECENT_ENTRIES, Sort.by(Sort.Direction.DESC, "date", "id"));
-            final Page<Entry> entries = entryDao.findByUserAndSecurityAndDraftWithSubjectOnly(username, securityDao.findByName("public"), PrefBool.N, page);
+            final Pageable page = PageRequest.of(0, MAX_RECENT_ENTRIES, Sort.by(Sort.Direction.DESC,
+                    "date", "id"));
+            final Page<Entry> entries = entryDao.findByUserAndSecurityAndDraftWithSubjectOnly(username,
+                    securityDao.findByName("public"), PrefBool.N, page);
             return getRecentEntryObservable(entries);
         } catch (final Exception e) {
             log.error(e.getMessage());
@@ -123,6 +137,9 @@ public class EntryService {
     public Entry getPublicEntry(final int id, final String username) throws ServiceException {
         try {
             final Entry entry = entryDao.findById(id).orElse(null);
+            if (entry == null)
+               return null;
+            
             if (entry.getUser().getUsername().equalsIgnoreCase(username) && entry.getSecurity().getId() == 2 && entry.getDraft().equals(PrefBool.N)) // public
                 return entry;
             return null;
@@ -140,7 +157,7 @@ public class EntryService {
                 return Collections.emptyList();
             }
             return entryDao.findByUserAndSecurityAndDraftOrderByDateDesc(user, securityDao.findById(2).orElse(null), PrefBool.N);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             log.error(e.getMessage());
             throw new ServiceException(e);
         }
@@ -186,7 +203,7 @@ public class EntryService {
             final Pageable page = PageRequest.of(0, 20, Sort.Direction.DESC, "date", "id");
             final Page<Entry> fe = entryDao.findByUserFriends(username, PrefBool.N, page);
 
-           return fe.getContent();
+            return fe.getContent();
         } catch (final Exception e) {
             log.error(e.getMessage());
             throw new ServiceException(e);
@@ -200,11 +217,8 @@ public class EntryService {
      * @return
      */
     @Transactional(readOnly = true, isolation = Isolation.READ_UNCOMMITTED)
-    public Flux<Tag> getEntryTags(final String username) throws ServiceException {
+    public Flux<Tag> getEntryTags(@NonNull final String username) throws ServiceException {
         try {
-            assert entryDao != null;
-            assert username != null;
-
             final Map<String, Tag> tags = new HashMap<>();
 
             final List<Tag> tagList = tagDao.findByUsername(username);

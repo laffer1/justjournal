@@ -37,7 +37,6 @@ package com.justjournal;
 import com.justjournal.model.Entry;
 import lombok.extern.slf4j.Slf4j;
 
-import java.lang.reflect.Array;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -55,7 +54,7 @@ import java.util.List;
 @Slf4j
 public final class Cal {
     public static final int MONTHS_IN_YEAR = 12;
-    private final List<CalMonth> Months = new ArrayList<CalMonth>(MONTHS_IN_YEAR);
+    private final List<CalMonth> monthList = new ArrayList<>(MONTHS_IN_YEAR);
     private final SimpleDateFormat shortDate = new SimpleDateFormat("yyyy-MM-dd");
     private final String[] days = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
     private final String[] daysSmall = {"S", "M", "T", "W", "R", "F", "S"};
@@ -70,7 +69,7 @@ public final class Cal {
         this.calculateEntryCounts();
     }
 
-    public void setBaseUrl(String baseUrl) {
+    public void setBaseUrl(final String baseUrl) {
         this.baseUrl = baseUrl;
     }
 
@@ -100,7 +99,7 @@ public final class Cal {
                         // "yyyy-MM-dd"
                         final java.util.Date baseDate = shortDate.parse(year + "-" + (month + 1) + "-01", pos2);
 
-                        Months.add(new CalMonth(month, monthPostCt, baseDate));
+                        monthList.add(new CalMonth(month, monthPostCt, baseDate));
                     }
 
                     monthPostCt = new int[calendarg.getActualMaximum(java.util.Calendar.DAY_OF_MONTH)];
@@ -116,9 +115,9 @@ public final class Cal {
             // "yyyy-MM-dd"
             final java.util.Date baseDate = shortDate.parse(year + "-" + (month + 1) + "-01", pos2);
             final int[] n = monthPostCt;
-            Months.add(new CalMonth(month, n, baseDate));
-        } catch (Exception e) {
-            log.debug("Exception raised in calculateEntryCounts... " + e.toString());
+            monthList.add(new CalMonth(month, n, baseDate));
+        } catch (final Exception e) {
+            log.debug("Exception raised in calculateEntryCounts", e);
         }
     }
 
@@ -126,11 +125,11 @@ public final class Cal {
 
         final StringBuilder sb = new StringBuilder();
         CalMonth o;
-        final Iterator<CalMonth> itr = Months.listIterator();
+        final Iterator<CalMonth> itr = monthList.listIterator();
 
         sb.append("<!-- Calendar Output -->\n");
 
-        for (int i = 0, n = Months.size(); i < n; i++) {
+        for (int i = 0, n = monthList.size(); i < n; i++) {
             o = itr.next();
             sb.append("<table class=\"fullcalendar\" cellpadding=\"1\" cellspacing=\"1\">\n");
 
@@ -235,7 +234,7 @@ public final class Cal {
 
         sb.append("\t<!-- Calendar Output -->\n");
 
-        for (CalMonth o : Months) {
+        for (final CalMonth o : monthList) {
             sb.append("\t<table class=\"minicalendar\" cellpadding=\"1\" cellspacing=\"1\">\n");
 
             sb.append("\t\t<caption>");

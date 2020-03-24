@@ -35,15 +35,38 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.ctl.api;
 
 import com.justjournal.Login;
-import com.justjournal.model.*;
-import com.justjournal.repository.*;
+import com.justjournal.model.Comment;
+import com.justjournal.model.Entry;
+import com.justjournal.model.PrefBool;
+import com.justjournal.model.QueueMail;
+import com.justjournal.model.Settings;
+import com.justjournal.model.User;
+import com.justjournal.repository.CommentRepository;
+import com.justjournal.repository.EntryRepository;
+import com.justjournal.repository.QueueMailRepository;
+import com.justjournal.repository.SettingsRepository;
+import com.justjournal.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -69,17 +92,15 @@ public class CommentController {
         this.queueMailRepository = queueMailRepository;
     }
 
-
-    @RequestMapping("/api/comment/{id}")
+    @GetMapping("/api/comment/{id}")
     @ResponseBody
     public Comment getById(@PathVariable("id") final Integer id) {
         return commentDao.findById(id).orElse(null);
     }
 
     @ResponseBody
-    @GetMapping(produces = "application/json")
-    public
-    List<Comment> getComments(@RequestParam("entryId") final Integer entryId, final HttpServletResponse response) {
+    @GetMapping(produces =  MediaType.APPLICATION_JSON_VALUE)
+    public List<Comment> getComments(@RequestParam("entryId") final Integer entryId, final HttpServletResponse response) {
         final Entry entry = entryDao.findById(entryId).orElse(null);
 
         if (entry == null) {
@@ -88,7 +109,7 @@ public class CommentController {
         }
 
         try {
-            if (new ArrayList<>(entry.getUser().getJournals()).get(0).isOwnerViewOnly()  ||
+            if (new ArrayList<>(entry.getUser().getJournals()).get(0).isOwnerViewOnly() ||
                     entry.getAllowComments() == PrefBool.N ||
                     entry.getSecurity().getId() == 0) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -103,9 +124,8 @@ public class CommentController {
 
     @DeleteMapping(value = "{id}")
     @ResponseBody
-    public
-    Map<String, String> delete(@PathVariable("id") final int id, final HttpSession session,
-                               final HttpServletResponse response) {
+    public Map<String, String> delete(@PathVariable("id") final int id, final HttpSession session,
+                                      final HttpServletResponse response) {
 
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -114,6 +134,9 @@ public class CommentController {
 
         try {
             final Comment comment = commentDao.findById(id).orElse(null);
+            if (comment == null)
+                throw new IllegalArgumentException("id");
+
             if (comment.getUser().getId() == Login.currentLoginId(session))
                 commentDao.deleteById(id);
 
@@ -125,17 +148,17 @@ public class CommentController {
         }
     }
 
-    @PostMapping(produces = "application/json")
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public
-    Map<String, String> post(@RequestBody final Comment comment, final HttpSession session, final HttpServletResponse response) {
+    public Map<String, String> post(@RequestBody final Comment comment, final HttpSession session,
+                                    final HttpServletResponse response) {
         return put(comment, session, response);
     }
 
-    @PutMapping(produces = "application/json")
+    @PutMapping(produces =  MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public
-    Map<String, String> put(@RequestBody final Comment comment, final HttpSession session, final HttpServletResponse response) {
+    public Map<String, String> put(@RequestBody final Comment comment, final HttpSession session,
+                                   final HttpServletResponse response) {
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
@@ -145,22 +168,37 @@ public class CommentController {
             final User user = userRepository.findById(Login.currentLoginId(session)).orElse(null);
             final Entry et = entryDao.findById(comment.getEid()).orElse(null);
 
+            if (et == null) {
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                return java.util.Collections.singletonMap("error", "No entry for this comment");
+            }
+
             if (et.getAllowComments().equals(PrefBool.N)) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 return java.util.Collections.singletonMap("error", "Comments blocked by owner of this blog entry.");
             }
 
-            boolean update = false;
-            final Comment saved;
             // new case
             if (comment.getId() == 0) {
                 comment.setUser(user);
                 comment.setDate(new Date());
                 comment.setEntry(et);
-                saved = commentDao.save(comment);
+                try {
+                    commentDao.save(comment);
+                } catch (final Exception e) {
+                    log.error("Could not add comment", e);
+                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    final String error = "Error adding comment";
+                    return java.util.Collections.singletonMap("error", error);
+                }
             } else {
-                update = true;
                 final Comment c = commentDao.findById(comment.getId()).orElse(null);
+
+                if (c == null) {
+                    response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                    return java.util.Collections.singletonMap("error", "No comment found");
+                }
+
                 if (c.getEntry().getId() != et.getId()) {
                     response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                     String error = "Error saving comment. Entry id does not match original on comment.";
@@ -169,16 +207,13 @@ public class CommentController {
                 c.setUser(user);
                 c.setBody(comment.getBody());
                 c.setSubject(comment.getSubject());
-                saved = commentDao.save(c);
-            }
-
-            if (saved == null) {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                String error = "Error adding comment";
-                if (update)
-                    error = "Error editing comment";
-
-                return java.util.Collections.singletonMap("error", error);
+                try {
+                    commentDao.save(c);
+                } catch (final Exception e) {
+                    log.error("Could not update comment", e);
+                    final String error = "Error editing comment";
+                    return java.util.Collections.singletonMap("error", error);
+                }
             }
 
             try {
@@ -189,26 +224,14 @@ public class CommentController {
                 final String entryUrl = baseuri + "users" + et.getUser().getUsername() + "/entry/" + et.getId();
 
                 // TODO: should we allow the user making the comment to disable email notifications?
-                if (et.getEmailComments().equals(PrefBool.Y)) {
+                if (user != null && et.getEmailComments().equals(PrefBool.Y)) {
                     final QueueMail mail = new QueueMail();
                     if (mailfrom != null)
                         mail.setFrom(mailfrom.getValue());
                     else
                         mail.setFrom("root@localhost");
                     mail.setTo(pf.getUserContact().getEmail());
-                    // TODO: site name should be stored in settings not hard coded
-                    mail.setBody(user.getUsername() + " said: \n"
-                            + "Subject: " + comment.getSubject() + "\n"
-                            + comment.getBody() + "\n\nIn response to:\n"
-                            + entryUrl + "\n\n"
-                            + "From here, you can:\n\n"
-                            + "View all comments to this entry: "
-                            + entryUrl + "\n\n"
-                            + "Reply at the webpage: http://www.justjournal.com/#!/comment/"
-                            + comment.getEid()
-                            + "\n\n-- JustJournal.com\n\n"
-                            + "(If you would prefer not to get these updates," +
-                            " edit the entry to disable comment notifications.)\n");
+                    mail.setBody(generateMailBody(user, comment, entryUrl));
 
                     mail.setSubject("JustJournal: Comment Notification");
                     mail.setPurpose("comment_notify");
@@ -224,5 +247,21 @@ public class CommentController {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return java.util.Collections.singletonMap("error", "Error adding comment");
         }
+    }
+
+    private String generateMailBody(final User user, final Comment comment, final String entryUrl) {
+        // TODO: site name should be stored in settings not hard coded
+        return user.getUsername() + " said: \n"
+                + "Subject: " + comment.getSubject() + "\n"
+                + comment.getBody() + "\n\nIn response to:\n"
+                + entryUrl + "\n\n"
+                + "From here, you can:\n\n"
+                + "View all comments to this entry: "
+                + entryUrl + "\n\n"
+                + "Reply at the webpage: http://www.justjournal.com/#!/comment/"
+                + comment.getEid()
+                + "\n\n-- JustJournal.com\n\n"
+                + "(If you would prefer not to get these updates," +
+                " edit the entry to disable comment notifications.)\n";
     }
 }

@@ -42,7 +42,7 @@ import java.io.PrintWriter;
  * @author Lucas Holt
  */
 public final class ErrorPage {
-    private final static String severeStyle =
+    private static final String severeStyle =
             "width: 100%; height: 100px; margin-top: 1in; margin-left: 0; margin-right: 0; position relative; text-align: center; background: maroon; color: white;";
 
     private ErrorPage() {
@@ -87,7 +87,8 @@ public final class ErrorPage {
         sb.append("<div style=\"");
         sb.append(severeStyle);
         sb.append("\">\n");
-        sb.append("<h1 style=\"font: 72pt Arial, Helvetica, sans-serif; letter-spacing: .2in;\">").append(ErrTitle).append("</h1>\n");
+        sb.append("<h1 style=\"font: 72pt Arial, Helvetica, sans-serif; letter-spacing: .2in;\">")
+                .append(ErrTitle).append("</h1>\n");
         sb.append("</div>\n");
 
         sb.append("<div style=\"margin: 1in; font: 12pt Arial, Helvetica, sans-serif;\">\n");

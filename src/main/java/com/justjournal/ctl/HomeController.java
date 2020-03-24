@@ -29,8 +29,8 @@ package com.justjournal.ctl;
 import com.justjournal.Login;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpSession;
 
@@ -41,15 +41,15 @@ import javax.servlet.http.HttpSession;
  */
 @Controller
 @RequestMapping("/")
-final public class HomeController {
+public final class HomeController {
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     public String home(Model model, HttpSession session) {
         model.addAttribute("username", Login.currentLoginName(session));
         return "index";
     }
 
-    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+    @GetMapping(value = "/logout")
     public String logout(Model model, HttpSession session) {
 
         session.invalidate();

@@ -42,13 +42,14 @@ public class JournalController {
     private StyleService styleService;
 
     @Autowired
-    public JournalController(final JournalRepository journalRepository, final UserRepository userRepository, final StyleService styleService) {
+    public JournalController(final JournalRepository journalRepository, final UserRepository userRepository,
+                             final StyleService styleService) {
         this.journalRepository = journalRepository;
         this.userRepository = userRepository;
         this.styleService = styleService;
     }
 
-    @GetMapping(value = "user/{username}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "user/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<List<Journal>> listByUser(@PathVariable("username") final String username) {
         try {
@@ -59,7 +60,7 @@ public class JournalController {
         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @GetMapping(value = "{slug}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "{slug}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<Journal> get(@PathVariable("slug") final String slug) {
         try {
@@ -71,7 +72,7 @@ public class JournalController {
     }
 
 
-    @PostMapping(value = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Map<String, String> post(@RequestBody final Journal journal,
                                     final HttpSession session, final HttpServletResponse response) {
@@ -79,7 +80,7 @@ public class JournalController {
     }
 
 
-    @PutMapping(value = "{slug}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PutMapping(value = "{slug}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Map<String, String> put(@PathVariable("slug") final String slug,
                                    @RequestBody Journal journal,
@@ -117,15 +118,11 @@ public class JournalController {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 return java.util.Collections.singletonMap("error", "Missing style id.");
             }
+            
             j.setModified(Calendar.getInstance().getTime());
-
             j = journalRepository.saveAndFlush(j);
-            if (j != null)
-                return java.util.Collections.singletonMap("slug", j.getSlug());
 
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return java.util.Collections.singletonMap("error", "Error adding journal.");
-
+            return java.util.Collections.singletonMap("slug", j.getSlug());
         } catch (final Exception e) {
             log.error(e.getMessage(), e);
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -133,7 +130,7 @@ public class JournalController {
         }
     }
 
-    @DeleteMapping(value = "{slug}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @DeleteMapping(value = "{slug}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Map<String, String> delete(@PathVariable("slug") final String slug,
                                       final HttpSession session,

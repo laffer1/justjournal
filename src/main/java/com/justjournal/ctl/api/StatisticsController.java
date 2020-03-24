@@ -89,7 +89,7 @@ public class StatisticsController {
     @Cacheable(value = "userstatistics", key = "username")
     @GetMapping(value = "{username}", headers = "Accept=*/*", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<UserStatistics> getById(@PathVariable("username") String username) {
+    public ResponseEntity<UserStatistics> getById(@PathVariable("username") final String username) {
 
         try {
             if (username == null || username.equals("") || username.length() < 3) {

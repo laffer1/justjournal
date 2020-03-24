@@ -58,7 +58,7 @@ public final class StringUtil {
      * @return Modified string
      */
     public
-    static String deleteChar(String origin, char delChar) {
+    static String deleteChar(final String origin, final char delChar) {
         final int len = origin.length();
         char[] val = origin.toCharArray();
         char[] buf = new char[len];
@@ -82,7 +82,7 @@ public final class StringUtil {
      * @param str  Modified string after completion.
      * @return The new string
      */
-    public static String replace(String base, char ch, String str) {
+    public static String replace(final String base, final char ch, final String str) {
         return (base.indexOf(ch) < 0) ? base :
                 replace(base, String.valueOf(ch), new String[]{str});
     }
@@ -96,7 +96,7 @@ public final class StringUtil {
      * @param str   the substring
      * @return Modified string after operations.
      */
-    public static String replace(String base, String delim, String[] str) {
+    public static String replace(final String base, final String delim, final String[] str) {
         final int len = base.length();
         final StringBuilder result = new StringBuilder();
 
@@ -138,7 +138,7 @@ public final class StringUtil {
      * @param address an email address to check
      * @return true if the address is valid.
      */
-    public static boolean isEmailValid(String address) {
+    public static boolean isEmailValid(final String address) {
         final Pattern p = Pattern.compile("[A-Za-z0-9\\.\\@_\\-~#]+");
         final Matcher m = p.matcher(address);
 
@@ -151,7 +151,7 @@ public final class StringUtil {
      * @param input A string to check for alphanumeric characters.
      * @return boolean indicating alphanumeric status
      */
-    public static boolean isAlphaNumeric(String input) {
+    public static boolean isAlphaNumeric(final String input) {
         final Pattern p = Pattern.compile("[\\w]+");
         final Matcher m = p.matcher(input);
 
@@ -164,7 +164,7 @@ public final class StringUtil {
      * @param input a string to check for alpha chars.
      * @return boolean indicating alpha status
      */
-    public static boolean isAlpha(String input) {
+    public static boolean isAlpha(final String input) {
         final Pattern p = Pattern.compile("[A-Za-z]+");
         final Matcher m = p.matcher(input);
 
@@ -180,7 +180,7 @@ public final class StringUtil {
      * @return true if the str is between the constraints, false if it violates them.
      */
     public static boolean lengthCheck(final String str, final int minLength, final int maxLength) {
-        int len = str.length();
+        final int len = str.length();
         return len >= minLength && len <= maxLength;
     }
 

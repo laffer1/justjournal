@@ -54,8 +54,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
-
 
 /**
  * Stores RSS content collected from the internet into a datastore,
@@ -105,7 +105,7 @@ public class CachedHeadlineBean extends HeadlineBean {
 
                 log.info("getRssDocument() Day doesn't match: " + uri);
                 hc.u = new URL(uri);
-                ir = new InputStreamReader(hc.u.openStream(), "UTF-8");
+                ir = new InputStreamReader(hc.u.openStream(), StandardCharsets.UTF_8);
                 try (BufferedReader bufferedReader = new BufferedReader(ir)) {
                     String input;
                     while ((input = bufferedReader.readLine()) != null) {
@@ -123,7 +123,7 @@ public class CachedHeadlineBean extends HeadlineBean {
                
                 log.info("getRssDocument() Empty RSS data: " + uri);
                 hc.u = new URL(uri);
-                ir = new InputStreamReader(hc.u.openStream(), "UTF-8");
+                ir = new InputStreamReader(hc.u.openStream(), StandardCharsets.UTF_8);
                 try (BufferedReader bufferedReader = new BufferedReader(ir)) {
                     String input;
                     while ((input = bufferedReader.readLine()) != null) {
@@ -151,7 +151,8 @@ public class CachedHeadlineBean extends HeadlineBean {
                 try {
                     final HttpEntity entity1 = response1.getEntity();
 
-                    try (BufferedReader buff = new BufferedReader(new InputStreamReader(entity1.getContent(), "UTF-8")); ){
+                    try (BufferedReader buff = new BufferedReader(new InputStreamReader(entity1.getContent(),
+                            StandardCharsets.UTF_8)); ){
                         String input;
                         while ((input = buff.readLine()) != null) {
                             sbx.append(StringUtil.replace(input, '\'', "\\\'"));
@@ -197,5 +198,4 @@ public class CachedHeadlineBean extends HeadlineBean {
         log.debug("Hit end of getRssDocument() for " + uri);
         return hc;
     }
-
 }

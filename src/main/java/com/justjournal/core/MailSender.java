@@ -74,7 +74,7 @@ public class MailSender {
             props.put("mail.smtp.auth", "true");
 
             props.put("mail.smtp.port", set.getMailPort());
-            Session s = Session.getInstance(props, new ForcedAuthenticator());
+            final Session s = Session.getInstance(props, new ForcedAuthenticator());
 
             log.trace("MailSender: " + set.getMailUser() + "@" +
                     set.getMailHost() + ":" + set.getMailPort());
@@ -83,14 +83,14 @@ public class MailSender {
 
             log.trace("MailSender: Recordset loaded.");
 
-            for (QueueMail item : items) {
+            for (final QueueMail item : items) {
                 boolean sentok = true;
 
                 try {
-                    InternetAddress from = new InternetAddress(item.getFrom());
-                    InternetAddress to = new InternetAddress(item.getTo());
+                    final InternetAddress from = new InternetAddress(item.getFrom());
+                    final InternetAddress to = new InternetAddress(item.getTo());
 
-                    MimeMessage message = new MimeMessage(s);
+                    final MimeMessage message = new MimeMessage(s);
                     message.setFrom(from);
                     message.setRecipient(Message.RecipientType.TO, to);
                     message.setSubject(item.getSubject());
@@ -98,17 +98,17 @@ public class MailSender {
                     message.setSentDate(new Date());
                     message.saveChanges();
 
-                    Address[] a = {to};
-                    Transport t = s.getTransport("smtp");
+                    final Address[] a = {to};
+                    final Transport t = s.getTransport("smtp");
                     t.connect();
                     t.sendMessage(message, a);
                     t.close();
-                } catch (AddressException e) {
+                } catch (final AddressException e) {
                     sentok = false;
-                    log.error("MailSender: Invalid address. " + e.getMessage());
-                } catch (MessagingException me) {
+                    log.error("MailSender: Invalid address. ", e);
+                } catch (final MessagingException me) {
                     sentok = false;
-                    log.error("MailSender: Send failed." + me.getMessage() + " : " + me.toString());
+                    log.error("MailSender: Send failed.", me);
                 }
 
                 if (sentok) {
@@ -116,8 +116,8 @@ public class MailSender {
                 }
 
             }
-        } catch (Exception me) {
-            log.error("MailSender: Exception - " + me.getMessage());
+        } catch (final Exception me) {
+            log.error("MailSender: Exception", me);
         }
     }
 }

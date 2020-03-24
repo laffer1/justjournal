@@ -43,6 +43,10 @@ package com.justjournal.utility;
  */
 public final class Xml {
 
+    private Xml() {
+        
+    }
+
     /**
      * converts characters that are special in xml to their equivalents.
      * <p/>
@@ -54,8 +58,7 @@ public final class Xml {
      * @param input dirty xml unescaped document
      * @return A string with xml friendly escaped sequences.
      */
-    public
-    static String cleanString(final String input) {
+    public static String cleanString(final String input) {
         if (input == null) return "";
 
         String work = input;
@@ -69,7 +72,7 @@ public final class Xml {
            character to get added to an XML document we can't control.  This also assumes latin1.
          */
         if (input.contains("&nbsp;"))
-            work = work.replaceAll("&nbsp;", " ");
+            work = work.replace("&nbsp;", " ");
 
         work = StringUtil.replace(work, '&', "&amp;");
         work = StringUtil.replace(work, '"', "&quot;");

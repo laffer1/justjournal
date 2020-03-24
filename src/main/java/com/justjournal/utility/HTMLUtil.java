@@ -133,7 +133,7 @@ public final class HTMLUtil {
                     entityPattern = Pattern.compile("&(#?[^; \t]+);");
             }
 
-            catch (PatternSyntaxException ex) {
+            catch (final PatternSyntaxException ex) {
                 // Should not happen unless I've screwed up the pattern.
                 // Throw a runtime error.
 
@@ -141,8 +141,8 @@ public final class HTMLUtil {
             }
         }
 
-        ResourceBundle bundle = getResourceBundle();
-        StringBuilder buf = new StringBuilder();
+        final ResourceBundle bundle = getResourceBundle();
+        final StringBuilder buf = new StringBuilder();
         Matcher matcher;
 
         synchronized (HTMLUtil.class) {
@@ -173,7 +173,7 @@ public final class HTMLUtil {
                     // string in the result, as is.
 
                     try {
-                        int cc = Integer.parseInt(match.substring(1));
+                        final int cc = Integer.parseInt(match.substring(1));
 
                         // It parsed. Is it a valid Unicode character?
 
@@ -183,7 +183,7 @@ public final class HTMLUtil {
                             buf.append("&#").append(match).append(";");
                     }
 
-                    catch (NumberFormatException ex) {
+                    catch (final NumberFormatException ex) {
                         buf.append("&#").append(match).append(";");
                     }
                 }
@@ -192,11 +192,8 @@ public final class HTMLUtil {
                 // entity.
 
                 try {
-                    String rep = bundle.getString("html_" + match);
-                    buf.append(rep);
-                }
-
-                catch (MissingResourceException ex) {
+                    buf.append(bundle.getString("html_" + match));
+                } catch (final MissingResourceException ex) {
                     buf.append("&").append(match).append(";");
                 }
             }
@@ -223,7 +220,7 @@ public final class HTMLUtil {
      * @see #convertCharacterEntities
      * @see #stripHTMLTags
      */
-    public static String textFromHTML(String s) {
+    public static String textFromHTML(final String s) {
         return convertCharacterEntities(stripHTMLTags(s));
     }
 
@@ -251,9 +248,9 @@ public final class HTMLUtil {
      * @return Text with HTML a tags added.
      */
     public static String uriToLink(String input) {
-        String url2 = "((ftp|https?://(.*?))\\s)";
+        final String url2 = "((ftp|https?://(.*?))\\s)";
         // Now convert string we've built up into a real regex object
-        Pattern UrlRegex = Pattern.compile(url2);
+        final Pattern UrlRegex = Pattern.compile(url2);
         // Now ready to apply to raw text to find urls . . .
 
         //final Pattern p = Pattern.compile("(\\sI\\n|^)(\\w+://[^\\s\\n]+)");
@@ -344,22 +341,21 @@ public final class HTMLUtil {
             tidy.parse(bais, baos);
             output = baos.toString();
         }
-        catch (Exception e) {
+        catch (final Exception e) {
             log.error(e.getMessage());
             output = input;  // if an error occurs, use the original input
         }
 
         try {
             bais.close();
+        } catch (final Exception e) {
+            log.error("Error closing input stream for HTMLUtil.clean()", e);
         }
-        catch (Exception e) {
-            log.error("Error closing input stream for HTMLUtil.clean():" + e.getMessage());
-        }
+
         try {
             baos.close();
-        }
-        catch (Exception e) {
-            log.error("Error closing output stream for HTMLUtil.clean():" + e.getMessage());
+        } catch (final Exception e) {
+            log.error("Error closing output stream for HTMLUtil.clean()", e);
         }
         return output;
     }

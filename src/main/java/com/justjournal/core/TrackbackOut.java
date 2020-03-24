@@ -124,7 +124,7 @@ public final class TrackbackOut {
             final URI tmpuri = new URI(address);
             u = tmpuri.toURL();
         } catch (final Exception me) {
-            log.error("Couldn't create URL. " + me.getMessage());
+            log.error("Couldn't create URL. ", me);
             return false;
         }
 
@@ -147,7 +147,7 @@ public final class TrackbackOut {
 
             return true; // todo: parse result and adjust this as necessary.
         } catch (final IOException e) {
-            log.debug("IO Error: " + e.getMessage());
+            log.debug("IO Error", e);
             return false;
         }
     }

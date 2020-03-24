@@ -16,9 +16,9 @@ import reactor.core.scheduler.Schedulers;
 @Slf4j
 @Service
 public class TagService {
+
     @Autowired
     private EntryService entryService;
-
 
     public ParallelFlux<Tag> getTags(final String username) throws ServiceException {
         Flux<Tag> tags = entryService.getEntryTags(username);
@@ -40,7 +40,6 @@ public class TagService {
                 .map(tagWeight::calculateType);
     }
 
-
     @Getter
     @Setter
     class TagWeight {
@@ -55,7 +54,7 @@ public class TagService {
             return calculateSmallestCutoff() * 2;
         }
 
-        Tag calculateType(Tag tag) {
+        Tag calculateType(final Tag tag) {
             if (tag.getCount() > calculateLargestCutoff())
                 tag.setType("TagCloudLarge");
             else if (tag.getCount() < calculateSmallestCutoff())

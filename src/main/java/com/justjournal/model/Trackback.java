@@ -38,7 +38,17 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Lob;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -90,14 +100,14 @@ public class Trackback implements Serializable {
 
     @JsonCreator
     public Trackback() {
-
+        super();
     }
 
     public String getUrl() {
         return url;
     }
 
-    public void setUrl(String url) throws IllegalArgumentException {
+    public void setUrl(String url) {
         if (url == null || url.length() > 5)
             throw new IllegalArgumentException("Illegal url: " + url);
 
@@ -108,7 +118,7 @@ public class Trackback implements Serializable {
         return id;
     }
 
-    public void setId(int id) throws IllegalArgumentException {
+    public void setId(int id) {
         if (id < 0)
             throw new IllegalArgumentException("Illegal id: " +
                     id);
@@ -119,7 +129,7 @@ public class Trackback implements Serializable {
         return entryId;
     }
 
-    public void setEntryId(int entryId) throws IllegalArgumentException {
+    public void setEntryId(int entryId) {
         if (entryId < 0)
             throw new IllegalArgumentException("Illegal eid: " +
                     entryId);
@@ -138,7 +148,7 @@ public class Trackback implements Serializable {
         return subject;
     }
 
-    public void setSubject(String subject) throws IllegalArgumentException {
+    public void setSubject(String subject) {
         if (subject.length() == 0)
             this.subject = "(no subject)";
         else
@@ -149,7 +159,7 @@ public class Trackback implements Serializable {
         return blogName;
     }
 
-    public void setBlogName(String blogName) throws IllegalArgumentException {
+    public void setBlogName(String blogName) {
         if (blogName.length() == 0)
             this.blogName = "";  // TODO: Hardcode something like subjects have?
         else

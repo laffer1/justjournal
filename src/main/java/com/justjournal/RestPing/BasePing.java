@@ -9,6 +9,7 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 /**
  * User: laffer1 Date: Jul 27, 2008 Time: 5:50:49 AM
@@ -34,11 +35,11 @@ public class BasePing {
         final URLConnection uc;
 
         try {
-            uc = createUrl(getUri() + "?name=" + URLEncoder.encode(getName(), "UTF-8") +
-                    "&url=" + URLEncoder.encode(getUri(), "UTF-8") +
-                    "&changesUrl=" + URLEncoder.encode(getChangesURL(), "UTF-8")).openConnection();
+            uc = createUrl(getUri() + "?name=" + URLEncoder.encode(getName(), StandardCharsets.UTF_8.displayName()) +
+                    "&url=" + URLEncoder.encode(getUri(), StandardCharsets.UTF_8.displayName()) +
+                    "&changesUrl=" + URLEncoder.encode(getChangesURL(), StandardCharsets.UTF_8.displayName())).openConnection();
         } catch (final Exception me) {
-            log.debug("Couldn't create URL. " + me.getMessage(), me);
+            log.debug("Couldn't create URL.", me);
             return false;
         }
 
@@ -56,9 +57,8 @@ public class BasePing {
             log.debug(uri + "\n" + input.toString());
 
             return true; // todo: parse result and adjust this as necessary.
-
         } catch (final IOException e) {
-            log.debug("IO Error: " + e.getMessage(), e);
+            log.debug("IO Error", e);
             return false;
         }
     }

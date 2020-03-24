@@ -75,7 +75,8 @@ public class SearchController {
 
             final Link link = linkTo(methodOn(SearchController.class).search(term, page, assembler)).withSelfRel();
 
-            final PagedModel<EntityModel<BlogEntry>> resources = assembler.toModel(entries, blogEntrySearchResourceAssembler, link);
+            final PagedModel<EntityModel<BlogEntry>> resources = assembler.toModel(entries,
+                    blogEntrySearchResourceAssembler, link);
             return new ResponseEntity(resources, HttpStatus.OK);
         } catch (final Exception e) {
             log.error(e.getMessage());
@@ -94,9 +95,11 @@ public class SearchController {
         try {
             final Page<BlogEntry> entries = blogSearchService.publicSearch(term, username, page);
 
-            final Link link = linkTo(methodOn(SearchController.class).search(username, term, page, assembler)).withSelfRel();
+            final Link link = linkTo(methodOn(SearchController.class).search(username, term, page, assembler))
+                    .withSelfRel();
 
-            final PagedModel<EntityModel<BlogEntry>> resources = assembler.toModel(entries, blogEntrySearchResourceAssembler, link);
+            final PagedModel<EntityModel<BlogEntry>> resources = assembler.toModel(entries,
+                    blogEntrySearchResourceAssembler, link);
             return new ResponseEntity(resources, HttpStatus.OK);
         } catch (final Exception e) {
             log.error(e.getMessage());

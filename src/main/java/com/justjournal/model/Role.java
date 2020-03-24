@@ -31,7 +31,7 @@ public class Role implements Serializable {
     private Set<User> users = new HashSet<>();
 
     public String getAuthority() {
-        return name;
+        return getName();
     }
 
     public Integer getId() {

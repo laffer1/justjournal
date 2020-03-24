@@ -20,13 +20,13 @@ public class PdfFormatService extends AbstractFormatService {
 
     public void write(final UserContext userContext, final OutputStream outputStream) throws ServiceException {
         try {
-            final Document document = new Document();
-            final OutputStream out = new BufferedOutputStream(outputStream);
-            PdfWriter.getInstance(document, out);
-            format(userContext, document);
-            document.close();
-            out.flush();
-            out.close();
+            try (Document document = new Document()) {
+                try (OutputStream out = new BufferedOutputStream(outputStream)) {
+                    PdfWriter.getInstance(document, out);
+                    format(userContext, document);
+                    out.flush();
+                }
+            }
         } catch (final DocumentException d) {
             log.error(d.getMessage(), d);
             throw new ServiceException("Could not generate PDF");

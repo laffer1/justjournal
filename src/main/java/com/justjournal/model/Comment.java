@@ -175,7 +175,7 @@ public final class Comment implements Serializable {
     }
 
     public com.justjournal.model.api.Comment toCommentTo() {
-        com.justjournal.model.api.Comment comment = new com.justjournal.model.api.Comment();
+        final com.justjournal.model.api.Comment comment = new com.justjournal.model.api.Comment();
         comment.setBody(getBody()); // TODO: which body type
         comment.setDate(getDate());
         comment.setFormat(getFormat().toString());

@@ -29,7 +29,12 @@ package com.justjournal.model;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
 
 /**
@@ -56,7 +61,7 @@ public class Mood implements Serializable, Comparable<Mood> {
 
     @JsonCreator
     public Mood() {
-
+        super();
     }
 
     public int getId() {

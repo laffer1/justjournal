@@ -31,7 +31,8 @@ public class EntryStatisticService {
     private final EntryRepository entryRepository;
 
     @Autowired
-    public EntryStatisticService(final EntryStatisticRepository entryStatisticRepository, final EntryRepository entryRepository) {
+    public EntryStatisticService(final EntryStatisticRepository entryStatisticRepository,
+                                 final EntryRepository entryRepository) {
         this.entryStatisticRepository = entryStatisticRepository;
         this.entryRepository = entryRepository;
     }

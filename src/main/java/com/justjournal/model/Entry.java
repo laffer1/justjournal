@@ -166,19 +166,20 @@ public class Entry implements Serializable {
 
     // TODO: implement
     @JsonIgnore
-    transient private int attachImage = 0;
+    private transient int attachImage = 0;
+
     @JsonIgnore
-    transient private int attachFile = 0;
+    private transient int attachFile = 0;
 
     @JsonManagedReference(value = "entry-entrytag")
     @JsonProperty("tags")
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "entry", fetch = FetchType.EAGER) // TODO: why!
-    private Set<EntryTag> tags = new HashSet<EntryTag>();
+    private Set<EntryTag> tags = new HashSet<>();
 
     @JsonManagedReference(value = "entry-comment")
     @JsonProperty("comments")
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "entry", fetch = FetchType.EAGER)
-    private Set<Comment> comments = new HashSet<Comment>();
+    private Set<Comment> comments = new HashSet<>();
 
     @JsonCreator
     public Entry() {
@@ -391,10 +392,10 @@ public class Entry implements Serializable {
 
         setMusic(entryTo.getMusic());
         setModified(Calendar.getInstance().getTime());
-        
-        setAllowComments(entryTo.getAllowComments() ? PrefBool.Y : PrefBool.N);
-        setDraft(entryTo.getDraft() ? PrefBool.Y : PrefBool.N);
-        setEmailComments(entryTo.getEmailComments() ? PrefBool.Y : PrefBool.N);
+
+        setAllowComments(entryTo.getAllowComments().booleanValue() ? PrefBool.Y : PrefBool.N);
+        setDraft(entryTo.getDraft().booleanValue() ? PrefBool.Y : PrefBool.N);
+        setEmailComments(entryTo.getEmailComments().booleanValue() ? PrefBool.Y : PrefBool.N);
 
         if (entryTo.getFormat().equals("MARKDOWN")) {
             setFormat(FormatType.MARKDOWN);
@@ -425,7 +426,7 @@ public class Entry implements Serializable {
                 .draft(getDraft() == PrefBool.Y)
                 .emailComments(getEmailComments() == PrefBool.Y)
                 .build();
-        
+
         if (entryTo.getDate() == null)
             entryTo.setDate(Calendar.getInstance().getTime());
 
@@ -439,7 +440,7 @@ public class Entry implements Serializable {
         }
 
         // TODO: needed? entryTo.setComments(getComments().stream().map(Comment::toCommentTo).collect(Collectors.toSet()));
-        
+
         return entryTo;
     }
 }

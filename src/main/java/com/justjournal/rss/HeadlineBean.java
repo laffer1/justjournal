@@ -86,7 +86,6 @@ public class HeadlineBean {
         final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     }
 
-
     protected HeadlineContext getRssDocument(final String uri) throws Exception {
 
         final HeadlineContext hc = new HeadlineContext();
@@ -296,7 +295,9 @@ public class HeadlineBean {
                     sb.append("<h4 class=\"panel-title\">");
                     sb.append("<a role=\"button\" data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#collapse");
                     sb.append(i + "_" + guid.hashCode());
-                    sb.append("\" aria-expanded=\"").append(i == 0 ? "true" : "false").append("\" aria-controls=\"collapse").append(i + "_" + guid.hashCode()).append("\">");
+                    sb.append("\" aria-expanded=\"").append(i == 0 ? "true" : "false")
+                            .append("\" aria-controls=\"collapse")
+                            .append(i + "_" + guid.hashCode()).append("\">");
                     sb.append(Xml.cleanString(title));
                     sb.append("</a></h4></div>");
                     sb.append("<div id=\"collapse").append(i + "_" + guid.hashCode()).append("\" class=\"panel-collapse collapse");

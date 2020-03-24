@@ -79,8 +79,7 @@ public class FavoriteController {
         this.entryRepository = entryRepository;
         this.userRepository = userRepository;
     }
-
-
+    
     /**
      * Retrieve the collection of favorite entries
      *

@@ -66,14 +66,14 @@ public class LinkController {
     @Autowired
     private UserRepository userRepository;
 
-    @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public UserLink getById(@PathVariable("id") Integer id) {
+    public UserLink getById(@PathVariable("id") final Integer id) {
         return userLinkRepository.findById(id).orElse(null);
     }
 
     @Cacheable(value = "userlink", key = "#username")
-    @RequestMapping(value = "user/{username}", method = RequestMethod.GET, produces = "application/json")
+    @GetMapping(value = "user/{username}", produces = "application/json")
     @ResponseBody
     public ResponseEntity<List<UserLink>> getByUser(@PathVariable("username") String username) {
         final List<UserLink> links = userLinkRepository.findByUsernameOrderByTitleTitleAsc(username);
@@ -85,10 +85,11 @@ public class LinkController {
                 .body(links);
     }
 
-    @RequestMapping(method = RequestMethod.PUT)
+    @PutMapping
     @ResponseBody
     public
-    Map<String, String> create(@RequestBody UserLink link, HttpSession session, HttpServletResponse response) {
+    Map<String, String> create(@RequestBody final UserLink link, final HttpSession session,
+                               final HttpServletResponse response) {
 
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -106,10 +107,11 @@ public class LinkController {
         }
     }
 
-    @RequestMapping(method = RequestMethod.DELETE)
+    @DeleteMapping
     @ResponseBody
     public
-    Map<String, String> delete(@RequestBody int linkId, HttpSession session, HttpServletResponse response) {
+    Map<String, String> delete(@RequestBody final int linkId, final HttpSession session,
+                               final HttpServletResponse response) {
 
 
         if (!Login.isAuthenticated(session)) {

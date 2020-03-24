@@ -25,7 +25,7 @@ public final class AtomEntry {
     private String content;
     private String summary;
 
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
@@ -35,9 +35,7 @@ public final class AtomEntry {
         if (link != null ? !link.equals(atomEntry.link) : atomEntry.link != null) return false;
         if (content != null ? !content.equals(atomEntry.content) : atomEntry.content != null) return false;
         if (title != null ? !title.equals(atomEntry.title) : atomEntry.title != null) return false;
-        if (updated != null ? !updated.equals(atomEntry.updated) : atomEntry.updated != null) return false;
-
-        return true;
+        return updated != null ? updated.equals(atomEntry.updated) : atomEntry.updated == null;
     }
 
     public int hashCode() {
@@ -54,7 +52,7 @@ public final class AtomEntry {
         return summary;
     }
 
-    public void setSummary(String summary) {
+    public void setSummary(final String summary) {
         this.summary = summary;
     }
 
@@ -62,7 +60,7 @@ public final class AtomEntry {
         return published;
     }
 
-    public void setPublished(String published) {
+    public void setPublished(final String published) {
         this.published = published;
     }
 
@@ -70,7 +68,7 @@ public final class AtomEntry {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(final String id) {
         this.id = id;
     }
 
@@ -78,7 +76,7 @@ public final class AtomEntry {
         return title;
     }
 
-    public void setTitle(String title) {
+    public void setTitle(final String title) {
         this.title = title;
     }
 
@@ -86,7 +84,7 @@ public final class AtomEntry {
         return link;
     }
 
-    public void setLink(String link) {
+    public void setLink(final String link) {
         this.link = link;
     }
 
@@ -94,7 +92,7 @@ public final class AtomEntry {
         return updated;
     }
 
-    public void setUpdated(String updated) {
+    public void setUpdated(final String updated) {
         this.updated = updated;
     }
 
@@ -102,7 +100,7 @@ public final class AtomEntry {
         return content;
     }
 
-    public void setContent(String content) {
+    public void setContent(final String content) {
         this.content = content;
     }
 }

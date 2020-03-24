@@ -34,7 +34,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpSession;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -61,7 +60,7 @@ public class Login {
     private UserRepository userRepository;
 
     public static boolean isAuthenticated(final HttpSession session) {
-        final String username = (String) session.getAttribute("auth.user");
+        final String username = (String) session.getAttribute(LOGIN_ATTRNAME);
         return username != null && !username.isEmpty();
     }
 
@@ -126,7 +125,7 @@ public class Login {
         return buf.toString();
     }
 
-    public static String sha1(final String text) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+    public static String sha1(final String text) throws NoSuchAlgorithmException {
         final MessageDigest md = MessageDigest.getInstance("SHA-1");
         byte[] sha1hash;
 
@@ -135,7 +134,7 @@ public class Login {
         return convertToHex(sha1hash);
     }
 
-    public static String sha256(final String text) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+    public static String sha256(final String text) throws NoSuchAlgorithmException {
         final MessageDigest md = MessageDigest.getInstance("SHA-256");
         byte[] sha2hash;
 

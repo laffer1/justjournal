@@ -70,8 +70,8 @@ public class BiographyController {
     @Cacheable(value = "biography", key = "username")
     @GetMapping(value = "{username}", headers = "Accept=*/*", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public UserBio get(@PathVariable("username") String username, HttpServletResponse response) {
-        User user = userDao.findByUsername(username);
+    public UserBio get(@PathVariable("username") String username, final HttpServletResponse response) {
+        final User user = userDao.findByUsername(username);
         if (user == null) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return null;
@@ -83,9 +83,11 @@ public class BiographyController {
     @CacheEvict(value = "biography", allEntries = true)
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Map<String, String> post(@RequestBody String bio, HttpServletResponse response, HttpSession session) {
+    public Map<String, String> post(@RequestBody final String bio,
+                                    final HttpServletResponse response,
+                                    final HttpSession session) {
 
-        int userID = Login.currentLoginId(session);
+        final int userID = Login.currentLoginId(session);
 
         if (!StringUtil.lengthCheck(bio, 5, BIO_MAX_LENGTH)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -94,7 +96,7 @@ public class BiographyController {
 
         try {
             if (userID > 0) {
-                UserBio biography = bioDao.findByUserId(userID);
+                final UserBio biography = bioDao.findByUserId(userID);
                 biography.setBio(bio);
                 bioDao.save(biography);
 
@@ -103,7 +105,7 @@ public class BiographyController {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 return java.util.Collections.singletonMap("error", "Authentication Error");
             }
-        } catch (Exception e3) {
+        } catch (final Exception e3) {
             log.error(e3.getMessage());
         }
 

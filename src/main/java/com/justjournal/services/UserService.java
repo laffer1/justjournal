@@ -20,8 +20,7 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
-
-
+    
     @Transactional(readOnly = true, isolation = Isolation.READ_UNCOMMITTED)
     @Cacheable(cacheNames = "members", value="members")
     public List<PublicMember> getPublicMembers() {

@@ -46,10 +46,11 @@ import javax.servlet.ServletException;
  *
  * @author Lucas Holt
  */
-final public class XmlRpc extends XmlRpcServlet {
+public final class XmlRpc extends XmlRpcServlet {
     private static final String BLOGGER = "blogger";
     private static final String METAWEBLOG = "metaWeblog";
 
+    @Override
     public void init(final ServletConfig servletConfig) throws ServletException {
         super.init(servletConfig);
 

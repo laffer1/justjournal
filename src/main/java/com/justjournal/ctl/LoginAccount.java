@@ -58,7 +58,8 @@ public class LoginAccount extends JustJournalBaseServlet {
     private Login webLogin;
 
     @Override
-    protected void execute(HttpServletRequest request, HttpServletResponse response, HttpSession session, StringBuffer sb) {
+    protected void execute(final HttpServletRequest request, final HttpServletResponse response,
+                           final HttpSession session, final StringBuffer sb) {
         boolean blnError = false;
         int userID;
         String userName = fixInput(request, "username");

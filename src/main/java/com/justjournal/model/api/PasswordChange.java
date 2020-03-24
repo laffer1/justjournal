@@ -6,6 +6,7 @@ import java.io.Serializable;
 
 /**
  * Represent password change request
+ *
  * @author Lucas Holt
  */
 public class PasswordChange implements Serializable {
@@ -16,7 +17,7 @@ public class PasswordChange implements Serializable {
 
     @JsonCreator
     public PasswordChange() {
-
+        super();
     }
 
     public String getPassCurrent() {

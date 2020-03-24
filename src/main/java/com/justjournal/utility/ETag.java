@@ -35,7 +35,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.utility;
 
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigInteger;
@@ -44,25 +44,24 @@ import java.security.NoSuchAlgorithmException;
 
 /**
  * ETag HTTP Header implmentation.  Hashes input to generate a unique ETag.
+ * <p>
+ * Format must be ETag: "mytag"  (including quotes) http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html
  *
- * Format must be ETag: "mytag"  (including quotes)
- * http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html
- * 
  * @author Lucas Holt
  * @version $Id: ETag.java,v 1.1 2009/05/30 18:22:21 laffer1 Exp $
  */
+@Slf4j
 public class ETag {
-    private org.slf4j.Logger log = LoggerFactory.getLogger(ETag.class);
     protected HttpServletResponse response;
 
-    public ETag(HttpServletResponse httpResponse) {
+    public ETag(final HttpServletResponse httpResponse) {
         this.response = httpResponse;
     }
 
-    public void writeFromString(String input) {
+    public void writeFromString(final String input) {
         if (input == null)
             throw new IllegalArgumentException("Input cannot be null");
-        
+
         writeFromByteArray(input.getBytes());
     }
 
@@ -72,8 +71,8 @@ public class ETag {
             digest.update(input, 0, input.length);
             String result = new BigInteger(1, digest.digest()).toString(16);
             write(result);
-        } catch (NoSuchAlgorithmException e) {
-            log.error("MD5 hash algorithm is not available.  ETag will not function.");
+        } catch (final NoSuchAlgorithmException e) {
+            log.error("MD5 hash algorithm is not available.  ETag will not function.", e);
         }
     }
 

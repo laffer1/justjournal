@@ -38,7 +38,13 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -72,14 +78,14 @@ public class FriendController {
 
     @GetMapping(value = "{username}/friendswith/{other}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<Boolean> areWeFriends(@PathVariable("username") String username,
-                                                @PathVariable("other") String otherUsername) {
+    public ResponseEntity<Boolean> areWeFriends(@PathVariable("username") final String username,
+                                                @PathVariable("other") final String otherUsername) {
         try {
-            User user = userRepository.findByUsername(username);
+            final User user = userRepository.findByUsername(username);
             if (user == null)
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            
-            for (Friend friend : user.getFriends()) {
+
+            for (final Friend friend : user.getFriends()) {
 
                 if (otherUsername.equalsIgnoreCase(friend.getFriend().getUsername()))
                     return ResponseEntity.ok(true);
@@ -91,7 +97,7 @@ public class FriendController {
     }
 
     /**
-     * @param username       username
+     * @param username username
      * @param response http response
      * @return List of usernames as strings
      */
@@ -114,7 +120,7 @@ public class FriendController {
     }
 
     @CacheEvict(value = "friends", key = "friend")
-    @PutMapping(value="{friend}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "{friend}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Map<String, String> put(@PathVariable("friend") final String friend,
                                    final HttpSession session,
@@ -138,23 +144,20 @@ public class FriendController {
             f.setFriend(friendUser);
             f.setUser(owner);
             f.setPk(owner.getId());
-            if (friendsDao.save(f) != null)
-                return java.util.Collections.singletonMap("status", "success");
-
-            return java.util.Collections.singletonMap("error", "Unable to add friend");
+            friendsDao.save(f);
+            return java.util.Collections.singletonMap("status", "success");
         } catch (final Exception e) {
             log.error(e.getMessage());
             return java.util.Collections.singletonMap("error", "Could not find friend's username");
         }
 
     }
-    
+
     @CacheEvict(value = "friends", allEntries = true)
-    @DeleteMapping(value="{friend}")
+    @DeleteMapping(value = "{friend}")
     @ResponseBody
-    public
-    Map<String, String> delete(@PathVariable("friend") final String friend,
-                               final HttpSession session, final HttpServletResponse response) {
+    public Map<String, String> delete(@PathVariable("friend") final String friend,
+                                      final HttpSession session, final HttpServletResponse response) {
 
 
         if (!Login.isAuthenticated(session)) {
@@ -172,7 +175,7 @@ public class FriendController {
                 return java.util.Collections.singletonMap("status", "success");
             } else {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                   return java.util.Collections.singletonMap("error", "Error deleting friend");
+                return java.util.Collections.singletonMap("error", "Error deleting friend");
             }
         } catch (final Exception e) {
             log.error(e.getMessage(), e);

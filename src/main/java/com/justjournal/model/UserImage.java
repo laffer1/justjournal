@@ -33,7 +33,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.sql.Blob;
 import java.util.Date;
 
 /**
@@ -72,6 +71,7 @@ public class UserImage implements Serializable {
 
     @JsonCreator
     public UserImage() {
+        super();
     }
 
     /**
@@ -88,7 +88,7 @@ public class UserImage implements Serializable {
      *
      * @param id > 0
      */
-    public final void setId(int id) {
+    public final void setId(final int id) {
         if (id > 0)
             this.id = id;
         else

@@ -31,9 +31,10 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 
 /**
  * See http://stackoverflow.com/questions/7672211/java-spring-jackons-date-serialization/14490816#14490816
+ *
  * @author Lucas Holt
  */
-final public class CustomObjectMapper extends ObjectMapper {
+public final class CustomObjectMapper extends ObjectMapper {
     public CustomObjectMapper() {
         configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         // defaults to 8601 date format

@@ -124,7 +124,7 @@ public class TrackbackPingController {
             if (email != null && email.length() > 0)
                 tb.setAuthorEmail(email);  // TODO: validate
 
-            if (istrackback)
+            if (istrackback.booleanValue())
                 tb.setType(TrackbackType.trackback);
             else
                 tb.setType(TrackbackType.postit); // don't do pingbacks yet.  http://wellformedweb.org/story/9#ping_back_note

@@ -27,7 +27,6 @@ import java.io.IOException;
 @Component
 public class GravatarFetcher {
 
-
     @Autowired
     ImageStorageService imageStorageService;
 

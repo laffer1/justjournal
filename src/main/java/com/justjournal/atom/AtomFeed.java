@@ -62,7 +62,7 @@ public class AtomFeed {
     private String authorName;
     private String userName;
 
-    private List<AtomEntry> items = new ArrayList<AtomEntry>(MAX_LENGTH);
+    private List<AtomEntry> items = new ArrayList<>(MAX_LENGTH);
 
     @Autowired
     public AtomFeed(final MarkdownService markdownService) {
@@ -93,11 +93,11 @@ public class AtomFeed {
                 item.setUpdated(DateConvert.encode3339(o.getDate()));
                 Add(item);
             }
-        } catch (Exception ignored) {
+        } catch (final Exception ignored) {
         }
     }
 
-    public void Add(AtomEntry item) {
+    public void Add(final AtomEntry item) {
         items.add(item);
     }
 
@@ -105,13 +105,12 @@ public class AtomFeed {
         return userName;
     }
 
-    public void setUserName(String userName) {
+    public void setUserName(final String userName) {
         this.userName = userName;
     }
 
     public String toXml() {
-
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
 
         sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 
@@ -252,6 +251,5 @@ public class AtomFeed {
     public void setAuthorName(String authorName) {
         this.authorName = authorName;
     }
-
 
 }

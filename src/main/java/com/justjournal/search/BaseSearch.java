@@ -112,7 +112,7 @@ public class BaseSearch {
 
     protected List<Map<String, Object>> realSearch(final List<String> terms) {
 
-        StringBuilder sqlStmt = new StringBuilder(baseQuery);
+        final StringBuilder sqlStmt = new StringBuilder(baseQuery);
 
         for (int i = 0; i < terms.size(); i++) {
             sqlStmt.append(" (");

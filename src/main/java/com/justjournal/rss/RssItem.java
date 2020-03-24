@@ -67,7 +67,7 @@ public final class RssItem {
         return truncateFields;
     }
 
-    public void setTruncateFields(boolean truncateFields) {
+    public void setTruncateFields(final boolean truncateFields) {
         this.truncateFields = truncateFields;
     }
 
@@ -168,7 +168,7 @@ public final class RssItem {
         return link;
     }
 
-    public void setLink(String link) {
+    public void setLink(final String link) {
         this.link = link;
     }
 
@@ -181,7 +181,7 @@ public final class RssItem {
      *
      * @param description
      */
-    public void setDescription(String description) {
+    public void setDescription(final String description) {
 
         if (description.length() > 495 && truncateFields) {
             this.description = description.substring(0, 496);

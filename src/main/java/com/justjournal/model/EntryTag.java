@@ -59,6 +59,7 @@ public class EntryTag implements Serializable {
 
     @JsonCreator
     public EntryTag() {
+        super();
     }
 
     public Entry getEntry() {

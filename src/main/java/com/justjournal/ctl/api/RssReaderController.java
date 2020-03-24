@@ -57,32 +57,33 @@ public class RssReaderController {
     private final UserRepository userRepository;
 
     @Autowired
-    public RssReaderController(final RssSubscriptionsRepository rssSubscriptionsDAO, final UserRepository userRepository) {
+    public RssReaderController(final RssSubscriptionsRepository rssSubscriptionsDAO,
+                               final UserRepository userRepository) {
         this.rssSubscriptionsDAO = rssSubscriptionsDAO;
         this.userRepository = userRepository;
     }
 
-    @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public RssSubscription getById(@PathVariable("id") Integer id) {
         return rssSubscriptionsDAO.findById(id).orElse(null);
     }
 
     @Cacheable(value = "rsssubscription", key = "username")
-    @RequestMapping(value = "user/{username}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "user/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Collection<RssSubscription> getByUser(@PathVariable("username") String username) {
         final User user = userRepository.findByUsername(username);
         return rssSubscriptionsDAO.findByUser(user);
     }
 
-    @RequestMapping(method = RequestMethod.PUT)
-    public
+    @PutMapping
     @ResponseBody
-    Map<String, String> create(@RequestBody String uri, HttpSession session, HttpServletResponse response) {
+    public Map<String, String> create(@RequestBody final String uri, final HttpSession session,
+                               final HttpServletResponse response) {
 
         try {
-            RssSubscription to = new RssSubscription();
+            final RssSubscription to = new RssSubscription();
 
             if (uri == null || uri.length() < RSS_URL_MIN_LENGTH || uri.length() > RSS_URL_MAX_LENGTH) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -102,9 +103,10 @@ public class RssReaderController {
         }
     }
 
-    @RequestMapping(method = RequestMethod.DELETE)
+    @DeleteMapping
     @ResponseBody
-    public Map<String, String> delete(@RequestBody int subId, HttpSession session, HttpServletResponse response) {
+    public Map<String, String> delete(@RequestBody final int subId, final HttpSession session,
+                                      final HttpServletResponse response) {
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return java.util.Collections.singletonMap("error", "The login timed out or is invalid.");
@@ -114,7 +116,7 @@ public class RssReaderController {
             final User user = userRepository.findById(Login.currentLoginId(session)).orElse(null);
             final RssSubscription to = rssSubscriptionsDAO.findById(subId).orElse(null);
 
-            if (user.getId() == to.getUser().getId()) {
+            if (user != null && to != null && user.getId() == to.getUser().getId()) {
                 rssSubscriptionsDAO.delete(to);
                 return java.util.Collections.singletonMap("id", Integer.toString(subId));
             }

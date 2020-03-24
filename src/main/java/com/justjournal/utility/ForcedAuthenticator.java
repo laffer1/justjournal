@@ -41,9 +41,10 @@ public class ForcedAuthenticator extends javax.mail.Authenticator {
     @Autowired
     private SettingsRepository settingsDao;
 
+    @Override
     public PasswordAuthentication getPasswordAuthentication() {
-        String user = settingsDao.findByName("mailUser").getValue();
-        String pass = settingsDao.findByName("mailPass").getValue();
+        final String user = settingsDao.findByName("mailUser").getValue();
+        final String pass = settingsDao.findByName("mailPass").getValue();
 
         return new PasswordAuthentication(user, pass);
     }

@@ -83,11 +83,11 @@ public class Thumbnail {
         try {
             File outfile = new File(outputfile);
             ImageIO.write(thumbImage, "png", outfile);
-        } catch (FileNotFoundException fe) {
-            log.error("create(): File not found, " + fe.getMessage() );
+        } catch (final FileNotFoundException fe) {
+            log.error("create(): File not found", fe);
             throw new Exception("Could not create thumbnail");
         } catch (IOException ioe) {
-           log.error("create(): IO error, " + ioe.getMessage() );
+           log.error("create(): IO error", ioe);
             throw new Exception("Could not create thumbnail");
         }
     }

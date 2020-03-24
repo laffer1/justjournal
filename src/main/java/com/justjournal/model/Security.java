@@ -61,7 +61,7 @@ public class Security implements Serializable {
 
     @JsonCreator
     public Security() {
-
+         super();
     }
 
     public final int getId() {

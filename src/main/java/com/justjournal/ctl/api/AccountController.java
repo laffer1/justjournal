@@ -113,7 +113,7 @@ public class AccountController {
     private JdbcTemplate jdbcTemplate;
 
     private Map<String, String>
-    changePassword(final PasswordChange passwordChange, HttpSession session, HttpServletResponse response) {
+    changePassword(final PasswordChange passwordChange, final HttpSession session, final HttpServletResponse response) {
         final String passCurrent = passwordChange.getPassCurrent();
         final String passNew = passwordChange.getPassNew();
 
@@ -203,8 +203,8 @@ public class AccountController {
 
     @PostMapping(value = "/password", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Map<String, String> post(@RequestBody PasswordChange passwordChange,
-                                    HttpSession session, HttpServletResponse response) {
+    public Map<String, String> post(@RequestBody final PasswordChange passwordChange,
+                                    final HttpSession session, final HttpServletResponse response) {
 
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

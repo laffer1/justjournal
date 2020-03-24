@@ -54,7 +54,7 @@ public class ImageStorageService {
     @Autowired
     private UserPrefRepository userPrefRepository;
 
-    public void deleteAvatar(int userId) {
+    public void deleteAvatar(final int userId) {
         final Optional<UserPref> pref = userPrefRepository.findById(userId);
         if (!pref.isPresent()) {
             throw new IllegalArgumentException("userId");
@@ -74,7 +74,8 @@ public class ImageStorageService {
         }
     }
 
-    public void uploadAvatar(int userId, @NonNull String mimeType, @NonNull AvatarSource source, @NonNull InputStream is)
+    public void uploadAvatar(final int userId, @NonNull final String mimeType, @NonNull final AvatarSource source,
+                             @NonNull final InputStream is)
             throws ServiceException {
 
         if (userId < 1)
