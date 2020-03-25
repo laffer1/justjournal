@@ -30,6 +30,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.justjournal.Login;
+import com.justjournal.model.LoginResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -58,44 +59,6 @@ public class LoginController {
     @Autowired
     private com.justjournal.Login webLogin;
 
-    // Response format
-    @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-    public class LoginResponse implements Serializable {
-        private static final long serialVersionUID = 6809817814936626615L;
-        private String status = null;
-        private String username = null;
-
-        @JsonCreator
-        public LoginResponse() {
-            super();
-        }
-
-        public String getUsername() {
-            return username;
-        }
-
-        public void setUsername(final String username) {
-            this.username = username;
-        }
-
-        public String getStatus() {
-            return status;
-        }
-
-        public void setStatus(final String status) {
-            this.status = status;
-        }
-
-        @JsonIgnore
-        @Override
-        public String toString() {
-            return "LoginResponse{" +
-                    "status='" + status + '\'' +
-                    ", username='" + username + '\'' +
-                    '}';
-        }
-    }
-
     /**
      * Check the login status of the user
      *
@@ -104,15 +67,13 @@ public class LoginController {
      */
     @GetMapping(headers = "Accept=*/*", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public
-    LoginResponse getLoginStatus(final HttpSession session) {
+    public LoginResponse getLoginStatus(final HttpSession session) {
         final LoginResponse response = new LoginResponse();
         final String username = (String) session.getAttribute("auth.user");
         response.setUsername(username);
         response.setStatus(username == null ? JJ_LOGIN_NONE : JJ_LOGIN_OK);
         return response;
     }
-
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE, headers = {"Accept=*/*", "content-type=application/json"})

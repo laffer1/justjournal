@@ -29,7 +29,6 @@ import static org.mockito.Mockito.*;
  * @author Lucas Holt
  */
 @RunWith(MockitoJUnitRunner.class)
-@Ignore
 public class EntryStatisticsServiceTests {
 
     private static final String TEST_USER = "testuser";
@@ -43,7 +42,6 @@ public class EntryStatisticsServiceTests {
 
     @InjectMocks
     private EntryStatisticService entryStatisticService;
-
 
     private EntryStatistic entryStatistic;
     private User user;

@@ -17,18 +17,19 @@ import io.minio.errors.InvalidResponseException;
 import io.minio.errors.NoResponseException;
 import io.minio.errors.RegionConflictException;
 import lombok.NonNull;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Optional;
 
 /**
@@ -38,10 +39,12 @@ import java.util.Optional;
 @Service
 public class ImageStorageService {
 
-    @Value("${bucket.avatar}")
+    @Setter
+    @Value("${bucket.avatar:jjavatar}")
     private String avatarBucket;
 
-    @Value("${bucket.image}")
+    @Setter
+    @Value("${bucket.image:jjimages}")
     private String imageBucket;
 
     @Autowired
@@ -131,7 +134,7 @@ public class ImageStorageService {
         }
     }
 
-    private String getAvatarFileName(final int id, @NonNull final String mimeType) {
+    protected String getAvatarFileName(final int id, @NonNull final String mimeType) {
         final String name = "avatar_" + id;
 
         if (mimeType.contains("jpeg") || mimeType.contains("jpg")) {
@@ -145,6 +148,26 @@ public class ImageStorageService {
         return name;
     }
 
+    /**
+     * upload a file and will close inputstream upon completion.
+     * 
+     * @param bucketName bucket to store images in
+     * @param objectName image name or file name
+     * @param mimeType image mime type
+     * @param is  input stream (preferably a ByteArrayInputStream)
+     * @throws IOException
+     * @throws InvalidKeyException
+     * @throws NoSuchAlgorithmException
+     * @throws InsufficientDataException
+     * @throws InvalidArgumentException
+     * @throws InternalException
+     * @throws NoResponseException
+     * @throws InvalidBucketNameException
+     * @throws XmlPullParserException
+     * @throws ErrorResponseException
+     * @throws RegionConflictException
+     * @throws InvalidResponseException
+     */
     public void uploadFile(@NonNull String bucketName,
                            @NonNull String objectName,
                            @NonNull String mimeType,
@@ -157,7 +180,11 @@ public class ImageStorageService {
             minioClient.makeBucket(bucketName);
         }
 
-        minioClient.putObject(bucketName, objectName, is, mimeType);
+        if (is instanceof ByteArrayInputStream)
+            minioClient.putObject(bucketName, objectName, is, is.available(), mimeType);
+        else
+            minioClient.putObject(bucketName, objectName, is, mimeType);
+        is.close();
     }
 
     public InputStream downloadFile(@NonNull String bucketName, @NonNull String objectName)
