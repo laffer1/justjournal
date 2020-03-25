@@ -54,6 +54,7 @@ import java.io.Serializable;
 @Table(name = "user_link")
 public class UserLink implements Serializable, Comparable<UserLink> {
     private static final long serialVersionUID = 6356304916167520610L;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "linkid")
@@ -73,6 +74,7 @@ public class UserLink implements Serializable, Comparable<UserLink> {
 
     @JsonCreator
     public UserLink() {
+        super();
     }
 
     /**
@@ -89,7 +91,7 @@ public class UserLink implements Serializable, Comparable<UserLink> {
      *
      * @param id > 0
      */
-    public final void setId(int id) {
+    public void setId(int id) {
         if (id > 0)
             this.id = id;
         else
@@ -101,7 +103,7 @@ public class UserLink implements Serializable, Comparable<UserLink> {
      *
      * @return title
      */
-    public final String getTitle() {
+    public String getTitle() {
         return title;
     }
 
@@ -110,7 +112,7 @@ public class UserLink implements Serializable, Comparable<UserLink> {
      *
      * @param title ascii text
      */
-    public final void setTitle(String title) {
+    public void setTitle(String title) {
         if (title != null)
             this.title = title;
         else
@@ -122,7 +124,7 @@ public class UserLink implements Serializable, Comparable<UserLink> {
      *
      * @return uri string
      */
-    public final String getUri() {
+    public String getUri() {
         return uri;
     }
 
@@ -131,7 +133,7 @@ public class UserLink implements Serializable, Comparable<UserLink> {
      *
      * @param uri a valid uri
      */
-    public final void setUri(String uri) {
+    public void setUri(String uri) {
         if (uri != null)
             this.uri = uri;
         else
@@ -142,7 +144,7 @@ public class UserLink implements Serializable, Comparable<UserLink> {
         return user;
     }
 
-    public void setUser(final User user) {
+    public void setUser(User user) {
         this.user = user;
     }
 

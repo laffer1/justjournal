@@ -65,7 +65,7 @@ public class UserBio implements Serializable {
 
     @JsonCreator
     public UserBio() {
-
+        super();
     }
 
     public String getBio() {

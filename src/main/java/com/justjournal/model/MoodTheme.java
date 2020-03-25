@@ -26,7 +26,14 @@
 
 package com.justjournal.model;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.io.Serializable;
 
 /**
@@ -56,7 +63,7 @@ public class MoodTheme implements Serializable {
         return id;
     }
 
-    public void setId(final int id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -64,7 +71,7 @@ public class MoodTheme implements Serializable {
         return user;
     }
 
-    public void setUser(final User user) {
+    public void setUser(User user) {
         this.user = user;
     }
 
@@ -72,7 +79,7 @@ public class MoodTheme implements Serializable {
         return isPublic;
     }
 
-    public void setIsPublic(final String isPublic) {
+    public void setIsPublic(String isPublic) {
         this.isPublic = isPublic;
     }
 
@@ -80,7 +87,7 @@ public class MoodTheme implements Serializable {
         return description;
     }
 
-    public void setDescription(final String description) {
+    public void setDescription(String description) {
         this.description = description;
     }
 }

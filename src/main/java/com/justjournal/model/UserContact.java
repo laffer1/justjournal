@@ -79,70 +79,70 @@ public class UserContact implements Serializable {
 
     @JsonCreator
     public UserContact() {
-
+       super();
     }
 
-    public final String getEmail() {
+    public String getEmail() {
         return this.email;
     }
 
-    public final void setEmail(final String email) {
+    public void setEmail(String email) {
         this.email = email;
     }
 
-    public final String getIcq() {
+    public String getIcq() {
         return this.icq;
     }
 
-    public final void setIcq(final String icq) {
+    public void setIcq(String icq) {
         this.icq = icq;
     }
 
-    public final String getAim() {
+    public String getAim() {
         return this.aim;
     }
 
-    public final void setAim(final String aim) {
+    public void setAim(String aim) {
         this.aim = aim;
     }
 
-    public final String getYahoo() {
+    public String getYahoo() {
         return this.yahoo;
     }
 
-    public final void setYahoo(final String yahoo) {
+    public void setYahoo(String yahoo) {
         this.yahoo = yahoo;
     }
 
-    public final String getMsn() {
+    public String getMsn() {
         return this.msn;
     }
 
-    public final void setMsn(final String msn) {
+    public void setMsn(String msn) {
         this.msn = msn;
     }
 
-    public final String getPhone() {
+    public String getPhone() {
         return this.phone;
     }
 
-    public final void setPhone(final String phone) {
+    public void setPhone(String phone) {
         this.phone = phone;
     }
 
-    public final String getHpTitle() {
+    public String getHpTitle() {
         return this.hpTitle;
     }
 
-    public final void setHpTitle(final String hpTitle) {
+    public void setHpTitle( String hpTitle) {
         this.hpTitle = hpTitle;
     }
 
-    public final String getHpUri() {
+    public String getHpUri() {
         return this.hpUri;
     }
 
-    public final void setHpUri(final String hpUri) {
+    public void setHpUri(String hpUri) {
         this.hpUri = hpUri;
     }
 
@@ -150,7 +150,7 @@ public class UserContact implements Serializable {
         return id;
     }
 
-    public void setId(final int id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -158,7 +158,7 @@ public class UserContact implements Serializable {
         return user;
     }
 
-    public void setUser(final User user) {
+    public void setUser(User user) {
         this.user = user;
     }
 }

@@ -45,6 +45,7 @@ import java.util.Date;
 @Table(name = "user_images")
 public class UserImage implements Serializable {
     private static final long serialVersionUID = 6356304916167520629L;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -79,7 +80,7 @@ public class UserImage implements Serializable {
      *
      * @return int > 0
      */
-    public final int getId() {
+    public int getId() {
         return id;
     }
 
@@ -88,7 +89,7 @@ public class UserImage implements Serializable {
      *
      * @param id > 0
      */
-    public final void setId(final int id) {
+    public void setId(int id) {
         if (id > 0)
             this.id = id;
         else
@@ -100,7 +101,7 @@ public class UserImage implements Serializable {
      *
      * @return title
      */
-    public final String getTitle() {
+    public String getTitle() {
         return title;
     }
 
@@ -109,7 +110,7 @@ public class UserImage implements Serializable {
      *
      * @param title ascii text
      */
-    public final void setTitle(String title) {
+    public void setTitle(String title) {
         if (title != null)
             this.title = title;
         else
@@ -120,7 +121,7 @@ public class UserImage implements Serializable {
         return user;
     }
 
-    public void setUser(final User user) {
+    public void setUser(User user) {
         this.user = user;
     }
 
@@ -128,7 +129,7 @@ public class UserImage implements Serializable {
         return mimeType;
     }
 
-    public void setMimeType(final String mimeType) {
+    public void setMimeType(String mimeType) {
         this.mimeType = mimeType;
     }
 
@@ -136,7 +137,7 @@ public class UserImage implements Serializable {
         return modified;
     }
 
-    public void setModified(final Date modified) {
+    public void setModified(Date modified) {
         this.modified = modified;
     }
 
@@ -144,7 +145,7 @@ public class UserImage implements Serializable {
         return image;
     }
 
-    public void setImage(final byte[] image) {
+    public void setImage(byte[] image) {
         this.image = image;
     }
 }

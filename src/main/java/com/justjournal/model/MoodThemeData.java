@@ -36,7 +36,14 @@ package com.justjournal.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.io.Serializable;
 
 /**
@@ -74,10 +81,10 @@ public class MoodThemeData implements Serializable {
 
     @JsonCreator
     public MoodThemeData() {
-
+        super();
     }
 
-    public final int getId() {
+    public int getId() {
         return id;
     }
 
@@ -85,35 +92,35 @@ public class MoodThemeData implements Serializable {
         this.id = id;
     }
 
-    public final String getFileName() {
+    public String getFileName() {
         return filename;
     }
 
-    public final void setFileName(String value) {
+    public void setFileName(String value) {
         filename = value;
     }
 
-    public final MoodTheme getTheme() {
+    public MoodTheme getTheme() {
         return theme;
     }
 
-    public final void setTheme(MoodTheme value) {
+    public void setTheme(MoodTheme value) {
         theme = value;
     }
 
-    public final int getWidth() {
+    public int getWidth() {
         return width;
     }
 
-    public final void setWidth(int value) {
+    public void setWidth(int value) {
         width = value;
     }
 
-    public final int getHeight() {
+    public int getHeight() {
         return height;
     }
 
-    public final void setHeight(int value) {
+    public void setHeight(int value) {
         height = value;
     }
 
@@ -121,7 +128,7 @@ public class MoodThemeData implements Serializable {
         return filename;
     }
 
-    public void setFilename(final String filename) {
+    public void setFilename(String filename) {
         this.filename = filename;
     }
 
@@ -129,7 +136,7 @@ public class MoodThemeData implements Serializable {
         return mood;
     }
 
-    public void setMood(final Mood mood) {
+    public void setMood(Mood mood) {
         this.mood = mood;
     }
 }

@@ -13,6 +13,7 @@ import io.minio.errors.InsufficientDataException;
 import io.minio.errors.InternalException;
 import io.minio.errors.InvalidArgumentException;
 import io.minio.errors.InvalidBucketNameException;
+import io.minio.errors.InvalidResponseException;
 import io.minio.errors.NoResponseException;
 import io.minio.errors.RegionConflictException;
 import lombok.NonNull;
@@ -55,7 +56,7 @@ public class ImageStorageService {
     @Autowired
     private UserPrefRepository userPrefRepository;
 
-    public void deleteAvatar(final int userId) {
+    public void deleteAvatar(final int userId) throws ServiceException {
         final Optional<UserPref> pref = userPrefRepository.findById(userId);
         if (!pref.isPresent()) {
             throw new IllegalArgumentException("userId");
@@ -67,11 +68,17 @@ public class ImageStorageService {
             String filename =  userPic.get().getFilename();
             if (filename == null)
                 filename = getAvatarFileName(userId, userPic.get().getMimeType());
-            deleteFile(avatarBucket, filename);
-            userPicRepository.deleteById(userId);
 
-            pref.get().setShowAvatar(PrefBool.N);
-            userPrefRepository.save(pref.get());
+            try {
+                deleteFile(avatarBucket, filename);
+                userPicRepository.deleteById(userId);
+
+                pref.get().setShowAvatar(PrefBool.N);
+                userPrefRepository.save(pref.get());
+            } catch (final Exception e) {
+                log.error("Unable to delete avatar file {} for user {}", filename, userId, e);
+                throw new ServiceException("Unable to delete avatar");
+            }
         }
     }
 
@@ -144,7 +151,7 @@ public class ImageStorageService {
                            @NonNull InputStream is) throws IOException, InvalidKeyException,
             NoSuchAlgorithmException, InsufficientDataException, InvalidArgumentException, InternalException,
             NoResponseException, InvalidBucketNameException, XmlPullParserException, ErrorResponseException,
-            RegionConflictException {
+            RegionConflictException, InvalidResponseException {
 
         if (!minioClient.bucketExists(bucketName)) {
             minioClient.makeBucket(bucketName);
@@ -156,12 +163,14 @@ public class ImageStorageService {
     public InputStream downloadFile(@NonNull String bucketName, @NonNull String objectName)
             throws IOException, InvalidKeyException,
             NoSuchAlgorithmException, InsufficientDataException, InvalidArgumentException, InternalException,
-            NoResponseException, InvalidBucketNameException, XmlPullParserException, ErrorResponseException {
+            NoResponseException, InvalidBucketNameException, XmlPullParserException, ErrorResponseException, InvalidResponseException {
 
         return minioClient.getObject(bucketName, objectName);
     }
 
-    public void deleteFile(@NonNull String bucketName, @NonNull String objectName) {
-          minioClient.removeObject(bucketName, Collections.singletonList(objectName));
+    public void deleteFile(@NonNull String bucketName, @NonNull String objectName) throws IOException, InvalidKeyException,
+            NoSuchAlgorithmException, InsufficientDataException, InvalidArgumentException, InvalidResponseException,
+            InternalException, NoResponseException, InvalidBucketNameException, XmlPullParserException, ErrorResponseException {
+          minioClient.removeObject(bucketName, objectName);
     }
 }

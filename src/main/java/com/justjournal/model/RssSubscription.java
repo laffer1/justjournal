@@ -34,7 +34,14 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.model;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.io.Serializable;
 
 /**
@@ -62,23 +69,23 @@ public class RssSubscription implements Serializable {
         return user;
     }
 
-    public void setUser(final User user) {
+    public void setUser(User user) {
         this.user = user;
     }
 
-    public final int getSubscriptionId() {
+    public int getSubscriptionId() {
         return this.subscriptionId;
     }
 
-    public final void setSubscriptionId(final int subscriptionId) {
+    public void setSubscriptionId(int subscriptionId) {
         this.subscriptionId = subscriptionId;
     }
 
-    public final String getUri() {
+    public String getUri() {
         return this.uri;
     }
 
-    public final void setUri(final String uri) {
+    public void setUri(String uri) {
         this.uri = uri;
     }
 }

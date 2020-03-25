@@ -68,7 +68,7 @@ public class Mood implements Serializable, Comparable<Mood> {
         return this.id;
     }
 
-    public void setId(final int id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -76,7 +76,7 @@ public class Mood implements Serializable, Comparable<Mood> {
         return this.parent;
     }
 
-    public void setParent(final int parent) {
+    public void setParent(int parent) {
         this.parent = parent;
     }
 
@@ -84,12 +84,12 @@ public class Mood implements Serializable, Comparable<Mood> {
         return this.title;
     }
 
-    public void setTitle(final String title) {
+    public void setTitle(String title) {
         this.title = title;
     }
 
     @Override
-    public int compareTo(final Mood mood) {
+    public int compareTo(Mood mood) {
         return this.getTitle().compareTo(mood.getTitle());
     }
 }

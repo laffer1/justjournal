@@ -70,12 +70,12 @@ import java.util.Set;
  *
  * @author Lucas Holt
  * @version $Id: UserTo.java,v 1.10 2012/06/23 18:15:31 laffer1 Exp $ Date: Jan 21, 2004 Time: 12:20:53 PM
- *          <p/>
- *          TODO: add the rest of the properties.
+ * <p/>
+ * TODO: add the rest of the properties.
  */
 @JsonIdentityInfo(
-  generator = ObjectIdGenerators.PropertyGenerator.class,
-  property = "id")
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @Entity
 @Table(name = "user")
@@ -90,7 +90,7 @@ public class User implements Serializable {
 
     @Column(name = "username", length = 15, nullable = false)
     private String username = "";
-    
+
     @Column(name = "name", length = 20, nullable = false)
     private String name = "";
 
@@ -126,13 +126,13 @@ public class User implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private Set<Journal> journals = new HashSet<>();
 
-    @JsonManagedReference(value="entry-user")
+    @JsonManagedReference(value = "entry-user")
     @JsonIgnore
     @Basic(fetch = FetchType.LAZY)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private Set<Entry> entries = new HashSet<>();
 
-    @JsonManagedReference(value="comment-user")
+    @JsonManagedReference(value = "comment-user")
     @JsonIgnore
     @Basic(fetch = FetchType.LAZY)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
@@ -188,20 +188,20 @@ public class User implements Serializable {
     }
 
     public User(User user) {
-    		super();
-    		this.id = user.getId();
-    		this.name = user.getName();
-    		this.username = user.getUsername();
-    		this.password = user.getPassword();
-    		this.passwordType = user.getPasswordType();
-    		this.roles = user.getRoles();
-    	}
+        super();
+        this.id = user.getId();
+        this.name = user.getName();
+        this.username = user.getUsername();
+        this.password = user.getPassword();
+        this.passwordType = user.getPasswordType();
+        this.roles = user.getRoles();
+    }
 
     public UserLocation getUserLocation() {
         return userLocation;
     }
 
-    public void setUserLocation(final UserLocation userLocation) {
+    public void setUserLocation(UserLocation userLocation) {
         this.userLocation = userLocation;
     }
 
@@ -209,7 +209,7 @@ public class User implements Serializable {
         return entries;
     }
 
-    public void setEntries(final Set<Entry> entries) {
+    public void setEntries(Set<Entry> entries) {
         this.entries = entries;
     }
 
@@ -217,7 +217,7 @@ public class User implements Serializable {
         return comments;
     }
 
-    public void setComments(final Set<Comment> comments) {
+    public void setComments(Set<Comment> comments) {
         this.comments = comments;
     }
 
@@ -225,7 +225,7 @@ public class User implements Serializable {
         return bio;
     }
 
-    public void setBio(final UserBio bio) {
+    public void setBio(UserBio bio) {
         this.bio = bio;
     }
 
@@ -233,7 +233,7 @@ public class User implements Serializable {
         return userContact;
     }
 
-    public void setUserContact(final UserContact userContact) {
+    public void setUserContact(UserContact userContact) {
         this.userContact = userContact;
     }
 
@@ -241,7 +241,7 @@ public class User implements Serializable {
         return userPref;
     }
 
-    public void setUserPref(final UserPref userPref) {
+    public void setUserPref(UserPref userPref) {
         this.userPref = userPref;
     }
 
@@ -249,11 +249,11 @@ public class User implements Serializable {
         return since;
     }
 
-    public void setSince(final Integer since) {
+    public void setSince(Integer since) {
         this.since = since;
     }
 
-    public void setType(final Integer type) {
+    public void setType(Integer type) {
         this.type = type;
     }
 
@@ -269,7 +269,7 @@ public class User implements Serializable {
      *
      * @param name User's first name
      */
-    public final void setName(final String name) {
+    public void setName(String name) {
         if (!StringUtil.lengthCheck(name, 2, 20)) {
             throw new IllegalArgumentException("Invalid name. Must be 2-20 characters");
         }
@@ -280,7 +280,7 @@ public class User implements Serializable {
         return modified;
     }
 
-    public void setModified(final Timestamp modified) {
+    public void setModified(Timestamp modified) {
         this.modified = modified;
     }
 
@@ -293,7 +293,7 @@ public class User implements Serializable {
         return lastName;
     }
 
-    public void setLastName(final String lastName) {
+    public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
@@ -302,7 +302,7 @@ public class User implements Serializable {
      *
      * @return User id as an int >= 0
      */
-    public final int getId() {
+    public int getId() {
         return this.id;
     }
 
@@ -311,7 +311,7 @@ public class User implements Serializable {
      *
      * @param id user id
      */
-    public final void setId(final int id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -325,7 +325,7 @@ public class User implements Serializable {
         return lastLogin;
     }
 
-    public void setLastLogin(final java.util.Date dt) {
+    public void setLastLogin(java.util.Date dt) {
         this.lastLogin = dt;
     }
 
@@ -343,7 +343,7 @@ public class User implements Serializable {
      *
      * @param username account name
      */
-    public final void setUsername(final String username) {
+    public void setUsername(String username) {
         // TODO: move username max length to this class
         if (!StringUtil.lengthCheck(username, 3, Login.USERNAME_MAX_LENGTH)) {
             throw new IllegalArgumentException("Invalid username " + username);
@@ -356,15 +356,15 @@ public class User implements Serializable {
      *
      * @return First Name of user
      */
-    public final String getFirstName() {
+    public String getFirstName() {
         return this.getName();
     }
 
-    public final String getPassword() {
+    public String getPassword() {
         return this.password;
     }
 
-    public final void setPassword(final String password) {
+    public void setPassword(String password) {
 
         if (!StringUtil.lengthCheck(password, 5, 64)) {
             throw new IllegalArgumentException("Invalid password");
@@ -372,11 +372,11 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    public final PasswordType getPasswordType() {
+    public PasswordType getPasswordType() {
         return this.passwordType;
     }
 
-    public final void setPasswordType(final PasswordType passwordType) {
+    public void setPasswordType(PasswordType passwordType) {
         this.passwordType = passwordType;
     }
 
@@ -384,7 +384,7 @@ public class User implements Serializable {
         return friends;
     }
 
-    public void setFriends(final Set<Friend> friends) {
+    public void setFriends(Set<Friend> friends) {
         this.friends = friends;
     }
 
@@ -392,7 +392,7 @@ public class User implements Serializable {
         return links;
     }
 
-    public void setLinks(final Set<UserLink> links) {
+    public void setLinks(Set<UserLink> links) {
         this.links = links;
     }
 
@@ -400,7 +400,7 @@ public class User implements Serializable {
         return images;
     }
 
-    public void setImages(final Set<UserImage> images) {
+    public void setImages(Set<UserImage> images) {
         this.images = images;
     }
 
@@ -408,7 +408,7 @@ public class User implements Serializable {
         return journals;
     }
 
-    public void setJournals(final Set<Journal> journals) {
+    public void setJournals(Set<Journal> journals) {
         this.journals = journals;
     }
 
@@ -416,7 +416,7 @@ public class User implements Serializable {
         return roles;
     }
 
-    public void setRoles(final Set<Role> roles) {
+    public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
 }

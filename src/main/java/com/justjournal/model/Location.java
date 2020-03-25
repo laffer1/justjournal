@@ -29,7 +29,12 @@ package com.justjournal.model;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
 
 /**
@@ -53,22 +58,22 @@ public class Location implements Serializable {
 
     @JsonCreator
     public Location() {
-
+       super();
     }
 
-    public final int getId() {
+    public int getId() {
         return this.id;
     }
 
-    public final void setId(int id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public final String getTitle() {
+    public String getTitle() {
         return this.title;
     }
 
-    public final void setTitle(String name) {
+    public void setTitle(String name) {
         this.title = name;
     }
 }

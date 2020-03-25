@@ -31,7 +31,17 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import javax.persistence.*;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
@@ -75,14 +85,14 @@ public class UserLocation implements Serializable {
 
     @JsonCreator
     public UserLocation() {
-      super();
+        super();
     }
 
     public int getId() {
         return id;
     }
 
-    public void setId(final int id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -90,7 +100,7 @@ public class UserLocation implements Serializable {
         return city;
     }
 
-    public void setCity(final String city) {
+    public void setCity(String city) {
         this.city = city;
     }
 
@@ -98,7 +108,7 @@ public class UserLocation implements Serializable {
         return zip;
     }
 
-    public void setZip(final String zip) {
+    public void setZip(String zip) {
         this.zip = zip;
     }
 
@@ -106,7 +116,7 @@ public class UserLocation implements Serializable {
         return user;
     }
 
-    public void setUser(final User user) {
+    public void setUser(User user) {
         this.user = user;
     }
 
@@ -114,7 +124,7 @@ public class UserLocation implements Serializable {
         return state;
     }
 
-    public void setState(final State state) {
+    public void setState(State state) {
         this.state = state;
     }
 
@@ -122,7 +132,7 @@ public class UserLocation implements Serializable {
         return country;
     }
 
-    public void setCountry(final Country country) {
+    public void setCountry(Country country) {
         this.country = country;
     }
 
@@ -130,7 +140,7 @@ public class UserLocation implements Serializable {
         return modified;
     }
 
-    public void setModified(final Timestamp modified) {
+    public void setModified(Timestamp modified) {
         this.modified = modified;
     }
 }
