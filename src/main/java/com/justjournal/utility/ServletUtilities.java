@@ -55,6 +55,10 @@ public final class ServletUtilities {
     public static final String DOCTYPE =
             "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">";
 
+    private ServletUtilities() {
+        super();
+    }
+
     /**
      * Create a HTML 4 doctype and header
      *

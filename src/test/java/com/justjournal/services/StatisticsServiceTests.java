@@ -1,6 +1,7 @@
 package com.justjournal.services;
 
 import com.justjournal.Application;
+import com.justjournal.exception.ServiceException;
 import com.justjournal.model.Statistics;
 import com.justjournal.model.UserStatistics;
 import org.junit.Test;

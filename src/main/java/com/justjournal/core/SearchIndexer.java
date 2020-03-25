@@ -26,7 +26,6 @@ public class SearchIndexer {
         this.blogSearchService = blogSearchService;
     }
 
-
     /**
      * Periodically load new blog entries
      */

@@ -40,5 +40,8 @@ package com.justjournal.model;
  * @author Lucas Holt
  */
 public enum TrackbackType {
-    trackback, pingback, postit
+    // these need to be lower case
+    trackback,
+    pingback,
+    postit
 }

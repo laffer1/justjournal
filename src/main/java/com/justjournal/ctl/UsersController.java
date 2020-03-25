@@ -31,6 +31,7 @@ import com.justjournal.ErrorPage;
 import com.justjournal.Login;
 import com.justjournal.atom.AtomFeed;
 import com.justjournal.core.UserContext;
+import com.justjournal.exception.ServiceException;
 import com.justjournal.model.*;
 import com.justjournal.model.search.BlogEntry;
 import com.justjournal.repository.*;
@@ -869,7 +870,7 @@ public class UsersController {
             } catch (final Exception e1) {
                 log.error("getSingleEntry: " + e1.getMessage() + '\n', e1);
 
-                ErrorPage.Display("Error",
+                ErrorPage.display("Error",
                         "Unable to retrieve journal entry from data store.",
                         sb);
             }
@@ -989,7 +990,7 @@ public class UsersController {
                 sb.append(formatEntry(uc, o, currentDate, false));
             }
         } catch (final Exception e1) {
-            ErrorPage.Display("Error", "Unable to retrieve journal entries from data store.", sb);
+            ErrorPage.display("Error", "Unable to retrieve journal entries from data store.", sb);
             log.error("getEntries: Exception is " + e1.getMessage(), e1);
         }
         return sb.toString();
@@ -1233,7 +1234,7 @@ public class UsersController {
 
           } catch (final Exception e1) {
               log.error(e1.getMessage(), e1);
-              ErrorPage.Display(" Error", "Error retrieving favorite entries", sb);
+              ErrorPage.display(" Error", "Error retrieving favorite entries", sb);
           }
           return sb.toString();
       }
@@ -1474,7 +1475,7 @@ public class UsersController {
 
         } catch (final Exception e1) {
             log.error(e1.getMessage(), e1);
-            ErrorPage.Display(" Error",
+            ErrorPage.display(" Error",
                     "Error retrieving the friends entries",
                     sb);
         }
@@ -1544,7 +1545,7 @@ public class UsersController {
 
         } catch (final Exception e1) {
             log.trace(e1.getMessage(), e1);
-            ErrorPage.Display(" Error", "An error has occured rendering calendar.", sb);
+            ErrorPage.display(" Error", "An error has occured rendering calendar.", sb);
         }
 
         return sb.toString();
@@ -1617,7 +1618,7 @@ public class UsersController {
 
         } catch (final Exception e1) {
             log.trace(e1.getMessage(), e1);
-            ErrorPage.Display(" Error", "An error has occured rendering calendar.", sb);
+            ErrorPage.display(" Error", "An error has occured rendering calendar.", sb);
         }
         return sb.toString();
     }
@@ -1724,7 +1725,7 @@ public class UsersController {
 
         } catch (final Exception e1) {
             log.trace(e1.getMessage(), e1);
-            ErrorPage.Display(" Error", "An error has occurred rendering calendar.", sb);
+            ErrorPage.display(" Error", "An error has occurred rendering calendar.", sb);
         }
 
         return sb.toString();

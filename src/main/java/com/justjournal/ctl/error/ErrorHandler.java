@@ -9,6 +9,10 @@ public class ErrorHandler {
 
     private static final String ERROR_KEY = "error";
 
+    private ErrorHandler() {
+        super();
+    }
+
     public static Map<String, String> modelError(final String errorMessage) {
         return java.util.Collections.singletonMap(ERROR_KEY, errorMessage);
     }

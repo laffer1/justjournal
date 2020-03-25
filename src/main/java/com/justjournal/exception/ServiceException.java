@@ -24,7 +24,7 @@
  * SUCH DAMAGE.
  */
 
-package com.justjournal.services;
+package com.justjournal.exception;
 
 /**
  * JustJournal Service Exception

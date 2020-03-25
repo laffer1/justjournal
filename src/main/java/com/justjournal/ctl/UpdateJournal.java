@@ -360,7 +360,7 @@ public class UpdateJournal extends HttpServlet {
                 }
             } catch (Exception e3) {
                 if (myclient == ClientType.web)
-                    ErrorPage.Display("Authentication Error",
+                    ErrorPage.display("Authentication Error",
                             "Unable to login.  Please check your username and password.",
                             sb);
                 else
@@ -486,7 +486,7 @@ public class UpdateJournal extends HttpServlet {
 
             } catch (final IllegalArgumentException e1) {
                 if (myclient == ClientType.web)
-                    ErrorPage.Display("Input Error", e1.getMessage(), sb);
+                    ErrorPage.display("Input Error", e1.getMessage(), sb);
                 else
                     sb.append("JJ.JOURNAL.UPDATE.FAIL");
 
@@ -494,7 +494,7 @@ public class UpdateJournal extends HttpServlet {
             } catch (final ParseException e) {
                 log.error(e.getMessage());
                 if (myclient == ClientType.web)
-                    ErrorPage.Display("Input Error", "Date Parse failure", sb);
+                    ErrorPage.display("Input Error", "Date Parse failure", sb);
                 else
                     sb.append("JJ.JOURNAL.UPDATE.FAIL");
             }
@@ -646,7 +646,7 @@ public class UpdateJournal extends HttpServlet {
         } else {
             if (myclient == ClientType.web)
                 // We couldn't authenticate.  Tell the user.
-                ErrorPage.Display("Authentication Error",
+                ErrorPage.display("Authentication Error",
                         "Unable to login.  Please check your username and password.",
                         sb);
             else

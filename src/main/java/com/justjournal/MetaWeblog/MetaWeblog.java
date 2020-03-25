@@ -40,7 +40,7 @@ import com.justjournal.repository.*;
 import com.justjournal.restping.BasePing;
 import com.justjournal.restping.IceRocket;
 import com.justjournal.services.EntryService;
-import com.justjournal.services.ServiceException;
+import com.justjournal.exception.ServiceException;
 import com.justjournal.utility.HTMLUtil;
 import com.justjournal.utility.StringUtil;
 import lombok.extern.slf4j.Slf4j;

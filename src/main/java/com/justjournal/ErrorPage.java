@@ -42,11 +42,11 @@ import java.io.PrintWriter;
  * @author Lucas Holt
  */
 public final class ErrorPage {
-    private static final String severeStyle =
+    private static final String SEVERE_STYLE =
             "width: 100%; height: 100px; margin-top: 1in; margin-left: 0; margin-right: 0; position relative; text-align: center; background: maroon; color: white;";
 
     private ErrorPage() {
-        
+        super();
     }
 
     private static void headStyle(final String title, final StringBuilder sb) {
@@ -65,15 +65,15 @@ public final class ErrorPage {
         sb.append("</html>\n");
     }
 
-    public static void Display(final String ErrTitle, final String ErrMsg, final PrintWriter ResponseWriter) {
+    public static void display(final String ErrTitle, final String ErrMsg, final PrintWriter printWriter) {
         final StringBuilder sb = new StringBuilder();
 
-        Display(ErrTitle, ErrMsg, sb);  // call the other version
+        display(ErrTitle, ErrMsg, sb);  // call the other version
 
-        ResponseWriter.write(sb.toString());
+        printWriter.write(sb.toString());
     }
 
-    public static void Display(final String ErrTitle, final String ErrMsg, final StringBuilder sb) {
+    public static void display(final String ErrTitle, final String ErrMsg, final StringBuilder sb) {
         severe(ErrTitle, ErrMsg, sb);
     }
 
@@ -85,7 +85,7 @@ public final class ErrorPage {
 
         headStyle(ErrTitle, sb);
         sb.append("<div style=\"");
-        sb.append(severeStyle);
+        sb.append(SEVERE_STYLE);
         sb.append("\">\n");
         sb.append("<h1 style=\"font: 72pt Arial, Helvetica, sans-serif; letter-spacing: .2in;\">")
                 .append(ErrTitle).append("</h1>\n");

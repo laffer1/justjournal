@@ -28,7 +28,7 @@ package com.justjournal.ctl.api;
 
 import com.justjournal.model.Statistics;
 import com.justjournal.model.UserStatistics;
-import com.justjournal.services.ServiceException;
+import com.justjournal.exception.ServiceException;
 import com.justjournal.services.StatisticsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

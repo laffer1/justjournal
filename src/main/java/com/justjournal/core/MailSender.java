@@ -39,7 +39,11 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import javax.mail.*;
+import javax.mail.Address;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
@@ -84,41 +88,44 @@ public class MailSender {
             log.trace("MailSender: Recordset loaded.");
 
             for (final QueueMail item : items) {
-                boolean sentok = true;
-
-                try {
-                    final InternetAddress from = new InternetAddress(item.getFrom());
-                    final InternetAddress to = new InternetAddress(item.getTo());
-
-                    final MimeMessage message = new MimeMessage(s);
-                    message.setFrom(from);
-                    message.setRecipient(Message.RecipientType.TO, to);
-                    message.setSubject(item.getSubject());
-                    message.setText(item.getBody());
-                    message.setSentDate(new Date());
-                    message.saveChanges();
-
-                    final Address[] a = {to};
-                    final Transport t = s.getTransport("smtp");
-                    t.connect();
-                    t.sendMessage(message, a);
-                    t.close();
-                } catch (final AddressException e) {
-                    sentok = false;
-                    log.error("MailSender: Invalid address. ", e);
-                } catch (final MessagingException me) {
-                    sentok = false;
-                    log.error("MailSender: Send failed.", me);
-                }
-
-                if (sentok) {
+                if (sendMessage(s, item)) {
                     queueMailRepository.deleteById(item.getId());
                 }
-
             }
         } catch (final Exception me) {
             log.error("MailSender: Exception", me);
         }
     }
+
+    private boolean sendMessage(final Session s, final QueueMail item) {
+        boolean sentok = true;
+
+        try {
+            final InternetAddress from = new InternetAddress(item.getFrom());
+            final InternetAddress to = new InternetAddress(item.getTo());
+
+            final MimeMessage message = new MimeMessage(s);
+            message.setFrom(from);
+            message.setRecipient(Message.RecipientType.TO, to);
+            message.setSubject(item.getSubject());
+            message.setText(item.getBody());
+            message.setSentDate(new Date());
+            message.saveChanges();
+
+            final Address[] a = {to};
+            final Transport t = s.getTransport("smtp");
+            t.connect();
+            t.sendMessage(message, a);
+            t.close();
+        } catch (final AddressException e) {
+            sentok = false;
+            log.error("MailSender: Invalid address. ", e);
+        } catch (final MessagingException me) {
+            sentok = false;
+            log.error("MailSender: Send failed.", me);
+        }
+        return sentok;
+    }
+
 }
 

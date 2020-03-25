@@ -1,6 +1,7 @@
 package com.justjournal.services;
 
 import com.justjournal.core.UserContext;
+import com.justjournal.exception.ServiceException;
 import com.lowagie.text.Document;
 import com.lowagie.text.rtf.RtfWriter2;
 import lombok.extern.slf4j.Slf4j;

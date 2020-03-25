@@ -1,5 +1,6 @@
 package com.justjournal.services;
 
+import com.justjournal.exception.ServiceException;
 import com.justjournal.model.Tag;
 import lombok.Getter;
 import lombok.Setter;

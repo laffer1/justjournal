@@ -1,6 +1,7 @@
 package com.justjournal.services;
 
 import com.justjournal.Login;
+import com.justjournal.exception.ServiceException;
 import com.justjournal.model.Journal;
 import com.justjournal.model.PasswordType;
 import com.justjournal.model.PrefBool;

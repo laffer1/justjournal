@@ -50,6 +50,10 @@ import java.util.regex.Pattern;
  */
 public final class StringUtil {
 
+    private StringUtil() {
+        super();
+    }
+
     /**
      * Deletes multiple instances of a specific character in a string
      *
@@ -112,22 +116,6 @@ public final class StringUtil {
         }
         return result.toString();
     }
-
-    /**
-     * Uses split to break up a string of input separated by
-     * commas and/or whitespace.
-     */
-
-    /*
-    public static String[] splitter( String[] args ) throws Exception
-    {
-        // Create a pattern to match breaks
-        Pattern p = Pattern.compile( "[,\\s]+" );
-        // Split input with the pattern
-        String[] result = p.split( "one,two, three   four ,  five" );
-        return result;
-    }
-    */
 
     /**
      * Checks e-mail addresses for invalid characters. If the address is invalid, false is returned.

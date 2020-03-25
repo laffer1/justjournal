@@ -1,5 +1,6 @@
 package com.justjournal.services;
 
+import com.justjournal.exception.ServiceException;
 import com.justjournal.model.AvatarSource;
 import com.justjournal.model.PrefBool;
 import com.justjournal.model.UserPic;

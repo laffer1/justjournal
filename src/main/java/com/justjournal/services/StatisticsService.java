@@ -26,6 +26,7 @@
 
 package com.justjournal.services;
 
+import com.justjournal.exception.ServiceException;
 import com.justjournal.model.Statistics;
 import com.justjournal.model.StatisticsImpl;
 import com.justjournal.model.User;

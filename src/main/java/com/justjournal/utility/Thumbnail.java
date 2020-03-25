@@ -1,5 +1,6 @@
 package com.justjournal.utility;
 
+import com.justjournal.exception.ThumbnailException;
 import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
@@ -28,7 +29,7 @@ public class Thumbnail {
         thumbHeight = 100;
     }
 
-    public Thumbnail(int width, int height) {
+    public Thumbnail(final int width, final int height) {
         thumbWidth = width;
         thumbHeight = height;
     }
@@ -37,9 +38,9 @@ public class Thumbnail {
         return (double) thumbWidth / (double) thumbHeight;
     }
 
-    protected double calcImageRatio(Image image) {
-        int imageWidth = image.getWidth(null);
-        int imageHeight = image.getHeight(null);
+    protected double calcImageRatio(final Image image) {
+        final int imageWidth = image.getWidth(null);
+        final int imageHeight = image.getHeight(null);
         return (double) imageWidth / (double) imageHeight;
     }
 
@@ -59,36 +60,36 @@ public class Thumbnail {
         this.thumbHeight = thumbHeight;
     }
 
-    public void create(String inputfile, String outputfile) throws Exception {
-        File f = new File(inputfile);
-        BufferedImage bi = ImageIO.read(f);
-
-        int height = thumbHeight;
-        int width = thumbWidth;
-        double imageRatio = calcImageRatio(bi);
-        if (calcThumbRatio() < imageRatio) {
-            height = (int) (thumbWidth / imageRatio);
-        } else {
-            width = (int) (thumbHeight * imageRatio);
-        }
-        // draw original image to thumbnail image object and
-        // scale it to the new size on-the-fly
-        BufferedImage thumbImage = new BufferedImage(width,
-                height, BufferedImage.TYPE_INT_RGB);
-        Graphics2D graphics2D = thumbImage.createGraphics();
-        graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-                RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-        graphics2D.drawImage(bi, 0, 0, width, height, null);
-        // save thumbnail image to OUTFILE
+    public void create(String inputfile, String outputfile) {
         try {
-            File outfile = new File(outputfile);
+            File f = new File(inputfile);
+            BufferedImage bi = ImageIO.read(f);
+
+            int height = thumbHeight;
+            int width = thumbWidth;
+            final double imageRatio = calcImageRatio(bi);
+
+            if (calcThumbRatio() < imageRatio) {
+                height = (int) (thumbWidth / imageRatio);
+            } else {
+                width = (int) (thumbHeight * imageRatio);
+            }
+            // draw original image to thumbnail image object and
+            // scale it to the new size on-the-fly
+            BufferedImage thumbImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+            Graphics2D graphics2D = thumbImage.createGraphics();
+            graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            graphics2D.drawImage(bi, 0, 0, width, height, null);
+
+            // save thumbnail image to OUTFILE
+            final File outfile = new File(outputfile);
             ImageIO.write(thumbImage, "png", outfile);
         } catch (final FileNotFoundException fe) {
             log.error("create(): File not found", fe);
-            throw new Exception("Could not create thumbnail");
-        } catch (IOException ioe) {
-           log.error("create(): IO error", ioe);
-            throw new Exception("Could not create thumbnail");
+            throw new ThumbnailException();
+        } catch (final IOException ioe) {
+            log.error("create(): IO error", ioe);
+            throw new ThumbnailException();
         }
     }
 

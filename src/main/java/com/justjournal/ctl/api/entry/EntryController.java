@@ -39,7 +39,7 @@ import com.justjournal.repository.MoodRepository;
 import com.justjournal.repository.SecurityRepository;
 import com.justjournal.repository.UserRepository;
 import com.justjournal.services.EntryService;
-import com.justjournal.services.ServiceException;
+import com.justjournal.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -74,7 +74,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 

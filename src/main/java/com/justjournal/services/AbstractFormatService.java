@@ -1,6 +1,7 @@
 package com.justjournal.services;
 
 import com.justjournal.core.UserContext;
+import com.justjournal.exception.ServiceException;
 import com.justjournal.model.Entry;
 import com.justjournal.model.Journal;
 import com.justjournal.repository.EntryRepository;

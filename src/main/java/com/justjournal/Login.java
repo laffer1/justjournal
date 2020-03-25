@@ -26,6 +26,7 @@
 
 package com.justjournal;
 
+import com.justjournal.exception.HashNotSupportedException;
 import com.justjournal.model.PasswordType;
 import com.justjournal.repository.UserRepository;
 import com.justjournal.utility.StringUtil;
@@ -97,6 +98,7 @@ public class Login {
 
     /**
      * Check if a password is valid in terms of characters used.
+     *
      * @param input
      * @return
      */
@@ -129,7 +131,7 @@ public class Login {
         final MessageDigest md = MessageDigest.getInstance("SHA-1");
         byte[] sha1hash;
 
-        md.update(text.getBytes( StandardCharsets.ISO_8859_1), 0, text.length());
+        md.update(text.getBytes(StandardCharsets.ISO_8859_1), 0, text.length());
         sha1hash = md.digest();
         return convertToHex(sha1hash);
     }
@@ -138,7 +140,7 @@ public class Login {
         final MessageDigest md = MessageDigest.getInstance("SHA-256");
         byte[] sha2hash;
 
-        md.update(text.getBytes( StandardCharsets.ISO_8859_1), 0, text.length());
+        md.update(text.getBytes(StandardCharsets.ISO_8859_1), 0, text.length());
         sha2hash = md.digest();
         return convertToHex(sha2hash);
     }
@@ -236,7 +238,7 @@ public class Login {
             return sha256(userName + password);
         } catch (final Exception e) {
             log.error("Invalid password hash algorithm?", e);
-            throw new RuntimeException("Password hash not supported");
+            throw new HashNotSupportedException();
         }
     }
 
@@ -250,7 +252,7 @@ public class Login {
             return user;
         } catch (final Exception e) {
             log.error("Invalid password hash algorithm?", e);
-            throw new RuntimeException("Password hash not supported");
+            throw new HashNotSupportedException();
         }
     }
 }

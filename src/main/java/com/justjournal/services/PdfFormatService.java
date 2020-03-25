@@ -1,6 +1,7 @@
 package com.justjournal.services;
 
 import com.justjournal.core.UserContext;
+import com.justjournal.exception.ServiceException;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.PdfWriter;

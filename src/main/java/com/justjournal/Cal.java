@@ -121,13 +121,37 @@ public final class Cal {
         }
     }
 
+    private void tableRowOpen(final StringBuilder sb) {
+        sb.append("<tr>\n");
+    }
+
+    private void tableRowClose(final StringBuilder sb) {
+        sb.append("</tr>\n");
+    }
+
+    private void tableClose(final StringBuilder sb) {
+        sb.append("\t</table>\n\n");
+    }
+
+    private void tableBodyOpen(final StringBuilder sb) {
+        sb.append("\t\t<tbody>\n");
+    }
+
+    private void tableBodyClose(final StringBuilder sb) {
+        sb.append("\t\t</tbody>\n");
+    }
+
+    private void calStartComment(final StringBuilder sb) {
+        sb.append("<!-- Calendar Output -->\n");
+    }
+
     public String render() {
 
         final StringBuilder sb = new StringBuilder();
         CalMonth o;
         final Iterator<CalMonth> itr = monthList.listIterator();
 
-        sb.append("<!-- Calendar Output -->\n");
+        calStartComment(sb);
 
         for (int i = 0, n = monthList.size(); i < n; i++) {
             o = itr.next();
@@ -140,16 +164,16 @@ public final class Cal {
             sb.append("</caption>\n");
 
             sb.append("<thead>\n");
-            sb.append("<tr>\n");
+            tableRowOpen(sb);
             for (int x = 0; x < 7; x++) {
                 sb.append("\t<th class=\"fullcalendarth\">");
                 sb.append(days[x]);
                 sb.append("</th>\n");
             }
-            sb.append("</tr>\n");
+            tableRowClose(sb);
             sb.append("</thead>\n");
-
-            sb.append("<tbody>\n");
+            
+            tableBodyOpen(sb);
 
             int dayinweek;
             boolean blnFirstTime = true; // first time through
@@ -159,10 +183,10 @@ public final class Cal {
                 sb.append("\t<td class=\"fullcalendaroffrow\" colspan=\"").append(o.getFirstDayInWeek() - 1).append("\"></td>");
 
             dayinweek = o.getFirstDayInWeek() - 1;
-            
+
             for (int y = 0; y < o.getStorage().length; y++) {
                 if (dayinweek == 0 && !blnFirstTime) {
-                    sb.append("<tr>\n");
+                    tableRowOpen(sb);
                 }
 
                 sb.append("\t<td class=\"fullcalendarrow\"><strong>");
@@ -196,7 +220,7 @@ public final class Cal {
                 sb.append("</span></td>\n");
 
                 if (dayinweek == 6) {
-                    sb.append("</tr>\n");
+                    tableRowClose(sb);
                     dayinweek = 0;
                     blnFirstTime = false; // hiding this here makes it execute less.
                 } else {
@@ -209,10 +233,10 @@ public final class Cal {
                 // this is seven because colspan is 1 based.  why do the
                 // extra addition +1
                 sb.append("\t<td class=\"fullcalendaroffrow\" colspan=\"").append(7 - dayinweek).append(" \"></td>");
-                sb.append("</tr>\n");
+                tableRowClose(sb);
             }
 
-            sb.append("<tr>\n");
+            tableRowOpen(sb);
             sb.append("\t<td class=\"fullcalendarsub\" colspan=\"7\"><a href=\"");
             sb.append(o.getYear());
             sb.append("/");
@@ -221,10 +245,9 @@ public final class Cal {
             }
             sb.append(o.monthid + 1);
             sb.append("\">View Subjects</a></td>\n");
-            sb.append("</tr>\n");
+            tableRowClose(sb);
             sb.append("</tbody>\n");
-            sb.append("</table>\n\n");
-
+            tableClose(sb);
         }
         return sb.toString();
     }
@@ -232,7 +255,7 @@ public final class Cal {
     public String renderMini() {
         final StringBuilder sb = new StringBuilder();
 
-        sb.append("\t<!-- Calendar Output -->\n");
+        calStartComment(sb);
 
         for (final CalMonth o : monthList) {
             sb.append("\t<table class=\"minicalendar\" cellpadding=\"1\" cellspacing=\"1\">\n");
@@ -253,7 +276,8 @@ public final class Cal {
 
             int dayinweek;
             boolean blnFirstTime = true; // first time through
-            sb.append("\t\t<tbody>\n\t\t<tr>\n");
+            tableBodyOpen(sb);
+            tableRowOpen(sb);
 
             if (o.getFirstDayInWeek() > 1)
                 sb.append("\t\t<td class=\"minicalendaroffrow\" colspan=\"").append(o.getFirstDayInWeek() - 1).append("\"></td>\n");
@@ -262,7 +286,7 @@ public final class Cal {
 
             for (int y = 0; y < o.getStorage().length; y++) {
                 if (dayinweek == 0 && !blnFirstTime) {
-                    sb.append("\t\t<tr>\n");
+                    tableRowOpen(sb);
                 }
 
                 sb.append("\t\t<td class=\"minicalendarrow\">");
@@ -309,10 +333,10 @@ public final class Cal {
                 // this is seven because colspan is 1 based.  why do the
                 // extra addition +1
                 sb.append("\t\t<td class=\"minicalendaroffrow\" colspan=\"").append(7 - dayinweek).append(" \"></td>");
-                sb.append("\t\t</tr>\n");
+                tableRowClose(sb);
             }
 
-            sb.append("\t\t<tr>\n");
+            tableRowOpen(sb);
             sb.append("\t\t<td class=\"minicalendarsub\" colspan=\"7\"><a href=\"");
             sb.append(baseUrl);
             sb.append(o.getYear());
@@ -321,9 +345,9 @@ public final class Cal {
                 sb.append("0");
             sb.append(o.monthid + 1);
             sb.append("\">View Subjects</a></td>\n");
-            sb.append("\t\t</tr>\n\t\t</tbody>\n");
-            sb.append("\t</table>\n\n");
-
+            tableRowClose(sb);
+            tableBodyClose(sb);
+            tableClose(sb);
         }
         return sb.toString();
     }

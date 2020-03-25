@@ -26,6 +26,7 @@
 
 package com.justjournal.services;
 
+import com.justjournal.exception.ServiceException;
 import com.justjournal.model.Entry;
 import com.justjournal.model.EntryTag;
 import com.justjournal.model.PrefBool;

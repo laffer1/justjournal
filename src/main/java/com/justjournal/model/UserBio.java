@@ -50,6 +50,7 @@ import java.io.Serializable;
 public class UserBio implements Serializable {
 
     private static final long serialVersionUID = 3877987531776135807L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id = 0;

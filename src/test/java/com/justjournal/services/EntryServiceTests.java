@@ -27,6 +27,7 @@
 package com.justjournal.services;
 
 import com.justjournal.Application;
+import com.justjournal.exception.ServiceException;
 import com.justjournal.model.Entry;
 import com.justjournal.model.RecentEntry;
 import org.junit.Test;
