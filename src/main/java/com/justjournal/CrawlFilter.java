@@ -4,39 +4,46 @@ import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
+import org.owasp.esapi.ESAPI;
+import org.owasp.esapi.errors.EncodingException;
 
-import javax.servlet.*;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Slf4j
 public final class CrawlFilter implements Filter {
-    private Logger log = LoggerFactory.getLogger(CrawlFilter.class);
+
+    private static final String PARAM_ESCAPED_FRAGMENT = "_escaped_fragment_";
 
     private FilterConfig filterConfig = null;
 
-    private static String rewriteQueryString(String queryString) throws UnsupportedEncodingException {
+    private static String rewriteQueryString(String queryString) throws EncodingException {
         StringBuilder queryStringSb = new StringBuilder(queryString);
         int i = queryStringSb.indexOf("&_escaped_fragment_");
         if (i != -1) {
-            StringBuilder tmpSb = new StringBuilder(queryStringSb.substring(0, i));
+            final StringBuilder tmpSb = new StringBuilder(queryStringSb.substring(0, i));
             tmpSb.append("#!");
-            tmpSb.append(URLDecoder.decode(queryStringSb.substring(i + 20, queryStringSb.length()), "UTF-8"));
+            tmpSb.append(ESAPI.encoder().decodeFromURL(queryStringSb.substring(i + 20, queryStringSb.length())));
             queryStringSb = tmpSb;
         }
 
-        i = queryStringSb.indexOf("_escaped_fragment_");
+        i = queryStringSb.indexOf(PARAM_ESCAPED_FRAGMENT);
         if (i != -1) {
-            StringBuilder tmpSb = new StringBuilder(queryStringSb.substring(0, i));
+            final StringBuilder tmpSb = new StringBuilder(queryStringSb.substring(0, i));
             tmpSb.append("#!");
-            tmpSb.append(URLDecoder.decode(queryStringSb.substring(i + 19, queryStringSb.length()), "UTF-8"));
+            tmpSb.append(ESAPI.encoder().decodeFromURL(queryStringSb.substring(i + 19, queryStringSb.length())));
             queryStringSb = tmpSb;
         }
         if (queryStringSb.indexOf("#!") != 0) {
@@ -69,7 +76,7 @@ public final class CrawlFilter implements Filter {
         HttpServletResponse res = (HttpServletResponse) response;
         String queryString = req.getQueryString();
 
-        if ((queryString != null) && (queryString.contains("_escaped_fragment_"))) {
+        if ((queryString != null) && (queryString.contains(PARAM_ESCAPED_FRAGMENT))) {
             StringBuilder pageNameSb = new StringBuilder(req.getScheme() + "://");
             pageNameSb.append(req.getServerName());
             if (req.getServerPort() != 0) {
@@ -77,27 +84,32 @@ public final class CrawlFilter implements Filter {
                 pageNameSb.append(req.getServerPort());
             }
             pageNameSb.append(req.getRequestURI());
-            queryString = rewriteQueryString(queryString);
+            try {
+                queryString = rewriteQueryString(queryString);
+            } catch (final EncodingException e) {
+                log.error("Could not generate url", e);
+                return;
+            }
             pageNameSb.append(queryString);
 
-           try (WebClient webClient = new WebClient(BrowserVersion.CHROME);
-                PrintWriter out = res.getWriter()) {
-               webClient.setAjaxController(new NicelyResynchronizingAjaxController());
-               webClient.getOptions().setJavaScriptEnabled(true);
-               String pageName = pageNameSb.toString();
-               HtmlPage page = webClient.getPage(pageName);
-               webClient.waitForBackgroundJavaScriptStartingBefore(2000);
-               webClient.waitForBackgroundJavaScript(8000);
+            try (WebClient webClient = new WebClient(BrowserVersion.CHROME);
+                 PrintWriter out = res.getWriter()) {
+                webClient.setAjaxController(new NicelyResynchronizingAjaxController());
+                webClient.getOptions().setJavaScriptEnabled(true);
+                String pageName = pageNameSb.toString();
+                HtmlPage page = webClient.getPage(pageName);
+                webClient.waitForBackgroundJavaScriptStartingBefore(2000);
+                webClient.waitForBackgroundJavaScript(8000);
 
-               res.setContentType("text/html;charset=UTF-8");
-              
-               out.println("<hr>");
-               out.println("<center><h3>You are viewing a non-interactive page that is intended for the crawler.  You probably want to see this page: <a href=\""
-                       + pageName + "\">" + pageName + "</a></h3></center>");
-               out.println("<hr>");
+                res.setContentType("text/html;charset=UTF-8");
 
-               out.println(page.asXml());
-           }
+                out.println("<hr>");
+                out.println("<center><h3>You are viewing a non-interactive page that is intended for the crawler.  You probably want to see this page: <a href=\""
+                        + ESAPI.encoder().encodeForHTMLAttribute(pageName) + "\">" + ESAPI.encoder().encodeForHTML(pageName) + "</a></h3></center>");
+                out.println("<hr>");
+
+                out.println(page.asXml());
+            }
         } else {
             try {
                 chain.doFilter(request, response);
@@ -114,13 +126,13 @@ public final class CrawlFilter implements Filter {
         }
 
         ServletOutputStream out = response.getOutputStream();
-        String escapedFragment = request.getParameter("_escaped_fragment_");
+        String escapedFragment = request.getParameter(PARAM_ESCAPED_FRAGMENT);
 
         if (escapedFragment != null) {
             HttpServletRequest httpRequest = (HttpServletRequest) request;
-                         /*
-                          * Rewrite the URL back to the original #! version.
-                          */
+            /*
+             * Rewrite the URL back to the original #! version.
+             */
             String urlWithHashFragment = httpRequest.getScheme() + "://"
                     + httpRequest.getServerName() + ":"
                     + httpRequest.getServerPort()
@@ -142,36 +154,36 @@ public final class CrawlFilter implements Filter {
                         + matcher.group(3);
             }
 
-                         /*
-                          * TODO Unescape %XX characters.
-                          */
+            /*
+             * TODO Unescape %XX characters.
+             */
             urlWithHashFragment += "#!" + escapedFragment;
 
-                         /*
-                          * Use the headless browser (HtmlUnit) to obtain an HTML snapshot.
-                          */
-             try (WebClient webClient = new WebClient(); ) {
-                 HtmlPage page = webClient.getPage(urlWithHashFragment);
+            /*
+             * Use the headless browser (HtmlUnit) to obtain an HTML snapshot.
+             */
+            try (WebClient webClient = new WebClient()) {
+                final HtmlPage page = webClient.getPage(urlWithHashFragment);
 
-                         /*
-                          * Give the headless browser enough time to execute JavaScript. The
-                          * exact time to wait may depend on your application.
-                          */
-                 webClient.waitForBackgroundJavaScript(2000);
+                /*
+                 * Give the headless browser enough time to execute JavaScript. The
+                 * exact time to wait may depend on your application.
+                 */
+                webClient.waitForBackgroundJavaScript(2000);
 
-                         /*
-                          * Return the snapshot.
-                          */
-                 out.println(page.asXml());
-             }
+                /*
+                 * Return the snapshot.
+                 */
+                out.println(page.asXml());
+            }
         } else {
             try {
-                                 /*
-                                  * Not an _escaped_fragment_ URL, so move up the chain of
-                                  * servlet filters.
-                                  */
+                /*
+                 * Not an _escaped_fragment_ URL, so move up the chain of
+                 * servlet filters.
+                 */
                 chain.doFilter(request, response);
-            } catch (ServletException e) {
+            } catch (final ServletException e) {
                 log.error(e.getMessage());
             }
         }

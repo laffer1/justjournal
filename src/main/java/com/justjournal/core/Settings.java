@@ -30,8 +30,6 @@ import com.justjournal.repository.SettingsRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
-
 
 /**
  * Global settings for the site.  Any changes here will effect the entire site.  User preferences are separate and any
@@ -86,7 +84,6 @@ public class Settings {
 
     @Autowired
     public Settings(SettingsRepository settingsDao) {
-        Assert.notNull(settingsDao);
         this.settingsDao = settingsDao;
         try {
             String name;
@@ -273,7 +270,7 @@ public class Settings {
         return tzName;
     }
 
-    public void setTzName(String tzName) {
+    public void setTzName(final String tzName) {
         this.tzName = tzName;
     }
 

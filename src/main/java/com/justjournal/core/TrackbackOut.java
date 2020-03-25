@@ -27,6 +27,7 @@
 package com.justjournal.core;
 
 import lombok.extern.slf4j.Slf4j;
+import org.owasp.esapi.ESAPI;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -34,7 +35,6 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.URLEncoder;
 
 /**
  * User: laffer1
@@ -43,8 +43,6 @@ import java.net.URLEncoder;
  */
 @Slf4j
 public final class TrackbackOut {
-
-    private static final String UTF8_ENCODING = "UTF-8";
     
     private String entryUrl;
     private String targetUrl;
@@ -116,10 +114,10 @@ public final class TrackbackOut {
         // TODO: switch to POST request!
         try {
             // build uri
-            address = targetUrl + "?title=" + URLEncoder.encode(title, UTF8_ENCODING) +
-                    "&url=" + URLEncoder.encode(entryUrl, UTF8_ENCODING) +
-                    "&blog_name=" + URLEncoder.encode(blogName, UTF8_ENCODING) +
-                    "&excerpt=" + URLEncoder.encode(excerpt, UTF8_ENCODING);
+            address = targetUrl + "?title=" + ESAPI.encoder().encodeForURL(title) +
+                    "&url=" + ESAPI.encoder().encodeForURL(entryUrl) +
+                    "&blog_name=" + ESAPI.encoder().encodeForURL(blogName) +
+                    "&excerpt=" + ESAPI.encoder().encodeForURL(excerpt);
 
             final URI tmpuri = new URI(address);
             u = tmpuri.toURL();
@@ -143,11 +141,11 @@ public final class TrackbackOut {
             in.close();
 
             if (log.isDebugEnabled())
-                log.debug(entryUrl + "\n" + input.toString());
+                log.debug("{}\n{}", entryUrl, input.toString());
 
             return true; // todo: parse result and adjust this as necessary.
         } catch (final IOException e) {
-            log.debug("IO Error", e);
+            log.warn("Could not send trackback out for {}", u.toString(), e);
             return false;
         }
     }

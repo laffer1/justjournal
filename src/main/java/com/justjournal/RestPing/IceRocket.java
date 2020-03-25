@@ -1,13 +1,12 @@
 package com.justjournal.restping;
 
 import lombok.extern.slf4j.Slf4j;
+import org.owasp.esapi.ESAPI;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.net.URLConnection;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 
 /**
  * @author Lucas Holt
@@ -40,10 +39,10 @@ public class IceRocket extends BasePing {
                     "  <methodName>ping</methodName>\n" +
                     "    <params>\n" +
                     "      <param>\n" +
-                    "        <value>" + URLEncoder.encode(name, StandardCharsets.UTF_8.displayName()) + "</value>\n" +
+                    "        <value>" + ESAPI.encoder().encodeForXML(name) + "</value>\n" +
                     "      </param>\n" +
                     "      <param>\n" +
-                    "        <value>" + URLEncoder.encode(uri, StandardCharsets.UTF_8.displayName()) + "</value>\n" +
+                    "        <value>" + ESAPI.encoder().encodeForXML(uri) + "</value>\n" +
                     "      </param>\n" +
                     "    </params>\n" +
                     "</methodCall>\n";

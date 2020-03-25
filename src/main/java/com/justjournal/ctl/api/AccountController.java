@@ -69,8 +69,6 @@ import java.util.Optional;
 @RequestMapping("/api/account")
 public class AccountController {
 
-    private static final String ERROR = "error";
-
     @Autowired
     private UserRepository userDao;
 

@@ -189,8 +189,7 @@ public class CommentController {
                 } catch (final Exception e) {
                     log.error("Could not add comment", e);
                     response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                    final String error = "Error adding comment";
-                    return ErrorHandler.modelError(  error);
+                    return ErrorHandler.modelError(  "Error adding comment");
                 }
             } else {
                 final Comment c = commentDao.findById(comment.getId()).orElse(null);
@@ -202,8 +201,7 @@ public class CommentController {
 
                 if (c.getEntry().getId() != et.getId()) {
                     response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                    String error = "Error saving comment. Entry id does not match original on comment.";
-                    return ErrorHandler.modelError(  error);
+                    return ErrorHandler.modelError(  "Error saving comment. Entry id does not match original on comment.");
                 }
                 c.setUser(user);
                 c.setBody(comment.getBody());
@@ -212,41 +210,44 @@ public class CommentController {
                     commentDao.save(c);
                 } catch (final Exception e) {
                     log.error("Could not update comment", e);
-                    final String error = "Error editing comment";
-                    return ErrorHandler.modelError(  error);
+                    return ErrorHandler.modelError(  "Error editing comment");
                 }
             }
 
-            try {
-                final User pf = et.getUser();
-                final Settings mailfrom = settingsRepository.findByName("mailFrom");
-                final Settings baseuri = settingsRepository.findByName("baseuri");
-
-                final String entryUrl = baseuri + "users" + et.getUser().getUsername() + "/entry/" + et.getId();
-
-                // TODO: should we allow the user making the comment to disable email notifications?
-                if (user != null && et.getEmailComments().equals(PrefBool.Y)) {
-                    final QueueMail mail = new QueueMail();
-                    if (mailfrom != null)
-                        mail.setFrom(mailfrom.getValue());
-                    else
-                        mail.setFrom("root@localhost");
-                    mail.setTo(pf.getUserContact().getEmail());
-                    mail.setBody(generateMailBody(user, comment, entryUrl));
-
-                    mail.setSubject("JustJournal: Comment Notification");
-                    mail.setPurpose("comment_notify");
-                    queueMailRepository.save(mail);
-                }
-            } catch (final Exception e) {
-                log.error("Could not send mail: " + e.getMessage());
-            }
-
+            queueMail(user, et, comment);
+            
             return java.util.Collections.singletonMap("id", Integer.toString(comment.getId()));
         } catch (final Exception e) {
             log.error(e.getMessage());
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return ErrorHandler.modelError(  "Error adding comment");
+        }
+    }
+
+    private void queueMail(final User user, final Entry et, final Comment comment) {
+        try {
+            final User pf = et.getUser();
+            final Settings mailfrom = settingsRepository.findByName("mailFrom");
+            final Settings baseuri = settingsRepository.findByName("baseuri");
+
+            final String entryUrl = baseuri + "users" + et.getUser().getUsername() + "/entry/" + et.getId();
+
+            // TODO: should we allow the user making the comment to disable email notifications?
+            if (user != null && et.getEmailComments().equals(PrefBool.Y)) {
+                final QueueMail mail = new QueueMail();
+                if (mailfrom != null)
+                    mail.setFrom(mailfrom.getValue());
+                else
+                    mail.setFrom("root@localhost");
+                mail.setTo(pf.getUserContact().getEmail());
+                mail.setBody(generateMailBody(user, comment, entryUrl));
+
+                mail.setSubject("JustJournal: Comment Notification");
+                mail.setPurpose("comment_notify");
+                queueMailRepository.save(mail);
+            }
+        } catch (final Exception e) {
+            log.error("Could not send mail: " + e.getMessage());
         }
     }
 

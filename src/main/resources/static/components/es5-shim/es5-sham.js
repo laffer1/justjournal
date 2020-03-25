@@ -1,6 +1,6 @@
 /*!
  * https://github.com/es-shims/es5-shim
- * @license es5-shim Copyright 2009-2015 by contributors, MIT License
+ * @license es5-shim Copyright 2009-2020 by contributors, MIT License
  * see https://github.com/es-shims/es5-shim/blob/master/LICENSE
  */
 
@@ -14,7 +14,7 @@
 (function (root, factory) {
     'use strict';
 
-    /* global define, exports, module */
+    /* global define */
     if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
         define(factory);
@@ -25,7 +25,7 @@
         module.exports = factory();
     } else {
         // Browser globals (root is window)
-        root.returnExports = factory();
+        root.returnExports = factory(); // eslint-disable-line no-param-reassign
     }
 }(this, function () {
 
@@ -86,17 +86,16 @@
     // ES5 15.2.3.3
     // http://es5.github.com/#x15.2.3.3
 
-    var doesGetOwnPropertyDescriptorWork = function doesGetOwnPropertyDescriptorWork(object) {
-        try {
-            object.sentinel = 0;
-            return Object.getOwnPropertyDescriptor(object, 'sentinel').value === 0;
-        } catch (exception) {
-            return false;
-        }
-    };
-
     // check whether getOwnPropertyDescriptor works if it's given. Otherwise, shim partially.
     if (Object.defineProperty) {
+        var doesGetOwnPropertyDescriptorWork = function doesGetOwnPropertyDescriptorWork(object) {
+            try {
+                object.sentinel = 0; // eslint-disable-line no-param-reassign
+                return Object.getOwnPropertyDescriptor(object, 'sentinel').value === 0;
+            } catch (exception) {
+                return false;
+            }
+        };
         var getOwnPropertyDescriptorWorksOnObject = doesGetOwnPropertyDescriptorWork({});
         var getOwnPropertyDescriptorWorksOnDom = typeof document === 'undefined'
             || doesGetOwnPropertyDescriptorWork(document.createElement('div'));
@@ -152,7 +151,7 @@
                 // Object.getOwnPropertyDescriptor(Object.prototype, 'toString')
                 // or any other Object.prototype accessor
                 if (notPrototypeOfObject) {
-                    object.__proto__ = prototypeOfObject;
+                    object.__proto__ = prototypeOfObject; // eslint-disable-line no-param-reassign
                 }
 
                 var getter = lookupGetter(object, property);
@@ -160,7 +159,7 @@
 
                 if (notPrototypeOfObject) {
                     // Once we have getter and setter we can put values back.
-                    object.__proto__ = prototype;
+                    object.__proto__ = prototype; // eslint-disable-line no-param-reassign
                 }
 
                 if (getter || setter) {
@@ -302,15 +301,14 @@
 
             if (prototype === null) {
                 object = createEmpty();
+            } else if (isPrimitive(prototype)) {
+                // In the native implementation `parent` can be `null`
+                // OR *any* `instanceof Object`  (Object|Function|Array|RegExp|etc)
+                // Use `typeof` tho, b/c in old IE, DOM elements are not `instanceof Object`
+                // like they are in modern browsers. Using `Object.create` on DOM elements
+                // is...err...probably inappropriate, but the native version allows for it.
+                throw new TypeError('Object prototype may only be an Object or null'); // same msg as Chrome
             } else {
-                if (prototype !== null && isPrimitive(prototype)) {
-                    // In the native implementation `parent` can be `null`
-                    // OR *any* `instanceof Object`  (Object|Function|Array|RegExp|etc)
-                    // Use `typeof` tho, b/c in old IE, DOM elements are not `instanceof Object`
-                    // like they are in modern browsers. Using `Object.create` on DOM elements
-                    // is...err...probably inappropriate, but the native version allows for it.
-                    throw new TypeError('Object prototype may only be an Object or null'); // same msg as Chrome
-                }
                 Type.prototype = prototype;
                 object = new Type();
                 // IE has no built-in implementation of `Object.getPrototypeOf`
@@ -405,7 +403,7 @@
                     // `__proto__` we can safely override `__proto__` while defining
                     // a property to make sure that we don't hit an inherited
                     // accessor.
-                    /* eslint-disable no-proto */
+                    /* eslint-disable no-proto, no-param-reassign */
                     var prototype = object.__proto__;
                     object.__proto__ = prototypeOfObject;
                     // Deleting a property anyway since getter / setter may be
@@ -414,9 +412,9 @@
                     object[property] = descriptor.value;
                     // Setting original `__proto__` back now.
                     object.__proto__ = prototype;
-                    /* eslint-enable no-proto */
+                    /* eslint-enable no-proto, no-param-reassign */
                 } else {
-                    object[property] = descriptor.value;
+                    object[property] = descriptor.value; // eslint-disable-line no-param-reassign
                 }
             } else {
                 var hasGetter = 'get' in descriptor;
@@ -550,9 +548,9 @@
             while (owns(object, name)) {
                 name += '?';
             }
-            object[name] = true;
+            object[name] = true; // eslint-disable-line no-param-reassign
             var returnValue = owns(object, name);
-            delete object[name];
+            delete object[name]; // eslint-disable-line no-param-reassign
             return returnValue;
         };
     }

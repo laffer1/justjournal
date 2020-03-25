@@ -18,7 +18,6 @@ public class NewUser implements Serializable {
     private String firstName;
     private String lastName;
 
-
     public String getUsername() {
         return username;
     }

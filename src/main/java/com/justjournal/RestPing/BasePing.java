@@ -1,6 +1,7 @@
 package com.justjournal.restping;
 
 import lombok.extern.slf4j.Slf4j;
+import org.owasp.esapi.ESAPI;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -8,15 +9,13 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 
 /**
  * User: laffer1 Date: Jul 27, 2008 Time: 5:50:49 AM
  */
 @Slf4j
 public class BasePing {
-    
+
     protected String pingUri;
     protected String uri;
     protected String name;
@@ -35,9 +34,12 @@ public class BasePing {
         final URLConnection uc;
 
         try {
-            uc = createUrl(getUri() + "?name=" + URLEncoder.encode(getName(), StandardCharsets.UTF_8.displayName()) +
-                    "&url=" + URLEncoder.encode(getUri(), StandardCharsets.UTF_8.displayName()) +
-                    "&changesUrl=" + URLEncoder.encode(getChangesURL(), StandardCharsets.UTF_8.displayName())).openConnection();
+            final String cleanName = ESAPI.encoder().encodeForURL(getName());
+            final String cleanUrl = ESAPI.encoder().encodeForURL(getUri());
+            final String changesUrl = ESAPI.encoder().encodeForURL(getChangesURL());
+
+            uc = createUrl(getUri() + "?name=" + cleanName + "&url=" + cleanUrl + "&changesUrl=" + changesUrl)
+                    .openConnection();
         } catch (final Exception me) {
             log.debug("Couldn't create URL.", me);
             return false;
