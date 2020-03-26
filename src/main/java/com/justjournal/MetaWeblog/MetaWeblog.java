@@ -35,12 +35,24 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.metaweblog;
 
 import com.justjournal.Login;
-import com.justjournal.model.*;
-import com.justjournal.repository.*;
+import com.justjournal.core.Settings;
+import com.justjournal.exception.ServiceException;
+import com.justjournal.model.Entry;
+import com.justjournal.model.EntryTag;
+import com.justjournal.model.Journal;
+import com.justjournal.model.PrefBool;
+import com.justjournal.model.Tag;
+import com.justjournal.model.User;
+import com.justjournal.repository.EntryRepository;
+import com.justjournal.repository.EntryTagsRepository;
+import com.justjournal.repository.LocationRepository;
+import com.justjournal.repository.MoodRepository;
+import com.justjournal.repository.SecurityRepository;
+import com.justjournal.repository.TagRepository;
+import com.justjournal.repository.UserRepository;
 import com.justjournal.restping.BasePing;
 import com.justjournal.restping.IceRocket;
 import com.justjournal.services.EntryService;
-import com.justjournal.exception.ServiceException;
 import com.justjournal.utility.HTMLUtil;
 import com.justjournal.utility.StringUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -48,37 +60,62 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.IllegalFormatException;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * The MetaWeblog API interface for blogging.  Similar to Blogger 1.0 API.
  *
  * @author Lucas Holt
  * @version $Id: MetaWeblog.java,v 1.6 2011/06/12 06:24:38 laffer1 Exp $
- *          <p/>
- *          User: laffer1 Date: Apr 26, 2008 Time: 2:46:56 PM
- *          <p/>
- *          TODO: Implement the media method
+ * <p/>
+ * User: laffer1 Date: Apr 26, 2008 Time: 2:46:56 PM
+ * <p/>
+ * TODO: Implement the media method
  */
 @SuppressWarnings({"UnusedParameters"})
 @Slf4j
 @Component
 public class MetaWeblog {
 
+    private static final String ERROR_USER_AUTH = "User authentication failed: ";
+    private static final String ERROR_ENTRY_ID =  "Invalid entry id ";
+
+    private static final String TITLE_KEY = "title";
+    private static final String DESC_KEY = "description";
+
+    private static final String FAULT_CODE = "faultCode";
+    private static final String FAULT_STRING = "faultString";
+    private static final String USER_PATH = "users/";
+
     @Autowired
     private EntryRepository entryRepository;
+
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private Login webLogin;
+
     @Autowired
     private SecurityRepository securityDao;
+
     @Autowired
     private LocationRepository locationDao;
+
     @Autowired
     private MoodRepository moodDao;
+
     @Autowired
     private TagRepository tagDao;
+
+    @Autowired
+    private Settings settings;
+
     @Autowired
     private EntryTagsRepository entryTagsRepository;
 
@@ -99,63 +136,9 @@ public class MetaWeblog {
      * @return A HashMap of the users personal info or an error code as a hashmap
      */
     public HashMap<String, Serializable> getUsersInfo(String appkey, String username, String password) {
-        int userId;
+        final int userId;
         boolean blnError = false;
-        HashMap<String, Serializable> s = new HashMap<String, Serializable>();
-
-
-        if (!StringUtil.lengthCheck(username, 3, Login.USERNAME_MAX_LENGTH)) {
-            blnError = true;
-        }
-
-        if (!StringUtil.lengthCheck(password, 5, Login.PASSWORD_MAX_LENGTH)) {
-            blnError = true;
-        }
-
-        userId = webLogin.validate(username, password);
-        if (userId < 1)
-            blnError = true;
-
-        if (!blnError)
-            try {
-                User user = userRepository.findById(userId).orElse(null);
-
-                s.put("nickname", user.getUsername());
-                s.put("userid", userId);
-                s.put("url", "http://www.justjournal.com/users/" + user.getUsername());
-                s.put("email", user.getUserContact().getEmail());
-                s.put("firstname", user.getFirstName());
-            } catch (Exception e) {
-                blnError = true;
-                log.debug(e.getMessage());
-            }
-
-        if (blnError) {
-            s.clear();
-            s.put("faultCode", 4);
-            s.put("faultString", "User authentication failed: " + username);
-        }
-
-
-        return s;
-    }
-
-
-    /**
-     * Fetch the users blogs.  JJ only supports 1 blog per user right now.  Still this must be a list of all blogs.
-     * <p/>
-     * The Blogger API defines url, blogid and blogName.
-     *
-     * @param appkey   Not used but required by Blogger API
-     * @param username username to authenticate/check
-     * @param password the account secret
-     * @return A list of hash maps for each blog
-     */
-    public ArrayList<HashMap<Object, Serializable>> getUsersBlogs(String appkey, String username, String password) {
-        int userId;
-        boolean blnError = false;
-        ArrayList<HashMap<Object, Serializable>> a = new ArrayList<HashMap<Object, Serializable>>();
-        HashMap<Object, Serializable> s = new HashMap<Object, Serializable>();
+        final HashMap<String, Serializable> s = new HashMap<>();
 
 
         if (!StringUtil.lengthCheck(username, 3, Login.USERNAME_MAX_LENGTH)) {
@@ -173,9 +156,68 @@ public class MetaWeblog {
         if (!blnError)
             try {
                 final User user = userRepository.findById(userId).orElse(null);
-                final Journal journal = new ArrayList<Journal>(user.getJournals()).get(0);
+                if (user == null) {
+                    throw new IllegalArgumentException("user");
+                }
 
-                s.put("url", "http://www.justjournal.com/users/" + user.getUsername());
+                s.put("nickname", user.getUsername());
+                s.put("userid", userId);
+                s.put("url", settings.getBaseUri() +  USER_PATH + user.getUsername());
+                s.put("email", user.getUserContact().getEmail());
+                s.put("firstname", user.getFirstName());
+            } catch (final Exception e) {
+                blnError = true;
+                log.debug(e.getMessage());
+            }
+
+        if (blnError) {
+            s.clear();
+            s.put(FAULT_CODE, 4);
+            s.put(FAULT_STRING, ERROR_USER_AUTH + username);
+        }
+        return s;
+    }
+
+
+    /**
+     * Fetch the users blogs.  JJ only supports 1 blog per user right now.  Still this must be a list of all blogs.
+     * <p/>
+     * The Blogger API defines url, blogid and blogName.
+     *
+     * @param appkey   Not used but required by Blogger API
+     * @param username username to authenticate/check
+     * @param password the account secret
+     * @return A list of hash maps for each blog
+     */
+    public ArrayList<HashMap<Object, Serializable>> getUsersBlogs(String appkey, String username, String password) {
+        int userId;
+        boolean blnError = false;
+        ArrayList<HashMap<Object, Serializable>> a = new ArrayList<>();
+        HashMap<Object, Serializable> s = new HashMap<>();
+
+
+        if (!StringUtil.lengthCheck(username, 3, Login.USERNAME_MAX_LENGTH)) {
+            blnError = true;
+        }
+
+        if (!StringUtil.lengthCheck(password, 5, Login.PASSWORD_MAX_LENGTH)) {
+            blnError = true;
+        }
+
+        userId = webLogin.validate(username, password);
+        if (userId < 1)
+            blnError = true;
+
+        if (!blnError)
+            try {
+                final User user = userRepository.findById(userId).orElse(null);
+                if (user == null) {
+                    throw new IllegalArgumentException("user");
+                }
+
+                final Journal journal = new ArrayList<>(user.getJournals()).get(0);
+
+                s.put("url", settings.getBaseUri() +  USER_PATH + user.getUsername());
                 s.put("blogid", userId);
                 s.put("blogName", journal.getName());
             } catch (final Exception e) {
@@ -185,8 +227,8 @@ public class MetaWeblog {
 
         if (blnError) {
             s.clear();
-            s.put("faultCode", 4);
-            s.put("faultString", "User authentication failed: " + username);
+            s.put(FAULT_CODE, 4);
+            s.put(FAULT_STRING, ERROR_USER_AUTH + username);
         }
 
         a.add(s);
@@ -207,11 +249,10 @@ public class MetaWeblog {
      */
     public Serializable newPost(String blogid, String username, String password, Map content, Boolean publish) {
         String result = "";
-        int userId;
+        final int userId;
         boolean blnError = false;
         final Entry et = new Entry();
-        Entry et2;
-        HashMap<String, Serializable> s = new HashMap<String, Serializable>();
+        final HashMap<String, Serializable> s = new HashMap<>();
 
         if (!StringUtil.lengthCheck(username, 3, Login.USERNAME_MAX_LENGTH)) {
             blnError = true;
@@ -227,12 +268,17 @@ public class MetaWeblog {
 
         if (!blnError)
             try {
-                User user = userRepository.findById(userId).orElse(null);
+                final User user = userRepository.findById(userId).orElse(null);
+
+                if (user == null) {
+                    throw new IllegalArgumentException("user");
+                }
+
                 et.setUser(user);
                 et.setDate(new java.util.Date());
-                et.setSubject((String) content.get("title"));
+                et.setSubject((String) content.get(TITLE_KEY));
                 //   et.setSubject(StringUtil.replace(request.getParameter("subject"), '\'', "\\\'"));
-                et.setBody(StringUtil.replace((String) content.get("description"), '\'', "\\\'"));
+                et.setBody(StringUtil.replace((String) content.get(DESC_KEY), '\'', "\\\'"));
                 //et.setMusic(StringUtil.replace(music, '\'', "\\\'"));
                 et.setMusic("");
                 et.setSecurity(securityDao.findById(2).orElse(null));   // public
@@ -243,7 +289,6 @@ public class MetaWeblog {
                 et.setEmailComments(PrefBool.Y);
 
                 entryRepository.save(et);
-                // et2 = entryDao.viewSingle(et);
                 result = Integer.toString(et.getId());
                 log.debug("Result is: " + result);
 
@@ -254,8 +299,8 @@ public class MetaWeblog {
                     /* WebLogs, Google, blo.gs */
                     BasePing rp = new BasePing("http://rpc.weblogs.com/pingSiteForm");
                     rp.setName(journal.getName());
-                    rp.setUri("http://www.justjournal.com/" + "users/" + user.getUsername());
-                    rp.setChangesURL("http://www.justjournal.com" + "/users/" + user.getUsername() + "/rss");
+                    rp.setUri(settings.getBaseUri() +  USER_PATH + user.getUsername());
+                    rp.setChangesURL(settings.getBaseUri() +  USER_PATH + user.getUsername() + "/rss");
                     rp.ping();
                     rp.setPingUri("http://blogsearch.google.com/ping");
                     rp.ping();
@@ -265,19 +310,18 @@ public class MetaWeblog {
                     /* IceRocket */
                     final IceRocket ice = new IceRocket();
                     ice.setName(journal.getName());
-                    ice.setUri("http://www.justjournal.com/" + "users/" + user.getUsername());
+                    ice.setUri(settings.getBaseUri() + USER_PATH + user.getUsername());
                     ice.ping();
                 }
 
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 blnError = true;
                 log.debug(e.getMessage());
             }
 
         if (blnError) {
-            s.clear();
-            s.put("faultCode", 2041);
-            s.put("faultString", "User authentication failed: " + username);
+            s.put(FAULT_CODE, 2041);
+            s.put(FAULT_STRING, ERROR_USER_AUTH + username);
             return s;
         }
 
@@ -299,9 +343,8 @@ public class MetaWeblog {
      * @return true on success, hashmap on error.
      */
     public Serializable deletePost(String appkey, String postid, String username, String password, boolean publish) {
-        int userId;
+        final int userId;
         boolean blnError = false;
-        HashMap<String, Serializable> s = new HashMap<String, Serializable>();
 
         int eid = 0;
 
@@ -317,37 +360,33 @@ public class MetaWeblog {
         if (userId < 1)
             blnError = true;
 
+        if (blnError) {
+            return error(ERROR_USER_AUTH + username);
+        }
+
         try {
             eid = Integer.parseInt(postid);
-        } catch (IllegalFormatException ex) {
-            blnError = true;
-        }
-
-        if (!blnError && eid > 0) {
-            try {
-                Entry entry = entryRepository.findById(eid).orElse(null);
-                if (entry.getUser().getId() == userId)
-                    entryRepository.deleteById(eid);
-            } catch (Exception e) {
-                blnError = true;
-                log.debug(e.getMessage());
+            if (eid < 1) {
+                return error(ERROR_ENTRY_ID + postid);
             }
+        } catch (final IllegalFormatException ex) {
+            return error(ERROR_ENTRY_ID + postid);
         }
 
-        if (eid < 1) {
-            s.put("faultCode", 4);
-            s.put("faultString", "Invalid entry id " + postid);
+        try {
+            final Entry entry = entryRepository.findById(eid).orElse(null);
+            if (entry == null) {
+                return error(ERROR_ENTRY_ID + postid);
+            }
 
-        } else if (blnError) {
-            s.clear();
-            s.put("faultCode", 4);
-            s.put("faultString", "User authentication failed: " + username);
-
-        } else {
-            return true; /* ie true per spec */
+            if (entry.getUser().getId() == userId)
+                entryRepository.deleteById(eid);
+        } catch (final Exception e) {
+            log.error("Unable to delete entry", e);
+            return error("Unable to delete entry id " + postid);
         }
 
-        return s;
+        return true; /* ie true per spec */
     }
 
     /**
@@ -363,7 +402,6 @@ public class MetaWeblog {
     public Serializable editPost(String postid, String username, String password, Map content, Boolean publish) {
         int userId;
         boolean blnError = false;
-        HashMap<String, Serializable> s = new HashMap<String, Serializable>();
 
         int eid = 0;
 
@@ -381,19 +419,21 @@ public class MetaWeblog {
 
         try {
             eid = Integer.parseInt(postid);
-        } catch (IllegalFormatException ex) {
+        } catch (final IllegalFormatException ex) {
             blnError = true;
         }
 
         if (!blnError && eid > 0) {
             try {
-                /* we're just updating the content aka body as this is the
-           only thing the protocol supports. */
-                Entry et2 = entryRepository.findById(eid).orElse(null);
+                /* we're just updating the content aka body as this is the only thing the protocol supports. */
+                final Entry et2 = entryRepository.findById(eid).orElse(null);
+                if (et2 == null) {
+                    return error(ERROR_ENTRY_ID + postid);
+                }
                 if (et2.getUser().getId() == userId) {
-                    et2.setSubject((String) content.get("title"));
-                    et2.setBody(StringUtil.replace((String) content.get("description"), '\'', "\\\'"));
-                /* TODO: add date edit support */
+                    et2.setSubject((String) content.get(TITLE_KEY));
+                    et2.setBody(StringUtil.replace((String) content.get(DESC_KEY), '\'', "\\\'"));
+                    /* TODO: add date edit support */
                     entryRepository.save(et2);
 
                     String tags[] = (String[]) content.get("categories");
@@ -407,26 +447,18 @@ public class MetaWeblog {
                         entryTagsRepository.save(entryTags);
                     }
                 }
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 blnError = true;
                 log.debug(e.getMessage());
             }
         }
 
         if (eid < 1) {
-            s.put("faultCode", 4);
-            s.put("faultString", "Invalid entry id " + postid);
-
+            return error(ERROR_ENTRY_ID + postid);
         } else if (blnError) {
-            s.clear();
-            s.put("faultCode", 4);
-            s.put("faultString", "User authentication failed: " + username);
-
-        } else {
-            return true; /* ie true per spec */
+            return error(ERROR_USER_AUTH + username);
         }
-
-        return s;
+        return true; /* ie true per spec */
     }
 
     /**
@@ -466,11 +498,10 @@ public class MetaWeblog {
      * @return An arraylist of posts or a hashmap of error info.
      */
     public Cloneable getRecentPosts(String blogid, String username, String password, int numberOfPosts) {
-        ArrayList<HashMap<Object, Serializable>> arr = new ArrayList<HashMap<Object, Serializable>>(numberOfPosts);
-        Collection<Entry> total;
-        Boolean blnError = false;
-        int userId;
-        HashMap<String, Serializable> s = new HashMap<String, Serializable>();
+        final ArrayList<HashMap<Object, Serializable>> arr = new ArrayList<>(numberOfPosts);
+        final Collection<Entry> total;
+        boolean blnError = false;
+        final int userId;
 
         if (!StringUtil.lengthCheck(username, 3, Login.USERNAME_MAX_LENGTH)) {
             blnError = true;
@@ -482,9 +513,7 @@ public class MetaWeblog {
 
         userId = webLogin.validate(username, password);
         if (blnError || userId < 1) {
-            s.put("faultCode", 4);
-            s.put("faultString", "User authentication failed: " + username);
-            return s;
+            return error(ERROR_USER_AUTH + username);
         }
 
         total = entryRepository.findByUsername(username);
@@ -493,10 +522,10 @@ public class MetaWeblog {
 
         for (int i = 0; i < numberOfPosts; i++)
             if (it.hasNext()) {
-                HashMap<Object, Serializable> entry = new HashMap<Object, Serializable>();
+                HashMap<Object, Serializable> entry = new HashMap<>();
                 Entry e = it.next();
-                entry.put("link", "http://www.justjournal.com/users/" + e.getUser().getUsername() + "/entry/" + e.getId());
-                entry.put("permaLink", "http://www.justjournal.com/users/" + e.getUser().getUsername() + "/entry/" + e.getId());
+                entry.put("link", settings.getBaseUri() +  USER_PATH + e.getUser().getUsername() + "/entry/" + e.getId());
+                entry.put("permaLink", settings.getBaseUri() +  USER_PATH + e.getUser().getUsername() + "/entry/" + e.getId());
                 entry.put("userid", Integer.toString(e.getUser().getId()));
                 entry.put("mt_allow_pings", 0);     /* TODO: on or off? */
                 entry.put("mt_allow_comments", 1);  /* TODO: on or off? */
@@ -510,7 +539,7 @@ public class MetaWeblog {
                 entry.put("title", e.getSubject());
                 entry.put("mt_text_more", "");
                 entry.put("dateCreated", e.getDate()); /* TODO: needs to be iso8601 */
-                Collection<String> list = new ArrayList<String>();
+                Collection<String> list = new ArrayList<>();
                 for (EntryTag tag : e.getTags()) {
                     list.add(tag.getTag().getName());
                 }
@@ -531,11 +560,10 @@ public class MetaWeblog {
      * @return a signle entry as a hashmap for consumption by xml-rpc
      */
     public HashMap<Object, Serializable> getPost(String postid, String username, String password) {
-        Boolean blnError = false;
-        int userId;
-        HashMap<Object, Serializable> s = new HashMap<Object, Serializable>();
-        HashMap<Object, Serializable> entry = new HashMap<Object, Serializable>();
-        Entry e;
+        boolean blnError = false;
+        final int userId;
+        final HashMap<Object, Serializable> entry = new HashMap<>();
+        final Entry e;
 
         if (!StringUtil.lengthCheck(username, 3, Login.USERNAME_MAX_LENGTH)) {
             blnError = true;
@@ -547,20 +575,21 @@ public class MetaWeblog {
 
         userId = webLogin.validate(username, password);
         if (blnError || userId < 1) {
-            s.put("faultCode", 4);
-            s.put("faultString", "User authentication failed: " + username);
-            return s;
+            return error(ERROR_USER_AUTH + username);
         }
 
         e = entryRepository.findById(Integer.parseInt(postid)).orElse(null);
-        if (e.getUser().getId() != userId) {
-            s.put("faultCode", 4);
-            s.put("faultString", "User authentication failed: " + username);
-            return s;
+
+        if (e == null) {
+            return error(ERROR_ENTRY_ID + postid);
         }
 
-        entry.put("link", "http://www.justjournal.com/users/" + e.getUser().getUsername() + "/entry/" + e.getId());
-        entry.put("permaLink", "http://www.justjournal.com/users/" + e.getUser().getUsername() + "/entry/" + e.getId());
+        if (e.getUser().getId() != userId) {
+            return error(ERROR_USER_AUTH + username);
+        }
+
+        entry.put("link", settings.getBaseUri() +  USER_PATH + e.getUser().getUsername() + "/entry/" + e.getId());
+        entry.put("permaLink", settings.getBaseUri() +  USER_PATH + e.getUser().getUsername() + "/entry/" + e.getId());
         entry.put("userid", Integer.toString(e.getUser().getId()));
         entry.put("mt_allow_pings", 0);     /* TODO: on or off? */
         entry.put("mt_allow_comments", 1);  /* TODO: on or off? */
@@ -573,11 +602,11 @@ public class MetaWeblog {
         entry.put("title", e.getSubject());
         entry.put("mt_text_more", "");
         entry.put("dateCreated", e.getDate()); /* TODO: needs to be iso8601 */
-        Collection<String> list = new ArrayList<String>();
+        Collection<String> list = new ArrayList<>();
         for (EntryTag entryTag : e.getTags()) {
             list.add(entryTag.getTag().getName());
         }
-        String str[] = (String[]) list.toArray(new String[list.size()]);
+        String str[] = list.toArray(new String[list.size()]);
         entry.put("categories", str); // according to microsoft it's a string array
 
         return entry;
@@ -585,10 +614,8 @@ public class MetaWeblog {
 
     public Cloneable getCategories(final String blogid, final String username, final String password) {
         final int userId;
-        Boolean blnError = false;
-        final HashMap<Object, Serializable> s = new HashMap<Object, Serializable>();
-        final ArrayList<HashMap<Object, Serializable>> arr = new ArrayList<HashMap<Object, Serializable>>();
-        final Map<String, Tag> tags = new HashMap<String, Tag>();
+        boolean blnError = false;
+        final ArrayList<HashMap<Object, Serializable>> arr = new ArrayList<>();
 
         if (!StringUtil.lengthCheck(username, 3, Login.USERNAME_MAX_LENGTH)) {
             blnError = true;
@@ -600,24 +627,30 @@ public class MetaWeblog {
 
         userId = webLogin.validate(username, password);
         if (blnError || userId < 1) {
-            s.put("faultCode", 4);
-            s.put("faultString", "User authentication failed: " + username);
-            return s;
+            return error(ERROR_USER_AUTH + username);
         }
 
         try {
             entryService.getEntryTags(username)
                     .map(curtag -> {
-                            final HashMap<Object, Serializable> entry = new HashMap<Object, Serializable>();
-                            entry.put("description", curtag.getName());
-                            entry.put("title", curtag.getName());
-                            arr.add(entry);
+                        final HashMap<Object, Serializable> entry = new HashMap<>();
+                        entry.put("description", curtag.getName());
+                        entry.put("title", curtag.getName());
+                        arr.add(entry);
 
-                            return curtag;
-                        }).subscribe();
+                        return curtag;
+                    })
+                    .subscribe();
         } catch (final ServiceException se) {
             log.error(se.getMessage(), se);
         }
         return arr;
+    }
+
+    private HashMap<Object, Serializable> error(final String faultString) {
+        final HashMap<Object, Serializable> s = new HashMap<>();
+        s.put(FAULT_CODE, 4);
+        s.put(FAULT_STRING, faultString);
+        return s;
     }
 }

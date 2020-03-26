@@ -27,9 +27,14 @@
 package com.justjournal.ctl.api.entry;
 
 import com.justjournal.Login;
+import com.justjournal.ctl.error.ErrorHandler;
+import com.justjournal.exception.ServiceException;
 import com.justjournal.model.Comment;
 import com.justjournal.model.Entry;
+import com.justjournal.model.Location;
+import com.justjournal.model.Mood;
 import com.justjournal.model.RecentEntry;
+import com.justjournal.model.Security;
 import com.justjournal.model.User;
 import com.justjournal.model.api.EntryTo;
 import com.justjournal.repository.CommentRepository;
@@ -39,7 +44,6 @@ import com.justjournal.repository.MoodRepository;
 import com.justjournal.repository.SecurityRepository;
 import com.justjournal.repository.UserRepository;
 import com.justjournal.services.EntryService;
-import com.justjournal.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -89,7 +93,6 @@ public class EntryController {
 
     private static final int DEFAULT_SIZE = 20;
     private static final String ERR_INVALID_LOGIN = "The login timed out or is invalid.";
-    private static final String ERR_TYPE = "error";
 
     @Qualifier("commentRepository")
     @Autowired
@@ -123,15 +126,13 @@ public class EntryController {
      * /api/entry/{username}/recent
      *
      * @param username username
-     * @param response HttpResponse
      * @param session  HttpSession
      * @return list of recent entries
      */
     @GetMapping(value = "{username}/recent", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<Iterable<RecentEntry>> getRecentEntries(@PathVariable("username") final String username,
-                                                              final HttpServletResponse response,
-                                                              final HttpSession session) {
+                                                                                            final HttpSession session) {
         final Flux<RecentEntry> entries;
         try {
             if (Login.isAuthenticated(session) && Login.isUserName(username)) {
@@ -177,12 +178,12 @@ public class EntryController {
                 return null;
             }
 
-            PagedModel.PageMetadata metadata =
+            final PagedModel.PageMetadata metadata =
                     new PagedModel.PageMetadata(entries.getSize(), entries.getNumber(), entries.getTotalElements(),
                             entries.getTotalPages());
 
-            Link link = new Link(request.getRequestURI());
-            return new PagedModel<EntryTo>(entries.stream().map(Entry::toEntryTo).collect(Collectors.toList()), metadata, link);
+            final Link link = new Link(request.getRequestURI());
+            return new PagedModel<>(entries.stream().map(Entry::toEntryTo).collect(Collectors.toList()), metadata, link);
         } catch (final ServiceException e) {
             log.error(e.getMessage(), e);
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -193,9 +194,9 @@ public class EntryController {
     @GetMapping(value = "{username}/page/{page}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public PagedModel<EntryTo> getEntries(@PathVariable("username") final String username,
-                                              @PathVariable("page") final int page,
-                                              final HttpServletRequest request,
-                                              final HttpServletResponse response, final HttpSession session) {
+                                          @PathVariable("page") final int page,
+                                          final HttpServletRequest request,
+                                          final HttpServletResponse response, final HttpSession session) {
 
         return getEntries(username, DEFAULT_SIZE, page, request, response, session);
     }
@@ -290,7 +291,7 @@ public class EntryController {
         try {
             entries = entryService.getPublicEntries(username)
                     .stream()
-                    .map(e -> e.toEntryTo())
+                    .map(Entry::toEntryTo)
                     .collect(Collectors.toList());
 
             if (entries.isEmpty()) {
@@ -323,31 +324,31 @@ public class EntryController {
 
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            return Collections.singletonMap(ERR_TYPE, "The login timed out or is invalid.");
+            return ErrorHandler.modelError( ERR_INVALID_LOGIN);
         }
 
         final User user = userRepository.findById(Login.currentLoginId(session)).orElse(null);
         if (user == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return Collections.singletonMap(ERR_TYPE, "User not found");
+            return ErrorHandler.modelError( "User not found");
         }
 
         if (entryTo.getBody() == null || entryTo.getBody().isEmpty()) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return Collections.singletonMap(ERR_TYPE, "Entry does not contain a body.");
+            return ErrorHandler.modelError( "Entry does not contain a body.");
         }
 
         final Entry entry = new Entry(entryTo);
         entry.setUser(user);
-        entry.setLocation(locationDao.findById(entryTo.getLocation()).orElse(null));
-        entry.setSecurity(securityDao.findById(entryTo.getSecurity()).orElse(null));
-        entry.setMood(moodDao.findById(entry.getMoodId()).orElse(null));
+        entry.setLocation(getLocation(entryTo.getLocation()));
+        entry.setSecurity(getSecurity(entryTo.getSecurity()));
+        entry.setMood(getMood(entryTo.getMood()));
 
         final Entry saved = entryRepository.saveAndFlush(entry);
 
         if (saved.getId() < 1) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            return Collections.singletonMap(ERR_TYPE, "Could not save entry");
+            return ErrorHandler.modelError( "Could not save entry");
         }
 
         entryService.applyTags(saved, entryTo.getTags());
@@ -375,15 +376,19 @@ public class EntryController {
     public Map<String, String> put(@RequestBody EntryTo entryTo, HttpSession session, HttpServletResponse response) {
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            return Collections.singletonMap(ERR_TYPE, ERR_INVALID_LOGIN);
+            return ErrorHandler.modelError(ERR_INVALID_LOGIN);
         }
         final User user = userRepository.findById(Login.currentLoginId(session)).orElse(null);
+        if (user == null) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            return ErrorHandler.modelError("Invalid user or session.");
+        }
         Entry entry = new Entry(entryTo);
         entry.setUser(user);
 
-        entry.setLocation(locationDao.findById(entryTo.getLocation()).orElse(null));
-        entry.setSecurity(securityDao.findById(entryTo.getSecurity()).orElse(null));
-        entry.setMood(moodDao.findById(entryTo.getMood()).orElse(null));
+        entry.setLocation(getLocation(entryTo.getLocation()));
+        entry.setSecurity(getSecurity(entryTo.getSecurity()));
+        entry.setMood(getMood(entryTo.getMood()));
 
         final Entry entry2 = entryRepository.findById(entryTo.getEntryId()).orElse(null);
 
@@ -395,6 +400,18 @@ public class EntryController {
         entryService.applyTags(entry, entryTo.getTags());
 
         return Collections.singletonMap("id", Integer.toString(entry.getId()));
+    }
+
+    private Location getLocation(int locationId) {
+        return locationDao.findById(locationId).orElse(null);
+    }
+
+    private Security getSecurity(int securityId) {
+        return securityDao.findById(securityId).orElse(null);
+    }
+
+    private Mood getMood(int moodId) {
+        return moodDao.findById(moodId).orElse(null);
     }
 
     /**
@@ -411,11 +428,13 @@ public class EntryController {
 
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            return Collections.singletonMap(ERR_TYPE, ERR_INVALID_LOGIN);
+            return ErrorHandler.modelError(ERR_INVALID_LOGIN);
         }
 
-        if (entryId < 1)
-            return Collections.singletonMap(ERR_TYPE, "The entry id was invalid.");
+        if (entryId < 1) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return ErrorHandler.modelError("The entry id was invalid.");
+        }
 
         try {
             final User user = userRepository.findById(Login.currentLoginId(session)).orElse(null);
@@ -427,14 +446,14 @@ public class EntryController {
                 entryRepository.deleteById(entryId);
             } else {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                return Collections.singletonMap(ERR_TYPE, "Could not delete entry.");
+                return ErrorHandler.modelError("Could not delete entry.");
             }
 
             return Collections.singletonMap("id", Integer.toString(entryId));
         } catch (final Exception e) {
             log.error(e.getMessage(), e);
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return Collections.singletonMap(ERR_TYPE, "Could not delete the comment.");
+            return ErrorHandler.modelError("Could not delete the comment.");
         }
     }
 }
