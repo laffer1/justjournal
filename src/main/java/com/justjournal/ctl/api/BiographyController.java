@@ -27,6 +27,7 @@
 package com.justjournal.ctl.api;
 
 import com.justjournal.Login;
+import com.justjournal.core.Constants;
 import com.justjournal.ctl.error.ErrorHandler;
 import com.justjournal.model.User;
 import com.justjournal.model.UserBio;
@@ -43,6 +44,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.Map;
+
+import static com.justjournal.core.Constants.PARAM_USERNAME;
 
 /**
  * Retrieve and manage user biography content.
@@ -69,9 +72,9 @@ public class BiographyController {
     }
 
     @Cacheable(value = "biography", key = "username")
-    @GetMapping(value = "{username}", headers = "Accept=*/*", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "{username}", headers = Constants.HEADER_ACCEPT_ALL, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public UserBio get(@PathVariable("username") String username, final HttpServletResponse response) {
+    public UserBio get(@PathVariable(PARAM_USERNAME) String username, final HttpServletResponse response) {
         final User user = userDao.findByUsername(username);
         if (user == null) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);

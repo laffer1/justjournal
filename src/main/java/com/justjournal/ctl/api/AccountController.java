@@ -27,6 +27,7 @@
 package com.justjournal.ctl.api;
 
 import com.justjournal.Login;
+import com.justjournal.core.Constants;
 import com.justjournal.ctl.error.ErrorHandler;
 import com.justjournal.model.Journal;
 import com.justjournal.model.User;
@@ -60,6 +61,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.Map;
 import java.util.Optional;
+
+import static com.justjournal.core.Constants.PARAM_USERNAME;
 
 /**
  * @author Lucas Holt
@@ -153,7 +156,7 @@ public class AccountController {
     public Map<String, String> delete(final HttpServletResponse response, final HttpSession session) {
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            return ErrorHandler.modelError(  "The login timed out or is invalid.");
+            return ErrorHandler.modelError(Constants.ERR_INVALID_LOGIN);
         }
 
         final int userID = Login.currentLoginId(session);
@@ -207,13 +210,13 @@ public class AccountController {
 
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return ErrorHandler.modelError(  "The login timed out or is invalid.");
+            return ErrorHandler.modelError(Constants.ERR_INVALID_LOGIN);
         }
 
         return changePassword(passwordChange, session, response);
     }
 
-    @PostMapping(produces = "application/json")
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Map<String, String> post(@RequestBody final User user,
                                     final HttpSession session,
@@ -221,7 +224,7 @@ public class AccountController {
 
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return ErrorHandler.modelError(  "The login timed out or is invalid.");
+            return ErrorHandler.modelError(Constants.ERR_INVALID_LOGIN);
         }
 
         return updateUser(user, session, response);
@@ -229,7 +232,7 @@ public class AccountController {
 
     @GetMapping(value = "{username}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public User getByUsername(@PathVariable("username") final String username,
+    public User getByUsername(@PathVariable(PARAM_USERNAME) final String username,
                               final HttpSession session,
                               final HttpServletResponse response) {
         try {

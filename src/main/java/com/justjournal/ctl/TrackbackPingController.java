@@ -34,6 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.ctl;
 
+import com.justjournal.core.Constants;
 import com.justjournal.model.Trackback;
 import com.justjournal.model.TrackbackType;
 import com.justjournal.repository.TrackbackRepository;
@@ -87,7 +88,7 @@ public class TrackbackPingController {
             response.setContentType("text/xml; charset=utf-8");
             Boolean istrackback = true;
 
-            int postId = ServletUtilities.getIntParameter(request, "entryID", 0);
+            final int postId = ServletUtilities.getIntParameter(request, "entryID", 0);
             if (postId > 1)
                 throw new IllegalArgumentException("entry id is missing");
 
@@ -95,7 +96,7 @@ public class TrackbackPingController {
             if (url == null || url.length() < 1) {
                 throw new IllegalArgumentException("Missing required parameter \"url\"");
             }
-            String title = request.getParameter("title");
+            String title = request.getParameter(Constants.PARAM_TITLE);
             String name = request.getParameter("name");  // post-it format title
             String blogName = request.getParameter("blog_name");
             String excerpt = request.getParameter("excerpt");

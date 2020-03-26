@@ -30,6 +30,7 @@ import com.justjournal.Cal;
 import com.justjournal.ErrorPage;
 import com.justjournal.Login;
 import com.justjournal.atom.AtomFeed;
+import com.justjournal.core.Constants;
 import com.justjournal.core.UserContext;
 import com.justjournal.exception.ServiceException;
 import com.justjournal.model.*;
@@ -61,6 +62,8 @@ import java.io.IOException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import static com.justjournal.core.Constants.HEADER_PRAGMA;
 
 /**
  * Journal viewer for JustJournal.
@@ -729,9 +732,9 @@ public class UsersController {
 
     private void setCommonFileHeaders(final HttpServletResponse response, final UserContext uc, String contentType, String fileExtension) {
         response.setContentType(contentType);
-        response.setHeader("Expires", "0");
-        response.setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
-        response.setHeader("Pragma", "public");
+        response.setHeader(Constants.HEADER_EXPIRES, "0");
+        response.setHeader(Constants.HEADER_CACHE_CONTROL, "must-revalidate, post-check=0, pre-check=0");
+        response.setHeader(HEADER_PRAGMA, "public");
         // RFC 1806
         response.setHeader("Content-Disposition", "attachment; filename=" + uc.getBlogUser().getUsername() + fileExtension);
     }
@@ -1692,7 +1695,7 @@ public class UsersController {
                 sb.append("<p>Calendar data not available.</p>");
                 sb.append(ENDL);
             } else {
-                final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+                final SimpleDateFormat formatter = new SimpleDateFormat(ENTRY_DATE_TIME_FORMAT);
                 final SimpleDateFormat formatmydate = new SimpleDateFormat(ENTRY_DATE_FORMAT);
 
                 String lastDate = "";

@@ -49,6 +49,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.justjournal.core.Constants.HEADER_CACHE_CONTROL;
+import static com.justjournal.core.Constants.HEADER_EXPIRES;
+import static com.justjournal.core.Constants.HEADER_LAST_MODIFIED;
+import static com.justjournal.core.Constants.MIME_TYPE_RSS;
+
 /**
  * Display recent blog entries in RSS format.
  *
@@ -73,12 +78,12 @@ public class RecentBlogsController {
     private Rss rss;
 
     @Cacheable("recentblogs")
-    @GetMapping(produces = "application/rss+xml")
+    @GetMapping(produces = MIME_TYPE_RSS)
     @ResponseBody
     public String get(final HttpServletResponse response) {
-        response.setContentType("application/rss+xml;charset=UTF-8");
-        response.setDateHeader("Expires", System.currentTimeMillis() + 1000 * 60);
-        response.setHeader("Cache-Control", "max-age=60, private, proxy-revalidate");
+        response.setContentType(MIME_TYPE_RSS + ";charset=UTF-8");
+        response.setDateHeader(HEADER_EXPIRES, System.currentTimeMillis() + 1000 * 60);
+        response.setHeader(HEADER_CACHE_CONTROL, "max-age=60, private, proxy-revalidate");
 
         // Create an RSS object, set the required
         // properties (title, description language, url)
@@ -121,9 +126,9 @@ public class RecentBlogsController {
             final Date d = rss.getNewestEntryDate();
 
             if (d != null)
-                response.setDateHeader("Last-Modified", d.getTime());
+                response.setDateHeader(HEADER_LAST_MODIFIED, d.getTime());
             else
-                response.setDateHeader("Last-Modified", System.currentTimeMillis());
+                response.setDateHeader(HEADER_LAST_MODIFIED, System.currentTimeMillis());
 
             return rss.toXml();
         } catch (final Exception e) {

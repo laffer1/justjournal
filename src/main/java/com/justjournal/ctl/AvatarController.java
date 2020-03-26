@@ -55,6 +55,9 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URI;
 
+import static com.justjournal.core.Constants.LOGIN_ATTRID;
+import static com.justjournal.core.Constants.PARAM_ID;
+
 /**
  * @author Lucas Holt
  */
@@ -70,7 +73,7 @@ public class AvatarController {
     private ImageService imageService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<Resource> getByPath(@PathVariable("id") final int id) throws IOException {
+    public ResponseEntity<Resource> getByPath(@PathVariable(PARAM_ID) final int id) {
         try {
             return ResponseEntity.ok()
                     .contentType(MediaType.IMAGE_JPEG)
@@ -84,7 +87,7 @@ public class AvatarController {
     @PostMapping(value = "")
     public ResponseEntity processUpload(@RequestParam MultipartFile file, HttpSession session, HttpRequest request) {
 
-        final Integer userIDasi = (Integer) session.getAttribute("auth.uid");
+        final Integer userIDasi = (Integer) session.getAttribute(LOGIN_ATTRID);
         int userID = 0;
         if (userIDasi != null) {
             userID = userIDasi;
@@ -125,10 +128,10 @@ public class AvatarController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity delete(@PathVariable("id") final int id, final HttpSession session) {
+    public ResponseEntity delete(@PathVariable(PARAM_ID) final int id, final HttpSession session) {
 
           // Retreive user id
-          final Integer userIDasi = (Integer) session.getAttribute("auth.uid");
+          final Integer userIDasi = (Integer) session.getAttribute(LOGIN_ATTRID);
           // convert Integer to int type
           int userID = 0;
           if (userIDasi != null) {

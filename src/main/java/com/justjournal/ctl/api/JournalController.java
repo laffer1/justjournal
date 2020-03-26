@@ -1,6 +1,7 @@
 package com.justjournal.ctl.api;
 
 import com.justjournal.Login;
+import com.justjournal.core.Constants;
 import com.justjournal.ctl.error.ErrorHandler;
 import com.justjournal.model.Journal;
 import com.justjournal.model.Style;
@@ -52,7 +53,7 @@ public class JournalController {
 
     @GetMapping(value = "user/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<List<Journal>> listByUser(@PathVariable("username") final String username) {
+    public ResponseEntity<List<Journal>> listByUser(@PathVariable(Constants.PARAM_USERNAME) final String username) {
         try {
             return ResponseEntity.ok(journalRepository.findByUsername(username));
         } catch (final Exception e) {
@@ -89,7 +90,7 @@ public class JournalController {
 
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return ErrorHandler.modelError(  "The login timed out or is invalid.");
+            return ErrorHandler.modelError(Constants.ERR_INVALID_LOGIN);
         }
 
         try {
@@ -140,7 +141,7 @@ public class JournalController {
 
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return ErrorHandler.modelError(  "The login timed out or is invalid.");
+            return ErrorHandler.modelError(Constants.ERR_INVALID_LOGIN);
         }
 
         final Journal journal = journalRepository.findOneBySlug(slug);

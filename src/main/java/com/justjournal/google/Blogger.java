@@ -55,6 +55,9 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.justjournal.core.Constants.PASSWORD_MAX_LENGTH;
+import static com.justjournal.core.Constants.USERNAME_MAX_LENGTH;
+
 /**
  * A blogger 1 compatible interface exposed by XML-RPC
  * <p/>
@@ -108,15 +111,6 @@ public class Blogger {
         boolean blnError = false;
         final HashMap<String, Serializable> s = new HashMap<>();
 
-
-        if (!StringUtil.lengthCheck(username, 3, Login.USERNAME_MAX_LENGTH)) {
-            blnError = true;
-        }
-
-        if (!StringUtil.lengthCheck(password, 5, Login.PASSWORD_MAX_LENGTH)) {
-            blnError = true;
-        }
-
         userId = webLogin.validate(username, password);
         if (userId < 1)
             blnError = true;
@@ -164,15 +158,6 @@ public class Blogger {
         boolean blnError = false;
         ArrayList<HashMap<Object, Serializable>> a = new ArrayList<>();
         HashMap<Object, Serializable> s = new HashMap<>();
-
-
-        if (!StringUtil.lengthCheck(username, 3, 15)) {
-            blnError = true;
-        }
-
-        if (!StringUtil.lengthCheck(password, 5, 18)) {
-            blnError = true;
-        }
 
         userId = webLogin.validate(username, password);
         if (userId < 1)
@@ -223,14 +208,6 @@ public class Blogger {
         boolean blnError = false;
         Entry et = new Entry();
         HashMap<String, Serializable> s = new HashMap<>();
-
-        if (!StringUtil.lengthCheck(username, 3, Login.USERNAME_MAX_LENGTH)) {
-            blnError = true;
-        }
-
-        if (!StringUtil.lengthCheck(password, 5, Login.PASSWORD_MAX_LENGTH)) {
-            blnError = true;
-        }
 
         userId = webLogin.validate(username, password);
         if (userId < 1)
@@ -337,14 +314,6 @@ public class Blogger {
 
         int eid = 0;
 
-        if (!StringUtil.lengthCheck(username, 3, 15)) {
-            blnError = true;
-        }
-
-        if (!StringUtil.lengthCheck(password, 5, 18)) {
-            blnError = true;
-        }
-
         userId = webLogin.validate(username, password);
         if (userId < 1)
             blnError = true;
@@ -402,14 +371,6 @@ public class Blogger {
         HashMap<String, Serializable> s = new HashMap<>();
 
         int eid = 0;
-
-        if (!StringUtil.lengthCheck(username, 3, 15)) {
-            blnError = true;
-        }
-
-        if (!StringUtil.lengthCheck(password, 5, 18)) {
-            blnError = true;
-        }
 
         userId = webLogin.validate(username, password);
         if (userId < 1)
@@ -489,19 +450,11 @@ public class Blogger {
      * @return An arraylist of posts or a hashmap of error info.
      */
     public Cloneable getRecentPosts(String appkey, String blogid, String username, String password, int numberOfPosts) {
-        ArrayList<HashMap<Object, Serializable>> arr = new ArrayList<>(numberOfPosts);
-        Collection<Entry> total;
+        final ArrayList<HashMap<Object, Serializable>> arr = new ArrayList<>(numberOfPosts);
+        final Collection<Entry> total;
         boolean blnError = false;
-        int userId;
-        HashMap<String, Serializable> s = new HashMap<>();
-
-        if (!StringUtil.lengthCheck(username, 3, Login.USERNAME_MAX_LENGTH)) {
-            blnError = true;
-        }
-
-        if (!StringUtil.lengthCheck(password, 5, Login.PASSWORD_MAX_LENGTH)) {
-            blnError = true;
-        }
+        final int userId;
+        final HashMap<String, Serializable> s = new HashMap<>();
 
         userId = webLogin.validate(username, password);
         if (blnError || userId < 1) {
@@ -553,14 +506,6 @@ public class Blogger {
         HashMap<Object, Serializable> s = new HashMap<>();
         HashMap<Object, Serializable> entry = new HashMap<>();
         Entry e;
-
-        if (!StringUtil.lengthCheck(username, 3, 15)) {
-            blnError = true;
-        }
-
-        if (!StringUtil.lengthCheck(password, 5, 18)) {
-            blnError = true;
-        }
 
         userId = webLogin.validate(username, password);
         if (blnError || userId < 1) {

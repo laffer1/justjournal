@@ -34,6 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.ctl.api;
 
 import com.justjournal.Login;
+import com.justjournal.core.Constants;
 import com.justjournal.ctl.error.ErrorHandler;
 import com.justjournal.model.Entry;
 import com.justjournal.model.Favorite;
@@ -124,7 +125,7 @@ public class FavoriteController {
 
     @PostMapping(value = "/{entryId}")
     @ResponseBody
-    public Map<String, String> create(@PathVariable("entryId") final int entryId,
+    public Map<String, String> create(@PathVariable(Constants.PARAM_ENTRY_ID) final int entryId,
                                       final HttpSession session,
                                       final HttpServletResponse response) {
         try {
@@ -146,13 +147,13 @@ public class FavoriteController {
 
     @DeleteMapping(value = "/{entryId}")
     @ResponseBody
-    public Map<String, String> delete(@PathVariable("entryId") final int entryId,
+    public Map<String, String> delete(@PathVariable(Constants.PARAM_ENTRY_ID) final int entryId,
                                       final HttpSession session,
                                       final HttpServletResponse response) {
 
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return ErrorHandler.modelError("The login timed out or is invalid.");
+            return ErrorHandler.modelError(Constants.ERR_INVALID_LOGIN);
         }
 
         try {

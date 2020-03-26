@@ -36,7 +36,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
@@ -48,6 +54,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import static com.justjournal.core.Constants.LOGIN_ATTRID;
+import static com.justjournal.core.Constants.PARAM_ID;
+import static com.justjournal.core.Constants.PARAM_TITLE;
 
 /**
  * Display individual images in the user's photo album.
@@ -70,7 +80,7 @@ public class AlbumImageController {
     }
 
     @GetMapping(value = "/{id}/thumbnail")
-    public ResponseEntity<byte[]> getThumbnail(@PathVariable("id") final int id) throws IOException {
+    public ResponseEntity<byte[]> getThumbnail(@PathVariable(PARAM_ID) final int id) throws IOException {
 
         // TODO: refactor into service
         final ResponseEntity<byte[]> out = get(id);
@@ -84,12 +94,12 @@ public class AlbumImageController {
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<byte[]> getByPath(@PathVariable("id") final int id) throws IOException {
+    public ResponseEntity<byte[]> getByPath(@PathVariable(PARAM_ID) final int id) throws IOException {
         return get(id);
     }
 
     @GetMapping(value = "")
-    public ResponseEntity<byte[]> get(@RequestParam("id") final int id) throws IOException {
+    public ResponseEntity<byte[]> get(@RequestParam(PARAM_ID) final int id) throws IOException {
         final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
         if (id < 1) {
@@ -98,8 +108,8 @@ public class AlbumImageController {
 
         try (final Connection conn = jdbcTemplate.getDataSource().getConnection();
              final PreparedStatement stmt = conn.prepareStatement("CALL getalbumimage(?)");
-             ) {
-             stmt.setInt(1, id);
+        ) {
+            stmt.setInt(1, id);
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
@@ -135,13 +145,13 @@ public class AlbumImageController {
 
     @PostMapping(value = "")
     public ResponseEntity upload(@RequestPart("file") MultipartFile file,
-                                 @RequestParam(value = "title", defaultValue = "untitled") String title,
+                                 @RequestParam(value = PARAM_TITLE, defaultValue = "untitled") String title,
                                  HttpSession session) throws IOException {
         assert jdbcTemplate != null;
         final int rowsAffected;
 
         // Retreive user id
-        final Integer userIDasi = (Integer) session.getAttribute("auth.uid");
+        final Integer userIDasi = (Integer) session.getAttribute(LOGIN_ATTRID);
         // convert Integer to int type
         int userID = 0;
         if (userIDasi != null) {
@@ -189,11 +199,11 @@ public class AlbumImageController {
             log.error("Error on database connection inserting image.", e);
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
         } finally {
-           /*
-            * Close any JDBC instances here that weren't
-            * explicitly closed during normal code path, so
-            * that we don't 'leak' resources...
-            */
+            /*
+             * Close any JDBC instances here that weren't
+             * explicitly closed during normal code path, so
+             * that we don't 'leak' resources...
+             */
             try {
                 if (stmt != null)
                     stmt.close();
@@ -215,10 +225,10 @@ public class AlbumImageController {
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity delete(@PathVariable("id") final int id, final HttpSession session) {
+    public ResponseEntity delete(@PathVariable(PARAM_ID) final int id, final HttpSession session) {
 
         // Retreive user id
-        final Integer userIDasi = (Integer) session.getAttribute("auth.uid");
+        final Integer userIDasi = (Integer) session.getAttribute(LOGIN_ATTRID);
         // convert Integer to int type
         int userID = 0;
         if (userIDasi != null) {
@@ -229,7 +239,7 @@ public class AlbumImageController {
         if (userID < 1) {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
         }
-        
+
         try {
             jdbcTemplate.execute("DELETE FROM user_images WHERE id='" + id + "' AND owner='" + userID + "';");
         } catch (final DataAccessException dae) {

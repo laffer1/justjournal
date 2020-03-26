@@ -34,6 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.ctl.api;
 
+import com.justjournal.core.Constants;
 import com.justjournal.model.Mood;
 import com.justjournal.repository.MoodRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
+
+import static com.justjournal.core.Constants.PARAM_ID;
 
 /**
  * List moods used for journal entries.
@@ -66,7 +69,7 @@ public class MoodController {
     @Cacheable(value = "mood", key = "id")
     @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<Mood> getById(@PathVariable("id") final Integer id) {
+    public ResponseEntity<Mood> getById(@PathVariable(PARAM_ID) final Integer id) {
         final Mood m = moodDao.findById(id).orElse(null);
         if (m == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -80,7 +83,7 @@ public class MoodController {
      * @return mood list
      */
     @Cacheable("mood")
-    @GetMapping(headers = "Accept=*/*", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(headers = Constants.HEADER_ACCEPT_ALL, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<List<Mood>> getMoodList() {
         final List<Mood> list = moodDao.findAll();

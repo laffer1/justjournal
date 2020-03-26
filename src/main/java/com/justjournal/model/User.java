@@ -40,7 +40,6 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.justjournal.Login;
 import com.justjournal.utility.StringUtil;
 
 import javax.persistence.Basic;
@@ -64,6 +63,8 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+
+import static com.justjournal.core.Constants.*;
 
 /**
  * Represents a user most basic properties.
@@ -345,7 +346,7 @@ public class User implements Serializable {
      */
     public void setUsername(String username) {
         // TODO: move username max length to this class
-        if (!StringUtil.lengthCheck(username, 3, Login.USERNAME_MAX_LENGTH)) {
+        if (!StringUtil.lengthCheck(username, USERNAME_MIN_LENGTH, USERNAME_MAX_LENGTH)) {
             throw new IllegalArgumentException("Invalid username " + username);
         }
         this.username = username.toLowerCase();

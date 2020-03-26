@@ -27,6 +27,7 @@
 package com.justjournal.ctl.api;
 
 import com.justjournal.Login;
+import com.justjournal.core.Constants;
 import com.justjournal.core.Settings;
 import com.justjournal.ctl.error.ErrorHandler;
 import com.justjournal.model.User;
@@ -35,6 +36,7 @@ import com.justjournal.services.AccountService;
 import com.justjournal.utility.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -59,13 +61,13 @@ public class SignUpController {
     @Autowired
     private Settings settings;
 
-    @PostMapping(produces = "application/json")
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Map<String, String> post(@RequestBody final NewUser user, final HttpServletResponse response) {
 
         if (!settings.isUserAllowNew()) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            return ErrorHandler.modelError(  "Could not add user");
+            return ErrorHandler.modelError(Constants.ERR_ADD_USER);
         }
 
         if (!StringUtil.lengthCheck(user.getEmail(), 6, 100)) {
@@ -99,7 +101,7 @@ public class SignUpController {
         } catch (final Exception e) {
             log.error(e.getMessage(), e);
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            return ErrorHandler.modelError(  "Could not add user");
+            return ErrorHandler.modelError(Constants.ERR_ADD_USER);
         }
     }
 }

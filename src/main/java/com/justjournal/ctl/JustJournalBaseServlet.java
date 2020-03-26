@@ -34,6 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.ctl;
 
+import com.justjournal.core.Constants;
 import com.justjournal.core.Settings;
 import com.justjournal.utility.ETag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,10 +57,8 @@ import java.io.IOException;
  * @version $Id: JustJournalBaseServlet.java,v 1.17 2009/07/11 02:03:43 laffer1 Exp $
  * @since 1.0
  */
-public class JustJournalBaseServlet extends HttpServlet {
-    protected static final char endl = '\n';  /* end of line character for output */
-    public static final int BUFFER_SIZE = 8192;
-
+public abstract class JustJournalBaseServlet extends HttpServlet {
+    
     @Autowired
     protected Settings set;
 
@@ -95,11 +94,11 @@ public class JustJournalBaseServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response, boolean head)
             throws java.io.IOException {
         final String contentType = "text/html; charset=utf-8";
-        final StringBuffer sb = new StringBuffer(512);
+        final StringBuilder sb = new StringBuilder(512);
         final HttpSession session = request.getSession(true);
 
         response.setContentType(contentType);
-        response.setBufferSize(BUFFER_SIZE);
+        response.setBufferSize(Constants.DEFAULT_BUFFER_SIZE);
         response.setDateHeader("Expires", System.currentTimeMillis());
         response.setDateHeader("Last-Modified", System.currentTimeMillis());
         response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
@@ -127,10 +126,9 @@ public class JustJournalBaseServlet extends HttpServlet {
     public long getLastModified(HttpServletRequest request) {
         return new java.util.Date().getTime() / 1000 * 1000;
     }
-
-    protected void execute(HttpServletRequest request, HttpServletResponse response, HttpSession session, StringBuffer sb) {
-
-    }
+    
+    protected abstract void execute(HttpServletRequest request, HttpServletResponse response, HttpSession session,
+                                    StringBuilder sb);
 
     /**
      * Get a string input parameter guaranteed not to be null

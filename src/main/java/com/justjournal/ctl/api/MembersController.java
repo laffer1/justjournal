@@ -26,6 +26,7 @@
 
 package com.justjournal.ctl.api;
 
+import com.justjournal.core.Constants;
 import com.justjournal.model.api.PublicMember;
 import com.justjournal.services.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -62,7 +63,7 @@ public class MembersController {
      *
      * @return member list
      */
-    @GetMapping(headers = "Accept=*/*", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(headers = Constants.HEADER_ACCEPT_ALL, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<List<PublicMember>> list() {
 

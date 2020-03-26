@@ -35,22 +35,32 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.ctl.api;
 
 import com.justjournal.Login;
+import com.justjournal.ctl.api.entry.EntryController;
 import com.justjournal.ctl.error.ErrorHandler;
-import com.justjournal.model.UserLink;
-import com.justjournal.repository.UserLinkRepository;
-import com.justjournal.repository.UserRepository;
+import com.justjournal.model.api.UserLinkTo;
+import com.justjournal.services.UserLinkService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
+import static com.justjournal.core.Constants.ERR_INVALID_LOGIN;
+import static com.justjournal.core.Constants.PARAM_USERNAME;
 
 /**
  * User Links that appear in their blog
@@ -62,80 +72,78 @@ import java.util.Map;
 @RequestMapping("/api/link")
 public class LinkController {
 
-    @Autowired
-    private UserLinkRepository userLinkRepository;
+    private final UserLinkService userLinkService;
 
-    @Autowired
-    private UserRepository userRepository;
+    public LinkController(final UserLinkService userLinkService) {
+        this.userLinkService = userLinkService;
+    }
 
     @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public UserLink getById(@PathVariable("id") final Integer id) {
-        return userLinkRepository.findById(id).orElse(null);
+    public UserLinkTo getById(@PathVariable("id") final Integer id) {
+        return userLinkService.get(id).orElse(null);
     }
 
     @Cacheable(value = "userlink", key = "#username")
-    @GetMapping(value = "user/{username}", produces = "application/json")
+    @GetMapping(value = "user/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<List<UserLink>> getByUser(@PathVariable("username") String username) {
-        final List<UserLink> links = userLinkRepository.findByUsernameOrderByTitleTitleAsc(username);
+    public ResponseEntity<List<UserLinkTo>> getByUser(@PathVariable(PARAM_USERNAME) String username) {
+        final List<UserLinkTo> links = userLinkService.getByUser(username);
 
         return ResponseEntity
                 .ok()
-               // .cacheControl(CacheControl.maxAge(1, TimeUnit.DAYS))
-            // TODO: etag code is not stable    .eTag(Integer.toString(links.hashCode()))
+                // .cacheControl(CacheControl.maxAge(1, TimeUnit.DAYS))
+                // TODO: etag code is not stable    .eTag(Integer.toString(links.hashCode()))
                 .body(links);
     }
 
     @PutMapping
     @ResponseBody
-    public
-    Map<String, String> create(@RequestBody final UserLink link, final HttpSession session,
-                               final HttpServletResponse response) {
+    public Map<String, String> create(@RequestBody final UserLinkTo link, final HttpSession session,
+                                      final HttpServletResponse response) {
 
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return ErrorHandler.modelError(  "The login timed out or is invalid.");
+            return ErrorHandler.modelError(ERR_INVALID_LOGIN);
         }
 
         try {
-            link.setUser(userRepository.findById(Login.currentLoginId(session)).orElse(null));
-            final UserLink l = userLinkRepository.save(link);
+            link.setUserId(Login.currentLoginId(session));
+            final UserLinkTo l = userLinkService.create(link);
             return java.util.Collections.singletonMap("id", Integer.toString(l.getId()));
         } catch (final Exception e) {
             log.error(e.getMessage(), e);
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return ErrorHandler.modelError(  "Error adding link.");
+            return ErrorHandler.modelError("Error adding link.");
         }
     }
 
     @DeleteMapping
     @ResponseBody
-    public
-    Map<String, String> delete(@RequestBody final int linkId, final HttpSession session,
-                               final HttpServletResponse response) {
-        
+    public Map<String, String> delete(@RequestBody final int linkId, final HttpSession session,
+                                      final HttpServletResponse response) {
+
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return ErrorHandler.modelError(  "The login timed out or is invalid.");
+            return ErrorHandler.modelError("The login timed out or is invalid.");
         }
 
         if (linkId > 0) {
             /* valid link id */
-            final UserLink link = userLinkRepository.findById(linkId).orElse(null);
+            final Optional<UserLinkTo> link = userLinkService.get(linkId);
 
-            if (link == null) {
+            if (!link.isPresent()) {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
                 return Collections.emptyMap();
             }
 
-            if (link.getUser().getId() == Login.currentLoginId(session)) {
-                userLinkRepository.deleteById(linkId);
+            if (link.get().getUserId() == Login.currentLoginId(session)) {
+                userLinkService.delete(linkId);
 
                 return java.util.Collections.singletonMap("id", Integer.toString(linkId));
             }
         }
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        return ErrorHandler.modelError(  "Error deleting your link. Bad link id.");
+        return ErrorHandler.modelError("Error deleting your link. Bad link id.");
     }
 }

@@ -26,21 +26,25 @@
 
 package com.justjournal.ctl.api;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.justjournal.Login;
+import com.justjournal.core.Constants;
 import com.justjournal.model.LoginResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.io.Serializable;
+
+import static com.justjournal.core.Constants.*;
 
 /**
  * Log user into session
@@ -52,10 +56,6 @@ import java.io.Serializable;
 @RequestMapping("/api/login")
 public class LoginController {
 
-    private static final String JJ_LOGIN_OK = "JJ.LOGIN.OK";
-    private static final String JJ_LOGIN_FAIL = "JJ.LOGIN.FAIL";
-    private static final String JJ_LOGIN_NONE = "JJ.LOGIN.NONE";
-
     @Autowired
     private com.justjournal.Login webLogin;
 
@@ -65,22 +65,21 @@ public class LoginController {
      * @param session HttpSession
      * @return LoginResponse with login OK or NONE
      */
-    @GetMapping(headers = "Accept=*/*", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(headers = HEADER_ACCEPT_ALL, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public LoginResponse getLoginStatus(final HttpSession session) {
         final LoginResponse response = new LoginResponse();
-        final String username = (String) session.getAttribute("auth.user");
+        final String username = (String) session.getAttribute(LOGIN_ATTRNAME);
         response.setUsername(username);
         response.setStatus(username == null ? JJ_LOGIN_NONE : JJ_LOGIN_OK);
         return response;
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE, headers = {"Accept=*/*", "content-type=application/json"})
+            produces = MediaType.APPLICATION_JSON_VALUE, headers = {HEADER_ACCEPT_ALL, "content-type=application/json"})
     @ResponseBody
-    public
-    ResponseEntity<LoginResponse> post(@RequestBody final com.justjournal.core.Login login,
-                                       final HttpServletRequest request) {
+    public ResponseEntity<LoginResponse> post(@RequestBody final com.justjournal.core.Login login,
+                                              final HttpServletRequest request) {
         final LoginResponse loginResponse = new LoginResponse();
 
         try {
@@ -92,10 +91,10 @@ public class LoginController {
             }
 
             final int userID = webLogin.validate(login.getUsername(), login.getPassword());
-            if (userID > Login.BAD_USER_ID) {
+            if (userID > BAD_USER_ID) {
                 log.debug("LoginController.post(): Username is " + login.getUsername());
-                session.setAttribute("auth.uid", userID);
-                session.setAttribute("auth.user", login.getUsername());
+                session.setAttribute(LOGIN_ATTRID, userID);
+                session.setAttribute(LOGIN_ATTRNAME, login.getUsername());
             } else {
                 log.error("Login attempt failed with user: " + login.getUsername());
 

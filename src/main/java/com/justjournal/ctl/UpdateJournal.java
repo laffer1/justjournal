@@ -61,6 +61,11 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.justjournal.core.Constants.PARAM_AUTO_FORMAT;
+import static com.justjournal.core.Constants.PARAM_DASHBOARD;
+import static com.justjournal.core.Constants.PARAM_MOBILE;
+import static com.justjournal.core.Constants.*;
+
 /**
  * Adds journal entries to database.
  * <p/>
@@ -78,11 +83,8 @@ import java.util.regex.Pattern;
 @Slf4j
 @Component
 public class UpdateJournal extends HttpServlet {
-
-    public static final int DEFAULT_BUFFER_SIZE = 8192;
-    private static final char endl = '\n';
+    
     private static final long serialVersionUID = -6905389941955230503L;
-    private static final String USERS_PATH = "users/";
 
     @SuppressWarnings({"InstanceVariableOfConcreteClass"})
     @Autowired
@@ -116,9 +118,9 @@ public class UpdateJournal extends HttpServlet {
     private static ClientType detectClient(final String ua, final String client) {
         if (ua != null && ua.contains("JustJournal")) {
             return ClientType.desktop;
-        } else if (client != null && client.contains("dash")) {
+        } else if (client != null && client.contains(PARAM_DASHBOARD)) {
             return ClientType.dashboard;
-        } else if (client != null && client.contains("mobile")) {
+        } else if (client != null && client.contains(PARAM_MOBILE)) {
             return ClientType.mobile;
         } else {
             return ClientType.web;
@@ -135,7 +137,7 @@ public class UpdateJournal extends HttpServlet {
     private void htmlOutput(final StringBuilder sb, final String userName, final int userID) {
         /* Initialize Preferences Object */
         final User pf = userRepository.findByUsername(userName);
-        final Journal journal = new ArrayList<Journal>(pf.getJournals()).get(0);
+        final Journal journal = new ArrayList<>(pf.getJournals()).get(0);
 
         // Begin HTML document.
         // IE hates this.
@@ -308,7 +310,7 @@ public class UpdateJournal extends HttpServlet {
         String userName;
         final Integer userIDasi;
 
-        userName = (String) session.getAttribute("auth.user");
+        userName = (String) session.getAttribute(LOGIN_ATTRNAME);
         userIDasi = (Integer) session.getAttribute("auth.uid");
 
         if (userIDasi != null) {
@@ -355,7 +357,7 @@ public class UpdateJournal extends HttpServlet {
                     keepLogin = "";
                 if (keepLogin.compareTo("checked") == 0) {
                     session.setAttribute("auth.uid", userID);
-                    session.setAttribute("auth.user", userName);
+                    session.setAttribute(LOGIN_ATTRNAME, userName);
                     webLogin.setLastLogin(userID);
                 }
             } catch (Exception e3) {
@@ -364,7 +366,7 @@ public class UpdateJournal extends HttpServlet {
                             "Unable to login.  Please check your username and password.",
                             sb);
                 else
-                    sb.append("JJ.LOGIN.FAIL");
+                    sb.append(JJ_LOGIN_FAIL);
             }
         }
 
@@ -375,17 +377,17 @@ public class UpdateJournal extends HttpServlet {
             final Entry et = new Entry();
 
             // Get the user input
-            final int security = Integer.parseInt(request.getParameter("security"));
-            final int location = Integer.parseInt(request.getParameter("location"));
-            final int mood = Integer.parseInt(request.getParameter("mood"));
-            String music = request.getParameter("music");
-            String aformat = request.getParameter("aformat");
-            String allowcomment = request.getParameter("allow_comment");
-            String emailcomment = request.getParameter("email_comment");
-            String tags = request.getParameter("tags");
-            String trackback = request.getParameter("trackback");
-            String date = request.getParameter("date");
-            String time = request.getParameter("time");
+            final int security = Integer.parseInt(request.getParameter(PARAM_SECURITY));
+            final int location = Integer.parseInt(request.getParameter(PARAM_LOCATION));
+            final int mood = Integer.parseInt(request.getParameter(PARAM_MOOD));
+            String music = request.getParameter(PARAM_MUSIC);
+            String aformat = request.getParameter(PARAM_AUTO_FORMAT);
+            String allowcomment = request.getParameter(PARAM_ALLOW_COMMENT);
+            String emailcomment = request.getParameter(PARAM_EMAIL_COMMENT);
+            String tags = request.getParameter(PARAM_TAGS);
+            String trackback = request.getParameter(PARAM_TRACKBACK);
+            String date = request.getParameter(PARAM_DATE);
+            String time = request.getParameter(PARAM_TIME);
 
             if (music == null)
                 music = "";
@@ -608,8 +610,8 @@ public class UpdateJournal extends HttpServlet {
                             /* WebLogs, Google, blo.gs */
                             final BasePing rp = new BasePing("http://rpc.weblogs.com/pingSiteForm");
                             rp.setName(journal.getName());
-                            rp.setUri(settings.getBaseUri() + USERS_PATH + userName);
-                            rp.setChangesURL(settings.getBaseUri() + USERS_PATH + userName + "/rss");
+                            rp.setUri(settings.getBaseUri() + PATH_USERS + userName);
+                            rp.setChangesURL(settings.getBaseUri() + PATH_USERS + userName + "/rss");
                             rp.ping();
                             rp.setPingUri("http://blogsearch.google.com/ping");
                             rp.ping();
@@ -619,7 +621,7 @@ public class UpdateJournal extends HttpServlet {
                             /* IceRocket */
                             final IceRocket ice = new IceRocket();
                             ice.setName(journal.getName());
-                            ice.setUri(settings.getBaseUri() + USERS_PATH + userName);
+                            ice.setUri(settings.getBaseUri() + PATH_USERS + userName);
                             ice.ping();
 
 
@@ -628,7 +630,7 @@ public class UpdateJournal extends HttpServlet {
                                 final Entry et2 = entryRepository.findById(et.getId()).orElse(null);
                                 if (et2 != null) {
                                     final TrackbackOut tbout = new TrackbackOut(trackback,
-                                            settings.getBaseUri() + USERS_PATH + userName + "/entry/" + et2.getId(),
+                                            settings.getBaseUri() + PATH_USERS + userName + "/entry/" + et2.getId(),
                                             et.getSubject(), et.getBody(), journal.getName());
                                     tbout.ping();
                                 }
@@ -650,7 +652,7 @@ public class UpdateJournal extends HttpServlet {
                         "Unable to login.  Please check your username and password.",
                         sb);
             else
-                sb.append("JJ.LOGIN.FAIL");
+                sb.append(JJ_LOGIN_FAIL);
 
             // output the result of our processing
             final ServletOutputStream outstream = response.getOutputStream();

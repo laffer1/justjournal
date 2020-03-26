@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collections;
 import java.util.List;
 
+import static com.justjournal.core.Constants.PARAM_USERNAME;
+
 /**
  * Get entry statistics
  * @author Lucas Holt
@@ -26,7 +28,7 @@ public class EntryStatisticsController {
 
     @GetMapping(value = "{username}/statistics", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<List<EntryStatistic>> getStatistics(@PathVariable("username") final String username) {
+    public ResponseEntity<List<EntryStatistic>> getStatistics(@PathVariable(PARAM_USERNAME) final String username) {
 
         final Iterable<EntryStatistic> myIterator = entryStatisticService.getEntryCounts(username).toIterable();
         final List<EntryStatistic> e = IteratorUtils.toList(myIterator.iterator());

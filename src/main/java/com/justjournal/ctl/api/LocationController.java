@@ -26,6 +26,7 @@
 
 package com.justjournal.ctl.api;
 
+import com.justjournal.core.Constants;
 import com.justjournal.model.Location;
 import com.justjournal.repository.LocationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,7 +65,7 @@ public class LocationController {
     }
 
     @Cacheable("location")
-    @GetMapping(headers = "Accept=*/*", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(headers = Constants.HEADER_ACCEPT_ALL, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<List<Location>> getLocationList() {
 

@@ -35,6 +35,7 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.ctl.api;
 
 import com.justjournal.Login;
+import com.justjournal.core.Constants;
 import com.justjournal.ctl.error.ErrorHandler;
 import com.justjournal.model.Comment;
 import com.justjournal.model.Entry;
@@ -69,6 +70,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import static com.justjournal.core.Constants.PARAM_ID;
+import static com.justjournal.core.Constants.PATH_ENTRY;
+import static com.justjournal.core.Constants.PATH_USERS;
+
 @Slf4j
 @RestController
 @RequestMapping("/api/comment")
@@ -95,13 +100,14 @@ public class CommentController {
 
     @GetMapping("/api/comment/{id}")
     @ResponseBody
-    public Comment getById(@PathVariable("id") final Integer id) {
+    public Comment getById(@PathVariable(PARAM_ID) final Integer id) {
         return commentDao.findById(id).orElse(null);
     }
 
     @ResponseBody
     @GetMapping(produces =  MediaType.APPLICATION_JSON_VALUE)
-    public List<Comment> getComments(@RequestParam("entryId") final Integer entryId, final HttpServletResponse response) {
+    public List<Comment> getComments(@RequestParam(Constants.PARAM_ENTRY_ID) final Integer entryId,
+                                     final HttpServletResponse response) {
         final Entry entry = entryDao.findById(entryId).orElse(null);
 
         if (entry == null) {
@@ -125,23 +131,23 @@ public class CommentController {
 
     @DeleteMapping(value = "{id}")
     @ResponseBody
-    public Map<String, String> delete(@PathVariable("id") final int id, final HttpSession session,
+    public Map<String, String> delete(@PathVariable(PARAM_ID) final int id, final HttpSession session,
                                       final HttpServletResponse response) {
 
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            return ErrorHandler.modelError(  "The login timed out or is invalid.");
+            return ErrorHandler.modelError(Constants.ERR_INVALID_LOGIN);
         }
 
         try {
             final Comment comment = commentDao.findById(id).orElse(null);
             if (comment == null)
-                throw new IllegalArgumentException("id");
+                throw new IllegalArgumentException(PARAM_ID);
 
             if (comment.getUser().getId() == Login.currentLoginId(session))
                 commentDao.deleteById(id);
 
-            return java.util.Collections.singletonMap("id", Integer.toString(comment.getId()));
+            return java.util.Collections.singletonMap(PARAM_ID, Integer.toString(comment.getId()));
         } catch (final Exception e) {
             log.error(e.getMessage());
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -162,7 +168,7 @@ public class CommentController {
                                    final HttpServletResponse response) {
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            return ErrorHandler.modelError(  "The login timed out or is invalid.");
+            return ErrorHandler.modelError(Constants.ERR_INVALID_LOGIN);
         }
 
         try {
@@ -230,7 +236,7 @@ public class CommentController {
             final Settings mailfrom = settingsRepository.findByName("mailFrom");
             final Settings baseuri = settingsRepository.findByName("baseuri");
 
-            final String entryUrl = baseuri + "users" + et.getUser().getUsername() + "/entry/" + et.getId();
+            final String entryUrl = baseuri + PATH_USERS + et.getUser().getUsername() + PATH_ENTRY + et.getId();
 
             // TODO: should we allow the user making the comment to disable email notifications?
             if (user != null && et.getEmailComments().equals(PrefBool.Y)) {

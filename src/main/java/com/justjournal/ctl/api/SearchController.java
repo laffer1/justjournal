@@ -42,6 +42,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static com.justjournal.core.Constants.PARAM_USERNAME;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -87,7 +88,7 @@ public class SearchController {
 
     @GetMapping(value = "/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PagedModel<BlogEntry>> search(
-            @PathVariable("username") final String username,
+            @PathVariable(PARAM_USERNAME) final String username,
             @RequestParam("term") final String term,
             final Pageable page,
             final PagedResourcesAssembler<BlogEntry> assembler) {

@@ -66,6 +66,9 @@ import java.util.HashMap;
 import java.util.IllegalFormatException;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
+
+import static com.justjournal.core.Constants.*;
 
 /**
  * The MetaWeblog API interface for blogging.  Similar to Blogger 1.0 API.
@@ -90,7 +93,6 @@ public class MetaWeblog {
 
     private static final String FAULT_CODE = "faultCode";
     private static final String FAULT_STRING = "faultString";
-    private static final String USER_PATH = "users/";
 
     @Autowired
     private EntryRepository entryRepository;
@@ -141,11 +143,11 @@ public class MetaWeblog {
         final HashMap<String, Serializable> s = new HashMap<>();
 
 
-        if (!StringUtil.lengthCheck(username, 3, Login.USERNAME_MAX_LENGTH)) {
+        if (!StringUtil.lengthCheck(username, 3, USERNAME_MAX_LENGTH)) {
             blnError = true;
         }
 
-        if (!StringUtil.lengthCheck(password, 5, Login.PASSWORD_MAX_LENGTH)) {
+        if (!StringUtil.lengthCheck(password, 5, PASSWORD_MAX_LENGTH)) {
             blnError = true;
         }
 
@@ -162,7 +164,7 @@ public class MetaWeblog {
 
                 s.put("nickname", user.getUsername());
                 s.put("userid", userId);
-                s.put("url", settings.getBaseUri() +  USER_PATH + user.getUsername());
+                s.put("url", settings.getBaseUri() +  PATH_USERS + user.getUsername());
                 s.put("email", user.getUserContact().getEmail());
                 s.put("firstname", user.getFirstName());
             } catch (final Exception e) {
@@ -195,15 +197,6 @@ public class MetaWeblog {
         ArrayList<HashMap<Object, Serializable>> a = new ArrayList<>();
         HashMap<Object, Serializable> s = new HashMap<>();
 
-
-        if (!StringUtil.lengthCheck(username, 3, Login.USERNAME_MAX_LENGTH)) {
-            blnError = true;
-        }
-
-        if (!StringUtil.lengthCheck(password, 5, Login.PASSWORD_MAX_LENGTH)) {
-            blnError = true;
-        }
-
         userId = webLogin.validate(username, password);
         if (userId < 1)
             blnError = true;
@@ -217,7 +210,7 @@ public class MetaWeblog {
 
                 final Journal journal = new ArrayList<>(user.getJournals()).get(0);
 
-                s.put("url", settings.getBaseUri() +  USER_PATH + user.getUsername());
+                s.put("url", settings.getBaseUri() +  PATH_USERS + user.getUsername());
                 s.put("blogid", userId);
                 s.put("blogName", journal.getName());
             } catch (final Exception e) {
@@ -254,11 +247,11 @@ public class MetaWeblog {
         final Entry et = new Entry();
         final HashMap<String, Serializable> s = new HashMap<>();
 
-        if (!StringUtil.lengthCheck(username, 3, Login.USERNAME_MAX_LENGTH)) {
+        if (!StringUtil.lengthCheck(username, 3, USERNAME_MAX_LENGTH)) {
             blnError = true;
         }
 
-        if (!StringUtil.lengthCheck(password, 5, Login.PASSWORD_MAX_LENGTH)) {
+        if (!StringUtil.lengthCheck(password, 5, PASSWORD_MAX_LENGTH)) {
             blnError = true;
         }
 
@@ -281,8 +274,8 @@ public class MetaWeblog {
                 et.setBody(StringUtil.replace((String) content.get(DESC_KEY), '\'', "\\\'"));
                 //et.setMusic(StringUtil.replace(music, '\'', "\\\'"));
                 et.setMusic("");
-                et.setSecurity(securityDao.findById(2).orElse(null));   // public
-                et.setLocation(locationDao.findById(0).orElse(null)); // not specified
+                et.setSecurity(Objects.requireNonNull(securityDao.findById(2).orElse(null)));   // public
+                et.setLocation(Objects.requireNonNull(locationDao.findById(0).orElse(null))); // not specified
                 et.setMood(moodDao.findById(12).orElse(null));    // not specified
                 et.setAutoFormat(PrefBool.N);
                 et.setAllowComments(PrefBool.Y);
@@ -299,8 +292,8 @@ public class MetaWeblog {
                     /* WebLogs, Google, blo.gs */
                     BasePing rp = new BasePing("http://rpc.weblogs.com/pingSiteForm");
                     rp.setName(journal.getName());
-                    rp.setUri(settings.getBaseUri() +  USER_PATH + user.getUsername());
-                    rp.setChangesURL(settings.getBaseUri() +  USER_PATH + user.getUsername() + "/rss");
+                    rp.setUri(settings.getBaseUri() +  PATH_USERS + user.getUsername());
+                    rp.setChangesURL(settings.getBaseUri() +  PATH_USERS + user.getUsername() + "/rss");
                     rp.ping();
                     rp.setPingUri("http://blogsearch.google.com/ping");
                     rp.ping();
@@ -310,7 +303,7 @@ public class MetaWeblog {
                     /* IceRocket */
                     final IceRocket ice = new IceRocket();
                     ice.setName(journal.getName());
-                    ice.setUri(settings.getBaseUri() + USER_PATH + user.getUsername());
+                    ice.setUri(settings.getBaseUri() + PATH_USERS + user.getUsername());
                     ice.ping();
                 }
 
@@ -348,11 +341,11 @@ public class MetaWeblog {
 
         int eid = 0;
 
-        if (!StringUtil.lengthCheck(username, 3, Login.USERNAME_MAX_LENGTH)) {
+        if (!StringUtil.lengthCheck(username, USERNAME_MIN_LENGTH, USERNAME_MAX_LENGTH)) {
             blnError = true;
         }
 
-        if (!StringUtil.lengthCheck(password, 5, Login.PASSWORD_MAX_LENGTH)) {
+        if (!StringUtil.lengthCheck(password, PASSWORD_MIN_LENGTH, PASSWORD_MAX_LENGTH)) {
             blnError = true;
         }
 
@@ -405,11 +398,11 @@ public class MetaWeblog {
 
         int eid = 0;
 
-        if (!StringUtil.lengthCheck(username, 3, Login.USERNAME_MAX_LENGTH)) {
+        if (!StringUtil.lengthCheck(username, USERNAME_MIN_LENGTH, USERNAME_MAX_LENGTH)) {
             blnError = true;
         }
 
-        if (!StringUtil.lengthCheck(password, 5, Login.PASSWORD_MAX_LENGTH)) {
+        if (!StringUtil.lengthCheck(password, PASSWORD_MIN_LENGTH, PASSWORD_MAX_LENGTH)) {
             blnError = true;
         }
 
@@ -437,10 +430,10 @@ public class MetaWeblog {
                     entryRepository.save(et2);
 
                     String tags[] = (String[]) content.get("categories");
-                    for (String tag : tags) {
-                        Tag tag1 = tagDao.findByName(tag);
+                    for (final String tag : tags) {
+                        final Tag tag1 = tagDao.findByName(tag);
 
-                        EntryTag entryTags = new EntryTag();
+                        final EntryTag entryTags = new EntryTag();
                         entryTags.setTag(tag1);
                         entryTags.setEntry(et2);
 
@@ -501,17 +494,7 @@ public class MetaWeblog {
         final ArrayList<HashMap<Object, Serializable>> arr = new ArrayList<>(numberOfPosts);
         final Collection<Entry> total;
         boolean blnError = false;
-        final int userId;
-
-        if (!StringUtil.lengthCheck(username, 3, Login.USERNAME_MAX_LENGTH)) {
-            blnError = true;
-        }
-
-        if (!StringUtil.lengthCheck(password, 5, Login.PASSWORD_MAX_LENGTH)) {
-            blnError = true;
-        }
-
-        userId = webLogin.validate(username, password);
+        final int userId = webLogin.validate(username, password);
         if (blnError || userId < 1) {
             return error(ERROR_USER_AUTH + username);
         }
@@ -524,8 +507,8 @@ public class MetaWeblog {
             if (it.hasNext()) {
                 HashMap<Object, Serializable> entry = new HashMap<>();
                 Entry e = it.next();
-                entry.put("link", settings.getBaseUri() +  USER_PATH + e.getUser().getUsername() + "/entry/" + e.getId());
-                entry.put("permaLink", settings.getBaseUri() +  USER_PATH + e.getUser().getUsername() + "/entry/" + e.getId());
+                entry.put("link", settings.getBaseUri() +  PATH_USERS + e.getUser().getUsername() + "/entry/" + e.getId());
+                entry.put("permaLink", settings.getBaseUri() +  PATH_USERS + e.getUser().getUsername() + "/entry/" + e.getId());
                 entry.put("userid", Integer.toString(e.getUser().getId()));
                 entry.put("mt_allow_pings", 0);     /* TODO: on or off? */
                 entry.put("mt_allow_comments", 1);  /* TODO: on or off? */
@@ -543,7 +526,7 @@ public class MetaWeblog {
                 for (EntryTag tag : e.getTags()) {
                     list.add(tag.getTag().getName());
                 }
-                String str[] = (String[]) list.toArray(new String[list.size()]);
+                String str[] = list.toArray(new String[list.size()]);
                 entry.put("categories", str); // according to microsoft it's a string array
                 arr.add(entry);
             }
@@ -565,14 +548,6 @@ public class MetaWeblog {
         final HashMap<Object, Serializable> entry = new HashMap<>();
         final Entry e;
 
-        if (!StringUtil.lengthCheck(username, 3, Login.USERNAME_MAX_LENGTH)) {
-            blnError = true;
-        }
-
-        if (!StringUtil.lengthCheck(password, 5, Login.PASSWORD_MAX_LENGTH)) {
-            blnError = true;
-        }
-
         userId = webLogin.validate(username, password);
         if (blnError || userId < 1) {
             return error(ERROR_USER_AUTH + username);
@@ -588,8 +563,8 @@ public class MetaWeblog {
             return error(ERROR_USER_AUTH + username);
         }
 
-        entry.put("link", settings.getBaseUri() +  USER_PATH + e.getUser().getUsername() + "/entry/" + e.getId());
-        entry.put("permaLink", settings.getBaseUri() +  USER_PATH + e.getUser().getUsername() + "/entry/" + e.getId());
+        entry.put("link", settings.getBaseUri() +  PATH_USERS + e.getUser().getUsername() + "/entry/" + e.getId());
+        entry.put("permaLink", settings.getBaseUri() +  PATH_USERS + e.getUser().getUsername() + "/entry/" + e.getId());
         entry.put("userid", Integer.toString(e.getUser().getId()));
         entry.put("mt_allow_pings", 0);     /* TODO: on or off? */
         entry.put("mt_allow_comments", 1);  /* TODO: on or off? */
@@ -616,14 +591,6 @@ public class MetaWeblog {
         final int userId;
         boolean blnError = false;
         final ArrayList<HashMap<Object, Serializable>> arr = new ArrayList<>();
-
-        if (!StringUtil.lengthCheck(username, 3, Login.USERNAME_MAX_LENGTH)) {
-            blnError = true;
-        }
-
-        if (!StringUtil.lengthCheck(password, 5, Login.PASSWORD_MAX_LENGTH)) {
-            blnError = true;
-        }
 
         userId = webLogin.validate(username, password);
         if (blnError || userId < 1) {

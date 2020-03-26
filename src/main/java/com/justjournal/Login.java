@@ -31,7 +31,6 @@ import com.justjournal.model.PasswordType;
 import com.justjournal.repository.UserRepository;
 import com.justjournal.utility.StringUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpSession;
@@ -40,6 +39,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static com.justjournal.core.Constants.*;
 
 /**
  * Provides authentication and password management services to web applications using the just journal data tier.
@@ -51,29 +52,23 @@ import java.util.regex.Pattern;
 @Slf4j
 @Component
 public class Login {
-    public static final int USERNAME_MAX_LENGTH = 15;
-    public static final int PASSWORD_MAX_LENGTH = 18;
-    public static final int BAD_USER_ID = 0;
-    protected static final String LOGIN_ATTRNAME = "auth.user";
-    protected static final String LOGIN_ATTRID = "auth.uid";
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    public Login(final UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     public static boolean isAuthenticated(final HttpSession session) {
         final String username = (String) session.getAttribute(LOGIN_ATTRNAME);
         return username != null && !username.isEmpty();
     }
 
-    public
-
-    static String currentLoginName(final HttpSession session) {
+    public static String currentLoginName(final HttpSession session) {
         return (String) session.getAttribute(LOGIN_ATTRNAME);
     }
 
-    public
-
-    static int currentLoginId(final HttpSession session) {
+    public static int currentLoginId(final HttpSession session) {
         int aUserID = 0;
         final Integer userIDasi = (Integer) session.getAttribute(LOGIN_ATTRID);
 
@@ -109,9 +104,7 @@ public class Login {
         return m.matches(); // valid on true
     }
 
-    private
-
-    static String convertToHex(byte[] data) {
+    private static String convertToHex(byte[] data) {
         final StringBuilder buf = new StringBuilder();
         for (final byte aData : data) {
             int halfByte = (aData >>> 4) & 0x0F;
@@ -155,10 +148,10 @@ public class Login {
     public int validate(final String userName, final String password) {
         // the password is sha1 encrypted in the sql server
 
-        if (!StringUtil.lengthCheck(userName, 3, USERNAME_MAX_LENGTH))
+        if (!StringUtil.lengthCheck(userName, USERNAME_MIN_LENGTH, USERNAME_MAX_LENGTH))
             return BAD_USER_ID; // bad username
 
-        if (!StringUtil.lengthCheck(password, 5, PASSWORD_MAX_LENGTH))
+        if (!StringUtil.lengthCheck(password, PASSWORD_MIN_LENGTH, PASSWORD_MAX_LENGTH))
             return BAD_USER_ID;
 
         if (!isUserName(userName))

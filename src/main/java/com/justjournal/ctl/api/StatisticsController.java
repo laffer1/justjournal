@@ -26,6 +26,7 @@
 
 package com.justjournal.ctl.api;
 
+import com.justjournal.core.Constants;
 import com.justjournal.model.Statistics;
 import com.justjournal.model.UserStatistics;
 import com.justjournal.exception.ServiceException;
@@ -63,7 +64,7 @@ public class StatisticsController {
      */
     @Transactional
     @Cacheable("statistics")
-    @GetMapping(headers = "Accept=*/*", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(headers = Constants.HEADER_ACCEPT_ALL, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<Statistics> get() {
 
@@ -87,9 +88,9 @@ public class StatisticsController {
      */
     @Transactional
     @Cacheable(value = "userstatistics", key = "username")
-    @GetMapping(value = "{username}", headers = "Accept=*/*", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "{username}", headers = Constants.HEADER_ACCEPT_ALL, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<UserStatistics> getById(@PathVariable("username") final String username) {
+    public ResponseEntity<UserStatistics> getById(@PathVariable(Constants.PARAM_USERNAME) final String username) {
 
         try {
             if (username == null || username.equals("") || username.length() < 3) {

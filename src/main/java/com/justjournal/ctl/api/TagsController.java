@@ -41,6 +41,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.justjournal.core.Constants.PARAM_ID;
+
 /**
  * Tags
  *
@@ -95,7 +97,7 @@ public class TagsController {
     @Cacheable(value = "tags", key = "#id")
     @GetMapping(value = "/api/tags/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<Tag> getById(@PathVariable("id") final Integer id) {
+    public ResponseEntity<Tag> getById(@PathVariable(PARAM_ID) final Integer id) {
 
         final Optional<Tag> tag = tagDao.findById(id);
 

@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.justjournal.core.Constants.PARAM_ID;
+
 /**
  * @author Lucas Holt
  */
@@ -40,7 +42,7 @@ public class StylesController {
     @Cacheable(value = "styles", key = "#id")
     @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<Style> getById(@PathVariable("id") final Integer id) {
+    public ResponseEntity<Style> getById(@PathVariable(PARAM_ID) final Integer id) {
 
         final Style style = styleService.get(id);
 

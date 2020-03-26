@@ -43,16 +43,16 @@ public class RsdController {
     @GetMapping(produces = "application/rsd+xml")
     @ResponseBody
     public String get(HttpServletRequest request, HttpServletResponse response) {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         try {
             response.setContentType("application/rsd+xml; charset=utf-8");
 
-            String blogID = request.getParameter("blogID");
+            final String blogID = request.getParameter("blogID");
             if (blogID == null || blogID.length() < 2) {
                 throw new IllegalArgumentException("Missing required parameter \"blogID\"");
             }
 
-            User user = userRepository.findByUsername(blogID);
+            final User user = userRepository.findByUsername(blogID);
 
             sb.append(XML_HEADER);
             sb.append(RSD_HEADER);
@@ -74,13 +74,13 @@ public class RsdController {
             sb.append("</service>\n");
             sb.append(RSD_FOOTER);
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             log.error("Error generating RSD", e);
             sb.delete(0, sb.length() - 1);
             sb.append(XML_HEADER);
             sb.append(RSD_HEADER);
             sb.append(RSD_FOOTER);
-            response.setStatus(500);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
 
         return sb.toString();

@@ -1,5 +1,6 @@
 package com.justjournal.ctl;
 
+import com.justjournal.core.Constants;
 import com.justjournal.model.*;
 import com.justjournal.repository.SettingsRepository;
 import com.justjournal.repository.UserRepository;
@@ -45,7 +46,7 @@ public class SitemapController {
         for (final User user : userRepository.findAll()) {
             for (final Journal journal : user.getJournals()) {
                 if (journal.isAllowSpider()) {
-                    final String users = baseUri.getValue() + "users/" + user.getUsername();
+                    final String users = baseUri.getValue() + Constants.PATH_USERS + user.getUsername();
 
                     create(xmlUrlSet, users, XmlUrl.Priority.HIGH, XmlUrl.ChangeFreqency.DAILY);
                     create(xmlUrlSet, users + "/calendar", XmlUrl.Priority.MEDIUM, XmlUrl.ChangeFreqency.MONTHLY);

@@ -27,6 +27,7 @@
 package com.justjournal.ctl.api.entry;
 
 import com.justjournal.Login;
+import com.justjournal.core.Constants;
 import com.justjournal.ctl.error.ErrorHandler;
 import com.justjournal.exception.ServiceException;
 import com.justjournal.model.Comment;
@@ -81,6 +82,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.justjournal.core.Constants.*;
+
 /**
  * Entry Controller, for managing blog entries
  *
@@ -92,7 +95,6 @@ import java.util.stream.Collectors;
 public class EntryController {
 
     private static final int DEFAULT_SIZE = 20;
-    private static final String ERR_INVALID_LOGIN = "The login timed out or is invalid.";
 
     @Qualifier("commentRepository")
     @Autowired
@@ -131,7 +133,7 @@ public class EntryController {
      */
     @GetMapping(value = "{username}/recent", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<Iterable<RecentEntry>> getRecentEntries(@PathVariable("username") final String username,
+    public ResponseEntity<Iterable<RecentEntry>> getRecentEntries(@PathVariable(PARAM_USERNAME) final String username,
                                                                                             final HttpSession session) {
         final Flux<RecentEntry> entries;
         try {
@@ -157,9 +159,9 @@ public class EntryController {
 
     @GetMapping(value = "{username}/size/{size}/page/{page}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public PagedModel<EntryTo> getEntries(@PathVariable("username") final String username,
-                                          @PathVariable("size") final int size,
-                                          @PathVariable("page") final int page,
+    public PagedModel<EntryTo> getEntries(@PathVariable(PARAM_USERNAME) final String username,
+                                          @PathVariable(PARAM_SIZE) final int size,
+                                          @PathVariable(PARAM_PAGE) final int page,
                                           final HttpServletRequest request,
                                           final HttpServletResponse response, final HttpSession session) {
         final Page<Entry> entries;
@@ -193,8 +195,8 @@ public class EntryController {
 
     @GetMapping(value = "{username}/page/{page}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public PagedModel<EntryTo> getEntries(@PathVariable("username") final String username,
-                                          @PathVariable("page") final int page,
+    public PagedModel<EntryTo> getEntries(@PathVariable(PARAM_USERNAME) final String username,
+                                          @PathVariable(PARAM_PAGE) final int page,
                                           final HttpServletRequest request,
                                           final HttpServletResponse response, final HttpSession session) {
 
@@ -210,8 +212,8 @@ public class EntryController {
 
     @GetMapping(value = "{username}/eid/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public EntryTo getById(@PathVariable("username") final String username,
-                           @PathVariable("id") final int id,
+    public EntryTo getById(@PathVariable(PARAM_USERNAME) final String username,
+                           @PathVariable(PARAM_ID) final int id,
                            final HttpServletResponse response,
                            final HttpSession session) {
         try {
@@ -254,7 +256,7 @@ public class EntryController {
      */
     @GetMapping(value = "{username}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Collection<EntryTo> getEntries(@PathVariable("username") final String username,
+    public Collection<EntryTo> getEntries(@PathVariable(PARAM_USERNAME) final String username,
                                           final HttpServletResponse response) {
         Collection<EntryTo> entries = null;
         try {
@@ -277,7 +279,7 @@ public class EntryController {
     @Transactional
     @GetMapping(value = "", params = "username", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Collection<EntryTo> getEntriesByUsername(@RequestParam("username") final String username,
+    public Collection<EntryTo> getEntriesByUsername(@RequestParam(PARAM_USERNAME) final String username,
                                                     final HttpServletResponse response) {
         Collection<EntryTo> entries = new ArrayList<>();
         log.warn("in entriesByUsername with " + username);
@@ -423,8 +425,9 @@ public class EntryController {
     @CacheEvict(value = "recentblogs")
     @DeleteMapping(value = "/{entryId}")
     @ResponseBody
-    public Map<String, String> delete(@PathVariable("entryId") final int entryId,
-                                      final HttpSession session, final HttpServletResponse response) {
+    public Map<String, String> delete(@PathVariable(PARAM_ENTRY_ID) final int entryId,
+                                      final HttpSession session,
+                                      final HttpServletResponse response) {
 
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);

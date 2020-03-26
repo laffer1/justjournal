@@ -26,6 +26,7 @@
 
 package com.justjournal.ctl.api;
 
+import com.justjournal.core.Constants;
 import com.justjournal.model.Tag;
 import com.justjournal.exception.ServiceException;
 import com.justjournal.services.TagService;
@@ -45,6 +46,8 @@ import reactor.core.publisher.ParallelFlux;
 import java.util.Collection;
 import java.util.Comparator;
 
+import static com.justjournal.core.Constants.PARAM_USERNAME;
+
 /**
  * @author Lucas Holt
  */
@@ -63,7 +66,7 @@ public class TagCloudController {
     @Cacheable(value = "tagcloud", key = "#username")
     @GetMapping(value = "{username}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<Collection<Tag>> getTags(@PathVariable("username") final String username)
+    public ResponseEntity<Collection<Tag>> getTags(@PathVariable(PARAM_USERNAME) final String username)
             throws ServiceException {
         final ParallelFlux<Tag> o = tagService.getTags(username);
         final Collection<Tag> tags = o.collectSortedList(

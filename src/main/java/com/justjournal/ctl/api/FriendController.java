@@ -27,6 +27,7 @@
 package com.justjournal.ctl.api;
 
 import com.justjournal.Login;
+import com.justjournal.core.Constants;
 import com.justjournal.ctl.error.ErrorHandler;
 import com.justjournal.model.Friend;
 import com.justjournal.model.User;
@@ -79,7 +80,7 @@ public class FriendController {
 
     @GetMapping(value = "{username}/friendswith/{other}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<Boolean> areWeFriends(@PathVariable("username") final String username,
+    public ResponseEntity<Boolean> areWeFriends(@PathVariable(Constants.PARAM_USERNAME) final String username,
                                                 @PathVariable("other") final String otherUsername) {
         try {
             final User user = userRepository.findByUsername(username);
@@ -104,7 +105,7 @@ public class FriendController {
     @Cacheable(value = "friends", key = "username")
     @GetMapping(value = "{username}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Collection<User> getByUsername(@PathVariable("username") String username, HttpServletResponse response) {
+    public Collection<User> getByUsername(@PathVariable(Constants.PARAM_USERNAME) String username, HttpServletResponse response) {
         try {
             final ArrayList<User> friends = new ArrayList<>();
 
@@ -127,7 +128,7 @@ public class FriendController {
                                    final HttpServletResponse response) {
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return ErrorHandler.modelError(  "The login timed out or is invalid.");
+            return ErrorHandler.modelError(Constants.ERR_INVALID_LOGIN);
         }
 
         try {
@@ -162,7 +163,7 @@ public class FriendController {
 
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return ErrorHandler.modelError(  "The login timed out or is invalid.");
+            return ErrorHandler.modelError(Constants.ERR_INVALID_LOGIN);
         }
 
         try {

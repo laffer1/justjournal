@@ -27,7 +27,6 @@
 package com.justjournal.ctl;
 
 import com.justjournal.Login;
-import com.justjournal.utility.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -35,6 +34,8 @@ import org.springframework.stereotype.Component;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import static com.justjournal.core.Constants.*;
 
 /**
  * Login account servlet.
@@ -51,21 +52,18 @@ import javax.servlet.http.HttpSession;
 @Slf4j
 @Component
 public class LoginAccount extends JustJournalBaseServlet {
-    private static final String JJ_LOGIN_OK = "JJ.LOGIN.OK";
-    private static final String JJ_LOGIN_FAIL = "JJ.LOGIN.FAIL";
 
     @Autowired
     private Login webLogin;
 
     @Override
     protected void execute(final HttpServletRequest request, final HttpServletResponse response,
-                           final HttpSession session, final StringBuffer sb) {
-        boolean blnError = false;
-        int userID;
-        String userName = fixInput(request, "username");
-        String password = fixInput(request, "password");
-        String userAgent = fixHeaderInput(request, "User-Agent");
-        String mobile = fixInput(request, "mobile");
+                           final HttpSession session, final StringBuilder sb) {
+        final int userID;
+        String userName = fixInput(request, PARAM_USERNAME);
+        final String password = fixInput(request, PARAM_PASSWORD);
+        final String userAgent = fixHeaderInput(request, HEADER_USER_AGENT);
+        final String mobile = fixInput(request, PARAM_MOBILE);
 
         // adjust the case
         userName = userName.toLowerCase();
@@ -75,35 +73,21 @@ public class LoginAccount extends JustJournalBaseServlet {
             log.debug("mobile: " + mobile + endl);
         }
 
+        try {
+            if (log.isDebugEnabled())
+                log.debug("Attempting Login Validation  ");
 
-        if (!StringUtil.lengthCheck(userName, 3, Login.USERNAME_MAX_LENGTH)) {
-            blnError = true;
+            userID = webLogin.validate(userName, password);
+
+            if (userID > 0) {
+                sb.append(JJ_LOGIN_OK);
+                webLogin.setLastLogin(userID);
+            } else {
                 sb.append(JJ_LOGIN_FAIL);
-        }
-
-        if (!StringUtil.lengthCheck(password, 5, Login.PASSWORD_MAX_LENGTH)) {
-            blnError = true;
-
-                sb.append(JJ_LOGIN_FAIL);
-        }
-
-        if (!blnError) {
-            try {
-                if (log.isDebugEnabled())
-                    log.debug("Attempting Login Validation  ");
-
-                userID = webLogin.validate(userName, password);
-
-                if (userID > 0) {
-                        sb.append(JJ_LOGIN_OK);
-                        webLogin.setLastLogin(userID);
-                } else {
-                        sb.append(JJ_LOGIN_FAIL);
-                }
-            } catch (final Exception e3) {
-                    sb.append(JJ_LOGIN_FAIL);
-                log.error("Login failed: {}", userName, e3);
             }
+        } catch (final Exception e3) {
+            sb.append(JJ_LOGIN_FAIL);
+            log.error("Login failed: {}", userName, e3);
         }
     }
 

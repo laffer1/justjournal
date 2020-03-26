@@ -27,6 +27,7 @@
 package com.justjournal.ctl.api;
 
 import com.justjournal.Login;
+import com.justjournal.core.Constants;
 import com.justjournal.ctl.error.ErrorHandler;
 import com.justjournal.model.RssSubscription;
 import com.justjournal.model.User;
@@ -42,6 +43,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.Collection;
 import java.util.Map;
+
+import static com.justjournal.core.Constants.PARAM_ID;
+import static com.justjournal.core.Constants.PARAM_USERNAME;
 
 /**
  * @author Lucas Holt
@@ -66,14 +70,14 @@ public class RssReaderController {
 
     @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public RssSubscription getById(@PathVariable("id") Integer id) {
+    public RssSubscription getById(@PathVariable(PARAM_ID) Integer id) {
         return rssSubscriptionsDAO.findById(id).orElse(null);
     }
 
     @Cacheable(value = "rsssubscription", key = "username")
     @GetMapping(value = "user/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Collection<RssSubscription> getByUser(@PathVariable("username") String username) {
+    public Collection<RssSubscription> getByUser(@PathVariable(PARAM_USERNAME) String username) {
         final User user = userRepository.findByUsername(username);
         return rssSubscriptionsDAO.findByUser(user);
     }
@@ -110,7 +114,7 @@ public class RssReaderController {
                                       final HttpServletResponse response) {
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return ErrorHandler.modelError(  "The login timed out or is invalid.");
+            return ErrorHandler.modelError(Constants.ERR_INVALID_LOGIN);
         }
 
         if (subId > 0) {

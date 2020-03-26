@@ -33,6 +33,7 @@ import com.justjournal.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -45,6 +46,9 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.GregorianCalendar;
+
+import static com.justjournal.core.Constants.PARAM_USERNAME;
+import static com.justjournal.core.Constants.PARAM_YEAR;
 
 /**
  * List blog entries by year, month and day for display on the site
@@ -65,10 +69,10 @@ public class CalendarController {
     @Autowired
     private EntryRepository entryRepository;
 
-    @GetMapping(value = "/counts/{username}", produces = "application/json")
+    @GetMapping(value = "/counts/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public
-    Collection<CalendarCount> getYearCounts(@PathVariable("username") final String username,
+    Collection<CalendarCount> getYearCounts(@PathVariable(PARAM_USERNAME) final String username,
                                             final HttpServletResponse response) {
 
         final User user = userRepository.findByUsername(username);
@@ -101,11 +105,11 @@ public class CalendarController {
         return counts;
     }
 
-    @GetMapping(value = "/counts/{username}/{year}", produces = "application/json")
+    @GetMapping(value = "/counts/{username}/{year}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public
-    Collection<CalendarCount> getMonthCounts(@PathVariable("username") final String username,
-                                             @PathVariable("year") final int year,
+    Collection<CalendarCount> getMonthCounts(@PathVariable(PARAM_USERNAME) final String username,
+                                             @PathVariable(PARAM_YEAR) final int year,
                                              final HttpServletResponse response) {
 
         final User user = userRepository.findByUsername(username);
