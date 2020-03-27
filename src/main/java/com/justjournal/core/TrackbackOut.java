@@ -28,6 +28,7 @@ package com.justjournal.core;
 
 import lombok.extern.slf4j.Slf4j;
 import org.owasp.esapi.ESAPI;
+import org.owasp.esapi.Encoder;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -120,6 +121,9 @@ public final class TrackbackOut {
                     "&excerpt=" + ESAPI.encoder().encodeForURL(excerpt);
 
             final URI tmpuri = new URI(address);
+
+            Encoder enc = ESAPI.encoder();
+            enc.canonicalize(tmpuri.getQuery());
             u = tmpuri.toURL();
         } catch (final Exception me) {
             log.error("Couldn't create URL. ", me);

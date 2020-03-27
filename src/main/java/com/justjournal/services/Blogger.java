@@ -32,7 +32,7 @@ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
 
-package com.justjournal.google;
+package com.justjournal.services;
 
 import com.justjournal.Login;
 import com.justjournal.core.Settings;
@@ -55,8 +55,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.justjournal.core.Constants.PASSWORD_MAX_LENGTH;
-import static com.justjournal.core.Constants.USERNAME_MAX_LENGTH;
+import static com.justjournal.core.Constants.PATH_USERS;
 
 /**
  * A blogger 1 compatible interface exposed by XML-RPC
@@ -73,7 +72,7 @@ import static com.justjournal.core.Constants.USERNAME_MAX_LENGTH;
 @SuppressWarnings({"UnusedParameters"})
 @Slf4j
 @Component
-public class Blogger {
+public class Blogger extends BaseXmlRpcService {
 
     @Autowired
     private EntryRepository entryRepository;
@@ -122,7 +121,7 @@ public class Blogger {
                 if (user != null) {
                     s.put("nickname", user.getUsername());
                     s.put("userid", userId);
-                    s.put("url", settings.getBaseUri() + "users/" + user.getUsername());
+                    s.put("url", settings.getBaseUri() + PATH_USERS + user.getUsername());
                     s.put("email", user.getUserContact().getEmail());
                     s.put("firstname", user.getFirstName());
                 } else {
@@ -207,17 +206,15 @@ public class Blogger {
         int userId;
         boolean blnError = false;
         Entry et = new Entry();
-        HashMap<String, Serializable> s = new HashMap<>();
 
         userId = webLogin.validate(username, password);
         if (userId < 1)
-            blnError = true;
+            return error(ERROR_USER_AUTH + username);
 
-        if (!blnError)
             try {
                 final com.justjournal.model.User user = userRepository.findById(userId).orElse(null);
                 if (user == null) {
-                    throw new IllegalArgumentException("userId");
+                    return error(ERROR_USER_AUTH + username);
                 }
                 
                 et.setUser(user);
@@ -285,9 +282,7 @@ public class Blogger {
             }
 
         if (blnError) {
-            s.put("faultCode", 4);
-            s.put("faultString", "User authentication failed: " + username);
-            return s;
+            return error(ERROR_USER_AUTH + username);
         }
 
         return result;
@@ -309,22 +304,19 @@ public class Blogger {
      */
     public Serializable deletePost(String appkey, String postid, String username, String password, boolean publish) {
         int userId;
-        boolean blnError = false;
-        HashMap<String, Serializable> s = new HashMap<>();
-
         int eid = 0;
 
         userId = webLogin.validate(username, password);
         if (userId < 1)
-            blnError = true;
+            return error(ERROR_USER_AUTH + username);
 
         try {
             eid = Integer.parseInt(postid);
         } catch (IllegalFormatException ex) {
-            blnError = true;
+            return error(ERROR_ENTRY_ID + postid);
         }
 
-        if (!blnError && eid > 0) {
+        if (eid > 0) {
             try {
                 final Entry entry = entryRepository.findById(eid).orElse(null);
                 if (entry == null) {
@@ -334,24 +326,16 @@ public class Blogger {
                 if (entry.getUser().getId() == userId)
                     entryRepository.deleteById(eid);
             } catch (final Exception e) {
-                blnError = true;
                 log.debug(e.getMessage());
+                return error(ERROR_ENTRY_ID + postid);
             }
         }
 
         if (eid < 1) {
-            s.put("faultCode", 4);
-            s.put("faultString", "Invalid entry id " + postid);
-
-        } else if (blnError) {
-            s.put("faultCode", 4);
-            s.put("faultString", "User authentication failed: " + username);
-
-        } else {
-            return true; /* ie true per spec */
+            return error(ERROR_ENTRY_ID + postid);
         }
 
-        return s;
+        return true; /* ie true per spec */
     }
 
     /**
@@ -368,29 +352,32 @@ public class Blogger {
     public Serializable editPost(String appkey, String postid, String username, String password, String content, Boolean publish) {
         int userId;
         boolean blnError = false;
-        HashMap<String, Serializable> s = new HashMap<>();
 
         int eid = 0;
 
         userId = webLogin.validate(username, password);
         if (userId < 1)
-            blnError = true;
+            return error(ERROR_USER_AUTH + username);
 
         try {
             eid = Integer.parseInt(postid);
         } catch (final IllegalFormatException ex) {
-            blnError = true;
+            return error(ERROR_ENTRY_ID + postid);
         }
 
-        if (!blnError && eid > 0) {
+        if (eid > 0) {
             try {
                 /* we're just updating the content aka body as this is the
            only thing the protocol supports. */
                 final Entry et2 = entryRepository.findById(eid).orElse(null);
-                if (et2 != null && userId == et2.getUser().getId()) {
+                if (et2 == null)
+                    return error(ERROR_ENTRY_ID + postid);
+                
+                if (userId == et2.getUser().getId()) {
                     et2.setBody(StringUtil.replace(content, '\'', "\\\'"));
                     entryRepository.save(et2);
-                } else blnError = true;
+                } else
+                    return error(ERROR_USER_AUTH + username);
             } catch (final Exception e) {
                 blnError = true;
                 log.error("Unable to update body for entry {}", eid, e);
@@ -398,18 +385,11 @@ public class Blogger {
         }
 
         if (eid < 1) {
-            s.put("faultCode", 4);
-            s.put("faultString", "Invalid entry id " + postid);
-
+            return error(ERROR_ENTRY_ID + postid);
         } else if (blnError) {
-            s.put("faultCode", 4);
-            s.put("faultString", "User authentication failed: " + username);
-
-        } else {
-            return true; /* true per spec */
+            return error(ERROR_USER_AUTH + username);
         }
-
-        return s;
+            return true; /* true per spec */
     }
 
     /**
@@ -452,15 +432,11 @@ public class Blogger {
     public Cloneable getRecentPosts(String appkey, String blogid, String username, String password, int numberOfPosts) {
         final ArrayList<HashMap<Object, Serializable>> arr = new ArrayList<>(numberOfPosts);
         final Collection<Entry> total;
-        boolean blnError = false;
         final int userId;
-        final HashMap<String, Serializable> s = new HashMap<>();
 
         userId = webLogin.validate(username, password);
-        if (blnError || userId < 1) {
-            s.put("faultCode", 4);
-            s.put("faultString", "User authentication failed: " + username);
-            return s;
+        if (userId < 1) {
+            return error(ERROR_USER_AUTH + username);
         }
 
         total = entryRepository.findByUsername(username);
@@ -508,16 +484,17 @@ public class Blogger {
         Entry e;
 
         userId = webLogin.validate(username, password);
-        if (blnError || userId < 1) {
-            s.put("faultCode", 4);
-            s.put("faultString", "User authentication failed: " + username);
-            return s;
+        if (userId < 1) {
+            return error(ERROR_USER_AUTH + username);
         }
 
         e = entryRepository.findById(Integer.parseInt(postid)).orElse(null);
-        if (e == null || userId != e.getUser().getId()) {
-            s.put("faultCode", 4);
-            s.put("faultString", "User authentication failed: " + username);
+        if (e == null) {
+            return error(ERROR_ENTRY_ID + postid);
+        }
+        if (userId != e.getUser().getId()) {
+            s.put(BaseXmlRpcService.FAULT_CODE, 4);
+            s.put(BaseXmlRpcService.FAULT_STRING, BaseXmlRpcService.ERROR_USER_AUTH + username);
             return s;
         }
 

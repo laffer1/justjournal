@@ -32,7 +32,7 @@ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
 
-package com.justjournal.metaweblog;
+package com.justjournal.services;
 
 import com.justjournal.Login;
 import com.justjournal.core.Settings;
@@ -83,16 +83,7 @@ import static com.justjournal.core.Constants.*;
 @SuppressWarnings({"UnusedParameters"})
 @Slf4j
 @Component
-public class MetaWeblog {
-
-    private static final String ERROR_USER_AUTH = "User authentication failed: ";
-    private static final String ERROR_ENTRY_ID =  "Invalid entry id ";
-
-    private static final String TITLE_KEY = "title";
-    private static final String DESC_KEY = "description";
-
-    private static final String FAULT_CODE = "faultCode";
-    private static final String FAULT_STRING = "faultString";
+public class MetaWeblog extends BaseXmlRpcService {
 
     @Autowired
     private EntryRepository entryRepository;
@@ -141,15 +132,6 @@ public class MetaWeblog {
         final int userId;
         boolean blnError = false;
         final HashMap<String, Serializable> s = new HashMap<>();
-
-
-        if (!StringUtil.lengthCheck(username, 3, USERNAME_MAX_LENGTH)) {
-            blnError = true;
-        }
-
-        if (!StringUtil.lengthCheck(password, 5, PASSWORD_MAX_LENGTH)) {
-            blnError = true;
-        }
 
         userId = webLogin.validate(username, password);
         if (userId < 1)
@@ -247,14 +229,6 @@ public class MetaWeblog {
         final Entry et = new Entry();
         final HashMap<String, Serializable> s = new HashMap<>();
 
-        if (!StringUtil.lengthCheck(username, 3, USERNAME_MAX_LENGTH)) {
-            blnError = true;
-        }
-
-        if (!StringUtil.lengthCheck(password, 5, PASSWORD_MAX_LENGTH)) {
-            blnError = true;
-        }
-
         userId = webLogin.validate(username, password);
         if (userId < 1)
             blnError = true;
@@ -337,25 +311,11 @@ public class MetaWeblog {
      */
     public Serializable deletePost(String appkey, String postid, String username, String password, boolean publish) {
         final int userId;
-        boolean blnError = false;
-
         int eid = 0;
-
-        if (!StringUtil.lengthCheck(username, USERNAME_MIN_LENGTH, USERNAME_MAX_LENGTH)) {
-            blnError = true;
-        }
-
-        if (!StringUtil.lengthCheck(password, PASSWORD_MIN_LENGTH, PASSWORD_MAX_LENGTH)) {
-            blnError = true;
-        }
 
         userId = webLogin.validate(username, password);
         if (userId < 1)
-            blnError = true;
-
-        if (blnError) {
             return error(ERROR_USER_AUTH + username);
-        }
 
         try {
             eid = Integer.parseInt(postid);
@@ -398,14 +358,6 @@ public class MetaWeblog {
 
         int eid = 0;
 
-        if (!StringUtil.lengthCheck(username, USERNAME_MIN_LENGTH, USERNAME_MAX_LENGTH)) {
-            blnError = true;
-        }
-
-        if (!StringUtil.lengthCheck(password, PASSWORD_MIN_LENGTH, PASSWORD_MAX_LENGTH)) {
-            blnError = true;
-        }
-
         userId = webLogin.validate(username, password);
         if (userId < 1)
             blnError = true;
@@ -413,7 +365,7 @@ public class MetaWeblog {
         try {
             eid = Integer.parseInt(postid);
         } catch (final IllegalFormatException ex) {
-            blnError = true;
+            return error(ERROR_ENTRY_ID + postid);
         }
 
         if (!blnError && eid > 0) {
@@ -493,9 +445,8 @@ public class MetaWeblog {
     public Cloneable getRecentPosts(String blogid, String username, String password, int numberOfPosts) {
         final ArrayList<HashMap<Object, Serializable>> arr = new ArrayList<>(numberOfPosts);
         final Collection<Entry> total;
-        boolean blnError = false;
         final int userId = webLogin.validate(username, password);
-        if (blnError || userId < 1) {
+        if (userId < 1) {
             return error(ERROR_USER_AUTH + username);
         }
 
@@ -543,13 +494,12 @@ public class MetaWeblog {
      * @return a signle entry as a hashmap for consumption by xml-rpc
      */
     public HashMap<Object, Serializable> getPost(String postid, String username, String password) {
-        boolean blnError = false;
         final int userId;
         final HashMap<Object, Serializable> entry = new HashMap<>();
         final Entry e;
 
         userId = webLogin.validate(username, password);
-        if (blnError || userId < 1) {
+        if (userId < 1) {
             return error(ERROR_USER_AUTH + username);
         }
 
@@ -589,11 +539,10 @@ public class MetaWeblog {
 
     public Cloneable getCategories(final String blogid, final String username, final String password) {
         final int userId;
-        boolean blnError = false;
         final ArrayList<HashMap<Object, Serializable>> arr = new ArrayList<>();
 
         userId = webLogin.validate(username, password);
-        if (blnError || userId < 1) {
+        if (userId < 1) {
             return error(ERROR_USER_AUTH + username);
         }
 
@@ -612,12 +561,5 @@ public class MetaWeblog {
             log.error(se.getMessage(), se);
         }
         return arr;
-    }
-
-    private HashMap<Object, Serializable> error(final String faultString) {
-        final HashMap<Object, Serializable> s = new HashMap<>();
-        s.put(FAULT_CODE, 4);
-        s.put(FAULT_STRING, faultString);
-        return s;
     }
 }

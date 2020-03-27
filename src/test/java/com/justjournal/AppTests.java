@@ -261,6 +261,14 @@ public class AppTests {
     }
 
     @Test
+    public void sitemapXml() throws Exception {
+        mockMvc.perform(get("/sitemap.xml")
+                        .accept(MediaType.parseMediaType("text/xml")))
+                        .andExpect(status().isOk())
+                        .andExpect(content().contentTypeCompatibleWith("text/xml;charset=UTF-8"));
+    }
+
+    @Test
     public void apiCommentWithEntry() throws Exception {
         mockMvc.perform(get("/api/comment?entryId=33661")
                 .accept(MediaType.parseMediaType("application/json")))

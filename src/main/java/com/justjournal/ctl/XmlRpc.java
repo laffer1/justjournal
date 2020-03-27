@@ -34,8 +34,8 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.ctl;
 
-import com.justjournal.metaweblog.MetaWeblog;
-import com.justjournal.google.Blogger;
+import com.justjournal.services.MetaWeblog;
+import com.justjournal.services.Blogger;
 import redstone.xmlrpc.XmlRpcServlet;
 
 import javax.servlet.ServletConfig;
