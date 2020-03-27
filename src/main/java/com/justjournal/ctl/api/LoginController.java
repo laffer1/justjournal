@@ -27,7 +27,6 @@
 package com.justjournal.ctl.api;
 
 import com.justjournal.Login;
-import com.justjournal.core.Constants;
 import com.justjournal.model.LoginResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

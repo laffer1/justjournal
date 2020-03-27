@@ -40,13 +40,15 @@ import java.util.Date;
  * @author Lucas Holt
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-public final class Comment implements Serializable {
+public final class CommentTo implements Serializable {
 
     private static final long serialVersionUID = 3594701186407268256L;
 
     private int id = 0;
 
     private String username;
+
+    private int eid;
 
     private Date date;
 
@@ -59,7 +61,7 @@ public final class Comment implements Serializable {
     private String format = "TEXT";
 
     @JsonCreator
-    public Comment() {
+    public CommentTo() {
        super();
     }
 
@@ -69,8 +71,7 @@ public final class Comment implements Serializable {
 
     public void setId(final int commentId) {
         if (commentId < 0)
-            throw new IllegalArgumentException("Illegal commentId: " +
-                    commentId);
+            throw new IllegalArgumentException("commentId");
 
         this.id = commentId;
     }
@@ -101,8 +102,7 @@ public final class Comment implements Serializable {
 
     public void setBody(final String bodyText) {
         if (bodyText.length() < 2)
-            throw new IllegalArgumentException("Illegal bodyText: " +
-                    bodyText);
+            throw new IllegalArgumentException("body");
 
         this.body = bodyText;
     }
@@ -113,6 +113,14 @@ public final class Comment implements Serializable {
 
     public void setUsername(final String username) {
         this.username = username;
+    }
+
+    public int getEid() {
+        return eid;
+    }
+
+    public void setEid(final int eid) {
+        this.eid = eid;
     }
 }
 

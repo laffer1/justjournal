@@ -6,7 +6,9 @@ import org.owasp.esapi.ESAPI;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -25,7 +27,7 @@ public class BasePing {
         pingUri = pinguri;
     }
 
-    protected URL createUrl(final String uri) throws Exception {
+    protected URL createUrl(final String uri) throws URISyntaxException, MalformedURLException {
         final URI tmpuri = new URI(uri);
         return tmpuri.toURL();
     }

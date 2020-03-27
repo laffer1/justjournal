@@ -35,6 +35,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import java.util.List;
+
 import static org.junit.Assert.*;
 
 /**
@@ -60,5 +62,12 @@ public class CommentRepositoryTests {
         Comment comment = commentRepository.findById(1).orElse(null);
         assertNotNull(comment);
         assertEquals(1, comment.getId());
+    }
+
+    @Test
+    public void getByEntryId() {
+        List<Comment> comments = commentRepository.findByEntryId(33661);
+        assertNotNull(comments);
+        assertEquals(1, comments.size());
     }
 }

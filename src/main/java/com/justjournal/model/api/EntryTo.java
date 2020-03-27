@@ -38,7 +38,6 @@ import com.fasterxml.jackson.annotation.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.hateoas.EntityModel;
 
@@ -114,7 +113,7 @@ public class EntryTo extends EntityModel<EntryTo> implements Serializable {
     
     @Getter @Setter 
     @JsonProperty("comments")
-    private Set<Comment> comments = new HashSet<>();
+    private Set<CommentTo> comments = new HashSet<>();
     
     @JsonCreator
     public EntryTo() {

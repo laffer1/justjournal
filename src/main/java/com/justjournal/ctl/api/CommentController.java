@@ -51,6 +51,7 @@ import com.justjournal.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -98,13 +99,16 @@ public class CommentController {
         this.queueMailRepository = queueMailRepository;
     }
 
-    @GetMapping("/api/comment/{id}")
-    @ResponseBody
-    public Comment getById(@PathVariable(PARAM_ID) final Integer id) {
-        return commentDao.findById(id).orElse(null);
+    @GetMapping("{id}")
+    public ResponseEntity<Comment> getById(@PathVariable(PARAM_ID) final Integer id) {
+        Comment comment = commentDao.findById(id).orElse(null);
+
+        if (comment != null)
+            return ResponseEntity.ok(comment);
+
+        return ResponseEntity.notFound().build();
     }
 
-    @ResponseBody
     @GetMapping(produces =  MediaType.APPLICATION_JSON_VALUE)
     public List<Comment> getComments(@RequestParam(Constants.PARAM_ENTRY_ID) final Integer entryId,
                                      final HttpServletResponse response) {
@@ -130,7 +134,6 @@ public class CommentController {
     }
 
     @DeleteMapping(value = "{id}")
-    @ResponseBody
     public Map<String, String> delete(@PathVariable(PARAM_ID) final int id, final HttpSession session,
                                       final HttpServletResponse response) {
 
@@ -156,14 +159,12 @@ public class CommentController {
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
     public Map<String, String> post(@RequestBody final Comment comment, final HttpSession session,
                                     final HttpServletResponse response) {
         return put(comment, session, response);
     }
 
     @PutMapping(produces =  MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
     public Map<String, String> put(@RequestBody final Comment comment, final HttpSession session,
                                    final HttpServletResponse response) {
         if (!Login.isAuthenticated(session)) {

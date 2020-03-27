@@ -253,7 +253,27 @@ public class AppTests {
                 .andExpect(content().contentTypeCompatibleWith("application/json;charset=UTF-8"));
     }
 
+    @Test
+    public void apiComment() throws Exception {
+        mockMvc.perform(get("/api/comment/1").accept(MediaType.parseMediaType("application/json;charset=UTF-8")))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith("application/json;charset=UTF-8"));
+    }
 
+    @Test
+    public void apiCommentWithEntry() throws Exception {
+        mockMvc.perform(get("/api/comment?entryId=33661")
+                .accept(MediaType.parseMediaType("application/json")))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith("application/json;charset=UTF-8"));
+    }
+    
+    @Test
+    public void apiCommentNotFound() throws Exception {
+        mockMvc.perform(get("/api/comment/99999"))
+                .andExpect(status().isNotFound());
+    }
+    
     @Test
     public void apiLoginCheck() throws Exception {
         mockMvc.perform(get("/api/login").accept(MediaType.parseMediaType("application/json;charset=UTF-8")))

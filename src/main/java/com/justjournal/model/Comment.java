@@ -27,6 +27,7 @@
 package com.justjournal.model;
 
 import com.fasterxml.jackson.annotation.*;
+import com.justjournal.model.api.CommentTo;
 import com.justjournal.utility.HTMLUtil;
 import lombok.Getter;
 import lombok.Setter;
@@ -174,8 +175,8 @@ public final class Comment implements Serializable {
         this.user = user;
     }
 
-    public com.justjournal.model.api.Comment toCommentTo() {
-        final com.justjournal.model.api.Comment comment = new com.justjournal.model.api.Comment();
+    public CommentTo toCommentTo() {
+        final CommentTo comment = new CommentTo();
         comment.setBody(getBody()); // TODO: which body type
         comment.setDate(getDate());
         comment.setFormat(getFormat().toString());
