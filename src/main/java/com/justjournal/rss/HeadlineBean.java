@@ -43,15 +43,12 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.springframework.stereotype.Component;
-import org.w3c.dom.Document;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static com.justjournal.core.Constants.endl;
 
 /**
  * Retrieves a RSS document using HTTP, parses the document, and
@@ -64,33 +61,23 @@ import java.util.regex.Pattern;
  *        Date: Jul 22, 2003
  *        Time: 12:19:17
  *        <p/>
- *        Switch to cvs versioning.
- *        1.4 Fixed bugs when certain rss features are missing.
- *        1.3 now supports several RSS 2 features (non rdf format)
- *        1.2 added several properties to the output including
- *        the published date, and description.
- *        1.1 optimized code
- *        1.0 Initial release
+ *        Switch to cvs versioning. <p/>
+ *        1.4 Fixed bugs when certain rss features are missing. <p/>
+ *        1.3 now supports several RSS 2 features (non rdf format) <p/>
+ *        1.2 added several properties to the output including <p/>
+ *        the published date, and description. <p/>
+ *        1.1 optimized code <p/>
+ *        1.0 Initial release <p/>
  */
 @Slf4j
 @Component
 public class HeadlineBean {
 
-    private static final char ENDL = '\n';
-
-    class HeadlineContext {
-        protected URL u;
-        protected InputStream inputXML;
-        protected DocumentBuilder builder;
-        protected Document document;
-        final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-    }
-
     protected HeadlineContext getRssDocument(final String uri) throws Exception {
 
         final HeadlineContext hc = new HeadlineContext();
 
-        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+        try (final CloseableHttpClient httpClient = HttpClients.createDefault()) {
             final HttpGet httpGet = new HttpGet(uri);
 
             try (final CloseableHttpResponse response1 = httpClient.execute(httpGet)) {
@@ -113,7 +100,7 @@ public class HeadlineBean {
     }
 
     public String parse(@NonNull final String url) {
-        
+
         try {
             log.info("Starting parse");
             final HeadlineContext hc = getRssDocument(url);
@@ -128,7 +115,7 @@ public class HeadlineBean {
             String contentDescription = "";
             String contentLastBuildDate = "";
             String contentGenerator = "";
-            
+
             log.info("Prepare xml nodelists");
 
             final org.w3c.dom.NodeList channelList = hc.document.getElementsByTagName("channel");
@@ -174,17 +161,17 @@ public class HeadlineBean {
                     }
                 }
             }
-            
+
             log.debug("Prepare HTML output");
 
             // create header!
             sb.append("<div style=\"width: 100%; padding: .1in; background: #F2F2F2;\" class=\"ljfhead\">");
-            sb.append(ENDL);
+            sb.append(endl);
 
             sb.append("<!-- Generator: ");
             sb.append(contentGenerator);
             sb.append(" -->");
-            sb.append(ENDL);
+            sb.append(endl);
 
             if (imageUrl != null) {
                 sb.append("<span style=\"padding: 5px; float:left; ");
@@ -219,7 +206,7 @@ public class HeadlineBean {
                 sb.append("\" title=\"");
                 sb.append(imageTitle);
                 sb.append("\" /></a></span>");
-                sb.append(ENDL);
+                sb.append(endl);
             }
 
             sb.append("<h3 ");
@@ -231,7 +218,7 @@ public class HeadlineBean {
             sb.append(">");
             sb.append(contentTitle);
             sb.append("</h3>");
-            sb.append(ENDL);
+            sb.append(endl);
 
             // some rss feeds don't have a last build date
             if (contentLastBuildDate != null && contentLastBuildDate.length() > 0) {
@@ -246,22 +233,22 @@ public class HeadlineBean {
                 sb.append("<a href=\"").append(contentLink).append("\">[").append(contentLink).append("]</a>");
             }
             sb.append("</p>");
-            sb.append(ENDL);
+            sb.append(endl);
 
 
             sb.append("<div style=\"clear: both;\">&nbsp;</div>");
-            sb.append(ENDL);
+            sb.append(endl);
 
             sb.append("</div>");
-            sb.append(ENDL);
+            sb.append(endl);
 
             //Generate the NodeList
-            org.w3c.dom.NodeList nodeList = hc.document.getElementsByTagName("item");
+            final org.w3c.dom.NodeList nodeList = hc.document.getElementsByTagName("item");
 
             sb.append("<div class=\"panel-group\" id=\"accordion\" role=\"tablist\" aria-multiselectable=\"true\">");
 
             for (int i = 0; i < nodeList.getLength() && i < 16; i++) {
-                org.w3c.dom.NodeList childList = nodeList.item(i).getChildNodes();
+                final org.w3c.dom.NodeList childList = nodeList.item(i).getChildNodes();
                 // some of the properties of <items>
                 String link = null;
                 String title = null;
@@ -289,22 +276,21 @@ public class HeadlineBean {
                 // assert the basic properties are there.
                 if (link != null && title != null) {
                     sb.append("<div class=\"panel panel-default\"><div class=\"panel-heading\" role=\"tab\" id=\"heading");
-                    sb.append(i + "_" + guid.hashCode());
+                    sb.append(i).append("_").append(guid.hashCode());
                     sb.append("\">");
 
                     sb.append("<h4 class=\"panel-title\">");
                     sb.append("<a role=\"button\" data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#collapse");
-                    sb.append(i + "_" + guid.hashCode());
+                    sb.append(i).append("_").append(guid.hashCode());
                     sb.append("\" aria-expanded=\"").append(i == 0 ? "true" : "false")
-                            .append("\" aria-controls=\"collapse")
-                            .append(i + "_" + guid.hashCode()).append("\">");
+                            .append("\" aria-controls=\"collapse").append(i).append("_").append(guid.hashCode()).append("\">");
                     sb.append(Xml.cleanString(title));
                     sb.append("</a></h4></div>");
                     sb.append("<div id=\"collapse").append(i + "_" + guid.hashCode()).append("\" class=\"panel-collapse collapse");
                     if (i == 0)
                         sb.append("in");
                     sb.append("\" role=\"tabpanel\" aria-labelledby=\"heading");
-                    sb.append(i + "_" + guid.hashCode());
+                    sb.append(i).append("_").append(guid.hashCode());
                     sb.append("\">");
                     sb.append("<div class=\"panel-body\">");
                     /*
@@ -312,7 +298,7 @@ public class HeadlineBean {
                      */
                     Pattern p = Pattern.compile("/<(script|noscript|object|embed|style|frameset|frame|iframe|link)[>\\s\\S]*<\\/\\1>/i");
                     Matcher m = p.matcher(description);
-                    String result = m.replaceAll("");
+                    final String result = m.replaceAll("");
 
                     sb.append(result);
 
@@ -321,37 +307,36 @@ public class HeadlineBean {
                     sb.append(link);
                     sb.append("\">");
                     sb.append("Read More</a></span>");
-                    sb.append(ENDL);
+                    sb.append(endl);
 
                     // some rss versions don't have a pub date per entry
                     if (pubDate != null) {
                         sb.append(" <br /><span class=\"RssItemPubDate\">");
                         sb.append(pubDate);
                         sb.append("</span>");
-                        sb.append(ENDL);
+                        sb.append(endl);
                     }
                     sb.append("</div></div></div>");
-                    sb.append(ENDL);
+                    sb.append(endl);
                 }
             }
 
             sb.append("</div>");
-            sb.append(ENDL);
+            sb.append(endl);
 
             return sb.toString();
         } catch (final java.io.FileNotFoundException e404) {
             log.warn("Feed is not available " + url + e404.getMessage(), e404);
-            return "<p>404 Not Found. The feed is no longer available. " + url + ENDL;
+            return "<p>404 Not Found. The feed is no longer available. " + url + endl;
         } catch (final org.xml.sax.SAXParseException sp) {
-             if (sp.getMessage().contains("Premature end of file"))
-                 return "<p>Feed is empty at " + url;
-             else {
-                 log.error("Bad feed " + sp.getMessage() , sp);
-                 return "<p>Bad Feed " + sp.toString() + " for url: " + url + ENDL;
-             }
+            if (sp.getMessage().contains("Premature end of file"))
+                return "<p>Feed is empty at " + url;
+            else {
+                log.error("Bad feed " + sp.getMessage(), sp);
+                return "<p>Bad Feed " + sp.toString() + " for url: " + url + endl;
+            }
         } catch (final Exception e) {
-            return "<p>Error, could not process request: " + e.toString() + " for url: " + url + ENDL;
+            return "<p>Error, could not process request: " + e.toString() + " for url: " + url + endl;
         }
     }
-
 }

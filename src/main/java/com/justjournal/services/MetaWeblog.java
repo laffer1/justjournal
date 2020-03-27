@@ -51,8 +51,6 @@ import com.justjournal.repository.SecurityRepository;
 import com.justjournal.repository.TagRepository;
 import com.justjournal.repository.UserRepository;
 import com.justjournal.restping.BasePing;
-import com.justjournal.restping.IceRocket;
-import com.justjournal.services.EntryService;
 import com.justjournal.utility.HTMLUtil;
 import com.justjournal.utility.StringUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -273,12 +271,6 @@ public class MetaWeblog extends BaseXmlRpcService {
                     rp.ping();
                     rp.setPingUri("http://ping.blo.gs/");
                     rp.ping();
-
-                    /* IceRocket */
-                    final IceRocket ice = new IceRocket();
-                    ice.setName(journal.getName());
-                    ice.setUri(settings.getBaseUri() + PATH_USERS + user.getUsername());
-                    ice.ping();
                 }
 
             } catch (final Exception e) {

@@ -42,7 +42,6 @@ import com.justjournal.model.PrefBool;
 import com.justjournal.model.User;
 import com.justjournal.repository.*;
 import com.justjournal.restping.BasePing;
-import com.justjournal.restping.IceRocket;
 import com.justjournal.utility.DateConvert;
 import com.justjournal.utility.HTMLUtil;
 import com.justjournal.utility.StringUtil;
@@ -268,12 +267,6 @@ public class Blogger extends BaseXmlRpcService {
                     rp.ping();
                     rp.setPingUri("http://ping.blo.gs/");
                     rp.ping();
-
-                    /* IceRocket */
-                    final IceRocket ice = new IceRocket();
-                    ice.setName(journal.getName());
-                    ice.setUri(settings.getBaseUri() + "users/"  + user.getUsername());
-                    ice.ping();
                 }
 
             } catch (final Exception e) {

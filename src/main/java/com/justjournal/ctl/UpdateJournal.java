@@ -41,7 +41,6 @@ import com.justjournal.core.TrackbackOut;
 import com.justjournal.model.*;
 import com.justjournal.repository.*;
 import com.justjournal.restping.BasePing;
-import com.justjournal.restping.IceRocket;
 import com.justjournal.utility.HTMLUtil;
 import com.justjournal.utility.Spelling;
 import com.justjournal.utility.StringUtil;
@@ -617,14 +616,7 @@ public class UpdateJournal extends HttpServlet {
                             rp.ping();
                             rp.setPingUri("http://ping.blo.gs/");
                             rp.ping();
-
-                            /* IceRocket */
-                            final IceRocket ice = new IceRocket();
-                            ice.setName(journal.getName());
-                            ice.setUri(settings.getBaseUri() + PATH_USERS + userName);
-                            ice.ping();
-
-
+                            
                             /* do trackback */
                             if (trackback.length() > 0) {
                                 final Entry et2 = entryRepository.findById(et.getId()).orElse(null);

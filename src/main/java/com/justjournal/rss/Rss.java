@@ -26,6 +26,7 @@
 
 package com.justjournal.rss;
 
+import com.justjournal.core.Settings;
 import com.justjournal.model.DateTimeBean;
 import com.justjournal.model.Entry;
 import com.justjournal.model.FormatType;
@@ -40,7 +41,14 @@ import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import static com.justjournal.core.Constants.PATH_USERS;
 
 /**
  * Create an RSS feed as a string.  This should be a valid XML document. Implements RSS 2
@@ -56,10 +64,13 @@ public class Rss {
     @Autowired
     private MarkdownService markdownService;
 
-    private static final int MAX_LENGTH = 15; // max size of RSS content
-    private static final String USER_BASE_URL = "http://www.justjournal.com/users/";
-    private static final String ALBUM_IMAGE_URL = "http://www.justjournal.com/AlbumImage?id=";
+    private final Settings settings;
 
+    private static final int MAX_LENGTH = 15; // max size of RSS content
+
+    private String albumImageUrl;
+    private String userBaseUrl;
+    
     private String title = "";
     private String link = "";
     private String description = "";
@@ -76,8 +87,12 @@ public class Rss {
     private List<RssItem> items = new ArrayList<>(MAX_LENGTH);
 
     @Autowired
-    public Rss(final JdbcTemplate jdbcTemplate) {
+    public Rss(final JdbcTemplate jdbcTemplate, final Settings settings) {
         this.jdbcTemplate = jdbcTemplate;
+        this.settings = settings;
+
+        userBaseUrl = settings.getBaseUri() + PATH_USERS;
+        albumImageUrl = settings.getBaseUri() + "AlbumImage?id=";
     }
 
     public String getTitle() {
@@ -165,7 +180,7 @@ public class Rss {
                 item = new RssItem();
                 item.setTruncateFields(false);
                 item.setTitle(o.getSubject());
-                item.setLink(USER_BASE_URL + o.getUser().getUsername());
+                item.setLink(userBaseUrl + o.getUser().getUsername());
                 // RSS feeds don't like &apos; and friends.  try to go unicode
                 final String descUnicode;
                 if (o.getFormat().equals(FormatType.MARKDOWN))
@@ -175,7 +190,7 @@ public class Rss {
                 else
                     descUnicode = o.getBody();
                 item.setDescription(HTMLUtil.convertCharacterEntities(descUnicode));
-                item.setGuid(USER_BASE_URL + o.getUser().getUsername() + "/entry/" + o.getId());
+                item.setGuid(userBaseUrl + o.getUser().getUsername() + "/entry/" + o.getId());
                 item.setPubDate(new DateTimeBean(o.getDate()).toPubDate());
 
                 final Date date = o.getDate();
@@ -221,10 +236,10 @@ public class Rss {
                 item = new RssItem();
                 item.setTruncateFields(false);
                 item.setTitle(imageTitle);
-                item.setLink(USER_BASE_URL + userName + "/pictures");
+                item.setLink(userBaseUrl + userName + "/pictures");
                 item.setDescription("");
-                item.setGuid(ALBUM_IMAGE_URL + rs.get("id"));
-                item.setEnclosureURL(ALBUM_IMAGE_URL + rs.get("id"));
+                item.setGuid(albumImageUrl + rs.get("id"));
+                item.setEnclosureURL(albumImageUrl + rs.get("id"));
                 item.setEnclosureType(rs.get("mimetype").toString().trim());
                 item.setEnclosureLength(Integer.toString(Integer.parseInt(rs.get("imglen").toString()) / 8));
 
