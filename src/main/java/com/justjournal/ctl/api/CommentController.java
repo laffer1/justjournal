@@ -39,10 +39,12 @@ import com.justjournal.core.Constants;
 import com.justjournal.ctl.error.ErrorHandler;
 import com.justjournal.model.Comment;
 import com.justjournal.model.Entry;
+import com.justjournal.model.FormatType;
 import com.justjournal.model.PrefBool;
 import com.justjournal.model.QueueMail;
 import com.justjournal.model.Settings;
 import com.justjournal.model.User;
+import com.justjournal.model.api.CommentTo;
 import com.justjournal.repository.CommentRepository;
 import com.justjournal.repository.EntryRepository;
 import com.justjournal.repository.QueueMailRepository;
@@ -60,7 +62,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
@@ -70,6 +71,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.justjournal.core.Constants.PARAM_ID;
 import static com.justjournal.core.Constants.PATH_ENTRY;
@@ -100,17 +103,14 @@ public class CommentController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Comment> getById(@PathVariable(PARAM_ID) final Integer id) {
-        Comment comment = commentDao.findById(id).orElse(null);
-
-        if (comment != null)
-            return ResponseEntity.ok(comment);
-
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<CommentTo> getById(@PathVariable(PARAM_ID) final Integer id) {
+        Optional<CommentTo> comment = commentDao.findById(id).map(Comment::toCommentTo);
+        return comment.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping(produces =  MediaType.APPLICATION_JSON_VALUE)
-    public List<Comment> getComments(@RequestParam(Constants.PARAM_ENTRY_ID) final Integer entryId,
+    public List<CommentTo> getComments(@RequestParam(Constants.PARAM_ENTRY_ID) final Integer entryId,
                                      final HttpServletResponse response) {
         final Entry entry = entryDao.findById(entryId).orElse(null);
 
@@ -130,7 +130,7 @@ public class CommentController {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
 
-        return commentDao.findByEntryId(entryId);
+        return commentDao.findByEntryId(entryId).stream().map(Comment::toCommentTo).collect(Collectors.toList());
     }
 
     @DeleteMapping(value = "{id}")
@@ -159,13 +159,13 @@ public class CommentController {
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, String> post(@RequestBody final Comment comment, final HttpSession session,
+    public Map<String, String> post(@RequestBody final CommentTo comment, final HttpSession session,
                                     final HttpServletResponse response) {
         return put(comment, session, response);
     }
 
     @PutMapping(produces =  MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, String> put(@RequestBody final Comment comment, final HttpSession session,
+    public Map<String, String> put(@RequestBody final CommentTo commentTo, final HttpSession session,
                                    final HttpServletResponse response) {
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -174,7 +174,7 @@ public class CommentController {
 
         try {
             final User user = userRepository.findById(Login.currentLoginId(session)).orElse(null);
-            final Entry et = entryDao.findById(comment.getEid()).orElse(null);
+            final Entry et = entryDao.findById(commentTo.getEid()).orElse(null);
 
             if (et == null) {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -185,6 +185,14 @@ public class CommentController {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 return ErrorHandler.modelError(  "Comments blocked by owner of this blog entry.");
             }
+
+            Comment comment = Comment.builder()
+                    .id(commentTo.getId())
+                    .body(commentTo.getBody())
+                    .date(commentTo.getDate())
+                    .eid(commentTo.getEid())
+                    .format(FormatType.valueOf(commentTo.getFormat()))
+                    .build();
 
             // new case
             if (comment.getId() == 0) {

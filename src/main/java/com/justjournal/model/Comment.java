@@ -29,6 +29,8 @@ package com.justjournal.model;
 import com.fasterxml.jackson.annotation.*;
 import com.justjournal.model.api.CommentTo;
 import com.justjournal.utility.HTMLUtil;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -41,6 +43,8 @@ import java.util.Date;
  *
  * @author Lucas Holt
  */
+@AllArgsConstructor
+@Builder
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @Entity
 @Table(name = "comments")
