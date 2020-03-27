@@ -35,7 +35,6 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.ctl.api;
 
 import com.justjournal.Login;
-import com.justjournal.ctl.api.entry.EntryController;
 import com.justjournal.ctl.error.ErrorHandler;
 import com.justjournal.model.api.UserLinkTo;
 import com.justjournal.services.UserLinkService;
@@ -87,13 +86,11 @@ public class LinkController {
     @Cacheable(value = "userlink", key = "#username")
     @GetMapping(value = "user/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<List<UserLinkTo>> getByUser(@PathVariable(PARAM_USERNAME) String username) {
+    public ResponseEntity<List<UserLinkTo>> getByUser(@PathVariable(PARAM_USERNAME) final String username) {
         final List<UserLinkTo> links = userLinkService.getByUser(username);
 
         return ResponseEntity
                 .ok()
-                // .cacheControl(CacheControl.maxAge(1, TimeUnit.DAYS))
-                // TODO: etag code is not stable    .eTag(Integer.toString(links.hashCode()))
                 .body(links);
     }
 
