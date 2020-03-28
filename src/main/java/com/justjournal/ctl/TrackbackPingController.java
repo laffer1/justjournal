@@ -38,7 +38,6 @@ import com.justjournal.core.Constants;
 import com.justjournal.model.Trackback;
 import com.justjournal.model.TrackbackType;
 import com.justjournal.repository.TrackbackRepository;
-import com.justjournal.utility.ServletUtilities;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -79,6 +78,30 @@ public class TrackbackPingController {
         this.trackbackDao = trackbackDao;
     }
 
+    /**
+       * Read a parameter with the specified name, convert it to an int,
+       * and return it. Return the designated default value if the parameter
+       * doesn't exist or if it is an illegal integer format.
+       *
+       * @param request      Incoming Servlet Request
+       * @param paramName    Name of the request parameter.
+       * @param defaultValue The value to use in case of error
+       * @return default value on err or correct value
+       */
+
+      private static int getIntParameter(final HttpServletRequest request,
+                                        final String paramName,
+                                        final int defaultValue) {
+          final String paramString = request.getParameter(paramName);
+          int paramValue;
+          try {
+              paramValue = Integer.parseInt(paramString);
+          } catch (final NumberFormatException nfe) { // Handles null and bad format
+              paramValue = defaultValue;
+          }
+          return (paramValue);
+      }
+
     @GetMapping(produces = "text/xml")
     @ResponseBody
     public String get(HttpServletRequest request, HttpServletResponse response) {
@@ -88,7 +111,7 @@ public class TrackbackPingController {
             response.setContentType("text/xml; charset=utf-8");
             Boolean istrackback = true;
 
-            final int postId = ServletUtilities.getIntParameter(request, "entryID", 0);
+            final int postId = getIntParameter(request, "entryID", 0);
             if (postId > 1)
                 throw new IllegalArgumentException("entry id is missing");
 
