@@ -1,6 +1,8 @@
 package com.justjournal.utility;
 
 import java.net.InetAddress;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 
 /**
@@ -10,6 +12,15 @@ public class DNSUtil {
 
     private DNSUtil() {
         super();
+    }
+
+    public static boolean isUrlDomainValid(String uri) {
+        try {
+            final URI tmpuri = new URI(uri);
+            return isDomainValid(tmpuri.getHost());
+        } catch (URISyntaxException ignored) {
+            return false;
+        }
     }
 
     public static String getDomainFromEmail(final String address) {

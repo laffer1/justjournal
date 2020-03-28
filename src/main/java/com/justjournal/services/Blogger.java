@@ -255,16 +255,10 @@ public class Blogger extends BaseXmlRpcService {
 
                 final Journal journal = new ArrayList<>(user.getJournals()).get(0);
                 if (!journal.isOwnerViewOnly() && journal.isPingServices()) {
-                    log.debug("Ping weblogs");
-                    /* WebLogs, Google, blo.gs */
-                    final RestPing rp = new RestPing("http://rpc.weblogs.com/pingSiteForm");
+                    final RestPing rp = new RestPing("http://ping.blo.gs/");
                     rp.setName(journal.getName());
-                    rp.setUri(settings.getBaseUri() + "users/"  + user.getUsername());
-                    rp.setChangesURL(settings.getBaseUri() + "users/"  + user.getUsername() + "/rss");
-                    rp.ping();
-                    rp.setPingUri("http://blogsearch.google.com/ping");
-                    rp.ping();
-                    rp.setPingUri("http://ping.blo.gs/");
+                    rp.setUri(settings.getBaseUri() + PATH_USERS  + user.getUsername());
+                    rp.setChangesURL(settings.getBaseUri() + PATH_USERS  + user.getUsername() + "/rss");
                     rp.ping();
                 }
 

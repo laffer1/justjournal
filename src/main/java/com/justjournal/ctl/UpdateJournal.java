@@ -605,18 +605,12 @@ public class UpdateJournal extends HttpServlet {
                         final Journal journal = new ArrayList<Journal>(pf.getJournals()).get(0);
 
                         if (pf != null && !journal.isOwnerViewOnly() && journal.isPingServices()) {
-                            log.debug("Ping weblogs");
-                            /* WebLogs, Google, blo.gs */
-                            final RestPing rp = new RestPing("http://rpc.weblogs.com/pingSiteForm");
+                            final RestPing rp = new RestPing("http://ping.blo.gs/");
                             rp.setName(journal.getName());
                             rp.setUri(settings.getBaseUri() + PATH_USERS + userName);
                             rp.setChangesURL(settings.getBaseUri() + PATH_USERS + userName + "/rss");
                             rp.ping();
-                            rp.setPingUri("http://blogsearch.google.com/ping");
-                            rp.ping();
-                            rp.setPingUri("http://ping.blo.gs/");
-                            rp.ping();
-                            
+                                                
                             /* do trackback */
                             if (trackback.length() > 0) {
                                 final Entry et2 = entryRepository.findById(et.getId()).orElse(null);

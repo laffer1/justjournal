@@ -1,5 +1,6 @@
 package com.justjournal.services;
 
+import com.justjournal.utility.DNSUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.owasp.esapi.ESAPI;
 
@@ -23,8 +24,8 @@ public class RestPing {
     protected String name;
     protected String changesURL;
 
-    public RestPing(final String pinguri) {
-        pingUri = pinguri;
+    public RestPing(final String pingUri) {
+        setPingUri(pingUri);
     }
 
     protected URL createUrl(final String uri) throws URISyntaxException, MalformedURLException {
@@ -40,7 +41,7 @@ public class RestPing {
             final String cleanUrl = ESAPI.encoder().encodeForURL(getUri());
             final String changesUrl = ESAPI.encoder().encodeForURL(getChangesURL());
 
-            uc = createUrl(getUri() + "?name=" + cleanName + "&url=" + cleanUrl + "&changesUrl=" + changesUrl)
+            uc = createUrl(getUri() + "?name=" + cleanName + "&url=" + cleanUrl + "&changesUrl=" + changesUrl + "&rssUrl=" + changesUrl)
                     .openConnection();
         } catch (final Exception me) {
             log.error("Couldn't create URL for rest ping", me);
@@ -72,6 +73,9 @@ public class RestPing {
     }
 
     public void setUri(final String uri) {
+        if (!DNSUtil.isUrlDomainValid(uri)) {
+            throw new IllegalArgumentException("uri");
+        }
         this.uri = uri;
     }
 
@@ -88,6 +92,9 @@ public class RestPing {
     }
 
     public void setChangesURL(final String changesURL) {
+        if (!DNSUtil.isUrlDomainValid(changesURL)) {
+            throw new IllegalArgumentException("changesURL");
+        }
         this.changesURL = changesURL;
     }
 
@@ -96,6 +103,9 @@ public class RestPing {
     }
 
     public void setPingUri(final String pingUri) {
+        if (!DNSUtil.isUrlDomainValid(pingUri)) {
+            throw new IllegalArgumentException("pingUri");
+        }
         this.pingUri = pingUri;
     }
 }

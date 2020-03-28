@@ -12,6 +12,12 @@ import static org.junit.Assert.assertTrue;
 public class DNSUtilTests {
 
     @Test
+    public void testUrlDomainValid() {
+        boolean result = DNSUtil.isUrlDomainValid("http://justjournal.com/users/jjsite");
+        assertTrue(result);
+    }
+
+    @Test
     public void testGetDomainFromEmail() {
         String result = DNSUtil.getDomainFromEmail("test@justjournal.com");
         assertEquals("justjournal.com", result);
