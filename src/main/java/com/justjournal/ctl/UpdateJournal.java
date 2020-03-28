@@ -40,7 +40,7 @@ import com.justjournal.core.Settings;
 import com.justjournal.core.TrackbackOut;
 import com.justjournal.model.*;
 import com.justjournal.repository.*;
-import com.justjournal.restping.BasePing;
+import com.justjournal.services.RestPing;
 import com.justjournal.utility.HTMLUtil;
 import com.justjournal.utility.Spelling;
 import com.justjournal.utility.StringUtil;
@@ -607,7 +607,7 @@ public class UpdateJournal extends HttpServlet {
                         if (pf != null && !journal.isOwnerViewOnly() && journal.isPingServices()) {
                             log.debug("Ping weblogs");
                             /* WebLogs, Google, blo.gs */
-                            final BasePing rp = new BasePing("http://rpc.weblogs.com/pingSiteForm");
+                            final RestPing rp = new RestPing("http://rpc.weblogs.com/pingSiteForm");
                             rp.setName(journal.getName());
                             rp.setUri(settings.getBaseUri() + PATH_USERS + userName);
                             rp.setChangesURL(settings.getBaseUri() + PATH_USERS + userName + "/rss");

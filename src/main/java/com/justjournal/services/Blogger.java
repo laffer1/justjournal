@@ -41,7 +41,6 @@ import com.justjournal.model.Journal;
 import com.justjournal.model.PrefBool;
 import com.justjournal.model.User;
 import com.justjournal.repository.*;
-import com.justjournal.restping.BasePing;
 import com.justjournal.utility.DateConvert;
 import com.justjournal.utility.HTMLUtil;
 import com.justjournal.utility.StringUtil;
@@ -258,7 +257,7 @@ public class Blogger extends BaseXmlRpcService {
                 if (!journal.isOwnerViewOnly() && journal.isPingServices()) {
                     log.debug("Ping weblogs");
                     /* WebLogs, Google, blo.gs */
-                    final BasePing rp = new BasePing("http://rpc.weblogs.com/pingSiteForm");
+                    final RestPing rp = new RestPing("http://rpc.weblogs.com/pingSiteForm");
                     rp.setName(journal.getName());
                     rp.setUri(settings.getBaseUri() + "users/"  + user.getUsername());
                     rp.setChangesURL(settings.getBaseUri() + "users/"  + user.getUsername() + "/rss");

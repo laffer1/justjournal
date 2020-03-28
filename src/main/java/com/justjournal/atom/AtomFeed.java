@@ -91,13 +91,13 @@ public class AtomFeed {
                 item.setLink("http://www.justjournal.com/users/" + o.getUser().getUsername() + "/entry/" + o.getId());
                 item.setPublished(DateConvert.encode3339(o.getDate()));
                 item.setUpdated(DateConvert.encode3339(o.getDate()));
-                Add(item);
+                add(item);
             }
         } catch (final Exception ignored) {
         }
     }
 
-    public void Add(final AtomEntry item) {
+    public void add(final AtomEntry item) {
         items.add(item);
     }
 

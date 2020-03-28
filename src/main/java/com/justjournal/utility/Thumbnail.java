@@ -1,7 +1,7 @@
 package com.justjournal.utility;
 
 import com.justjournal.exception.ThumbnailException;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -15,11 +15,10 @@ import java.io.IOException;
  *
  * @author Lucas Holt
  */
+@Slf4j
 public class Thumbnail {
     private int thumbWidth;  /* Suggested thumbnail max width */
     private int thumbHeight; /* Suggested thumbnail max height */
-
-    private org.slf4j.Logger log = LoggerFactory.getLogger(Thumbnail.class);
 
     /**
      * Create Thumbnail with default width & height 100

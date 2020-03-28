@@ -1,4 +1,4 @@
-package com.justjournal.restping;
+package com.justjournal.services;
 
 import lombok.extern.slf4j.Slf4j;
 import org.owasp.esapi.ESAPI;
@@ -16,14 +16,14 @@ import java.net.URLConnection;
  * User: laffer1 Date: Jul 27, 2008 Time: 5:50:49 AM
  */
 @Slf4j
-public class BasePing {
+public class RestPing {
 
     protected String pingUri;
     protected String uri;
     protected String name;
     protected String changesURL;
 
-    public BasePing(final String pinguri) {
+    public RestPing(final String pinguri) {
         pingUri = pinguri;
     }
 

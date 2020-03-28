@@ -50,7 +50,6 @@ import com.justjournal.repository.MoodRepository;
 import com.justjournal.repository.SecurityRepository;
 import com.justjournal.repository.TagRepository;
 import com.justjournal.repository.UserRepository;
-import com.justjournal.restping.BasePing;
 import com.justjournal.utility.HTMLUtil;
 import com.justjournal.utility.StringUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -262,7 +261,7 @@ public class MetaWeblog extends BaseXmlRpcService {
                 if (!journal.isOwnerViewOnly() && journal.isPingServices()) {
                     log.debug("Ping weblogs");
                     /* WebLogs, Google, blo.gs */
-                    BasePing rp = new BasePing("http://rpc.weblogs.com/pingSiteForm");
+                    RestPing rp = new RestPing("http://rpc.weblogs.com/pingSiteForm");
                     rp.setName(journal.getName());
                     rp.setUri(settings.getBaseUri() +  PATH_USERS + user.getUsername());
                     rp.setChangesURL(settings.getBaseUri() +  PATH_USERS + user.getUsername() + "/rss");
