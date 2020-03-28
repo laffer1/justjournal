@@ -120,14 +120,18 @@ public final class StringUtil {
     /**
      * Checks e-mail addresses for invalid characters. If the address is invalid, false is returned.
      * <p/>
-     * This might be too restrictive TODO: look at .NET version or regex.com Email address generally contain more
-     * characters than this.  (flawed)
+     * Does not support TLD emails at this time. (me@com, foo@google, bar@coke)
+     * Does not support internationalized (unicode) domains yet
      *
      * @param address an email address to check
      * @return true if the address is valid.
      */
     public static boolean isEmailValid(final String address) {
-        final Pattern p = Pattern.compile("[A-Za-z0-9\\.\\@_\\-~#]+");
+        if (address == null)
+            return false;
+
+        // based on http://emailregex.com/
+        final Pattern p = Pattern.compile("(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])");
         final Matcher m = p.matcher(address);
 
         return m.matches();
@@ -140,6 +144,9 @@ public final class StringUtil {
      * @return boolean indicating alphanumeric status
      */
     public static boolean isAlphaNumeric(final String input) {
+        if (input == null)
+            return false;
+        
         final Pattern p = Pattern.compile("[\\w]+");
         final Matcher m = p.matcher(input);
 
@@ -153,6 +160,9 @@ public final class StringUtil {
      * @return boolean indicating alpha status
      */
     public static boolean isAlpha(final String input) {
+        if (input == null)
+            return false;
+
         final Pattern p = Pattern.compile("[A-Za-z]+");
         final Matcher m = p.matcher(input);
 
@@ -168,6 +178,9 @@ public final class StringUtil {
      * @return true if the str is between the constraints, false if it violates them.
      */
     public static boolean lengthCheck(final String str, final int minLength, final int maxLength) {
+        if (str == null)
+            return false;
+
         final int len = str.length();
         return len >= minLength && len <= maxLength;
     }

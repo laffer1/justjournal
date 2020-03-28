@@ -65,14 +65,6 @@ public final class ErrorPage {
         sb.append("</html>\n");
     }
 
-    public static void display(final String ErrTitle, final String ErrMsg, final PrintWriter printWriter) {
-        final StringBuilder sb = new StringBuilder();
-
-        display(ErrTitle, ErrMsg, sb);  // call the other version
-
-        printWriter.write(sb.toString());
-    }
-
     public static void display(final String ErrTitle, final String ErrMsg, final StringBuilder sb) {
         severe(ErrTitle, ErrMsg, sb);
     }

@@ -32,6 +32,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -48,9 +49,6 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 @SpringBootTest(classes = Application.class)
 @WebAppConfiguration
 public class AppTests {
-    private static final int STATUS_HTTP_400 = 400;
-    private static final int STATUS_HTTP_403 = 403;
-
     @SuppressWarnings({"SpringJavaAutowiringInspection", "ProtectedField"})
     @Autowired
     protected WebApplicationContext wac;
@@ -64,6 +62,34 @@ public class AppTests {
     @Test
     public void simple() throws Exception {
         mockMvc.perform(get("/"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("index"));
+    }
+
+    @Test
+    public void privacy() throws Exception {
+        mockMvc.perform(get("/#!/privacy"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("index"));
+    }
+
+    @Test
+    public void search() throws Exception {
+        mockMvc.perform(get("/#!/search"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("index"));
+    }
+
+    @Test
+    public void sitemap() throws Exception {
+        mockMvc.perform(get("/#!/sitemap"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("index"));
+    }
+
+    @Test
+    public void searchEscape() throws Exception {
+        mockMvc.perform(get("/?=_escaped_fragment_=sitemap"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("index"));
     }
@@ -211,16 +237,13 @@ public class AppTests {
                 .andExpect(status().isOk());
     }
 
-    @Ignore
     @Test
-    public void apiEntryPostInvalid() throws Exception {
-
-        mockMvc.perform(post("/api/entry", "{\"id\":\"1\", \"subject\":\"testing\", \"body\":\"test\"}")
-                .content("{\"id\":\"1\", \"subject\":\"testing\", \"body\":\"test\"}")
+    public void apiEntryPostNotLoggedIn() throws Exception {
+        mockMvc.perform(post("/api/entry", "{\"subject\":\"testing\", \"body\":\"test\"}")
+                .content("{\"subject\":\"testing\", \"body\":\"test\"}")
                 .contentType(MediaType.APPLICATION_JSON)
-
                 .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().is(STATUS_HTTP_403))
+                .andExpect(status().is(HttpStatus.FORBIDDEN.value()))
                 .andExpect(content().string("{\"error\":\"The login timed out or is invalid.\"}"))
                 .andExpect(content().contentTypeCompatibleWith("application/json;charset=UTF-8"));
     }
@@ -271,7 +294,7 @@ public class AppTests {
     @Test
     public void apiCommentWithEntry() throws Exception {
         mockMvc.perform(get("/api/comment?entryId=33661")
-                .accept(MediaType.parseMediaType("application/json")))
+                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith("application/json;charset=UTF-8"));
     }
