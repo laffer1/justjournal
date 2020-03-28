@@ -43,7 +43,7 @@ public class RestPing {
             uc = createUrl(getUri() + "?name=" + cleanName + "&url=" + cleanUrl + "&changesUrl=" + changesUrl)
                     .openConnection();
         } catch (final Exception me) {
-            log.debug("Couldn't create URL.", me);
+            log.error("Couldn't create URL for rest ping", me);
             return false;
         }
 
@@ -62,7 +62,7 @@ public class RestPing {
 
             return true; // todo: parse result and adjust this as necessary.
         } catch (final IOException e) {
-            log.debug("IO Error", e);
+            log.error("Could read response from rest ping from {}", uc.getURL().toString(), e);
             return false;
         }
     }

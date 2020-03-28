@@ -33,6 +33,7 @@ import com.justjournal.ctl.error.ErrorHandler;
 import com.justjournal.model.User;
 import com.justjournal.model.api.NewUser;
 import com.justjournal.services.AccountService;
+import com.justjournal.utility.DNSUtil;
 import com.justjournal.utility.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,8 +71,16 @@ public class SignUpController {
             return ErrorHandler.modelError(Constants.ERR_ADD_USER);
         }
 
-        if (!StringUtil.lengthCheck(user.getEmail(), 6, 100)) {
+        if (!StringUtil.lengthCheck(user.getEmail(), 3, 100)) {
             throw new IllegalArgumentException("Invalid email address");
+        }
+
+        if (!StringUtil.isEmailValid(user.getEmail())) {
+            throw new IllegalArgumentException("Invalid email address.");
+        }
+
+        if (!DNSUtil.isEmailDomainValid((user.getEmail()))) {
+            throw new IllegalArgumentException("Invalid email address. Domain not found.");
         }
 
         if (!Login.isUserName(user.getUsername())) {
