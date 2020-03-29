@@ -27,11 +27,12 @@
 package com.justjournal.ctl.api.entry;
 
 import com.justjournal.Login;
-import com.justjournal.core.Constants;
+import com.justjournal.core.Settings;
 import com.justjournal.ctl.error.ErrorHandler;
 import com.justjournal.exception.ServiceException;
 import com.justjournal.model.Comment;
 import com.justjournal.model.Entry;
+import com.justjournal.model.Journal;
 import com.justjournal.model.Location;
 import com.justjournal.model.Mood;
 import com.justjournal.model.RecentEntry;
@@ -45,7 +46,9 @@ import com.justjournal.repository.MoodRepository;
 import com.justjournal.repository.SecurityRepository;
 import com.justjournal.repository.UserRepository;
 import com.justjournal.services.EntryService;
+import com.justjournal.services.TrackbackService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.annotation.CacheEvict;
@@ -123,6 +126,12 @@ public class EntryController {
 
     @Autowired
     private EntryService entryService;
+
+    @Autowired
+    private TrackbackService trackbackService;
+
+    @Autowired
+    Settings settings;
 
     /**
      * Get the private list of recent blog entries. If logged in, get the private list otherwise only public entries.
@@ -356,6 +365,17 @@ public class EntryController {
         }
 
         entryService.applyTags(saved, entryTo.getTags());
+
+        if (StringUtils.isNotBlank(entryTo.getTrackback())) {
+            try {
+                String permalink = settings.getBaseUri() + PATH_USERS + user.getUsername() + PATH_ENTRY + saved.getId();
+                trackbackService.send(entryTo.getTrackback(),
+                        user.getJournals().stream().findFirst().get().getName(),
+                        permalink, entryTo.getSubject(), entryTo.getBody());
+            } catch (final Exception e) {
+                log.error("Could not save trackback on entry {}", saved.getId(), e);
+            }
+        }
 
         model.addAttribute("status", "ok");
         model.addAttribute("id", saved.getId());

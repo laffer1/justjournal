@@ -43,6 +43,8 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.justjournal.model.api.EntryTo;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -163,6 +165,11 @@ public class Entry implements Serializable {
     @Column(name = "draft", nullable = false, length = 1)
     @Enumerated(EnumType.STRING)
     private PrefBool draft = PrefBool.N;
+
+    @Getter
+    @Setter
+    @Column(name = "trackback", length = 1024)
+    private String trackback;
 
     // TODO: implement
     @JsonIgnore
@@ -407,6 +414,8 @@ public class Entry implements Serializable {
             setFormat(FormatType.TEXT);
             setAutoFormat(PrefBool.Y);
         }
+
+        setTrackback(entryTo.getTrackback());
     }
 
     public EntryTo toEntryTo() {
@@ -425,6 +434,7 @@ public class Entry implements Serializable {
                 .autoFormat(getAutoFormat() == PrefBool.Y)
                 .draft(getDraft() == PrefBool.Y)
                 .emailComments(getEmailComments() == PrefBool.Y)
+                .trackback(getTrackback())
                 .build();
 
         if (entryTo.getDate() == null)
@@ -435,8 +445,7 @@ public class Entry implements Serializable {
         }
 
         if (getTags() != null) {
-            final Set<String> tags = getTags().stream().map(t -> t.getTag().getName()).collect(Collectors.toSet());
-            entryTo.setTags(tags);
+            entryTo.setTags(getTags().stream().map(t -> t.getTag().getName()).collect(Collectors.toSet()));
         } else {
             entryTo.setTags(new HashSet<>());
         }

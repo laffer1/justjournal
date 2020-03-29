@@ -88,6 +88,9 @@ public class EntryTo extends EntityModel<EntryTo> implements Serializable {
 
     @Getter @Setter 
     private String music = "";
+
+    @Getter @Setter
+    private String trackback;
   
     @Getter @Setter
     private String format = "TEXT";

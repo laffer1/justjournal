@@ -38,6 +38,8 @@ import com.justjournal.core.Constants;
 import com.justjournal.model.Trackback;
 import com.justjournal.model.TrackbackType;
 import com.justjournal.repository.TrackbackRepository;
+import com.justjournal.utility.DNSUtil;
+import com.justjournal.utility.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -145,8 +147,8 @@ public class TrackbackPingController {
                 istrackback = false;
             }
 
-            if (email != null && email.length() > 0)
-                tb.setAuthorEmail(email);  // TODO: validate
+            if (StringUtil.isEmailValid(email) && DNSUtil.isEmailDomainValid(email))
+                tb.setAuthorEmail(email);
 
             if (istrackback.booleanValue())
                 tb.setType(TrackbackType.trackback);

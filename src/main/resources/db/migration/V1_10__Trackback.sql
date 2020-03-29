@@ -1,0 +1,1 @@
+alter table entry add column `trackback` varchar(1024) NULL;
