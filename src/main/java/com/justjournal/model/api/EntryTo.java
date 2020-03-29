@@ -107,7 +107,15 @@ public class EntryTo extends EntityModel<EntryTo> implements Serializable {
     @Getter @Setter 
     private Boolean draft = false;
 
-    @Getter @Setter 
+    /**
+     * For backward compatibility with front end
+     */
+    @Deprecated
+    @Getter @Setter
+    @JsonProperty("tag")
+    private String tag = "";
+
+    @Getter @Setter
     @JsonProperty("tags")
     private Set<String> tags = new HashSet<>();
     

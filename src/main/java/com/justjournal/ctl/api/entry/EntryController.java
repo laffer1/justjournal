@@ -79,6 +79,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -345,6 +346,7 @@ public class EntryController {
         entry.setLocation(getLocation(entryTo.getLocation()));
         entry.setSecurity(getSecurity(entryTo.getSecurity()));
         entry.setMood(getMood(entryTo.getMood()));
+        entry.setTags(new HashSet<>());
 
         final Entry saved = entryRepository.saveAndFlush(entry);
 

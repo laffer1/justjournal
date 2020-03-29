@@ -437,6 +437,8 @@ public class Entry implements Serializable {
         if (getTags() != null) {
             final Set<String> tags = getTags().stream().map(t -> t.getTag().getName()).collect(Collectors.toSet());
             entryTo.setTags(tags);
+        } else {
+            entryTo.setTags(new HashSet<>());
         }
 
         // TODO: needed? entryTo.setComments(getComments().stream().map(Comment::toCommentTo).collect(Collectors.toSet()));
