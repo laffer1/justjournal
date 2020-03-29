@@ -227,12 +227,8 @@ public final class HTMLUtil {
      * @return Text with HTML a tags added.
      */
     public static String uriToLink(String input) {
-        final String url2 = "((ftp|https?://(.*?))\\s)";
-        // Now convert string we've built up into a real regex object
+        final String url2 = "(((ftp|https?)://(.*?))[\\s\\r\\n|,|$])";
         final Pattern UrlRegex = Pattern.compile(url2);
-        // Now ready to apply to raw text to find urls . . .
-
-        //final Pattern p = Pattern.compile("(\\sI\\n|^)(\\w+://[^\\s\\n]+)");
 
         final Matcher m = UrlRegex.matcher(input);
 
