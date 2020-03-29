@@ -35,17 +35,17 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.utility;
 
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 /**
  * XML Utilities
  *
  * @author Lucas Holt
  * @version $Id: Xml.java,v 1.9 2010/02/05 03:11:24 laffer1 Exp $ User: laffer1 Date: Sep 24, 2003 Time: 11:39:50 AM
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Xml {
-
-    private Xml() {
-        
-    }
 
     /**
      * converts characters that are special in xml to their equivalents.

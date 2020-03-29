@@ -24,11 +24,11 @@ public class Thumbnail {
      * Create Thumbnail with default width & height 100
      */
     public Thumbnail() {
-        thumbWidth = 100;
-        thumbHeight = 100;
+        this(100, 100);
     }
 
     public Thumbnail(final int width, final int height) {
+        super();
         thumbWidth = width;
         thumbHeight = height;
     }
@@ -47,7 +47,7 @@ public class Thumbnail {
         return thumbWidth;
     }
 
-    public void setThumbWidth(int thumbWidth) {
+    public void setThumbWidth(final int thumbWidth) {
         this.thumbWidth = thumbWidth;
     }
 
@@ -55,11 +55,11 @@ public class Thumbnail {
         return thumbHeight;
     }
 
-    public void setThumbHeight(int thumbHeight) {
+    public void setThumbHeight(final int thumbHeight) {
         this.thumbHeight = thumbHeight;
     }
 
-    public void create(String inputfile, String outputfile) {
+    public void create(final String inputfile, final String outputfile) {
         try {
             File f = new File(inputfile);
             BufferedImage bi = ImageIO.read(f);

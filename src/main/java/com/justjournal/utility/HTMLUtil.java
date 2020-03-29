@@ -26,6 +26,9 @@ package com.justjournal.utility;
   a pointer to or a copy of the original.
 \*---------------------------------------------------------------------------*/
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.LoggerFactory;
 import org.w3c.tidy.Tidy;
 
@@ -43,20 +46,14 @@ import java.util.regex.PatternSyntaxException;
  * @author Copyright &copy; 2004 Brian M. Clapper
  * @version <tt>$Revision: 1.12 $</tt>
  */
+@Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class HTMLUtil {
-    /*----------------------------------------------------------------------*\
-                            Private Constants
-    \*----------------------------------------------------------------------*/
 
     /**
      * Resource bundle containing the character entity code mappings.
      */
     private static final String BUNDLE_NAME = "com.justjournal.utility.HTMLUtil";
-    private static org.slf4j.Logger log = LoggerFactory.getLogger(HTMLUtil.class);
-
-    /*----------------------------------------------------------------------*\
-                            Private Data Items
-    \*----------------------------------------------------------------------*/
 
     private static ResourceBundle resourceBundle = null;
 
@@ -64,17 +61,7 @@ public final class HTMLUtil {
      * For regular expression substitution. Instantiated first time it's needed.
      */
     private static Pattern entityPattern = null;
-
-    /*----------------------------------------------------------------------*\
-                                Constructor
-    \*----------------------------------------------------------------------*/
-
-    private HTMLUtil() {
-    }
-
-    /*----------------------------------------------------------------------*\
-                              Public Methods
-    \*----------------------------------------------------------------------*/
+    
 
     /**
      * Removes all HTML element tags from a string, leaving just the character data. This method does <b>not</b> touch
@@ -85,10 +72,10 @@ public final class HTMLUtil {
      * @return the resulting, possibly modified, string
      * @see #convertCharacterEntities
      */
-    public static String stripHTMLTags(String s) {
-        char[] ch = s.toCharArray();
+    public static String stripHTMLTags(final String s) {
+        final char[] ch = s.toCharArray();
         boolean inElement = false;
-        StringBuilder buf = new StringBuilder();
+        final StringBuilder buf = new StringBuilder();
 
         for (final char aCh : ch) {
             switch (aCh) {
@@ -131,12 +118,8 @@ public final class HTMLUtil {
             try {
                 if (entityPattern == null)
                     entityPattern = Pattern.compile("&(#?[^; \t]+);");
-            }
-
-            catch (final PatternSyntaxException ex) {
+            } catch (final PatternSyntaxException ex) {
                 // Should not happen unless I've screwed up the pattern.
-                // Throw a runtime error.
-
                 throw new RuntimeException(ex);
             }
         }
@@ -150,9 +133,9 @@ public final class HTMLUtil {
         }
 
         for (; ;) {
-            String match;
-            String preMatch;
-            String postMatch;
+            final String match;
+            final String preMatch;
+            final String postMatch;
 
             if (!matcher.find())
                 break;
@@ -223,11 +206,7 @@ public final class HTMLUtil {
     public static String textFromHTML(final String s) {
         return convertCharacterEntities(stripHTMLTags(s));
     }
-
-    /*----------------------------------------------------------------------*\
-                              Private Methods
-    \*----------------------------------------------------------------------*/
-
+    
     /**
      * Load the resource bundle, if it hasn't already been loaded.
      * @return resource bundle

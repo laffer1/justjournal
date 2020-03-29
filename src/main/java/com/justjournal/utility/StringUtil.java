@@ -35,6 +35,9 @@ POSSIBILITY OF SUCH DAMAGE.
 package com.justjournal.utility;
 
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -48,12 +51,9 @@ import java.util.regex.Pattern;
  * <p/>
  * Sun Jun 01 2003
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class StringUtil {
-
-    private StringUtil() {
-        super();
-    }
-
+    
     /**
      * Deletes multiple instances of a specific character in a string
      *
