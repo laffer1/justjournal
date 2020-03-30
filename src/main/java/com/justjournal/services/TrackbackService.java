@@ -34,13 +34,13 @@ public class TrackbackService {
     private static final String END_MESSAGE = "</message>";
 
     private final TrackbackRepository trackbackDao;
-    
+
+    @Autowired
     private RestTemplate restTemplate;
 
     @Autowired
-    public TrackbackService(final TrackbackRepository trackbackDao, final RestTemplate restTemplate) {
+    public TrackbackService(final TrackbackRepository trackbackDao) {
         this.trackbackDao = trackbackDao;
-        this.restTemplate = restTemplate;
     }
     
     public boolean send(String pingUrl, String blogName, String permalink, String title, String excerpt) {

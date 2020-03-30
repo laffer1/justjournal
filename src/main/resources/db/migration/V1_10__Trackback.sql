@@ -1,1 +1,1 @@
-alter table entry add column `trackback` varchar(1024) NULL;
+alter table `entry` add column `trackback` VARCHAR(1024) DEFAULT NULL;
