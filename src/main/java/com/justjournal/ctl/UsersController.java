@@ -2225,6 +2225,7 @@ public class UsersController {
                     sb.append(ESAPI.encoder().encodeForHTML(trackback.getAuthorEmail()));
                     sb.append("</a>&gt;");
                 }
+                sb.append("<br/>").append(trackback.getUrl());
 
                 sb.append("<br/><span class=\"time\">");
                 sb.append(new DateTimeBean(trackback.getDate()).toPubDate());
