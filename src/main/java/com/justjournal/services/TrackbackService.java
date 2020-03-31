@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.thymeleaf.util.StringUtils;
 
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
@@ -71,6 +72,12 @@ public class TrackbackService {
 
     }
 
+    public TrackbackTo save(Trackback tb) {
+        final java.sql.Date now = new java.sql.Date(System.currentTimeMillis());
+        tb.setDate(now);
+        return trackbackRepository.save(tb).toTrackbackTo();
+    }
+
     protected List<Trackback> findByEntry(int entryId) {
         return trackbackRepository.findByEntryIdOrderByDate(entryId);
     }
@@ -86,5 +93,27 @@ public class TrackbackService {
 
     public void deleteById(int trackbackId) {
         trackbackRepository.deleteById(trackbackId);
+    }
+
+    /**
+     * A trackback response compatible with the trackback protocol.
+     * @param errorCode
+     * @param message
+     * @return
+     */
+    public String generateResponse(final int errorCode, final String message) {
+        final StringBuilder sb = new StringBuilder();
+        sb.append(XML_HEADER);
+        sb.append(RESPONSE);
+        sb.append(ERROR);
+        sb.append(errorCode);
+        sb.append(END_ERROR);
+        if (!StringUtils.isEmpty(message)) {
+            sb.append(MESSAGE);
+            sb.append(message);
+            sb.append(END_MESSAGE);
+        }
+        sb.append(END_RESPONSE);
+        return sb.toString();
     }
 }

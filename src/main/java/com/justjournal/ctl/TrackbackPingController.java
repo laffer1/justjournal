@@ -37,18 +37,19 @@ package com.justjournal.ctl;
 import com.justjournal.core.Constants;
 import com.justjournal.model.Trackback;
 import com.justjournal.model.TrackbackType;
-import com.justjournal.repository.TrackbackRepository;
+import com.justjournal.services.TrackbackService;
 import com.justjournal.utility.DNSUtil;
 import com.justjournal.utility.StringUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -56,83 +57,47 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Lucas Holt
  * @version $Id: TrackbackPing.java,v 1.5 2009/05/16 03:13:12 laffer1 Exp $ User: laffer1 Date: Aug 10, 2006 Time:
- *          8:25:03 PM
+ * 8:25:03 PM
  */
 @Slf4j
 @Controller
 @RequestMapping("/trackback")
 public class TrackbackPingController {
 
-    private static final String XML_HEADER =
-            "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
-    private static final String RESPONSE = "<response>";
-    private static final String END_RESPONSE = "</response>";
-    private static final String ERROR = "<error>";
-    private static final String END_ERROR = "</error>";
-    private static final String MESSAGE = "<message>";
-    private static final String END_MESSAGE = "</message>";
-
-    private final TrackbackRepository trackbackDao;
+    private final TrackbackService trackbackService;
 
     @Autowired
-    public TrackbackPingController(TrackbackRepository trackbackDao) {
-        Assert.notNull(trackbackDao, "TrackbackDao must not be null");
-        this.trackbackDao = trackbackDao;
+    public TrackbackPingController(final TrackbackService trackbackService) {
+        this.trackbackService = trackbackService;
     }
-
-    /**
-       * Read a parameter with the specified name, convert it to an int,
-       * and return it. Return the designated default value if the parameter
-       * doesn't exist or if it is an illegal integer format.
-       *
-       * @param request      Incoming Servlet Request
-       * @param paramName    Name of the request parameter.
-       * @param defaultValue The value to use in case of error
-       * @return default value on err or correct value
-       */
-
-      private static int getIntParameter(final HttpServletRequest request,
-                                        final String paramName,
-                                        final int defaultValue) {
-          final String paramString = request.getParameter(paramName);
-          int paramValue;
-          try {
-              paramValue = Integer.parseInt(paramString);
-          } catch (final NumberFormatException nfe) { // Handles null and bad format
-              paramValue = defaultValue;
-          }
-          return (paramValue);
-      }
 
     @GetMapping(produces = "text/xml")
     @ResponseBody
-    public String get(HttpServletRequest request, HttpServletResponse response) {
-        final StringBuilder sb = new StringBuilder();
-
+    public String get(@RequestParam("entryID") int entryId,
+                      @RequestParam("url") String url,
+                      @RequestParam(name = Constants.PARAM_TITLE, required = false) String title,
+                      // post-it format title
+                      @RequestParam(name = "name", required = false) String name,
+                      @RequestParam(name = "blog_name", required = false) String blogName,
+                      @RequestParam(name = "excerpt", required = false) String excerpt,
+                      @RequestParam(name = "comment", required = false) String comment,
+                      @RequestParam(name = "email", required = false) String email,
+                      HttpServletResponse response) {
         try {
             response.setContentType("text/xml; charset=utf-8");
-            Boolean istrackback = true;
+            boolean istrackback = true;
 
-            final int postId = getIntParameter(request, "entryID", 0);
-            if (postId > 1)
+            if (entryId < 1)
                 throw new IllegalArgumentException("entry id is missing");
 
-            String url = request.getParameter("url");
-            if (url == null || url.length() < 1) {
+            if (StringUtils.isNotEmpty(url)) {
                 throw new IllegalArgumentException("Missing required parameter \"url\"");
             }
-            String title = request.getParameter(Constants.PARAM_TITLE);
-            String name = request.getParameter("name");  // post-it format title
-            String blogName = request.getParameter("blog_name");
-            String excerpt = request.getParameter("excerpt");
-            String comment = request.getParameter("comment");
-            String email = request.getParameter("email");
 
             // todo ... validate trackback.
             // TODO: add pingback support which looks xmlrpc-ish
 
-
-            Trackback tb = new Trackback();
+            final Trackback tb = new Trackback();
             if (title != null && title.length() > 0)  // trackback
                 tb.setSubject(title);
             else if (name != null && name.length() > 0) {// post it
@@ -150,41 +115,20 @@ public class TrackbackPingController {
             if (StringUtil.isEmailValid(email) && DNSUtil.isEmailDomainValid(email))
                 tb.setAuthorEmail(email);
 
-            if (istrackback.booleanValue())
+            if (istrackback)
                 tb.setType(TrackbackType.trackback);
             else
-                tb.setType(TrackbackType.postit); // don't do pingbacks yet.  http://wellformedweb.org/story/9#ping_back_note
+                tb.setType(TrackbackType.postit); // don't do pingbacks yet. 
 
-            tb.setEntryId(postId);
+            tb.setEntryId(entryId);
 
-            final java.sql.Date now = new java.sql.Date(System.currentTimeMillis());
-            tb.setDate(now);
+            trackbackService.save(tb);
 
-            trackbackDao.save(tb);
-
-            sb.append(XML_HEADER);
-            sb.append(RESPONSE);
-            sb.append(ERROR);
-            sb.append(0);
-            sb.append(END_ERROR);
-            sb.append(END_RESPONSE);
-
+            return trackbackService.generateResponse(0, null);
         } catch (final Exception e) {
-            log.error("TrackbackPing exception: " + e.getMessage());
-            sb.delete(0, sb.length() - 1);
-            sb.append(XML_HEADER);
-            sb.append(RESPONSE);
-            sb.append(ERROR);
-            sb.append(1);
-            sb.append(END_ERROR);
-            sb.append(MESSAGE);
-            sb.append(e.getMessage());
-            sb.append(END_MESSAGE);
-            sb.append(END_RESPONSE);
-
-            response.setStatus(500);
+            log.error("TrackbackPing failed ", e);
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            return trackbackService.generateResponse(1, e.getMessage());
         }
-
-        return sb.toString();
     }
 }
