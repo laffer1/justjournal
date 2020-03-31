@@ -2156,13 +2156,13 @@ public class UsersController {
             sb.append("<a href=\"/#!/comment/").append(o.getId()).append("\" title=\"Add Comment\">Add Comment</a></div>\n");
 
             if (!comments.isEmpty())
-                   sb.append("<h2>Comments</h2>");
+                   sb.append("<h3>Comments</h3>");
             for (final Comment co : comments) {
                 sb.append("<div class=\"comment\">\n");
                 sb.append("<div class=\"chead\">\n");
-                sb.append("<h3><span class=\"subject\">");
+                sb.append("<h4><span class=\"subject\">");
                 sb.append(Xml.cleanString(co.getSubject()));
-                sb.append("</span></h3>\n");
+                sb.append("</span></h4>\n");
                 sb.append("<img src=\"/static/images/userclass_16.png\" alt=\"user\"/>");
                 sb.append("<a href=\"../users/");
                 sb.append(co.getUser().getUsername());
@@ -2208,13 +2208,13 @@ public class UsersController {
             // trackback
             List<TrackbackTo> trackbacks = trackbackService.getByEntry(o.getId());
             if (!trackbacks.isEmpty())
-                sb.append("<h2>Trackbacks</h2>");
+                sb.append("<h3>Trackbacks</h3>");
             for (TrackbackTo trackback : trackbacks) {
                 sb.append("<div class=\"trackback\">\n");
                 sb.append("<div class=\"trackbackhead\">\n");
-                sb.append("<h3><span class=\"subject\">");
+                sb.append("<h4><span class=\"subject\">");
                 sb.append(ESAPI.encoder().encodeForHTML(trackback.getSubject()));
-                sb.append("</span></h3>\n");
+                sb.append("</span></h4>\n");
 
                 if (StringUtils.isNotBlank(trackback.getAuthorName()))
                     sb.append(ESAPI.encoder().encodeForHTML(trackback.getAuthorName()));
