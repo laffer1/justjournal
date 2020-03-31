@@ -33,15 +33,41 @@ import com.justjournal.atom.AtomFeed;
 import com.justjournal.core.Constants;
 import com.justjournal.core.UserContext;
 import com.justjournal.exception.ServiceException;
-import com.justjournal.model.*;
+import com.justjournal.model.Comment;
+import com.justjournal.model.DateTimeBean;
+import com.justjournal.model.Entry;
+import com.justjournal.model.EntryTag;
+import com.justjournal.model.Favorite;
+import com.justjournal.model.FormatType;
+import com.justjournal.model.Friend;
+import com.justjournal.model.Journal;
+import com.justjournal.model.MoodThemeData;
+import com.justjournal.model.RssSubscription;
+import com.justjournal.model.User;
+import com.justjournal.model.api.TrackbackTo;
 import com.justjournal.model.search.BlogEntry;
-import com.justjournal.repository.*;
+import com.justjournal.repository.CommentRepository;
+import com.justjournal.repository.EntryRepository;
+import com.justjournal.repository.FavoriteRepository;
+import com.justjournal.repository.MoodThemeDataRepository;
+import com.justjournal.repository.RssSubscriptionsRepository;
+import com.justjournal.repository.SecurityRepository;
+import com.justjournal.repository.UserPicRepository;
+import com.justjournal.repository.UserRepository;
 import com.justjournal.rss.CachedHeadlineBean;
 import com.justjournal.rss.Rss;
-import com.justjournal.services.*;
+import com.justjournal.services.BlogSearchService;
+import com.justjournal.services.EntryService;
+import com.justjournal.services.MarkdownService;
+import com.justjournal.services.PdfFormatService;
+import com.justjournal.services.RdfFormatService;
+import com.justjournal.services.TrackbackService;
+import com.justjournal.services.UserImageService;
 import com.justjournal.utility.StringUtil;
 import com.justjournal.utility.Xml;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
+import org.owasp.esapi.ESAPI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -52,7 +78,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -61,7 +91,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Iterator;
+import java.util.List;
+import java.util.TimeZone;
 
 import static com.justjournal.core.Constants.HEADER_PRAGMA;
 
@@ -121,6 +158,9 @@ public class UsersController {
     private final BlogSearchService blogSearchService;
 
     private final Rss rss;
+
+    @Autowired
+    private TrackbackService trackbackService;
 
     @Autowired
     public UsersController(final EntryService entryService,
@@ -2063,9 +2103,6 @@ public class UsersController {
                 sb.append(o.getId());
                 sb.append("\" data-layout=\"button_count\">");
                 sb.append("\t</div> ");
-
-                // google+
-                sb.append("<div class=\"g-plus\" data-action=\"share\"></div>");
             }
 
             sb.append("</div></td>");
@@ -2118,6 +2155,8 @@ public class UsersController {
             sb.append("<div class=\"rightflt\">");
             sb.append("<a href=\"/#!/comment/").append(o.getId()).append("\" title=\"Add Comment\">Add Comment</a></div>\n");
 
+            if (!comments.isEmpty())
+                   sb.append("<h2>Comments</h2>");
             for (final Comment co : comments) {
                 sb.append("<div class=\"comment\">\n");
                 sb.append("<div class=\"chead\">\n");
@@ -2165,6 +2204,38 @@ public class UsersController {
                 sb.append("\n</div>\n");
                 
             }
+
+            // trackback
+            List<TrackbackTo> trackbacks = trackbackService.getByEntry(o.getId());
+            if (!trackbacks.isEmpty())
+                sb.append("<h2>Trackbacks</h2>");
+            for (TrackbackTo trackback : trackbacks) {
+                sb.append("<div class=\"trackback\">\n");
+                sb.append("<div class=\"trackbackhead\">\n");
+                sb.append("<h3><span class=\"subject\">");
+                sb.append(ESAPI.encoder().encodeForHTML(trackback.getSubject()));
+                sb.append("</span></h3>\n");
+
+                if (StringUtils.isNotBlank(trackback.getAuthorName()))
+                    sb.append(ESAPI.encoder().encodeForHTML(trackback.getAuthorName()));
+                if (StringUtils.isNotBlank(trackback.getAuthorEmail())) {
+                    sb.append("&lt;<a href=\"mailto:");
+                    sb.append(ESAPI.encoder().encodeForHTMLAttribute(trackback.getAuthorEmail()));
+                    sb.append("\">");
+                    sb.append(ESAPI.encoder().encodeForHTML(trackback.getAuthorEmail()));
+                    sb.append("</a>&gt;");
+                }
+
+                sb.append("<br/><span class=\"time\">");
+                sb.append(new DateTimeBean(trackback.getDate()).toPubDate());
+                sb.append("</span>\n");
+                sb.append("</div>\n");
+                
+                sb.append("<p>");
+                sb.append(ESAPI.encoder().encodeForHTML(trackback.getBody()));
+                sb.append("</p>");
+            }
+            sb.append("\n</div>\n");
         }
 
         sb.append("\t\t</div></article>");

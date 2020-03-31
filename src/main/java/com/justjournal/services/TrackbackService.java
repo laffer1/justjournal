@@ -1,5 +1,7 @@
 package com.justjournal.services;
 
+import com.justjournal.model.Trackback;
+import com.justjournal.model.api.TrackbackTo;
 import com.justjournal.repository.TrackbackRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.owasp.esapi.ESAPI;
@@ -14,6 +16,9 @@ import org.springframework.web.client.RestTemplate;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author Lucas Holt
@@ -30,14 +35,14 @@ public class TrackbackService {
     private static final String MESSAGE = "<message>";
     private static final String END_MESSAGE = "</message>";
 
-    private final TrackbackRepository trackbackDao;
+    private final TrackbackRepository trackbackRepository;
 
     @Autowired
     private RestTemplate restTemplate;
 
     @Autowired
-    public TrackbackService(final TrackbackRepository trackbackDao) {
-        this.trackbackDao = trackbackDao;
+    public TrackbackService(final TrackbackRepository trackbackRepository) {
+        this.trackbackRepository = trackbackRepository;
     }
 
     public boolean send(String pingUrl, String blogName, String permalink, String title, String excerpt) {
@@ -64,5 +69,22 @@ public class TrackbackService {
             return false;
         }
 
+    }
+
+    protected List<Trackback> findByEntry(int entryId) {
+        return trackbackRepository.findByEntryIdOrderByDate(entryId);
+    }
+
+    public List<TrackbackTo> getByEntry(int entryId) {
+        return findByEntry(entryId).stream().map(Trackback::toTrackbackTo)
+                .collect(Collectors.toList());
+    }
+
+    public Optional<TrackbackTo> getById(int trackbackId) {
+        return trackbackRepository.findById(trackbackId).map(Trackback::toTrackbackTo);
+    }
+
+    public void deleteById(int trackbackId) {
+        trackbackRepository.deleteById(trackbackId);
     }
 }

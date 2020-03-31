@@ -38,6 +38,8 @@ import com.justjournal.model.Trackback;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * Manipulate trackback storage
  *
@@ -45,4 +47,6 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface TrackbackRepository extends PagingAndSortingRepository<Trackback, Integer> {
+
+    List<Trackback> findByEntryIdOrderByDate(int entryId);
 }

@@ -1,42 +1,9 @@
-/*
-Copyright (c) 2008 Lucas Holt
-All rights reserved.
+package com.justjournal.model.api;
 
-Redistribution and use in source and binary forms, with or without modification, are
-permitted provided that the following conditions are met:
-
-  Redistributions of source code must retain the above copyright notice, this list of
-  conditions and the following disclaimer.
-
-  Redistributions in binary form must reproduce the above copyright notice, this
-  list of conditions and the following disclaimer in the documentation and/or other
-  materials provided with the distribution.
-
-  Neither the name of the Just Journal nor the names of its contributors
-  may be used to endorse or promote products derived from this software without
-  specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
-CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
-INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
-MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
-CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
-GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
-BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
-OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
-TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
-OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-POSSIBILITY OF SUCH DAMAGE.
-*/
-
-package com.justjournal.model;
-
-import com.justjournal.model.api.CommentTo;
-import com.justjournal.model.api.TrackbackTo;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.justjournal.model.TrackbackType;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -57,45 +24,34 @@ import java.util.Date;
  *
  * @author Lucas Holt
  */
-@NoArgsConstructor
-@Entity
-@Table(name = "trackback")
-public class Trackback implements Serializable {
-    private static final long serialVersionUID = 1249662473110605504L;
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+public class TrackbackTo implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private int id;
 
-    @Column(name = "eid")
     private int entryId = 0;
 
-    @Column(name = "date")
-    @Temporal(value = TemporalType.DATE)
+    @JsonIgnore
     private Date date = new Date();
 
-    @Column(name = "subject", length = 150)
     private String subject = null;
 
-    @Lob
     private String body = null;
 
-    @Column(name = "author_email", length = 150)
     private String authorEmail = null;
 
-    @Column(name = "author_name", length = 50)
     private String authorName = null;
 
-    @Column(name = "blogname", length = 150)
     private String blogName = null;
 
-    @Column(name = "url", length = 150)
     private String url = null;
 
-    @Column(name = "type", length = 10)
-    @Enumerated(EnumType.STRING)
     private TrackbackType type = null;
+
+    @JsonCreator
+    public TrackbackTo() {
+        super();
+    }
 
     public String getUrl() {
         return url;
@@ -155,7 +111,7 @@ public class Trackback implements Serializable {
 
     public void setBlogName(String blogName) {
         if (blogName.length() == 0)
-            this.blogName = "";  // TODO: Hardcode something like subjects have?
+            this.blogName = ""; 
         else
             this.blogName = blogName;
     }
@@ -201,19 +157,5 @@ public class Trackback implements Serializable {
         this.type = type;
     }
 
-    public TrackbackTo toTrackbackTo() {
-        final TrackbackTo trackbackTo = new TrackbackTo();
-        trackbackTo.setBody(getBody());
-        trackbackTo.setDate(getDate());
-        trackbackTo.setSubject(getSubject());
-        trackbackTo.setId(getId());
-        trackbackTo.setAuthorEmail(getAuthorEmail());
-        trackbackTo.setAuthorName(getAuthorName());
-        trackbackTo.setBlogName(getBlogName());
-        trackbackTo.setEntryId(getEntryId());
-        trackbackTo.setType(getType());
-
-        return trackbackTo;
-    }
-
 }
+
