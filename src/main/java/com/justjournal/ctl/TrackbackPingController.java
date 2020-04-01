@@ -56,8 +56,6 @@ import javax.servlet.http.HttpServletResponse;
  * Trackback and Post-IT Pings inbound http://wellformedweb.org/story/9
  *
  * @author Lucas Holt
- * @version $Id: TrackbackPing.java,v 1.5 2009/05/16 03:13:12 laffer1 Exp $ User: laffer1 Date: Aug 10, 2006 Time:
- * 8:25:03 PM
  */
 @Slf4j
 @Controller
@@ -90,7 +88,7 @@ public class TrackbackPingController {
             if (entryId < 1)
                 throw new IllegalArgumentException("entry id is missing");
 
-            if (StringUtils.isNotEmpty(url)) {
+            if (StringUtils.isEmpty(url)) {
                 throw new IllegalArgumentException("Missing required parameter \"url\"");
             }
 
@@ -98,16 +96,16 @@ public class TrackbackPingController {
             // TODO: add pingback support which looks xmlrpc-ish
 
             final Trackback tb = new Trackback();
-            if (title != null && title.length() > 0)  // trackback
+            if (StringUtils.isNotEmpty(title))  // trackback
                 tb.setSubject(title);
-            else if (name != null && name.length() > 0) {// post it
+            else if (StringUtils.isNotEmpty(name)) {// post it
                 tb.setSubject(name);
                 istrackback = false;
             }
 
-            if (excerpt != null && excerpt.length() > 0)
+            if (StringUtils.isNotEmpty(excerpt))
                 tb.setBody(excerpt);
-            else if (comment != null && comment.length() > 0) {
+            else if (StringUtils.isNotEmpty(comment)) {
                 tb.setBlogName(blogName);
                 istrackback = false;
             }
@@ -121,6 +119,7 @@ public class TrackbackPingController {
                 tb.setType(TrackbackType.postit); // don't do pingbacks yet. 
 
             tb.setEntryId(entryId);
+            tb.setUrl(url);
 
             trackbackService.save(tb);
 
