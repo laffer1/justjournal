@@ -88,7 +88,7 @@ public class TrackbackPingController {
             if (entryId < 1)
                 throw new IllegalArgumentException("entry id is missing");
 
-            if (StringUtils.isEmpty(url)) {
+            if (StringUtils.isEmpty(url) || !DNSUtil.isUrlDomainValid(url)) {
                 throw new IllegalArgumentException("Missing required parameter \"url\"");
             }
 

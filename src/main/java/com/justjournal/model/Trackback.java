@@ -125,8 +125,7 @@ public class Trackback implements Serializable {
 
     public void setEntryId(int entryId) {
         if (entryId < 0)
-            throw new IllegalArgumentException("Illegal eid: " +
-                    entryId);
+            throw new IllegalArgumentException("Illegal eid: " + entryId);
         this.entryId = entryId;
     }
 
@@ -143,7 +142,7 @@ public class Trackback implements Serializable {
     }
 
     public void setSubject(String subject) {
-        if (subject.length() == 0)
+        if (subject == null || subject.isEmpty())
             this.subject = "(no subject)";
         else
             this.subject = subject;
@@ -154,8 +153,8 @@ public class Trackback implements Serializable {
     }
 
     public void setBlogName(String blogName) {
-        if (blogName.length() == 0)
-            this.blogName = "";  // TODO: Hardcode something like subjects have?
+        if (blogName == null)
+            this.blogName = "";
         else
             this.blogName = blogName;
     }

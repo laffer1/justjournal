@@ -29,7 +29,6 @@ package com.justjournal;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.owasp.esapi.ESAPI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
@@ -38,11 +37,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Collections;
-import java.util.HashMap;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -336,6 +333,12 @@ public class AppTests {
     }
 
     @Test
+    public void trackbackPingInvalid2() throws Exception {
+        mockMvc.perform(get("/trackback/?url="))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
     public void trackbackPing() throws Exception {
         LinkedMultiValueMap<String, String> requestParams = new LinkedMultiValueMap<>();
         requestParams.put("entryID", Collections.singletonList("1"));
@@ -348,7 +351,8 @@ public class AppTests {
                 .accept(MediaType.TEXT_XML)
                 .contentType(MediaType.TEXT_XML))
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith("text/xml;charset=UTF-8"));;
+                .andExpect(content().contentTypeCompatibleWith("text/xml;charset=UTF-8"));
+        ;
     }
 
     @Test
@@ -356,7 +360,7 @@ public class AppTests {
         LinkedMultiValueMap<String, String> requestParams = new LinkedMultiValueMap<>();
         requestParams.put("entryID", Collections.singletonList("1"));
         requestParams.put("title", Collections.singletonList("my title"));
-        requestParams.put("url", Collections.singletonList("http://example.com/bar"));
+        requestParams.put("url", Collections.singletonList("http://example.notarealdomainnameatallandshouldntresolve.com/bar"));
         requestParams.put("excerpt", Collections.singletonList("a cool blog"));
 
         mockMvc.perform(get("/trackback/")
@@ -364,42 +368,45 @@ public class AppTests {
                 .accept(MediaType.TEXT_XML)
                 .contentType(MediaType.TEXT_XML))
                 .andExpect(status().is5xxServerError())
-                .andExpect(content().contentTypeCompatibleWith("text/xml;charset=UTF-8"));;
+                .andExpect(content().contentTypeCompatibleWith("text/xml;charset=UTF-8"));
+        ;
     }
 
     @Test
     public void trackbackPingPostIt() throws Exception {
         LinkedMultiValueMap<String, String> requestParams = new LinkedMultiValueMap<>();
-               requestParams.put("entryID", Collections.singletonList("1"));
-               requestParams.put("name", Collections.singletonList("my title"));
-               requestParams.put("email", Collections.singletonList("test@example.com"));
-               requestParams.put("url", Collections.singletonList("http://justjournal.com/bar"));
-               requestParams.put("excerpt", Collections.singletonList("a cool blog"));
-               requestParams.put("blog_name", Collections.singletonList("blog_name"));
+        requestParams.put("entryID", Collections.singletonList("1"));
+        requestParams.put("name", Collections.singletonList("my title"));
+        requestParams.put("email", Collections.singletonList("test@example.com"));
+        requestParams.put("url", Collections.singletonList("http://justjournal.com/bar"));
+        requestParams.put("excerpt", Collections.singletonList("a cool blog"));
+        requestParams.put("blog_name", Collections.singletonList("blog_name"));
 
         mockMvc.perform(get("/trackback/")
                 .queryParams(requestParams)
                 .accept(MediaType.TEXT_XML)
                 .contentType(MediaType.TEXT_XML))
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith("text/xml;charset=UTF-8"));;
+                .andExpect(content().contentTypeCompatibleWith("text/xml;charset=UTF-8"));
+        ;
     }
 
     @Test
-      public void trackbackPingPostItWithIllegalUrl() throws Exception {
-          LinkedMultiValueMap<String, String> requestParams = new LinkedMultiValueMap<>();
-                 requestParams.put("entryID", Collections.singletonList("1"));
-                 requestParams.put("name", Collections.singletonList("my title"));
-                 requestParams.put("email", Collections.singletonList("test@example.com"));
-                 requestParams.put("url", Collections.singletonList("http://example.com/bar"));
-                 requestParams.put("excerpt", Collections.singletonList("a cool blog"));
-                 requestParams.put("blog_name", Collections.singletonList("blog_name"));
+    public void trackbackPingPostItWithIllegalUrl() throws Exception {
+        LinkedMultiValueMap<String, String> requestParams = new LinkedMultiValueMap<>();
+        requestParams.put("entryID", Collections.singletonList("1"));
+        requestParams.put("name", Collections.singletonList("my title"));
+        requestParams.put("email", Collections.singletonList("test@example.com"));
+        requestParams.put("url", Collections.singletonList("http://example.notarealdomainnameatallandshouldntresolve.com/bar"));
+        requestParams.put("excerpt", Collections.singletonList("a cool blog"));
+        requestParams.put("blog_name", Collections.singletonList("blog_name"));
 
-          mockMvc.perform(get("/trackback/")
-                  .queryParams(requestParams)
-                  .accept(MediaType.TEXT_XML)
-                  .contentType(MediaType.TEXT_XML))
-                  .andExpect(status().is5xxServerError())
-                  .andExpect(content().contentTypeCompatibleWith("text/xml;charset=UTF-8"));;
-      }
+        mockMvc.perform(get("/trackback/")
+                .queryParams(requestParams)
+                .accept(MediaType.TEXT_XML)
+                .contentType(MediaType.TEXT_XML))
+                .andExpect(status().is5xxServerError())
+                .andExpect(content().contentTypeCompatibleWith("text/xml;charset=UTF-8"));
+        ;
+    }
 }

@@ -110,7 +110,7 @@ public class TrackbackTo implements Serializable {
     }
 
     public void setBlogName(String blogName) {
-        if (blogName.length() == 0)
+        if (blogName == null)
             this.blogName = ""; 
         else
             this.blogName = blogName;
