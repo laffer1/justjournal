@@ -84,6 +84,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.justjournal.core.Constants.*;
@@ -368,10 +369,15 @@ public class EntryController {
 
         if (StringUtils.isNotBlank(entryTo.getTrackback())) {
             try {
-                String permalink = settings.getBaseUri() + PATH_USERS + user.getUsername() + PATH_ENTRY + saved.getId();
-                trackbackService.send(entryTo.getTrackback(),
-                        user.getJournals().stream().findFirst().get().getName(),
+                Optional<String> html = trackbackService.getHtmlDocument(entryTo.getTrackback());
+                if (html.isPresent()) {
+                    Optional<String> url = trackbackService.parseTrackbackUrl(html.get());
+                    if (url.isPresent()) {
+                        String permalink = settings.getBaseUri() + PATH_USERS + user.getUsername() + PATH_ENTRY + saved.getId();
+                        trackbackService.send(url.get(), user.getJournals().stream().findFirst().get().getName(),
                         permalink, entryTo.getSubject(), entryTo.getBody());
+                    }
+                }
             } catch (final Exception e) {
                 log.error("Could not save trackback on entry {}", saved.getId(), e);
             }

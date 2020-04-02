@@ -352,7 +352,6 @@ public class AppTests {
                 .contentType(MediaType.TEXT_XML))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith("text/xml;charset=UTF-8"));
-        ;
     }
 
     @Test
@@ -369,7 +368,6 @@ public class AppTests {
                 .contentType(MediaType.TEXT_XML))
                 .andExpect(status().is5xxServerError())
                 .andExpect(content().contentTypeCompatibleWith("text/xml;charset=UTF-8"));
-        ;
     }
 
     @Test
@@ -388,7 +386,6 @@ public class AppTests {
                 .contentType(MediaType.TEXT_XML))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith("text/xml;charset=UTF-8"));
-        ;
     }
 
     @Test
@@ -407,6 +404,5 @@ public class AppTests {
                 .contentType(MediaType.TEXT_XML))
                 .andExpect(status().is5xxServerError())
                 .andExpect(content().contentTypeCompatibleWith("text/xml;charset=UTF-8"));
-        ;
     }
 }

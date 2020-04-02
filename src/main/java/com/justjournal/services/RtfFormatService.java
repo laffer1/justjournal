@@ -14,7 +14,7 @@ import java.io.ByteArrayOutputStream;
  */
 @Slf4j
 @Service
-public class RdfFormatService extends AbstractFormatService {
+public class RtfFormatService extends AbstractFormatService {
     public ByteArrayOutputStream generate(final UserContext userContext) throws ServiceException {
         final Document document = new Document();
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();

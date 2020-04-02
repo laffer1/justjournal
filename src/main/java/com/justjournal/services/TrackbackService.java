@@ -8,6 +8,7 @@ import org.owasp.esapi.ESAPI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -16,9 +17,12 @@ import org.thymeleaf.util.StringUtils;
 
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -47,7 +51,6 @@ public class TrackbackService {
     }
 
     public boolean send(String pingUrl, String blogName, String permalink, String title, String excerpt) {
-
         try {
             final String cleanTitle = ESAPI.encoder().encodeForURL(title);
             final String cleanPermanentBlogEntryUrl = ESAPI.encoder().encodeForURL(permalink);
@@ -69,7 +72,26 @@ public class TrackbackService {
             log.error("Failed to perform trackback ping", me);
             return false;
         }
+    }
 
+    public Optional<String> parseTrackbackUrl(String input) {
+        final String pattern = "(((trackback:ping=[\\\"\\'])((https?)://(.*?)))[\\'\\\"\\s\\r\\n|,|$])";
+
+        final Pattern p = Pattern.compile(pattern);
+        final Matcher m = p.matcher(input);
+        if (m.groupCount() < 4)
+            return Optional.empty();
+        return Optional.ofNullable(m.group(4));
+    }
+
+    public Optional<String> getHtmlDocument(String url) {
+        ResponseEntity<String> result = restTemplate.getForEntity(url, String.class);
+
+        if (result.getStatusCode() == HttpStatus.OK) {
+            return Optional.ofNullable(result.getBody());
+        }
+
+        return Optional.empty();
     }
 
     public TrackbackTo save(Trackback tb) {

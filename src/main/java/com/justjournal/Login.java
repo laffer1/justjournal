@@ -244,7 +244,7 @@ public class Login {
 
             return user;
         } catch (final Exception e) {
-            log.error("Invalid password hash algorithm?", e);
+            log.error("Couldn't lookup user", e);
             throw new HashNotSupportedException();
         }
     }

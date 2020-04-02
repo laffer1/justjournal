@@ -60,7 +60,7 @@ import com.justjournal.services.BlogSearchService;
 import com.justjournal.services.EntryService;
 import com.justjournal.services.MarkdownService;
 import com.justjournal.services.PdfFormatService;
-import com.justjournal.services.RdfFormatService;
+import com.justjournal.services.RtfFormatService;
 import com.justjournal.services.TrackbackService;
 import com.justjournal.services.UserImageService;
 import com.justjournal.utility.StringUtil;
@@ -160,7 +160,13 @@ public class UsersController {
     private final Rss rss;
 
     @Autowired
+    private RtfFormatService rdfFormatService;
+
+    @Autowired
     private TrackbackService trackbackService;
+
+    @Autowired
+    private CachedHeadlineBean cachedHeadlineBean;
 
     @Autowired
     public UsersController(final EntryService entryService,
@@ -796,9 +802,6 @@ public class UsersController {
         }
     }
 
-    @Autowired
-    private RdfFormatService rdfFormatService;
-
     private void getRTF(final HttpServletResponse response, final UserContext uc) {
         try {
             final ByteArrayOutputStream baos = rdfFormatService.generate(uc);
@@ -817,8 +820,7 @@ public class UsersController {
         }
     }
 
-    @Autowired
-    private CachedHeadlineBean cachedHeadlineBean;
+
 
     private String getSubscriptions(final UserContext uc) {
         final StringBuilder sb = new StringBuilder();
@@ -1932,7 +1934,7 @@ public class UsersController {
             sb.append(Xml.cleanString(o.getSubject()));
             sb.append("</a></span></h3> ");
             sb.append(ENDL);
-
+            
             sb.append("<rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" \n");
             sb.append("xmlns:dc=\"http://purl.org/dc/elements/1.1/\" \n");
             sb.append("xmlns:trackback=\"http://madskills.com/public/xml/rss/module/trackback/\">\n");
@@ -1950,7 +1952,7 @@ public class UsersController {
             sb.append("\" dc:title=\"");
             sb.append(Xml.cleanString(o.getSubject()));
             sb.append("\" ");
-            sb.append("trackback:ping=\"http://www.justjournal.com/trackback?entryID=");
+            sb.append("trackback:ping=\"https://www.justjournal.com/trackback?entryID=");
             sb.append(o.getId());
             sb.append("\" />\n");
             sb.append("</rdf:RDF>\n");

@@ -34,8 +34,6 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal;
 
-import java.io.PrintWriter;
-
 /**
  * Prints out an error message in HTML.
  *

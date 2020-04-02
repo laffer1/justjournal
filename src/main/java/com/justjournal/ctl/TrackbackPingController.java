@@ -54,6 +54,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * Trackback and Post-IT Pings inbound http://wellformedweb.org/story/9
+ * http://archive.cweiske.de/trackback/trackback-1.2.html
  *
  * @author Lucas Holt
  */
@@ -106,7 +107,7 @@ public class TrackbackPingController {
             if (StringUtils.isNotEmpty(excerpt))
                 tb.setBody(excerpt);
             else if (StringUtils.isNotEmpty(comment)) {
-                tb.setBlogName(blogName);
+                tb.setBody(comment);
                 istrackback = false;
             }
 
@@ -116,8 +117,10 @@ public class TrackbackPingController {
             if (istrackback)
                 tb.setType(TrackbackType.trackback);
             else
-                tb.setType(TrackbackType.postit); // don't do pingbacks yet. 
+                tb.setType(TrackbackType.postit);
+            // don't do pingbacks yet.
 
+            tb.setBlogName(blogName);
             tb.setEntryId(entryId);
             tb.setUrl(url);
 
