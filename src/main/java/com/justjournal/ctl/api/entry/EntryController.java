@@ -145,7 +145,7 @@ public class EntryController {
     @GetMapping(value = "{username}/recent", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<Iterable<RecentEntry>> getRecentEntries(@PathVariable(PARAM_USERNAME) final String username,
-                                                                                            final HttpSession session) {
+                                                                  final HttpSession session) {
         final Flux<RecentEntry> entries;
         try {
             if (Login.isAuthenticated(session) && Login.isUserName(username)) {
@@ -261,9 +261,9 @@ public class EntryController {
     /**
      * Get all the blog entries for a user (public) /api/entry/username
      *
-     * @param username
-     * @param response
-     * @return
+     * @param username blog username
+     * @param response http response
+     * @return list of entries
      */
     @GetMapping(value = "{username}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
@@ -337,18 +337,18 @@ public class EntryController {
 
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            return ErrorHandler.modelError( ERR_INVALID_LOGIN);
+            return ErrorHandler.modelError(ERR_INVALID_LOGIN);
         }
 
         final User user = userRepository.findById(Login.currentLoginId(session)).orElse(null);
         if (user == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return ErrorHandler.modelError( "User not found");
+            return ErrorHandler.modelError("User not found");
         }
 
         if (entryTo.getBody() == null || entryTo.getBody().isEmpty()) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return ErrorHandler.modelError( "Entry does not contain a body.");
+            return ErrorHandler.modelError("Entry does not contain a body.");
         }
 
         final Entry entry = new Entry(entryTo);
@@ -362,26 +362,12 @@ public class EntryController {
 
         if (saved.getId() < 1) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            return ErrorHandler.modelError( "Could not save entry");
+            return ErrorHandler.modelError("Could not save entry");
         }
 
         entryService.applyTags(saved, entryTo.getTags());
 
-        if (StringUtils.isNotBlank(entryTo.getTrackback())) {
-            try {
-                Optional<String> html = trackbackService.getHtmlDocument(entryTo.getTrackback());
-                if (html.isPresent()) {
-                    Optional<String> url = trackbackService.parseTrackbackUrl(html.get());
-                    if (url.isPresent()) {
-                        String permalink = settings.getBaseUri() + PATH_USERS + user.getUsername() + PATH_ENTRY + saved.getId();
-                        trackbackService.send(url.get(), user.getJournals().stream().findFirst().get().getName(),
-                        permalink, entryTo.getSubject(), entryTo.getBody());
-                    }
-                }
-            } catch (final Exception e) {
-                log.error("Could not save trackback on entry {}", saved.getId(), e);
-            }
-        }
+        trackbackPing(entryTo, user, saved.getId());
 
         model.addAttribute("status", "ok");
         model.addAttribute("id", saved.getId());
@@ -390,6 +376,30 @@ public class EntryController {
         map.put("status", "ok");
         map.put("id", Integer.toString(saved.getId()));
         return map;
+    }
+
+    private void trackbackPing(EntryTo entryTo, User user, int entryId) {
+        if (StringUtils.isNotBlank(entryTo.getTrackback())) {
+            try {
+                Optional<String> html = trackbackService.getHtmlDocument(entryTo.getTrackback());
+                if (html.isPresent()) {
+                    Optional<String> url = trackbackService.parseTrackbackUrl(html.get());
+                    if (url.isPresent()) {
+                        String permalink = settings.getBaseUri() + PATH_USERS + user.getUsername() + PATH_ENTRY + entryId;
+
+                        Optional<Journal> journal = user.getJournals().stream().findFirst();
+
+                        if (journal.isPresent()) {
+                            trackbackService.send(url.get(), journal.get().getName(),
+                                    permalink, entryTo.getSubject(), entryTo.getBody());
+                            log.info("Performed trackback call on {}", url.get());
+                        }
+                    }
+                }
+            } catch (final Exception e) {
+                log.error("Could not save trackback on entry {}", entryId, e);
+            }
+        }
     }
 
     /**
