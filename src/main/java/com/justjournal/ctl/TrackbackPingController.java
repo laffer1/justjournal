@@ -34,9 +34,11 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.ctl;
 
-import com.justjournal.core.Constants;
+import com.justjournal.model.Entry;
 import com.justjournal.model.Trackback;
 import com.justjournal.model.TrackbackType;
+import com.justjournal.repository.EntryRepository;
+import com.justjournal.repository.cache.TrackBackIpRepository;
 import com.justjournal.services.TrackbackService;
 import com.justjournal.utility.DNSUtil;
 import com.justjournal.utility.StringUtil;
@@ -44,17 +46,21 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
+import java.time.Duration;
+import java.util.Optional;
 
 /**
- * Trackback and Post-IT Pings inbound http://wellformedweb.org/story/9
- * http://archive.cweiske.de/trackback/trackback-1.2.html
+ * Trackback and Post-IT Pings inbound http://wellformedweb.org/story/9 http://archive.cweiske.de/trackback/trackback-1.2.html
  *
  * @author Lucas Holt
  */
@@ -65,54 +71,82 @@ public class TrackbackPingController {
 
     private final TrackbackService trackbackService;
 
+    TrackBackIpRepository trackBackIpRepository;
+
     @Autowired
-    public TrackbackPingController(final TrackbackService trackbackService) {
+    EntryRepository entryRepository;
+
+    @Autowired
+    public TrackbackPingController(final TrackbackService trackbackService,
+                                   TrackBackIpRepository trackBackIpRepository) {
         this.trackbackService = trackbackService;
+        this.trackBackIpRepository = trackBackIpRepository;
     }
 
-    @GetMapping(produces = "text/xml")
+    @PostMapping(produces = "text/xml", consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
     @ResponseBody
-    public String get(@RequestParam("entryID") int entryId,
-                      @RequestParam("url") String url,
-                      @RequestParam(name = Constants.PARAM_TITLE, required = false) String title,
-                      // post-it format title
-                      @RequestParam(name = "name", required = false) String name,
-                      @RequestParam(name = "blog_name", required = false) String blogName,
-                      @RequestParam(name = "excerpt", required = false) String excerpt,
-                      @RequestParam(name = "comment", required = false) String comment,
-                      @RequestParam(name = "email", required = false) String email,
-                      HttpServletResponse response) {
+    public ResponseEntity<String> post(@RequestParam("entryID") int entryId,
+                                       TrackbackPingRequest trackbackPingRequest) {
         try {
-            response.setContentType("text/xml; charset=utf-8");
+            //response.setContentType("text/xml; charset=utf-8");
             boolean istrackback = true;
 
-            if (entryId < 1)
-                throw new IllegalArgumentException("entry id is missing");
+            if (entryId < 1) {
+                if (trackbackPingRequest.getEntryID() > 0) {
+                    entryId = trackbackPingRequest.getEntryID();
+                } else
+                    throw new IllegalArgumentException("entry id is missing");
+            }
 
-            if (StringUtils.isEmpty(url) || !DNSUtil.isUrlDomainValid(url)) {
+            if (StringUtils.isEmpty(trackbackPingRequest.getUrl()) ||
+                    !DNSUtil.isUrlDomainValid(trackbackPingRequest.getUrl())) {
                 throw new IllegalArgumentException("Missing required parameter \"url\"");
+            }
+
+            final String ip = com.justjournal.utility.RequestUtil.getRemoteIP();
+            if (trackBackIpRepository.getIpAddress(ip).blockOptional(Duration.ofMinutes(1)).isPresent()) {
+                log.warn("Multiple requests during timeout period from IP ADDRESS {} for TrackBack.", ip);
+                return ResponseEntity
+                        .status(HttpStatus.TOO_MANY_REQUESTS)
+                        .body(trackbackService.generateResponse(1, "Too many requests. Try again later."));
+            }
+            trackBackIpRepository.saveIpAddreess(ip).block(Duration.ofMinutes(1));
+
+            final Optional<Entry> entry = entryRepository.findById(entryId);
+            if (!entry.isPresent()) {
+                return ResponseEntity
+                        .status(HttpStatus.NOT_FOUND)
+                        .body(trackbackService.generateResponse(1, "Entry not found."));
+
+            }
+
+            if (!entry.get().getSecurity().getName().equalsIgnoreCase("public")) {
+                return ResponseEntity
+                        .status(HttpStatus.FORBIDDEN)
+                        .body(trackbackService.generateResponse(1, "Entry does not support TrackBack"));
             }
 
             // todo ... validate trackback.
             // TODO: add pingback support which looks xmlrpc-ish
 
             final Trackback tb = new Trackback();
-            if (StringUtils.isNotEmpty(title))  // trackback
-                tb.setSubject(title);
-            else if (StringUtils.isNotEmpty(name)) {// post it
-                tb.setSubject(name);
+            if (StringUtils.isNotEmpty(trackbackPingRequest.getTitle()))  // trackback
+                tb.setSubject(trackbackPingRequest.getTitle());
+            else if (StringUtils.isNotEmpty(trackbackPingRequest.getName())) {// post it
+                tb.setSubject(trackbackPingRequest.getName());
                 istrackback = false;
             }
 
-            if (StringUtils.isNotEmpty(excerpt))
-                tb.setBody(excerpt);
-            else if (StringUtils.isNotEmpty(comment)) {
-                tb.setBody(comment);
+            if (StringUtils.isNotEmpty(trackbackPingRequest.getExcerpt()))
+                tb.setBody(trackbackPingRequest.getExcerpt());
+            else if (StringUtils.isNotEmpty(trackbackPingRequest.getComment())) {
+                tb.setBody(trackbackPingRequest.getComment());
                 istrackback = false;
             }
 
-            if (StringUtil.isEmailValid(email) && DNSUtil.isEmailDomainValid(email))
-                tb.setAuthorEmail(email);
+            if (StringUtil.isEmailValid(trackbackPingRequest.getEmail()) &&
+                    DNSUtil.isEmailDomainValid(trackbackPingRequest.getEmail()))
+                tb.setAuthorEmail(trackbackPingRequest.getEmail());
 
             if (istrackback)
                 tb.setType(TrackbackType.trackback);
@@ -120,17 +154,23 @@ public class TrackbackPingController {
                 tb.setType(TrackbackType.postit);
             // don't do pingbacks yet.
 
-            tb.setBlogName(blogName);
+            tb.setBlogName(trackbackPingRequest.getBlog_name());
             tb.setEntryId(entryId);
-            tb.setUrl(url);
+            tb.setUrl(trackbackPingRequest.getUrl());
 
-            trackbackService.save(tb);
+            if (trackbackService.save(tb) == null) {
+                return ResponseEntity
+                        .status(HttpStatus.ALREADY_REPORTED)
+                        .body(trackbackService.generateResponse(1, "TrackBack entry exists"));
+            }
 
-            return trackbackService.generateResponse(0, null);
+            return ResponseEntity.ok(trackbackService.generateResponse(0, null));
         } catch (final Exception e) {
-            log.error("TrackbackPing failed ", e);
-            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            return trackbackService.generateResponse(1, e.getMessage());
+            log.error("TrackBack ping failed ", e);
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                    .body(trackbackService.generateResponse(1, e.getMessage()));
+
         }
     }
 }

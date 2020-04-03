@@ -45,6 +45,7 @@ import com.justjournal.repository.LocationRepository;
 import com.justjournal.repository.MoodRepository;
 import com.justjournal.repository.SecurityRepository;
 import com.justjournal.repository.UserRepository;
+import com.justjournal.repository.cache.RecentBlogsRepository;
 import com.justjournal.services.EntryService;
 import com.justjournal.services.TrackbackService;
 import lombok.extern.slf4j.Slf4j;
@@ -133,6 +134,9 @@ public class EntryController {
 
     @Autowired
     Settings settings;
+
+    @Autowired
+    private RecentBlogsRepository recentBlogsRepository;
 
     /**
      * Get the private list of recent blog entries. If logged in, get the private list otherwise only public entries.
@@ -327,7 +331,6 @@ public class EntryController {
      * @param response HttpServletResponse
      * @return status ok or error
      */
-    @CacheEvict(value = "recentblogs", allEntries = true)
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Map<String, String> post(@RequestBody final EntryTo entryTo,
@@ -372,6 +375,8 @@ public class EntryController {
         model.addAttribute("status", "ok");
         model.addAttribute("id", saved.getId());
 
+        recentBlogsRepository.delete().subscribe();
+
         final HashMap<String, String> map = new HashMap<>();
         map.put("status", "ok");
         map.put("id", Integer.toString(saved.getId()));
@@ -410,7 +415,6 @@ public class EntryController {
      * @param response HttpServletResponse
      * @return
      */
-    @CacheEvict(value = "recentblogs")
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Map<String, String> put(@RequestBody EntryTo entryTo, HttpSession session, HttpServletResponse response) {
@@ -431,13 +435,28 @@ public class EntryController {
         entry.setMood(getMood(entryTo.getMood()));
 
         final Entry entry2 = entryRepository.findById(entryTo.getEntryId()).orElse(null);
+        boolean trackback = false;
 
-        if (entry2 != null && entry2.getId() > 0 && entry2.getUser().getId() == user.getId()) {
-            entry.setId(entry2.getId());
+        if (entry2 != null) {
+            if (entry2.getId() > 0 && entry2.getUser().getId() == user.getId()) {
+                entry.setId(entry2.getId());
+            }
+
+            if (entry2.getTrackback() == null || !entry2.getTrackback().equals(entryTo.getTrackback())) {
+                entry.setTrackback(entryTo.getTrackback());
+                trackback = true;
+            }
+        } else {
+            entry.setTrackback(entryTo.getTrackback());
         }
 
         entry = entryRepository.save(entry);
         entryService.applyTags(entry, entryTo.getTags());
+
+        if (trackback)
+            trackbackPing(entryTo, user, entry.getId());
+
+        recentBlogsRepository.delete().subscribe();
 
         return Collections.singletonMap("id", Integer.toString(entry.getId()));
     }
@@ -460,7 +479,6 @@ public class EntryController {
      * @param response HttpServletResponse
      * @return errors or entry id if success
      */
-    @CacheEvict(value = "recentblogs")
     @DeleteMapping(value = "/{entryId}")
     @ResponseBody
     public Map<String, String> delete(@PathVariable(PARAM_ENTRY_ID) final int entryId,
@@ -485,6 +503,8 @@ public class EntryController {
                 final Iterable<Comment> comments = entry.getComments();
                 commentDao.deleteAll(comments);
                 entryRepository.deleteById(entryId);
+
+                recentBlogsRepository.delete().subscribe();
             } else {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 return ErrorHandler.modelError("Could not delete entry.");

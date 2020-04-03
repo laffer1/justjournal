@@ -75,7 +75,39 @@ public class TrackbackService {
     }
 
     public Optional<String> parseTrackbackUrl(String input) {
+        Optional<String> result = parseTrackbackUrlWithRdf(input);
+        if (result.isPresent())
+            return result;
+
+        return parseTrackbackUrlWithLinkTag(input);
+    }
+
+    /**
+     * Parse the RDF version
+     * @param input
+     * @return
+     */
+    public Optional<String> parseTrackbackUrlWithRdf(String input) {
         final String pattern = "(((trackback:ping=[\\\"\\'])((https?)://(.*?)))[\\'\\\"\\s\\r\\n|,|$])";
+
+        final Pattern p = Pattern.compile(pattern);
+        final Matcher m = p.matcher(input);
+        if (m.groupCount() < 4)
+            return Optional.empty();
+        return Optional.ofNullable(m.group(4));
+    }
+
+    /**
+     * 
+     * Works on one line but not mulitline like this:
+     *   <link rel="trackback"
+     *            type="application/x-www-form-urlencoded"
+     *            href="http://example.org/trackback-url" />
+     * @param input
+     * @return
+     */
+    public Optional<String> parseTrackbackUrlWithLinkTag(String input) {
+        final String pattern = "<\\s*link[\\s\\r\\n](rel=\"trackback\"|[\\s\\n\\r]?type=\"application\\/x-www-form-urlencoded\"|[^>](.*?)([\\s\\n\\r]?href=\"(.*?)\"))[\\s\\r\\n]*\\/?>";
 
         final Pattern p = Pattern.compile(pattern);
         final Matcher m = p.matcher(input);
@@ -95,6 +127,10 @@ public class TrackbackService {
     }
 
     public TrackbackTo save(Trackback tb) {
+        if (trackbackRepository.existsByEntryIdAndUrl(tb.getEntryId(), tb.getUrl())) {
+            return null;
+        }
+
         final java.sql.Date now = new java.sql.Date(System.currentTimeMillis());
         tb.setDate(now);
         return trackbackRepository.save(tb).toTrackbackTo();

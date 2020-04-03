@@ -25,11 +25,13 @@
  */
 package com.justjournal.ctl;
 
+import com.justjournal.core.CacheKeys;
 import com.justjournal.core.Settings;
 import com.justjournal.model.Entry;
 import com.justjournal.model.Security;
 import com.justjournal.repository.EntryRepository;
 import com.justjournal.repository.SecurityRepository;
+import com.justjournal.repository.cache.RecentBlogsRepository;
 import com.justjournal.rss.Rss;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +39,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,10 +47,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.justjournal.core.Constants.HEADER_CACHE_CONTROL;
 import static com.justjournal.core.Constants.HEADER_EXPIRES;
@@ -77,13 +82,19 @@ public class RecentBlogsController {
     @Autowired
     private Rss rss;
 
-    @Cacheable("recentblogs")
+    @Autowired
+    private RecentBlogsRepository recentBlogsRepository;
+
     @GetMapping(produces = MIME_TYPE_RSS)
     @ResponseBody
     public String get(final HttpServletResponse response) {
         response.setContentType(MIME_TYPE_RSS + ";charset=UTF-8");
         response.setDateHeader(HEADER_EXPIRES, System.currentTimeMillis() + 1000 * 60);
         response.setHeader(HEADER_CACHE_CONTROL, "max-age=60, private, proxy-revalidate");
+        
+        Optional<String> blogs = recentBlogsRepository.getBlogs().blockOptional(Duration.ofMinutes(1));
+        if (blogs.isPresent())
+            return blogs.get();
 
         // Create an RSS object, set the required
         // properties (title, description language, url)
@@ -130,16 +141,18 @@ public class RecentBlogsController {
             else
                 response.setDateHeader(HEADER_LAST_MODIFIED, System.currentTimeMillis());
 
-            return rss.toXml();
+            String result = rss.toXml();
+            recentBlogsRepository.setBlogs(result).subscribe();
+            return result;
         } catch (final Exception e) {
             // oops we goofed somewhere.  Its not in the original spec
             // how to handle error conditions with rss.
             // html back isn't good, but what do we do?
-            log.debug(e.getMessage(), e);
+            log.error("Could not generate recent blogs", e);
             try {
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             } catch (final IOException e1) {
-                log.debug(e1.getMessage(), e1);
+                log.error("Could not send error code for recentblogs", e1);
             }
         }
 

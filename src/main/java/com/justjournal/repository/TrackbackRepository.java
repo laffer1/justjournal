@@ -49,4 +49,8 @@ import java.util.List;
 public interface TrackbackRepository extends PagingAndSortingRepository<Trackback, Integer> {
 
     List<Trackback> findByEntryIdOrderByDate(int entryId);
+
+    List<Trackback> findByEntryIdAndUrlOrderByDate(int entryId, String url);
+
+    boolean existsByEntryIdAndUrl(int entryId, String url);
 }
