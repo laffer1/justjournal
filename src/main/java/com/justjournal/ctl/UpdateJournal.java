@@ -37,14 +37,26 @@ package com.justjournal.ctl;
 import com.justjournal.ErrorPage;
 import com.justjournal.Login;
 import com.justjournal.core.Settings;
-import com.justjournal.core.TrackbackOut;
-import com.justjournal.model.*;
-import com.justjournal.repository.*;
+import com.justjournal.model.DateTime;
+import com.justjournal.model.DateTimeBean;
+import com.justjournal.model.Entry;
+import com.justjournal.model.FormatType;
+import com.justjournal.model.Journal;
+import com.justjournal.model.PrefBool;
+import com.justjournal.model.User;
+import com.justjournal.model.api.EntryTo;
+import com.justjournal.repository.EntryRepository;
+import com.justjournal.repository.LocationRepository;
+import com.justjournal.repository.MoodRepository;
+import com.justjournal.repository.SecurityRepository;
+import com.justjournal.repository.UserRepository;
 import com.justjournal.services.RestPing;
+import com.justjournal.services.TrackbackService;
 import com.justjournal.utility.HTMLUtil;
 import com.justjournal.utility.Spelling;
 import com.justjournal.utility.StringUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -56,13 +68,13 @@ import javax.servlet.http.HttpSession;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.justjournal.core.Constants.PARAM_AUTO_FORMAT;
-import static com.justjournal.core.Constants.PARAM_DASHBOARD;
-import static com.justjournal.core.Constants.PARAM_MOBILE;
 import static com.justjournal.core.Constants.*;
 
 /**
@@ -106,6 +118,9 @@ public class UpdateJournal extends HttpServlet {
 
     @Autowired
     private Login webLogin;
+
+    @Autowired
+    private TrackbackService trackbackService;
 
     /**
      * Determine the type of client
@@ -471,7 +486,6 @@ public class UpdateJournal extends HttpServlet {
                 body = StringUtil.replace(body, '\'', "\\\'");
                 et.setBody(body);
 
-
                 // disable comments
                 if ((allowcomment.equals("checked")) || myclient == ClientType.dashboard || myclient == ClientType.mobile)
                     et.setAllowComments(PrefBool.Y);
@@ -484,7 +498,7 @@ public class UpdateJournal extends HttpServlet {
                 else
                     et.setEmailComments(PrefBool.N);
 
-
+                et.setTrackback(trackback);
             } catch (final IllegalArgumentException e1) {
                 if (myclient == ClientType.web)
                     ErrorPage.display("Input Error", e1.getMessage(), sb);
@@ -610,16 +624,10 @@ public class UpdateJournal extends HttpServlet {
                             rp.setUri(settings.getBaseUri() + PATH_USERS + userName);
                             rp.setChangesURL(settings.getBaseUri() + PATH_USERS + userName + "/rss");
                             rp.ping();
-                                                
-                            /* do trackback */
-                            if (trackback.length() > 0) {
-                                final Entry et2 = entryRepository.findById(et.getId()).orElse(null);
-                                if (et2 != null) {
-                                    final TrackbackOut tbout = new TrackbackOut(trackback,
-                                            settings.getBaseUri() + PATH_USERS + userName + "/entry/" + et2.getId(),
-                                            et.getSubject(), et.getBody(), journal.getName());
-                                    tbout.ping();
-                                }
+
+                            final Entry et2 = entryRepository.findById(et.getId()).orElse(null);
+                            if (et2 != null) {
+                                trackbackPing(et2.toEntryTo(), user, et2.getId());
                             }
                         }
                     }
@@ -630,7 +638,6 @@ public class UpdateJournal extends HttpServlet {
                 outstream.println(sb.toString());
                 outstream.flush();
             }
-
         } else {
             if (myclient == ClientType.web)
                 // We couldn't authenticate.  Tell the user.
@@ -647,6 +654,56 @@ public class UpdateJournal extends HttpServlet {
         }
 
     }
+
+    private void trackbackPing(EntryTo entryTo, User user, int entryId) {
+            if (StringUtils.isNotBlank(entryTo.getTrackback())) {
+                try {
+                    Optional<String> html = trackbackService.getHtmlDocument(entryTo.getTrackback());
+                    if (html.isPresent()) {
+                        Optional<String> url = trackbackService.parseTrackbackUrl(html.get());
+                        if (url.isPresent()) {
+                            String permalink = settings.getBaseUri() + PATH_USERS + user.getUsername() + PATH_ENTRY + entryId;
+
+                            Optional<Journal> journal = user.getJournals().stream().findFirst();
+
+                            if (journal.isPresent()) {
+                                trackbackService.send(url.get(), journal.get().getName(),
+                                        permalink, entryTo.getSubject(), entryTo.getBody());
+                                log.info("Performed trackback call on {}", url.get());
+                            }
+                        }
+                    }
+                } catch (final Exception e) {
+                    log.error("Could not save trackback on entry {}", entryId, e);
+                }
+            }
+
+            List<String> trackbackCandidates = HTMLUtil.getURIs(entryTo.getBody());
+            for (String tbUrl : trackbackCandidates) {
+                if (Objects.equals(tbUrl, entryTo.getTrackback()))
+                    continue;
+
+                try {
+                     Optional<String> html = trackbackService.getHtmlDocument(tbUrl);
+                     if (html.isPresent()) {
+                         Optional<String> url = trackbackService.parseTrackbackUrl(html.get());
+                         if (url.isPresent()) {
+                             String permalink = settings.getBaseUri() + PATH_USERS + user.getUsername() + PATH_ENTRY + entryId;
+
+                             Optional<Journal> journal = user.getJournals().stream().findFirst();
+
+                             if (journal.isPresent()) {
+                                 trackbackService.send(url.get(), journal.get().getName(),
+                                         permalink, entryTo.getSubject(), entryTo.getBody());
+                                 log.info("Performed trackback call on {}", url.get());
+                             }
+                         }
+                     }
+                 } catch (final Exception e) {
+                     log.error("Could not save trackback on entry {}", entryId, e);
+                 }
+            }
+        }
 
     /**
      * Handles the HTTP <code>GET</code> method.

@@ -48,6 +48,7 @@ import com.justjournal.repository.UserRepository;
 import com.justjournal.repository.cache.RecentBlogsRepository;
 import com.justjournal.services.EntryService;
 import com.justjournal.services.TrackbackService;
+import com.justjournal.utility.HTMLUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,7 +85,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -404,6 +407,32 @@ public class EntryController {
             } catch (final Exception e) {
                 log.error("Could not save trackback on entry {}", entryId, e);
             }
+        }
+
+        List<String> trackbackCandidates = HTMLUtil.getURIs(entryTo.getBody());
+        for (String tbUrl : trackbackCandidates) {
+            if (Objects.equals(tbUrl, entryTo.getTrackback()))
+                continue;
+            
+            try {
+                 Optional<String> html = trackbackService.getHtmlDocument(tbUrl);
+                 if (html.isPresent()) {
+                     Optional<String> url = trackbackService.parseTrackbackUrl(html.get());
+                     if (url.isPresent()) {
+                         String permalink = settings.getBaseUri() + PATH_USERS + user.getUsername() + PATH_ENTRY + entryId;
+
+                         Optional<Journal> journal = user.getJournals().stream().findFirst();
+
+                         if (journal.isPresent()) {
+                             trackbackService.send(url.get(), journal.get().getName(),
+                                     permalink, entryTo.getSubject(), entryTo.getBody());
+                             log.info("Performed trackback call on {}", url.get());
+                         }
+                     }
+                 }
+             } catch (final Exception e) {
+                 log.error("Could not save trackback on entry {}", entryId, e);
+             }
         }
     }
 

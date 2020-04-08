@@ -29,11 +29,12 @@ package com.justjournal.utility;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.LoggerFactory;
 import org.w3c.tidy.Tidy;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
@@ -61,7 +62,7 @@ public final class HTMLUtil {
      * For regular expression substitution. Instantiated first time it's needed.
      */
     private static Pattern entityPattern = null;
-    
+
 
     /**
      * Removes all HTML element tags from a string, leaving just the character data. This method does <b>not</b> touch
@@ -101,8 +102,7 @@ public final class HTMLUtil {
     }
 
     /**
-     * Converts all inline HTML character entities
-     * (c.f., <a href="http://www.w3.org/TR/REC-html40/sgml/entities.html">http://www.w3.org/TR/REC-html40/sgml/entities.html</a>)
+     * Converts all inline HTML character entities (c.f., <a href="http://www.w3.org/TR/REC-html40/sgml/entities.html">http://www.w3.org/TR/REC-html40/sgml/entities.html</a>)
      * to their Unicode character counterparts, if possible.
      *
      * @param s the string to convert
@@ -132,7 +132,7 @@ public final class HTMLUtil {
             matcher = entityPattern.matcher(s);
         }
 
-        for (; ;) {
+        for (; ; ) {
             final String match;
             final String preMatch;
             final String postMatch;
@@ -164,9 +164,7 @@ public final class HTMLUtil {
                             buf.append((char) cc);
                         else
                             buf.append("&#").append(match).append(";");
-                    }
-
-                    catch (final NumberFormatException ex) {
+                    } catch (final NumberFormatException ex) {
                         buf.append("&#").append(match).append(";");
                     }
                 }
@@ -206,9 +204,10 @@ public final class HTMLUtil {
     public static String textFromHTML(final String s) {
         return convertCharacterEntities(stripHTMLTags(s));
     }
-    
+
     /**
      * Load the resource bundle, if it hasn't already been loaded.
+     *
      * @return resource bundle
      */
     private static ResourceBundle getResourceBundle() {
@@ -234,7 +233,19 @@ public final class HTMLUtil {
 
         input = m.replaceAll("<a href=\"$2\">$2</a>");
         return input;
+    }
 
+    public static List<String> getURIs(String input) {
+        List<String> list = new ArrayList<>();
+        final String url2 = "(((ftp|https?)://(.*?))[\\s\\r\\n|,|$])";
+        final Pattern UrlRegex = Pattern.compile(url2);
+
+        final Matcher m = UrlRegex.matcher(input);
+
+        while (m.find()) {
+            list.add(m.group(2));
+        }
+        return list;
     }
 
     /**
@@ -315,8 +326,7 @@ public final class HTMLUtil {
             tidy.setWord2000(true);
             tidy.parse(bais, baos);
             output = baos.toString();
-        }
-        catch (final Exception e) {
+        } catch (final Exception e) {
             log.error(e.getMessage());
             output = input;  // if an error occurs, use the original input
         }

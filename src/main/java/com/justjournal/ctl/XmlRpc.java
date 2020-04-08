@@ -34,8 +34,8 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.ctl;
 
-import com.justjournal.services.MetaWeblog;
 import com.justjournal.services.Blogger;
+import com.justjournal.services.MetaWeblog;
 import redstone.xmlrpc.XmlRpcServlet;
 
 import javax.servlet.ServletConfig;
@@ -54,7 +54,8 @@ public final class XmlRpc extends XmlRpcServlet {
     public void init(final ServletConfig servletConfig) throws ServletException {
         super.init(servletConfig);
 
-        getXmlRpcServer().addInvocationHandler(BLOGGER, new Blogger());   // This is blogger 1.0 api which is no longer used by Google, but still popular with older blogging clients.
+        // This is blogger 1.0 api which is no longer used by Google, but still popular with older blogging clients.
+        getXmlRpcServer().addInvocationHandler(BLOGGER, new Blogger());
         getXmlRpcServer().addInvocationHandler(METAWEBLOG, new MetaWeblog());
     }
 }

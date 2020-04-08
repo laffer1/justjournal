@@ -2,7 +2,10 @@ package com.justjournal.utility;
 
 import org.junit.Test;
 
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 /**
  * @author Lucas Holt
@@ -43,5 +46,12 @@ public class HTMLUtilTests {
     public void testUriToLinkFtp() {
         String result = HTMLUtil.uriToLink("ftp://ftp.midnightbsd.org/ ");
         assertEquals("<a href=\"ftp://ftp.midnightbsd.org/\">ftp://ftp.midnightbsd.org/</a>", result);
+    }
+
+    @Test
+    public void testGetURIsSingle() {
+        List<String> result = HTMLUtil.getURIs("I am a url pattern https://www.justjournal.com/users/jjsite and i like it.");
+        assertFalse(result.isEmpty());
+        assertEquals("https://www.justjournal.com/users/jjsite", result.get(0));
     }
 }
