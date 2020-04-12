@@ -46,6 +46,7 @@ import reactor.core.publisher.Flux;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -74,8 +75,8 @@ public class TagsController {
      */
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Flux<Tag> getTags() {
-        return tagService.getTags();
+    public List<Tag> getTags() {
+        return tagService.getTags().collectList().block();
     }
 
     /**
