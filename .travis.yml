@@ -7,6 +7,7 @@ node_js: "4"
 services:
   - mysql
   - elasticsearch
+  - redis
 before_script:
   - npm install -g bower
   - echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config

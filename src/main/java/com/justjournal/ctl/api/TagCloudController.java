@@ -32,7 +32,6 @@ import com.justjournal.exception.ServiceException;
 import com.justjournal.services.TagService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -47,7 +46,6 @@ import java.util.Collection;
 import java.util.Comparator;
 
 import static com.justjournal.core.Constants.PARAM_USERNAME;
-
 /**
  * @author Lucas Holt
  */
@@ -63,7 +61,7 @@ public class TagCloudController {
         this.tagService = tagService;
     }
 
-    @GetMapping(value = "{username}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "{" + PARAM_USERNAME + "}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<Collection<Tag>> getTags(@PathVariable(PARAM_USERNAME) final String username)
             throws ServiceException {
