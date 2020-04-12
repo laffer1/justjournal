@@ -3,13 +3,18 @@ package com.justjournal.config;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.type.TypeBindings;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import com.justjournal.model.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,12 +25,16 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.connection.ReactiveRedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collection;
+import java.util.List;
 
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
@@ -53,6 +62,20 @@ public class CacheConfig {
     public ReactiveRedisConnectionFactory reactiveRedisConnectionFactory() {
         log.info(String.format("CacheConfig: Redis Host is %s and port is %d", hostname, port));
         return new LettuceConnectionFactory(hostname, port);
+    }
+
+    @Bean
+    public ReactiveRedisTemplate<String, Tag> reactiveRedisTemplateTag(ReactiveRedisConnectionFactory connectionFactory) {
+        Jackson2JsonRedisSerializer<Tag> valSerializer = new Jackson2JsonRedisSerializer<>(Tag.class);
+        valSerializer.setObjectMapper(objectMapper);
+
+        RedisSerializationContext.RedisSerializationContextBuilder<String,Tag> builder
+                = RedisSerializationContext.newSerializationContext(new StringRedisSerializer());
+
+        RedisSerializationContext<String,Tag> context = builder.hashValue(valSerializer)
+                .value(valSerializer).build();
+
+        return new ReactiveRedisTemplate<>(connectionFactory, context);
     }
 
     @Bean

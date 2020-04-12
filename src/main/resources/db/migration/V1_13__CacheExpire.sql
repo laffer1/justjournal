@@ -1,0 +1,1 @@
+alter table rss_cache add column `error_count` int NOT NULL default 0;

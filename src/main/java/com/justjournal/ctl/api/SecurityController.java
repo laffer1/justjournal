@@ -54,7 +54,7 @@ public class SecurityController {
         this.securityDao = securityDao;
     }
 
-    @Cacheable(value = "security", key = "id")
+   // @Cacheable(value = "security", key = "id")
     @GetMapping(value = "{id}", produces = APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<Security> getById(@PathVariable(PARAM_ID) final Integer id) {
@@ -65,7 +65,7 @@ public class SecurityController {
         return ResponseEntity.ok().eTag(Integer.toString(s.hashCode())).body(s);
     }
 
-    @Cacheable("security")
+ //   @Cacheable("security")
     @GetMapping(headers = Constants.HEADER_ACCEPT_ALL, produces = APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<List<Security>> getSecurityList() {

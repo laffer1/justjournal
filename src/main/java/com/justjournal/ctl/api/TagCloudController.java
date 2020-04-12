@@ -63,7 +63,6 @@ public class TagCloudController {
         this.tagService = tagService;
     }
 
-    @Cacheable(value = "tagcloud", key = "#username")
     @GetMapping(value = "{username}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<Collection<Tag>> getTags(@PathVariable(PARAM_USERNAME) final String username)

@@ -59,6 +59,8 @@ import java.util.List;
 @Profile("!test")
 public class RssCacheRefresh {
 
+    private static final int MAX_ERROR_FETCH = 5;
+
     @Autowired
     private RssCacheRepository rssCacheDao;
 
@@ -81,6 +83,10 @@ public class RssCacheRefresh {
                                 return Mono.fromCallable(() -> getRssDocument(cache));
                         } catch (final Exception e) {
                             log.error(e.getMessage(), e);
+                            cache.setErrorCount(cache.getErrorCount() + 1);
+                            if (cache.getErrorCount() > MAX_ERROR_FETCH)
+                                cache.setActive(false);
+                            rssCacheDao.saveAndFlush(cache);
                         }
                         return Mono.empty();
                     })

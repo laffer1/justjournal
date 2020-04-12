@@ -52,7 +52,7 @@ public class LocationController {
         this.locationDao = locationDao;
     }
 
-    @Cacheable(value = "location", key = "id")
+  //  @Cacheable(value = "location", key = "id")
     @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<Location> getById(@PathVariable("id") final Integer id) {
@@ -64,7 +64,7 @@ public class LocationController {
         return ResponseEntity.ok().eTag(Integer.toString(location.hashCode())).body(location);
     }
 
-    @Cacheable("location")
+  //  @Cacheable("location")
     @GetMapping(headers = Constants.HEADER_ACCEPT_ALL, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<List<Location>> getLocationList() {

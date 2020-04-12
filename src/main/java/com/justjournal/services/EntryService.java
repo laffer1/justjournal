@@ -52,6 +52,7 @@ import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -233,8 +234,7 @@ public class EntryService {
                     tags.put(t.getName(), tag);
                 }
             }
-
-            return Flux.fromIterable(tags.values());
+            return Flux.fromIterable(tags.values()).sort(Comparator.comparingLong(Tag::getCount));
         } catch (final Exception e) {
             log.error(e.getMessage());
             throw new ServiceException(e);

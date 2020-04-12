@@ -29,18 +29,27 @@ package com.justjournal.ctl.api;
 import com.justjournal.model.Tag;
 import com.justjournal.repository.EntryTagsRepository;
 import com.justjournal.repository.TagRepository;
+import com.justjournal.services.EntryService;
+import com.justjournal.services.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
 
+import java.time.Duration;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.justjournal.core.CacheKeys.TAG_KEY;
 import static com.justjournal.core.Constants.PARAM_ID;
 
 /**
@@ -52,14 +61,10 @@ import static com.justjournal.core.Constants.PARAM_ID;
 @RequestMapping("/api/tags")
 public class TagsController {
 
-    private final TagRepository tagDao;
+    private final TagService tagService;
 
-    private final EntryTagsRepository entryTagsRepository;
-
-    @Autowired
-    public TagsController(final TagRepository tagDao, final EntryTagsRepository entryTagsRepository) {
-        this.tagDao = tagDao;
-        this.entryTagsRepository = entryTagsRepository;
+    public TagsController(final TagService tagService) {
+        this.tagService = tagService;
     }
 
     /**
@@ -67,25 +72,10 @@ public class TagsController {
      *
      * @return tag list
      */
-    @Cacheable("tags")
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<Collection<Tag>> getTags() {
-
-        final Map<String, Tag> tags = new HashMap<>();
-
-        final Iterable<Tag> tagList = tagDao.findAll();
-        for (final Tag t : tagList) {
-            if (!tags.containsKey(t.getName())) {
-                final long count = entryTagsRepository.countByTag(t);
-                t.setCount(count);
-                tags.put(t.getName(), t);
-            }
-        }
-
-        return ResponseEntity.ok()
-                .eTag(Integer.toString(tags.values().hashCode()))
-                .body(tags.values());
+    public Flux<Tag> getTags() {
+        return tagService.getTags();
     }
 
     /**
@@ -94,12 +84,10 @@ public class TagsController {
      * @param id tag id
      * @return tag list
      */
-    @Cacheable(value = "tags", key = "#id")
     @GetMapping(value = "/api/tags/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<Tag> getById(@PathVariable(PARAM_ID) final Integer id) {
-
-        final Optional<Tag> tag = tagDao.findById(id);
+        final Optional<Tag> tag = tagService.getTag(id);
 
         return tag.map(value -> ResponseEntity.ok()
                 .eTag(Integer.toString(value.hashCode()))

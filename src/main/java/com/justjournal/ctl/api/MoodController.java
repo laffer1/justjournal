@@ -66,7 +66,7 @@ public class MoodController {
         this.moodDao = moodDao;
     }
 
-    @Cacheable(value = "mood", key = "id")
+  //  @Cacheable(value = "mood", key = "id")
     @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<Mood> getById(@PathVariable(PARAM_ID) final Integer id) {
@@ -82,7 +82,7 @@ public class MoodController {
      *
      * @return mood list
      */
-    @Cacheable("mood")
+ //   @Cacheable("mood")
     @GetMapping(headers = Constants.HEADER_ACCEPT_ALL, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<List<Mood>> getMoodList() {

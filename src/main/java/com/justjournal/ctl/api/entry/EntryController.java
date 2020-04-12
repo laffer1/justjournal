@@ -373,7 +373,10 @@ public class EntryController {
 
         entryService.applyTags(saved, entryTo.getTags());
 
-        trackbackPing(entryTo, user, saved.getId());
+        // only ping if it's public
+        if (entry.getSecurity().getId() == 2) {
+            trackbackPing(entryTo, user, saved.getId());
+        }
 
         model.addAttribute("status", "ok");
         model.addAttribute("id", saved.getId());
@@ -464,7 +467,6 @@ public class EntryController {
         entry.setMood(getMood(entryTo.getMood()));
 
         final Entry entry2 = entryRepository.findById(entryTo.getEntryId()).orElse(null);
-        boolean trackback = false;
 
         if (entry2 != null) {
             if (entry2.getId() > 0 && entry2.getUser().getId() == user.getId()) {
@@ -473,7 +475,6 @@ public class EntryController {
 
             if (entry2.getTrackback() == null || !entry2.getTrackback().equals(entryTo.getTrackback())) {
                 entry.setTrackback(entryTo.getTrackback());
-                trackback = true;
             }
         } else {
             entry.setTrackback(entryTo.getTrackback());
@@ -482,8 +483,10 @@ public class EntryController {
         entry = entryRepository.save(entry);
         entryService.applyTags(entry, entryTo.getTags());
 
-        if (trackback)
+        // only ping if it's public
+        if (entry.getSecurity().getId() == 2) {
             trackbackPing(entryTo, user, entry.getId());
+        }
 
         recentBlogsRepository.delete().subscribe();
 

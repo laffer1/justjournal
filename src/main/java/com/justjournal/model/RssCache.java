@@ -74,6 +74,9 @@ public final class RssCache implements Serializable {
     @Column(name = "active", columnDefinition = "boolean default true")
     private Boolean active;
 
+    @Column(name = "error_count", columnDefinition = "int default 0", nullable = false)
+    private int errorCount;
+
     @JsonCreator
     public RssCache() {
         super();
@@ -125,5 +128,13 @@ public final class RssCache implements Serializable {
 
     public void setActive(final Boolean active) {
         this.active = active;
+    }
+
+    public int getErrorCount() {
+        return errorCount;
+    }
+
+    public void setErrorCount(final int errorCount) {
+        this.errorCount = errorCount;
     }
 }
