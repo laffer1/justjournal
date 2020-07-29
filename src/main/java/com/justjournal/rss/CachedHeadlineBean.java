@@ -113,7 +113,12 @@ public class CachedHeadlineBean extends HeadlineBean {
                     }
                 }
 
+                rss.setLastUpdated(Calendar.getInstance().getTime());
                 rss.setContent(sbx.toString().trim());
+                if (rss.getContent().startsWith("<html") || rss.getContent().startsWith("<!DOCTYPE HTML")) {
+                    rss.setContent(""); // it's an html page.. bad
+                    rss.setActive(false);
+                }
                 // sun can't make their own rss feeds complaint
                 if (rss.getContent().startsWith("<rss"))
                     rss.setContent("<?xml version=\"1.0\"?>\n" + rss.getContent());
@@ -130,6 +135,7 @@ public class CachedHeadlineBean extends HeadlineBean {
                         sbx.append(StringUtil.replace(input, '\'', "\\\'"));
                     }
                 }
+                rss.setLastUpdated(Calendar.getInstance().getTime());
                 rss.setContent(sbx.toString().trim());
                 // sun can't make their own rss feeds complaint
                 if (rss.getContent().startsWith("<rss"))

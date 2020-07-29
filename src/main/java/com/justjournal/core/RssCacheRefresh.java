@@ -135,7 +135,7 @@ public class RssCacheRefresh {
             }
 
             rss.setLastUpdated(Calendar.getInstance().getTime());
-            rss.setContent(cleanContent(sbx.toString())); // it's an html page.. bad
+            rss.setContent(cleanContent(sbx.toString()));
 
             return rssCacheDao.saveAndFlush(rss);
         } else if (code == 404 || code == 410) {
