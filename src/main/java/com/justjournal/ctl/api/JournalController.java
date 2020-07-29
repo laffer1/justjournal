@@ -5,6 +5,7 @@ import com.justjournal.core.Constants;
 import com.justjournal.ctl.error.ErrorHandler;
 import com.justjournal.model.Journal;
 import com.justjournal.model.Style;
+import com.justjournal.model.api.JournalTo;
 import com.justjournal.repository.JournalRepository;
 import com.justjournal.repository.UserRepository;
 import com.justjournal.services.StyleService;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -39,9 +41,9 @@ import java.util.Map;
 @RequestMapping("/api/journal")
 public class JournalController {
 
-    private JournalRepository journalRepository;
-    private UserRepository userRepository;
-    private StyleService styleService;
+    private final JournalRepository journalRepository;
+    private final UserRepository userRepository;
+    private final StyleService styleService;
 
     @Autowired
     public JournalController(final JournalRepository journalRepository, final UserRepository userRepository,
@@ -74,18 +76,20 @@ public class JournalController {
     }
 
 
-    @PostMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Map<String, String> post(@RequestBody final Journal journal,
+    public Map<String, String> post(@RequestBody final JournalTo journal,
                                     final HttpSession session, final HttpServletResponse response) {
         return put(journal.getSlug(), journal, session, response);
     }
 
 
-    @PutMapping(value = "{slug}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "{slug}", consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Map<String, String> put(@PathVariable("slug") final String slug,
-                                   @RequestBody Journal journal,
+                                   @RequestBody JournalTo journalTo,
                                    final HttpSession session, final HttpServletResponse response) {
 
         if (!Login.isAuthenticated(session)) {
@@ -96,6 +100,16 @@ public class JournalController {
         try {
             Journal j = journalRepository.findOneBySlug(slug);
             if (j == null) {
+                Journal journal = new Journal();
+                journal.setId(journalTo.getId());
+                journal.setAllowSpider(journalTo.isAllowSpider());
+                journal.setSlug(journalTo.getSlug());
+                journal.setName(journalTo.getName());
+                journal.setStyleId(journalTo.getStyleId());
+                final Style s = styleService.get(journal.getStyleId());
+                journal.setStyle(s);
+                journal.setOwnerViewOnly(journalTo.isOwnerViewOnly());
+                journal.setPingServices(journalTo.isPingServices());
                 journal.setUser(userRepository.findById(Login.currentLoginId(session)).orElse(null));
                 journal.setSince(Calendar.getInstance().getTime());
                 journal.setModified(Calendar.getInstance().getTime());
@@ -109,12 +123,12 @@ public class JournalController {
                 return ErrorHandler.modelError(  "You do not have permission to update this journal.");
             }
 
-            j.setAllowSpider(journal.isAllowSpider());
-            j.setName(journal.getName());
-            j.setOwnerViewOnly(journal.isOwnerViewOnly());
-            j.setPingServices(journal.isPingServices());
-            if (journal.getStyleId() > 0) {
-                final Style s = styleService.get(journal.getStyleId());
+            j.setAllowSpider(journalTo.isAllowSpider());
+            j.setName(journalTo.getName());
+            j.setOwnerViewOnly(journalTo.isOwnerViewOnly());
+            j.setPingServices(journalTo.isPingServices());
+            if (journalTo.getStyleId() > 0) {
+                final Style s = styleService.get(journalTo.getStyleId());
                 j.setStyle(s);
             } else {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

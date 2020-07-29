@@ -87,7 +87,7 @@ public class UserLink implements Serializable, Comparable<UserLink> {
      *
      * @return int > 0
      */
-    public final int getId() {
+    public int getId() {
         return id;
     }
 

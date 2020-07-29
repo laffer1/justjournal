@@ -17,17 +17,17 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
     username: jj
     password: 
-    max-active: 10
+    max-active: 30
     initial-size: 5
     max-idle: 5
-    min-idle: 1
+    min-idle: 2
     test-while-idle: true
     test-on-borrow: true
     validation-query: SELECT 1
     type: com.zaxxer.hikari.HikariDataSource
     hikari:
-      maximum-pool-size: 10
-      minimum-idle: 1
+      maximum-pool-size: 30
+      minimum-idle: 2
   jpa:
     database: MYSQL
     hibernate:

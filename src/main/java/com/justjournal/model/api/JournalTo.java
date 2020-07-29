@@ -1,68 +1,42 @@
-package com.justjournal.model;
+package com.justjournal.model.api;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
 /**
- * Represent individual journal.  This allows multiple journals to be associated with one login.
  * @author Lucas Holt
  */
-@Builder
 @AllArgsConstructor
-@NoArgsConstructor
-@JsonIdentityInfo(
-  generator = ObjectIdGenerators.PropertyGenerator.class,
-  property = "id")
-@Entity
-@Table(name = "journal")
-public class Journal implements Serializable {
+@Builder
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class JournalTo implements Serializable {
     @JsonIgnore
-    private static final long serialVersionUID = 9106701690730308047L;
+    private static final long serialVersionUID = 9106701690730308099L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "slug", length = 15, nullable = false)
     private String slug = "";
 
-    @Column(name = "name", length = 150, nullable = true)
     private String name = "";
 
-    @JsonBackReference
-    @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    @Column(name = "allow_spider")
     private boolean allowSpider = true;
 
-    @ManyToOne
-    @JoinColumn(name = "style")
-    private Style style;
-
-    @Column(name="style", updatable=false, insertable = false)
     private int styleId;
 
-    @Column(name = "owner_view_only", nullable = false, length = 1)
     private boolean ownerViewOnly = false;
 
-    @Column(name = "ping_services", nullable = false, length = 1)
     private boolean pingServices = true;
 
-    @Temporal(value = TemporalType.TIMESTAMP)
-    @Column(name = "since", nullable = false)
     private Date since;
 
-    @Temporal(value = TemporalType.TIMESTAMP)
-    @Column(name = "modified", nullable = false)
     private Date modified;
 
     public int getId() {
@@ -89,14 +63,6 @@ public class Journal implements Serializable {
         this.name = name;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(final User user) {
-        this.user = user;
-    }
-
     public boolean isAllowSpider() {
         return allowSpider;
     }
@@ -110,15 +76,7 @@ public class Journal implements Serializable {
     }
 
     public void setStyleId(int styleId) {
-      this.styleId = styleId;
-    }
-
-    public Style getStyle() {
-        return style;
-    }
-
-    public void setStyle(final Style style) {
-        this.style = style;
+        this.styleId = styleId;
     }
 
     public boolean isOwnerViewOnly() {
@@ -151,5 +109,10 @@ public class Journal implements Serializable {
 
     public void setSince(final Date since) {
         this.since = since;
+    }
+
+    @JsonCreator
+    public JournalTo() {
+        super();
     }
 }
