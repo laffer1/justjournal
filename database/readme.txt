@@ -5,7 +5,7 @@ MySQL Version Compatibility
 MySQL 5.7.x is required since portions of the code now use stored procedures.
 
 JDBC Driver
-The production version of just journal is currently running on mysql-connector-j  8.0.13
+The production version of just journal is currently running on mysql-connector-j  8.0.19
 Installation
 ____________
 
