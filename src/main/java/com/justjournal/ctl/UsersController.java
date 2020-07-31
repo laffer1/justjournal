@@ -125,6 +125,7 @@ public class UsersController {
     private static final String MODEL_FAVORITES = "favorites";
     private static final String MODEL_FRIENDS = "friends";
     private static final String VIEW_USERS = "users";
+    private static final String VIEW_NOT_FOUND = "notfound";
     private static final String PATH_USERNAME = "username";
     private static final String PATH_MONTH = "month";
     private static final String MODEL_AVATAR = "avatar";
@@ -210,7 +211,7 @@ public class UsersController {
 
         if (userContext == null) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            return "";
+            return VIEW_NOT_FOUND;
         }
 
         Journal journal = new ArrayList<Journal>(userContext.getBlogUser().getJournals()).get(0);
@@ -244,7 +245,7 @@ public class UsersController {
 
         if (userContext == null) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            return "";
+            return VIEW_NOT_FOUND;
         }
 
         Journal journal = new ArrayList<Journal>(userContext.getBlogUser().getJournals()).get(0);
@@ -279,7 +280,7 @@ public class UsersController {
 
           if (userc == null) {
               response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-              return "";
+              return VIEW_NOT_FOUND;
           }
 
         Journal journal = new ArrayList<Journal>(userc.getBlogUser().getJournals()).get(0);
@@ -314,7 +315,7 @@ public class UsersController {
 
         if (userc == null) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            return "";
+            return VIEW_NOT_FOUND;
         }
 
         Journal journal = new ArrayList<Journal>(userc.getBlogUser().getJournals()).get(0);
@@ -348,7 +349,7 @@ public class UsersController {
 
         if (userContext == null) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            return "";
+            return VIEW_NOT_FOUND;
         }
 
         Journal journal = new ArrayList<Journal>(userContext.getBlogUser().getJournals()).get(0);
@@ -390,7 +391,7 @@ public class UsersController {
 
         if (userc == null) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            return "";
+            return VIEW_NOT_FOUND;
         }
 
         Journal journal = new ArrayList<Journal>(userc.getBlogUser().getJournals()).get(0);
@@ -423,7 +424,7 @@ public class UsersController {
 
         if (userc == null) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            return "";
+            return VIEW_NOT_FOUND;
         }
 
         Journal journal = new ArrayList<Journal>(userc.getBlogUser().getJournals()).get(0);
@@ -455,7 +456,7 @@ public class UsersController {
 
         if (userc == null) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            return "";
+            return VIEW_NOT_FOUND;
         }
 
         final Journal journal = new ArrayList<>(userc.getBlogUser().getJournals()).get(0);
@@ -487,7 +488,7 @@ public class UsersController {
 
             if (user == null) {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                return "";
+                return VIEW_NOT_FOUND;
             }
 
             if (new ArrayList<>(user.getJournals()).get(0).isOwnerViewOnly()) {
@@ -512,7 +513,7 @@ public class UsersController {
 
             if (user == null) {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                return "";
+                return VIEW_NOT_FOUND;
             }
 
             if (new ArrayList<Journal>(user.getJournals()).get(0).isOwnerViewOnly()) {
@@ -537,7 +538,7 @@ public class UsersController {
 
             if (user == null) {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                return "";
+                return VIEW_NOT_FOUND;
             }
 
             if (new ArrayList<Journal>(user.getJournals()).get(0).isOwnerViewOnly()) {
@@ -622,7 +623,7 @@ public class UsersController {
 
         if (userc == null) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            return "";
+            return VIEW_NOT_FOUND;
         }
 
         Journal journal = new ArrayList<Journal>(userc.getBlogUser().getJournals()).get(0);
@@ -651,7 +652,7 @@ public class UsersController {
         final UserContext userc = getUserContext(username, session);
         if (userc == null) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            return "";
+            return VIEW_NOT_FOUND;
         }
 
         Journal journal = new ArrayList<Journal>(userc.getBlogUser().getJournals()).get(0);
@@ -690,7 +691,7 @@ public class UsersController {
 
         if (userc == null) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            return "";
+            return VIEW_NOT_FOUND;
         }
 
         Journal journal = new ArrayList<Journal>(userc.getBlogUser().getJournals()).get(0);
@@ -729,7 +730,7 @@ public class UsersController {
 
             if (user == null) {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                return "";
+                return VIEW_NOT_FOUND;
             }
 
             final UserContext userc = new UserContext(user, authUser);

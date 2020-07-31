@@ -184,15 +184,16 @@ public class AccountController {
             jdbcTemplate.execute("DELETE FROM user_images_album_map WHERE owner=" + userID + ";");
             jdbcTemplate.execute("DELETE FROM user_pic WHERE id=" + userID + ";");
 
-            userPrefRepository.deleteByUser(user.get());
-            jdbcTemplate.execute("DELETE FROM user_style WHERE id=" + userID + ";");
+            jdbcTemplate.execute("DELETE FROM user_pref WHERE user_id=" + userID + ";");
 
             jdbcTemplate.execute("DELETE FROM journal WHERE user_id=" + userID + ";");
 
             userLinkRepository.deleteByUser(user.get());
             userLocationRepository.deleteByUser(user.get());
-            userBioDao.deleteByUser(user.get());
-            userContactRepository.deleteByUser(user.get());
+
+            jdbcTemplate.execute("DELETE FROM user_bio WHERE user_id=" + userID + ";");
+
+            jdbcTemplate.execute("DELETE FROM user_contact WHERE user_id=" + userID + ";");
 
             userDao.deleteById(userID);
         } catch (final Exception e) {

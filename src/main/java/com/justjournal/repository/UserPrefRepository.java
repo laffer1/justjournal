@@ -36,6 +36,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface UserPrefRepository extends PagingAndSortingRepository<UserPref, Integer> {
-
-    void deleteByUser(User user);
+    
 }
