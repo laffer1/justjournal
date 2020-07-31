@@ -34,6 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.repository;
 
+import com.justjournal.model.User;
 import com.justjournal.model.UserBio;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
@@ -45,4 +46,6 @@ import org.springframework.stereotype.Repository;
 public interface UserBioRepository extends PagingAndSortingRepository<UserBio, Integer> {
 
     UserBio findByUserId(int userId);
+
+    void deleteByUser(User user);
 }

@@ -155,6 +155,9 @@
                                                                       class=""></i>
                                         Change Password</a></li>
 
+                                    <li th:if="${authenticatedUsername != null}"><a href="/#!/prefs/journaldelete"><i
+                                            class="fa fa-sliders"></i> Delete Journal</a></li>
+
                                     <li th:if="${authenticatedUsername != null}"><a href="/#!/prefs/image">
                                         <i class="fa fa-picture-o"></i> Add Pictures</a></li>
 

@@ -1,0 +1,24 @@
+<div class="row">
+    <div class="col-md-12">
+
+        <h2>Preferences</h2>
+
+        <p>Permanently delete your account including all journal entries. This is permanent.</p>
+
+        <form id="frmJournalDelete" name="JournalPreferencesDelete" role="form" class="form-horizontal">
+            <fieldset>
+                <legend><strong>Delete Account</strong><br/></legend>
+
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button class="btn btn-primary btn-md" name="save"
+                                data-ng-click="deleteJournal()">Delete Account
+                        </button>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+
+        <div class="alert" ng-hide="ErrorMessage == null">{{ ErrorMessage }}</div>
+    </div>
+</div>
