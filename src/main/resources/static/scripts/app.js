@@ -65,6 +65,10 @@ angular.module('wwwApp',
                         templateUrl: 'views/prefs/journal.html',
                         controller: 'PrefsJournalCtrl'
                     })
+                    .when('/prefs/journaldelete', {
+                        templateUrl: 'views/prefs/deleteJournal.html',
+                        controller: 'PrefsJournalDeleteCtrl'
+                    })
                     .when('/privacy', {
                         templateUrl: 'views/privacy.html',
                         controller: 'PrivacyCtrl'

@@ -27,7 +27,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -120,7 +119,7 @@ public class JournalController {
 
             if (j.getUser().getId() != Login.currentLoginId(session)) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                return ErrorHandler.modelError(  "You do not have permission to update this journal.");
+                return ErrorHandler.modelError("You do not have permission to update this journal.");
             }
 
             j.setAllowSpider(journalTo.isAllowSpider());
@@ -132,9 +131,9 @@ public class JournalController {
                 j.setStyle(s);
             } else {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                return ErrorHandler.modelError(  "Missing style id.");
+                return ErrorHandler.modelError("Missing style id.");
             }
-            
+
             j.setModified(Calendar.getInstance().getTime());
             j = journalRepository.saveAndFlush(j);
 
@@ -142,7 +141,7 @@ public class JournalController {
         } catch (final Exception e) {
             log.error(e.getMessage(), e);
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return ErrorHandler.modelError(  "Error adding journal.");
+            return ErrorHandler.modelError("Error adding journal.");
         }
     }
 
@@ -152,26 +151,30 @@ public class JournalController {
                                       final HttpSession session,
                                       final HttpServletResponse response) {
 
-
         if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return ErrorHandler.modelError(Constants.ERR_INVALID_LOGIN);
         }
 
+        if (slug == null || slug.isEmpty()) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return ErrorHandler.modelError("Error deleting your journal. Slug is missing.");
+        }
+        
         final Journal journal = journalRepository.findOneBySlug(slug);
-        if (slug != null) {
-            if (journal.getUser().getId() != Login.currentLoginId(session)) {
-                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                return ErrorHandler.modelError(  "You do not have permission to delete this journal.");
-            }
-
-            journalRepository.delete(journal);
-            journalRepository.flush();
-            return java.util.Collections.singletonMap("slug", journal.getSlug());
+        if (journal == null) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return ErrorHandler.modelError("Error deleting your journal. Slug not found.");
         }
 
-        response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-        return ErrorHandler.modelError(  "Error deleting your journal. Bad slug");
+        if (journal.getUser().getId() != Login.currentLoginId(session)) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return ErrorHandler.modelError("You do not have permission to delete this journal.");
+        }
+
+        journalRepository.delete(journal);
+        journalRepository.flush();
+        return java.util.Collections.singletonMap("slug", journal.getSlug());
     }
 
 }

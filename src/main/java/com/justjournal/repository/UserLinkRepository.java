@@ -34,6 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package com.justjournal.repository;
 
+import com.justjournal.model.User;
 import com.justjournal.model.UserLink;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -53,4 +54,6 @@ public interface UserLinkRepository extends PagingAndSortingRepository<UserLink,
 
     @Query("select ul from UserLink ul, User u where ul.user = u and LOWER(u.username) = LOWER(:username)")
     public List<UserLink> findByUsernameOrderByTitleTitleAsc(@Param("username") String username);
+
+    void deleteByUser(User user);
 }

@@ -173,30 +173,30 @@ public class AccountController {
             favoriteRepository.deleteInBatch(favoriteRepository.findByUser(user.get()));
             favoriteRepository.flush();
 
-            friendsDao.deleteById(userID);
-
-            jdbcTemplate.execute("DELETE FROM friends_lj WHERE id=" + userID + ";");
-
+            jdbcTemplate.execute("DELETE from friends where id = " + userID + ";");
+  
             rssSubscriptionsDAO.deleteAll(rssSubscriptionsDAO.findByUser(user.get()));
 
             jdbcTemplate.execute("DELETE FROM user_files WHERE ownerid=" + userID + ";");
-
+    
             userImageRepository.deleteAll(userImageRepository.findByUsername(user.get().getUsername()));
             jdbcTemplate.execute("DELETE FROM user_images_album WHERE owner=" + userID + ";");
             jdbcTemplate.execute("DELETE FROM user_images_album_map WHERE owner=" + userID + ";");
             jdbcTemplate.execute("DELETE FROM user_pic WHERE id=" + userID + ";");
-            userPrefRepository.deleteById(userID);
+
+            userPrefRepository.deleteByUser(user.get());
             jdbcTemplate.execute("DELETE FROM user_style WHERE id=" + userID + ";");
 
             jdbcTemplate.execute("DELETE FROM journal WHERE user_id=" + userID + ";");
 
-            userLinkRepository.deleteById(userID);
-            userLocationRepository.deleteById(userID);
-            userBioDao.deleteById(userID);
-            userContactRepository.deleteById(userID);
+            userLinkRepository.deleteByUser(user.get());
+            userLocationRepository.deleteByUser(user.get());
+            userBioDao.deleteByUser(user.get());
+            userContactRepository.deleteByUser(user.get());
+
             userDao.deleteById(userID);
         } catch (final Exception e) {
-            log.error(e.getMessage());
+            log.error("Could not delete account", e);
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return ErrorHandler.modelError(  "Error deleting account");
         }

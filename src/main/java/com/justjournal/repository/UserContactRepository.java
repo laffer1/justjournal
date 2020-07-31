@@ -26,6 +26,7 @@
 
 package com.justjournal.repository;
 
+import com.justjournal.model.User;
 import com.justjournal.model.UserContact;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
@@ -35,4 +36,6 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface UserContactRepository extends PagingAndSortingRepository<UserContact, Integer> {
+
+    void deleteByUser(User user);
 }
