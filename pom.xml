@@ -24,7 +24,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <flyway.version>6.5.3</flyway.version>
         <mysql.driver.version>8.0.21</mysql.driver.version>
-        <esapi.version>2.2.0.0</esapi.version>
+        <esapi.version>2.2.1.0</esapi.version>
         <commonmark.version>0.15.1</commonmark.version>
     </properties>
 
