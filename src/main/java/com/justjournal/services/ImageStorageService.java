@@ -7,15 +7,18 @@ import com.justjournal.model.UserPic;
 import com.justjournal.model.UserPref;
 import com.justjournal.repository.UserPicRepository;
 import com.justjournal.repository.UserPrefRepository;
+import io.minio.GetObjectArgs;
 import io.minio.MinioClient;
+import io.minio.PutObjectArgs;
+import io.minio.RemoveObjectArgs;
 import io.minio.errors.ErrorResponseException;
 import io.minio.errors.InsufficientDataException;
 import io.minio.errors.InternalException;
-import io.minio.errors.InvalidArgumentException;
 import io.minio.errors.InvalidBucketNameException;
 import io.minio.errors.InvalidResponseException;
-import io.minio.errors.NoResponseException;
 import io.minio.errors.RegionConflictException;
+import io.minio.errors.ServerException;
+import io.minio.errors.XmlParserException;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -159,11 +162,7 @@ public class ImageStorageService {
      * @throws InvalidKeyException
      * @throws NoSuchAlgorithmException
      * @throws InsufficientDataException
-     * @throws InvalidArgumentException
-     * @throws InternalException
-     * @throws NoResponseException
      * @throws InvalidBucketNameException
-     * @throws XmlPullParserException
      * @throws ErrorResponseException
      * @throws RegionConflictException
      * @throws InvalidResponseException
@@ -172,32 +171,40 @@ public class ImageStorageService {
                            @NonNull String objectName,
                            @NonNull String mimeType,
                            @NonNull InputStream is) throws IOException, InvalidKeyException,
-            NoSuchAlgorithmException, InsufficientDataException, InvalidArgumentException, InternalException,
-            NoResponseException, InvalidBucketNameException, XmlPullParserException, ErrorResponseException,
-            RegionConflictException, InvalidResponseException {
+            NoSuchAlgorithmException, InsufficientDataException,
+            InvalidBucketNameException, ErrorResponseException,
+            RegionConflictException, InvalidResponseException, InternalException, XmlParserException, ServerException {
 
         if (!minioClient.bucketExists(bucketName)) {
             minioClient.makeBucket(bucketName);
         }
 
         if (is instanceof ByteArrayInputStream)
-            minioClient.putObject(bucketName, objectName, is, is.available(), mimeType);
+            minioClient.putObject(
+                    PutObjectArgs.builder().bucket(bucketName).object(objectName).stream(
+                            is, is.available(), -1)
+                            .contentType(mimeType).build()
+            );
         else
-            minioClient.putObject(bucketName, objectName, is, mimeType);
+            minioClient.putObject(
+                    PutObjectArgs.builder().bucket(bucketName).object(objectName).stream(
+                            is, -1, 10485760)
+                            .contentType(mimeType).build()
+            );
         is.close();
     }
 
     public InputStream downloadFile(@NonNull String bucketName, @NonNull String objectName)
             throws IOException, InvalidKeyException,
-            NoSuchAlgorithmException, InsufficientDataException, InvalidArgumentException, InternalException,
-            NoResponseException, InvalidBucketNameException, XmlPullParserException, ErrorResponseException, InvalidResponseException {
-
-        return minioClient.getObject(bucketName, objectName);
+            NoSuchAlgorithmException, InsufficientDataException,
+            InvalidBucketNameException, ErrorResponseException, InvalidResponseException, InternalException, XmlParserException, ServerException {
+        
+        return minioClient.getObject(GetObjectArgs.builder().bucket(bucketName).object(objectName).build());
     }
 
     public void deleteFile(@NonNull String bucketName, @NonNull String objectName) throws IOException, InvalidKeyException,
-            NoSuchAlgorithmException, InsufficientDataException, InvalidArgumentException, InvalidResponseException,
-            InternalException, NoResponseException, InvalidBucketNameException, XmlPullParserException, ErrorResponseException {
-          minioClient.removeObject(bucketName, objectName);
+            NoSuchAlgorithmException, InsufficientDataException, InvalidResponseException,
+            InvalidBucketNameException, XmlPullParserException, ErrorResponseException, InternalException, XmlParserException, ServerException {
+             minioClient.removeObject(RemoveObjectArgs.builder().bucket(bucketName).object(objectName).build());
     }
 }

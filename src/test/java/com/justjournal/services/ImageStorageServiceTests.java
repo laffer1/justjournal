@@ -11,17 +11,16 @@ import io.minio.MinioClient;
 import io.minio.errors.ErrorResponseException;
 import io.minio.errors.InsufficientDataException;
 import io.minio.errors.InternalException;
-import io.minio.errors.InvalidArgumentException;
 import io.minio.errors.InvalidBucketNameException;
 import io.minio.errors.InvalidResponseException;
-import io.minio.errors.NoResponseException;
+import io.minio.errors.ServerException;
+import io.minio.errors.XmlParserException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -32,7 +31,6 @@ import java.util.Optional;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -110,8 +108,8 @@ public class ImageStorageServiceTests {
 
     @Test
     public void testDownloadAvatar() throws ServiceException, IOException, InvalidKeyException, NoSuchAlgorithmException,
-            InsufficientDataException, InvalidArgumentException, InvalidResponseException, InternalException, NoResponseException,
-            InvalidBucketNameException, XmlPullParserException, ErrorResponseException {
+            InsufficientDataException, InvalidResponseException, InternalException,
+            InvalidBucketNameException, ErrorResponseException, ServerException, XmlParserException {
         UserPic userPic = new UserPic();
         userPic.setFilename("test");
         userPic.setId(1);
@@ -119,7 +117,7 @@ public class ImageStorageServiceTests {
         when(userPicRepository.findById(anyInt())).thenReturn(Optional.of(userPic));
         imageStorageService.downloadAvatar(1);
 
-        verify(minioClient, times(1)).getObject(anyString(), anyString());
+        verify(minioClient, times(1)).getObject(any());
     }
 
     @Test
