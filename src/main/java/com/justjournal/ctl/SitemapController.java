@@ -24,7 +24,7 @@ public class SitemapController {
     @Autowired
     private UserRepository userRepository;
 
-    @GetMapping(value = "/sitemap.xml")
+    @GetMapping(value = "/sitemap.xml", produces = "application/xml")
     @ResponseBody
     public XmlUrlSet main() {
 
