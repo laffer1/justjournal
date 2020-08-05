@@ -63,6 +63,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import static com.justjournal.core.Constants.PARAM_USERNAME;
+import static com.justjournal.core.Constants.PASSWORD_MAX_LENGTH;
+import static com.justjournal.core.Constants.PASSWORD_MIN_LENGTH;
 
 /**
  * @author Lucas Holt
@@ -120,14 +122,15 @@ public class AccountController {
         final String passNew = passwordChange.getPassNew();
 
         if (passCurrent == null ||
-                passCurrent.length() < 5 ||
-                passCurrent.length() > 18) {
+                passCurrent.length() < PASSWORD_MIN_LENGTH ||
+                passCurrent.length() > PASSWORD_MAX_LENGTH) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return ErrorHandler.modelError(  "The current password is invalid.");
         }
         if (passNew == null ||
-                passNew.length() < 5 ||
-                passNew.length() > 18) {
+                passNew.length() < PASSWORD_MIN_LENGTH ||
+                passNew.length() > PASSWORD_MAX_LENGTH ||
+                !Login.isPassword(passNew)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return ErrorHandler.modelError(  "The new password is invalid.");
         }

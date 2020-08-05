@@ -94,8 +94,8 @@ public class Login {
     /**
      * Check if a password is valid in terms of characters used.
      *
-     * @param input
-     * @return
+     * @param input  clear text password
+     * @return true if valid, false otherwise
      */
     public static boolean isPassword(final CharSequence input) {
         final Pattern p = Pattern.compile("[A-Za-z0-9_@.#$ ]+");
