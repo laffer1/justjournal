@@ -98,7 +98,7 @@ public class Login {
      * @return true if valid, false otherwise
      */
     public static boolean isPassword(final CharSequence input) {
-        final Pattern p = Pattern.compile("[A-Za-z0-9_@.#$ ]+");
+        final Pattern p = Pattern.compile("[A-Za-z0-9_@.!&*#$?^ ]+");
         final Matcher m = p.matcher(input);
 
         return m.matches(); // valid on true
