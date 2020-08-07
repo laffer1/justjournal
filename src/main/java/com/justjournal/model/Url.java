@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlAccessorType(value = XmlAccessType.NONE)
 @XmlRootElement(name = "url")
-public class XmlUrl {
+public class Url {
     public enum Priority {
         HIGH("1.0"), MEDIUMHIGH("0.7"), MEDIUM("0.5"), MEDIUMLOW("0.2"), LOW("0.0");
 
@@ -50,15 +50,15 @@ public class XmlUrl {
     @XmlElement
     private String priority = Priority.MEDIUM.getValue();
 
-    public XmlUrl() {
+    public Url() {
         this("", Priority.MEDIUM, ChangeFreqency.DAILY);
     }
 
-    public XmlUrl(final String loc, final Priority priority) {
+    public Url(final String loc, final Priority priority) {
         this(loc, priority, ChangeFreqency.DAILY);
     }
 
-    public XmlUrl(final String loc, final Priority priority, final ChangeFreqency freqency) {
+    public Url(final String loc, final Priority priority, final ChangeFreqency freqency) {
         this.loc = loc;
         this.priority = priority.getValue();
         this.changefreq = freqency.getValue();

@@ -2,6 +2,7 @@ package com.justjournal.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
+import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.ResourceProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -32,6 +33,9 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 
         this.mapper = mapper;
         mapper.registerModule(new Hibernate5Module());
+
+        JaxbAnnotationModule module = new JaxbAnnotationModule();
+        mapper.registerModule(module);
     }
 
     /**
