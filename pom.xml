@@ -25,7 +25,7 @@
         <flyway.version>7.6.0</flyway.version>
         <mysql.driver.version>8.0.22</mysql.driver.version>
         <esapi.version>2.2.3.0</esapi.version>
-        <commonmark.version>0.15.2</commonmark.version>
+        <commonmark.version>0.17.0</commonmark.version>
     </properties>
 
     <dependencies>
