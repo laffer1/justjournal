@@ -14,6 +14,7 @@ pipeline {
                     mysql -e 'create database IF NOT EXISTS justjournal_test;'
                     mysql --database=justjournal_test < src/main/resources/db/migration/V1_0__jj_create.sql
                     mysql --database=justjournal_test < database/jj_data_load.sql
+                    mysql -e 'GRANT all ON justjournal_test.* TO travis@localhost';
                 '''
             }
         }
