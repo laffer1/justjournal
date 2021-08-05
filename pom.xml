@@ -22,7 +22,7 @@
     <properties>
         <java-version>1.8</java-version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <flyway.version>7.11.0</flyway.version>
+        <flyway.version>7.6.0</flyway.version>
         <mysql.driver.version>8.0.25</mysql.driver.version>
         <esapi.version>2.2.3.0</esapi.version>
         <commonmark.version>0.17.0</commonmark.version>
