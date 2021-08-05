@@ -27,9 +27,21 @@
         <esapi.version>2.2.3.0</esapi.version>
         <commonmark.version>0.17.0</commonmark.version>
     </properties>
+         
+   <profiles>
+        <profile>
+               <id>test</id>
+               <properties>
+                   <env>test</env>
+                   <gebEnv>test</gebEnv>
+                   <jacoco.skip>false</jacoco.skip>
+                   <maven.test.skip>false</maven.test.skip>
+                   <skip.unit.tests>false</skip.unit.tests>
+               </properties>
+           </profile>
+    </profiles>
 
     <dependencies>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-properties-migrator</artifactId>
