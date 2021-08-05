@@ -10,7 +10,8 @@ pipeline {
                 sh '''
                     echo "PATH = ${PATH}"
                     echo "M2_HOME = ${M2_HOME}"
-                    mysql -e 'create database justjournal_test;'
+                    mysql -e 'drop database IF EXISTS justjournal_test;'
+                    mysql -e 'create database IF NOT EXISTS justjournal_test;'
                     mysql --database=justjournal_test < src/main/resources/db/migration/V1_0__jj_create.sql
                     mysql --database=justjournal_test < database/jj_data_load.sql
                 '''
