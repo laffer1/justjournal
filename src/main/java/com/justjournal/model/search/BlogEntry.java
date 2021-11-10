@@ -23,7 +23,7 @@ import java.util.List;
  */
 @ToString
 @EqualsAndHashCode
-@Document(indexName = "#{@blogEntryIndex}", type = "entry")
+@Document(indexName = "#{@blogEntryIndex}")
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BlogEntry implements Serializable, Comparable<BlogEntry> {
