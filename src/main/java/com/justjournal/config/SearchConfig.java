@@ -1,7 +1,6 @@
 package com.justjournal.config;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,11 +16,14 @@ import java.util.Arrays;
 @Configuration
 @EnableElasticsearchRepositories(basePackages = {"com.justjournal.repository.search"})
 public class SearchConfig {
-    @Autowired
-    private Environment environment;
+    private final Environment environment;
 
     @Value("search.blog-entry-index")
     private String blogEntryIndex;
+
+    public SearchConfig(final Environment environment) {
+        this.environment = environment;
+    }
 
     @Bean
     public String blogEntryIndex() {

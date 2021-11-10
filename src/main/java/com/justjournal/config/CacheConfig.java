@@ -46,11 +46,13 @@ public class CacheConfig {
     @Value("${spring.redis.port:6379}")
     private Integer port;
 
-
     private static final DateTimeFormatter FORMATTER = ISO_LOCAL_DATE_TIME;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
+
+    public CacheConfig(final ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
 
     @Primary
     @Bean
@@ -60,27 +62,27 @@ public class CacheConfig {
     }
 
     @Bean
-    public ReactiveRedisTemplate<String, Tag> reactiveRedisTemplateTag(ReactiveRedisConnectionFactory connectionFactory) {
-        Jackson2JsonRedisSerializer<Tag> valSerializer = new Jackson2JsonRedisSerializer<>(Tag.class);
+    public ReactiveRedisTemplate<String, Tag> reactiveRedisTemplateTag(final ReactiveRedisConnectionFactory connectionFactory) {
+        final Jackson2JsonRedisSerializer<Tag> valSerializer = new Jackson2JsonRedisSerializer<>(Tag.class);
         valSerializer.setObjectMapper(objectMapper);
 
-        RedisSerializationContext.RedisSerializationContextBuilder<String,Tag> builder
+        final RedisSerializationContext.RedisSerializationContextBuilder<String,Tag> builder
                 = RedisSerializationContext.newSerializationContext(new StringRedisSerializer());
 
-        RedisSerializationContext<String,Tag> context = builder.hashValue(valSerializer)
+        final RedisSerializationContext<String,Tag> context = builder.hashValue(valSerializer)
                 .value(valSerializer).build();
 
         return new ReactiveRedisTemplate<>(connectionFactory, context);
     }
 
     @Bean
-    public ReactiveRedisTemplate<String, String> reactiveRedisTemplateString(ReactiveRedisConnectionFactory connectionFactory) {
+    public ReactiveRedisTemplate<String, String> reactiveRedisTemplateString(final ReactiveRedisConnectionFactory connectionFactory) {
         return new ReactiveRedisTemplate<>(connectionFactory, RedisSerializationContext.string());
     }
 
     @PostConstruct
     private void postConstruct() {
-        JavaTimeModule javaTimeModule = new JavaTimeModule();
+        final JavaTimeModule javaTimeModule = new JavaTimeModule();
         javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateSerializer());
         javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateDeserializer());
 
@@ -93,7 +95,7 @@ public class CacheConfig {
     public class LocalDateSerializer extends JsonSerializer<LocalDateTime> {
 
         @Override
-        public void serialize(LocalDateTime value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+        public void serialize(final LocalDateTime value, final JsonGenerator gen, final SerializerProvider serializers) throws IOException {
             gen.writeString(value.format(FORMATTER));
         }
     }
@@ -101,7 +103,7 @@ public class CacheConfig {
     public class LocalDateDeserializer extends JsonDeserializer<LocalDateTime> {
 
         @Override
-        public LocalDateTime deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+        public LocalDateTime deserialize(final JsonParser p, final DeserializationContext ctxt) throws IOException {
             if (p == null || p.getValueAsString() == null) {
                 return null;
             }
