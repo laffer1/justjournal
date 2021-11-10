@@ -1,8 +1,6 @@
 package com.justjournal.config;
 
 import io.minio.MinioClient;
-import io.minio.errors.InvalidEndpointException;
-import io.minio.errors.InvalidPortException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,7 +20,10 @@ public class MinioConfig {
     private String minioSecretKey;
 
     @Bean
-    public MinioClient minioClient() throws InvalidPortException, InvalidEndpointException {
-        return new MinioClient(minioHost, minioAccessKey, minioSecretKey);
+    public MinioClient minioClient() {
+        return MinioClient.builder()
+                .endpoint(minioHost)
+                .credentials(minioAccessKey, minioSecretKey)
+                .build();
     }
 }

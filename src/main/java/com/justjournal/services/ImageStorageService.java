@@ -7,16 +7,11 @@ import com.justjournal.model.UserPic;
 import com.justjournal.model.UserPref;
 import com.justjournal.repository.UserPicRepository;
 import com.justjournal.repository.UserPrefRepository;
-import io.minio.GetObjectArgs;
-import io.minio.MinioClient;
-import io.minio.PutObjectArgs;
-import io.minio.RemoveObjectArgs;
+import io.minio.*;
 import io.minio.errors.ErrorResponseException;
 import io.minio.errors.InsufficientDataException;
 import io.minio.errors.InternalException;
-import io.minio.errors.InvalidBucketNameException;
 import io.minio.errors.InvalidResponseException;
-import io.minio.errors.RegionConflictException;
 import io.minio.errors.ServerException;
 import io.minio.errors.XmlParserException;
 import lombok.NonNull;
@@ -25,7 +20,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -162,9 +156,7 @@ public class ImageStorageService {
      * @throws InvalidKeyException
      * @throws NoSuchAlgorithmException
      * @throws InsufficientDataException
-     * @throws InvalidBucketNameException
      * @throws ErrorResponseException
-     * @throws RegionConflictException
      * @throws InvalidResponseException
      */
     public void uploadFile(@NonNull String bucketName,
@@ -172,11 +164,11 @@ public class ImageStorageService {
                            @NonNull String mimeType,
                            @NonNull InputStream is) throws IOException, InvalidKeyException,
             NoSuchAlgorithmException, InsufficientDataException,
-            InvalidBucketNameException, ErrorResponseException,
-            RegionConflictException, InvalidResponseException, InternalException, XmlParserException, ServerException {
+            ErrorResponseException,
+            InvalidResponseException, InternalException, XmlParserException, ServerException {
 
-        if (!minioClient.bucketExists(bucketName)) {
-            minioClient.makeBucket(bucketName);
+        if (!minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build())) {
+            minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
         }
 
         if (is instanceof ByteArrayInputStream)
@@ -197,14 +189,14 @@ public class ImageStorageService {
     public InputStream downloadFile(@NonNull String bucketName, @NonNull String objectName)
             throws IOException, InvalidKeyException,
             NoSuchAlgorithmException, InsufficientDataException,
-            InvalidBucketNameException, ErrorResponseException, InvalidResponseException, InternalException, XmlParserException, ServerException {
+            ErrorResponseException, InvalidResponseException, InternalException, XmlParserException, ServerException {
         
         return minioClient.getObject(GetObjectArgs.builder().bucket(bucketName).object(objectName).build());
     }
 
     public void deleteFile(@NonNull String bucketName, @NonNull String objectName) throws IOException, InvalidKeyException,
             NoSuchAlgorithmException, InsufficientDataException, InvalidResponseException,
-            InvalidBucketNameException, XmlPullParserException, ErrorResponseException, InternalException, XmlParserException, ServerException {
+            ErrorResponseException, InternalException, XmlParserException, ServerException {
              minioClient.removeObject(RemoveObjectArgs.builder().bucket(bucketName).object(objectName).build());
     }
 }
