@@ -56,10 +56,12 @@ public class ImageStorageService {
     @Autowired
     private UserPrefRepository userPrefRepository;
 
+    private static final String USER_ID_ARGUMENT = "userId";
+
     public void deleteAvatar(final int userId) throws ServiceException {
         final Optional<UserPref> pref = userPrefRepository.findById(userId);
-        if (!pref.isPresent()) {
-            throw new IllegalArgumentException("userId");
+        if (pref.isEmpty()) {
+            throw new IllegalArgumentException(USER_ID_ARGUMENT);
         }
 
         final Optional<UserPic> userPic = userPicRepository.findById(userId);
@@ -87,11 +89,11 @@ public class ImageStorageService {
             throws ServiceException {
 
         if (userId < 1)
-            throw new IllegalArgumentException("userId");
+            throw new IllegalArgumentException(USER_ID_ARGUMENT);
 
         try {
             Optional<UserPic> userPic = userPicRepository.findById(userId);
-            if (!userPic.isPresent()) {
+            if (userPic.isEmpty()) {
                 userPic = Optional.of(new UserPic());
             }
 
@@ -107,8 +109,8 @@ public class ImageStorageService {
             uploadFile(avatarBucket, entity.getFilename(), mimeType, is);
 
             final Optional<UserPref> pref = userPrefRepository.findById(userId);
-            if (!pref.isPresent()) {
-                throw new IllegalArgumentException("userId");
+            if (pref.isEmpty()) {
+                throw new IllegalArgumentException(USER_ID_ARGUMENT);
             }
             pref.get().setShowAvatar(PrefBool.N);
             userPrefRepository.save(pref.get());
@@ -121,8 +123,8 @@ public class ImageStorageService {
     public InputStream downloadAvatar(final int userId) throws ServiceException {
         try {
             final Optional<UserPic> userPic = userPicRepository.findById(userId);
-            if (!userPic.isPresent()) {
-                throw new IllegalArgumentException("userId");
+            if (userPic.isEmpty()) {
+                throw new IllegalArgumentException(USER_ID_ARGUMENT);
             }
             return downloadFile(avatarBucket, userPic.get().getFilename());
         } catch (final Exception e) {
@@ -159,10 +161,10 @@ public class ImageStorageService {
      * @throws ErrorResponseException
      * @throws InvalidResponseException
      */
-    public void uploadFile(@NonNull String bucketName,
-                           @NonNull String objectName,
-                           @NonNull String mimeType,
-                           @NonNull InputStream is) throws IOException, InvalidKeyException,
+    public void uploadFile(@NonNull final String bucketName,
+                           @NonNull final String objectName,
+                           @NonNull final String mimeType,
+                           @NonNull final InputStream is) throws IOException, InvalidKeyException,
             NoSuchAlgorithmException, InsufficientDataException,
             ErrorResponseException,
             InvalidResponseException, InternalException, XmlParserException, ServerException {
@@ -186,7 +188,7 @@ public class ImageStorageService {
         is.close();
     }
 
-    public InputStream downloadFile(@NonNull String bucketName, @NonNull String objectName)
+    public InputStream downloadFile(@NonNull final String bucketName, @NonNull final String objectName)
             throws IOException, InvalidKeyException,
             NoSuchAlgorithmException, InsufficientDataException,
             ErrorResponseException, InvalidResponseException, InternalException, XmlParserException, ServerException {
@@ -194,7 +196,7 @@ public class ImageStorageService {
         return minioClient.getObject(GetObjectArgs.builder().bucket(bucketName).object(objectName).build());
     }
 
-    public void deleteFile(@NonNull String bucketName, @NonNull String objectName) throws IOException, InvalidKeyException,
+    public void deleteFile(@NonNull final String bucketName, @NonNull final String objectName) throws IOException, InvalidKeyException,
             NoSuchAlgorithmException, InsufficientDataException, InvalidResponseException,
             ErrorResponseException, InternalException, XmlParserException, ServerException {
              minioClient.removeObject(RemoveObjectArgs.builder().bucket(bucketName).object(objectName).build());
