@@ -517,7 +517,7 @@
                 <configuration>
                     <testFailureIgnore>true</testFailureIgnore>
                     <includes>
-                        <include>**/*Test.java</include>
+                        <include>**/*Tests.java</include>
                     </includes>
                     <argLine>${argLine} -Dspring.profiles.active=test</argLine>
                 </configuration>
