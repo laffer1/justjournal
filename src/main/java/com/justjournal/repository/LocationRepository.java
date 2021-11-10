@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2004, 2005, 2014 Lucas Holt
+Copyright (c) 2003-2021, Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -31,18 +31,16 @@ TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
-
 package com.justjournal.repository;
 
+
 import com.justjournal.model.Location;
-import org.springframework.data.repository.CrudRepository;
+import java.util.List;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 public interface LocationRepository extends PagingAndSortingRepository<Location, Integer> {
 
-    List<Location> findAll();
+  List<Location> findAll();
 }

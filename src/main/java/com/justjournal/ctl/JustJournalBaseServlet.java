@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2005-2009 Lucas Holt
+Copyright (c) 2003-2021, Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -31,14 +31,13 @@ TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
-
 package com.justjournal.ctl;
+
 
 import com.justjournal.core.Constants;
 import com.justjournal.core.Settings;
 import com.justjournal.utility.ETag;
-import org.springframework.beans.factory.annotation.Autowired;
-
+import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.ServletRequest;
@@ -46,118 +45,121 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Base servlet to do some of the repetative servlet initialization stuff.
- * <p/>
- * Date: Sep 25, 2005 Time: 9:04:00 PM
+ *
+ * <p>Date: Sep 25, 2005 Time: 9:04:00 PM
  *
  * @author Lucas Holt
  * @version $Id: JustJournalBaseServlet.java,v 1.17 2009/07/11 02:03:43 laffer1 Exp $
  * @since 1.0
  */
 public abstract class JustJournalBaseServlet extends HttpServlet {
-    
-    @Autowired
-    protected Settings set;
 
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request  servlet request
-     * @param response servlet response
-     */
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws java.io.IOException {
-        processRequest(request, response, false);
+  @Autowired protected Settings set;
+
+  /**
+   * Handles the HTTP <code>GET</code> method.
+   *
+   * @param request servlet request
+   * @param response servlet response
+   */
+  @Override
+  protected void doGet(HttpServletRequest request, HttpServletResponse response)
+      throws java.io.IOException {
+    processRequest(request, response, false);
+  }
+
+  /**
+   * Handles the HTTP <code>POST</code> method.
+   *
+   * @param request servlet request
+   * @param response servlet response
+   */
+  @Override
+  protected void doPost(HttpServletRequest request, HttpServletResponse response)
+      throws java.io.IOException {
+    processRequest(request, response, false);
+  }
+
+  @Override
+  protected void doHead(
+      HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)
+      throws ServletException, IOException {
+    processRequest(httpServletRequest, httpServletResponse, true);
+  }
+
+  protected void processRequest(
+      HttpServletRequest request, HttpServletResponse response, boolean head)
+      throws java.io.IOException {
+    final String contentType = "text/html; charset=utf-8";
+    final StringBuilder sb = new StringBuilder(512);
+    final HttpSession session = request.getSession(true);
+
+    response.setContentType(contentType);
+    response.setBufferSize(Constants.DEFAULT_BUFFER_SIZE);
+    response.setDateHeader("Expires", System.currentTimeMillis());
+    response.setDateHeader("Last-Modified", System.currentTimeMillis());
+    response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
+    response.setHeader("Pragma", "no-cache");
+
+    execute(request, response, session, sb);
+
+    /* create etag */
+    ETag etag = new ETag(response);
+    etag.writeFromString(sb.toString());
+
+    response.setContentLength(sb.length());
+
+    if (head) {
+      response.flushBuffer();
+    } else {
+      final ServletOutputStream outstream = response.getOutputStream();
+      outstream.print(sb.toString());
+      outstream.flush();
+      outstream.close();
     }
+  }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request  servlet request
-     * @param response servlet response
-     */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws java.io.IOException {
-        processRequest(request, response, false);
-    }
+  @Override
+  public long getLastModified(HttpServletRequest request) {
+    return new java.util.Date().getTime() / 1000 * 1000;
+  }
 
-    @Override
-    protected void doHead(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ServletException, IOException {
-        processRequest(httpServletRequest, httpServletResponse, true);
-    }
+  protected abstract void execute(
+      HttpServletRequest request,
+      HttpServletResponse response,
+      HttpSession session,
+      StringBuilder sb);
 
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response, boolean head)
-            throws java.io.IOException {
-        final String contentType = "text/html; charset=utf-8";
-        final StringBuilder sb = new StringBuilder(512);
-        final HttpSession session = request.getSession(true);
+  /**
+   * Get a string input parameter guaranteed not to be null
+   *
+   * @param request Servlet Request
+   * @param input Name of the parameter
+   * @return Trimmed, Not null string from parameter
+   */
+  protected String fixInput(ServletRequest request, String input) {
+    String fixed = request.getParameter(input);
 
-        response.setContentType(contentType);
-        response.setBufferSize(Constants.DEFAULT_BUFFER_SIZE);
-        response.setDateHeader("Expires", System.currentTimeMillis());
-        response.setDateHeader("Last-Modified", System.currentTimeMillis());
-        response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
-        response.setHeader("Pragma", "no-cache");
+    if (fixed == null) fixed = "";
 
-        execute(request, response, session, sb);
+    return fixed.trim();
+  }
 
-        /* create etag */
-        ETag etag = new ETag(response);
-        etag.writeFromString(sb.toString());
+  /**
+   * Get a string header guaranteed not to be null
+   *
+   * @param request Servlet Request
+   * @param input Name of the header
+   * @return Trimmed, Not null string from header
+   */
+  protected String fixHeaderInput(HttpServletRequest request, String input) {
+    String fixed = request.getHeader(input);
 
-        response.setContentLength(sb.length());
-
-        if (head) {
-            response.flushBuffer();
-        } else {
-            final ServletOutputStream outstream = response.getOutputStream();
-            outstream.print(sb.toString());
-            outstream.flush();
-            outstream.close();
-        }
-    }
-
-    @Override
-    public long getLastModified(HttpServletRequest request) {
-        return new java.util.Date().getTime() / 1000 * 1000;
-    }
-    
-    protected abstract void execute(HttpServletRequest request, HttpServletResponse response, HttpSession session,
-                                    StringBuilder sb);
-
-    /**
-     * Get a string input parameter guaranteed not to be null
-     *
-     * @param request Servlet Request
-     * @param input   Name of the parameter
-     * @return Trimmed, Not null string from parameter
-     */
-    protected String fixInput(ServletRequest request, String input) {
-        String fixed = request.getParameter(input);
-
-        if (fixed == null)
-            fixed = "";
-
-        return fixed.trim();
-    }
-
-    /**
-     * Get a string header guaranteed not to be null
-     *
-     * @param request Servlet Request
-     * @param input   Name of the header
-     * @return Trimmed, Not null string from header
-     */
-    protected String fixHeaderInput(HttpServletRequest request, String input) {
-        String fixed = request.getHeader(input);
-
-        if (fixed == null)
-            fixed = "";
-        return fixed.trim();
-    }
+    if (fixed == null) fixed = "";
+    return fixed.trim();
+  }
 }

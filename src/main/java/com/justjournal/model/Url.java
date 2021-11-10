@@ -1,7 +1,40 @@
+/*
+Copyright (c) 2003-2021, Lucas Holt
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are
+permitted provided that the following conditions are met:
+
+  Redistributions of source code must retain the above copyright notice, this list of
+  conditions and the following disclaimer.
+
+  Redistributions in binary form must reproduce the above copyright notice, this
+  list of conditions and the following disclaimer in the documentation and/or other
+  materials provided with the distribution.
+
+  Neither the name of the Just Journal nor the names of its contributors
+  may be used to endorse or promote products derived from this software without
+  specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
+GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+*/
 package com.justjournal.model;
 
-import com.justjournal.utility.DateConvert;
 
+import com.justjournal.utility.DateConvert;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -10,73 +43,79 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(value = XmlAccessType.NONE)
 @XmlRootElement(name = "url")
 public class Url {
-    public enum Priority {
-        HIGH("1.0"), MEDIUMHIGH("0.7"), MEDIUM("0.5"), MEDIUMLOW("0.2"), LOW("0.0");
+  public enum Priority {
+    HIGH("1.0"),
+    MEDIUMHIGH("0.7"),
+    MEDIUM("0.5"),
+    MEDIUMLOW("0.2"),
+    LOW("0.0");
 
-        private String value;
+    private String value;
 
-        Priority(final String value) {
-            this.value = value;
-        }
-
-        public String getValue() {
-            return value;
-        }
+    Priority(final String value) {
+      this.value = value;
     }
 
-    public enum ChangeFreqency {
-        ALWAYS("always"), HOURLY("hourly"), DAILY("daily"), WEEKLY("weekly"), MONTHLY("monthly"), YEARLY("yearly"), NEVER("never");
+    public String getValue() {
+      return value;
+    }
+  }
 
-        private String value;
+  public enum ChangeFreqency {
+    ALWAYS("always"),
+    HOURLY("hourly"),
+    DAILY("daily"),
+    WEEKLY("weekly"),
+    MONTHLY("monthly"),
+    YEARLY("yearly"),
+    NEVER("never");
 
-        ChangeFreqency(final String value) {
-            this.value = value;
-        }
+    private String value;
 
-        public String getValue() {
-            return value;
-        }
+    ChangeFreqency(final String value) {
+      this.value = value;
     }
 
-    @XmlElement
-    private String loc;
-
-    @XmlElement
-    private String lastmod = DateConvert.encode8601();
-
-    @XmlElement
-    private String changefreq = ChangeFreqency.DAILY.getValue();
-
-    @XmlElement
-    private String priority = Priority.MEDIUM.getValue();
-
-    public Url() {
-        this("", Priority.MEDIUM, ChangeFreqency.DAILY);
+    public String getValue() {
+      return value;
     }
+  }
 
-    public Url(final String loc, final Priority priority) {
-        this(loc, priority, ChangeFreqency.DAILY);
-    }
+  @XmlElement private String loc;
 
-    public Url(final String loc, final Priority priority, final ChangeFreqency freqency) {
-        this.loc = loc;
-        this.priority = priority.getValue();
-        this.changefreq = freqency.getValue();
-    }
+  @XmlElement private String lastmod = DateConvert.encode8601();
 
-    public String getLoc() {
-        return loc;
-    }
+  @XmlElement private String changefreq = ChangeFreqency.DAILY.getValue();
 
-    public String getPriority() {
-        return priority;
-    }
+  @XmlElement private String priority = Priority.MEDIUM.getValue();
 
-    public String getChangefreq() {
-        return changefreq;
-    }
+  public Url() {
+    this("", Priority.MEDIUM, ChangeFreqency.DAILY);
+  }
 
-    public String getLastmod() {
-        return lastmod;
-    }
+  public Url(final String loc, final Priority priority) {
+    this(loc, priority, ChangeFreqency.DAILY);
+  }
+
+  public Url(final String loc, final Priority priority, final ChangeFreqency freqency) {
+    this.loc = loc;
+    this.priority = priority.getValue();
+    this.changefreq = freqency.getValue();
+  }
+
+  public String getLoc() {
+    return loc;
+  }
+
+  public String getPriority() {
+    return priority;
+  }
+
+  public String getChangefreq() {
+    return changefreq;
+  }
+
+  public String getLastmod() {
+    return lastmod;
+  }
 }

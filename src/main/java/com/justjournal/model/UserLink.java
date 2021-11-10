@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2005, 2006, 2008 Lucas Holt
+Copyright (c) 2003-2021, Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -31,20 +31,18 @@ TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
-
 package com.justjournal.model;
+
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.io.Serializable;
+import javax.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-
-import javax.persistence.*;
-import java.io.Serializable;
 
 /**
  * Blog Link List
@@ -58,104 +56,97 @@ import java.io.Serializable;
 @Entity
 @Table(name = "user_link")
 public class UserLink implements Serializable, Comparable<UserLink> {
-    private static final long serialVersionUID = 6356304916167520610L;
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "linkid")
-    private int id;
+  private static final long serialVersionUID = 6356304916167520610L;
 
-    @Column(name = "title")
-    private String title;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "linkid")
+  private int id;
 
-    @Column(name = "uri")
-    private String uri;
+  @Column(name = "title")
+  private String title;
 
-    @JsonBackReference
-    @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+  @Column(name = "uri")
+  private String uri;
 
-    @JsonCreator
-    public UserLink() {
-        super();
-    }
+  @JsonBackReference
+  @JsonIgnore
+  @ManyToOne
+  @JoinColumn(name = "user_id")
+  private User user;
 
-    /**
-     * Retrieve unique identifier for link
-     *
-     * @return int > 0
-     */
-    public int getId() {
-        return id;
-    }
+  @JsonCreator
+  public UserLink() {
+    super();
+  }
 
-    /**
-     * Set unique identifier for link
-     *
-     * @param id > 0
-     */
-    public void setId(int id) {
-        if (id > 0)
-            this.id = id;
-        else
-            throw new IllegalArgumentException("id must be greater than zero");
-    }
+  /**
+   * Retrieve unique identifier for link
+   *
+   * @return int > 0
+   */
+  public int getId() {
+    return id;
+  }
 
-    /**
-     * Retrieve the link title
-     *
-     * @return title
-     */
-    public String getTitle() {
-        return title;
-    }
+  /**
+   * Set unique identifier for link
+   *
+   * @param id > 0
+   */
+  public void setId(int id) {
+    if (id > 0) this.id = id;
+    else throw new IllegalArgumentException("id must be greater than zero");
+  }
 
-    /**
-     * Set the link title so that it can be displayed instead of just the hyperlink itself.
-     *
-     * @param title ascii text
-     */
-    public void setTitle(String title) {
-        if (title != null)
-            this.title = title;
-        else
-            throw new IllegalArgumentException("title cannot be null");
-    }
+  /**
+   * Retrieve the link title
+   *
+   * @return title
+   */
+  public String getTitle() {
+    return title;
+  }
 
-    /**
-     * Retrieve the address of the link which should be a complete URI
-     *
-     * @return uri string
-     */
-    public String getUri() {
-        return uri;
-    }
+  /**
+   * Set the link title so that it can be displayed instead of just the hyperlink itself.
+   *
+   * @param title ascii text
+   */
+  public void setTitle(String title) {
+    if (title != null) this.title = title;
+    else throw new IllegalArgumentException("title cannot be null");
+  }
 
-    /**
-     * Set the Uniform resource identifier as a string
-     *
-     * @param uri a valid uri
-     */
-    public void setUri(String uri) {
-        if (uri != null)
-            this.uri = uri;
-        else
-            throw new IllegalArgumentException("uri cannot be null");
-    }
+  /**
+   * Retrieve the address of the link which should be a complete URI
+   *
+   * @return uri string
+   */
+  public String getUri() {
+    return uri;
+  }
 
-    public User getUser() {
-        return user;
-    }
+  /**
+   * Set the Uniform resource identifier as a string
+   *
+   * @param uri a valid uri
+   */
+  public void setUri(String uri) {
+    if (uri != null) this.uri = uri;
+    else throw new IllegalArgumentException("uri cannot be null");
+  }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+  public User getUser() {
+    return user;
+  }
 
-    @Override
-    public int compareTo(UserLink ul) {
-        return this.getTitle().compareTo(ul.getTitle());
-    }
+  public void setUser(User user) {
+    this.user = user;
+  }
 
+  @Override
+  public int compareTo(UserLink ul) {
+    return this.getTitle().compareTo(ul.getTitle());
+  }
 }

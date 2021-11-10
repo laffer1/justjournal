@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2005, Lucas Holt
+Copyright (c) 2003-2021, Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -31,17 +31,14 @@ TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
-
 package com.justjournal.repository;
+
 
 import com.justjournal.model.Friend;
 import com.justjournal.model.User;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
-
 
 /**
  * Friend Dao
@@ -51,5 +48,5 @@ import java.util.List;
 @Repository
 public interface FriendsRepository extends PagingAndSortingRepository<Friend, Integer> {
 
-    Friend findOneByUserAndFriend(@Param("user") User user, @Param("friend") User friend);
+  Friend findOneByUserAndFriend(@Param("user") User user, @Param("friend") User friend);
 }

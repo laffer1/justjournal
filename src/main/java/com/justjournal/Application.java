@@ -62,32 +62,32 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 @EnableJpaRepositories
 @SpringBootApplication(
-        exclude = {
-            GsonAutoConfiguration.class,
-            XADataSourceAutoConfiguration.class,
-            SolrAutoConfiguration.class,
-            SolrRepositoriesAutoConfiguration.class,
-            Neo4jRepositoriesAutoConfiguration.class,
-            MongoRepositoriesAutoConfiguration.class
-        })
+    exclude = {
+      GsonAutoConfiguration.class,
+      XADataSourceAutoConfiguration.class,
+      SolrAutoConfiguration.class,
+      SolrRepositoriesAutoConfiguration.class,
+      Neo4jRepositoriesAutoConfiguration.class,
+      MongoRepositoriesAutoConfiguration.class
+    })
 public class Application extends SpringBootServletInitializer {
 
-    public static void main(final String[] args) {
-        SpringApplication.run(Application.class, args);
-    }
+  public static void main(final String[] args) {
+    SpringApplication.run(Application.class, args);
+  }
 
-    @Bean
-    public ServletRegistrationBean updateJournalServlet() {
-        return new ServletRegistrationBean(new UpdateJournal(), "/updateJournal");
-    }
+  @Bean
+  public ServletRegistrationBean updateJournalServlet() {
+    return new ServletRegistrationBean(new UpdateJournal(), "/updateJournal");
+  }
 
-    @Bean
-    public ServletRegistrationBean loginAccountServlet() {
-        return new ServletRegistrationBean(new LoginAccount(), "/loginAccount");
-    }
+  @Bean
+  public ServletRegistrationBean loginAccountServlet() {
+    return new ServletRegistrationBean(new LoginAccount(), "/loginAccount");
+  }
 
-    @Bean
-    public ServletRegistrationBean xmlrpc() {
-        return new ServletRegistrationBean(new XmlRpc(), "/xml-rpc/*");
-    }
+  @Bean
+  public ServletRegistrationBean xmlrpc() {
+    return new ServletRegistrationBean(new XmlRpc(), "/xml-rpc/*");
+  }
 }

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2005 Lucas Holt
+Copyright (c) 2003-2021, Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -31,23 +31,20 @@ TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
-
 package com.justjournal.ctl.api;
+
+import static com.justjournal.core.Constants.PARAM_ID;
 
 import com.justjournal.core.Constants;
 import com.justjournal.model.Mood;
 import com.justjournal.repository.MoodRepository;
+import java.util.Collections;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Collections;
-import java.util.List;
-
-import static com.justjournal.core.Constants.PARAM_ID;
 
 /**
  * List moods used for journal entries.
@@ -59,36 +56,34 @@ import static com.justjournal.core.Constants.PARAM_ID;
 @RequestMapping("/api/mood")
 public class MoodController {
 
-    private final MoodRepository moodDao;
+  private final MoodRepository moodDao;
 
-    @Autowired
-    public MoodController(final MoodRepository moodDao) {
-        this.moodDao = moodDao;
-    }
+  @Autowired
+  public MoodController(final MoodRepository moodDao) {
+    this.moodDao = moodDao;
+  }
 
   //  @Cacheable(value = "mood", key = "id")
-    @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public ResponseEntity<Mood> getById(@PathVariable(PARAM_ID) final Integer id) {
-        final Mood m = moodDao.findById(id).orElse(null);
-        if (m == null)
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+  @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @ResponseBody
+  public ResponseEntity<Mood> getById(@PathVariable(PARAM_ID) final Integer id) {
+    final Mood m = moodDao.findById(id).orElse(null);
+    if (m == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-        return ResponseEntity.ok().eTag(Integer.toString(m.hashCode())).body(m);
-    }
+    return ResponseEntity.ok().eTag(Integer.toString(m.hashCode())).body(m);
+  }
 
-    /**
-     * All moods usable by blogs
-     *
-     * @return mood list
-     */
- //   @Cacheable("mood")
-    @GetMapping(headers = Constants.HEADER_ACCEPT_ALL, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public ResponseEntity<List<Mood>> getMoodList() {
-        final List<Mood> list = moodDao.findAll();
-        Collections.sort(list);
-        return ResponseEntity.ok().eTag(Integer.toString(list.hashCode())).body(list);
-    }
-
+  /**
+   * All moods usable by blogs
+   *
+   * @return mood list
+   */
+  //   @Cacheable("mood")
+  @GetMapping(headers = Constants.HEADER_ACCEPT_ALL, produces = MediaType.APPLICATION_JSON_VALUE)
+  @ResponseBody
+  public ResponseEntity<List<Mood>> getMoodList() {
+    final List<Mood> list = moodDao.findAll();
+    Collections.sort(list);
+    return ResponseEntity.ok().eTag(Integer.toString(list.hashCode())).body(list);
+  }
 }

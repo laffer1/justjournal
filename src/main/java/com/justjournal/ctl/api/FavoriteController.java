@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2005, Lucas Holt
+Copyright (c) 2003-2021, Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -33,6 +33,7 @@ POSSIBILITY OF SUCH DAMAGE.
 */
 package com.justjournal.ctl.api;
 
+
 import com.justjournal.Login;
 import com.justjournal.core.Constants;
 import com.justjournal.ctl.error.ErrorHandler;
@@ -42,6 +43,13 @@ import com.justjournal.model.User;
 import com.justjournal.repository.EntryRepository;
 import com.justjournal.repository.FavoriteRepository;
 import com.justjournal.repository.UserRepository;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -53,121 +61,113 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-
 /**
  * View the favorite entries list.
  *
  * @author Lucas Holt
  * @version 1.0
  * @since 1.0
- * <p/>
- * Created: Date: Dec 10, 2005 Time: 8:44:39 PM
+ *     <p>Created: Date: Dec 10, 2005 Time: 8:44:39 PM
  */
 @Slf4j
 @RestController
 @RequestMapping("/api/favorite")
 public class FavoriteController {
 
-    private final FavoriteRepository favoriteRepository;
+  private final FavoriteRepository favoriteRepository;
 
-    private final EntryRepository entryRepository;
+  private final EntryRepository entryRepository;
 
-    private final UserRepository userRepository;
+  private final UserRepository userRepository;
 
-    @Autowired
-    public FavoriteController(final FavoriteRepository favoriteRepository, final EntryRepository entryRepository,
-                              final UserRepository userRepository) {
-        this.favoriteRepository = favoriteRepository;
-        this.entryRepository = entryRepository;
-        this.userRepository = userRepository;
+  @Autowired
+  public FavoriteController(
+      final FavoriteRepository favoriteRepository,
+      final EntryRepository entryRepository,
+      final UserRepository userRepository) {
+    this.favoriteRepository = favoriteRepository;
+    this.entryRepository = entryRepository;
+    this.userRepository = userRepository;
+  }
+
+  /**
+   * Retrieve the collection of favorite entries
+   *
+   * @return an arraylist containing EntryTo objects
+   */
+  @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+  public @ResponseBody Collection<Entry> getFavorites(
+      final HttpSession session, final HttpServletResponse response) {
+    final Collection<Entry> entries = new ArrayList<>();
+
+    try {
+      final User user = userRepository.findById(Login.currentLoginId(session)).orElse(null);
+
+      if (user == null) {
+        response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        return Collections.emptyList();
+      }
+
+      final List<Favorite> favoriteList = favoriteRepository.findByUser(user);
+
+      for (final Favorite f : favoriteList) {
+        entries.add(f.getEntry());
+      }
+
+    } catch (final Exception e) {
+      response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+      log.error(e.getMessage());
+    }
+    return entries;
+  }
+
+  @PostMapping(value = "/{entryId}")
+  @ResponseBody
+  public Map<String, String> create(
+      @PathVariable(Constants.PARAM_ENTRY_ID) final int entryId,
+      final HttpSession session,
+      final HttpServletResponse response) {
+    try {
+      final User user = userRepository.findById(Login.currentLoginId(session)).orElse(null);
+      final Entry e = entryRepository.findById(entryId).orElse(null);
+
+      final Favorite f = new Favorite();
+      f.setUser(user);
+      f.setEntry(e);
+
+      favoriteRepository.saveAndFlush(f);
+      return java.util.Collections.singletonMap("id", Integer.toString(entryId));
+    } catch (final Exception e) {
+      log.error(e.getMessage());
+      response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+      return ErrorHandler.modelError("Could not add the favorite.");
+    }
+  }
+
+  @DeleteMapping(value = "/{entryId}")
+  @ResponseBody
+  public Map<String, String> delete(
+      @PathVariable(Constants.PARAM_ENTRY_ID) final int entryId,
+      final HttpSession session,
+      final HttpServletResponse response) {
+
+    if (!Login.isAuthenticated(session)) {
+      response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+      return ErrorHandler.modelError(Constants.ERR_INVALID_LOGIN);
     }
 
-    /**
-     * Retrieve the collection of favorite entries
-     *
-     * @return an arraylist containing EntryTo objects
-     */
+    try {
+      final User user = userRepository.findById(Login.currentLoginId(session)).orElse(null);
+      final Entry e = entryRepository.findById(entryId).orElse(null);
+      final Favorite f = favoriteRepository.findByUserAndEntry(user, e);
+      favoriteRepository.delete(f);
+      favoriteRepository.flush();
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public
-    @ResponseBody
-    Collection<Entry> getFavorites(final HttpSession session, final HttpServletResponse response) {
-        final Collection<Entry> entries = new ArrayList<>();
-
-        try {
-            final User user = userRepository.findById(Login.currentLoginId(session)).orElse(null);
-
-            if (user == null) {
-                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                return Collections.emptyList();
-            }
-
-            final List<Favorite> favoriteList = favoriteRepository.findByUser(user);
-
-            for (final Favorite f : favoriteList) {
-                entries.add(f.getEntry());
-            }
-
-        } catch (final Exception e) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            log.error(e.getMessage());
-        }
-        return entries;
+      return java.util.Collections.singletonMap("id", Integer.toString(entryId));
+    } catch (final Exception e) {
+      log.error(e.getMessage());
+      response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+      return ErrorHandler.modelError("Could not delete the favorite.");
     }
-
-    @PostMapping(value = "/{entryId}")
-    @ResponseBody
-    public Map<String, String> create(@PathVariable(Constants.PARAM_ENTRY_ID) final int entryId,
-                                      final HttpSession session,
-                                      final HttpServletResponse response) {
-        try {
-            final User user = userRepository.findById(Login.currentLoginId(session)).orElse(null);
-            final Entry e = entryRepository.findById(entryId).orElse(null);
-
-            final Favorite f = new Favorite();
-            f.setUser(user);
-            f.setEntry(e);
-
-            favoriteRepository.saveAndFlush(f);
-            return java.util.Collections.singletonMap("id", Integer.toString(entryId));
-        } catch (final Exception e) {
-            log.error(e.getMessage());
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return ErrorHandler.modelError("Could not add the favorite.");
-        }
-    }
-
-    @DeleteMapping(value = "/{entryId}")
-    @ResponseBody
-    public Map<String, String> delete(@PathVariable(Constants.PARAM_ENTRY_ID) final int entryId,
-                                      final HttpSession session,
-                                      final HttpServletResponse response) {
-
-        if (!Login.isAuthenticated(session)) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return ErrorHandler.modelError(Constants.ERR_INVALID_LOGIN);
-        }
-
-        try {
-            final User user = userRepository.findById(Login.currentLoginId(session)).orElse(null);
-            final Entry e = entryRepository.findById(entryId).orElse(null);
-            final Favorite f = favoriteRepository.findByUserAndEntry(user, e);
-            favoriteRepository.delete(f);
-            favoriteRepository.flush();
-
-            return java.util.Collections.singletonMap("id", Integer.toString(entryId));
-        } catch (final Exception e) {
-            log.error(e.getMessage());
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return ErrorHandler.modelError("Could not delete the favorite.");
-        }
-    }
+  }
 }

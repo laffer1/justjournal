@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2005, Lucas Holt
+Copyright (c) 2003-2021, Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -31,15 +31,14 @@ TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
-
 package com.justjournal.model;
+
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
-
-import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import javax.persistence.*;
 
 /**
  * Rss file record.
@@ -51,90 +50,90 @@ import java.util.Date;
 @Table(name = "rss_cache")
 public final class RssCache implements Serializable {
 
-    private static final long serialVersionUID = 7699995609479936367L;
+  private static final long serialVersionUID = 7699995609479936367L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private int id;
 
-    // reserved keyword
-    @Column(name="\"interval\"", columnDefinition = "tinyint default 24")
-    private int interval = 24;
+  // reserved keyword
+  @Column(name = "\"interval\"", columnDefinition = "tinyint default 24")
+  private int interval = 24;
 
-    @Temporal(value = TemporalType.TIMESTAMP)
-    @Column(name = "lastupdated")
-    private Date lastUpdated;
+  @Temporal(value = TemporalType.TIMESTAMP)
+  @Column(name = "lastupdated")
+  private Date lastUpdated;
 
-    @Column(name = "uri", nullable = false, length = 255, columnDefinition = "tinytext")
-    private String uri;
+  @Column(name = "uri", nullable = false, length = 255, columnDefinition = "tinytext")
+  private String uri;
 
-    @Column(name = "content", nullable = false, length = 16777215, columnDefinition = "MEDIUMTEXT")
-    private String content;
+  @Column(name = "content", nullable = false, length = 16777215, columnDefinition = "MEDIUMTEXT")
+  private String content;
 
-    @Column(name = "active", columnDefinition = "boolean default true")
-    private Boolean active;
+  @Column(name = "active", columnDefinition = "boolean default true")
+  private Boolean active;
 
-    @Column(name = "error_count", columnDefinition = "int default 0", nullable = false)
-    private int errorCount;
+  @Column(name = "error_count", columnDefinition = "int default 0", nullable = false)
+  private int errorCount;
 
-    @JsonCreator
-    public RssCache() {
-        super();
-    }
+  @JsonCreator
+  public RssCache() {
+    super();
+  }
 
-    public int getId() {
-        return id;
-    }
+  public int getId() {
+    return id;
+  }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+  public void setId(int id) {
+    this.id = id;
+  }
 
-    public int getInterval() {
-        return interval;
-    }
+  public int getInterval() {
+    return interval;
+  }
 
-    public void setInterval(int interval) {
-        this.interval = interval;
-    }
+  public void setInterval(int interval) {
+    this.interval = interval;
+  }
 
-    public Date getLastUpdated() {
-        return lastUpdated;
-    }
+  public Date getLastUpdated() {
+    return lastUpdated;
+  }
 
-    public void setLastUpdated(Date lastUpdated) {
-        this.lastUpdated = lastUpdated;
-    }
+  public void setLastUpdated(Date lastUpdated) {
+    this.lastUpdated = lastUpdated;
+  }
 
-    public String getUri() {
-        return uri;
-    }
+  public String getUri() {
+    return uri;
+  }
 
-    public void setUri(String uri) {
-        this.uri = uri;
-    }
+  public void setUri(String uri) {
+    this.uri = uri;
+  }
 
-    public String getContent() {
-        return content;
-    }
+  public String getContent() {
+    return content;
+  }
 
-    public void setContent(String content) {
-        this.content = content;
-    }
+  public void setContent(String content) {
+    this.content = content;
+  }
 
-    public Boolean getActive() {
-        return active;
-    }
+  public Boolean getActive() {
+    return active;
+  }
 
-    public void setActive(final Boolean active) {
-        this.active = active;
-    }
+  public void setActive(final Boolean active) {
+    this.active = active;
+  }
 
-    public int getErrorCount() {
-        return errorCount;
-    }
+  public int getErrorCount() {
+    return errorCount;
+  }
 
-    public void setErrorCount(final int errorCount) {
-        this.errorCount = errorCount;
-    }
+  public void setErrorCount(final int errorCount) {
+    this.errorCount = errorCount;
+  }
 }

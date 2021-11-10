@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2006, 2007  Lucas Holt
+Copyright (c) 2003-2021, Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -31,8 +31,8 @@ TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
-
 package com.justjournal.model;
+
 
 import java.util.Date;
 
@@ -42,37 +42,36 @@ import java.util.Date;
  * @author Lucas Holt
  */
 public interface DateTime {
-    int getDay();
+  int getDay();
 
-    void setDay(int day);
+  void setDay(int day);
 
-    int getMonth();
+  int getMonth();
 
-    void setMonth(int month);
+  void setMonth(int month);
 
-    int getYear();
+  int getYear();
 
-    void setYear(int year);
+  void setYear(int year);
 
-    int getHour();
+  int getHour();
 
-    void setHour(int hour);
+  void setHour(int hour);
 
-    int getMinutes();
+  int getMinutes();
 
-    void setMinutes(int minutes);
+  void setMinutes(int minutes);
 
-    void set(String mysqlDate)
-            throws java.text.ParseException;
+  void set(String mysqlDate) throws java.text.ParseException;
 
-    void set(java.util.Date date);
+  void set(java.util.Date date);
 
-    Date toDate();
+  Date toDate();
 
-    String toPubDate();
+  String toPubDate();
 
-    String toRFC3339();
+  String toRFC3339();
 
-    @Override
-    String toString();
+  @Override
+  String toString();
 }

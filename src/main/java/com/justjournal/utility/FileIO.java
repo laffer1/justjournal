@@ -1,20 +1,20 @@
 /*
-Copyright (c) 2005, Lucas Holt
+Copyright (c) 2003-2021, Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
 permitted provided that the following conditions are met:
 
- Redistributions of source code must retain the above copyright notice, this list of
- conditions and the following disclaimer.
+  Redistributions of source code must retain the above copyright notice, this list of
+  conditions and the following disclaimer.
 
- Redistributions in binary form must reproduce the above copyright notice, this
- list of conditions and the following disclaimer in the documentation and/or other
- materials provided with the distribution.
+  Redistributions in binary form must reproduce the above copyright notice, this
+  list of conditions and the following disclaimer in the documentation and/or other
+  materials provided with the distribution.
 
- Neither the name of the Just Journal nor the names of its contributors
- may be used to endorse or promote products derived from this software without
- specific prior written permission.
+  Neither the name of the Just Journal nor the names of its contributors
+  may be used to endorse or promote products derived from this software without
+  specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
 CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
@@ -31,7 +31,6 @@ TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
-
 package com.justjournal.utility;
 
 
@@ -44,75 +43,73 @@ import java.io.*;
  */
 public final class FileIO {
 
-    public
-    static String readTextFile(final String filePath)
-            throws IOException {
-        int myC;
-        final StringWriter myInput = new StringWriter();
-        try (FileReader myFR = new FileReader(filePath)) {
-            myC = myFR.read();
+  public static String readTextFile(final String filePath) throws IOException {
+    int myC;
+    final StringWriter myInput = new StringWriter();
+    try (FileReader myFR = new FileReader(filePath)) {
+      myC = myFR.read();
 
-            while (myC != -1) {
-                myInput.write(myC);
-                // System.out.print( myC );  // debug
-                myC = myFR.read();
-            }
-        }
-
-        return myInput.toString();
+      while (myC != -1) {
+        myInput.write(myC);
+        // System.out.print( myC );  // debug
+        myC = myFR.read();
+      }
     }
 
-    public static void writeTextFile(final String filePath, final String dataToWrite)
-            throws IOException {
-        try (FileWriter myFW = new FileWriter(filePath, false)) {
-            myFW.write(dataToWrite);
-        }
+    return myInput.toString();
+  }
+
+  public static void writeTextFile(final String filePath, final String dataToWrite)
+      throws IOException {
+    try (FileWriter myFW = new FileWriter(filePath, false)) {
+      myFW.write(dataToWrite);
     }
+  }
 
-    public boolean makeDirectory(final String path) {
-        final File dir = new File(path);
-        return dir.mkdir();
+  public boolean makeDirectory(final String path) {
+    final File dir = new File(path);
+    return dir.mkdir();
+  }
+
+  public boolean deleteDirectory(final String path) {
+    final File dir = new File(path);
+    return dir.isDirectory() && dir.delete();
+  }
+
+  public boolean deleteFile(final String path) {
+    final File f = new File(path);
+    return f.isFile() && f.delete();
+  }
+
+  public boolean touchFile(final String path) {
+    final File f = new File(path);
+
+    try {
+      return f.createNewFile();
+    } catch (final IOException ef) {
+      return false;
     }
+  }
 
-    public boolean deleteDirectory(final String path) {
-        final File dir = new File(path);
-        return dir.isDirectory() && dir.delete();
-    }
+  public long fileLength(final String path) {
+    final File f = new File(path);
+    return f.length();
+  }
 
-    public boolean deleteFile(final String path) {
-        final File f = new File(path);
-        return f.isFile() && f.delete();
-    }
+  public long fileLastModified(final String path) {
+    final File f = new File(path);
+    return f.lastModified();
+  }
 
-    public boolean touchFile(final String path) {
-        final File f = new File(path);
+  public boolean renameFile(final String source, final String destination) {
+    final File s = new File(source);
+    final File d = new File(destination);
 
-        try {
-            return f.createNewFile();
-        } catch (final IOException ef) {
-            return false;
-        }
-    }
+    return s.renameTo(d);
+  }
 
-    public long fileLength(final String path) {
-        final File f = new File(path);
-        return f.length();
-    }
-
-    public long fileLastModified(final String path) {
-        final File f = new File(path);
-        return f.lastModified();
-    }
-
-    public boolean renameFile(final String source, final String destination) {
-        final File s = new File(source);
-        final File d = new File(destination);
-
-        return s.renameTo(d);
-    }
-
-    public String[] listFiles(final String path) {
-        final File dir = new File(path);
-        return dir.list();
-    }
+  public String[] listFiles(final String path) {
+    final File dir = new File(path);
+    return dir.list();
+  }
 }

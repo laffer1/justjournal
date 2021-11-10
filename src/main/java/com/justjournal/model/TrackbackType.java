@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2008 Lucas Holt
+Copyright (c) 2003-2021, Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -31,17 +31,16 @@ TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
-
 package com.justjournal.model;
 
 /**
- * Type of trackback entry:  trackback, post-it or pingback http://wellformedweb.org/story/9
+ * Type of trackback entry: trackback, post-it or pingback http://wellformedweb.org/story/9
  *
  * @author Lucas Holt
  */
 public enum TrackbackType {
-    // these need to be lower case
-    trackback,
-    pingback,
-    postit
+  // these need to be lower case
+  trackback,
+  pingback,
+  postit
 }

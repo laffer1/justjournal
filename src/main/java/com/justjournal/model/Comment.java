@@ -1,42 +1,49 @@
 /*
- * Copyright (c) 2005-2011 Lucas Holt
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
- */
+Copyright (c) 2003-2021, Lucas Holt
+All rights reserved.
 
+Redistribution and use in source and binary forms, with or without modification, are
+permitted provided that the following conditions are met:
+
+  Redistributions of source code must retain the above copyright notice, this list of
+  conditions and the following disclaimer.
+
+  Redistributions in binary form must reproduce the above copyright notice, this
+  list of conditions and the following disclaimer in the documentation and/or other
+  materials provided with the distribution.
+
+  Neither the name of the Just Journal nor the names of its contributors
+  may be used to endorse or promote products derived from this software without
+  specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
+GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+*/
 package com.justjournal.model;
+
 
 import com.fasterxml.jackson.annotation.*;
 import com.justjournal.model.api.CommentTo;
 import com.justjournal.utility.HTMLUtil;
+import java.io.Serializable;
+import java.util.Date;
+import javax.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-
-import javax.persistence.*;
-import java.io.Serializable;
-import java.util.Date;
 
 /**
  * A comment
@@ -50,145 +57,137 @@ import java.util.Date;
 @Table(name = "comments")
 public final class Comment implements Serializable {
 
-    private static final long serialVersionUID = 3594701186407268256L;
+  private static final long serialVersionUID = 3594701186407268256L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id = 0;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private int id = 0;
 
-    @JsonBackReference(value = "entry-comment")
-    @JsonProperty("entry")
-    @ManyToOne
-    @JoinColumn(name = "eid")
-    private Entry entry;
+  @JsonBackReference(value = "entry-comment")
+  @JsonProperty("entry")
+  @ManyToOne
+  @JoinColumn(name = "eid")
+  private Entry entry;
 
-    @Column(name = "eid", insertable = false, updatable = false)
-    private int eid;
+  @Column(name = "eid", insertable = false, updatable = false)
+  private int eid;
 
-    @JsonBackReference(value = "comment-user")
-    @JsonProperty("user")
-    @ManyToOne
-    @JoinColumn(name = "uid")
-    private User user;
+  @JsonBackReference(value = "comment-user")
+  @JsonProperty("user")
+  @ManyToOne
+  @JoinColumn(name = "uid")
+  private User user;
 
-    @JsonIgnore
-    @Column(name = "date")
-    @Temporal(value = TemporalType.DATE)
-    private Date date = new Date();
+  @JsonIgnore
+  @Column(name = "date")
+  @Temporal(value = TemporalType.DATE)
+  private Date date = new Date();
 
-    @JsonProperty("subject")
-    @Column(name = "subject", length = 150)
-    private String subject = "";
+  @JsonProperty("subject")
+  @Column(name = "subject", length = 150)
+  private String subject = "";
 
-    // @Basic(fetch = FetchType.LAZY)
-    @JsonProperty("body")
-    @Column(name = "body")
-    @Lob
-    private String body = "";
+  // @Basic(fetch = FetchType.LAZY)
+  @JsonProperty("body")
+  @Column(name = "body")
+  @Lob
+  private String body = "";
 
-    @Getter
-    @Setter 
-    @JsonProperty("format")
-    @Column(name = "format", nullable = false, length = 8)
-    @Enumerated(EnumType.STRING)
-    private FormatType format = FormatType.TEXT;
+  @Getter
+  @Setter
+  @JsonProperty("format")
+  @Column(name = "format", nullable = false, length = 8)
+  @Enumerated(EnumType.STRING)
+  private FormatType format = FormatType.TEXT;
 
-    @JsonCreator
-    public Comment() {
-        super();
-    }
+  @JsonCreator
+  public Comment() {
+    super();
+  }
 
-    public int getId() {
-        return id;
-    }
+  public int getId() {
+    return id;
+  }
 
-    public void setId(final int commentId) {
-        if (commentId < 0)
-            throw new IllegalArgumentException("Illegal commentId: " +
-                    commentId);
+  public void setId(final int commentId) {
+    if (commentId < 0) throw new IllegalArgumentException("Illegal commentId: " + commentId);
 
-        this.id = commentId;
-    }
+    this.id = commentId;
+  }
 
+  public int getEid() {
+    return eid;
+  }
 
-    public int getEid() {
-        return eid;
-    }
+  public void setEid(final int eid) {
+    this.eid = eid;
+  }
 
-    public void setEid(final int eid) {
-        this.eid = eid;
-    }
+  public Date getDate() {
+    return date;
+  }
 
-    public Date getDate() {
-        return date;
-    }
+  public void setDate(final Date dateTime) {
+    this.date = dateTime;
+  }
 
-    public void setDate(final Date dateTime) {
-        this.date = dateTime;
-    }
+  public String getSubject() {
+    return subject;
+  }
 
-    public String getSubject() {
-        return subject;
-    }
+  public void setSubject(final String subjectText) {
 
-    public void setSubject(final String subjectText) {
+    if (subjectText.length() == 0) this.subject = "(no subject)";
+    else this.subject = subjectText;
+  }
 
-        if (subjectText.length() == 0)
-            this.subject = "(no subject)";
-        else
-            this.subject = subjectText;
-    }
+  public String getBody() {
+    return body;
+  }
 
-    public String getBody() {
-        return body;
-    }
+  public void setBody(final String bodyText) {
+    if (bodyText.length() < 2) throw new IllegalArgumentException("Illegal bodyText: " + bodyText);
 
-    public void setBody(final String bodyText) {
-        if (bodyText.length() < 2)
-            throw new IllegalArgumentException("Illegal bodyText: " +
-                    bodyText);
+    this.body = bodyText;
+  }
 
-        this.body = bodyText;
-    }
+  @JsonIgnore
+  @Transient
+  public String getBodyWithLinks() {
+    return HTMLUtil.uriToLink(getBody());
+  }
 
-    @JsonIgnore
-    @Transient
-    public String getBodyWithLinks() {
-        return HTMLUtil.uriToLink(getBody());
-    }
+  @JsonIgnore
+  @Transient
+  public String getBodyWithoutHTML() {
+    return HTMLUtil.stripHTMLTags(getBody());
+  }
 
-    @JsonIgnore
-    @Transient
-    public String getBodyWithoutHTML() {
-        return HTMLUtil.stripHTMLTags(getBody());
-    }
+  public Entry getEntry() {
+    return entry;
+  }
 
-    public Entry getEntry() {
-        return entry;
-    }
+  public void setEntry(final Entry entry) {
+    this.entry = entry;
+  }
 
-    public void setEntry(final Entry entry) {
-        this.entry = entry;
-    }
+  public User getUser() {
+    return user;
+  }
 
-    public User getUser() {
-        return user;
-    }
+  public void setUser(final User user) {
+    this.user = user;
+  }
 
-    public void setUser(final User user) {
-        this.user = user;
-    }
+  public CommentTo toCommentTo() {
+    final CommentTo comment = new CommentTo();
+    comment.setBody(getBody()); // TODO: which body type
+    comment.setDate(getDate());
+    comment.setFormat(getFormat().toString());
+    comment.setSubject(getSubject());
+    comment.setId(getId());
+    if (this.getUser() != null) comment.setUsername(getUser().getUsername());
 
-    public CommentTo toCommentTo() {
-        final CommentTo comment = new CommentTo();
-        comment.setBody(getBody()); // TODO: which body type
-        comment.setDate(getDate());
-        comment.setFormat(getFormat().toString());
-        comment.setSubject(getSubject());
-        comment.setId(getId());
-        if (this.getUser() != null)
-            comment.setUsername(getUser().getUsername());
-
-        return comment;
-    }
+    return comment;
+  }
 }

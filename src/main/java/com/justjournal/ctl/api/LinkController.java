@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2005-2006, Lucas Holt
+Copyright (c) 2003-2021, Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -31,16 +31,23 @@ TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
-
 package com.justjournal.ctl.api;
+
+import static com.justjournal.core.Constants.ERR_INVALID_LOGIN;
+import static com.justjournal.core.Constants.PARAM_USERNAME;
 
 import com.justjournal.Login;
 import com.justjournal.core.Constants;
 import com.justjournal.ctl.error.ErrorHandler;
 import com.justjournal.model.api.UserLinkTo;
 import com.justjournal.services.UserLinkService;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -52,16 +59,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import static com.justjournal.core.Constants.ERR_INVALID_LOGIN;
-import static com.justjournal.core.Constants.PARAM_USERNAME;
-
 /**
  * User Links that appear in their blog
  *
@@ -72,76 +69,79 @@ import static com.justjournal.core.Constants.PARAM_USERNAME;
 @RequestMapping("/api/link")
 public class LinkController {
 
-    private final UserLinkService userLinkService;
+  private final UserLinkService userLinkService;
 
-    public LinkController(final UserLinkService userLinkService) {
-        this.userLinkService = userLinkService;
+  public LinkController(final UserLinkService userLinkService) {
+    this.userLinkService = userLinkService;
+  }
+
+  @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @ResponseBody
+  public UserLinkTo getById(@PathVariable("id") final Integer id) {
+    return userLinkService.get(id).orElse(null);
+  }
+
+  //   @Cacheable(value = "userlink", key = "#username")
+  @GetMapping(value = "user/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @ResponseBody
+  public ResponseEntity<List<UserLinkTo>> getByUser(
+      @PathVariable(PARAM_USERNAME) final String username) {
+    final List<UserLinkTo> links = userLinkService.getByUser(username);
+
+    return ResponseEntity.ok().body(links);
+  }
+
+  @PutMapping
+  @ResponseBody
+  public Map<String, String> create(
+      @RequestBody final UserLinkTo link,
+      final HttpSession session,
+      final HttpServletResponse response) {
+
+    if (!Login.isAuthenticated(session)) {
+      response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+      return ErrorHandler.modelError(ERR_INVALID_LOGIN);
     }
 
-    @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public UserLinkTo getById(@PathVariable("id") final Integer id) {
-        return userLinkService.get(id).orElse(null);
+    try {
+      link.setUserId(Login.currentLoginId(session));
+      final UserLinkTo l = userLinkService.create(link);
+      return java.util.Collections.singletonMap("id", Integer.toString(l.getId()));
+    } catch (final Exception e) {
+      log.error(e.getMessage(), e);
+      response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+      return ErrorHandler.modelError("Error adding link.");
+    }
+  }
+
+  @DeleteMapping
+  @ResponseBody
+  public Map<String, String> delete(
+      @RequestBody final int linkId,
+      final HttpSession session,
+      final HttpServletResponse response) {
+
+    if (!Login.isAuthenticated(session)) {
+      response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+      return ErrorHandler.modelError(Constants.ERR_INVALID_LOGIN);
     }
 
- //   @Cacheable(value = "userlink", key = "#username")
-    @GetMapping(value = "user/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public ResponseEntity<List<UserLinkTo>> getByUser(@PathVariable(PARAM_USERNAME) final String username) {
-        final List<UserLinkTo> links = userLinkService.getByUser(username);
+    if (linkId > 0) {
+      /* valid link id */
+      final Optional<UserLinkTo> link = userLinkService.get(linkId);
 
-        return ResponseEntity
-                .ok()
-                .body(links);
+      if (!link.isPresent()) {
+        response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        return Collections.emptyMap();
+      }
+
+      if (link.get().getUserId() == Login.currentLoginId(session)) {
+        userLinkService.delete(linkId);
+
+        return java.util.Collections.singletonMap("id", Integer.toString(linkId));
+      }
     }
-
-    @PutMapping
-    @ResponseBody
-    public Map<String, String> create(@RequestBody final UserLinkTo link, final HttpSession session,
-                                      final HttpServletResponse response) {
-
-        if (!Login.isAuthenticated(session)) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return ErrorHandler.modelError(ERR_INVALID_LOGIN);
-        }
-
-        try {
-            link.setUserId(Login.currentLoginId(session));
-            final UserLinkTo l = userLinkService.create(link);
-            return java.util.Collections.singletonMap("id", Integer.toString(l.getId()));
-        } catch (final Exception e) {
-            log.error(e.getMessage(), e);
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return ErrorHandler.modelError("Error adding link.");
-        }
-    }
-
-    @DeleteMapping
-    @ResponseBody
-    public Map<String, String> delete(@RequestBody final int linkId, final HttpSession session,
-                                      final HttpServletResponse response) {
-
-        if (!Login.isAuthenticated(session)) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return ErrorHandler.modelError(Constants.ERR_INVALID_LOGIN);
-        }
-
-        if (linkId > 0) {
-            /* valid link id */
-            final Optional<UserLinkTo> link = userLinkService.get(linkId);
-
-            if (!link.isPresent()) {
-                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                return Collections.emptyMap();
-            }
-
-            if (link.get().getUserId() == Login.currentLoginId(session)) {
-                userLinkService.delete(linkId);
-
-                return java.util.Collections.singletonMap("id", Integer.toString(linkId));
-            }
-        }
-        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        return ErrorHandler.modelError("Error deleting your link. Bad link id.");
-    }
+    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+    return ErrorHandler.modelError("Error deleting your link. Bad link id.");
+  }
 }

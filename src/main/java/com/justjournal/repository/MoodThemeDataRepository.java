@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2005, Lucas Holt
+Copyright (c) 2003-2021, Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -31,15 +31,16 @@ TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
-
 package com.justjournal.repository;
+
 
 import com.justjournal.model.MoodThemeData;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface MoodThemeDataRepository extends PagingAndSortingRepository<MoodThemeData, Integer> {
+public interface MoodThemeDataRepository
+    extends PagingAndSortingRepository<MoodThemeData, Integer> {
 
-    public MoodThemeData findByThemeIdAndMoodId(int themeId, int moodId);
+  public MoodThemeData findByThemeIdAndMoodId(int themeId, int moodId);
 }

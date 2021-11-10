@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2005, 2014 Lucas Holt
+Copyright (c) 2003-2021, Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -31,19 +31,18 @@ TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
-
 package com.justjournal.model;
+
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
-
+import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.io.Serializable;
 
 /**
  * Security Transfer Object
@@ -55,33 +54,33 @@ import java.io.Serializable;
 @Table(name = "entry_security")
 public class Security implements Serializable {
 
-    private static final long serialVersionUID = -3247158592308509915L;
+  private static final long serialVersionUID = -3247158592308509915L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id = 0;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private int id = 0;
 
-    @Column(length = 7, nullable = false, name = "title", unique = true)
-    private String name = "";
+  @Column(length = 7, nullable = false, name = "title", unique = true)
+  private String name = "";
 
-    @JsonCreator
-    public Security() {
-        super();
-    }
+  @JsonCreator
+  public Security() {
+    super();
+  }
 
-    public int getId() {
-        return this.id;
-    }
+  public int getId() {
+    return this.id;
+  }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+  public void setId(int id) {
+    this.id = id;
+  }
 
-    public String getName() {
-        return this.name;
-    }
+  public String getName() {
+    return this.name;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
 }

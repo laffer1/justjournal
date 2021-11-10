@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2003-2007, Lucas Holt
+Copyright (c) 2003-2021, Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -31,180 +31,171 @@ TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
-
 package com.justjournal.rss;
 
 /**
  * An RSS Item is one entry in an RSS feed.
  *
  * @author Lucas Holt
- * @version $Id: RssItem.java,v 1.5 2008/10/16 20:20:07 laffer1 Exp $
- *          User: laffer1
- *          Date: Aug 28, 2003
- *          Time: 12:19:36 AM
+ * @version $Id: RssItem.java,v 1.5 2008/10/16 20:20:07 laffer1 Exp $ User: laffer1 Date: Aug 28,
+ *     2003 Time: 12:19:36 AM
  */
 public final class RssItem {
 
-    private String title;
-    private String link;     // link of exact item.
-    private String description;
-    private String author;   // email address of author of item.
-    private String comments; // url of comments page for item.
-    private String pubDate;  // publication date.
-    private String guid;     // url to item, always works.
+  private String title;
+  private String link; // link of exact item.
+  private String description;
+  private String author; // email address of author of item.
+  private String comments; // url of comments page for item.
+  private String pubDate; // publication date.
+  private String guid; // url to item, always works.
 
-    /* file attachment rss 2 feature
-    <enclosure url="http://www.scripting.com/mp3s/touchOfGrey.mp3"
-    length="5588242" type="audio/mpeg"/>
-    */
-    private String enclosureURL;
-    private String enclosureLength;
-    private String enclosureType;
+  /* file attachment rss 2 feature
+  <enclosure url="http://www.scripting.com/mp3s/touchOfGrey.mp3"
+  length="5588242" type="audio/mpeg"/>
+  */
+  private String enclosureURL;
+  private String enclosureLength;
+  private String enclosureType;
 
-    private boolean truncateFields = true;
+  private boolean truncateFields = true;
 
-    public boolean isTruncateFields() {
-        return truncateFields;
+  public boolean isTruncateFields() {
+    return truncateFields;
+  }
+
+  public void setTruncateFields(final boolean truncateFields) {
+    this.truncateFields = truncateFields;
+  }
+
+  /**
+   * URL pointed to an object to embed in the feed. MP3, images, and other elements make good
+   * candidates.
+   *
+   * @return URL
+   */
+  public String getEnclosureURL() {
+    return enclosureURL;
+  }
+
+  /**
+   * We want to embed something in our feed.
+   *
+   * @param enclosureURL A string reepresentation of a valid URL pointing to a resource such as a
+   *     jpeg, mp3, etc.
+   */
+  public void setEnclosureURL(String enclosureURL) {
+    this.enclosureURL = enclosureURL;
+  }
+
+  /**
+   * Size of item pointed to by the URL.
+   *
+   * @return Number of bytes as a string.
+   */
+  public String getEnclosureLength() {
+    return enclosureLength;
+  }
+
+  public void setEnclosureLength(String enclosureLength) {
+    this.enclosureLength = enclosureLength;
+  }
+
+  public String getEnclosureType() {
+    return enclosureType;
+  }
+
+  public void setEnclosureType(String enclosureType) {
+    this.enclosureType = enclosureType;
+  }
+
+  public String getAuthor() {
+    return author;
+  }
+
+  public void setAuthor(String author) {
+    this.author = author;
+  }
+
+  public String getComments() {
+    return comments;
+  }
+
+  public void setComments(String comments) {
+    this.comments = comments;
+  }
+
+  public String getPubDate() {
+    return pubDate;
+  }
+
+  public void setPubDate(String pubDate) {
+    this.pubDate = pubDate;
+  }
+
+  public String getGuid() {
+    return guid;
+  }
+
+  public void setGuid(String guid) {
+    this.guid = guid;
+  }
+
+  public String getTitle() {
+    return title;
+  }
+
+  /**
+   * Sets thte tile, triming the title to 100 characters
+   *
+   * @param title
+   */
+  public void setTitle(String title) {
+
+    if (title.length() > 98 && truncateFields) {
+      this.title = title.substring(0, 99);
+    } else {
+      this.title = title;
     }
+  }
 
-    public void setTruncateFields(final boolean truncateFields) {
-        this.truncateFields = truncateFields;
+  public String getLink() {
+    return link;
+  }
+
+  public void setLink(final String link) {
+    this.link = link;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  /**
+   * Sets the description, trimming to 497
+   *
+   * @param description
+   */
+  public void setDescription(final String description) {
+
+    if (description.length() > 495 && truncateFields) {
+      this.description = description.substring(0, 496);
+    } else {
+      this.description = description;
     }
+  }
 
-    /**
-     * URL pointed to an object to embed in the feed.  MP3,
-     * images, and other elements make good candidates.
-     *
-     * @return URL
-     */
-    public String getEnclosureURL() {
-        return enclosureURL;
-    }
-
-    /**
-     * We want to embed something in our feed.
-     *
-     * @param enclosureURL A string reepresentation of a
-     *                     valid URL pointing to a resource such as a jpeg,
-     *                     mp3, etc.
-     */
-    public void setEnclosureURL(String enclosureURL) {
-        this.enclosureURL = enclosureURL;
-    }
-
-    /**
-     * Size of item pointed to by the URL.
-     *
-     * @return Number of bytes as a string.
-     */
-    public String getEnclosureLength() {
-        return enclosureLength;
-    }
-
-    public void setEnclosureLength(String enclosureLength) {
-        this.enclosureLength = enclosureLength;
-    }
-
-    public String getEnclosureType() {
-        return enclosureType;
-    }
-
-    public void setEnclosureType(String enclosureType) {
-        this.enclosureType = enclosureType;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
-    public String getComments() {
-        return comments;
-    }
-
-    public void setComments(String comments) {
-        this.comments = comments;
-    }
-
-    public String getPubDate() {
-        return pubDate;
-    }
-
-    public void setPubDate(String pubDate) {
-        this.pubDate = pubDate;
-    }
-
-    public String getGuid() {
-        return guid;
-    }
-
-    public void setGuid(String guid) {
-        this.guid = guid;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    /**
-     * Sets thte tile, triming the title to 100 characters
-     *
-     * @param title
-     */
-    public void setTitle(String title) {
-
-        if (title.length() > 98 && truncateFields) {
-            this.title = title.substring(0, 99);
-        } else {
-            this.title = title;
-        }
-
-    }
-
-    public String getLink() {
-        return link;
-    }
-
-    public void setLink(final String link) {
-        this.link = link;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * Sets the description, trimming to 497
-     *
-     * @param description
-     */
-    public void setDescription(final String description) {
-
-        if (description.length() > 495 && truncateFields) {
-            this.description = description.substring(0, 496);
-        } else {
-            this.description = description;
-        }
-
-    }
-
-    /**
-     * Clear all properties for reuse of the class
-     * instance.
-     */
-    public void recycle() {
-        title = "";
-        link = "";
-        description = "";
-        author = "";
-        comments = "";
-        pubDate = "";
-        guid = "";
-        enclosureURL = "";
-        enclosureLength = "";
-        enclosureType = "";
-    }
+  /** Clear all properties for reuse of the class instance. */
+  public void recycle() {
+    title = "";
+    link = "";
+    description = "";
+    author = "";
+    comments = "";
+    pubDate = "";
+    guid = "";
+    enclosureURL = "";
+    enclosureLength = "";
+    enclosureType = "";
+  }
 }

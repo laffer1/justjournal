@@ -1,52 +1,83 @@
+/*
+Copyright (c) 2003-2021, Lucas Holt
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are
+permitted provided that the following conditions are met:
+
+  Redistributions of source code must retain the above copyright notice, this list of
+  conditions and the following disclaimer.
+
+  Redistributions in binary form must reproduce the above copyright notice, this
+  list of conditions and the following disclaimer in the documentation and/or other
+  materials provided with the distribution.
+
+  Neither the name of the Just Journal nor the names of its contributors
+  may be used to endorse or promote products derived from this software without
+  specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
+GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+*/
 package com.justjournal.model;
+
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import lombok.Data;
-
-import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import javax.persistence.*;
+import lombok.Data;
 
-/**
- * @author Lucas Holt
- */
+/** @author Lucas Holt */
 @Data
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class , property = "id")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Entity
 @Table(name = "entry_statistics")
 public class EntryStatistic implements Serializable, Comparable<EntryStatistic> {
 
-    private static final long serialVersionUID = 7280767109218766181L;
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+  private static final long serialVersionUID = 7280767109218766181L;
 
-    @JsonProperty("user")
-    @ManyToOne
-    @JoinColumn(name = "uid")
-    private User user;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private int id;
 
-    @Column(name = "year")
-    private int year;
+  @JsonProperty("user")
+  @ManyToOne
+  @JoinColumn(name = "uid")
+  private User user;
 
-    @Column(name = "entry_count")
-    private long count;
+  @Column(name = "year")
+  private int year;
 
-    @Column(name = "modified")
-    @Temporal(value = TemporalType.TIMESTAMP)
-    private Date modified;
+  @Column(name = "entry_count")
+  private long count;
 
-    @JsonCreator
-    public EntryStatistic() {
-        super();
-    }
+  @Column(name = "modified")
+  @Temporal(value = TemporalType.TIMESTAMP)
+  private Date modified;
 
-    @Override
-    public int compareTo(final EntryStatistic o) {
-        return Integer.compare(o.getYear(), getYear());
-    }
+  @JsonCreator
+  public EntryStatistic() {
+    super();
+  }
+
+  @Override
+  public int compareTo(final EntryStatistic o) {
+    return Integer.compare(o.getYear(), getYear());
+  }
 }

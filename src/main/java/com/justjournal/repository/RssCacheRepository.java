@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2005-2007, Lucas Holt
+Copyright (c) 2003-2021, Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -31,23 +31,22 @@ TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
-
 package com.justjournal.repository;
 
+
 import com.justjournal.model.RssCache;
+import java.util.Date;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.Date;
-import java.util.List;
-
 @Repository
 public interface RssCacheRepository extends JpaRepository<RssCache, Integer> {
 
-    RssCache findByUri(@Param("uri") String uri);
+  RssCache findByUri(@Param("uri") String uri);
 
-    List<RssCache> findByLastUpdatedBetween(@Param("begin") Date begin, @Param("end") Date end);
+  List<RssCache> findByLastUpdatedBetween(@Param("begin") Date begin, @Param("end") Date end);
 
-    List<RssCache> findByLastUpdatedBefore(@Param("lastUpdated") Date lastUpdated);
+  List<RssCache> findByLastUpdatedBefore(@Param("lastUpdated") Date lastUpdated);
 }

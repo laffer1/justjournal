@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2005, Lucas Holt
+Copyright (c) 2003-2021, Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -31,64 +31,61 @@ TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
-
 package com.justjournal.model;
+
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonCreator;
-
-import javax.persistence.*;
 import java.io.Serializable;
+import javax.persistence.*;
 
-/**
- * Biography
- */
+/** Biography */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @Entity
 @Table(name = "user_bio")
 public class UserBio implements Serializable {
 
-    private static final long serialVersionUID = 3877987531776135807L;
+  private static final long serialVersionUID = 3877987531776135807L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id = 0;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private int id = 0;
 
-    @Column(length = 65535, nullable = false, name = "content", columnDefinition = "TEXT")
-    private String bio = "";
+  @Column(length = 65535, nullable = false, name = "content", columnDefinition = "TEXT")
+  private String bio = "";
 
-    @JsonBackReference
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+  @JsonBackReference
+  @OneToOne
+  @JoinColumn(name = "user_id")
+  private User user;
 
-    @JsonCreator
-    public UserBio() {
-        super();
-    }
+  @JsonCreator
+  public UserBio() {
+    super();
+  }
 
-    public String getBio() {
-        return this.bio;
-    }
+  public String getBio() {
+    return this.bio;
+  }
 
-    public void setBio(String bioText) {
-        this.bio = bioText;
-    }
+  public void setBio(String bioText) {
+    this.bio = bioText;
+  }
 
-    public int getId() {
-        return id;
-    }
+  public int getId() {
+    return id;
+  }
 
-    public void setId(final int id) {
-        this.id = id;
-    }
+  public void setId(final int id) {
+    this.id = id;
+  }
 
-    public User getUser() {
-        return user;
-    }
+  public User getUser() {
+    return user;
+  }
 
-    public void setUser(final User user) {
-        this.user = user;
-    }
+  public void setUser(final User user) {
+    this.user = user;
+  }
 }

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2005-2006, Lucas Holt
+Copyright (c) 2003-2021, Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -31,20 +31,15 @@ TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
-
 package com.justjournal.repository;
 
+
 import com.justjournal.model.User;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
-
 
 /**
  * Access account information for a specific user or all users of Just Journal.
@@ -54,12 +49,15 @@ import java.util.List;
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
 
-    @Query("SELECT u FROM User u WHERE LOWER(u.username) = LOWER(:username)")
-    User findByUsername(@Param("username") String username);
+  @Query("SELECT u FROM User u WHERE LOWER(u.username) = LOWER(:username)")
+  User findByUsername(@Param("username") String username);
 
-    @Query("SELECT u FROM User u WHERE LOWER(u.username) = LOWER(:username) and u.password = :password")
-    User findByUsernameAndPassword(@Param("username") String username, @Param("password") String password);
+  @Query(
+      "SELECT u FROM User u WHERE LOWER(u.username) = LOWER(:username) and u.password ="
+          + " :password")
+  User findByUsernameAndPassword(
+      @Param("username") String username, @Param("password") String password);
 
-    @Query("SELECT u FROM User u, Journal j where j.user = u and j.ownerViewOnly = false")
-    List<User> getPublicUsers();
+  @Query("SELECT u FROM User u, Journal j where j.user = u and j.ownerViewOnly = false")
+  List<User> getPublicUsers();
 }

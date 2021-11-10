@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2005, Lucas Holt
+Copyright (c) 2003-2021, Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -31,9 +31,10 @@ TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
-
 package com.justjournal.model;
 
+
+import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -42,50 +43,52 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import java.io.Serializable;
 
-/**
- * User: laffer1 Date: Mar 19, 2005 Time: 9:19:40 PM
- */
+/** User: laffer1 Date: Mar 19, 2005 Time: 9:19:40 PM */
 @Entity
 @Table(name = "rss_subscriptions")
 public class RssSubscription implements Serializable {
 
-    private static final long serialVersionUID = -5641819117393997020L;
+  private static final long serialVersionUID = -5641819117393997020L;
 
-    @ManyToOne
-    @JoinColumn(name = "id")
-    private User user;
+  @ManyToOne
+  @JoinColumn(name = "id")
+  private User user;
 
-    @Column(name = "uri", length = 255, nullable = false, columnDefinition = "varchar(255)", unique = false)
-    private String uri;
+  @Column(
+      name = "uri",
+      length = 255,
+      nullable = false,
+      columnDefinition = "varchar(255)",
+      unique = false)
+  private String uri;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "subid")
-    private int subscriptionId;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "subid")
+  private int subscriptionId;
 
-    public User getUser() {
-        return user;
-    }
+  public User getUser() {
+    return user;
+  }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+  public void setUser(User user) {
+    this.user = user;
+  }
 
-    public int getSubscriptionId() {
-        return this.subscriptionId;
-    }
+  public int getSubscriptionId() {
+    return this.subscriptionId;
+  }
 
-    public void setSubscriptionId(int subscriptionId) {
-        this.subscriptionId = subscriptionId;
-    }
+  public void setSubscriptionId(int subscriptionId) {
+    this.subscriptionId = subscriptionId;
+  }
 
-    public String getUri() {
-        return this.uri;
-    }
+  public String getUri() {
+    return this.uri;
+  }
 
-    public void setUri(String uri) {
-        this.uri = uri;
-    }
+  public void setUri(String uri) {
+    this.uri = uri;
+  }
 }

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2008 Lucas Holt
+Copyright (c) 2003-2021, Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -31,13 +31,12 @@ TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
-
 package com.justjournal.model;
 
-import com.justjournal.model.api.CommentTo;
-import com.justjournal.model.api.TrackbackTo;
-import lombok.NoArgsConstructor;
 
+import com.justjournal.model.api.TrackbackTo;
+import java.io.Serializable;
+import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -49,8 +48,7 @@ import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import java.io.Serializable;
-import java.util.Date;
+import lombok.NoArgsConstructor;
 
 /**
  * A Trackback ping
@@ -61,158 +59,142 @@ import java.util.Date;
 @Entity
 @Table(name = "trackback")
 public class Trackback implements Serializable {
-    private static final long serialVersionUID = 1249662473110605504L;
+  private static final long serialVersionUID = 1249662473110605504L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private int id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "id")
+  private int id;
 
-    @Column(name = "eid")
-    private int entryId = 0;
+  @Column(name = "eid")
+  private int entryId = 0;
 
-    @Column(name = "date")
-    @Temporal(value = TemporalType.DATE)
-    private Date date = new Date();
+  @Column(name = "date")
+  @Temporal(value = TemporalType.DATE)
+  private Date date = new Date();
 
-    @Column(name = "subject", length = 150)
-    private String subject = null;
+  @Column(name = "subject", length = 150)
+  private String subject = null;
 
-    @Lob
-    private String body = null;
+  @Lob private String body = null;
 
-    @Column(name = "author_email", length = 150)
-    private String authorEmail = null;
+  @Column(name = "author_email", length = 150)
+  private String authorEmail = null;
 
-    @Column(name = "author_name", length = 50)
-    private String authorName = null;
+  @Column(name = "author_name", length = 50)
+  private String authorName = null;
 
-    @Column(name = "blogname", length = 150)
-    private String blogName = null;
+  @Column(name = "blogname", length = 150)
+  private String blogName = null;
 
-    @Column(name = "url", length = 150)
-    private String url = null;
+  @Column(name = "url", length = 150)
+  private String url = null;
 
-    @Column(name = "type", length = 10)
-    @Enumerated(EnumType.STRING)
-    private TrackbackType type = null;
+  @Column(name = "type", length = 10)
+  @Enumerated(EnumType.STRING)
+  private TrackbackType type = null;
 
-    public String getUrl() {
-        return url;
-    }
+  public String getUrl() {
+    return url;
+  }
 
-    public void setUrl(String url) {
-        if (url == null || url.length() < 5)
-            throw new IllegalArgumentException("Illegal url: " + url);
+  public void setUrl(String url) {
+    if (url == null || url.length() < 5) throw new IllegalArgumentException("Illegal url: " + url);
 
-        this.url = url;
-    }
+    this.url = url;
+  }
 
-    public int getId() {
-        return id;
-    }
+  public int getId() {
+    return id;
+  }
 
-    public void setId(int id) {
-        if (id < 0)
-            throw new IllegalArgumentException("Illegal id: " +
-                    id);
-        this.id = id;
-    }
+  public void setId(int id) {
+    if (id < 0) throw new IllegalArgumentException("Illegal id: " + id);
+    this.id = id;
+  }
 
-    public int getEntryId() {
-        return entryId;
-    }
+  public int getEntryId() {
+    return entryId;
+  }
 
-    public void setEntryId(int entryId) {
-        if (entryId < 0)
-            throw new IllegalArgumentException("Illegal eid: " + entryId);
-        this.entryId = entryId;
-    }
+  public void setEntryId(int entryId) {
+    if (entryId < 0) throw new IllegalArgumentException("Illegal eid: " + entryId);
+    this.entryId = entryId;
+  }
 
-    public Date getDate() {
-        return date;
-    }
+  public Date getDate() {
+    return date;
+  }
 
-    public void setDate(Date date) {
-        this.date = date;
-    }
+  public void setDate(Date date) {
+    this.date = date;
+  }
 
-    public String getSubject() {
-        return subject;
-    }
+  public String getSubject() {
+    return subject;
+  }
 
-    public void setSubject(String subject) {
-        if (subject == null || subject.isEmpty())
-            this.subject = "(no subject)";
-        else
-            this.subject = subject;
-    }
+  public void setSubject(String subject) {
+    if (subject == null || subject.isEmpty()) this.subject = "(no subject)";
+    else this.subject = subject;
+  }
 
-    public String getBlogName() {
-        return blogName;
-    }
+  public String getBlogName() {
+    return blogName;
+  }
 
-    public void setBlogName(String blogName) {
-        if (blogName == null)
-            this.blogName = "";
-        else
-            this.blogName = blogName;
-    }
+  public void setBlogName(String blogName) {
+    if (blogName == null) this.blogName = "";
+    else this.blogName = blogName;
+  }
 
-    public String getBody() {
-        return body;
-    }
+  public String getBody() {
+    return body;
+  }
 
-    public void setBody(String body) {
-        if (body == null)
-            this.body = "";
-        else
-            this.body = body;
-    }
+  public void setBody(String body) {
+    if (body == null) this.body = "";
+    else this.body = body;
+  }
 
-    public String getAuthorEmail() {
-        return authorEmail;
-    }
+  public String getAuthorEmail() {
+    return authorEmail;
+  }
 
-    public void setAuthorEmail(String authorEmail) {
-        if (authorEmail == null)
-            this.authorEmail = "";
-        else
-            this.authorEmail = authorEmail;
-    }
+  public void setAuthorEmail(String authorEmail) {
+    if (authorEmail == null) this.authorEmail = "";
+    else this.authorEmail = authorEmail;
+  }
 
-    public String getAuthorName() {
-        return authorName;
-    }
+  public String getAuthorName() {
+    return authorName;
+  }
 
-    public void setAuthorName(String authorName) {
-        if (authorName == null)
-            this.authorName = "";
-        else
-            this.authorName = authorName;
-    }
+  public void setAuthorName(String authorName) {
+    if (authorName == null) this.authorName = "";
+    else this.authorName = authorName;
+  }
 
-    public TrackbackType getType() {
-        return type;
-    }
+  public TrackbackType getType() {
+    return type;
+  }
 
-    public void setType(TrackbackType type) {
-        this.type = type;
-    }
+  public void setType(TrackbackType type) {
+    this.type = type;
+  }
 
-    public TrackbackTo toTrackbackTo() {
-        final TrackbackTo trackbackTo = new TrackbackTo();
-        trackbackTo.setBody(getBody());
-        trackbackTo.setDate(getDate());
-        trackbackTo.setSubject(getSubject());
-        trackbackTo.setId(getId());
-        trackbackTo.setAuthorEmail(getAuthorEmail());
-        trackbackTo.setAuthorName(getAuthorName());
-        trackbackTo.setBlogName(getBlogName());
-        trackbackTo.setEntryId(getEntryId());
-        trackbackTo.setType(getType());
+  public TrackbackTo toTrackbackTo() {
+    final TrackbackTo trackbackTo = new TrackbackTo();
+    trackbackTo.setBody(getBody());
+    trackbackTo.setDate(getDate());
+    trackbackTo.setSubject(getSubject());
+    trackbackTo.setId(getId());
+    trackbackTo.setAuthorEmail(getAuthorEmail());
+    trackbackTo.setAuthorName(getAuthorName());
+    trackbackTo.setBlogName(getBlogName());
+    trackbackTo.setEntryId(getEntryId());
+    trackbackTo.setType(getType());
 
-        return trackbackTo;
-    }
-
+    return trackbackTo;
+  }
 }

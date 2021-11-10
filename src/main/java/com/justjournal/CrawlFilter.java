@@ -1,13 +1,47 @@
+/*
+Copyright (c) 2003-2021, Lucas Holt
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are
+permitted provided that the following conditions are met:
+
+  Redistributions of source code must retain the above copyright notice, this list of
+  conditions and the following disclaimer.
+
+  Redistributions in binary form must reproduce the above copyright notice, this
+  list of conditions and the following disclaimer in the documentation and/or other
+  materials provided with the distribution.
+
+  Neither the name of the Just Journal nor the names of its contributors
+  may be used to endorse or promote products derived from this software without
+  specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
+GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+*/
 package com.justjournal;
+
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import lombok.extern.slf4j.Slf4j;
-import org.owasp.esapi.ESAPI;
-import org.owasp.esapi.errors.EncodingException;
-
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -17,183 +51,183 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import lombok.extern.slf4j.Slf4j;
+import org.owasp.esapi.ESAPI;
+import org.owasp.esapi.errors.EncodingException;
 
 @Slf4j
 public final class CrawlFilter implements Filter {
 
-    private static final String PARAM_ESCAPED_FRAGMENT = "_escaped_fragment_";
+  private static final String PARAM_ESCAPED_FRAGMENT = "_escaped_fragment_";
 
-    private FilterConfig filterConfig = null;
+  private FilterConfig filterConfig = null;
 
-    private static String rewriteQueryString(String queryString) throws EncodingException {
-        StringBuilder queryStringSb = new StringBuilder(queryString);
-        int i = queryStringSb.indexOf("&_escaped_fragment_");
-        if (i != -1) {
-            final StringBuilder tmpSb = new StringBuilder(queryStringSb.substring(0, i));
-            tmpSb.append("#!");
-            tmpSb.append(ESAPI.encoder().decodeFromURL(queryStringSb.substring(i + 20, queryStringSb.length())));
-            queryStringSb = tmpSb;
-        }
-
-        i = queryStringSb.indexOf(PARAM_ESCAPED_FRAGMENT);
-        if (i != -1) {
-            final StringBuilder tmpSb = new StringBuilder(queryStringSb.substring(0, i));
-            tmpSb.append("#!");
-            tmpSb.append(ESAPI.encoder().decodeFromURL(queryStringSb.substring(i + 19, queryStringSb.length())));
-            queryStringSb = tmpSb;
-        }
-        if (queryStringSb.indexOf("#!") != 0) {
-            queryStringSb.insert(0, '?');
-        }
-        queryString = queryStringSb.toString();
-
-
-        return queryString;
+  private static String rewriteQueryString(String queryString) throws EncodingException {
+    StringBuilder queryStringSb = new StringBuilder(queryString);
+    int i = queryStringSb.indexOf("&_escaped_fragment_");
+    if (i != -1) {
+      final StringBuilder tmpSb = new StringBuilder(queryStringSb.substring(0, i));
+      tmpSb.append("#!");
+      tmpSb.append(
+          ESAPI.encoder().decodeFromURL(queryStringSb.substring(i + 20, queryStringSb.length())));
+      queryStringSb = tmpSb;
     }
 
-    /**
-     * Initializes the filter configuration
-     */
-    @Override
-    public void init(FilterConfig filterConfig) {
-        this.filterConfig = filterConfig;
+    i = queryStringSb.indexOf(PARAM_ESCAPED_FRAGMENT);
+    if (i != -1) {
+      final StringBuilder tmpSb = new StringBuilder(queryStringSb.substring(0, i));
+      tmpSb.append("#!");
+      tmpSb.append(
+          ESAPI.encoder().decodeFromURL(queryStringSb.substring(i + 19, queryStringSb.length())));
+      queryStringSb = tmpSb;
+    }
+    if (queryStringSb.indexOf("#!") != 0) {
+      queryStringSb.insert(0, '?');
+    }
+    queryString = queryStringSb.toString();
+
+    return queryString;
+  }
+
+  /** Initializes the filter configuration */
+  @Override
+  public void init(FilterConfig filterConfig) {
+    this.filterConfig = filterConfig;
+  }
+
+  /** Filters all requests and invokes headless browser if necessary */
+  public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+      throws IOException {
+    if (filterConfig == null) {
+      return;
     }
 
-    /**
-     * Filters all requests and invokes headless browser if necessary
-     */
-    public void doFilter(ServletRequest request, ServletResponse response,
-                         FilterChain chain) throws IOException {
-        if (filterConfig == null) {
-            return;
-        }
+    HttpServletRequest req = (HttpServletRequest) request;
+    HttpServletResponse res = (HttpServletResponse) response;
+    String queryString = req.getQueryString();
 
-        HttpServletRequest req = (HttpServletRequest) request;
-        HttpServletResponse res = (HttpServletResponse) response;
-        String queryString = req.getQueryString();
+    if ((queryString != null) && (queryString.contains(PARAM_ESCAPED_FRAGMENT))) {
+      StringBuilder pageNameSb = new StringBuilder(req.getScheme() + "://");
+      pageNameSb.append(req.getServerName());
+      if (req.getServerPort() != 0) {
+        pageNameSb.append(":");
+        pageNameSb.append(req.getServerPort());
+      }
+      pageNameSb.append(req.getRequestURI());
+      try {
+        queryString = rewriteQueryString(queryString);
+      } catch (final EncodingException e) {
+        log.error("Could not generate url", e);
+        return;
+      }
+      pageNameSb.append(queryString);
 
-        if ((queryString != null) && (queryString.contains(PARAM_ESCAPED_FRAGMENT))) {
-            StringBuilder pageNameSb = new StringBuilder(req.getScheme() + "://");
-            pageNameSb.append(req.getServerName());
-            if (req.getServerPort() != 0) {
-                pageNameSb.append(":");
-                pageNameSb.append(req.getServerPort());
-            }
-            pageNameSb.append(req.getRequestURI());
-            try {
-                queryString = rewriteQueryString(queryString);
-            } catch (final EncodingException e) {
-                log.error("Could not generate url", e);
-                return;
-            }
-            pageNameSb.append(queryString);
+      try (WebClient webClient = new WebClient(BrowserVersion.CHROME);
+          PrintWriter out = res.getWriter()) {
+        webClient.setAjaxController(new NicelyResynchronizingAjaxController());
+        webClient.getOptions().setJavaScriptEnabled(true);
+        String pageName = pageNameSb.toString();
+        HtmlPage page = webClient.getPage(pageName);
+        webClient.waitForBackgroundJavaScriptStartingBefore(2000);
+        webClient.waitForBackgroundJavaScript(8000);
 
-            try (WebClient webClient = new WebClient(BrowserVersion.CHROME);
-                 PrintWriter out = res.getWriter()) {
-                webClient.setAjaxController(new NicelyResynchronizingAjaxController());
-                webClient.getOptions().setJavaScriptEnabled(true);
-                String pageName = pageNameSb.toString();
-                HtmlPage page = webClient.getPage(pageName);
-                webClient.waitForBackgroundJavaScriptStartingBefore(2000);
-                webClient.waitForBackgroundJavaScript(8000);
+        res.setContentType("text/html;charset=UTF-8");
 
-                res.setContentType("text/html;charset=UTF-8");
+        out.println("<hr>");
+        out.println(
+            "<center><h3>You are viewing a non-interactive page that is intended for"
+                + " the crawler.  You probably want to see this page: <a href=\""
+                + ESAPI.encoder().encodeForHTMLAttribute(pageName)
+                + "\">"
+                + ESAPI.encoder().encodeForHTML(pageName)
+                + "</a></h3></center>");
+        out.println("<hr>");
 
-                out.println("<hr>");
-                out.println("<center><h3>You are viewing a non-interactive page that is intended for the crawler.  You probably want to see this page: <a href=\""
-                        + ESAPI.encoder().encodeForHTMLAttribute(pageName) + "\">" + ESAPI.encoder().encodeForHTML(pageName) + "</a></h3></center>");
-                out.println("<hr>");
+        out.println(page.asXml());
+      }
+    } else {
+      try {
+        chain.doFilter(request, response);
+      } catch (ServletException e) {
+        log.error(e.getMessage());
+      }
+    }
+  }
 
-                out.println(page.asXml());
-            }
-        } else {
-            try {
-                chain.doFilter(request, response);
-            } catch (ServletException e) {
-                log.error(e.getMessage());
-            }
-        }
+  public void doFilterOld(ServletRequest request, ServletResponse response, FilterChain chain)
+      throws IOException, ServletException {
+    if (filterConfig == null) {
+      return;
     }
 
-    public void doFilterOld(ServletRequest request, ServletResponse response,
-                            FilterChain chain) throws IOException, ServletException {
-        if (filterConfig == null) {
-            return;
-        }
+    ServletOutputStream out = response.getOutputStream();
+    String escapedFragment = request.getParameter(PARAM_ESCAPED_FRAGMENT);
 
-        ServletOutputStream out = response.getOutputStream();
-        String escapedFragment = request.getParameter(PARAM_ESCAPED_FRAGMENT);
+    if (escapedFragment != null) {
+      HttpServletRequest httpRequest = (HttpServletRequest) request;
+      /*
+       * Rewrite the URL back to the original #! version.
+       */
+      String urlWithHashFragment =
+          httpRequest.getScheme()
+              + "://"
+              + httpRequest.getServerName()
+              + ":"
+              + httpRequest.getServerPort()
+              + httpRequest.getContextPath()
+              + httpRequest.getServletPath();
 
-        if (escapedFragment != null) {
-            HttpServletRequest httpRequest = (HttpServletRequest) request;
-            /*
-             * Rewrite the URL back to the original #! version.
-             */
-            String urlWithHashFragment = httpRequest.getScheme() + "://"
-                    + httpRequest.getServerName() + ":"
-                    + httpRequest.getServerPort()
-                    + httpRequest.getContextPath()
-                    + httpRequest.getServletPath();
+      String pathInfo = httpRequest.getPathInfo();
+      if (pathInfo != null) {
+        urlWithHashFragment += pathInfo;
+      }
 
-            String pathInfo = httpRequest.getPathInfo();
-            if (pathInfo != null) {
-                urlWithHashFragment += pathInfo;
-            }
+      String queryString = httpRequest.getQueryString();
+      Pattern pattern = Pattern.compile("(.*&)?_escaped_fragment_=[^&]*(&(.*))?");
+      Matcher matcher = pattern.matcher(queryString);
 
-            String queryString = httpRequest.getQueryString();
-            Pattern pattern = Pattern
-                    .compile("(.*&)?_escaped_fragment_=[^&]*(&(.*))?");
-            Matcher matcher = pattern.matcher(queryString);
+      if (matcher.matches()) {
+        urlWithHashFragment += "?" + matcher.group(1) + matcher.group(3);
+      }
 
-            if (matcher.matches()) {
-                urlWithHashFragment += "?" + matcher.group(1)
-                        + matcher.group(3);
-            }
+      /*
+       * TODO Unescape %XX characters.
+       */
+      urlWithHashFragment += "#!" + escapedFragment;
 
-            /*
-             * TODO Unescape %XX characters.
-             */
-            urlWithHashFragment += "#!" + escapedFragment;
+      /*
+       * Use the headless browser (HtmlUnit) to obtain an HTML snapshot.
+       */
+      try (WebClient webClient = new WebClient()) {
+        final HtmlPage page = webClient.getPage(urlWithHashFragment);
 
-            /*
-             * Use the headless browser (HtmlUnit) to obtain an HTML snapshot.
-             */
-            try (WebClient webClient = new WebClient()) {
-                final HtmlPage page = webClient.getPage(urlWithHashFragment);
+        /*
+         * Give the headless browser enough time to execute JavaScript. The
+         * exact time to wait may depend on your application.
+         */
+        webClient.waitForBackgroundJavaScript(2000);
 
-                /*
-                 * Give the headless browser enough time to execute JavaScript. The
-                 * exact time to wait may depend on your application.
-                 */
-                webClient.waitForBackgroundJavaScript(2000);
-
-                /*
-                 * Return the snapshot.
-                 */
-                out.println(page.asXml());
-            }
-        } else {
-            try {
-                /*
-                 * Not an _escaped_fragment_ URL, so move up the chain of
-                 * servlet filters.
-                 */
-                chain.doFilter(request, response);
-            } catch (final ServletException e) {
-                log.error(e.getMessage());
-            }
-        }
+        /*
+         * Return the snapshot.
+         */
+        out.println(page.asXml());
+      }
+    } else {
+      try {
+        /*
+         * Not an _escaped_fragment_ URL, so move up the chain of
+         * servlet filters.
+         */
+        chain.doFilter(request, response);
+      } catch (final ServletException e) {
+        log.error(e.getMessage());
+      }
     }
+  }
 
-    /**
-     * Destroys the filter configuration
-     */
-    @Override
-    public void destroy() {
-        this.filterConfig = null;
-    }
+  /** Destroys the filter configuration */
+  @Override
+  public void destroy() {
+    this.filterConfig = null;
+  }
 }

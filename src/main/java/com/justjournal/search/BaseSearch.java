@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2007, Lucas Holt
+Copyright (c) 2003-2021, Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -31,15 +31,14 @@ TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
-
 package com.justjournal.search;
 
+
+import java.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
-
-import java.util.*;
 
 /**
  * @author Lucas Holt
@@ -49,94 +48,88 @@ import java.util.*;
 @Component
 public class BaseSearch {
 
-    protected ArrayList<String> terms = new ArrayList<>();
-    protected ArrayList<String> fieldlist = new ArrayList<>();
-    protected int maxresults = 30;
-    protected String baseQuery;
-    protected String sort;
-    private JdbcTemplate jdbcTemplate;
+  protected ArrayList<String> terms = new ArrayList<>();
+  protected ArrayList<String> fieldlist = new ArrayList<>();
+  protected int maxresults = 30;
+  protected String baseQuery;
+  protected String sort;
+  private JdbcTemplate jdbcTemplate;
 
-    @Autowired
-    public BaseSearch(final JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+  @Autowired
+  public BaseSearch(final JdbcTemplate jdbcTemplate) {
+    this.jdbcTemplate = jdbcTemplate;
+  }
+
+  public void setMaxResults(final int results) {
+    maxresults = results;
+  }
+
+  public void setBaseQuery(final String base) {
+    if (base != null && base.length() > 0) baseQuery = base;
+  }
+
+  public void setFields(final String fields) {
+    final String[] q = fields.split("\\s");
+    fieldlist.addAll(Arrays.asList(q));
+  }
+
+  public void setSortAscending(final String field) {
+    if (field != null && field.length() > 0) sort = "ORDER BY " + field;
+  }
+
+  public void setSortDescending(final String field) {
+    if (field != null && field.length() > 0) sort = "ORDER BY " + field + " DESC";
+  }
+
+  public List<Map<String, Object>> search(final String query) {
+    if (log.isDebugEnabled()) {
+      log.debug("search() called with " + query);
+    }
+    final List<Map<String, Object>> result;
+    parseQuery(query);
+
+    result = realSearch(terms);
+
+    return result;
+  }
+
+  protected void parseQuery(final String query) {
+    final String[] q = query.split("\\s");
+    final int qLen = java.lang.reflect.Array.getLength(q);
+
+    for (int i = 0; i < qLen; i++) {
+      if (!(q[i].equalsIgnoreCase("and")
+          || (q[i].contains("*") || q[i].contains(";") || q[i].contains("|")))) terms.add(q[i]);
+    }
+  }
+
+  protected List<Map<String, Object>> realSearch(final List<String> terms) {
+
+    final StringBuilder sqlStmt = new StringBuilder(baseQuery);
+
+    for (int i = 0; i < terms.size(); i++) {
+      sqlStmt.append(" (");
+      for (int y = 0; y < fieldlist.size(); y++) {
+        if (y != 0) sqlStmt.append(" or ");
+        sqlStmt.append(fieldlist.get(y) + " like '%" + terms.get(i) + "%'");
+      }
+      sqlStmt.append(") and ");
     }
 
-    public void setMaxResults(final int results) {
-        maxresults = results;
+    sqlStmt.append(" 1=1 " + sort + " LIMIT 0," + maxresults + ";");
+
+    try {
+      if (log.isDebugEnabled()) {
+        log.debug("realSearch() called on " + sqlStmt);
+      }
+
+      return jdbcTemplate.queryForList(sqlStmt.toString());
+
+    } catch (final Exception e) {
+      log.error(
+          "Error executing search with query: " + sqlStmt + "; and error " + e.getMessage(), e);
     }
 
-    public void setBaseQuery(final String base) {
-        if (base != null && base.length() > 0)
-            baseQuery = base;
-    }
-
-    public void setFields(final String fields) {
-        final String[] q = fields.split("\\s");
-        fieldlist.addAll(Arrays.asList(q));
-    }
-
-    public void setSortAscending(final String field) {
-        if (field != null && field.length() > 0)
-            sort = "ORDER BY " + field;
-    }
-
-    public void setSortDescending(final String field) {
-        if (field != null && field.length() > 0)
-            sort = "ORDER BY " + field + " DESC";
-    }
-
-    public List<Map<String, Object>> search(final String query) {
-        if (log.isDebugEnabled()) {
-            log.debug("search() called with " + query);
-        }
-        final List<Map<String, Object>> result;
-        parseQuery(query);
-
-        result = realSearch(terms);
-
-        return result;
-    }
-
-    protected void parseQuery(final String query) {
-        final String[] q = query.split("\\s");
-        final int qLen = java.lang.reflect.Array.getLength(q);
-
-        for (int i = 0; i < qLen; i++) {
-            if (!(q[i].equalsIgnoreCase("and") ||
-                    (q[i].contains("*") ||
-                            q[i].contains(";") ||
-                            q[i].contains("|"))))
-                terms.add(q[i]);
-        }
-    }
-
-    protected List<Map<String, Object>> realSearch(final List<String> terms) {
-
-        final StringBuilder sqlStmt = new StringBuilder(baseQuery);
-
-        for (int i = 0; i < terms.size(); i++) {
-            sqlStmt.append(" (");
-            for (int y = 0; y < fieldlist.size(); y++) {
-                if (y != 0)
-                    sqlStmt.append(" or ");
-                sqlStmt.append(fieldlist.get(y) + " like '%" + terms.get(i) + "%'");
-            }
-            sqlStmt.append(") and ");
-        }
-
-        sqlStmt.append(" 1=1 " + sort + " LIMIT 0," + maxresults + ";");
-
-        try {
-            if (log.isDebugEnabled()) {
-                log.debug("realSearch() called on " + sqlStmt);
-            }
-
-            return jdbcTemplate.queryForList(sqlStmt.toString());
-
-        } catch (final Exception e) {
-            log.error("Error executing search with query: " + sqlStmt + "; and error " + e.getMessage(), e);
-        }
-
-        return Collections.emptyList();
-    }
+    return Collections.emptyList();
+  }
 }

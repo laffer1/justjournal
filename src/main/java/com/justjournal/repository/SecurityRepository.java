@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2005, Lucas Holt
+Copyright (c) 2003-2021, Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -31,25 +31,20 @@ TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
-
 package com.justjournal.repository;
 
+
 import com.justjournal.model.Security;
+import java.util.List;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
-
-/**
- * Entry Security
- */
+/** Entry Security */
 @Repository
 public interface SecurityRepository extends PagingAndSortingRepository<Security, Integer> {
 
-    Security findByName(@Param("name") String name);
+  Security findByName(@Param("name") String name);
 
-    List<Security> findAll();
-
+  List<Security> findAll();
 }

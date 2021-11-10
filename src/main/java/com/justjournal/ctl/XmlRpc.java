@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2007, Lucas Holt
+Copyright (c) 2003-2021, Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -31,15 +31,14 @@ TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
-
 package com.justjournal.ctl;
+
 
 import com.justjournal.services.Blogger;
 import com.justjournal.services.MetaWeblog;
-import redstone.xmlrpc.XmlRpcServlet;
-
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+import redstone.xmlrpc.XmlRpcServlet;
 
 /**
  * XML RPC endpoints for blogger and metaweblog legacy APIs.
@@ -47,15 +46,16 @@ import javax.servlet.ServletException;
  * @author Lucas Holt
  */
 public final class XmlRpc extends XmlRpcServlet {
-    private static final String BLOGGER = "blogger";
-    private static final String METAWEBLOG = "metaWeblog";
+  private static final String BLOGGER = "blogger";
+  private static final String METAWEBLOG = "metaWeblog";
 
-    @Override
-    public void init(final ServletConfig servletConfig) throws ServletException {
-        super.init(servletConfig);
+  @Override
+  public void init(final ServletConfig servletConfig) throws ServletException {
+    super.init(servletConfig);
 
-        // This is blogger 1.0 api which is no longer used by Google, but still popular with older blogging clients.
-        getXmlRpcServer().addInvocationHandler(BLOGGER, new Blogger());
-        getXmlRpcServer().addInvocationHandler(METAWEBLOG, new MetaWeblog());
-    }
+    // This is blogger 1.0 api which is no longer used by Google, but still popular with older
+    // blogging clients.
+    getXmlRpcServer().addInvocationHandler(BLOGGER, new Blogger());
+    getXmlRpcServer().addInvocationHandler(METAWEBLOG, new MetaWeblog());
+  }
 }

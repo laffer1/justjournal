@@ -47,24 +47,24 @@ import org.springframework.data.elasticsearch.repository.config.EnableElasticsea
 @Configuration
 @EnableElasticsearchRepositories(basePackages = {"com.justjournal.repository.search"})
 public class SearchConfig {
-    private final Environment environment;
+  private final Environment environment;
 
-    @Value("search.blog-entry-index")
-    private String blogEntryIndex;
+  @Value("search.blog-entry-index")
+  private String blogEntryIndex;
 
-    public SearchConfig(final Environment environment) {
-        this.environment = environment;
+  public SearchConfig(final Environment environment) {
+    this.environment = environment;
+  }
+
+  @Bean
+  public String blogEntryIndex() {
+    return String.format("%s-%s", blogEntryIndex, getEnv());
+  }
+
+  public String getEnv() {
+    if (environment != null) {
+      return Arrays.toString(environment.getActiveProfiles());
     }
-
-    @Bean
-    public String blogEntryIndex() {
-        return String.format("%s-%s", blogEntryIndex, getEnv());
-    }
-
-    public String getEnv() {
-        if (environment != null) {
-            return Arrays.toString(environment.getActiveProfiles());
-        }
-        return "";
-    }
+    return "";
+  }
 }

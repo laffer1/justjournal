@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2005, Lucas Holt
+Copyright (c) 2003-2021, Lucas Holt
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -31,8 +31,9 @@ TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
-
 package com.justjournal.model;
+
+import static com.justjournal.core.Constants.*;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -41,7 +42,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.justjournal.utility.StringUtil;
-
+import java.io.Serializable;
+import java.sql.Timestamp;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -58,366 +63,358 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import java.io.Serializable;
-import java.sql.Timestamp;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-
-import static com.justjournal.core.Constants.*;
 
 /**
  * Represents a user most basic properties.
  *
  * @author Lucas Holt
- * @version $Id: UserTo.java,v 1.10 2012/06/23 18:15:31 laffer1 Exp $ Date: Jan 21, 2004 Time: 12:20:53 PM
- * <p/>
- * TODO: add the rest of the properties.
+ * @version $Id: UserTo.java,v 1.10 2012/06/23 18:15:31 laffer1 Exp $ Date: Jan 21, 2004 Time:
+ *     12:20:53 PM
+ *     <p>TODO: add the rest of the properties.
  */
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @Entity
 @Table(name = "user")
 public class User implements Serializable {
 
-    @JsonIgnore
-    private static final long serialVersionUID = -7545141063644043241L;
+  @JsonIgnore private static final long serialVersionUID = -7545141063644043241L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id = 0;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private int id = 0;
 
-    @Column(name = "username", length = 15, nullable = false)
-    private String username = "";
+  @Column(name = "username", length = 15, nullable = false)
+  private String username = "";
 
-    @Column(name = "name", length = 20, nullable = false)
-    private String name = "";
+  @Column(name = "name", length = 20, nullable = false)
+  private String name = "";
 
-    @Column(name = "lastname", length = 20, nullable = true)
-    private String lastName = "";
+  @Column(name = "lastname", length = 20, nullable = true)
+  private String lastName = "";
 
-    @JsonIgnore // don't show password in output
-    @Basic(fetch = FetchType.LAZY)
-    @Column(name = "password", length = 40, nullable = false)
-    private String password = "";
+  @JsonIgnore // don't show password in output
+  @Basic(fetch = FetchType.LAZY)
+  @Column(name = "password", length = 40, nullable = false)
+  private String password = "";
 
-    @Column(name = "password_type", length = 10)
-    @Enumerated(EnumType.STRING)
-    private PasswordType passwordType = null;
+  @Column(name = "password_type", length = 10)
+  @Enumerated(EnumType.STRING)
+  private PasswordType passwordType = null;
 
-    @Column(name = "since", nullable = false)
-    private Integer since = 2003;
+  @Column(name = "since", nullable = false)
+  private Integer since = 2003;
 
-    @Column(name = "lastlogin", nullable = true)
-    private Date lastLogin = null;
+  @Column(name = "lastlogin", nullable = true)
+  private Date lastLogin = null;
 
-    @JsonIgnore
-    @Basic(fetch = FetchType.LAZY)
-    @Column(name = "modified", nullable = false)
-    private Timestamp modified;
+  @JsonIgnore
+  @Basic(fetch = FetchType.LAZY)
+  @Column(name = "modified", nullable = false)
+  private Timestamp modified;
 
-    @Column(name = "type", nullable = false)
-    private Integer type;
+  @Column(name = "type", nullable = false)
+  private Integer type;
 
-    @JsonManagedReference(value = "journal-user")
-    @JsonIgnore
-    @Basic(fetch = FetchType.LAZY)
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private Set<Journal> journals = new HashSet<>();
+  @JsonManagedReference(value = "journal-user")
+  @JsonIgnore
+  @Basic(fetch = FetchType.LAZY)
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+  private Set<Journal> journals = new HashSet<>();
 
-    @JsonManagedReference(value = "entry-user")
-    @JsonIgnore
-    @Basic(fetch = FetchType.LAZY)
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private Set<Entry> entries = new HashSet<>();
+  @JsonManagedReference(value = "entry-user")
+  @JsonIgnore
+  @Basic(fetch = FetchType.LAZY)
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+  private Set<Entry> entries = new HashSet<>();
 
-    @JsonManagedReference(value = "comment-user")
-    @JsonIgnore
-    @Basic(fetch = FetchType.LAZY)
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private Set<Comment> comments = new HashSet<>();
+  @JsonManagedReference(value = "comment-user")
+  @JsonIgnore
+  @Basic(fetch = FetchType.LAZY)
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+  private Set<Comment> comments = new HashSet<>();
 
-    @JsonManagedReference
-    @JsonIgnore
-    @Basic(fetch = FetchType.LAZY)
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private Set<Friend> friends = new HashSet<>();
+  @JsonManagedReference
+  @JsonIgnore
+  @Basic(fetch = FetchType.LAZY)
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+  private Set<Friend> friends = new HashSet<>();
 
-    @JsonManagedReference
-    @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER) // TODO: Lazy fetch type
-    private Set<UserLink> links = new HashSet<>();
+  @JsonManagedReference
+  @JsonIgnore
+  @OneToMany(
+      cascade = CascadeType.ALL,
+      mappedBy = "user",
+      fetch = FetchType.EAGER) // TODO: Lazy fetch type
+  private Set<UserLink> links = new HashSet<>();
 
-    @JsonManagedReference
-    @JsonIgnore
-    @Basic(fetch = FetchType.LAZY)
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private Set<UserImage> images = new HashSet<>();
+  @JsonManagedReference
+  @JsonIgnore
+  @Basic(fetch = FetchType.LAZY)
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+  private Set<UserImage> images = new HashSet<>();
 
-    @JsonManagedReference
-    @JsonIgnore
-    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
-    private UserBio bio;
+  @JsonManagedReference
+  @JsonIgnore
+  @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+  private UserBio bio;
 
-    @JsonManagedReference
-    @JsonIgnore
-    @Basic(fetch = FetchType.LAZY)
-    @OneToOne(mappedBy = "user")
-    private UserContact userContact;
+  @JsonManagedReference
+  @JsonIgnore
+  @Basic(fetch = FetchType.LAZY)
+  @OneToOne(mappedBy = "user")
+  private UserContact userContact;
 
-    @JsonManagedReference
-    @JsonIgnore
-    @Basic(fetch = FetchType.LAZY)
-    @OneToOne(mappedBy = "user")
-    private UserPref userPref;
+  @JsonManagedReference
+  @JsonIgnore
+  @Basic(fetch = FetchType.LAZY)
+  @OneToOne(mappedBy = "user")
+  private UserPref userPref;
 
-    @JsonManagedReference
-    @JsonIgnore
-    @Basic(fetch = FetchType.LAZY)
-    @OneToOne(mappedBy = "user")
-    private UserLocation userLocation;
+  @JsonManagedReference
+  @JsonIgnore
+  @Basic(fetch = FetchType.LAZY)
+  @OneToOne(mappedBy = "user")
+  private UserLocation userLocation;
 
-    @JsonIgnore
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "user_role", joinColumns = {@JoinColumn(name = "user_id")}, inverseJoinColumns = {@JoinColumn(name = "role_id")})
-    private Set<Role> roles = new HashSet<>();
+  @JsonIgnore
+  @ManyToMany(fetch = FetchType.EAGER)
+  @JoinTable(
+      name = "user_role",
+      joinColumns = {@JoinColumn(name = "user_id")},
+      inverseJoinColumns = {@JoinColumn(name = "role_id")})
+  private Set<Role> roles = new HashSet<>();
 
-    @JsonCreator
-    public User() {
+  @JsonCreator
+  public User() {}
+
+  public User(User user) {
+    super();
+    this.id = user.getId();
+    this.name = user.getName();
+    this.username = user.getUsername();
+    this.password = user.getPassword();
+    this.passwordType = user.getPasswordType();
+    this.roles = user.getRoles();
+  }
+
+  public UserLocation getUserLocation() {
+    return userLocation;
+  }
+
+  public void setUserLocation(UserLocation userLocation) {
+    this.userLocation = userLocation;
+  }
+
+  public Set<Entry> getEntries() {
+    return entries;
+  }
+
+  public void setEntries(Set<Entry> entries) {
+    this.entries = entries;
+  }
+
+  public Set<Comment> getComments() {
+    return comments;
+  }
+
+  public void setComments(Set<Comment> comments) {
+    this.comments = comments;
+  }
+
+  public UserBio getBio() {
+    return bio;
+  }
+
+  public void setBio(UserBio bio) {
+    this.bio = bio;
+  }
+
+  public UserContact getUserContact() {
+    return userContact;
+  }
+
+  public void setUserContact(UserContact userContact) {
+    this.userContact = userContact;
+  }
+
+  public UserPref getUserPref() {
+    return userPref;
+  }
+
+  public void setUserPref(UserPref userPref) {
+    this.userPref = userPref;
+  }
+
+  public Integer getSince() {
+    return since;
+  }
+
+  public void setSince(Integer since) {
+    this.since = since;
+  }
+
+  public void setType(Integer type) {
+    this.type = type;
+  }
+
+  /** First Name */
+  public String getName() {
+    return name;
+  }
+
+  /**
+   * Set the first name of the user.
+   *
+   * @param name User's first name
+   */
+  public void setName(String name) {
+    if (!StringUtil.lengthCheck(name, 2, 20)) {
+      throw new IllegalArgumentException("Invalid name. Must be 2-20 characters");
     }
+    this.name = name;
+  }
 
-    public User(User user) {
-        super();
-        this.id = user.getId();
-        this.name = user.getName();
-        this.username = user.getUsername();
-        this.password = user.getPassword();
-        this.passwordType = user.getPasswordType();
-        this.roles = user.getRoles();
+  public Date getModified() {
+    return modified;
+  }
+
+  public void setModified(Timestamp modified) {
+    this.modified = modified;
+  }
+
+  public Integer getType() {
+    return type;
+  }
+
+  public String getLastName() {
+    return lastName;
+  }
+
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
+  }
+
+  /**
+   * Retrieve the user id.
+   *
+   * @return User id as an int >= 0
+   */
+  public int getId() {
+    return this.id;
+  }
+
+  /**
+   * Set the user id.
+   *
+   * @param id user id
+   */
+  public void setId(int id) {
+    this.id = id;
+  }
+
+  /**
+   * Retrieve last login date as a <code>DateTimeBean</code>
+   *
+   * @return last login in a DateTimeBean
+   * @see DateTimeBean
+   */
+  public Date getLastLogin() {
+    return lastLogin;
+  }
+
+  public void setLastLogin(java.util.Date dt) {
+    this.lastLogin = dt;
+  }
+
+  /**
+   * Retrieve the user name.
+   *
+   * @return username
+   */
+  public String getUsername() {
+    return this.username;
+  }
+
+  /**
+   * Set the user name.
+   *
+   * @param username account name
+   */
+  public void setUsername(String username) {
+    // TODO: move username max length to this class
+    if (!StringUtil.lengthCheck(username, USERNAME_MIN_LENGTH, USERNAME_MAX_LENGTH)) {
+      throw new IllegalArgumentException("Invalid username " + username);
     }
+    this.username = username.toLowerCase();
+  }
 
-    public UserLocation getUserLocation() {
-        return userLocation;
+  /**
+   * get the first name of the user.
+   *
+   * @return First Name of user
+   */
+  public String getFirstName() {
+    return this.getName();
+  }
+
+  public String getPassword() {
+    return this.password;
+  }
+
+  public void setPassword(String password) {
+
+    if (!StringUtil.lengthCheck(password, 5, 64)) {
+      throw new IllegalArgumentException("Invalid password");
     }
+    this.password = password;
+  }
 
-    public void setUserLocation(UserLocation userLocation) {
-        this.userLocation = userLocation;
-    }
+  public PasswordType getPasswordType() {
+    return this.passwordType;
+  }
 
-    public Set<Entry> getEntries() {
-        return entries;
-    }
+  public void setPasswordType(PasswordType passwordType) {
+    this.passwordType = passwordType;
+  }
 
-    public void setEntries(Set<Entry> entries) {
-        this.entries = entries;
-    }
+  public Set<Friend> getFriends() {
+    return friends;
+  }
 
-    public Set<Comment> getComments() {
-        return comments;
-    }
+  public void setFriends(Set<Friend> friends) {
+    this.friends = friends;
+  }
 
-    public void setComments(Set<Comment> comments) {
-        this.comments = comments;
-    }
+  public Set<UserLink> getLinks() {
+    return links;
+  }
 
-    public UserBio getBio() {
-        return bio;
-    }
+  public void setLinks(Set<UserLink> links) {
+    this.links = links;
+  }
 
-    public void setBio(UserBio bio) {
-        this.bio = bio;
-    }
+  public Set<UserImage> getImages() {
+    return images;
+  }
 
-    public UserContact getUserContact() {
-        return userContact;
-    }
+  public void setImages(Set<UserImage> images) {
+    this.images = images;
+  }
 
-    public void setUserContact(UserContact userContact) {
-        this.userContact = userContact;
-    }
+  public Set<Journal> getJournals() {
+    return journals;
+  }
 
-    public UserPref getUserPref() {
-        return userPref;
-    }
+  public void setJournals(Set<Journal> journals) {
+    this.journals = journals;
+  }
 
-    public void setUserPref(UserPref userPref) {
-        this.userPref = userPref;
-    }
+  public Set<Role> getRoles() {
+    return roles;
+  }
 
-    public Integer getSince() {
-        return since;
-    }
-
-    public void setSince(Integer since) {
-        this.since = since;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
-    }
-
-    /**
-     * First Name
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Set the first name of the user.
-     *
-     * @param name User's first name
-     */
-    public void setName(String name) {
-        if (!StringUtil.lengthCheck(name, 2, 20)) {
-            throw new IllegalArgumentException("Invalid name. Must be 2-20 characters");
-        }
-        this.name = name;
-    }
-
-    public Date getModified() {
-        return modified;
-    }
-
-    public void setModified(Timestamp modified) {
-        this.modified = modified;
-    }
-
-    public Integer getType() {
-        return type;
-    }
-
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    /**
-     * Retrieve the user id.
-     *
-     * @return User id as an int >= 0
-     */
-    public int getId() {
-        return this.id;
-    }
-
-    /**
-     * Set the user id.
-     *
-     * @param id user id
-     */
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    /**
-     * Retrieve last login date as a <code>DateTimeBean</code>
-     *
-     * @return last login in a DateTimeBean
-     * @see DateTimeBean
-     */
-    public Date getLastLogin() {
-        return lastLogin;
-    }
-
-    public void setLastLogin(java.util.Date dt) {
-        this.lastLogin = dt;
-    }
-
-    /**
-     * Retrieve the user name.
-     *
-     * @return username
-     */
-    public String getUsername() {
-        return this.username;
-    }
-
-    /**
-     * Set the user name.
-     *
-     * @param username account name
-     */
-    public void setUsername(String username) {
-        // TODO: move username max length to this class
-        if (!StringUtil.lengthCheck(username, USERNAME_MIN_LENGTH, USERNAME_MAX_LENGTH)) {
-            throw new IllegalArgumentException("Invalid username " + username);
-        }
-        this.username = username.toLowerCase();
-    }
-
-    /**
-     * get the first name of the user.
-     *
-     * @return First Name of user
-     */
-    public String getFirstName() {
-        return this.getName();
-    }
-
-    public String getPassword() {
-        return this.password;
-    }
-
-    public void setPassword(String password) {
-
-        if (!StringUtil.lengthCheck(password, 5, 64)) {
-            throw new IllegalArgumentException("Invalid password");
-        }
-        this.password = password;
-    }
-
-    public PasswordType getPasswordType() {
-        return this.passwordType;
-    }
-
-    public void setPasswordType(PasswordType passwordType) {
-        this.passwordType = passwordType;
-    }
-
-    public Set<Friend> getFriends() {
-        return friends;
-    }
-
-    public void setFriends(Set<Friend> friends) {
-        this.friends = friends;
-    }
-
-    public Set<UserLink> getLinks() {
-        return links;
-    }
-
-    public void setLinks(Set<UserLink> links) {
-        this.links = links;
-    }
-
-    public Set<UserImage> getImages() {
-        return images;
-    }
-
-    public void setImages(Set<UserImage> images) {
-        this.images = images;
-    }
-
-    public Set<Journal> getJournals() {
-        return journals;
-    }
-
-    public void setJournals(Set<Journal> journals) {
-        this.journals = journals;
-    }
-
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
+  public void setRoles(Set<Role> roles) {
+    this.roles = roles;
+  }
 }
