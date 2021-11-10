@@ -2,7 +2,9 @@ spring:
   profiles.default: default
 ---
 spring:
-  profiles: default
+  config:
+    activate:
+      on-profile: default
   flyway:
     baseline-on-migrate: true
     table: schema_version
@@ -69,7 +71,9 @@ bucket:
 
 ---
 spring:
-  profiles: test
+  config:
+    activate:
+      on-profile: test
   data:
     jest:
       uri: http://localhost:9200

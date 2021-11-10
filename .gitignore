@@ -82,3 +82,6 @@ php.xml
 codeStyleConfig.xml
 sonarlint.xml
 compiler.xml
+/.idea/jarRepositories.xml
+/.idea/jpa-buddy.xml
+/.idea/runConfigurations.xml
