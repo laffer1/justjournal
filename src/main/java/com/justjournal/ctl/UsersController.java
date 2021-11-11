@@ -828,8 +828,11 @@ public class UsersController {
       response.resetBuffer();
       setCommonFileHeaders(response, uc, MEDIA_TYPE_PDF, ".pdf");
 
+      ByteArrayOutputStream baos = new ByteArrayOutputStream();
       final ServletOutputStream os = response.getOutputStream();
-      pdfFormatService.write(uc, os);
+      pdfFormatService.write(uc, baos);
+      response.setContentLength(baos.size());
+      baos.writeTo(os);
       os.close();
     } catch (final IOException e1) {
       log.error("Users.getPDF() IOException:" + e1.getMessage(), e1);

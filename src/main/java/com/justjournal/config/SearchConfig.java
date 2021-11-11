@@ -29,8 +29,10 @@ package com.justjournal.config;
 import java.util.Arrays;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchRestClientAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.env.Environment;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 
@@ -38,6 +40,7 @@ import org.springframework.data.elasticsearch.repository.config.EnableElasticsea
 @Log4j2
 @Configuration
 @EnableElasticsearchRepositories(basePackages = {"com.justjournal.repository.search"})
+@Import(ElasticsearchRestClientAutoConfiguration.class)
 public class SearchConfig {
   private final Environment environment;
 

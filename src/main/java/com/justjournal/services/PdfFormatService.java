@@ -25,7 +25,6 @@
  */
 package com.justjournal.services;
 
-
 import com.justjournal.core.UserContext;
 import com.justjournal.exception.ServiceException;
 import com.lowagie.text.Document;
@@ -46,7 +45,7 @@ public class PdfFormatService extends AbstractFormatService {
       throws ServiceException {
     try {
       try (Document document = new Document()) {
-        try (OutputStream out = new BufferedOutputStream(outputStream)) {
+        try (final OutputStream out = new BufferedOutputStream(outputStream)) {
           PdfWriter.getInstance(document, out);
           format(userContext, document);
           out.flush();

@@ -29,6 +29,7 @@ package com.justjournal.services;
 import com.justjournal.core.UserContext;
 import com.justjournal.exception.ServiceException;
 import com.justjournal.model.Entry;
+import com.justjournal.model.FormatType;
 import com.justjournal.model.Journal;
 import com.justjournal.repository.EntryRepository;
 import com.justjournal.repository.SecurityRepository;
@@ -53,6 +54,9 @@ public class AbstractFormatService {
 
   @Autowired private SecurityRepository securityRepository;
 
+  @Autowired
+  private MarkdownService markdownService;
+
   public void format(final UserContext uc, final Document document) throws ServiceException {
     final Font helvetica14 = new Font(Font.HELVETICA, 14.0F);
     final Font helvetica12 = new Font(Font.HELVETICA, 12.0F);
@@ -65,18 +69,19 @@ public class AbstractFormatService {
       document.open();
       document.add(new Paragraph(""));
       Chunk chunk =
-          new Chunk(new ArrayList<Journal>(uc.getBlogUser().getJournals()).get(0).getName());
+          new Chunk(new ArrayList<>(uc.getBlogUser().getJournals()).get(0).getName());
       chunk.setTextRenderMode(PdfContentByte.TEXT_RENDER_MODE_STROKE, 0.4f, blue);
       document.add(chunk);
       document.add(Chunk.NEWLINE);
 
       final java.util.List<Entry> entries;
 
-      if (uc.isAuthBlog()) entries = entryRepository.findByUsername(uc.getBlogUser().getUsername());
-      else
-        entries =
-            entryRepository.findByUsernameAndSecurity(
-                uc.getBlogUser().getUsername(), securityRepository.findByName("public"));
+      if (uc.isAuthBlog()) {
+        entries = entryRepository.findByUsername(uc.getBlogUser().getUsername());
+      } else {
+        entries = entryRepository.findByUsernameAndSecurity(
+                        uc.getBlogUser().getUsername(), securityRepository.findByName("public"));
+      }
 
       // Format the current time.
       final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm");
@@ -104,7 +109,17 @@ public class AbstractFormatService {
         document.add(chunk);
         document.add(Chunk.NEWLINE);
 
-        document.add(new Paragraph(HTMLUtil.textFromHTML(o.getBody()), times11));
+        switch (o.getFormat()) {
+          case HTML:
+            document.add(new Paragraph(HTMLUtil.textFromHTML(o.getBody()), times11));
+            break;
+          case MARKDOWN:
+            document.add(new Paragraph(markdownService.convertToText(o.getBody()), times11));
+            break;
+          case TEXT: /* falls through */
+          default:
+              document.add(new Paragraph(o.getBody(), times11));
+        }
         document.add(Chunk.NEWLINE);
 
         if (o.getSecurity().getId() == 0)
@@ -122,7 +137,7 @@ public class AbstractFormatService {
         document.add(Chunk.NEWLINE);
       }
     } catch (final DocumentException e) {
-      log.error(e.getMessage(), e);
+      log.error("Failed to render document (PDF or RTF) {}", e.getMessage(), e);
     }
   }
 }
