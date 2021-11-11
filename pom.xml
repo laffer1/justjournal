@@ -222,7 +222,7 @@
         <dependency>
             <groupId>io.minio</groupId>
             <artifactId>minio</artifactId>
-            <version>8.3.0</version>
+            <version>8.3.1</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.fasterxml.jackson.core</groupId>
@@ -436,9 +436,9 @@
                             <reflowLongStrings>true</reflowLongStrings>
                         </googleJavaFormat>
 
-                        <removeUnusedImports />
+                        <removeUnusedImports/>
 
-                        <importOrder />
+                        <importOrder/>
 
                         <!-- make sure every file has the following copyright header.
                           optionally, Spotless can set copyright years by digging
