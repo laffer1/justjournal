@@ -11,9 +11,9 @@ spring:
   jackson:
     serialization:
       write-dates-as-timestamps: false
-  data:
-    jest:
-      uri: http://localhost:9200
+  elasticsearch:
+    rest:
+      uris: http://localhost:9200
   datasource:
     url: jdbc:mysql://localhost:3306/jj
     driver-class-name: com.mysql.jdbc.Driver
@@ -74,9 +74,9 @@ spring:
   config:
     activate:
       on-profile: test
-  data:
-    jest:
-      uri: http://localhost:9200
+  elasticsearch:
+    rest:
+      uris: http://localhost:9200
   datasource:
     url: jdbc:mysql://localhost:3306/justjournal_test
     username: travis
