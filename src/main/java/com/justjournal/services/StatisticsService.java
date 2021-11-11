@@ -32,7 +32,7 @@ import com.justjournal.model.StatisticsImpl;
 import com.justjournal.model.User;
 import com.justjournal.model.UserStatistics;
 import com.justjournal.repository.*;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,7 +42,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author Lucas Holt
  */
-@Slf4j
+@Log4j2
 @Service
 @Transactional
 public class StatisticsService {

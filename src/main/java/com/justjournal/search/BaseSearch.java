@@ -25,9 +25,9 @@
  */
 package com.justjournal.search;
 
-
 import java.util.*;
-import lombok.extern.slf4j.Slf4j;
+
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -36,7 +36,7 @@ import org.springframework.stereotype.Component;
  * @author Lucas Holt
  * @version $Id: BaseSearch.java,v 1.6 2009/05/16 03:15:27 laffer1 Exp $
  */
-@Slf4j
+@Log4j2
 @Component
 public class BaseSearch {
 
@@ -45,7 +45,7 @@ public class BaseSearch {
   protected int maxresults = 30;
   protected String baseQuery;
   protected String sort;
-  private JdbcTemplate jdbcTemplate;
+  private final JdbcTemplate jdbcTemplate;
 
   @Autowired
   public BaseSearch(final JdbcTemplate jdbcTemplate) {
@@ -103,7 +103,7 @@ public class BaseSearch {
       sqlStmt.append(" (");
       for (int y = 0; y < fieldlist.size(); y++) {
         if (y != 0) sqlStmt.append(" or ");
-        sqlStmt.append(fieldlist.get(y) + " like '%" + terms.get(i) + "%'");
+        sqlStmt.append(fieldlist.get(y)).append(" like '%").append(terms.get(i)).append("%'");
       }
       sqlStmt.append(") and ");
     }

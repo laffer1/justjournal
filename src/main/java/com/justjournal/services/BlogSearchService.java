@@ -39,7 +39,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -53,7 +53,7 @@ import org.springframework.stereotype.Service;
  *
  * @author Lucas Holt
  */
-@Slf4j
+@Log4j2
 @Service
 public class BlogSearchService {
 

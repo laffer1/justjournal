@@ -44,12 +44,12 @@ import com.justjournal.repository.UserPrefRepository;
 import com.justjournal.repository.UserRepository;
 import java.util.Calendar;
 import java.util.Date;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /** @author Lucas Holt */
-@Slf4j
+@Log4j2
 @Service
 public class AccountService {
 

@@ -31,7 +31,7 @@ import com.justjournal.exception.ServiceException;
 import com.justjournal.model.Statistics;
 import com.justjournal.model.UserStatistics;
 import com.justjournal.services.StatisticsService;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -44,7 +44,7 @@ import org.springframework.web.bind.annotation.*;
  *
  * @author Lucas Holt
  */
-@Slf4j
+@Log4j2
 @RestController
 @RequestMapping("/api/statistics")
 public class StatisticsController {

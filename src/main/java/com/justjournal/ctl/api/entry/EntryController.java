@@ -63,7 +63,7 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -95,7 +95,7 @@ import reactor.core.publisher.Flux;
  *
  * @author Lucas Holt
  */
-@Slf4j
+@Log4j2
 @RestController
 @RequestMapping("/api/entry")
 public class EntryController {

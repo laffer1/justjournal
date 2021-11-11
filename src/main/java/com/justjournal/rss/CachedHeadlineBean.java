@@ -39,7 +39,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
 import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -59,7 +59,7 @@ import org.springframework.stereotype.Component;
  *     xml declaration was missing in feed and whitespace at front. 1.2 Fixed bug where records
  *     might not get updated. 1.1 optimized code 1.0 Initial release
  */
-@Slf4j
+@Log4j2
 @Component
 public class CachedHeadlineBean extends HeadlineBean {
 

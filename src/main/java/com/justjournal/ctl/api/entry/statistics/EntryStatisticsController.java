@@ -31,7 +31,7 @@ import com.justjournal.model.EntryStatistic;
 import com.justjournal.services.EntryStatisticService;
 import java.util.Collections;
 import java.util.List;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.collections4.IteratorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -43,7 +43,7 @@ import org.springframework.web.bind.annotation.*;
  *
  * @author Lucas Holt
  */
-@Slf4j
+@Log4j2
 @RestController
 @RequestMapping("/api/entry")
 public class EntryStatisticsController {

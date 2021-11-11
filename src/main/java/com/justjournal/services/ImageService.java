@@ -32,7 +32,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import javax.imageio.ImageIO;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 /**
@@ -40,7 +40,7 @@ import org.springframework.stereotype.Service;
  *
  * @author Lucas Holt
  */
-@Slf4j
+@Log4j2
 @Service
 public class ImageService {
   private static final int AVATAR_MAX_WIDTH = 100;

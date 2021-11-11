@@ -34,7 +34,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Calendar;
 import java.util.List;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -53,7 +53,7 @@ import reactor.core.scheduler.Schedulers;
  *
  * @author Lucas Holt
  */
-@Slf4j
+@Log4j2
 @Component
 @Profile("!test")
 public class RssCacheRefresh {

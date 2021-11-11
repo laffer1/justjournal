@@ -81,7 +81,7 @@ import java.util.TimeZone;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang.StringUtils;
 import org.owasp.esapi.ESAPI;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,7 +105,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  *
  * @author Lucas Holt
  */
-@Slf4j
+@Log4j2
 @Transactional
 @Controller
 @RequestMapping("/users")

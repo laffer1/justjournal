@@ -63,7 +63,7 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.w3c.tidy.Tidy;
 
 /**
@@ -72,7 +72,7 @@ import org.w3c.tidy.Tidy;
  * @author Copyright &copy; 2004 Brian M. Clapper
  * @version <tt>$Revision: 1.12 $</tt>
  */
-@Slf4j
+@Log4j2
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class HTMLUtil {
 

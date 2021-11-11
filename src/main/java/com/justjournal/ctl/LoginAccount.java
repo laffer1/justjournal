@@ -31,7 +31,7 @@ import com.justjournal.Login;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -44,7 +44,7 @@ import org.springframework.stereotype.Component;
  *     <p>Mon Sep 19 2005 1.3 added JJ.LOGIN.FAIL and JJ.LOGIN.OK for desktop clients.
  *     <p>
  */
-@Slf4j
+@Log4j2
 @Component
 public class LoginAccount extends JustJournalBaseServlet {
 

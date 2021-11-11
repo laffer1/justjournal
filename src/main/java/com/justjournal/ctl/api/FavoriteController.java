@@ -42,7 +42,7 @@ import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -61,7 +61,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 1.0
  *     <p>Created: Date: Dec 10, 2005 Time: 8:44:39 PM
  */
-@Slf4j
+@Log4j2
 @RestController
 @RequestMapping("/api/favorite")
 public class FavoriteController {

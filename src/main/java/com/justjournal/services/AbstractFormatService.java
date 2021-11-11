@@ -40,13 +40,13 @@ import java.awt.*;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /** @author Lucas Holt */
 @Service
-@Slf4j
+@Log4j2
 public class AbstractFormatService {
 
   @Autowired private EntryRepository entryRepository;

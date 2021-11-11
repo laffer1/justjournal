@@ -39,7 +39,7 @@ import java.util.Map;
 import java.util.Optional;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -56,7 +56,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author Lucas Holt
  */
-@Slf4j
+@Log4j2
 @RestController
 @RequestMapping("/api/link")
 public class LinkController {

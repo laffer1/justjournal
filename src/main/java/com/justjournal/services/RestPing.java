@@ -35,11 +35,11 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.owasp.esapi.ESAPI;
 
 /** User: laffer1 Date: Jul 27, 2008 Time: 5:50:49 AM */
-@Slf4j
+@Log4j2
 public class RestPing {
 
   protected String pingUri;

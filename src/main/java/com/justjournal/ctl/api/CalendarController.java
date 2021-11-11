@@ -38,7 +38,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.GregorianCalendar;
 import javax.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
@@ -53,7 +53,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  *
  * @author Lucas Holt
  */
-@Slf4j
+@Log4j2
 @Controller
 @RequestMapping("/api/calendar")
 public class CalendarController {

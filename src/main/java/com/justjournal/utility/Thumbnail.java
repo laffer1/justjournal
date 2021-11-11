@@ -33,14 +33,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import javax.imageio.ImageIO;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Create thumbnails of full images as PNG
  *
  * @author Lucas Holt
  */
-@Slf4j
+@Log4j2
 public class Thumbnail {
   private int thumbWidth; /* Suggested thumbnail max width */
   private int thumbHeight; /* Suggested thumbnail max height */

@@ -43,7 +43,6 @@ import io.minio.MinioClient;
 import io.minio.errors.ErrorResponseException;
 import io.minio.errors.InsufficientDataException;
 import io.minio.errors.InternalException;
-import io.minio.errors.InvalidBucketNameException;
 import io.minio.errors.InvalidResponseException;
 import io.minio.errors.ServerException;
 import io.minio.errors.XmlParserException;
@@ -126,7 +125,7 @@ public class ImageStorageServiceTests {
   public void testDownloadAvatar()
       throws ServiceException, IOException, InvalidKeyException, NoSuchAlgorithmException,
           InsufficientDataException, InvalidResponseException, InternalException,
-          InvalidBucketNameException, ErrorResponseException, ServerException, XmlParserException {
+          ErrorResponseException, ServerException, XmlParserException {
     UserPic userPic = new UserPic();
     userPic.setFilename("test");
     userPic.setId(1);

@@ -41,7 +41,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
@@ -54,7 +54,7 @@ import org.springframework.stereotype.Service;
  * @author Lucas Holt
  * @version $Id: Rss.java,v 1.13 2011/05/29 22:32:59 laffer1 Exp $
  */
-@Slf4j
+@Log4j2
 @Service
 @Scope(value = "request", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class Rss {

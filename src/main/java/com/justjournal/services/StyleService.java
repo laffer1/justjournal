@@ -29,7 +29,7 @@ package com.justjournal.services;
 import com.justjournal.model.Style;
 import com.justjournal.repository.StyleRepository;
 import java.util.List;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,7 +38,7 @@ import org.springframework.stereotype.Service;
  *
  * @author Lucas Holt
  */
-@Slf4j
+@Log4j2
 @Service
 public class StyleService {
 

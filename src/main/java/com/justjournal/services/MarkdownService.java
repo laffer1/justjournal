@@ -28,7 +28,7 @@ package com.justjournal.services;
 
 import java.util.Arrays;
 import java.util.List;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.commonmark.Extension;
 import org.commonmark.ext.autolink.AutolinkExtension;
 import org.commonmark.ext.gfm.tables.TablesExtension;
@@ -43,7 +43,7 @@ import org.springframework.stereotype.Service;
  *
  * @author Lucas Holt
  */
-@Slf4j
+@Log4j2
 @Service
 public class MarkdownService {
 

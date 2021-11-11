@@ -29,14 +29,14 @@ package com.justjournal.core;
 import com.justjournal.model.User;
 import com.justjournal.repository.UserRepository;
 import com.justjournal.services.EntryStatisticService;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 /** @author Lucas Holt */
-@Slf4j
+@Log4j2
 @Component
 @Profile("!test")
 public class StatisticsRefresh {

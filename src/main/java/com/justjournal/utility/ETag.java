@@ -30,7 +30,7 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import javax.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * ETag HTTP Header implmentation. Hashes input to generate a unique ETag.
@@ -41,7 +41,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author Lucas Holt
  * @version $Id: ETag.java,v 1.1 2009/05/30 18:22:21 laffer1 Exp $
  */
-@Slf4j
+@Log4j2
 public class ETag {
   protected HttpServletResponse response;
 
