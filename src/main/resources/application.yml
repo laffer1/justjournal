@@ -92,8 +92,8 @@ spring:
 app:
   minio:
     host: http://localhost:9000/
-    accessKey:
-    secretKey:
+    accessKey: test
+    secretKey: test
 
 bucket:
   avatar: jjqaavatar
