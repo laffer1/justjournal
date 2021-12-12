@@ -297,8 +297,18 @@
                     <groupId>com.fasterxml.jackson.core</groupId>
                     <artifactId>jackson-annotations</artifactId>
                 </exclusion>
+                <exclusion>
+                  <groupId>com.google.guava</groupId>
+                  <artifactId>guava</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
+             
+         <dependency>
+                  <groupId>com.google.guava</groupId>
+                  <artifactId>guava</artifactId>
+                  <version>31.0-jre</version>
+         </dependency>
 
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
