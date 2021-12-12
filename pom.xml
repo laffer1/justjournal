@@ -661,9 +661,10 @@
                 </dependencies>
             </plugin>
             <plugin>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <version>3.0.0-M5</version>
-                <configuration>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-failsafe-plugin</artifactId>
+                  <version>3.0.0-M5</version>
+                 <configuration>
                     <testFailureIgnore>true</testFailureIgnore>
                     <includes>
                         <include>**/IT*.java</include>
