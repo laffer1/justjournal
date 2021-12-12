@@ -287,7 +287,7 @@
         <dependency>
             <groupId>io.minio</groupId>
             <artifactId>minio</artifactId>
-            <version>8.0.0</version>
+            <version>8.0.3</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.fasterxml.jackson.core</groupId>
