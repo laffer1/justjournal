@@ -671,13 +671,6 @@
                     </includes>
                     <argLine>${argLine} -Dspring.profiles.active=it</argLine>
                 </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.maven.surefire</groupId>
-                        <artifactId>failsafe-junit47</artifactId>
-                        <version>3.0.0-M5</version>
-                    </dependency>
-                </dependencies>
             </plugin>
         </plugins>
     </build>
