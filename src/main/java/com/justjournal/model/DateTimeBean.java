@@ -31,7 +31,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Represent a date in just journal. Allows the conversion of dates between java Date objects and
@@ -43,7 +43,7 @@ import lombok.extern.log4j.Log4j2;
  * @version $Id: DateTimeBean.java,v 1.11 2012/06/23 18:15:31 laffer1 Exp $
  * @since 1.0
  */
-@Log4j2
+@Slf4j
 public final class DateTimeBean implements DateTime {
 
   // default is epoch -1 sec

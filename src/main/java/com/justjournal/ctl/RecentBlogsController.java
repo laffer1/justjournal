@@ -45,7 +45,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import javax.servlet.http.HttpServletResponse;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -61,7 +61,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * @author Lucas Holt
  * @version $Id: RecentBlogs.java,v 1.15 2011/07/01 11:54:31 laffer1 Exp $
  */
-@Log4j2
+@Slf4j
 @Controller
 @RequestMapping("/RecentBlogs")
 public class RecentBlogsController {

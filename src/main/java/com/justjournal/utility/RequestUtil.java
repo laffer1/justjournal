@@ -30,12 +30,12 @@ import java.util.Arrays;
 import javax.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 /** @author Lucas Holt */
-@Log4j2
+@Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RequestUtil {
   private static final String[] IP_HEADER_NAMES = {

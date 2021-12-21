@@ -30,6 +30,7 @@
         <argLine>-Xmx786m</argLine>
         <log4j2.version>2.17.0</log4j2.version>
         <okhttp3.version>4.8.1</okhttp3.version>
+        <logback.version>1.2.9</logback.version>
     </properties>
 
     <profiles>
@@ -104,16 +105,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis-reactive</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-logging</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-simple</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <dependency>
@@ -140,31 +131,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-logging</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-simple</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-tomcat</artifactId>
             <scope>compile</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-logging</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-simple</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <dependency>
@@ -214,11 +185,17 @@
             <groupId>org.owasp.antisamy</groupId>
             <artifactId>antisamy</artifactId>
             <version>1.6.4</version>
+            <exclusions>
+            <exclusion>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-simple</artifactId>
+            </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
             <groupId>org.owasp</groupId>
-            <artifactId>security-logging-slf4j</artifactId>
+            <artifactId>security-logging-logback</artifactId>
             <version>1.1.6</version>
         </dependency>
 

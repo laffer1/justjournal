@@ -42,7 +42,7 @@ import java.util.Map;
 import java.util.Optional;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -57,7 +57,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author Lucas Holt
  */
-@Log4j2
+@Slf4j
 @RestController
 @RequestMapping("/api/trackback")
 public class TrackbackController {

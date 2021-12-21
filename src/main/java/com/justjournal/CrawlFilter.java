@@ -43,11 +43,11 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.owasp.esapi.ESAPI;
 import org.owasp.esapi.errors.EncodingException;
 
-@Log4j2
+@Slf4j
 public final class CrawlFilter implements Filter {
 
   private static final String PARAM_ESCAPED_FRAGMENT = "_escaped_fragment_";

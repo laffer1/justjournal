@@ -33,7 +33,7 @@ import com.justjournal.repository.EntryStatisticRepository;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.function.Function;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -48,7 +48,7 @@ import reactor.core.scheduler.Schedulers;
  * @author Lucas Holt
  */
 @Service
-@Log4j2
+@Slf4j
 public class EntryStatisticService {
 
   private final EntryStatisticRepository entryStatisticRepository;

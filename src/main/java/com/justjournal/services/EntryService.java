@@ -46,7 +46,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import lombok.NonNull;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -58,7 +58,7 @@ import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 
 /** @author Lucas Holt */
-@Log4j2
+@Slf4j
 @Service
 public class EntryService {
   private static final int MAX_RECENT_ENTRIES = 5;

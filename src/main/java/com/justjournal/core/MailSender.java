@@ -39,7 +39,7 @@ import javax.mail.Transport;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -51,7 +51,7 @@ import org.springframework.stereotype.Component;
  * @author Lucas Holt
  * @version $Id: MailSender.java,v 1.8 2009/03/16 22:10:31 laffer1 Exp $
  */
-@Log4j2
+@Slf4j
 @Component
 @Profile("!test")
 public class MailSender {

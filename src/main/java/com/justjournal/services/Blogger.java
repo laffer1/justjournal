@@ -41,7 +41,7 @@ import java.io.Serializable;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -59,7 +59,7 @@ import org.springframework.stereotype.Component;
  * index template of a given blog.
  */
 @SuppressWarnings({"UnusedParameters"})
-@Log4j2
+@Slf4j
 @Component
 public class Blogger extends BaseXmlRpcService {
 

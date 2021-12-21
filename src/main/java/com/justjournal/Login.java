@@ -37,7 +37,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.servlet.http.HttpSession;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 /**
@@ -48,7 +48,7 @@ import org.springframework.stereotype.Component;
  *
  * @author Lucas Holt
  */
-@Log4j2
+@Slf4j
 @Component
 public class Login {
 

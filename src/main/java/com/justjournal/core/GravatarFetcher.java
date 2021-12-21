@@ -39,14 +39,14 @@ import com.timgroup.jgravatar.GravatarDefaultImage;
 import com.timgroup.jgravatar.GravatarRating;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 /** @author Lucas Holt */
-@Log4j2
+@Slf4j
 @Component
 public class GravatarFetcher {
 

@@ -32,7 +32,7 @@ import com.justjournal.model.Tag;
 import com.justjournal.services.TagService;
 import java.util.Collection;
 import java.util.Comparator;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -45,7 +45,7 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.ParallelFlux;
 
 /** @author Lucas Holt */
-@Log4j2
+@Slf4j
 @RestController
 @RequestMapping("/api/tagcloud")
 public class TagCloudController {

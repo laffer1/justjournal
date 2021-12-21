@@ -53,7 +53,7 @@ import java.util.IllegalFormatException;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -66,7 +66,7 @@ import org.springframework.stereotype.Component;
  *     <p>TODO: Implement the media method
  */
 @SuppressWarnings({"UnusedParameters"})
-@Log4j2
+@Slf4j
 @Component
 public class MetaWeblog extends BaseXmlRpcService {
 

@@ -33,11 +33,11 @@ import com.lowagie.text.pdf.PdfWriter;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 /** @author Lucas Holt */
-@Log4j2
+@Slf4j
 @Service
 public class PdfFormatService extends AbstractFormatService {
 

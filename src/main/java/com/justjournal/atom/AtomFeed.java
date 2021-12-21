@@ -32,7 +32,7 @@ import com.justjournal.services.MarkdownService;
 import com.justjournal.utility.DateConvert;
 import com.justjournal.utility.Xml;
 import java.util.*;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
@@ -44,7 +44,7 @@ import org.springframework.stereotype.Service;
  * @author Lucas Holt
  * @version $Id: AtomFeed.java,v 1.5 2011/05/29 22:32:59 laffer1 Exp $
  */
-@Log4j2
+@Slf4j
 @Service
 @Scope(value = "request", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class AtomFeed {

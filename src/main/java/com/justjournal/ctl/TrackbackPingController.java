@@ -36,7 +36,7 @@ import com.justjournal.utility.DNSUtil;
 import com.justjournal.utility.StringUtil;
 import java.time.Duration;
 import java.util.Optional;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -54,7 +54,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  *
  * @author Lucas Holt
  */
-@Log4j2
+@Slf4j
 @Controller
 @RequestMapping("/trackback")
 public class TrackbackPingController {

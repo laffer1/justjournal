@@ -39,7 +39,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.servlet.http.HttpSession;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpHeaders;
@@ -63,7 +63,7 @@ import org.springframework.web.multipart.MultipartFile;
  * @author Lucas Holt
  * @version $Id: AlbumImage.java,v 1.9 2012/07/04 18:48:28 laffer1 Exp $
  */
-@Log4j2
+@Slf4j
 @RequestMapping("/AlbumImage")
 @Controller
 public class AlbumImageController {

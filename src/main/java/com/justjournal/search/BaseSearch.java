@@ -27,7 +27,7 @@ package com.justjournal.search;
 
 import java.util.*;
 
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -36,7 +36,7 @@ import org.springframework.stereotype.Component;
  * @author Lucas Holt
  * @version $Id: BaseSearch.java,v 1.6 2009/05/16 03:15:27 laffer1 Exp $
  */
-@Log4j2
+@Slf4j
 @Component
 public class BaseSearch {
 

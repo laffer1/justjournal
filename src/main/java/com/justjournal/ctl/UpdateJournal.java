@@ -62,7 +62,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -79,7 +79,7 @@ import org.springframework.stereotype.Component;
  *     <p>1.4 Changed default behavior for allow comments flag. Assumes the user will uncheck a box
  *     to disable comments. auto formatting was changed in a similar manner for usability.
  */
-@Log4j2
+@Slf4j
 @Component
 public class UpdateJournal extends HttpServlet {
 

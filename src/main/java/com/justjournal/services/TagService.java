@@ -39,7 +39,7 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -48,7 +48,7 @@ import reactor.core.publisher.ParallelFlux;
 import reactor.core.scheduler.Schedulers;
 
 /** @author Lucas Holt */
-@Log4j2
+@Slf4j
 @Service
 public class TagService {
 

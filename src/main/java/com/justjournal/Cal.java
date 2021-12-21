@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Storage for calendar months.
@@ -42,7 +42,7 @@ import lombok.extern.log4j.Log4j2;
  * @version $Id: Cal.java,v 1.12 2012/07/04 18:48:53 laffer1 Exp $
  * @see CalMonth
  */
-@Log4j2
+@Slf4j
 public final class Cal {
   public static final int MONTHS_IN_YEAR = 12;
   private final List<CalMonth> monthList = new ArrayList<>(MONTHS_IN_YEAR);

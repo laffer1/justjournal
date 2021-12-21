@@ -32,7 +32,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import com.justjournal.ctl.api.assembler.BlogEntrySearchResourceAssembler;
 import com.justjournal.model.search.BlogEntry;
 import com.justjournal.services.BlogSearchService;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -46,7 +46,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 /** @author Lucas Holt */
-@Log4j2
+@Slf4j
 @RestController
 @RequestMapping("/api/search")
 public class SearchController {

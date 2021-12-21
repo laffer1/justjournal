@@ -32,7 +32,7 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.NonNull;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -55,7 +55,7 @@ import org.springframework.stereotype.Component;
  *     <p>1.0 Initial release
  *     <p>
  */
-@Log4j2
+@Slf4j
 @Component
 public class HeadlineBean {
 

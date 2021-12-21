@@ -37,7 +37,7 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.owasp.esapi.ESAPI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -50,7 +50,7 @@ import org.springframework.web.client.RestTemplate;
 import org.thymeleaf.util.StringUtils;
 
 /** @author Lucas Holt */
-@Log4j2
+@Slf4j
 @Service
 public class TrackbackService {
   private static final String XML_HEADER = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";

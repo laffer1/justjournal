@@ -27,7 +27,7 @@ package com.justjournal.core;
 
 
 import com.justjournal.repository.SettingsRepository;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -38,7 +38,7 @@ import org.springframework.stereotype.Component;
  *
  * @author Lucas Holt
  */
-@Log4j2
+@Slf4j
 @Component
 public class Settings {
 
