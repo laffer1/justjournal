@@ -25,10 +25,10 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <mysql.driver.version>8.0.27</mysql.driver.version>
         <esapi.version>2.2.3.1</esapi.version>
-        <commonmark.version>0.18.0</commonmark.version>
+        <commonmark.version>0.18.1</commonmark.version>
         <spotless.version>2.17.4</spotless.version>
         <argLine>-Xmx786m</argLine>
-        <log4j2.version>2.16.0</log4j2.version>
+        <log4j2.version>2.17.0</log4j2.version>
         <okhttp3.version>4.8.1</okhttp3.version>
     </properties>
 
@@ -78,28 +78,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-logging</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-simple</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-log4j2</artifactId>
-        </dependency>
-
-        <!-- Needed for Async Logging with Log4j 2 -->
-        <dependency>
-            <groupId>com.lmax</groupId>
-            <artifactId>disruptor</artifactId>
-            <version>3.4.4</version>
         </dependency>
 
         <dependency>
@@ -224,6 +202,11 @@
                            <groupId>org.owasp.antisamy</groupId>
                            <artifactId>antisamy</artifactId> 
                      </exclusion>
+                      <exclusion>
+                           <groupId>log4j</groupId>
+                           <artifactId>log4j</artifactId> 
+                     </exclusion>
+
             </exclusions>
         </dependency>
 
@@ -235,7 +218,7 @@
 
         <dependency>
             <groupId>org.owasp</groupId>
-            <artifactId>security-logging-log4j</artifactId>
+            <artifactId>security-logging-slf4j</artifactId>
             <version>1.1.6</version>
         </dependency>
 
