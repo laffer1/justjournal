@@ -26,9 +26,13 @@
 package com.justjournal;
 
 
+import com.justjournal.core.Settings;
 import com.justjournal.ctl.LoginAccount;
 import com.justjournal.ctl.UpdateJournal;
 import com.justjournal.ctl.XmlRpc;
+import com.justjournal.repository.*;
+import com.justjournal.services.TrackbackService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.data.mongo.MongoRepositoriesAutoConfiguration;
@@ -69,13 +73,19 @@ public class Application extends SpringBootServletInitializer {
   }
 
   @Bean
-  public ServletRegistrationBean updateJournalServlet() {
-    return new ServletRegistrationBean(new UpdateJournal(), "/updateJournal");
+  public Login webLogin(UserRepository userRepository) {
+    return new Login(userRepository);
   }
 
   @Bean
-  public ServletRegistrationBean loginAccountServlet() {
-    return new ServletRegistrationBean(new LoginAccount(), "/loginAccount");
+  public ServletRegistrationBean updateJournalServlet(Settings settings, EntryRepository entryRepository, UserRepository user, SecurityRepository securityRepository,
+                                                      LocationRepository locationDao, MoodRepository moodDao, Login webLogin, TrackbackService trackbackService) {
+    return new ServletRegistrationBean(new UpdateJournal(settings, entryRepository, user, securityRepository, locationDao, moodDao, webLogin, trackbackService), "/updateJournal");
+  }
+
+  @Bean
+  public ServletRegistrationBean loginAccountServlet(Login webLogin) {
+    return new ServletRegistrationBean(new LoginAccount(webLogin), "/loginAccount");
   }
 
   @Bean

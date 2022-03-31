@@ -86,22 +86,34 @@ public class UpdateJournal extends HttpServlet {
   private static final long serialVersionUID = -6905389941955230503L;
 
   @SuppressWarnings({"InstanceVariableOfConcreteClass"})
-  @Autowired
   private Settings settings;
 
-  @Autowired private EntryRepository entryRepository;
+  private EntryRepository entryRepository;
 
-  @Autowired private UserRepository userRepository;
+  private UserRepository userRepository;
 
-  @Autowired private SecurityRepository securityRepository;
+  private SecurityRepository securityRepository;
 
-  @Autowired private LocationRepository locationDao;
+  private LocationRepository locationDao;
 
-  @Autowired private MoodRepository moodDao;
+  private MoodRepository moodDao;
 
-  @Autowired private Login webLogin;
+  private Login webLogin;
 
-  @Autowired private TrackbackService trackbackService;
+  private TrackbackService trackbackService;
+
+  public UpdateJournal(Settings settings, EntryRepository entryRepository, UserRepository user, SecurityRepository securityRepository,
+                       LocationRepository locationDao, MoodRepository moodDao, Login webLogin, TrackbackService trackbackService) {
+    super();
+    this.settings = settings;
+    this.entryRepository = entryRepository;
+    this.userRepository = user;
+    this.securityRepository = securityRepository;
+    this.locationDao = locationDao;
+    this.moodDao = moodDao;
+    this.webLogin = webLogin;
+    this.trackbackService = trackbackService;
+  }
 
   /**
    * Determine the type of client
