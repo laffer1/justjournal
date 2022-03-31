@@ -48,7 +48,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class LoginAccount extends JustJournalBaseServlet {
 
-  @Autowired private Login webLogin;
+  private Login webLogin;
+
+  @Autowired
+  public LoginAccount(Login webLogin) {
+    super();
+    this.webLogin = webLogin;
+  }
 
   @Override
   protected void execute(
@@ -73,7 +79,7 @@ public class LoginAccount extends JustJournalBaseServlet {
     try {
       if (log.isDebugEnabled()) log.debug("Attempting Login Validation  ");
 
-      userID = webLogin.validate(userName, password);
+      userID = webLogin.validate(userName, password); // TODO: broken
 
       if (userID > 0) {
         sb.append(JJ_LOGIN_OK);

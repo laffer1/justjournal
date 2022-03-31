@@ -38,7 +38,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 /**
  * Provides authentication and password management services to web applications using the just
@@ -49,11 +51,12 @@ import org.springframework.stereotype.Component;
  * @author Lucas Holt
  */
 @Slf4j
-@Component
+@Service
 public class Login {
 
   private final UserRepository userRepository;
 
+  @Autowired
   public Login(final UserRepository userRepository) {
     this.userRepository = userRepository;
   }
