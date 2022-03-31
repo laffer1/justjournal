@@ -26,14 +26,14 @@
   "dependencies": {
     "jquery": ">2"
   },
-  "version": "2.10.0",
-  "_release": "2.10.0",
+  "version": "2.11.3",
+  "_release": "2.11.3",
   "_resolution": {
     "type": "version",
-    "tag": "v2.10.0",
-    "commit": "351a2ccc87f71bfbbf20ef102a945a12e4c8f2ac"
+    "tag": "v2.11.3",
+    "commit": "e51998c067f95a7d23599c2d1efa130f6662ec11"
   },
   "_source": "https://github.com/lokesh/lightbox2.git",
-  "_target": "~2.10",
+  "_target": "~2.11.3",
   "_originalSource": "lightbox2"
 }
