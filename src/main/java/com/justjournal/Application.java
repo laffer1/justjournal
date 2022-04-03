@@ -32,15 +32,12 @@ import com.justjournal.ctl.UpdateJournal;
 import com.justjournal.ctl.XmlRpc;
 import com.justjournal.repository.*;
 import com.justjournal.services.TrackbackService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.data.mongo.MongoRepositoriesAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.neo4j.Neo4jRepositoriesAutoConfiguration;
-import org.springframework.boot.autoconfigure.data.solr.SolrRepositoriesAutoConfiguration;
 import org.springframework.boot.autoconfigure.gson.GsonAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.XADataSourceAutoConfiguration;
-import org.springframework.boot.autoconfigure.solr.SolrAutoConfiguration;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
@@ -61,8 +58,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
     exclude = {
       GsonAutoConfiguration.class,
       XADataSourceAutoConfiguration.class,
-      SolrAutoConfiguration.class,
-      SolrRepositoriesAutoConfiguration.class,
       Neo4jRepositoriesAutoConfiguration.class,
       MongoRepositoriesAutoConfiguration.class
     })
