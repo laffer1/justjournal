@@ -25,8 +25,6 @@
  */
 package com.justjournal.services;
 
-import static org.elasticsearch.index.query.QueryBuilders.*;
-
 import com.justjournal.model.Entry;
 import com.justjournal.model.Security;
 import com.justjournal.model.search.BlogEntry;
@@ -40,7 +38,6 @@ import java.util.HashMap;
 import java.util.List;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.elasticsearch.index.query.QueryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -92,14 +89,7 @@ public class BlogSearchService {
    * @return a page of results
    */
   public Page<BlogEntry> publicSearch(final String term, final Pageable page) {
-    final QueryBuilder qb =
-        boolQuery()
-            .must(matchQuery("privateEntry", "false"))
-            .must(multiMatchQuery(term, "subject", "body"));
-
-    log.warn(qb.toString());
-
-    return blogEntryRepository.search(qb, page);
+    return blogEntryRepository.findByPublicSearch(term, page);
   }
 
   /**
@@ -111,14 +101,7 @@ public class BlogSearchService {
    * @return a page of results
    */
   public Page<BlogEntry> search(final String term, final String username, final Pageable page) {
-    final QueryBuilder qb =
-        boolQuery()
-            .must(matchQuery("author", username))
-            .must(multiMatchQuery(term, "subject", "body"));
-
-    log.warn(qb.toString());
-
-    return blogEntryRepository.search(qb, page);
+    return blogEntryRepository.findBySearchAndAuthor(term, username, page);
   }
 
   /**
@@ -130,16 +113,8 @@ public class BlogSearchService {
    * @return a page of results
    */
   public Page<BlogEntry> publicSearch(
-      final String term, final String username, final Pageable page) {
-    final QueryBuilder qb =
-        boolQuery()
-            .must(matchQuery("privateEntry", "false"))
-            .must(matchQuery("author", username))
-            .must(multiMatchQuery(term, "subject", "body"));
-
-    log.warn(qb.toString());
-
-    return blogEntryRepository.search(qb, page);
+    final String term, final String username, final Pageable page) {
+    return blogEntryRepository.findByPublicSearchAndAuthor(term, username, page);
   }
 
   /** Index all blog entries regardless of security level. */
