@@ -288,7 +288,7 @@
         <dependency>
             <groupId>com.github.librepdf</groupId>
             <artifactId>openpdf</artifactId>
-            <version>1.3.29</version>
+            <version>1.3.30</version>
         </dependency>
 
         <!-- new versions are under AGPL, this version appears to be a mix of MPL/lgpl/apache (up to 4.2.0)-->
