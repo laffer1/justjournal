@@ -24,8 +24,8 @@
         <java-version>11</java-version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <mysql.driver.version>8.0.31</mysql.driver.version>
+        <commonmark.version>0.21.0</commonmark.version>
         <esapi.version>2.5.1.0</esapi.version>
-        <commonmark.version>0.19.0</commonmark.version>
         <spotless.version>2.17.5</spotless.version>
         <argLine>-Xmx786m</argLine>
         <log4j2.version>2.17.2</log4j2.version>
