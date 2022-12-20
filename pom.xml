@@ -23,9 +23,9 @@
     <properties>
         <java-version>11</java-version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <mysql.driver.version>8.0.30</mysql.driver.version>
-        <esapi.version>2.5.0.0</esapi.version>
-        <commonmark.version>0.20.0</commonmark.version>
+        <mysql.driver.version>8.0.31</mysql.driver.version>
+        <commonmark.version>0.21.0</commonmark.version>
+        <esapi.version>2.5.1.0</esapi.version>
         <spotless.version>2.17.5</spotless.version>
         <argLine>-Xmx786m</argLine>
         <log4j2.version>2.17.2</log4j2.version>
@@ -183,7 +183,7 @@
         <dependency>
             <groupId>org.owasp.antisamy</groupId>
             <artifactId>antisamy</artifactId>
-            <version>1.7.1</version>
+            <version>1.7.2</version>
             <exclusions>
             <exclusion>
                 <groupId>org.slf4j</groupId>
@@ -247,7 +247,7 @@
         <dependency>
             <groupId>io.minio</groupId>
             <artifactId>minio</artifactId>
-            <version>8.4.4</version>
+            <version>8.4.6</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.fasterxml.jackson.core</groupId>
@@ -375,7 +375,7 @@
         <dependency>
             <groupId>net.sourceforge.htmlunit</groupId>
             <artifactId>htmlunit</artifactId>
-            <version>2.66.0</version>
+            <version>2.67.0</version>
         </dependency>
 
         <!-- For unit testing -->
