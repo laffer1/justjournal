@@ -6,9 +6,9 @@ JustJournal.com's Source
 Just Journal is a blogging web application that supports multiple users and has clients in
 C#, Java, Apple's Dashboard (javascript), and unix command line (C)
 
-JustJournal is developed on JDK 1.8 (java 8) on Linux
-using MySQL 8.0 and Spring Boot 2.2.x.  It has been successfully
-deployed on MidnightBSD 2.1 with the OpenJDK 1.8 JDK using MySQL 8.0.
+JustJournal is developed on JDK 11 on Linux
+using MySQL 8.0 and Spring Boot 2.6.x.  It has been successfully
+deployed on MidnightBSD 3.0 with the OpenJDK 11 using MySQL 8.0.32.
 
 Fore more information, see the INSTALL file
 
