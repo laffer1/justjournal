@@ -36,7 +36,7 @@ import lombok.extern.slf4j.Slf4j;
  * ETag HTTP Header implmentation. Hashes input to generate a unique ETag.
  *
  * <p>Format must be ETag: "mytag" (including quotes)
- * http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html
+ * <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html">...</a>
  *
  * @author Lucas Holt
  * @version $Id: ETag.java,v 1.1 2009/05/30 18:22:21 laffer1 Exp $

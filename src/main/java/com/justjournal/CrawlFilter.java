@@ -26,10 +26,10 @@
 package com.justjournal;
 
 
-import com.gargoylesoftware.htmlunit.BrowserVersion;
-import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import org.htmlunit.BrowserVersion;
+import org.htmlunit.NicelyResynchronizingAjaxController;
+import org.htmlunit.WebClient;
+import org.htmlunit.html.HtmlPage;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.regex.Matcher;

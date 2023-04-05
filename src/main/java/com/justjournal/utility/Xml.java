@@ -69,8 +69,7 @@ public final class Xml {
     work = StringUtil.replace(work, '"', "&quot;");
     work = StringUtil.replace(work, '<', "&lt;");
     work = StringUtil.replace(work, '>', "&gt;");
-    // bastards.. this is valid in XML but not in HTML work = StringUtil.replace(work, '\'',
-    // "&apos;");
+    // &apos; is not valid in HTML, but is in XML.  We skip it.
     work = StringUtil.replace(work, '\'', "&#39;");
 
     return work;

@@ -46,7 +46,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 /** @author Lucas Holt */
 @RunWith(MockitoJUnitRunner.class)
-class LoginTests {
+public class LoginTests {
 
   @Mock UserRepository userRepository;
 

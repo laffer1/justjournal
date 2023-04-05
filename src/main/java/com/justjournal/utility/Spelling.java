@@ -47,7 +47,7 @@ import org.slf4j.LoggerFactory;
 public final class Spelling implements SpellCheckListener {
   private Logger log = LoggerFactory.getLogger(Spelling.class);
 
-  private static final String dictFile = "/usr/local/dict/english.0";
+  private static final String DICT_FILE = "/usr/local/dict/english.0";
   private SpellChecker spellCheck;
   private StringBuilder sb; // output variable
 
@@ -55,8 +55,7 @@ public final class Spelling implements SpellCheckListener {
   public Spelling() {
     try {
       com.swabunga.spell.engine.GenericSpellDictionary dictionary =
-          new GenericSpellDictionary(new File(dictFile));
-      // old version SpellDictionary dictionary = new SpellDictionary(new File(dictFile));
+          new GenericSpellDictionary(new File(DICT_FILE));
 
       spellCheck = new SpellChecker(dictionary);
       spellCheck.addSpellCheckListener(this);
@@ -73,7 +72,7 @@ public final class Spelling implements SpellCheckListener {
    */
   public void spellingError(final SpellCheckEvent event) {
     final List suggestions = event.getSuggestions();
-    if (suggestions.size() > 0) {
+    if (!suggestions.isEmpty()) {
       sb.append("<p><span style=\"color:red\">");
       sb.append(event.getInvalidWord());
       sb.append("</span> ");
