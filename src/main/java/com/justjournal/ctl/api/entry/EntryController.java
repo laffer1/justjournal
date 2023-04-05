@@ -50,15 +50,8 @@ import com.justjournal.repository.cache.RecentBlogsRepository;
 import com.justjournal.services.EntryService;
 import com.justjournal.services.TrackbackService;
 import com.justjournal.utility.HTMLUtil;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+
+import java.util.*;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -71,6 +64,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
@@ -199,9 +193,9 @@ public class EntryController {
               entries.getTotalElements(),
               entries.getTotalPages());
 
-      final Link link = new Link(request.getRequestURI());
-      return new PagedModel<>(
-          entries.stream().map(Entry::toEntryTo).collect(Collectors.toList()), metadata, link);
+      final Link link = Link.of(request.getRequestURI());
+      return PagedModel.of(
+          entries.stream().map(Entry::toEntryTo).collect(Collectors.toList()), metadata, (Iterable) List.of(link));
     } catch (final ServiceException e) {
       log.error(e.getMessage(), e);
       response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -243,9 +237,9 @@ public class EntryController {
       }
 
       if (entry.getUser().getUsername().equalsIgnoreCase(username)) {
-        if (entry.getSecurity().getId() == 2) // public
-        return entry.toEntryTo();
-        else {
+        if (entry.getSecurity().getId() == 2) { // public
+          return entry.toEntryTo();
+        } else {
           if (!Login.isAuthenticated(session)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
           } else if (username.equalsIgnoreCase(Login.currentLoginName(session))) {
@@ -417,6 +411,10 @@ public class EntryController {
       }
     }
 
+    trackback(entryTo, user, entryId);
+  }
+
+  private void trackback(EntryTo entryTo, User user, int entryId) {
     List<String> trackbackCandidates = HTMLUtil.getURIs(entryTo.getBody());
     for (String tbUrl : trackbackCandidates) {
       if (Objects.equals(tbUrl, entryTo.getTrackback())) continue;
@@ -427,17 +425,17 @@ public class EntryController {
           Optional<String> url = trackbackService.parseTrackbackUrl(html.get());
           if (url.isPresent()) {
             String permalink =
-                settings.getBaseUri() + PATH_USERS + user.getUsername() + PATH_ENTRY + entryId;
+                    settings.getBaseUri() + PATH_USERS + user.getUsername() + PATH_ENTRY + entryId;
 
             Optional<Journal> journal = user.getJournals().stream().findFirst();
 
             if (journal.isPresent()) {
               trackbackService.send(
-                  url.get(),
-                  journal.get().getName(),
-                  permalink,
-                  entryTo.getSubject(),
-                  entryTo.getBody());
+                      url.get(),
+                      journal.get().getName(),
+                      permalink,
+                      entryTo.getSubject(),
+                      entryTo.getBody());
               log.info("Performed trackback call on {}", url.get());
             }
           }

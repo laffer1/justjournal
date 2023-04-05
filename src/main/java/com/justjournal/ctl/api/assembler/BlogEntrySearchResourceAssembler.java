@@ -40,7 +40,7 @@ public class BlogEntrySearchResourceAssembler
 
   @Override
   public EntityModel<BlogEntry> toModel(final BlogEntry blogEntry) {
-    return new EntityModel(
+    return EntityModel.of(
         blogEntry, linkTo(EntryController.class).slash(blogEntry.getId()).withSelfRel());
   }
 }

@@ -31,7 +31,7 @@ import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.web.ResourceProperties;
+import org.springframework.boot.autoconfigure.web.WebProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
@@ -44,10 +44,8 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 @Configuration
-@EnableConfigurationProperties({ResourceProperties.class})
+@EnableConfigurationProperties
 public class WebMvcConfig extends WebMvcConfigurerAdapter {
-
-  @Autowired private ResourceProperties resourceProperties = new ResourceProperties();
 
   private ObjectMapper mapper;
 
