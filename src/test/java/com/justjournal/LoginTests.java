@@ -37,6 +37,8 @@ import com.justjournal.model.User;
 import com.justjournal.repository.UserRepository;
 import java.security.NoSuchAlgorithmException;
 import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -44,52 +46,31 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 /** @author Lucas Holt */
 @RunWith(MockitoJUnitRunner.class)
-public class LoginTests {
+class LoginTests {
 
   @Mock UserRepository userRepository;
 
   @InjectMocks private Login login;
 
-  @Test
-  public void testIsPasswordLowercaseOnly() {
-    boolean result = Login.isPassword("abcdefg");
-    assertTrue(result);
-  }
-
-  @Test
-  public void testIsPasswordUpperCaseeOnly() {
-    boolean result = Login.isPassword("ABCDEFG");
-    assertTrue(result);
-  }
-
-  @Test
-  public void testIsPasswordAlphaNum() {
-    boolean result = Login.isPassword("ABCDEFGkadkdk39393");
-    assertTrue(result);
-  }
-
-  @Test
-  public void testIsPasswordSpecial() {
-    boolean result = Login.isPassword("_@.!&*#$?^ ");
+  @ParameterizedTest
+  @ValueSource(strings = { "abcdefg", "ABCDEFG", "ABCDEFGkadkdk39393", "_@.!&*#$?^ " })
+  void testIsPasswordValid(String password) {
+    boolean result = Login.isPassword(password);
     assertTrue(result);
   }
 
   /** We don't allow % */
-  @Test
-  public void testIsPasswordInvalid() {
-    boolean result = Login.isPassword("%_@.!&*#$?^ ");
+  @ParameterizedTest
+  @ValueSource(strings = { "%_@.!&*#$?^ "})
+  void testIsPasswordInvalid(String password) {
+    boolean result = Login.isPassword(password);
     assertFalse(result);
   }
 
-  @Test
-  public void testIsUserNameSpecial() {
-    boolean result = Login.isUserName("%_@.!&*#$?^ ");
-    assertFalse(result);
-  }
-
-  @Test
-  public void testIsUserNameSpaceInvalid() {
-    boolean result = Login.isUserName("foo bar");
+  @ParameterizedTest
+  @ValueSource(strings = { "%_@.!&*#$?^ ", "foo bar"})
+  void testIsUserNameInvalid(String username) {
+    boolean result = Login.isUserName(username);
     assertFalse(result);
   }
 
