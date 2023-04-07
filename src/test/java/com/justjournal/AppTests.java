@@ -31,9 +31,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -48,24 +50,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 @SuppressWarnings("ClassWithTooManyMethods")
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = Application.class)
-@WebAppConfiguration
-public class AppTests {
-  @SuppressWarnings({"SpringJavaAutowiringInspection", "ProtectedField"})
-  @Autowired
-  protected WebApplicationContext wac;
+@ActiveProfiles("test")
+@SpringBootTest
+@AutoConfigureMockMvc
+class AppTests {
 
-  private MockMvc mockMvc = null;
+  @Autowired
+  private MockMvc mockMvc;
 
   @Autowired private TrackbackRepository trackbackRepository;
 
   @Autowired TrackBackIpRepository trackBackIpRepository;
 
   @BeforeEach
-  public void setup() {
-    this.mockMvc = webAppContextSetup(this.wac).build();
-
+  void setup() {
     // test cleanup
     trackbackRepository.deleteAll(
         trackbackRepository.findByEntryIdAndUrlOrderByDate(33661, "http://justjournal.com/bar"));
@@ -76,27 +74,27 @@ public class AppTests {
   }
 
   @Test
-  public void simple() throws Exception {
+  void simple() throws Exception {
     mockMvc.perform(get("/")).andExpect(status().isOk()).andExpect(view().name("index"));
   }
 
   @Test
-  public void privacy() throws Exception {
+  void privacy() throws Exception {
     mockMvc.perform(get("/#!/privacy")).andExpect(status().isOk()).andExpect(view().name("index"));
   }
 
   @Test
-  public void search() throws Exception {
+  void search() throws Exception {
     mockMvc.perform(get("/#!/search")).andExpect(status().isOk()).andExpect(view().name("index"));
   }
 
   @Test
-  public void sitemap() throws Exception {
+  void sitemap() throws Exception {
     mockMvc.perform(get("/#!/sitemap")).andExpect(status().isOk()).andExpect(view().name("index"));
   }
 
   @Test
-  public void searchEscape() throws Exception {
+  void searchEscape() throws Exception {
     mockMvc
         .perform(get("/?=_escaped_fragment_=sitemap"))
         .andExpect(status().isOk())
@@ -104,7 +102,7 @@ public class AppTests {
   }
 
   // TODO: Fix
-  public void users() throws Exception {
+  void users() throws Exception {
     mockMvc
         .perform(get("/users/testuser"))
         .andExpect(status().isOk())
@@ -112,7 +110,7 @@ public class AppTests {
   }
 
   @Test
-  public void usersSingleEntry() throws Exception {
+  void usersSingleEntry() throws Exception {
     mockMvc
         .perform(get("/users/testuser/entry/33661"))
         .andExpect(status().isOk())
@@ -120,7 +118,7 @@ public class AppTests {
   }
 
   @Test
-  public void usersFriends() throws Exception {
+  void usersFriends() throws Exception {
     mockMvc
         .perform(get("/users/testuser/friends"))
         .andExpect(status().isOk())
@@ -128,7 +126,7 @@ public class AppTests {
   }
 
   @Test
-  public void usersPictures() throws Exception {
+  void usersPictures() throws Exception {
     mockMvc
         .perform(get("/users/testuser/pictures"))
         .andExpect(status().isOk())
@@ -136,7 +134,7 @@ public class AppTests {
   }
 
   @Test
-  public void usersCalendar() throws Exception {
+  void usersCalendar() throws Exception {
     mockMvc
         .perform(get("/users/testuser/calendar"))
         .andExpect(status().isOk())
@@ -144,7 +142,7 @@ public class AppTests {
   }
 
   @Test
-  public void usersCalendarYear() throws Exception {
+  void usersCalendarYear() throws Exception {
     mockMvc
         .perform(get("/users/testuser/2014"))
         .andExpect(status().isOk())
@@ -152,7 +150,7 @@ public class AppTests {
   }
 
   @Test
-  public void usersCalendarMonth() throws Exception {
+  void usersCalendarMonth() throws Exception {
     mockMvc
         .perform(get("/users/testuser/2014/03"))
         .andExpect(status().isOk())
@@ -160,7 +158,7 @@ public class AppTests {
   }
 
   @Test
-  public void recentBlogs() throws Exception {
+  void recentBlogs() throws Exception {
     mockMvc
         .perform(get("/RecentBlogs"))
         .andExpect(status().isOk())
@@ -168,12 +166,12 @@ public class AppTests {
   }
 
   @Test
-  public void apiMembers() throws Exception {
+  void apiMembers() throws Exception {
     mockMvc.perform(get("/api/members")).andExpect(status().isOk());
   }
 
   @Test
-  public void apiLocation() throws Exception {
+  void apiLocation() throws Exception {
     mockMvc
         .perform(get("/api/location"))
         .andExpect(status().isOk())
@@ -181,7 +179,7 @@ public class AppTests {
   }
 
   @Test
-  public void apiLocationWithId() throws Exception {
+  void apiLocationWithId() throws Exception {
     mockMvc
         .perform(get("/api/location/1"))
         .andExpect(status().isOk())
@@ -189,7 +187,7 @@ public class AppTests {
   }
 
   @Test
-  public void apiMood() throws Exception {
+  void apiMood() throws Exception {
     mockMvc
         .perform(get("/api/mood"))
         .andExpect(status().isOk())
@@ -197,7 +195,7 @@ public class AppTests {
   }
 
   @Test
-  public void apiMoodWithId() throws Exception {
+  void apiMoodWithId() throws Exception {
     mockMvc
         .perform(get("/api/mood/1"))
         .andExpect(status().isOk())
@@ -205,7 +203,7 @@ public class AppTests {
   }
 
   @Test
-  public void apiSecurity() throws Exception {
+  void apiSecurity() throws Exception {
     mockMvc
         .perform(get("/api/security"))
         .andExpect(status().isOk())
@@ -213,7 +211,7 @@ public class AppTests {
   }
 
   @Test
-  public void apiSecurityWithId() throws Exception {
+  void apiSecurityWithId() throws Exception {
     mockMvc
         .perform(get("/api/security/1"))
         .andExpect(status().isOk())
@@ -221,7 +219,7 @@ public class AppTests {
   }
 
   @Test
-  public void apiStatistics() throws Exception {
+  void apiStatistics() throws Exception {
     mockMvc
         .perform(get("/api/statistics"))
         .andExpect(status().isOk())
@@ -229,7 +227,7 @@ public class AppTests {
   }
 
   @Test
-  public void apiStatisticsUser() throws Exception {
+  void apiStatisticsUser() throws Exception {
     mockMvc
         .perform(get("/api/statistics/testuser"))
         .andExpect(status().isOk())
@@ -237,17 +235,17 @@ public class AppTests {
   }
 
   @Test
-  public void apiStatisticsBadUser() throws Exception {
+  void apiStatisticsBadUser() throws Exception {
     mockMvc.perform(get("/api/statistics/root")).andExpect(status().isNotFound());
   }
 
   @Test
-  public void apiStatisticsInvalid() throws Exception {
+  void apiStatisticsInvalid() throws Exception {
     mockMvc.perform(get("/api/statistics/r")).andExpect(status().isBadRequest());
   }
 
   @Test
-  public void apiTags() throws Exception {
+  void apiTags() throws Exception {
     mockMvc
         .perform(get("/api/tags"))
         .andExpect(status().isOk())
@@ -255,12 +253,12 @@ public class AppTests {
   }
 
   @Test
-  public void apiTagCloud() throws Exception {
+  void apiTagCloud() throws Exception {
     mockMvc.perform(get("/api/tagcloud/testuser")).andExpect(status().isOk());
   }
 
   @Test
-  public void apiEntryPostNotLoggedIn() throws Exception {
+  void apiEntryPostNotLoggedIn() throws Exception {
     mockMvc
         .perform(
             post("/api/entry", "{\"subject\":\"testing\", \"body\":\"test\"}")
@@ -273,7 +271,7 @@ public class AppTests {
   }
 
   @Test
-  public void apiEntry() throws Exception {
+  void apiEntry() throws Exception {
     mockMvc
         .perform(
             get("/api/entry/testuser/eid/33661")
@@ -283,7 +281,7 @@ public class AppTests {
   }
 
   @Test
-  public void apiEntryRecentWithUser() throws Exception {
+  void apiEntryRecentWithUser() throws Exception {
     mockMvc
         .perform(
             get("/api/entry/testuser/recent")
@@ -293,7 +291,7 @@ public class AppTests {
   }
 
   @Test
-  public void apiEntryWithUser() throws Exception {
+  void apiEntryWithUser() throws Exception {
     mockMvc
         .perform(
             get("/api/entry/testuser")
@@ -303,7 +301,7 @@ public class AppTests {
   }
 
   @Test
-  public void apiEntryWithUserParam() throws Exception {
+  void apiEntryWithUserParam() throws Exception {
     mockMvc
         .perform(
             get("/api/entry?username=testuser")
@@ -313,7 +311,7 @@ public class AppTests {
   }
 
   @Test
-  public void apiComment() throws Exception {
+  void apiComment() throws Exception {
     mockMvc
         .perform(
             get("/api/comment/1")
@@ -323,7 +321,7 @@ public class AppTests {
   }
 
   @Test
-  public void sitemapXml() throws Exception {
+  void sitemapXml() throws Exception {
     mockMvc
         .perform(get("/sitemap.xml").accept(MediaType.parseMediaType("text/xml")))
         .andExpect(status().isOk())
@@ -331,7 +329,7 @@ public class AppTests {
   }
 
   @Test
-  public void apiCommentWithEntry() throws Exception {
+  void apiCommentWithEntry() throws Exception {
     mockMvc
         .perform(get("/api/comment?entryId=33661").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
@@ -339,12 +337,12 @@ public class AppTests {
   }
 
   @Test
-  public void apiCommentNotFound() throws Exception {
+  void apiCommentNotFound() throws Exception {
     mockMvc.perform(get("/api/comment/99999")).andExpect(status().isNotFound());
   }
 
   @Test
-  public void apiLoginCheck() throws Exception {
+  void apiLoginCheck() throws Exception {
     mockMvc
         .perform(
             get("/api/login").accept(MediaType.parseMediaType("application/json;charset=UTF-8")))
@@ -353,7 +351,7 @@ public class AppTests {
   }
 
   @Test
-  public void apiLoginBad() throws Exception {
+  void apiLoginBad() throws Exception {
     mockMvc
         .perform(
             post("/api/login", "{\"username\":\"testuser\", \"password\":\"blah\"}")
@@ -365,17 +363,17 @@ public class AppTests {
   }
 
   @Test
-  public void trackbackPingInvalid() throws Exception {
+  void trackbackPingInvalid() throws Exception {
     mockMvc.perform(post("/trackback/?entryID=")).andExpect(status().is4xxClientError());
   }
 
   @Test
-  public void trackbackPingInvalid2() throws Exception {
+  void trackbackPingInvalid2() throws Exception {
     mockMvc.perform(post("/trackback/?url=")).andExpect(status().is4xxClientError());
   }
 
   @Test
-  public void trackbackPing() throws Exception {
+  void trackbackPing() throws Exception {
     LinkedMultiValueMap<String, String> requestParams = new LinkedMultiValueMap<>();
     requestParams.put("entryID", Collections.singletonList("33661"));
     requestParams.put("title", Collections.singletonList("my title"));
@@ -393,7 +391,7 @@ public class AppTests {
   }
 
   @Test
-  public void trackbackPingWithIllegalUrl() throws Exception {
+  void trackbackPingWithIllegalUrl() throws Exception {
     LinkedMultiValueMap<String, String> requestParams = new LinkedMultiValueMap<>();
     requestParams.put("entryID", Collections.singletonList("33661"));
     requestParams.put("title", Collections.singletonList("my title"));
@@ -414,7 +412,7 @@ public class AppTests {
   }
 
   @Test
-  public void trackbackPingPostIt() throws Exception {
+  void trackbackPingPostIt() throws Exception {
     LinkedMultiValueMap<String, String> requestParams = new LinkedMultiValueMap<>();
     requestParams.put("entryID", Collections.singletonList("33661"));
     requestParams.put("name", Collections.singletonList("my title"));
@@ -434,7 +432,7 @@ public class AppTests {
   }
 
   @Test
-  public void trackbackPingPostItWithIllegalUrl() throws Exception {
+  void trackbackPingPostItWithIllegalUrl() throws Exception {
     LinkedMultiValueMap<String, String> requestParams = new LinkedMultiValueMap<>();
     requestParams.put("entryID", Collections.singletonList("33661"));
     requestParams.put("name", Collections.singletonList("my title"));
