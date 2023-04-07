@@ -101,6 +101,7 @@ class EntryStatisticsServiceTests {
     EntryStatistic es = o.block();
     verify(entryStatisticRepository, atLeastOnce()).findByUsernameAndYear(TEST_USER, TEST_YEAR);
 
+    assert es != null;
     assertEquals(TEST_USER, es.getUser().getUsername());
     assertEquals(TEST_YEAR, es.getYear());
     assertEquals(1L, es.getCount());
@@ -108,16 +109,12 @@ class EntryStatisticsServiceTests {
 
   @Test
   void computeBadStartYear() {
-    Throwable exception = assertThrows(IllegalArgumentException.class, ()-> {
-      entryStatisticService.compute(user, 0, TEST_YEAR).collectList().block();
-    });
+    Throwable exception = assertThrows(IllegalArgumentException.class, ()-> entryStatisticService.compute(user, 0, TEST_YEAR));
   }
 
   @Test
   void computeBadEndYear() {
-    Throwable exception = assertThrows(IllegalArgumentException.class, ()-> {
-      entryStatisticService.compute(user, TEST_YEAR, 0).collectList().block();
-    });
+    Throwable exception = assertThrows(IllegalArgumentException.class, ()-> entryStatisticService.compute(user, TEST_YEAR, 0));
   }
 
   /*   TODO: not working due to rxjava scheduler io multithreading.
