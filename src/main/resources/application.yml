@@ -96,3 +96,32 @@ app:
 bucket:
   avatar: jjqaavatar
   image: jjqaimages
+
+---
+spring:
+  config:
+    activate:
+      on-profile: it
+  elasticsearch:
+    uris: http://localhost:9200
+  datasource:
+    url: jdbc:mysql://localhost:3306/justjournal_test
+    username: travis
+    password:
+    hikari:
+      jdbc-url: jdbc:mysql://localhost:3306/justjournal_test
+      maximum-pool-size: 10
+      minimum-idle: 1
+  flyway:
+    baseline-on-migrate: true
+    table: schema_version
+
+app:
+  minio:
+    host: http://localhost:9000/
+    accessKey: test
+    secretKey: test
+
+bucket:
+  avatar: jjqaavatar
+  image: jjqaimages
