@@ -25,13 +25,6 @@
  */
 package com.justjournal.services;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import com.justjournal.exception.ServiceException;
 import com.justjournal.model.AvatarSource;
 import com.justjournal.model.PrefBool;
@@ -40,27 +33,26 @@ import com.justjournal.model.UserPref;
 import com.justjournal.repository.UserPicRepository;
 import com.justjournal.repository.UserPrefRepository;
 import io.minio.MinioClient;
-import io.minio.errors.ErrorResponseException;
-import io.minio.errors.InsufficientDataException;
-import io.minio.errors.InternalException;
-import io.minio.errors.InvalidResponseException;
-import io.minio.errors.ServerException;
-import io.minio.errors.XmlParserException;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.util.Optional;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import io.minio.errors.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.io.ByteArrayInputStream;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.*;
 
 /** @author Lucas Holt */
-@RunWith(SpringRunner.class)
-public class ImageStorageServiceTests {
+@ExtendWith(SpringExtension.class)
+class ImageStorageServiceTests {
 
   @Mock private MinioClient minioClient;
 
@@ -72,19 +64,22 @@ public class ImageStorageServiceTests {
 
   @InjectMocks private ImageStorageService imageStorageService;
 
-  @Before
+  @BeforeEach
   public void setup() {
     imageStorageService.setAvatarBucket("testa");
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testDeleteNoUser() throws ServiceException {
-    when(userPrefRepository.findById(anyInt())).thenReturn(Optional.empty());
-    imageStorageService.deleteAvatar(1);
+  @Test
+  void testDeleteNoUser() throws ServiceException {
+    Throwable exception = assertThrows(IllegalArgumentException.class, ()->{
+      when(userPrefRepository.findById(anyInt())).thenReturn(Optional.empty());
+      imageStorageService.deleteAvatar(1);
+    });
+    assertEquals("userId", exception.getMessage());
   }
 
   @Test
-  public void testDeleteAvatar() throws ServiceException {
+  void testDeleteAvatar() throws ServiceException {
     UserPref userPref = new UserPref();
     userPref.setShowAvatar(PrefBool.Y);
 
@@ -102,7 +97,7 @@ public class ImageStorageServiceTests {
   }
 
   @Test
-  public void testUploadAvatar() throws ServiceException {
+  void testUploadAvatar() throws ServiceException {
     UserPref userPref = new UserPref();
     userPref.setShowAvatar(PrefBool.Y);
 
@@ -122,10 +117,7 @@ public class ImageStorageServiceTests {
   }
 
   @Test
-  public void testDownloadAvatar()
-      throws ServiceException, IOException, InvalidKeyException, NoSuchAlgorithmException,
-          InsufficientDataException, InvalidResponseException, InternalException,
-          ErrorResponseException, ServerException, XmlParserException {
+  public void testDownloadAvatar() throws Exception {
     UserPic userPic = new UserPic();
     userPic.setFilename("test");
     userPic.setId(1);
@@ -137,31 +129,31 @@ public class ImageStorageServiceTests {
   }
 
   @Test
-  public void testGetAvatarFileNameJpeg() {
+  void testGetAvatarFileNameJpeg() {
     String result = imageStorageService.getAvatarFileName(1, "image/jpeg");
     assertEquals("avatar_1.jpg", result);
   }
 
   @Test
-  public void testGetAvatarFileNameJpg() {
+  void testGetAvatarFileNameJpg() {
     String result = imageStorageService.getAvatarFileName(1, "image/jpg");
     assertEquals("avatar_1.jpg", result);
   }
 
   @Test
-  public void testGetAvatarFileNameGif() {
+  void testGetAvatarFileNameGif() {
     String result = imageStorageService.getAvatarFileName(1, "image/gif");
     assertEquals("avatar_1.gif", result);
   }
 
   @Test
-  public void testGetAvatarFileNamePng() {
+  void testGetAvatarFileNamePng() {
     String result = imageStorageService.getAvatarFileName(1, "image/png");
     assertEquals("avatar_1.png", result);
   }
 
   @Test
-  public void testGetAvatarFileNamePing() {
+  void testGetAvatarFileNamePing() {
     String result = imageStorageService.getAvatarFileName(1, "image/ping");
     assertEquals("avatar_1.png", result);
   }
