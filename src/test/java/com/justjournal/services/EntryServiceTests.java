@@ -25,23 +25,23 @@
  */
 package com.justjournal.services;
 
-import static org.junit.Assert.*;
-
 import com.justjournal.Application;
 import com.justjournal.exception.ServiceException;
 import com.justjournal.model.Entry;
 import com.justjournal.model.RecentEntry;
-import java.util.List;
-import java.util.stream.Collectors;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 /** @author Lucas Holt */
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = Application.class)
 @WebAppConfiguration
 public class EntryServiceTests {
@@ -54,38 +54,38 @@ public class EntryServiceTests {
   @Test
   public void entryGetPublicEntry() throws ServiceException {
     final Entry entry = entryService.getPublicEntry(PUBLIC_ENTRY_ID, TEST_USER);
-    assertNotNull(entry);
-    assertEquals(PUBLIC_ENTRY_ID, entry.getId());
-    assertEquals(TEST_USER, entry.getUser().getUsername());
-    assertEquals(2, entry.getSecurity().getId());
+    Assertions.assertNotNull(entry);
+    Assertions.assertEquals(PUBLIC_ENTRY_ID, entry.getId());
+    Assertions.assertEquals(TEST_USER, entry.getUser().getUsername());
+    Assertions.assertEquals(2, entry.getSecurity().getId());
   }
 
   @Test
   public void entryGetRecentEntriesPublic() throws ServiceException {
     final List<RecentEntry> entryList =
         entryService.getRecentEntriesPublic(TEST_USER).collect(Collectors.toList()).block();
-    assertNotNull(entryList);
-    assertTrue(entryList.size() > 2);
+    Assertions.assertNotNull(entryList);
+    Assertions.assertTrue(entryList.size() > 2);
     final RecentEntry re = entryList.get(0);
-    assertNotNull(re);
-    assertEquals(33662, re.getId());
+    Assertions.assertNotNull(re);
+    Assertions.assertEquals(33662, re.getId());
   }
 
   @Test
   public void entryGetRecentEntries() throws ServiceException {
     final List<RecentEntry> entryList =
         entryService.getRecentEntries(TEST_USER).collectList().block();
-    assertNotNull(entryList);
-    assertTrue(entryList.size() > 3);
+    Assertions.assertNotNull(entryList);
+    Assertions.assertTrue(entryList.size() > 3);
     final RecentEntry re = entryList.get(0);
-    assertNotNull(re);
-    assertEquals(33662, re.getId());
+    Assertions.assertNotNull(re);
+    Assertions.assertEquals(33662, re.getId());
   }
 
   @Test
   public void entryGetPublicEntries() throws ServiceException {
     final List<Entry> entryList = entryService.getPublicEntries(TEST_USER);
-    assertNotNull(entryList);
-    assertTrue(entryList.size() > 0);
+    Assertions.assertNotNull(entryList);
+    Assertions.assertTrue(entryList.size() > 0);
   }
 }
