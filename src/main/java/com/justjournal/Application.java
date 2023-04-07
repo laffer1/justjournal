@@ -73,18 +73,18 @@ public class Application extends SpringBootServletInitializer {
   }
 
   @Bean
-  public ServletRegistrationBean updateJournalServlet(Settings settings, EntryRepository entryRepository, UserRepository user, SecurityRepository securityRepository,
+  public ServletRegistrationBean<UpdateJournal> updateJournalServlet(Settings settings, EntryRepository entryRepository, UserRepository user, SecurityRepository securityRepository,
                                                       LocationRepository locationDao, MoodRepository moodDao, Login webLogin, TrackbackService trackbackService) {
-    return new ServletRegistrationBean(new UpdateJournal(settings, entryRepository, user, securityRepository, locationDao, moodDao, webLogin, trackbackService), "/updateJournal");
+    return new ServletRegistrationBean<>(new UpdateJournal(settings, entryRepository, user, securityRepository, locationDao, moodDao, webLogin, trackbackService), "/updateJournal");
   }
 
   @Bean
-  public ServletRegistrationBean loginAccountServlet(Login webLogin) {
-    return new ServletRegistrationBean(new LoginAccount(webLogin), "/loginAccount");
+  public ServletRegistrationBean<LoginAccount> loginAccountServlet(Login webLogin) {
+    return new ServletRegistrationBean<>(new LoginAccount(webLogin), "/loginAccount");
   }
 
   @Bean
-  public ServletRegistrationBean xmlrpc() {
-    return new ServletRegistrationBean(new XmlRpc(), "/xml-rpc/*");
+  public ServletRegistrationBean<XmlRpc> xmlrpc() {
+    return new ServletRegistrationBean<>(new XmlRpc(), "/xml-rpc/*");
   }
 }
