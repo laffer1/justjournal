@@ -25,20 +25,18 @@
  */
 package com.justjournal.repository;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import com.justjournal.Application;
 import com.justjournal.model.Location;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = Application.class)
 @WebAppConfiguration
 @DirtiesContext
@@ -46,22 +44,22 @@ import org.springframework.test.context.web.WebAppConfiguration;
         DirtiesContextTestExecutionListener.class,
         TransactionalTestExecutionListener.class
 })*/
-public class LocationDaoTests {
+class LocationDaoTests {
 
   @Autowired private LocationRepository locationDao;
 
   @Test
-  public void list() throws Exception {
+  void list() throws Exception {
     Iterable<Location> list = locationDao.findAll();
-    assertNotNull(list);
-    assertEquals(5, locationDao.count());
+    Assertions.assertNotNull(list);
+    Assertions.assertEquals(5, locationDao.count());
   }
 
   @Test
-  public void get() {
+  void get() {
     Location locationTo = locationDao.findById(1).orElse(null);
-    assertNotNull(locationTo);
-    assertEquals(1, locationTo.getId());
-    assertNotNull(locationTo.getTitle());
+    Assertions.assertNotNull(locationTo);
+    Assertions.assertEquals(1, locationTo.getId());
+    Assertions.assertNotNull(locationTo.getTitle());
   }
 }

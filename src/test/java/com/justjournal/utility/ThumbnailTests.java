@@ -25,18 +25,18 @@
  */
 package com.justjournal.utility;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Test;
 
 /** @author Lucas Holt */
-public class ThumbnailTests {
+class ThumbnailTests {
 
   private Thumbnail thumbnail = new Thumbnail();
 
   @Test
-  public void testCalcThumbRatio() {
+  void testCalcThumbRatio() {
     Double result = thumbnail.calcThumbRatio();
-    assertEquals(Double.valueOf("1.0"), result);
+    Assertions.assertEquals(Double.valueOf("1.0"), result);
   }
 }

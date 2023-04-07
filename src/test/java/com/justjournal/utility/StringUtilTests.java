@@ -26,140 +26,138 @@
 package com.justjournal.utility;
 
 import static com.justjournal.utility.StringUtil.lengthCheck;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /** @author Lucas Holt */
-public class StringUtilTests {
+class StringUtilTests {
 
   @Test
-  public void testDeleteChar() {
+  void testDeleteChar() {
     String result = StringUtil.deleteChar("I am a cool dude.", 'a');
-    assertEquals("I m  cool dude.", result);
+    Assertions.assertEquals("I m  cool dude.", result);
   }
 
   @Test
-  public void testReplaceChar() {
+  void testReplaceChar() {
     String result = StringUtil.replace("We believe OS/2 is the platform for the 90s.", ' ', "_");
-    assertEquals("We_believe_OS/2_is_the_platform_for_the_90s.", result);
+    Assertions.assertEquals("We_believe_OS/2_is_the_platform_for_the_90s.", result);
   }
 
   @Test
-  public void testReplaceArray() {
+  void testReplaceArray() {
     String[] txt = {"a"};
     String result = StringUtil.replace("We believe OS/2 is the platform for the 90s.", " ", txt);
-    assertEquals("WeabelieveaOS/2aisatheaplatformaforathea90s.", result);
+    Assertions.assertEquals("WeabelieveaOS/2aisatheaplatformaforathea90s.", result);
   }
 
   @Test
-  public void testEmail() {
+  void testEmail() {
     boolean result = StringUtil.isEmailValid("foo@bar.baz");
-    assertTrue(result);
+    Assertions.assertTrue(result);
   }
 
   @Test
-  public void testEmailNull() {
+  void testEmailNull() {
     boolean result = StringUtil.isEmailValid(null);
-    assertFalse(result);
+    Assertions.assertFalse(result);
   }
 
   // we don't support TLD as email right now
   @Test
-  public void testEmailTLD() {
+  void testEmailTLD() {
     boolean result = StringUtil.isEmailValid("foo@coke");
-    assertFalse(result);
+    Assertions.assertFalse(result);
   }
 
   @Test
-  public void testEmailNoDomain() {
+  void testEmailNoDomain() {
     boolean result = StringUtil.isEmailValid("foo");
-    assertFalse(result);
+    Assertions.assertFalse(result);
   }
 
   @Test
-  public void testEmailNoUser() {
+  void testEmailNoUser() {
     boolean result = StringUtil.isEmailValid("@foo");
-    assertFalse(result);
+    Assertions.assertFalse(result);
   }
 
   @Test
-  public void testIsAlphaNumericWithLetters() {
+  void testIsAlphaNumericWithLetters() {
     boolean result = StringUtil.isAlphaNumeric("foo");
-    assertTrue(result);
+    Assertions.assertTrue(result);
   }
 
   @Test
-  public void testIsAlphaNumericWithMix() {
+  void testIsAlphaNumericWithMix() {
     boolean result = StringUtil.isAlphaNumeric("foo123");
-    assertTrue(result);
+    Assertions.assertTrue(result);
   }
 
   @Test
-  public void testIsAlphaNumericWithNumbers() {
+  void testIsAlphaNumericWithNumbers() {
     boolean result = StringUtil.isAlphaNumeric("123");
-    assertTrue(result);
+    Assertions.assertTrue(result);
   }
 
   @Test
-  public void testIsAlphaNumericSpace() {
+  void testIsAlphaNumericSpace() {
     boolean result = StringUtil.isAlphaNumeric(" ");
-    assertFalse(result);
+    Assertions.assertFalse(result);
   }
 
   @Test
-  public void testIsAlphaNumericInvalid() {
+  void testIsAlphaNumericInvalid() {
     boolean result = StringUtil.isAlphaNumeric("!");
-    assertFalse(result);
+    Assertions.assertFalse(result);
   }
 
   @Test
-  public void testIsAlphaNumericNull() {
+  void testIsAlphaNumericNull() {
     boolean result = StringUtil.isAlphaNumeric(null);
-    assertFalse(result);
+    Assertions.assertFalse(result);
   }
 
   @Test
-  public void testIsAlpha() {
+  void testIsAlpha() {
     boolean result = StringUtil.isAlpha("foo");
-    assertTrue(result);
+    Assertions.assertTrue(result);
   }
 
   @Test
-  public void testIsAlphaNumberString() {
+  void testIsAlphaNumberString() {
     boolean result = StringUtil.isAlpha("123");
-    assertFalse(result);
+    Assertions.assertFalse(result);
   }
 
   @Test
-  public void testIsAlphaNull() {
+  void testIsAlphaNull() {
     boolean result = StringUtil.isAlpha(null);
-    assertFalse(result);
+    Assertions.assertFalse(result);
   }
 
   @Test
-  public void testLengthCheckHappy() {
+  void testLengthCheckHappy() {
     boolean result = lengthCheck("foo", 1, 3);
-    assertTrue(result);
+    Assertions.assertTrue(result);
   }
 
   @Test
-  public void testLengthTooShort() {
+  void testLengthTooShort() {
     boolean result = lengthCheck("foo", 4, 12);
-    assertFalse(result);
+    Assertions.assertFalse(result);
   }
 
   @Test
-  public void testLengthTooLong() {
+  void testLengthTooLong() {
     boolean result = lengthCheck("foo", 1, 2);
-    assertFalse(result);
+    Assertions.assertFalse(result);
   }
 
   @Test
-  public void testLengthNull() {
+  void testLengthNull() {
     boolean result = lengthCheck(null, 1, 2);
-    assertFalse(result);
+    Assertions.assertFalse(result);
   }
 }

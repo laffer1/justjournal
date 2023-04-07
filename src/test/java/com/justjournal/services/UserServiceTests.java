@@ -25,22 +25,20 @@
  */
 package com.justjournal.services;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import com.justjournal.Application;
 import com.justjournal.model.api.PublicMember;
 import java.util.List;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 /** @author Lucas Holt */
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = Application.class)
 @WebAppConfiguration
 public class UserServiceTests {
@@ -50,13 +48,13 @@ public class UserServiceTests {
   @Test
   public void testPublicMembers() {
     final List<PublicMember> members = userService.getPublicMembers();
-    assertNotNull(members);
-    assertFalse(members.isEmpty());
+    Assertions.assertNotNull(members);
+    Assertions.assertFalse(members.isEmpty());
 
     for (final PublicMember member : members) {
-      assertNotNull(member.getName());
-      assertNotNull(member.getUsername());
-      assertTrue(member.getSince() > 2002);
+      Assertions.assertNotNull(member.getName());
+      Assertions.assertNotNull(member.getUsername());
+      Assertions.assertTrue(member.getSince() > 2002);
     }
   }
 }

@@ -25,63 +25,60 @@
  */
 package com.justjournal.utility;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
-import org.junit.Test;
 
-/** @author Lucas Holt */
-public class HTMLUtilTests {
+/**
+ * @author Lucas Holt
+ */
+class HTMLUtilTests {
 
-  @Test
-  public void testConvertCharacterEntities() {
-    String result = HTMLUtil.convertCharacterEntities("Me &amp; Joe are&nbsp; &lt; &gt;");
-    assertEquals("Me & Joe are  < >", result);
-  }
+    @Test
+    void testConvertCharacterEntities() {
+        String result = HTMLUtil.convertCharacterEntities("Me &amp; Joe are&nbsp; &lt; &gt;");
+        Assertions.assertEquals("Me & Joe are  < >", result);
+    }
 
-  @Test
-  public void testStripHtmlTags() {
-    String result =
-        HTMLUtil.stripHTMLTags(
-            "<html><body><p>I am a redneck</p> <p><a" + " href=\"foo\">foo</a></body></html>");
-    assertEquals("I am a redneck foo", result);
-  }
+    @Test
+    void testStripHtmlTags() {
+        String result =
+                HTMLUtil.stripHTMLTags(
+                        "<html><body><p>I am a redneck</p> <p><a" + " href=\"foo\">foo</a></body></html>");
+        Assertions.assertEquals("I am a redneck foo", result);
+    }
 
-  @Test
-  public void testTextFromHTML() {
-    String result = HTMLUtil.textFromHTML("<p>Me &amp; Joe are&nbsp; &lt; &gt;</p>");
-    assertEquals("Me & Joe are  < >", result);
-  }
+    @Test
+    void testTextFromHTML() {
+        String result = HTMLUtil.textFromHTML("<p>Me &amp; Joe are&nbsp; &lt; &gt;</p>");
+        Assertions.assertEquals("Me & Joe are  < >", result);
+    }
 
-  @Test
-  public void testUriToLinkHTTPS() {
-    String result = HTMLUtil.uriToLink("https://www.justjournal.com/users/jjsite ");
-    assertEquals(
-        "<a href=\"https://www.justjournal.com/users/jjsite\">https://www.justjournal.com/users/jjsite</a>",
-        result);
-  }
+    @Test
+    void testUriToLinkHTTPS() {
+        String result = HTMLUtil.uriToLink("https://www.justjournal.com/users/jjsite ");
+        Assertions.assertEquals("<a href=\"https://www.justjournal.com/users/jjsite\">https://www.justjournal.com/users/jjsite</a>", result);
+    }
 
-  @Test
-  public void testUriToLinkHttp() {
-    String result = HTMLUtil.uriToLink("http://www.justjournal.com/users/jjsite ");
-    assertEquals(
-        "<a href=\"http://www.justjournal.com/users/jjsite\">http://www.justjournal.com/users/jjsite</a>",
-        result);
-  }
+    @Test
+    void testUriToLinkHttp() {
+        String result = HTMLUtil.uriToLink("http://www.justjournal.com/users/jjsite ");
+        Assertions.assertEquals("<a href=\"http://www.justjournal.com/users/jjsite\">http://www.justjournal.com/users/jjsite</a>", result);
+    }
 
-  @Test
-  public void testUriToLinkFtp() {
-    String result = HTMLUtil.uriToLink("ftp://ftp.midnightbsd.org/ ");
-    assertEquals("<a href=\"ftp://ftp.midnightbsd.org/\">ftp://ftp.midnightbsd.org/</a>", result);
-  }
+    @Test
+    void testUriToLinkFtp() {
+        String result = HTMLUtil.uriToLink("ftp://ftp.midnightbsd.org/ ");
+        Assertions.assertEquals("<a href=\"ftp://ftp.midnightbsd.org/\">ftp://ftp.midnightbsd.org/</a>", result);
+    }
 
-  @Test
-  public void testGetURIsSingle() {
-    List<String> result =
-        HTMLUtil.getURIs(
-            "I am a url pattern https://www.justjournal.com/users/jjsite and i like" + " it.");
-    assertFalse(result.isEmpty());
-    assertEquals("https://www.justjournal.com/users/jjsite", result.get(0));
-  }
+    @Test
+    void testGetURIsSingle() {
+        List<String> result =
+                HTMLUtil.getURIs(
+                        "I am a url pattern https://www.justjournal.com/users/jjsite and i like" + " it.");
+        Assertions.assertFalse(result.isEmpty());
+        Assertions.assertEquals("https://www.justjournal.com/users/jjsite", result.get(0));
+    }
 }

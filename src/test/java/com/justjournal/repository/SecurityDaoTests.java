@@ -25,21 +25,18 @@
  */
 package com.justjournal.repository;
 
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import com.justjournal.Application;
 import com.justjournal.model.Security;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 /** @author Lucas Holt */
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = Application.class)
 @WebAppConfiguration
 public class SecurityDaoTests {
@@ -48,15 +45,15 @@ public class SecurityDaoTests {
   @Test
   public void list() {
     Iterable<Security> list = securityDao.findAll();
-    assertNotNull(list);
-    assertTrue(securityDao.count() > 0);
+    Assertions.assertNotNull(list);
+    Assertions.assertTrue(securityDao.count() > 0);
   }
 
   @Test
   public void get() {
     Security securityTo = securityDao.findById(1).orElse(null);
-    assertNotNull(securityTo);
-    assertEquals(1, securityTo.getId());
-    assertNotNull(securityTo.getName());
+    Assertions.assertNotNull(securityTo);
+    Assertions.assertEquals(1, securityTo.getId());
+    Assertions.assertNotNull(securityTo.getName());
   }
 }

@@ -25,36 +25,35 @@
  */
 package com.justjournal.repository;
 
-import static org.junit.Assert.*;
-
 import com.justjournal.Application;
 import com.justjournal.model.Entry;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 /** @author Lucas Holt */
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = Application.class)
 @WebAppConfiguration
-public class EntryRepositoryTests {
+class EntryRepositoryTests {
   @Autowired EntryRepository entryRepository;
 
   @Test
-  public void list() throws Exception {
+  void list() throws Exception {
     Iterable<Entry> list = entryRepository.findAll();
-    assertNotNull(list);
-    assertTrue(entryRepository.count() > 0);
+    Assertions.assertNotNull(list);
+    Assertions.assertTrue(entryRepository.count() > 0);
   }
 
   @Test
-  public void get() {
+  void get() {
     Entry entry = entryRepository.findById(33661).orElse(null);
-    assertNotNull(entry);
-    assertEquals(33661, entry.getId());
-    assertNotNull(entry.getSubject());
+    Assertions.assertNotNull(entry);
+    Assertions.assertEquals(33661, entry.getId());
+    Assertions.assertNotNull(entry.getSubject());
   }
 }

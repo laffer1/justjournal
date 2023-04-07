@@ -43,15 +43,17 @@ import com.justjournal.repository.UserRepository;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /** @author Lucas Holt */
-@RunWith(MockitoJUnitRunner.class)
-public class UserLinkServiceTests {
+@ExtendWith(MockitoExtension.class)
+class UserLinkServiceTests {
 
   @Mock private UserLinkRepository userLinkRepository;
 
@@ -60,7 +62,7 @@ public class UserLinkServiceTests {
   @InjectMocks private UserLinkService userLinkService;
 
   @Test
-  public void testCreate() {
+  void testCreate() {
     UserLinkTo link =
         UserLinkTo.builder().id(1).title("foo").uri("http://mysite.com").userId(1).build();
 
@@ -69,41 +71,41 @@ public class UserLinkServiceTests {
 
     when(userLinkRepository.save(any())).thenReturn(item);
     UserLinkTo result = userLinkService.create(link);
-    assertNotNull(result);
+    Assertions.assertNotNull(result);
     verify(userLinkRepository, times(1)).save(any(UserLink.class));
   }
 
   @Test
-  public void testGet() {
+  void testGet() {
     UserLink item =
         UserLink.builder().id(1).title("foo").uri("http://mysite.com").user(new User()).build();
     when(userLinkRepository.findById(anyInt())).thenReturn(Optional.of(item));
 
     Optional<UserLinkTo> result = userLinkService.get(1);
-    assertTrue(result.isPresent());
-    assertEquals(1, result.get().getId());
-    assertEquals("foo", result.get().getTitle());
-    assertEquals("http://mysite.com", result.get().getUri());
+    Assertions.assertTrue(result.isPresent());
+    Assertions.assertEquals(1, result.get().getId());
+    Assertions.assertEquals("foo", result.get().getTitle());
+    Assertions.assertEquals("http://mysite.com", result.get().getUri());
     verify(userLinkRepository, times(1)).findById(1);
   }
 
   @Test
-  public void testGetByUser() {
+  void testGetByUser() {
     UserLink item =
         UserLink.builder().id(1).title("foo").uri("http://mysite.com").user(new User()).build();
     when(userLinkRepository.findByUsernameOrderByTitleTitleAsc(anyString()))
         .thenReturn(Collections.singletonList(item));
 
     List<UserLinkTo> result = userLinkService.getByUser("user");
-    assertNotNull(result);
-    assertEquals(1, result.get(0).getId());
-    assertEquals("foo", result.get(0).getTitle());
-    assertEquals("http://mysite.com", result.get(0).getUri());
+    Assertions.assertNotNull(result);
+    Assertions.assertEquals(1, result.get(0).getId());
+    Assertions.assertEquals("foo", result.get(0).getTitle());
+    Assertions.assertEquals("http://mysite.com", result.get(0).getUri());
     verify(userLinkRepository, times(1)).findByUsernameOrderByTitleTitleAsc(anyString());
   }
 
   @Test
-  public void testDelete() {
+  void testDelete() {
     userLinkService.delete(1);
     verify(userLinkRepository, times(1)).deleteById(anyInt());
   }

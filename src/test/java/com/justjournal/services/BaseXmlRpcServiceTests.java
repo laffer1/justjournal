@@ -25,23 +25,24 @@
  */
 package com.justjournal.services;
 
-import static com.justjournal.services.BaseXmlRpcService.FAULT_CODE;
-import static com.justjournal.services.BaseXmlRpcService.FAULT_STRING;
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.io.Serializable;
 import java.util.HashMap;
-import org.junit.Test;
+
+import static com.justjournal.services.BaseXmlRpcService.FAULT_CODE;
+import static com.justjournal.services.BaseXmlRpcService.FAULT_STRING;
 
 /** @author Lucas Holt */
-public class BaseXmlRpcServiceTests {
+class BaseXmlRpcServiceTests {
 
   final BaseXmlRpcService baseXmlRpcService = new BaseXmlRpcService();
 
   @Test
-  public void testError() {
+  void testError() {
     HashMap<Object, Serializable> result = baseXmlRpcService.error("my string");
-    assertEquals(4, result.get(FAULT_CODE));
-    assertEquals("my string", result.get(FAULT_STRING));
+    Assertions.assertEquals(4, result.get(FAULT_CODE));
+    Assertions.assertEquals("my string", result.get(FAULT_STRING));
   }
 }

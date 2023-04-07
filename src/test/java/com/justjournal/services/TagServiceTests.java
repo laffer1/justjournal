@@ -25,40 +25,39 @@
  */
 package com.justjournal.services;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import com.justjournal.Application;
 import com.justjournal.model.Tag;
-import java.util.List;
-import java.util.stream.Collectors;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.thymeleaf.util.StringUtils;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 /** @author Lucas Holt */
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = Application.class)
 @WebAppConfiguration
-public class TagServiceTests {
+class TagServiceTests {
 
   @Autowired private TagService tagService;
 
   @Test
-  public void testGetTags() {
+  void testGetTags() {
     List<Tag> tags = tagService.getTags().toStream().collect(Collectors.toList());
 
-    assertFalse(tags.isEmpty());
+    Assertions.assertFalse(tags.isEmpty());
 
     for (Tag tag : tags) {
-      assertTrue(tag.getId() > 0);
-      assertFalse(StringUtils.isEmpty(tag.getName()));
-      assertFalse(StringUtils.isEmpty(tag.getType()));
-      assertTrue(tag.getCount() > 0);
+      Assertions.assertTrue(tag.getId() > 0);
+      Assertions.assertFalse(StringUtils.isEmpty(tag.getName()));
+      Assertions.assertFalse(StringUtils.isEmpty(tag.getType()));
+      Assertions.assertTrue(tag.getCount() > 0);
     }
   }
 }

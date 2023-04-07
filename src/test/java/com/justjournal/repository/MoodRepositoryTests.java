@@ -25,38 +25,35 @@
  */
 package com.justjournal.repository;
 
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import com.justjournal.Application;
 import com.justjournal.model.Mood;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 /** @author Lucas Holt */
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = Application.class)
 @WebAppConfiguration
-public class MoodRepositoryTests {
+class MoodRepositoryTests {
   @Autowired private MoodRepository moodRepository;
 
   @Test
-  public void list() {
+  void list() {
     Iterable<Mood> list = moodRepository.findAll();
-    assertNotNull(list);
-    assertTrue(moodRepository.count() > 100);
+    Assertions.assertNotNull(list);
+    Assertions.assertTrue(moodRepository.count() > 100);
   }
 
   @Test
-  public void get() {
+  void get() {
     Mood moodTo = moodRepository.findById(1).orElse(null);
-    assertNotNull(moodTo);
-    assertEquals(1, moodTo.getId());
-    assertNotNull(moodTo.getTitle());
+    Assertions.assertNotNull(moodTo);
+    Assertions.assertEquals(1, moodTo.getId());
+    Assertions.assertNotNull(moodTo.getTitle());
   }
 }

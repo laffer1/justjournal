@@ -25,28 +25,27 @@
  */
 package com.justjournal;
 
+import com.justjournal.model.User;
+import com.justjournal.repository.UserRepository;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.security.NoSuchAlgorithmException;
+
 import static com.justjournal.core.Constants.BAD_USER_ID;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.justjournal.model.User;
-import com.justjournal.repository.UserRepository;
-import java.security.NoSuchAlgorithmException;
-import org.junit.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-
 /** @author Lucas Holt */
-@RunWith(MockitoJUnitRunner.class)
-public class LoginTests {
+@ExtendWith(MockitoExtension.class)
+class LoginTests {
 
   @Mock UserRepository userRepository;
 
@@ -75,55 +74,55 @@ public class LoginTests {
   }
 
   @Test
-  public void testIsUserName() {
+  void testIsUserName() {
     boolean result = Login.isUserName("testing");
     assertTrue(result);
   }
 
   @Test
-  public void testIsUserNameWeirdButValid() {
+  void testIsUserNameWeirdButValid() {
     boolean result = Login.isUserName("testing123_");
     assertTrue(result);
   }
 
   @Test
-  public void testSha1() throws NoSuchAlgorithmException {
+  void testSha1() throws NoSuchAlgorithmException {
     String result = Login.sha1("foo");
     assertEquals("0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33", result);
   }
 
   @Test
-  public void testSha256() throws NoSuchAlgorithmException {
+  void testSha256() throws NoSuchAlgorithmException {
     String result = Login.sha256("foo");
     assertEquals("2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae", result);
   }
 
   @Test
-  public void testValidateShortUser() {
+  void testValidateShortUser() {
     int result = login.validate("a", "basic");
     assertEquals(BAD_USER_ID, result);
   }
 
   @Test
-  public void testValidateShortPass() {
+  void testValidateShortPass() {
     int result = login.validate("abcdef", "a");
     assertEquals(BAD_USER_ID, result);
   }
 
   @Test
-  public void testValidateBadUser() {
+  void testValidateBadUser() {
     int result = login.validate("a@b", "basic");
     assertEquals(BAD_USER_ID, result);
   }
 
   @Test
-  public void testValidateBadPass() {
+  void testValidateBadPass() {
     int result = login.validate("abb", "basic%");
     assertEquals(BAD_USER_ID, result);
   }
 
   @Test
-  public void testValidate() {
+  void testValidate() {
     User user = new User();
     user.setId(1);
     user.setUsername("abc");

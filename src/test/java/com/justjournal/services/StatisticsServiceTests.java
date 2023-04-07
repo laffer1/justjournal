@@ -25,21 +25,20 @@
  */
 package com.justjournal.services;
 
-import static org.junit.Assert.*;
-
 import com.justjournal.Application;
 import com.justjournal.exception.ServiceException;
 import com.justjournal.model.Statistics;
 import com.justjournal.model.UserStatistics;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 /** @author Lucas Holt */
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = Application.class)
 @WebAppConfiguration
 public class StatisticsServiceTests {
@@ -50,28 +49,28 @@ public class StatisticsServiceTests {
   @Test
   public void testGetStatistics() throws ServiceException {
     final Statistics statistics = statisticsService.getStatistics();
-    assertNotNull(statistics);
-    assertTrue(statistics.getComments() > 0);
-    assertTrue(statistics.getEntries() > 0);
+    Assertions.assertNotNull(statistics);
+    Assertions.assertTrue(statistics.getComments() > 0);
+    Assertions.assertTrue(statistics.getEntries() > 0);
     // assertTrue(statistics.getTags() > 0);
     // assertTrue(statistics.getStyles() > 0);
     // assertTrue(statistics.getPrivateEntries() > 0);
-    assertTrue(statistics.getPublicEntries() > 0);
+    Assertions.assertTrue(statistics.getPublicEntries() > 0);
     // assertTrue(statistics.getFriendsEntries() > 0);
   }
 
   @Test
   public void testGetUserStatistics() throws ServiceException {
     final UserStatistics statistics = statisticsService.getUserStatistics(TEST_USER);
-    assertNotNull(statistics);
-    assertEquals("testuser", statistics.getUsername());
-    assertTrue(statistics.getEntryCount() > 0);
-    assertTrue(statistics.getCommentCount() > 0);
+    Assertions.assertNotNull(statistics);
+    Assertions.assertEquals("testuser", statistics.getUsername());
+    Assertions.assertTrue(statistics.getEntryCount() > 0);
+    Assertions.assertTrue(statistics.getCommentCount() > 0);
   }
 
   @Test
   public void testGetUserStatisticsBadUser() throws ServiceException {
     final UserStatistics statistics = statisticsService.getUserStatistics("root");
-    assertNull(statistics);
+    Assertions.assertNull(statistics);
   }
 }

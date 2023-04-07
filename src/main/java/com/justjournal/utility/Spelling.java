@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
  * @since 1.0 User: laffer1 Date: Sep 19, 2003 Time: 6:11:18 PM
  */
 public final class Spelling implements SpellCheckListener {
-  private Logger log = LoggerFactory.getLogger(Spelling.class);
+  private final Logger log = LoggerFactory.getLogger(Spelling.class);
 
   private static final String DICT_FILE = "/usr/local/dict/english.0";
   private SpellChecker spellCheck;

@@ -25,54 +25,51 @@
  */
 package com.justjournal.utility;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /** @author Lucas Holt */
-public class DNSUtilTests {
+class DNSUtilTests {
 
   @Test
-  public void testUrlDomainValid() {
+  void testUrlDomainValid() {
     boolean result = DNSUtil.isUrlDomainValid("http://justjournal.com/users/jjsite");
-    assertTrue(result);
+    Assertions.assertTrue(result);
   }
 
   @Test
-  public void testGetDomainFromEmail() {
+  void testGetDomainFromEmail() {
     String result = DNSUtil.getDomainFromEmail("test@justjournal.com");
-    assertEquals("justjournal.com", result);
+    Assertions.assertEquals("justjournal.com", result);
   }
 
   @Test
-  public void testIsEmailDomainValid() {
+  void testIsEmailDomainValid() {
     boolean result = DNSUtil.isEmailDomainValid("test@justjournal.com");
-    assertTrue(result);
+    Assertions.assertTrue(result);
   }
 
   @Test
-  public void testIsEmailDomainInvalid() {
+  void testIsEmailDomainInvalid() {
     boolean result = DNSUtil.isDomainValid("test@iamareallylonginvaliddomainname.justjournal.com");
-    assertFalse(result);
+    Assertions.assertFalse(result);
   }
 
   @Test
-  public void testIsDomainValid() {
+  void testIsDomainValid() {
     boolean result = DNSUtil.isDomainValid("justjournal.com");
-    assertTrue(result);
+    Assertions.assertTrue(result);
   }
 
   @Test
-  public void testIsDomainInvalid() {
+  void testIsDomainInvalid() {
     boolean result = DNSUtil.isDomainValid("iamareallylonginvaliddomainname.justjournal.com");
-    assertFalse(result);
+    Assertions.assertFalse(result);
   }
 
   @Test
-  public void testIsDomainNull() {
+  void testIsDomainNull() {
     boolean result = DNSUtil.isDomainValid(null);
-    assertFalse(result);
+    Assertions.assertFalse(result);
   }
 }

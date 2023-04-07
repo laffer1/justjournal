@@ -35,15 +35,17 @@ import com.justjournal.model.PrefBool;
 import com.justjournal.model.User;
 import java.util.ArrayList;
 import java.util.Collection;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 /** @author Lucas Holt */
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = Application.class)
 @WebAppConfiguration
 public class RssTests {
@@ -74,10 +76,10 @@ public class RssTests {
 
     rss.populate(entries);
 
-    assertTrue(rss.size() > 0);
+    Assertions.assertTrue(rss.size() > 0);
 
     final String xml = rss.toXml();
-    assertTrue(xml.contains("<item"));
+    Assertions.assertTrue(xml.contains("<item"));
   }
 
   @Test
@@ -85,6 +87,6 @@ public class RssTests {
     final String webmaster = "test@test.com (test)";
 
     rss.setWebMaster(webmaster);
-    assertEquals(webmaster, rss.getWebMaster());
+    Assertions.assertEquals(webmaster, rss.getWebMaster());
   }
 }
