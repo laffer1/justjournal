@@ -618,7 +618,7 @@
 
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M6</version>
+                <version>3.0.0</version>
                 <configuration>
                     <testFailureIgnore>true</testFailureIgnore>
                     <includes>
@@ -626,13 +626,6 @@
                     </includes>
                     <argLine>${argLine} -Dspring.profiles.active=test</argLine>
                 </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.maven.surefire</groupId>
-                        <artifactId>surefire-junit47</artifactId>
-                        <version>3.0.0-M6</version>
-                    </dependency>
-                </dependencies>
             </plugin>
             <plugin>
                   <groupId>org.apache.maven.plugins</groupId>
