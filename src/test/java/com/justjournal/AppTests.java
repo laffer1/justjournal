@@ -29,28 +29,23 @@ import com.justjournal.repository.TrackbackRepository;
 import com.justjournal.repository.cache.TrackBackIpRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Collections;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 @SuppressWarnings("ClassWithTooManyMethods")
-@ActiveProfiles("test")
+@ActiveProfiles("it")
 @SpringBootTest
 @AutoConfigureMockMvc
 class AppTests {
@@ -101,7 +96,7 @@ class AppTests {
         .andExpect(view().name("index"));
   }
 
-  // TODO: Fix
+  @Test
   void users() throws Exception {
     mockMvc
         .perform(get("/users/testuser"))
