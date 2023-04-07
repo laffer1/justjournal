@@ -25,7 +25,7 @@
  */
 package com.justjournal.services;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import com.justjournal.model.EntryStatistic;
@@ -34,8 +34,8 @@ import com.justjournal.repository.EntryRepository;
 import com.justjournal.repository.EntryStatisticRepository;
 import java.util.Collections;
 import java.util.Iterator;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -45,7 +45,7 @@ import reactor.core.publisher.Mono;
 
 /** @author Lucas Holt */
 @ExtendWith(MockitoExtension.class)
-public class EntryStatisticsServiceTests {
+class EntryStatisticsServiceTests {
 
   private static final String TEST_USER = "testuser";
   private static final int TEST_YEAR = 2003;
@@ -59,7 +59,7 @@ public class EntryStatisticsServiceTests {
   private EntryStatistic entryStatistic;
   private User user;
 
-  @Before
+  @BeforeEach
   public void setupMock() {
     user = new User();
     user.setUsername(TEST_USER);
@@ -71,7 +71,7 @@ public class EntryStatisticsServiceTests {
   }
 
   @Test
-  public void getEntryCounts() {
+  void getEntryCounts() {
     when(entryStatisticRepository.findByUsernameOrderByYearDesc(TEST_USER))
         .thenReturn(Collections.singletonList(entryStatistic));
     Flux<EntryStatistic> o = entryStatisticService.getEntryCounts(TEST_USER);
@@ -92,7 +92,7 @@ public class EntryStatisticsServiceTests {
   }
 
   @Test
-  public void getEntryCount() {
+  void getEntryCount() {
     when(entryStatisticRepository.findByUsernameAndYear(TEST_USER, TEST_YEAR))
         .thenReturn(entryStatistic);
 
@@ -106,14 +106,18 @@ public class EntryStatisticsServiceTests {
     assertEquals(1L, es.getCount());
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void computeBadStartYear() {
-    entryStatisticService.compute(user, 0, TEST_YEAR);
+  @Test
+  void computeBadStartYear() {
+    Throwable exception = assertThrows(IllegalArgumentException.class, ()-> {
+      entryStatisticService.compute(user, 0, TEST_YEAR).collectList().block();
+    });
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void computeBadEndYear() {
-    entryStatisticService.compute(user, TEST_YEAR, 0);
+  @Test
+  void computeBadEndYear() {
+    Throwable exception = assertThrows(IllegalArgumentException.class, ()-> {
+      entryStatisticService.compute(user, TEST_YEAR, 0).collectList().block();
+    });
   }
 
   /*   TODO: not working due to rxjava scheduler io multithreading.
