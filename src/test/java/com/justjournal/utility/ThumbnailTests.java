@@ -32,7 +32,7 @@ import org.junit.jupiter.api.Test;
 /** @author Lucas Holt */
 class ThumbnailTests {
 
-  private Thumbnail thumbnail = new Thumbnail();
+  private final Thumbnail thumbnail = new Thumbnail();
 
   @Test
   void testCalcThumbRatio() {
