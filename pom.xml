@@ -168,15 +168,18 @@
                     <groupId>org.slf4j</groupId>
                     <artifactId>slf4j-simple</artifactId>
                 </exclusion>
-                     <exclusion>
-                           <groupId>org.owasp.antisamy</groupId>
-                           <artifactId>antisamy</artifactId> 
-                     </exclusion>
-                      <exclusion>
-                           <groupId>log4j</groupId>
-                           <artifactId>log4j</artifactId> 
-                     </exclusion>
-
+                <exclusion>
+                    <groupId>org.owasp.antisamy</groupId>
+                    <artifactId>antisamy</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>commons-collections</groupId>
+                    <artifactId>commons-collections</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 
@@ -189,6 +192,10 @@
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-simple</artifactId>
             </exclusion>
+                <exclusion>
+                    <groupId>net.sourceforge.htmlunit</groupId>
+                    <artifactId>neko-htmlunit</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 
