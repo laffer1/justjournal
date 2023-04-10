@@ -46,10 +46,11 @@ pipeline {
        stage('jacoco') {
         	steps {
         		jacoco(
-              	execPattern: 'target/*.exec',
-              	classPattern: 'target/classes',
-              	sourcePattern: 'src/main/java',
-              	exclusionPattern: 'src/test*'
+              	    execPattern: 'target/*.exec',
+              	    classPattern: 'target/classes',
+              	    sourcePattern: 'src/main/java',
+              	    exclusionPattern: 'src/test*',
+              	    runAlways: true
         		)
         	}
        }

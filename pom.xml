@@ -519,21 +519,33 @@
                 <version>0.8.9</version>
                 <executions>
                     <execution>
-                        <id>default-prepare-agent</id>
+                        <phase>pre-integration-test</phase>
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
+                        <configuration>
+                            <destFile>${basedir}/target/jacoco.exec</destFile>
+                        </configuration>
                     </execution>
                     <execution>
-                        <id>post-unit-test</id>
-                        <phase>test</phase>
+                        <id>jacoco-site</id>
+                        <phase>post-integration-test</phase>
                         <goals>
                             <goal>report</goal>
                         </goals>
+                        <configuration>
+                            <dataFile>${basedir}/target/jacoco.exec</dataFile>
+                        </configuration>
                     </execution>
-
+                <execution>
+                    <id>post-unit-test</id>
+                    <phase>test</phase>
+                    <goals>
+                        <goal>report</goal>
+                    </goals>
+                </execution>
                     <execution>
-                        <id>jacoco-check</id>
+                        <id>default-check</id>
                         <goals>
                             <goal>check</goal>
                         </goals>
@@ -551,11 +563,6 @@
                                 </rule>
                             </rules>
                         </configuration>
-                    </execution>
-                    <execution>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
                     </execution>
                     <execution>
                         <id>generate-code-coverage-report</id>
@@ -646,7 +653,7 @@
                     <includes>
                         <include>**/*Tests.java</include>
                     </includes>
-                    <argLine>${argLine} -Dspring.profiles.active=test</argLine>
+                    <argLine>@{argLine} -Dspring.profiles.active=test</argLine>
                 </configuration>
                 <dependencies>
                     <dependency>
@@ -665,7 +672,7 @@
                     <includes>
                         <include>**/IT*.java</include>
                     </includes>
-                    <argLine>${argLine} -Dspring.profiles.active=it</argLine>
+                    <argLine>@{argLine} -Dspring.profiles.active=it</argLine>
                 </configuration>
             </plugin>
         </plugins>
