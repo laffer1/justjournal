@@ -49,6 +49,9 @@ class DateConvertTests {
 
         var result = DateConvert.encode3339(dateObject);
         assertEquals("2014-02-11T05:00:00.000Z", result);
+
+        result = DateConvert.encode3339();
+        assertNotNull(result);
     }
 
     @Test
