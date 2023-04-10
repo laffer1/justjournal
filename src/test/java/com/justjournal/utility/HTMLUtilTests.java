@@ -30,6 +30,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+
 /**
  * @author Lucas Holt
  */
@@ -80,5 +81,29 @@ class HTMLUtilTests {
                         "I am a url pattern https://www.justjournal.com/users/jjsite and i like" + " it.");
         Assertions.assertFalse(result.isEmpty());
         Assertions.assertEquals("https://www.justjournal.com/users/jjsite", result.get(0));
+    }
+
+    @Test
+    void testDetermineMimeType_valid() {
+        var result = HTMLUtil.determineMimeType("application/xhtml+xml", "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0");
+        Assertions.assertEquals("application/xhtml+xml", result);
+    }
+
+    @Test
+    void testDetermineMimeType_w3c() {
+        var result = HTMLUtil.determineMimeType("text/html", "W3C_Validator");
+        Assertions.assertEquals("application/xhtml+xml", result);
+    }
+
+    @Test
+    void testDetermineMimeType_nullAccept() {
+        var result = HTMLUtil.determineMimeType(null, "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0");
+        Assertions.assertEquals("text/html", result);
+    }
+
+    @Test
+    void testDetermineMimeType_nullUA() {
+        var result = HTMLUtil.determineMimeType("application/xhtml+xml", null);
+        Assertions.assertEquals("application/xhtml+xml", result);
     }
 }
