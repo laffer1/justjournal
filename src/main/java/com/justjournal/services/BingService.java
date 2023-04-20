@@ -2,7 +2,6 @@ package com.justjournal.services;
 
 import lombok.extern.slf4j.Slf4j;
 import org.owasp.esapi.ESAPI;
-import org.owasp.esapi.errors.EncodingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;

@@ -37,7 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Dynamically generate sitemap from
- * http://stackoverflow.com/questions/12289232/serving-sitemap-xml-and-robots-txt-with-spring-mvc
+ * <a href="http://stackoverflow.com/questions/12289232/serving-sitemap-xml-and-robots-txt-with-spring-mvc">...</a>
  *
  * @author Lucas Holt
  */
@@ -104,10 +104,10 @@ public class SitemapController {
   /**
    * Create Link
    *
-   * @param xmlUrlSet
-   * @param link
-   * @param priority
-   * @param changeFreqency
+   * @param xmlUrlSet link set
+   * @param link link to add to sitemap
+   * @param priority indexing priority
+   * @param changeFreqency how often link gets updated/changed
    */
   private void create(
       final UrlSet xmlUrlSet,

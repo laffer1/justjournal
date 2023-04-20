@@ -65,7 +65,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -86,24 +85,28 @@ public class UpdateJournal extends HttpServlet {
 
   private static final long serialVersionUID = -6905389941955230503L;
 
+  private static final String PARAM_CHECKED = "checked";
+  private static final String HEADER_EXPIRES = "Expires";
+  private static final String HEADER_LAST_MODIFIED = "Last-Modified";
+
   @SuppressWarnings({"InstanceVariableOfConcreteClass"})
-  private Settings settings;
+  private final Settings settings;
 
-  private EntryRepository entryRepository;
+  private final EntryRepository entryRepository;
 
-  private UserRepository userRepository;
+  private final UserRepository userRepository;
 
-  private SecurityRepository securityRepository;
+  private final SecurityRepository securityRepository;
 
-  private LocationRepository locationDao;
+  private final LocationRepository locationDao;
 
-  private MoodRepository moodDao;
+  private final MoodRepository moodDao;
 
-  private Login webLogin;
+  private final Login webLogin;
 
-  private TrackbackService trackbackService;
+  private final TrackbackService trackbackService;
 
-  private BingService bingService;
+  private final BingService bingService;
 
   public UpdateJournal(Settings settings, EntryRepository entryRepository, UserRepository user, SecurityRepository securityRepository,
                        LocationRepository locationDao, MoodRepository moodDao, Login webLogin, TrackbackService trackbackService, BingService bingService) {
@@ -347,21 +350,21 @@ public class UpdateJournal extends HttpServlet {
       final String mimeType = HTMLUtil.determineMimeType(request.getHeader("Accept"), userAgent);
       response.setContentType(mimeType + "; charset=utf-8");
       response.setBufferSize(DEFAULT_BUFFER_SIZE);
-      response.setDateHeader("Expires", System.currentTimeMillis());
-      response.setDateHeader("Last-Modified", System.currentTimeMillis());
+      response.setDateHeader(HEADER_EXPIRES, System.currentTimeMillis());
+      response.setDateHeader(HEADER_LAST_MODIFIED, System.currentTimeMillis());
       response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
       response.setHeader("Pragma", "no-cache");
     } else if (myclient == ClientType.mobile) {
       response.setContentType("application/xhtml+xml; charset=utf-8");
       response.setBufferSize(DEFAULT_BUFFER_SIZE);
-      response.setDateHeader("Expires", System.currentTimeMillis());
-      response.setDateHeader("Last-Modified", System.currentTimeMillis());
+      response.setDateHeader(HEADER_EXPIRES, System.currentTimeMillis());
+      response.setDateHeader(HEADER_LAST_MODIFIED, System.currentTimeMillis());
       response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
       response.setHeader("Pragma", "no-cache");
     } else {
       response.setContentType("text/plain");
-      response.setDateHeader("Expires", System.currentTimeMillis());
-      response.setDateHeader("Last-Modified", System.currentTimeMillis());
+      response.setDateHeader(HEADER_EXPIRES, System.currentTimeMillis());
+      response.setDateHeader(HEADER_LAST_MODIFIED, System.currentTimeMillis());
     }
 
     // Validate the login
@@ -374,7 +377,7 @@ public class UpdateJournal extends HttpServlet {
 
         String keepLogin = request.getParameter("keeplogin");
         if (keepLogin == null) keepLogin = "";
-        if (keepLogin.compareTo("checked") == 0) {
+        if (keepLogin.compareTo(PARAM_CHECKED) == 0) {
           session.setAttribute("auth.uid", userID);
           session.setAttribute(LOGIN_ATTRNAME, userName);
           webLogin.setLastLogin(userID);
@@ -452,7 +455,8 @@ public class UpdateJournal extends HttpServlet {
       }
 
       // escape out for MySQL
-      subject = StringUtil.replace(subject, '\'', "\\\'");
+      if (subject != null)
+        subject = StringUtil.replace(subject, '\'', "\\\'");
 
       try {
         et.setUser(user);
@@ -471,7 +475,7 @@ public class UpdateJournal extends HttpServlet {
         et.setDraft(PrefBool.N);
 
         // the check box says disable auto format
-        if ((aformat.equals("checked"))
+        if ((aformat.equals(PARAM_CHECKED))
             || myclient == ClientType.dashboard
             || myclient == ClientType.mobile) {
           et.setAutoFormat(PrefBool.Y);
@@ -484,17 +488,18 @@ public class UpdateJournal extends HttpServlet {
         }
 
         // escape out for MySQL
-        body = StringUtil.replace(body, '\'', "\\\'");
+        if (body != null)
+          body = StringUtil.replace(body, '\'', "\\\'");
         et.setBody(body);
 
         // disable comments
-        if ((allowcomment.equals("checked"))
+        if ((allowcomment.equals(PARAM_CHECKED))
             || myclient == ClientType.dashboard
             || myclient == ClientType.mobile) et.setAllowComments(PrefBool.Y);
         else et.setAllowComments(PrefBool.N);
 
         // disable email notifications
-        if ((emailcomment.equals("checked"))
+        if ((emailcomment.equals(PARAM_CHECKED))
             || myclient == ClientType.dashboard
             || myclient == ClientType.mobile) et.setEmailComments(PrefBool.Y);
         else et.setEmailComments(PrefBool.N);
@@ -512,7 +517,7 @@ public class UpdateJournal extends HttpServlet {
       }
 
       final String isSpellCheck = request.getParameter("spellcheck");
-      if (isSpellCheck != null && isSpellCheck.compareTo("checked") == 0) {
+      if (isSpellCheck != null && isSpellCheck.compareTo(PARAM_CHECKED) == 0) {
         final Spelling sp = new Spelling();
 
         // store everything
@@ -618,7 +623,7 @@ public class UpdateJournal extends HttpServlet {
           if (et.getSecurity().getId() == 2) {
             /* Initialize Preferences Object */
             final User pf = userRepository.findByUsername(userName);
-            final Journal journal = new ArrayList<Journal>(pf.getJournals()).get(0);
+            final Journal journal = new ArrayList<>(pf.getJournals()).get(0);
 
             if (pf != null && !journal.isOwnerViewOnly() && journal.isPingServices()) {
               final RestPing rp = new RestPing("http://ping.blo.gs/");
