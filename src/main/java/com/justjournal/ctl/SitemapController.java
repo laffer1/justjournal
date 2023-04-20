@@ -58,40 +58,40 @@ public class SitemapController {
     create(xmlUrlSet, baseUri.getValue(), Url.Priority.HIGH, Url.ChangeFreqency.MONTHLY);
 
     create(
-        xmlUrlSet, baseUri.getValue() + "/RecentBlogs", Url.Priority.LOW, Url.ChangeFreqency.DAILY);
+        xmlUrlSet, baseUri.getValue() + "RecentBlogs", Url.Priority.LOW, Url.ChangeFreqency.DAILY);
     create(
-        xmlUrlSet, baseUri.getValue() + "/#!/sitemap", Url.Priority.LOW, Url.ChangeFreqency.YEARLY);
+        xmlUrlSet, baseUri.getValue() + "#!/sitemap", Url.Priority.LOW, Url.ChangeFreqency.YEARLY);
     create(
-        xmlUrlSet, baseUri.getValue() + "/#!/sitemap", Url.Priority.LOW, Url.ChangeFreqency.YEARLY);
+        xmlUrlSet, baseUri.getValue() + "#!/sitemap", Url.Priority.LOW, Url.ChangeFreqency.YEARLY);
     create(
-        xmlUrlSet, baseUri.getValue() + "/#!/search", Url.Priority.LOW, Url.ChangeFreqency.YEARLY);
+        xmlUrlSet, baseUri.getValue() + "#!/search", Url.Priority.LOW, Url.ChangeFreqency.YEARLY);
     create(
-        xmlUrlSet, baseUri.getValue() + "/#!/privacy", Url.Priority.LOW, Url.ChangeFreqency.YEARLY);
+        xmlUrlSet, baseUri.getValue() + "#!/privacy", Url.Priority.LOW, Url.ChangeFreqency.YEARLY);
     create(
-        xmlUrlSet, baseUri.getValue() + "/#!/members", Url.Priority.LOW, Url.ChangeFreqency.DAILY);
+        xmlUrlSet, baseUri.getValue() + "#!/members", Url.Priority.LOW, Url.ChangeFreqency.DAILY);
     create(
-        xmlUrlSet, baseUri.getValue() + "/#!/support", Url.Priority.LOW, Url.ChangeFreqency.YEARLY);
+        xmlUrlSet, baseUri.getValue() + "#!/support", Url.Priority.LOW, Url.ChangeFreqency.YEARLY);
     create(
         xmlUrlSet,
-        baseUri.getValue() + "/#!/support/bugs",
+        baseUri.getValue() + "#!/support/bugs",
         Url.Priority.LOW,
         Url.ChangeFreqency.YEARLY);
     create(
         xmlUrlSet,
-        baseUri.getValue() + "/#!/moodlist",
+        baseUri.getValue() + "#!/moodlist",
         Url.Priority.LOW,
         Url.ChangeFreqency.YEARLY);
 
     for (final User user : userRepository.findAll()) {
       for (final Journal journal : user.getJournals()) {
-        if (journal.isAllowSpider()) {
+        if (journal.isAllowSpider() && !journal.isOwnerViewOnly()) {
           final String users = baseUri.getValue() + Constants.PATH_USERS + user.getUsername();
 
           create(xmlUrlSet, users, Url.Priority.HIGH, Url.ChangeFreqency.DAILY);
-          create(xmlUrlSet, users + "/calendar", Url.Priority.MEDIUM, Url.ChangeFreqency.MONTHLY);
-          create(xmlUrlSet, users + "/friends", Url.Priority.MEDIUM, Url.ChangeFreqency.DAILY);
-          create(xmlUrlSet, users + "/pictures", Url.Priority.MEDIUM, Url.ChangeFreqency.WEEKLY);
-          create(xmlUrlSet, users + "/favorites", Url.Priority.MEDIUM, Url.ChangeFreqency.WEEKLY);
+          create(xmlUrlSet, users + "/calendar", Url.Priority.MEDIUMLOW, Url.ChangeFreqency.MONTHLY);
+          create(xmlUrlSet, users + "/friends", Url.Priority.MEDIUMLOW, Url.ChangeFreqency.DAILY);
+          create(xmlUrlSet, users + "/pictures", Url.Priority.LOW, Url.ChangeFreqency.WEEKLY);
+          create(xmlUrlSet, users + "/favorites", Url.Priority.LOW, Url.ChangeFreqency.WEEKLY);
           create(xmlUrlSet, users + "/rss", Url.Priority.MEDIUM, Url.ChangeFreqency.DAILY);
           create(xmlUrlSet, users + "/atom", Url.Priority.MEDIUM, Url.ChangeFreqency.DAILY);
         }
