@@ -68,6 +68,9 @@ bucket:
   avatar: jjavatar
   image: jjimages
 
+bing:
+  indexNowKey:
+
 ---
 spring:
   config:
