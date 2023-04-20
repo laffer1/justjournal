@@ -43,6 +43,7 @@ import com.justjournal.repository.LocationRepository;
 import com.justjournal.repository.MoodRepository;
 import com.justjournal.repository.SecurityRepository;
 import com.justjournal.repository.UserRepository;
+import com.justjournal.services.BingService;
 import com.justjournal.services.RestPing;
 import com.justjournal.services.TrackbackService;
 import com.justjournal.utility.HTMLUtil;
@@ -102,8 +103,10 @@ public class UpdateJournal extends HttpServlet {
 
   private TrackbackService trackbackService;
 
+  private BingService bingService;
+
   public UpdateJournal(Settings settings, EntryRepository entryRepository, UserRepository user, SecurityRepository securityRepository,
-                       LocationRepository locationDao, MoodRepository moodDao, Login webLogin, TrackbackService trackbackService) {
+                       LocationRepository locationDao, MoodRepository moodDao, Login webLogin, TrackbackService trackbackService, BingService bingService) {
     super();
     this.settings = settings;
     this.entryRepository = entryRepository;
@@ -113,6 +116,7 @@ public class UpdateJournal extends HttpServlet {
     this.moodDao = moodDao;
     this.webLogin = webLogin;
     this.trackbackService = trackbackService;
+    this.bingService = bingService;
   }
 
   /**
@@ -626,6 +630,9 @@ public class UpdateJournal extends HttpServlet {
               final Entry et2 = entryRepository.findById(et.getId()).orElse(null);
               if (et2 != null) {
                 trackbackPing(et2.toEntryTo(), user, et2.getId());
+
+                if (user != null)
+                  bingService.indexNow(settings.getBaseUri() + PATH_USERS + user.getUsername() + PATH_ENTRY + et2.getId());
               }
             }
           }
