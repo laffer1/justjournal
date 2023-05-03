@@ -15,7 +15,7 @@
     "angular-bootstrap": "0.4.0",
     "jquery": "3.6.0",
     "jquery-ui": "1.12.1",
-    "jquery.validation": "1.19.4",
+    "jquery.validation": "1.19.5",
     "lightbox2": "~2.11.3",
     "ng-file-upload-shim": "^12.2.13"
   },
