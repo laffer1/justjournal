@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.justjournal.core.Settings;
+import com.justjournal.model.PrefBool;
 import com.justjournal.repository.EntryRepository;
 import com.justjournal.repository.UserRepository;
 import lombok.Getter;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
@@ -39,9 +41,8 @@ public class WebFingerController {
 
     String baseUri;
 
-    public WebFingerController() {
-        super();
-
+    @PostConstruct
+    public void url() {
         baseUri = settings.getBaseUri();
         baseUri = baseUri.replace("http://", "https://");
     }
@@ -62,20 +63,24 @@ public class WebFingerController {
 
                 user.getJournals().stream().findFirst().ifPresent(journal -> {
                     if (!journal.isOwnerViewOnly()) {
-                        webFingerResponse.setAliases(Collections.singletonList(settings.getBaseUri() + "/users/" + account));
+                        webFingerResponse.setAliases(Collections.singletonList(baseUri + "users/" + account));
                         var links = new ArrayList<Links>();
-                        links.add(new Links("http://webfinger.net/rel/profile-page", settings.getBaseUri() + "/#!/profile/" + account));
+                        links.add(new Links("http://webfinger.net/rel/profile-page", baseUri + "#!/profile/" + account));
                         links.get(0).setType("text/html");
 
-                        links.add(new Links("self",settings.getBaseUri() + "/users/" + account));
+                        links.add(new Links("self",baseUri + "users/" + account));
                         links.get(1).setType("application/activity+json");
+
+                        if (user.getUserPref().getShowAvatar().equals(PrefBool.Y)) {
+                            links.add(new Links("http://webfinger.net/rel/avatar", baseUri + "Avatar/" + user.getId()));
+                        }
                         webFingerResponse.setLinks(links);
                         if (user.getFirstName() != null && user.getLastName() != null)
-                            webFingerResponse.setProperties(Collections.singletonMap(settings.getBaseUri() + "/ns/name", user.getFirstName() + " " + user.getLastName()));
+                            webFingerResponse.setProperties(Collections.singletonMap(baseUri + "ns/name", user.getFirstName() + " " + user.getLastName()));
                     }
                 });
             }
-        } else if (resource.startsWith(settings.getBaseUri())) {
+        } else if (resource.startsWith(baseUri)) {
             // Compile regular expression
             final Pattern pattern1 = Pattern.compile("https://www\\.justjournal\\.com/users/([A-Za-z0-9]+)/entry/([0-9]+)", Pattern.CASE_INSENSITIVE);
             final Matcher matcher1 = pattern1.matcher(resource);
@@ -84,7 +89,7 @@ public class WebFingerController {
                 var entry = entryRepository.findById(entryId);
                 if (entry.isPresent()&& entry.get().getSecurity().getName().equals("public")) {
                     var links = new ArrayList<Links>();
-                    links.add(new Links("author", settings.getBaseUri() + "/users/" + entry.get().getUser().getUsername(), Collections.singletonMap("en-us", entry.get().getUser().getJournals().stream().findFirst().get().getName())));
+                    links.add(new Links("author", baseUri + "users/" + entry.get().getUser().getUsername(), Collections.singletonMap("en-us", entry.get().getUser().getJournals().stream().findFirst().get().getName())));
                     webFingerResponse.setLinks(links);
                 }
             }
