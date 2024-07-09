@@ -140,7 +140,7 @@ public class AtomFeed {
     final StringBuilder sb = new StringBuilder();
 
     sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-
+    sb.append("<?xml-stylesheet type=\"text/xsl\" href=\"/static/streamburner/streamburner.xsl\"?>\n");
     sb.append(
         "<feed xmlns=\"http://www.w3.org/2005/Atom\"\n"
             + "      xml:lang=\"en\"\n"

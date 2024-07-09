@@ -267,6 +267,8 @@ public class Rss {
 
     sb.append("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n");
 
+    sb.append("<?xml-stylesheet type=\"text/xsl\" href=\"/static/streamburner/streamburner.xsl\"?>\n");
+
     sb.append("<rss version=\"2.0\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n");
     sb.append("\t<channel>\n");
 
@@ -378,7 +380,7 @@ public class Rss {
 
       sb.append("\t\t</item>\n");
     }
-    if (selfLink != null && selfLink.length() > 0)
+    if (selfLink != null && !selfLink.isEmpty())
       sb.append("<atom:link href=\"")
           .append(selfLink)
           .append("\" rel=\"self\" type=\"application/rss+xml\" />");
