@@ -73,7 +73,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
                     </xsl:choose>
                 </title>
                 <!-- TODO media='print' -->
-                <link href='streamburner.css' rel='stylesheet' type='text/css' media='screen'/>
+                <link href='/static/streamburner/streamburner.css' rel='stylesheet' type='text/css' media='screen'/>
                 <!-- whether language code is of direction right-to-left -->
                 <xsl:if test='$rtl'>
                     <link id='semitic' href='syndication-rtl.css' rel='stylesheet' type='text/css' />
@@ -402,7 +402,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
                     </xsl:choose>
                 </title>
                 <!-- TODO media='print' -->
-                <link href='streamburner.css' rel='stylesheet' type='text/css' media='screen'/>
+                <link href='/static/streamburner/streamburner.css' rel='stylesheet' type='text/css' media='screen'/>
                 <!-- whether language code is of direction right-to-left -->
                 <xsl:if test='$rtl'>
                     <link id='semitic' href='syndication-rtl.css' rel='stylesheet' type='text/css' />
@@ -692,7 +692,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
                     </xsl:choose>
                 </title>
                 <!-- TODO media='print' -->
-                <link href='streamburner.css' rel='stylesheet' type='text/css' media='screen'/>
+                <link href='/static/streamburner/streamburner.css' rel='stylesheet' type='text/css' media='screen'/>
                 <!-- whether language code is of direction right-to-left -->
                 <xsl:if test='$rtl'>
                     <link id='semitic' href='syndication-rtl.css' rel='stylesheet' type='text/css' />
