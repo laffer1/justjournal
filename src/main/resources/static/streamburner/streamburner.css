@@ -1,0 +1,547 @@
+/*
+ * Copyright (C) 2016 - 2022 Schimon Jehuda. Released under MIT license
+ * Feeds rendered using this XSLT stylesheet, or it's derivatives, must
+ * include https://sjehuda.github.io/ in attribute name='generator' of
+ * element <meta/> inside of html element </head>
+ */
+
+/* consider :root */
+html, body {
+ /* font: 1em/1.5 'DejaVu Sans', 'Trebuchet MS', sans-serif;
+ text-align: left; */
+ padding: 0;
+ margin: 0;
+}
+
+body {
+ background: WhiteSmoke;
+ color: #333;
+ hyphens: auto;
+}
+
+header {
+ margin: 0 -1em 1em -1em;
+ margin-bottom: 1em;
+ padding: 1em 1em 0 1em;
+}
+
+#feed {
+ min-width: 400px;
+ overflow: auto;
+ position: relative;
+}
+
+/* img, video { */
+  /* TODO Don't let visual objects to expand */
+  /* width='1920' height='1040' */
+  /* http://freeso.org/avatar-content-tools-and-drivable-cars/ */
+  /* max-width: 100% !important; */ /* It doesn't work */
+  /* object-fit: contain; */
+/* } */
+
+* {
+ max-width: 100%;
+ object-fit: contain;
+ height: auto;
+}
+
+#logo {
+ display: inline-block;
+ float: left;
+ overflow: hidden;
+ position: relative;
+ height: 60px;
+ width: 60px;
+ margin-right: 9;
+ /* padding-top: 16; */
+ padding-top: 12;
+}
+
+#logo > a > img {
+ margin: auto;
+ max-width: 100%;
+ position: absolute;
+ width: 5em;
+ bottom: 0;
+ right: 0;
+ left: 0;
+ top: 0;
+}
+
+#title {
+ /* font-family: 'DejaVu Serif', Georgia, sans; */
+ font-variant: small-caps;
+ text-align: center;
+}
+
+#title {
+ font-weight: bold;
+ margin-bottom: 0px;
+ overflow: hidden;
+ -webkit-line-clamp: 2; /* number of lines to show */
+ white-space: nowrap;
+ margin: 0;
+ font-size: 2.2em;
+}
+
+/* When feed has no title, we set a title */
+#title .empty:before {
+ /* font-family: 'DejaVu Serif', Georgia, sans; */
+ font-variant: small-caps;
+ /* content: 'The Falkon Times'; */
+ content: 'Streamburner News Dashboard';
+ /* display: flex; */
+ text-align: center;
+}
+
+#subtitle {
+ /* font-family: 'DejaVu Serif', Georgia, sans; */
+ overflow: hidden;
+ -webkit-line-clamp: 2; /* number of lines to show */
+ white-space: wrap;
+ /* horizontal rule */
+ font-weight:bold;
+ font-size:1.5em;
+ text-align:center;
+ font-variant: small-caps;
+}
+
+.container {
+ display: flex;
+}
+
+#links {
+ border-top:.1em solid;
+ margin: auto;
+ width: 50%;
+ text-align: center;
+ direction: ltr;
+}
+
+#links > a {
+ padding: 10px;
+ text-decoration: none;
+ font-size: 70%;
+}
+
+#links > a:nth-child(1):after {
+ content: 'Follow';
+ cursor: pointer;
+ border-color: grey;
+ border-left-style: solid;
+ border-radius: 1px;
+ /* text-decoration: underline; */
+ padding: 6px;
+ background: #eee !important;
+}
+
+#links > a:nth-child(2):after {
+ content: 'SubToMe';
+ cursor: pointer;
+}
+
+#links > a:nth-child(3):after {
+ content: 'What’s This?';
+ cursor: help;
+}
+
+#links > a:nth-child(4):after {
+ content: 'Get a News Reader';
+}
+
+#links > a:nth-child(5):after {
+ content: 'More Info...';
+}
+
+#toc {
+ margin-left: 3%;
+ /* border: .1em solid; */
+ padding: 5px;
+}
+
+#toc:before {
+ content: 'Latest Updates';
+ font-size: 76%;
+ font-weight: bold;
+}
+
+#toc > a {
+ text-decoration: none;
+ font-size: 66%;
+ display: block;
+ padding: 5px 0;
+ margin-left: 1%;
+ /* border-left: .1em solid; */
+}
+
+#toc > a:hover {
+	text-decoration: underline;
+}
+
+#toc > a:visited {
+	text-decoration: line-through;
+}
+
+/* Popup container */
+.popup {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+/* The actual popup (appears on top) */
+.popup .popuptext {
+  visibility: hidden;
+  width: 160px;
+  color: #fff;
+  border-radius: 6px;
+  padding: 18px;
+  position: absolute;
+  z-index: 1;
+  background-color: #555;
+ position: absolute;
+ right: 4%;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50%;
+  text-align: left;
+}
+
+/* RSS is a subscription format that gives you the option to instantly get notified when new torrents are added to our site. If you have a torrent client with support for RSS you can even let it search for your favorite series and automatically download new episodes as soon as they show up. */
+.popup .popuptext:after {
+ content: '📰 Web Syndication News Feed \A\A '
+ ' Syndication Feed is a mean for content and media publishers '
+ 'to reach a wider audience easily. '
+ ' It allows you to receive information directly without the '
+ 'going from site to site. \A\A '
+ ' Essentially, a feed is a function that allows “Feed Readers” '
+ 'to access multiple websites automatically looking for new '
+ 'content and then posting the information about new content '
+ 'and updates to another website, mobile app or desktop software '
+ 'at the office. \A\A '
+ ' Feeds provide a way for users to keep up with the latest '
+ 'news, events and package and delivery status information '
+ 'posted on different websites such as social networks, torrent '
+ 'indexers or podcasts in one spot.';
+ white-space: pre-wrap;
+ line-height: 1.8;
+ font-size: 150%;
+}
+
+/* Toggle this class when clicking on the popup container (hide and show the popup) */
+.popup .show {
+  visibility: visible;
+  -webkit-animation: fadeIn 1s;
+  animation: fadeIn 1s
+}
+
+/* Add animation (fade in the popup) */
+@-webkit-keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity:1 ;}
+}
+
+#articles {
+ /* display: flex; */
+ justify-content:space-between;
+ /* flex-wrap: wrap; */
+ /* flex-direction: row; */
+ max-width: 90%;
+ margin: 0 auto;
+ padding: 10px 0;
+}
+
+#articles > * {
+ /* max-height: 29%; */
+ /* max-width: 29%; */
+ /* min-height: 29%; */
+ /* min-width: 29%; */
+ /* display: -webkit-box; */
+ /* number of lines to show */
+ /* line-clamp: 11; */
+ /* -webkit-line-clamp: 11; */
+ /* -webkit-box-orient: vertical; */
+ margin: 0.5em;
+ white-space: normal;
+ vertical-align: top;
+ margin-bottom: 50px;
+ /* center entiries
+ margin: auto;
+ width: 50%;
+ text-align: center; */
+}
+
+.entry {
+ border-bottom:inset;
+ /* max-height: 230px; */
+ /* max-width: 29%; */
+ /* min-height: 230px; */
+ /* min-width: 29%; */
+ margin-left: auto;
+ margin-right: auto;
+ overflow: auto;
+ line-height: 1.6;
+ font-size: 85%;
+ /* Hide vertical scrollbar */
+ /* overflow-y: hidden; */
+ /* Hide horizontal scrollbar */
+ overflow-x: hidden;
+ /*
+ animation effect to be used with transform upon hover
+ transition: all .2s ease-in-out;
+ -webkit-animation-name: none;
+ */
+}
+
+/* TODO expand entry from center of screen upon hover */
+.entry:hover {
+ /* background: #f9fbff; */
+ background: #f8f9fa;
+ /* transform: scale(1.8);
+ height: 50em;
+ width: 50vw; */
+  
+}
+
+.entry * {
+ max-width: 98%;
+}
+
+/* FIXME: Dont truncate text or att least set to max 3 lines */
+.entry > a {
+ white-space: normal;
+}
+
+/*
+.clear {
+ clear: both;
+}
+*/
+
+.title {
+ cursor: pointer;
+ display: inline-block;
+ font-size: 110%;
+ font-weight: bold;
+ text-decoration: underline;
+ overflow: visible;
+ text-overflow: ellipsis;
+ white-space: nowrap;
+ font-variant: small-caps;
+}
+
+/*
+.title {
+ cursor: pointer;
+ display: inline;
+ font-size: 110%;
+ font-weight: bold;
+ text-decoration: underline;
+}
+*/
+
+/* .title > a { */
+a {
+ color: #333;
+ display: inline-block;
+}
+
+/* TODO place a graphical icon above character ⚲ */
+/* background: url(qrc:icons/pin.png) no-repeat; */
+.geolocation > a {
+ text-decoration: none;
+ padding-left: 6px;
+}
+
+.author {
+ font-size: 75%;
+ margin: 0px auto 0px auto;
+}
+
+.author:before {
+ content: 'By ';
+}
+
+.author:after {
+ content: ' / ';
+}
+
+.published, .updated {
+ font-size: 75%;
+ margin: 0px auto 0px auto;
+}
+
+/*
+.published:before {
+ content: 'Posted on ';
+}
+
+.updated:before {
+ content: 'Updated on ';
+}
+*/
+
+.content {
+ margin: 15px auto 15px 1%;
+ inline-size: 95%;
+ /* word-break: normal; 
+ hyphens: auto; */
+ text-indent: 3px;
+ /* TODO Chinese Japanese Korean
+ word-break: break-all; */
+}
+
+/* Respect plain-text (e.g. ASCII art) */
+.content[type='text'] {
+ font-family: monospace;
+/*
+ text-align: initial;
+ text-indent: 0px;
+*/
+}
+
+/* Encapsulate code */
+
+code {
+ overflow: auto;
+ display: block;
+ max-height: 300px;
+ border-radius: 4px;
+}
+
+/* TODO consider InfoBackground instead of #dddddd */
+.enclosure {
+ background: #eee;
+ border: 1px solid GrayText;
+ border-radius: 4px;
+ clear: both;
+ color: #525c66;
+ cursor: help;
+ direction: ltr;
+ /* font-family: cursive; */
+ font-size: 0.8em;
+ margin: 5px auto 15px 1%;
+ padding: 15px;
+ vertical-align: middle;
+ border: 1px solid #aaa;
+ border-radius: .5em;
+ max-width: 100%;
+ moz-border-radius: .5em;
+ padding: 1em;
+}
+
+.enclosure > span:after {
+ content: ' (Document file) ';
+}
+
+.enclosure > span.executable:after {
+ content: ' (Executable file) ';
+}
+
+/* TODO resolve conflict with .image */
+.enclosure > span.image:after {
+ content: ' (Image file) ';
+}
+
+.enclosure > span.audio:after {
+ content: ' (Audio file) ';
+}
+
+.enclosure > span.video:after {
+ content: ' (Video file) ';
+}
+
+.enclosure > span[icon]:after {
+ content: '📄️';
+ margin: 3px;
+}
+
+.enclosure > span[icon='executable']:after {
+ content: '📦️';
+ margin: 3px;
+}
+
+.enclosure > span[icon='image']:after {
+ content: '🖼️';
+ margin: 3px;
+}
+
+.enclosure > span[icon='audio']:after {
+ content: '🎼️';
+ margin: 3px;
+}
+
+.enclosure > span[icon='video']:after {
+ content: '📽️';
+ margin: 3px;
+}
+
+.notice {
+ text-align: center;
+ display:block;
+ font-size:130%;
+ font-weight:lighter;
+ font-variant-caps: small-caps;
+ font-style: oblique;
+ color:FireBrick;
+}
+
+.warning {
+ display: block;
+ font-size: 60%;
+ font-weight: bold;
+ color: DarkRed;
+}
+
+.no-entry:after {
+ content: 'This news feed is empty';
+}
+
+.atom1.author:after { /* required under certain conditions */
+ content: 'Atom 1.0 Warning: Element </author> is missing';
+}
+
+.atom1.id:after {
+ content: 'Atom 1.0 Warning: Element </id> is missing';
+}
+
+.atom1.link:after { /* required under certain conditions */
+ content: 'Atom 1.0 Warning: Element </link> is missing';
+}
+
+.atom1.published:after {
+ content: 'Atom 1.0 Warning: Element </published> is missing';
+}
+
+.atom1.title:after {
+ content: 'Atom 1.0 Warning: Element </title> is missing';
+}
+
+.rss2.description:after {
+ content: 'RSS 2.0 Warning: Element </description> is missing';
+}
+
+.rss2.link:after {
+ content: 'RSS 2.0 Warning: Element </link> is missing';
+}
+
+.rss2.title:after {
+ content: 'RSS 2.0 Warning: Element </title> is missing';
+}
+
+/* actual page styling, from style.css at otter-browser.org */
+
+abbr, acronym {
+ border-bottom:1px dotted #c30;
+}
+
+dt {
+ font-weight:bold;
+}
