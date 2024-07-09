@@ -6,7 +6,7 @@
 
     <groupId>com.justjournal</groupId>
     <artifactId>justjournal</artifactId>
-    <version>3.1.5</version>
+    <version>3.1.6</version>
 
     <organization>
         <name>Just Journal</name>
@@ -21,7 +21,7 @@
     </parent>
 
     <properties>
-        <java-version>13</java-version>
+        <java-version>17</java-version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <mysql.driver.version>8.0.33</mysql.driver.version>
         <commonmark.version>0.22.0</commonmark.version>
@@ -31,7 +31,7 @@
         <log4j2.version>2.17.2</log4j2.version>
         <okhttp3.version>4.8.1</okhttp3.version>
         <logback.version>1.2.13</logback.version>
-        <tomcat.version>9.0.83</tomcat.version>
+        <tomcat.version>9.0.90</tomcat.version>
     </properties>
 
     <profiles>
