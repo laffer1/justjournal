@@ -1,41 +1,28 @@
-Updated: March 2014
+Updated: July 2024
 
 Building JustJournal
 
-JustJournal uses maven 3 to build.  You can use the standard mvn package to get a war file.
+JustJournal uses maven 3 to build.  You can use the standard mvn package to get a deployable jar.
 
 Requirements:
-Java 6 or higher
-Maven 3
-MySQL 5.6 server
-Tomcat 7
+Java 13 or higher
+Maven 3.x
+MySQL 8.0.x server
+Tomcat 9.x (included with spring)
 
-Note:
-Work is underway to migrate to Spring DATA.  This ORM will replace
-the hackish data access code using the old Sun CachedRowSet.  There are
-known deployment problems on newer versions of MySQL as they changed the
-way aliases are handled.  (SELECT fieldname as something from tablename; something
-won't show up in the CachedRowSet with MySQL 5.5.25)
+Spring data migration is complete.
 
-I am not currently using war file deployments.  I've been
-just pointing a context root in tomcat to a directory.  I'm working
-on war deployments.  In addition, a database connection reference
-must be created.  This is usually different among servlet container
-implementations.
-
-In tomcat, this might work in the web.xml
-   <resource-ref>
-        <description>DB Connection</description>
-        <res-ref-name>jdbc/jjDB</res-ref-name>
-        <res-type>javax.sql.DataSource</res-type>
-        <res-auth>Container</res-auth>
-        <res-sharing-scope>Shareable</res-sharing-scope>
-    </resource-ref>
-
-The current problem with just journal aside from war deployment,
+The current problem with just journal
 is that it was a hack job originally and makes references both
 to the domain name and / throughout the code.  I'm working on a
 global settings class to fix these problems so the code is
 reusable.
 
 The database schema & documentation is in /database.
+
+Place the deployable jar on the server.  Run at startup using your preferred mechanism.
+
+There is an example rc.d script in rc.d called jj.  It should work on MidnightBSD or FreeBSD.
+
+Use the following to enable on your BSD OS
+sysrc jj_enable="YES"

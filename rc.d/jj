@@ -1,0 +1,62 @@
+#!/bin/sh
+
+# PROVIDE: jj
+# REQUIRE: LOGIN mysql
+# KEYWORD: shutdown
+
+. /etc/rc.subr
+
+name="jj"
+rcvar=jj_enable
+
+load_rc_config "${name}"
+
+: ${jj_enable="NO"}
+: ${jj_home="/usr/local/boot/"}
+: ${jj_args=""}
+: ${jj_java_opts="-Xmx16000m -Dlog4j2.formatMsgNoLookups=true"}
+: ${jj_user="jj"}
+: ${jj_group="jj"}
+: ${jj_log_file="/var/log/jj.log"}
+
+pidfile="/var/run/jj/jj.pid"
+command="/usr/sbin/daemon"
+java_cmd="/usr/local/bin/java"
+procname="${java_cmd}"
+command_args="-p ${pidfile} ${java_cmd} ${jj_java_opts} -jar ${jj_home}/jj.jar ${jj_args} > ${jj_log_file} 2>&1"
+required_files="${java_cmd}"
+
+start_precmd="jj_prestart"
+start_cmd="jj_start"
+stop_cmd="${name}_stop"
+
+jj_prestart() {
+        if [ ! -f "${jj_log_file}" ]; then
+                touch "${jj_log_file}"
+                chown "${jj_user}:${jj_group}" "${jj_log_file}"
+                chmod 640 "${jj_log_file}"
+        fi
+        if [ ! -d "/var/run/jj" ]; then
+                install -d -o "${jj_user}" -g "${jj_group}" -m 750 "/var/run/jj"
+        fi
+}
+
+jj_start()
+{
+        check_startmsgs && echo "Starting ${name}."
+        su -l ${jj_user} -c "exec ${command} ${command_args} ${rc_arg}"
+}
+
+jj_stop()
+{
+        if [ -f $pidfile ]; then
+                echo "Stopping ${name}."
+                kill $(cat $pidfile)
+        else
+                echo "${name} not running."
+                exit 0
+        fi
+}
+
+load_rc_config $name
+run_rc_command "$1"
