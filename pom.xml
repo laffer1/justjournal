@@ -21,7 +21,7 @@
     </parent>
 
     <properties>
-        <java-version>11</java-version>
+        <java-version>13</java-version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <mysql.driver.version>8.0.33</mysql.driver.version>
         <commonmark.version>0.22.0</commonmark.version>
