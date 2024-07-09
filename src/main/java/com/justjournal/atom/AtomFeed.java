@@ -165,6 +165,8 @@ public class AtomFeed {
     sb.append(selfLink);
     sb.append("\"/>\n");
 
+    sb.append("<generator uri=\"https://github.com/laffer1/justjournal\" version=\"3.1.4\">JustJournal</generator>\n");
+
     sb.append("<updated>");
     sb.append(date());
     sb.append("</updated>\n");

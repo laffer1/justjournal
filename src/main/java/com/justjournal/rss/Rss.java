@@ -300,7 +300,7 @@ public class Rss {
     sb.append(copyright);
     sb.append("</copyright>\n");
 
-    sb.append("\t\t<generator>JustJournal v2.2</generator>\n");
+    sb.append("\t\t<generator>JustJournal</generator>\n");
     sb.append("\t\t<docs>http://blogs.law.harvard.edu/tech/rss</docs>\n");
     sb.append("\t\t<ttl>360</ttl>\n\n");
 
