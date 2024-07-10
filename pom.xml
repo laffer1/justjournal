@@ -29,7 +29,7 @@
         <spotless.version>2.30.0</spotless.version>
         <argLine>-Xmx786m</argLine>
         <log4j2.version>2.20.0</log4j2.version>
-        <okhttp3.version>4.8.1</okhttp3.version>
+        <okhttp3.version>4.9.3</okhttp3.version>
         <logback.version>1.2.13</logback.version>
         <tomcat.version>9.0.90</tomcat.version>
     </properties>
