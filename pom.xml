@@ -164,12 +164,22 @@
                     <groupId>org.apache.tomcat.embed</groupId>
                     <artifactId>tomcat-embed-core</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.apache.tomcat.embed</groupId>
+                    <artifactId>tomcat-embed-websocket</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tomcat.embed</groupId>
             <artifactId>tomcat-embed-core</artifactId>
+            <version>${tomcat.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-websocket</artifactId>
             <version>${tomcat.version}</version>
         </dependency>
 
