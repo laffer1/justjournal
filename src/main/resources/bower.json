@@ -13,7 +13,7 @@
     "angular-ui-bootstrap": "0.3.0",
     "angular-local-storage": "latest",
     "angular-bootstrap": "0.4.0",
-    "jquery": "3.6.0",
+    "jquery": "3.6.4",
     "jquery-ui": "1.12.1",
     "jquery.validation": "1.19.5",
     "lightbox2": "~2.11.3",
