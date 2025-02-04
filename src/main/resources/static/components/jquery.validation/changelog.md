@@ -1,3 +1,45 @@
+1.20.1 / 2024-06-13
+===================
+
+## Core
+  * Fix remote validation when input is the same as in aborted request [#2481](https://github.com/jquery-validation/jquery-validation/pull/2481)
+
+## Localisation
+  * Update Arabic translations [#2485](https://github.com/jquery-validation/jquery-validation/pull/2485)
+
+1.20.0 / 2023-10-10
+===================
+
+## Additional
+  * Fixed vinUS validation failing on valid vin numbers [#2460](https://github.com/jquery-validation/jquery-validation/pull/2460)
+
+## Core
+  * Fixed race condition in remote validation rules [#2435](https://github.com/jquery-validation/jquery-validation/pull/2435)
+  * Removed pending class from fields with an aborted request [#2436](https://github.com/jquery-validation/jquery-validation/pull/2436)
+  * Fixed remote validation error tracking [#2242](https://github.com/jquery-validation/jquery-validation/pull/2242)
+  * Added escapeHtml option to avoid XSS attacks via showLabel method [#2462](https://github.com/jquery-validation/jquery-validation/pull/2462)
+
+## Demo
+  * Fixed minlength validation in ajaxSubmit-integration-demo.html [#2454](https://github.com/jquery-validation/jquery-validation/pull/2454)
+
+## Localisation
+  * Improved required translation in pt_BR [#2445](https://github.com/jquery-validation/jquery-validation/pull/2445)
+  * Added Hindi translation [#2453](https://github.com/jquery-validation/jquery-validation/pull/2453)
+  * Added French currency translation [#2471](https://github.com/jquery-validation/jquery-validation/pull/2471)
+
+1.19.5 / 2022-07-01
+===================
+
+## Chore
+  * Add CodeQL analysis [3d3c1fb](https://github.com/jquery-validation/jquery-validation/commit/3d3c1fb880c3c623da334e9b6b32a861a16efeb8)
+
+## Core
+  * Fixed jQuery .submit() event shorthand deprecation notice [#2430](https://github.com/jquery-validation/jquery-validation/pull/2430)
+  * Fixed ReDos vulnerability in url, and url2 validation [5bbd80d](https://github.com/jquery-validation/jquery-validation/commit/5bbd80d27fc6b607d2f7f106c89522051a9fb0dd)
+
+## Localisation
+  * Added periods to messages [#2266](https://github.com/jquery-validation/jquery-validation/pull/2266)
+
 1.19.4 / 2022-05-19
 ===================
 
@@ -28,7 +70,7 @@
   * Add Accessibility section to Readme (#2149)
 
 ## Localization
-  * Add "pattern" translation for French (#2363) 
+  * Add "pattern" translation for French (#2363)
   * add phone validate translate for Turkish translation (#2343)
 
 1.19.2 / 2020-05-23
@@ -160,7 +202,7 @@ The hashes for the 1.19.0 release can be found in the file [`jquery-validation-s
 ## Tests
   * Pass on the value of the used submit button for scripted submits (#2019)
   * Use assert#pushResult instead of assert#push (#2018)
-  
+
 ## All
   * Fix links after move to organization
   * Use https

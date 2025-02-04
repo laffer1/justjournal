@@ -2,7 +2,7 @@
 	"name": "jquery-validation",
 	"title": "jQuery Validation Plugin",
 	"description": "Client-side form validation made easy",
-	"version": "1.19.5",
+	"version": "1.21.0",
 	"homepage": "https://jqueryvalidation.org/",
 	"license": "MIT",
 	"author": {
@@ -40,12 +40,12 @@
 	},
 	"devDependencies": {
 		"commitplease": "2.3.1",
-		"grunt": "1.5.3",
+		"grunt": "1.0.1",
 		"grunt-contrib-compress": "1.2.0",
 		"grunt-contrib-concat": "1.0.1",
 		"grunt-contrib-copy": "1.0.0",
 		"grunt-contrib-jshint": "1.0.0",
-		"grunt-contrib-qunit": "1.2.0",
+		"grunt-contrib-qunit": "10.0.0",
 		"grunt-contrib-uglify": "1.0.1",
 		"grunt-contrib-watch": "1.0.0",
 		"grunt-jscs": "2.8.0",
