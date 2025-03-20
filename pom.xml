@@ -6,7 +6,7 @@
 
     <groupId>com.justjournal</groupId>
     <artifactId>justjournal</artifactId>
-    <version>3.1.6</version>
+    <version>3.1.7</version>
 
     <organization>
         <name>Just Journal</name>
@@ -31,7 +31,8 @@
         <log4j2.version>2.20.0</log4j2.version>
         <okhttp3.version>4.9.3</okhttp3.version>
         <logback.version>1.2.13</logback.version>
-        <tomcat.version>9.0.98</tomcat.version>
+        <tomcat.version>9.0.102</tomcat.version>
+        <elasticsearch.version>7.17.28</elasticsearch.version>
     </properties>
 
     <profiles>
@@ -374,6 +375,18 @@
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
             <version>1.5</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-io</groupId>
+                    <artifactId>commons-io</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.17.0</version>
         </dependency>
 
         <dependency>
@@ -489,41 +502,33 @@
 
     <repositories>
         <repository>
-            <id>springsource-repo</id>
-            <name>SpringSource Repository</name>
-            <url>https://repo.springsource.org/release</url>
-        </repository>
-
-        <repository>
-            <id>spring-snnapshot</id>
-            <name>Spring Maven SNAPSHOT Repository</name>
-            <url>https://maven.springframework.org/snapshot</url>
-        </repository>
-        <repository>
-            <id>spring-milestone</id>
-            <name>Spring Maven MILESTONE Repository</name>
-            <url>https://maven.springframework.org/milestone</url>
-        </repository>
-
-        <repository>
             <id>spring-releases</id>
-            <url>https://repo.spring.io/libs-release</url>
-        </repository>
-        <!-- https://github.com/spring-projects/spring-boot/issues/2961 -->
-        <repository>
-            <id>gemfire-repository</id>
-            <name>Gemfire Repository</name>
-            <url>https://dist.gemstone.com/maven/release</url>
+            <name>Spring Releases</name>
+            <url>https://repo.spring.io/release</url>
         </repository>
 
         <repository>
-            <id>java.net</id>
-            <url>https://maven.java.net/content/repositories/public/</url>
+            <id>spring-snapshots</id>
+            <name>Spring Snapshots</name>
+            <url>https://repo.spring.io/snapshot</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
         </repository>
+
         <repository>
-            <name>central</name>
+            <id>spring-milestones</id>
+            <name>Spring Milestones</name>
+            <url>https://repo.spring.io/milestone</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+
+        <repository>
             <id>central</id>
-            <url>https://repo1.maven.org/maven2/</url>
+            <name>Maven Central</name>
+            <url>https://repo.maven.apache.org/maven2</url>
         </repository>
     </repositories>
 
@@ -580,7 +585,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.9</version>
+                <version>0.8.10</version>
                 <executions>
                     <execution>
                         <phase>pre-integration-test</phase>
@@ -723,7 +728,7 @@
                     <dependency>
                         <groupId>org.junit.jupiter</groupId>
                         <artifactId>junit-jupiter-engine</artifactId>
-                        <version>5.9.2</version>
+                        <version>5.9.3</version>
                     </dependency>
                 </dependencies>
             </plugin>
