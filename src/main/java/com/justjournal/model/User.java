@@ -194,6 +194,8 @@ public class User implements Serializable {
   @OneToOne(mappedBy = "user")
   private UserPref userPref;
 
+  @Getter
+  @Setter
   @JsonManagedReference
   @JsonIgnore
   @Basic(fetch = FetchType.LAZY)
