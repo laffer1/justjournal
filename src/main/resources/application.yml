@@ -18,19 +18,15 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: jj
     password: 
-    max-active: 30
-    initial-size: 5
-    max-idle: 5
-    min-idle: 2
-    test-while-idle: true
-    test-on-borrow: true
-    validation-query: SELECT 1
     type: com.zaxxer.hikari.HikariDataSource
     hikari:
       maximum-pool-size: 30
       minimum-idle: 2
-      max-lifetime: 14400
       idle-timeout: 14400
+      max-lifetime: 14400
+      connection-timeout: 30000
+      pool-name: JJHikariCP
+      connection-test-query: SELECT 1
   jpa:
     database: MYSQL
     hibernate:
@@ -78,13 +74,49 @@ bucket4j:
   enabled: true
   filters:
     - cache-name: buckets
-      cache-key: getRemoteAddr()
+      filter-method: servlet
+      filter-order: 1
       url: .*
+      metrics:
+        tags:
+          - key: IP
+            expression: getRemoteAddr()
+            types: REJECTED_COUNTER
+          - key: URL
+            expression: getRequestURI()
       rate-limits:
-        - bandwidths:
+        - cache-key: "getRemoteAddr()"
+          bandwidths:
             - capacity: 10
               time: 10
               unit: seconds
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+  metrics:
+    enable:
+      http: true
+      jvm: true
+      logback: true
+      process: true
+      system: true
+  info:
+    git:
+      mode: full
 
 ---
 spring:
