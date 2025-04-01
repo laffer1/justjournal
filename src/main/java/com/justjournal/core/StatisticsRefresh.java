@@ -30,10 +30,14 @@ import com.justjournal.model.User;
 import com.justjournal.repository.UserRepository;
 import com.justjournal.services.EntryStatisticService;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionCallbackWithoutResult;
+import org.springframework.transaction.support.TransactionTemplate;
 
 /** @author Lucas Holt */
 @Slf4j
@@ -45,11 +49,14 @@ public class StatisticsRefresh {
 
   private final EntryStatisticService entryStatisticService;
 
+  final TransactionTemplate transactionTemplate;
+
   @Autowired
   public StatisticsRefresh(
-      final UserRepository userRepository, final EntryStatisticService entryStatisticService) {
+          final UserRepository userRepository, final EntryStatisticService entryStatisticService, TransactionTemplate transactionTemplate) {
     this.userRepository = userRepository;
     this.entryStatisticService = entryStatisticService;
+    this.transactionTemplate = transactionTemplate;
   }
 
   // Every six hours?
@@ -57,14 +64,19 @@ public class StatisticsRefresh {
   public void run() {
     log.info("Statistics Refresh: init");
 
-    try {
-      for (final User user : userRepository.findAll()) {
-        entryStatisticService.compute(user).subscribe();
-      }
-    } catch (final Exception e) {
-      log.error(e.getMessage(), e);
-    }
+    transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+      protected void doInTransactionWithoutResult(@NotNull TransactionStatus status) {
 
-    log.info("Statistics Refresh: Quit");
+        try {
+          for (final User user : userRepository.findAll()) {
+            entryStatisticService.compute(user).subscribe();
+          }
+        } catch (final Exception e) {
+          log.error(e.getMessage(), e);
+        }
+
+        log.info("Statistics Refresh: Quit");
+
+      } });
   }
 }

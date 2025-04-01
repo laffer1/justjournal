@@ -27,9 +27,13 @@ package com.justjournal.core;
 
 
 import com.justjournal.services.TagService;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionCallbackWithoutResult;
+import org.springframework.transaction.support.TransactionTemplate;
 
 /**
  * Performs cleanup operations.
@@ -39,14 +43,26 @@ import org.springframework.stereotype.Component;
 @Component
 public class ScheduledMaintenance {
 
-  @Autowired private TagService tagService;
+  private final TagService tagService;
+
+  private final TransactionTemplate transactionTemplate;
+
+  public ScheduledMaintenance(TagService tagService, TransactionTemplate transactionTemplate) {
+    this.tagService = tagService;
+    this.transactionTemplate = transactionTemplate;
+  }
 
   /** Remove old tags that are no longer connected to any entries. */
   @Scheduled(fixedDelay = 1000 * 60 * 30, initialDelay = 120000)
   public void tagCleanup() {
-    tagService
-        .getTags()
-        .filter(t -> t.getCount() == 0)
-        .subscribe(tag -> tagService.deleteTag(tag.getId()));
+    transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+      protected void doInTransactionWithoutResult(@NotNull TransactionStatus status) {
+
+        tagService
+                .getTags()
+                .filter(t -> t.getCount() == 0)
+                .subscribe(tag -> tagService.deleteTag(tag.getId()));
+      }
+    });
   }
 }

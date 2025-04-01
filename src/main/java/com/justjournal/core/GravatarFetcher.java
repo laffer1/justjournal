@@ -40,10 +40,15 @@ import com.timgroup.jgravatar.GravatarRating;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionCallbackWithoutResult;
+import org.springframework.transaction.support.TransactionTemplate;
 
 /** @author Lucas Holt */
 @Slf4j
@@ -59,6 +64,9 @@ public class GravatarFetcher {
   @Autowired UserPicRepository userPicRepository;
 
   @Autowired private UserRepository userRepository;
+
+  @Autowired
+  private TransactionTemplate transactionTemplate;
 
   private byte[] getGravatar(final String email) {
     log.info("Attempting fetch of gravatar for email " + email);
@@ -80,27 +88,32 @@ public class GravatarFetcher {
 
   @Scheduled(fixedDelay = 1000 * 60 * 60 * 24, initialDelay = 30000)
   public void run() throws ServiceException, IOException {
-    for (final User user : userRepository.findAll()) {
-      try {
-        if (!userPicRepository.existsById(user.getId())) {
-          upload(
-              user.getId(),
-              MediaType.IMAGE_JPEG_VALUE,
-              AvatarSource.GRAVATAR,
-              getGravatar(user.getUserContact().getEmail()));
+    transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+      protected void doInTransactionWithoutResult(@NotNull TransactionStatus status) {
+        for (final User user : userRepository.findAll()) {
+          try {
+            if (!userPicRepository.existsById(user.getId())) {
+              upload(
+                      user.getId(),
+                      MediaType.IMAGE_JPEG_VALUE,
+                      AvatarSource.GRAVATAR,
+                      getGravatar(user.getUserContact().getEmail()));
 
-          Thread.sleep(GRAVATAR_FETCH_PAUSE_MS);
+              Thread.sleep(GRAVATAR_FETCH_PAUSE_MS);
+            }
+          } catch (final Exception e) {
+            log.warn("Could not find for user {}", user.getUsername(), e);
+          }
+
+          /*   convert existing db files   */
+          for (final UserPic userPic : userPicRepository.findAll()) {
+            if (userPic.getFilename() != null || userPic.getSource() != AvatarSource.UPLOAD) continue;
+
+            upload(userPic.getId(), userPic.getMimeType(), AvatarSource.UPLOAD, userPic.getImage());
+          }
+
         }
-      } catch (final Exception e) {
-        log.warn("Could not find for user {}", user.getUsername(), e);
       }
-
-      /*   convert existing db files   */
-      for (final UserPic userPic : userPicRepository.findAll()) {
-        if (userPic.getFilename() != null || userPic.getSource() != AvatarSource.UPLOAD) continue;
-
-        upload(userPic.getId(), userPic.getMimeType(), AvatarSource.UPLOAD, userPic.getImage());
-      }
-    }
+    });
   }
 }

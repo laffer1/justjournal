@@ -214,6 +214,9 @@ public class ImageStorageService {
           ErrorResponseException, InvalidResponseException, InternalException, XmlParserException,
           ServerException {
 
+    if (log.isTraceEnabled())
+      log.trace("Download file bucket: {}  objectName: {}", bucketName, objectName);
+
     return minioClient.getObject(
         GetObjectArgs.builder().bucket(bucketName).object(objectName).build());
   }
@@ -222,6 +225,10 @@ public class ImageStorageService {
       throws IOException, InvalidKeyException, NoSuchAlgorithmException, InsufficientDataException,
           InvalidResponseException, ErrorResponseException, InternalException, XmlParserException,
           ServerException {
+
+    if (log.isTraceEnabled())
+      log.trace("Delete file bucket: {}  objectName: {}", bucketName, objectName);
+
     minioClient.removeObject(
         RemoveObjectArgs.builder().bucket(bucketName).object(objectName).build());
   }
