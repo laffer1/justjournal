@@ -265,23 +265,6 @@ public class User implements Serializable {
     this.name = name;
   }
 
-  public LocalDateTime getModified() {
-    return modified;
-  }
-
-    /**
-   * Retrieve last login date as a <code>DateTimeBean</code>
-   *
-   * @return last login in a DateTimeBean
-   * @see DateTimeBean
-   */
-  public Date getLastLogin() {
-    return lastLogin;
-  }
-
-  public void setLastLogin(java.util.Date dt) {
-    this.lastLogin = dt;
-  }
 
     /**
    * Set the user name.
