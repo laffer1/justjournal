@@ -202,6 +202,7 @@ public class UsersController {
     return userPicRepository.existsById(userId);
   }
 
+  @Transactional(readOnly = true)
   @GetMapping(value = "{username}", produces = MediaType.TEXT_HTML_VALUE)
   public String entries(
       @PathVariable(PATH_USERNAME) final String username,
@@ -238,6 +239,7 @@ public class UsersController {
     return VIEW_USERS;
   }
 
+  @Transactional(readOnly = true)
   @GetMapping(value = "{username}/entry/{id}", produces = MediaType.TEXT_HTML_VALUE)
   public String entry(
       @PathVariable(PATH_USERNAME) final String username,
@@ -276,6 +278,7 @@ public class UsersController {
     return VIEW_USERS;
   }
 
+  @Transactional(readOnly = true)
   @GetMapping(value = "{username}/favorites", produces = "text/html")
   public String favorites(
       @PathVariable(PATH_USERNAME) final String username,
