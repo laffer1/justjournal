@@ -374,9 +374,12 @@ public class UpdateJournal extends HttpServlet {
     if (userID < 1) {
       try {
         userName = request.getParameter("user");
-        if (userName != null) userName = userName.toLowerCase();
+        if (StringUtils.isNotBlank(userName))
+          userName = userName.toLowerCase();
         final String password = request.getParameter("pass");
         userID = webLogin.validate(userName, password);
+        if (userID == BAD_USER_ID)
+          throw new Exception("Invalid username or password.");
 
         String keepLogin = request.getParameter("keeplogin");
         if (keepLogin == null) keepLogin = "";
