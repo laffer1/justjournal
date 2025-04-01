@@ -25,7 +25,6 @@
  */
 package com.justjournal.services;
 
-
 import com.justjournal.model.UserImage;
 import com.justjournal.repository.UserImageRepository;
 import java.util.List;
@@ -36,7 +35,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserImageService {
 
-  @Autowired private UserImageRepository userImageRepository;
+  private final UserImageRepository userImageRepository;
+
+  public UserImageService(UserImageRepository userImageRepository) {
+    this.userImageRepository = userImageRepository;
+  }
 
   public List<UserImage> getUserImages(final String username) {
     return userImageRepository.findByUsernameOrderByTitleTitleAsc(username);

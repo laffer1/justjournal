@@ -32,6 +32,7 @@ import com.justjournal.repository.EntryRepository;
 import com.justjournal.repository.EntryStatisticRepository;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.function.Function;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,56 +66,50 @@ public class EntryStatisticService {
   }
 
   @Transactional(readOnly = true, isolation = Isolation.READ_UNCOMMITTED)
-  public Mono<EntryStatistic> getEntryCount(final String username, final int year) {
-    log.trace("Fetching entry count for " + username + " and year " + year);
+  public EntryStatistic getEntryCount(final String username, final int year) {
+    log.trace("Fetching entry count for {} and year {}", username, year);
 
-    return Mono.justOrEmpty(entryStatisticRepository.findByUsernameAndYear(username, year));
+    return entryStatisticRepository.findByUsernameAndYear(username, year);
   }
 
   @Transactional(readOnly = true, isolation = Isolation.READ_UNCOMMITTED)
-  public Flux<EntryStatistic> getEntryCounts(final String username) {
-    return Flux.fromIterable(entryStatisticRepository.findByUsernameOrderByYearDesc(username));
+  public List<EntryStatistic> getEntryCounts(final String username) {
+    return entryStatisticRepository.findByUsernameOrderByYearDesc(username);
   }
 
   @Transactional(isolation = Isolation.READ_UNCOMMITTED)
-  public Flux<EntryStatistic> compute(final User user) {
-    final GregorianCalendar calendarg = new GregorianCalendar();
-    final int yearNow = calendarg.get(Calendar.YEAR);
+  public void compute(final User user) {
+      log.debug("Computing statistics for user: {}", user.getUsername());
 
-    return compute(user, user.getSince(), yearNow);
-  }
+      final GregorianCalendar calendarg = new GregorianCalendar();
+      int endYear = calendarg.get(Calendar.YEAR);
+      int startYear = user.getSince();
 
-  @Transactional(isolation = Isolation.READ_UNCOMMITTED)
-  public Flux<EntryStatistic> compute(final User user, final int startYear, final int endYear) {
-    final GregorianCalendar calendarg = new GregorianCalendar();
+      log.debug("Start year: {}, End year: {}", startYear, endYear);
 
-    if (endYear < startYear) throw new IllegalArgumentException("endYear");
-    if (endYear < 2003) throw new IllegalArgumentException("endYear");
-    if (startYear < 2003) throw new IllegalArgumentException("startYear");
+      if (endYear < 2003) endYear = 2004;
 
-    return Flux.range(startYear, endYear - startYear + 1)
-        .flatMap(
-            (Function<Integer, Mono<EntryStatistic>>)
-                yr ->
-                    Mono.fromCallable(
-                        () -> {
-                          log.debug("testing with year: " + yr + " user: " + user.getUsername());
-                          EntryStatistic es = entryStatisticRepository.findByUserAndYear(user, yr);
-                          final long count = entryRepository.calendarCount(yr, user.getUsername());
+      if (startYear < 2003) startYear = 2003;
 
-                          if (es == null) {
-                            log.trace("Creating new entry statistic");
-                            es = new EntryStatistic();
-                            es.setUser(user);
-                          }
+    for (int yr = startYear; yr <= endYear; yr++) {
+        log.debug("testing with year: {} user: {}", yr , user.getUsername());
+        EntryStatistic es = entryStatisticRepository.findByUserAndYear(user, yr);
+        final long count = entryRepository.calendarCount(yr, user.getUsername());
 
-                          es.setCount(count);
-                          es.setYear(yr);
-                          es.setModified(calendarg.getTime());
+        if (es == null) {
+            log.trace("Creating new entry statistic for {}", user.getUsername());
+            es = new EntryStatistic();
+            es.setUser(user);
+        } else {
+            log.debug("Updating existing entry statistic for year: {}", yr);
+        }
 
-                          log.trace("save and flush time");
-                          return entryStatisticRepository.saveAndFlush(es);
-                        }))
-        .subscribeOn(Schedulers.boundedElastic());
+        es.setCount(count);
+        es.setYear(yr);
+        es.setModified(calendarg.getTime());
+
+        log.trace("save and flush year: {} user: {} count: {}", yr, user.getUsername(), count);
+        entryStatisticRepository.saveAndFlush(es);
+    }
   }
 }

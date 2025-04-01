@@ -39,6 +39,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.owasp.esapi.ESAPI;
+import org.owasp.esapi.Encoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -62,21 +63,23 @@ public class TrackbackService {
   private static final String END_MESSAGE = "</message>";
 
   private final TrackbackRepository trackbackRepository;
-
-  @Autowired private RestTemplate restTemplate;
+  private final RestTemplate restTemplate;
+  private final Encoder encoder;
 
   @Autowired
-  public TrackbackService(final TrackbackRepository trackbackRepository) {
+  public TrackbackService(TrackbackRepository trackbackRepository, RestTemplate restTemplate, Encoder encoder) {
     this.trackbackRepository = trackbackRepository;
+    this.restTemplate = restTemplate;
+    this.encoder = encoder;
   }
 
   public boolean send(
       String pingUrl, String blogName, String permalink, String title, String excerpt) {
     try {
-      final String cleanTitle = ESAPI.encoder().encodeForURL(title);
-      final String cleanPermanentBlogEntryUrl = ESAPI.encoder().encodeForURL(permalink);
-      final String cleanBlogName = ESAPI.encoder().encodeForURL(blogName);
-      final String cleanExcerpt = ESAPI.encoder().encodeForURL(excerpt);
+      final String cleanTitle = encoder.encodeForURL(title);
+      final String cleanPermanentBlogEntryUrl = encoder.encodeForURL(permalink);
+      final String cleanBlogName = encoder.encodeForURL(blogName);
+      final String cleanExcerpt = encoder.encodeForURL(excerpt);
 
       final URI uri =
           new URI(
@@ -118,12 +121,13 @@ public class TrackbackService {
    * @return
    */
   public Optional<String> parseTrackbackUrlWithRdf(String input) {
-    final String pattern = "(((trackback:ping=[\\\"\\'])((https?)://(.*?)))[\\'\\\"\\s\\r\\n|,|$])";
-
+    final String pattern = "trackback:ping=\"(.*?)\"";
     final Pattern p = Pattern.compile(pattern);
     final Matcher m = p.matcher(input);
-    if (m.groupCount() < 4) return Optional.empty();
-    return Optional.ofNullable(m.group(4));
+    if (m.find()) {
+      return Optional.ofNullable(m.group(1));
+    }
+    return Optional.empty();
   }
 
   /**

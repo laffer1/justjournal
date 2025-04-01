@@ -69,7 +69,7 @@ public class StatisticsRefresh {
 
         try {
           for (final User user : userRepository.findAll()) {
-            entryStatisticService.compute(user).subscribe();
+            entryStatisticService.compute(user);
           }
         } catch (final Exception e) {
           log.error(e.getMessage(), e);

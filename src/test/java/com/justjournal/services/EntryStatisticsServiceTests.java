@@ -25,127 +25,115 @@
  */
 package com.justjournal.services;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import com.justjournal.model.EntryStatistic;
 import com.justjournal.model.User;
 import com.justjournal.repository.EntryRepository;
 import com.justjournal.repository.EntryStatisticRepository;
-import java.util.Collections;
-import java.util.Iterator;
+
+import java.util.Calendar;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
-/** @author Lucas Holt */
+/**
+ * @author Lucas Holt
+ */
 @ExtendWith(MockitoExtension.class)
 class EntryStatisticsServiceTests {
 
-  private static final String TEST_USER = "testuser";
-  private static final int TEST_YEAR = 2003;
+    @Mock
+    private EntryStatisticRepository entryStatisticRepository;
 
-  @Mock private EntryStatisticRepository entryStatisticRepository;
+    @Mock
+    private EntryRepository entryRepository;
 
-  @Mock private EntryRepository entryRepository;
+    @InjectMocks
+    private EntryStatisticService entryStatisticService;
 
-  @InjectMocks private EntryStatisticService entryStatisticService;
+    private User testUser;
 
-  private EntryStatistic entryStatistic;
-  private User user;
 
-  @BeforeEach
-  public void setupMock() {
-    user = new User();
-    user.setUsername(TEST_USER);
+    @BeforeEach
+    void setUp() {
+        testUser = new User();
+        testUser.setUsername("testuser");
+        testUser.setSince(2010);
+    }
 
-    entryStatistic = new EntryStatistic();
-    entryStatistic.setUser(user);
-    entryStatistic.setCount(1L);
-    entryStatistic.setYear(TEST_YEAR);
-  }
+    @Test
+    void compute_shouldUpdateExistingStatistics() {
+        // Given
+        int testYear = 2015;
+        testUser.setSince(testYear);
+        EntryStatistic existingStatistic = new EntryStatistic();
+        existingStatistic.setUser(testUser);
+        existingStatistic.setYear(testYear);
+        existingStatistic.setCount(5L);
 
-  @Test
-  void getEntryCounts() {
-    when(entryStatisticRepository.findByUsernameOrderByYearDesc(TEST_USER))
-        .thenReturn(Collections.singletonList(entryStatistic));
-    Flux<EntryStatistic> o = entryStatisticService.getEntryCounts(TEST_USER);
-    final Iterable<EntryStatistic> myIterator = o.toIterable();
+        when(entryStatisticRepository.findByUserAndYear(testUser, testYear)).thenReturn(existingStatistic);
+        when(entryRepository.calendarCount(testYear, "testuser")).thenReturn(15L);
 
-    assertNotNull(myIterator);
+        // When
+        entryStatisticService.compute(testUser);
 
-    Iterator<EntryStatistic> iterator = myIterator.iterator();
-    assertTrue(iterator.hasNext());
+        // Then
+        verify(entryStatisticRepository).findByUserAndYear(eq(testUser), eq(testYear));
+        verify(entryRepository).calendarCount(eq(testYear), eq("testuser"));
+        verify(entryStatisticRepository).saveAndFlush(argThat(stat ->
+                stat.getYear() == testYear && stat.getCount() == 15L && stat.getUser() == testUser
+        ));
+    }
 
-    EntryStatistic es = iterator.next();
+    @Test
+    void compute_shouldCreateAndUpdateStatistics() {
+        // Given
+        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+        testUser.setSince(2010);
+        when(entryRepository.calendarCount(anyInt(), eq("testuser"))).thenReturn(10L);
 
-    verify(entryStatisticRepository, atLeastOnce()).findByUsernameOrderByYearDesc(TEST_USER);
+        // When
+        entryStatisticService.compute(testUser);
 
-    assertEquals(TEST_USER, es.getUser().getUsername());
-    assertEquals(TEST_YEAR, es.getYear());
-    assertEquals(1L, es.getCount());
-  }
+        // Then
+        int expectedCalls = currentYear - 2010 + 1;
+        verify(entryStatisticRepository, times(expectedCalls)).findByUserAndYear(eq(testUser), anyInt());
+        verify(entryRepository, times(expectedCalls)).calendarCount(anyInt(), eq("testuser"));
+        verify(entryStatisticRepository, times(expectedCalls)).saveAndFlush(any(EntryStatistic.class));
+    }
 
-  @Test
-  void getEntryCount() {
-    when(entryStatisticRepository.findByUsernameAndYear(TEST_USER, TEST_YEAR))
-        .thenReturn(entryStatistic);
+    @Test
+    void compute_shouldHandleUserWithSinceBelow2003() {
+        // Given
+        testUser.setSince(2000);
+        when(entryRepository.calendarCount(anyInt(), eq("testuser"))).thenReturn(5L);
 
-    Mono<EntryStatistic> o = entryStatisticService.getEntryCount(TEST_USER, TEST_YEAR);
+        // When
+        entryStatisticService.compute(testUser);
 
-    EntryStatistic es = o.block();
-    verify(entryStatisticRepository, atLeastOnce()).findByUsernameAndYear(TEST_USER, TEST_YEAR);
+        // Then
+        verify(entryStatisticRepository, atLeastOnce()).findByUserAndYear(eq(testUser), eq(2003));
+        verify(entryRepository, atLeastOnce()).calendarCount(eq(2003), eq("testuser"));
+        verify(entryStatisticRepository, atLeastOnce()).saveAndFlush(any(EntryStatistic.class));
+    }
 
-    assert es != null;
-    assertEquals(TEST_USER, es.getUser().getUsername());
-    assertEquals(TEST_YEAR, es.getYear());
-    assertEquals(1L, es.getCount());
-  }
+    @Test
+    void compute_shouldHandleCurrentYearBelow2004() {
+        // Given
+        testUser.setSince(2003);
+        when(entryRepository.calendarCount(anyInt(), eq("testuser"))).thenReturn(5L);
 
-  @Test
-  void computeBadStartYear() {
-    Throwable exception = assertThrows(IllegalArgumentException.class, ()-> entryStatisticService.compute(user, 0, TEST_YEAR));
-  }
+        // When
+        entryStatisticService.compute(testUser);
 
-  @Test
-  void computeBadEndYear() {
-    Throwable exception = assertThrows(IllegalArgumentException.class, ()-> entryStatisticService.compute(user, TEST_YEAR, 0));
-  }
-
-  /*   TODO: not working due to rxjava scheduler io multithreading.
-  @Test
-  public void computeSingle() {
-      when(entryStatisticRepository.findByUserAndYear(user, TEST_YEAR + 1)).thenReturn(entryStatistic);
-      when(user.getUsername()).thenReturn(TEST_USER);
-      when(entryRepository.calendarCount(TEST_YEAR, TEST_USER)).thenReturn(1L);
-      when(entryStatistic.getUser()).thenReturn(user);
-      when(entryStatistic.getCount()).thenReturn(1L);
-      when(entryStatistic.getYear()).thenReturn(TEST_YEAR);
-      when(entryStatisticRepository.saveAndFlush(entryStatistic)).thenReturn(entryStatistic);
-
-      TestObserver<EntryStatistic> testObserver = entryStatisticService.compute(user, TEST_YEAR, TEST_YEAR )
-              .test().awaitDone(5, TimeUnit.SECONDS);
-
-    //  testObserver.awaitTerminalEvent();
-      verify(entryStatisticRepository, atLeastOnce()).findByUserAndYear(user, TEST_YEAR);
-        verify(entryRepository, atLeastOnce()).calendarCount(TEST_YEAR, TEST_USER);
-
-      testObserver
-          .assertNoErrors()
-          .assertValue(new Predicate<EntryStatistic>() {
-              @Override
-              public boolean test(final EntryStatistic entryStatistic) throws Exception {
-                  return entryStatistic.getCount() == 1L ;
-              }
-          });
-  }
-           */
-
-  // @Rule
-  //  public TrampolineSchedulerRule rule = new TrampolineSchedulerRule();
+        // Then
+        verify(entryStatisticRepository, atLeast(23)).findByUserAndYear(eq(testUser), anyInt());
+        verify(entryRepository, atLeast(23)).calendarCount(anyInt(), eq("testuser"));
+        verify(entryStatisticRepository, atLeast(23)).saveAndFlush(any(EntryStatistic.class));
+    }
 }

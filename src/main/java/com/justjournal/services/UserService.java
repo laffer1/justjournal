@@ -25,13 +25,11 @@
  */
 package com.justjournal.services;
 
-
 import com.justjournal.model.User;
 import com.justjournal.model.api.PublicMember;
 import com.justjournal.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -41,7 +39,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class UserService {
 
-  @Autowired private UserRepository userRepository;
+  private final UserRepository userRepository;
+
+  public UserService(UserRepository userRepository) {
+    this.userRepository = userRepository;
+  }
 
   @Transactional(readOnly = true, isolation = Isolation.READ_UNCOMMITTED)
   @Cacheable(cacheNames = "members", value = "members")

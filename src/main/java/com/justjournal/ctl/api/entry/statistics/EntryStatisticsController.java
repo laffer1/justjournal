@@ -55,9 +55,7 @@ public class EntryStatisticsController {
   public ResponseEntity<List<EntryStatistic>> getStatistics(
       @PathVariable(PARAM_USERNAME) final String username) {
 
-    final Iterable<EntryStatistic> myIterator =
-        entryStatisticService.getEntryCounts(username).toIterable();
-    final List<EntryStatistic> e = IteratorUtils.toList(myIterator.iterator());
+    final List<EntryStatistic> e = entryStatisticService.getEntryCounts(username);
     Collections.sort(e);
 
     return ResponseEntity.ok().eTag(Integer.toString(e.hashCode())).body(e);

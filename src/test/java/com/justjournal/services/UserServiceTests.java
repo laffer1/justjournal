@@ -25,36 +25,79 @@
  */
 package com.justjournal.services;
 
-import com.justjournal.Application;
+import com.justjournal.model.User;
 import com.justjournal.model.api.PublicMember;
-import java.util.List;
-
-import org.junit.jupiter.api.Assertions;
+import com.justjournal.repository.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.web.WebAppConfiguration;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-/** @author Lucas Holt */
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = Application.class)
-@WebAppConfiguration
-public class UserServiceTests {
+import java.util.Arrays;
+import java.util.List;
 
-  @Autowired private UserService userService;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-  @Test
-  public void testPublicMembers() {
-    final List<PublicMember> members = userService.getPublicMembers();
-    Assertions.assertNotNull(members);
-    Assertions.assertFalse(members.isEmpty());
+@ExtendWith(MockitoExtension.class)
+class UserServiceTests {
 
-    for (final PublicMember member : members) {
-      Assertions.assertNotNull(member.getName());
-      Assertions.assertNotNull(member.getUsername());
-      Assertions.assertTrue(member.getSince() > 2002);
+    @Mock
+    private UserRepository userRepository;
+
+    @InjectMocks
+    private UserService userService;
+
+    @BeforeEach
+    void setUp() {
+        userService = new UserService(userRepository);
     }
-  }
+
+    @Test
+    void getPublicMembers_shouldReturnListOfPublicMembers() {
+        // Arrange
+        User user1 = new User();
+        user1.setUsername("user1");
+        user1.setName("John");
+        user1.setSince(2004);
+
+        User user2 = new User();
+        user2.setUsername("user2");
+        user2.setName("Jane");
+        user2.setSince(2005);
+
+        List<User> users = Arrays.asList(user1, user2);
+
+        when(userRepository.getPublicUsers()).thenReturn(users);
+
+        // Act
+        List<PublicMember> result = userService.getPublicMembers();
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertEquals("user1", result.get(0).getUsername());
+        assertEquals("John", result.get(0).getName());
+        assertEquals("user2", result.get(1).getUsername());
+        assertEquals("Jane", result.get(1).getName());
+
+        verify(userRepository, times(1)).getPublicUsers();
+    }
+
+    @Test
+    void getPublicMembers_shouldReturnEmptyList_whenNoPublicUsers() {
+        // Arrange
+        when(userRepository.getPublicUsers()).thenReturn(List.of());
+
+        // Act
+        List<PublicMember> result = userService.getPublicMembers();
+
+        // Assert
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+
+        verify(userRepository, times(1)).getPublicUsers();
+    }
 }
