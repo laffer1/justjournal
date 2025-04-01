@@ -198,12 +198,8 @@ public class Entry implements Serializable {
     setLocationId(location.getId());
   }
 
-  public int getMoodId() {
-    return moodId;
-  }
-
-  public void setMoodId(final int moodId) {
-    this.moodId = moodId;
+  public Location getLocation() {
+    return location;
   }
 
   public Mood getMood() {
@@ -217,109 +213,9 @@ public class Entry implements Serializable {
     else setMoodId(0);
   }
 
-  public User getUser() {
-    return user;
-  }
-
-  public void setUser(final User user) {
-    this.user = user;
-  }
-
-  public int getSecurityId() {
-    return securityId;
-  }
-
-  public void setSecurityId(final int securityId) {
-    this.securityId = securityId;
-  }
-
-  public Security getSecurity() {
-    return security;
-  }
-
   public void setSecurity(final Security security) {
     this.security = security;
     setSecurityId(security.getId());
-  }
-
-  public String getSubject() {
-    return subject;
-  }
-
-  public void setSubject(final String subject) {
-    this.subject = subject;
-  }
-
-  public String getBody() {
-    return body;
-  }
-
-  public void setBody(final String body) {
-    this.body = body;
-  }
-
-  public String getMusic() {
-    return music;
-  }
-
-  public void setMusic(final String music) {
-    this.music = music;
-  }
-
-  public PrefBool getAutoFormat() {
-    return autoFormat;
-  }
-
-  public FormatType getFormat() {
-    return format;
-  }
-
-  public void setFormat(final FormatType format) {
-    this.format = format;
-  }
-
-  public void setAutoFormat(final PrefBool autoFormat) {
-    this.autoFormat = autoFormat;
-  }
-
-  public PrefBool getAllowComments() {
-    return allowComments;
-  }
-
-  public void setAllowComments(final PrefBool allowComments) {
-    this.allowComments = allowComments;
-  }
-
-  public PrefBool getEmailComments() {
-    return emailComments;
-  }
-
-  public void setEmailComments(final PrefBool emailComments) {
-    this.emailComments = emailComments;
-  }
-
-  public PrefBool getDraft() {
-    return draft;
-  }
-
-  public void setDraft(final PrefBool draft) {
-    this.draft = draft;
-  }
-
-  public int getAttachImage() {
-    return attachImage;
-  }
-
-  public void setAttachImage(final int attachImage) {
-    this.attachImage = attachImage;
-  }
-
-    public void setAttachFile(final int attachFile) {
-    this.attachFile = attachFile;
-  }
-
-    public void setTags(final Set<EntryTag> tags) {
-    this.tags = tags;
   }
 
     public Entry(final EntryTo entryTo) {
