@@ -93,7 +93,7 @@ public class User implements Serializable {
   @Getter
   @Column(name = "password_type", length = 10, nullable = false)
   @Enumerated(EnumType.STRING)
-  private PasswordType passwordType = null;
+  private PasswordType passwordType = PasswordType.SHA256;
 
   @Getter
   @Setter
@@ -315,29 +315,6 @@ public class User implements Serializable {
     this.password = password;
   }
 
-  public Set<Friend> getFriends() {
-    return friends;
-  }
-
-  public void setFriends(Set<Friend> friends) {
-    this.friends = friends;
-  }
-
-  public Set<UserLink> getLinks() {
-    return links;
-  }
-
-  public void setLinks(Set<UserLink> links) {
-    this.links = links;
-  }
-
-  public Set<UserImage> getImages() {
-    return images;
-  }
-
-  public void setImages(Set<UserImage> images) {
-    this.images = images;
-  }
     public void setJournals(Set<Journal> journals) {
     this.journals = journals;
   }

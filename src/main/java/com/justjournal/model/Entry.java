@@ -193,18 +193,6 @@ public class Entry implements Serializable {
   }
 
 
-  public int getLocationId() {
-    return locationId;
-  }
-
-  public void setLocationId(final int locationId) {
-    this.locationId = locationId;
-  }
-
-  public Location getLocation() {
-    return location;
-  }
-
   public void setLocation(final Location location) {
     this.location = location;
     setLocationId(location.getId());
