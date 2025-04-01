@@ -61,7 +61,6 @@ import com.justjournal.services.BlogSearchService;
 import com.justjournal.services.EntryService;
 import com.justjournal.services.MarkdownService;
 import com.justjournal.services.PdfFormatService;
-import com.justjournal.services.RtfFormatService;
 import com.justjournal.services.TrackbackService;
 import com.justjournal.services.UserImageService;
 import com.justjournal.utility.StringUtil;
@@ -131,7 +130,6 @@ public class UsersController {
   private static final String ENTRY_DATE_FORMAT = "EEE, d MMM yyyy";
   private static final String ENTRY_DATE_TIME_FORMAT = "yyyy-MM-dd hh:mm";
 
-  private static final String MEDIA_TYPE_RTF = "application/rtf";
   private static final String MEDIA_TYPE_PDF = "application/pdf";
 
   private final CommentRepository commentDao;
@@ -157,8 +155,6 @@ public class UsersController {
   private final BlogSearchService blogSearchService;
 
   private final Rss rss;
-
-  @Autowired private RtfFormatService rdfFormatService;
 
   @Autowired private TrackbackService trackbackService;
 
@@ -604,41 +600,6 @@ public class UsersController {
     }
   }
 
-  /**
-   * @param username
-   * @param response
-   * @param session
-   * @deprecated Library is old and will be removed.
-   */
-  @Deprecated
-  @GetMapping(value = "{username}/rtf", produces = MEDIA_TYPE_RTF)
-  public void rtf(
-      @PathVariable(PATH_USERNAME) final String username,
-      final HttpServletResponse response,
-      final HttpSession session) {
-    User authUser = null;
-    try {
-      authUser = userRepository.findByUsername(Login.currentLoginName(session));
-    } catch (final Exception e) {
-      if (log.isTraceEnabled()) log.trace(e.getMessage(), e);
-    }
-
-    try {
-      final User user = userRepository.findByUsername(username);
-      if (user == null) {
-        response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-        return;
-      }
-      final UserContext userc = new UserContext(user, authUser);
-      if (!new ArrayList<Journal>(user.getJournals()).get(0).isOwnerViewOnly()
-          || userc.isAuthBlog()) getRTF(response, userc);
-      else response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-    } catch (final Exception e) {
-      log.error("Unable to generate RTF", e);
-      response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-    }
-  }
-
   @GetMapping(value = "{username}/pictures", produces = "text/html")
   public String pictures(
       @PathVariable(PATH_USERNAME) final String username,
@@ -842,24 +803,6 @@ public class UsersController {
     } catch (final Exception e) {
       // user class caused this
       log.error("Users.getPDF():" + e.getMessage(), e);
-    }
-  }
-
-  private void getRTF(final HttpServletResponse response, final UserContext uc) {
-    try {
-      final ByteArrayOutputStream baos = rdfFormatService.generate(uc);
-
-      setCommonFileHeaders(response, uc, MEDIA_TYPE_RTF, ".rtf");
-      response.setContentLength(baos.size()); /* required by IE */
-      final ServletOutputStream out = response.getOutputStream();
-      baos.writeTo(out);
-      out.flush();
-      out.close();
-    } catch (final IOException e1) {
-      log.error("Users.getRDF() IOException:" + e1.getMessage(), e1);
-    } catch (final Exception e) {
-      // user class caused this
-      log.error("Users.getRDF():" + e.getMessage(), e);
     }
   }
 

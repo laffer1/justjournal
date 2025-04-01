@@ -29,8 +29,6 @@ package com.justjournal.services;
 import com.justjournal.core.UserContext;
 import com.justjournal.exception.ServiceException;
 import com.justjournal.model.Entry;
-import com.justjournal.model.FormatType;
-import com.justjournal.model.Journal;
 import com.justjournal.repository.EntryRepository;
 import com.justjournal.repository.SecurityRepository;
 import com.justjournal.utility.HTMLUtil;
@@ -137,7 +135,7 @@ public class AbstractFormatService {
         document.add(Chunk.NEWLINE);
       }
     } catch (final DocumentException e) {
-      log.error("Failed to render document (PDF or RTF) {}", e.getMessage(), e);
+      log.error("Failed to render document (PDF) {}", e.getMessage(), e);
     }
   }
 }
