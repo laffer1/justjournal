@@ -35,11 +35,11 @@ spring:
     database: MYSQL
     hibernate:
       ddl-auto: none
-      naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
     generate-ddl: false
     show-sql: false
     properties:
-     dialect: org.hibernate.dialect.MySQL5Dialect
+     dialect: org.hibernate.dialect.MySQLDialect
+     physical_naming_strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
      hibernate:
        temp:
          use_jdbc_metadata_defaults: false
