@@ -31,8 +31,10 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.justjournal.utility.StringUtil;
+
+import java.io.Serial;
 import java.io.Serializable;
-import javax.persistence.*;
+import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 
 /**
@@ -48,6 +50,7 @@ import lombok.EqualsAndHashCode;
 @Table(name = "tags")
 public class Tag implements Serializable {
 
+  @Serial
   private static final long serialVersionUID = 6428478632490878525L;
   /** Unique id to represent the global tag */
   @JsonProperty("id")

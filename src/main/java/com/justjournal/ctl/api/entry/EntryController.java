@@ -511,7 +511,7 @@ public class EntryController {
   }
 
   private Mood getMood(int moodId) {
-    return moodDao.findById(moodId).orElse(null);
+    return moodDao.findById(moodId);
   }
 
   /**

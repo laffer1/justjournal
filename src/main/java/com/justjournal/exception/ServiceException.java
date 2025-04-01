@@ -25,12 +25,15 @@
  */
 package com.justjournal.exception;
 
+import java.io.Serial;
+
 /**
  * JustJournal Service Exception
  *
  * @author Lucas Holt
  */
 public class ServiceException extends Exception {
+  @Serial
   private static final long serialVersionUID = 8911047285453302885L;
 
   public ServiceException() {

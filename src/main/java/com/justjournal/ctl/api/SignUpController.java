@@ -36,7 +36,7 @@ import com.justjournal.services.AccountService;
 import com.justjournal.utility.DNSUtil;
 import com.justjournal.utility.StringUtil;
 import java.util.Map;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;

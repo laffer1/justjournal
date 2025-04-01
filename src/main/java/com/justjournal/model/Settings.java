@@ -26,14 +26,16 @@
 package com.justjournal.model;
 
 
+import java.io.Serial;
 import java.io.Serializable;
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 /** @author Lucas Holt */
 @Entity
 @Table(name = "settings")
 public class Settings implements Serializable {
 
+  @Serial
   private static final long serialVersionUID = -7137678422555117028L;
 
   @Id

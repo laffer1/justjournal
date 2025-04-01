@@ -26,6 +26,7 @@
 package com.justjournal.model.search;
 
 
+import java.io.Serial;
 import java.io.Serializable;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -40,6 +41,7 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 public class Tag implements Serializable, Comparable<Tag> {
+  @Serial
   private static final long serialVersionUID = 3452319081969591586L;
 
   @Getter @Setter private String name;

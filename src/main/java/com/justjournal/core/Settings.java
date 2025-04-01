@@ -29,6 +29,7 @@ package com.justjournal.core;
 import com.justjournal.repository.SettingsRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 /**
@@ -89,7 +90,7 @@ public class Settings {
       String name;
       String value;
 
-      for (com.justjournal.model.Settings set : settingsDao.findAll()) {
+      for (com.justjournal.model.Settings set : settingsDao.findAll(Sort.by("name"))) {
         value = set.getValue();
         name = set.getName();
 

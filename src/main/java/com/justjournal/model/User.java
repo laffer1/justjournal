@@ -34,27 +34,18 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.justjournal.utility.StringUtil;
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Represents a user most basic properties.
@@ -70,6 +61,7 @@ import javax.persistence.Table;
 @Table(name = "user")
 public class User implements Serializable {
 
+  @Serial
   @JsonIgnore private static final long serialVersionUID = -7545141063644043241L;
 
   @Id

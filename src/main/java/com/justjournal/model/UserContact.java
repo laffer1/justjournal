@@ -31,7 +31,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 /** User contact information including IM accounts, email and homepage */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)

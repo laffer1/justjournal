@@ -28,15 +28,22 @@ package com.justjournal.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.sql.Timestamp;
-import javax.persistence.*;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 /** @author Lucas Holt */
+@Setter
+@Getter
 @Entity
 @Table(name = "user_pref")
 public class UserPref implements Serializable {
 
+  @Serial
   private static final long serialVersionUID = -4301597963273403598L;
 
   @Id
@@ -44,7 +51,7 @@ public class UserPref implements Serializable {
   private int id = 0;
 
   @Column(name = "show_avatar", nullable = false, length = 1)
-  @Enumerated(EnumType.STRING)
+  @Convert(converter = PrefBoolConverter.class)
   private PrefBool showAvatar = PrefBool.N;
 
   @Column(name = "modified", nullable = false)
@@ -56,35 +63,4 @@ public class UserPref implements Serializable {
   @JoinColumn(name = "user_id")
   private User user;
 
-  public User getUser() {
-    return user;
-  }
-
-  public void setUser(final User user) {
-    this.user = user;
-  }
-
-  public int getId() {
-    return id;
-  }
-
-  public void setId(final int id) {
-    this.id = id;
-  }
-
-  public PrefBool getShowAvatar() {
-    return showAvatar;
-  }
-
-  public void setShowAvatar(final PrefBool showAvatar) {
-    this.showAvatar = showAvatar;
-  }
-
-  public Timestamp getModified() {
-    return modified;
-  }
-
-  public void setModified(final Timestamp modified) {
-    this.modified = modified;
-  }
 }

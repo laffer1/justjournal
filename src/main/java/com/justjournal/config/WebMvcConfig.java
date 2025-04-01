@@ -27,8 +27,8 @@ package com.justjournal.config;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
-import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
+import com.fasterxml.jackson.datatype.hibernate5.jakarta.Hibernate5JakartaModule;
+import com.fasterxml.jackson.module.jakarta.xmlbind.JakartaXmlBindAnnotationModule;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.WebProperties;
@@ -41,22 +41,22 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
+import org.springframework.http.CacheControl;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.time.Duration;
 
 @Configuration
-@EnableConfigurationProperties
-public class WebMvcConfig extends WebMvcConfigurerAdapter {
+public class WebMvcConfig implements WebMvcConfigurer {
 
-  private ObjectMapper mapper;
+  private final ObjectMapper mapper;
 
   @Autowired
   public WebMvcConfig(ObjectMapper mapper) {
-    super();
-
     this.mapper = mapper;
-    mapper.registerModule(new Hibernate5Module());
-
-    JaxbAnnotationModule module = new JaxbAnnotationModule();
+    mapper.registerModule(new Hibernate5JakartaModule());
+    JakartaXmlBindAnnotationModule module = new JakartaXmlBindAnnotationModule();
     mapper.registerModule(module);
   }
 
@@ -74,44 +74,32 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
     registry
         .addResourceHandler("/robots.txt")
         .addResourceLocations("classpath:/static/robots.txt")
-        .setCachePeriod(cachePeriod);
+            .setCacheControl(CacheControl.maxAge(Duration.ofSeconds(cachePeriod)));
+
 
     registry
         .addResourceHandler("/static/**")
         .addResourceLocations("classpath:/static/")
-        .setCachePeriod(cachePeriod);
+            .setCacheControl(CacheControl.maxAge(Duration.ofSeconds(cachePeriod)));
+
 
     registry
         .addResourceHandler("/static/styles/**", "/styles/*.css", "/styles/*.map")
         .addResourceLocations("classpath:/static/styles/")
-        .setCachePeriod(cachePeriod);
+            .setCacheControl(CacheControl.maxAge(Duration.ofSeconds(cachePeriod)));
 
     // todo: move these files to an external source
     registry
         .addResourceHandler(
             "/software/*.zip", "/software/*.bz2", "/software/*.gz", "/software/unix/**")
         .addResourceLocations("classpath:/static/software/")
-        .setCachePeriod(cachePeriod);
+            .setCacheControl(CacheControl.maxAge(Duration.ofSeconds(cachePeriod)));
 
-    /* one possible html5 mode solution.
-    registry.addResourceHandler("/**")
-            .addResourceLocations("classpath:/static/index.html")
-            .setCachePeriod(cachePeriod).resourceChain(true)
-            .addResolver(new PathResourceResolver() {
-                @Override
-                protected Resource getResource(String resourcePath,
-                        Resource location) throws IOException {
-                    return location.exists() && location.isReadable() ? location
-                            : null;
-                }
-            });
-            */
   }
 
   /** {@inheritDoc} */
   @Override
   public void configureMessageConverters(final List<HttpMessageConverter<?>> converters) {
-    super.configureMessageConverters(converters);
     converters.add(new StringHttpMessageConverter());
     converters.add(new ByteArrayHttpMessageConverter());
   }

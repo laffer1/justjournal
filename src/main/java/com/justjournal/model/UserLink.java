@@ -30,8 +30,10 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import java.io.Serial;
 import java.io.Serializable;
-import javax.persistence.*;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -48,6 +50,7 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "user_link")
 public class UserLink implements Serializable, Comparable<UserLink> {
+  @Serial
   private static final long serialVersionUID = 6356304916167520610L;
 
   @Id

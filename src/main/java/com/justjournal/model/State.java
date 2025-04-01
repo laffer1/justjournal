@@ -27,14 +27,17 @@ package com.justjournal.model;
 
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+
+import java.io.Serial;
 import java.io.Serializable;
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 /** @author Lucas Holt */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @Entity
 @Table(name = "state")
 public class State implements Serializable {
+  @Serial
   private static final long serialVersionUID = 7308393000204318100L;
 
   @Id

@@ -28,9 +28,11 @@ package com.justjournal.model;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 /**
  * Style sheet theme entries.
@@ -42,6 +44,7 @@ import javax.persistence.*;
 @Table(name = "style")
 public class Style implements Serializable {
 
+  @Serial
   private static final long serialVersionUID = -1788221747557111756L;
   /** Unique id to represent the global style */
   @JsonProperty("id")

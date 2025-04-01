@@ -29,8 +29,10 @@ package com.justjournal.model;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonCreator;
+
+import java.io.Serial;
 import java.io.Serializable;
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 /** Biography */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
@@ -38,6 +40,7 @@ import javax.persistence.*;
 @Table(name = "user_bio")
 public class UserBio implements Serializable {
 
+  @Serial
   private static final long serialVersionUID = 3877987531776135807L;
 
   @Id

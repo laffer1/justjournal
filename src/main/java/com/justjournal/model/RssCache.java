@@ -28,9 +28,11 @@ package com.justjournal.model;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 /**
  * Rss file record.
@@ -42,6 +44,7 @@ import javax.persistence.*;
 @Table(name = "rss_cache")
 public final class RssCache implements Serializable {
 
+  @Serial
   private static final long serialVersionUID = 7699995609479936367L;
 
   @Id

@@ -29,10 +29,11 @@ package com.justjournal.model.api;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import java.io.Serial;
 import java.io.Serializable;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
+
+import lombok.*;
 
 /** @author Lucas Holt */
 @AllArgsConstructor
@@ -41,6 +42,7 @@ import lombok.EqualsAndHashCode;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class UserLinkTo implements Serializable, Comparable<UserLinkTo> {
 
+  @Serial
   @JsonIgnore private static final long serialVersionUID = -132658312201527378L;
 
   private int id;

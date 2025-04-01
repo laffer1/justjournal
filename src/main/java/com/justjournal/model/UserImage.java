@@ -30,9 +30,11 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 /**
  * User Images
@@ -43,6 +45,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "user_images")
 public class UserImage implements Serializable {
+  @Serial
   private static final long serialVersionUID = 6356304916167520629L;
 
   @Id

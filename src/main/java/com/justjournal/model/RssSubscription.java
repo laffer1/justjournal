@@ -26,21 +26,23 @@
 package com.justjournal.model;
 
 
+import java.io.Serial;
 import java.io.Serializable;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 /** User: laffer1 Date: Mar 19, 2005 Time: 9:19:40 PM */
 @Entity
 @Table(name = "rss_subscriptions")
 public class RssSubscription implements Serializable {
 
+  @Serial
   private static final long serialVersionUID = -5641819117393997020L;
 
   @ManyToOne
