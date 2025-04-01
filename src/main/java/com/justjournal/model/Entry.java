@@ -169,6 +169,7 @@ public class Entry implements Serializable {
 
   @JsonIgnore private transient int attachFile = 0;
 
+  @Setter
   @JsonManagedReference(value = "entry-entrytag")
   @JsonProperty("tags")
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "entry", fetch = FetchType.EAGER) // TODO: why!
