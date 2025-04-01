@@ -52,6 +52,7 @@ import lombok.Setter;
 @Table(name = "entry_security")
 public class Security implements Serializable {
 
+  @Serial
   private static final long serialVersionUID = -3247158592308509915L;
 
   @Id
@@ -66,19 +67,4 @@ public class Security implements Serializable {
     super();
   }
 
-  public int getId() {
-    return this.id;
-  }
-
-  public void setId(int id) {
-    this.id = id;
-  }
-
-  public String getName() {
-    return this.name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
 }

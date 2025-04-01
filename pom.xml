@@ -16,7 +16,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.18</version>
+        <version>3.0.12</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -30,8 +30,8 @@
         <argLine>-Xmx786m</argLine>
         <log4j2.version>2.20.0</log4j2.version>
         <okhttp3.version>4.9.3</okhttp3.version>
-        <logback.version>1.2.13</logback.version>
-        <tomcat.version>9.0.102</tomcat.version>
+        <logback.version>1.4.11</logback.version>
+        <tomcat.version>10.1.31</tomcat.version>
         <elasticsearch.version>7.17.28</elasticsearch.version>
     </properties>
 
@@ -102,12 +102,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>javax.transaction</groupId>
-                    <artifactId>javax.transaction-api</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <dependency>
@@ -156,28 +150,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-tomcat</artifactId>
             <scope>compile</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.tomcat.embed</groupId>
-                    <artifactId>tomcat-embed-core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.tomcat.embed</groupId>
-                    <artifactId>tomcat-embed-websocket</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tomcat.embed</groupId>
-            <artifactId>tomcat-embed-core</artifactId>
-            <version>${tomcat.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tomcat.embed</groupId>
-            <artifactId>tomcat-embed-websocket</artifactId>
-            <version>${tomcat.version}</version>
         </dependency>
 
         <dependency>
@@ -245,7 +217,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.34</version>
+            <version>1.18.36</version>
             <scope>provided</scope>
         </dependency>
 
@@ -262,24 +234,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-            <version>5.3.37</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-webmvc</artifactId>
-            <version>5.3.39</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
-            <version>5.3.39</version>
         </dependency>
 
         <dependency>
@@ -386,14 +340,16 @@
         </dependency>
 
         <dependency>
-            <groupId>com.sun.mail</groupId>
+            <groupId>org.eclipse.angus</groupId>
             <artifactId>jakarta.mail</artifactId>
+            <version>2.0.2</version>
         </dependency>
 
         <dependency>
-            <groupId>org.kohsuke.redstone</groupId>
-            <artifactId>redstone</artifactId>
-            <version>1.1.1</version>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>6.0.0</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -412,43 +368,43 @@
             <artifactId>cglib-nodep</artifactId>
             <version>3.3.0</version>
         </dependency>
-        <!-- @Inject -->
-        <dependency>
-            <groupId>javax.inject</groupId>
-            <artifactId>javax.inject</artifactId>
-            <version>1</version>
-        </dependency>
 
         <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-hibernate5</artifactId>
+            <groupId>jakarta.platform</groupId>
+            <artifactId>jakarta.jakartaee-api</artifactId>
+            <version>9.1.0</version>
+            <scope>provided</scope>
         </dependency>
-        <!-- needed for post java 8 support -->
+
+        <!-- Jakarta XML Binding API -->
         <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-            <version>2.4.0-b180830.0359</version>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>3.0.1</version>
         </dependency>
-        <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-core</artifactId>
-            <version>4.0.5</version>
-        </dependency>
+        <!-- Jakarta XML Binding Implementation -->
         <dependency>
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-impl</artifactId>
-            <version>3.0.2</version>
+            <version>3.0.1</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-servlet-api</artifactId>
+            <version>10.1.31</version>
         </dependency>
 
         <dependency>
             <groupId>com.fasterxml.jackson.module</groupId>
-            <artifactId>jackson-module-jaxb-annotations</artifactId>
+            <artifactId>jackson-module-jakarta-xmlbind-annotations</artifactId>
+            <version>2.13.0</version> <!-- Use the version compatible with your Jackson core -->
         </dependency>
 
         <dependency>
-            <groupId>javax.activation</groupId>
-            <artifactId>activation</artifactId>
-            <version>1.1.1</version>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-hibernate5-jakarta</artifactId>
         </dependency>
 
         <dependency>
@@ -467,19 +423,19 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>5.9.2</version>
+            <version>5.9.3</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.vintage</groupId>
             <artifactId>junit-vintage-engine</artifactId>
-            <version>5.9.2</version>
+            <version>5.9.3</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>
-            <version>4.5.1</version>
+            <version>4.8.1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -489,7 +445,7 @@
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
-                <version>2021.0.5</version>
+                <version>2022.0.4</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

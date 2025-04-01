@@ -64,7 +64,9 @@ public class User implements Serializable {
   @Serial
   @JsonIgnore private static final long serialVersionUID = -7545141063644043241L;
 
-  @Id
+    @Getter
+    @Setter
+    @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int id = 0;
 

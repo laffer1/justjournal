@@ -85,6 +85,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class UpdateJournal extends HttpServlet {
 
+  @Serial
   private static final long serialVersionUID = -6905389941955230503L;
 
   private static final String PARAM_CHECKED = "checked";

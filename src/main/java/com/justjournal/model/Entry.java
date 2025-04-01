@@ -92,7 +92,7 @@ public class Entry implements Serializable {
 
   @JsonProperty("mood")
   @ManyToOne
-  @JoinColumn(name = "mood", nullable = true)
+  @JoinColumn(name = "mood")
   private Mood mood;
 
   @Setter

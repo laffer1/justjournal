@@ -47,10 +47,14 @@ public class UserLinkTo implements Serializable, Comparable<UserLinkTo> {
 
   private int id;
 
-  private String title;
+    @Getter
+    private String title;
 
-  private String uri;
+    @Getter
+    private String uri;
 
+  @Setter
+  @Getter
   @JsonIgnore private int userId;
 
   @JsonCreator
@@ -77,16 +81,7 @@ public class UserLinkTo implements Serializable, Comparable<UserLinkTo> {
     else throw new IllegalArgumentException("id must be greater than zero");
   }
 
-  /**
-   * Retrieve the link title
-   *
-   * @return title
-   */
-  public String getTitle() {
-    return title;
-  }
-
-  /**
+    /**
    * Set the link title so that it can be displayed instead of just the hyperlink itself.
    *
    * @param title ascii text
@@ -96,16 +91,7 @@ public class UserLinkTo implements Serializable, Comparable<UserLinkTo> {
     else throw new IllegalArgumentException("title cannot be null");
   }
 
-  /**
-   * Retrieve the address of the link which should be a complete URI
-   *
-   * @return uri string
-   */
-  public String getUri() {
-    return uri;
-  }
-
-  /**
+    /**
    * Set the Uniform resource identifier as a string
    *
    * @param uri a valid uri
@@ -115,15 +101,7 @@ public class UserLinkTo implements Serializable, Comparable<UserLinkTo> {
     else throw new IllegalArgumentException("uri cannot be null");
   }
 
-  public int getUserId() {
-    return userId;
-  }
-
-  public void setUserId(final int userId) {
-    this.userId = userId;
-  }
-
-  public int compareTo(UserLinkTo ul) {
+    public int compareTo(UserLinkTo ul) {
     return this.getTitle().compareTo(ul.getTitle());
   }
 }

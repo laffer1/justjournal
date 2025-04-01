@@ -53,6 +53,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "trackback")
 public class Trackback implements Serializable {
+  @Serial
   private static final long serialVersionUID = 1249662473110605504L;
 
   @Id
