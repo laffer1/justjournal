@@ -37,7 +37,6 @@ import com.justjournal.utility.StringUtil;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashSet;
@@ -99,11 +98,6 @@ public class User implements Serializable {
   @Setter
   @Column(name = "since", nullable = false)
   private Integer since = 2003;
-
-  @Getter
-  @Setter
-  @Column(name = "email", length = 100, nullable = false)
-  private String email = "";
 
   @Getter
   @Setter
