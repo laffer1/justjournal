@@ -116,6 +116,7 @@ public class User implements Serializable {
   private Integer type;
 
   @Getter
+  @Setter
   @JsonManagedReference(value = "journal-user")
   @JsonIgnore
   @Basic(fetch = FetchType.LAZY)
@@ -190,6 +191,7 @@ public class User implements Serializable {
   private UserLocation userLocation;
 
   @Getter
+  @Setter
   @JsonIgnore
   @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(
@@ -237,22 +239,6 @@ public class User implements Serializable {
 
   public UserBio getBio() {
     return bio;
-  }
-
-  public void setBio(UserBio bio) {
-    this.bio = bio;
-  }
-
-  public void setUserContact(UserContact userContact) {
-    this.userContact = userContact;
-  }
-
-  public UserPref getUserPref() {
-    return userPref;
-  }
-
-  public void setUserPref(UserPref userPref) {
-    this.userPref = userPref;
   }
 
     /**
@@ -315,11 +301,4 @@ public class User implements Serializable {
     this.password = password;
   }
 
-    public void setJournals(Set<Journal> journals) {
-    this.journals = journals;
-  }
-
-    public void setRoles(Set<Role> roles) {
-    this.roles = roles;
-  }
 }
