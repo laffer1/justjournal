@@ -23,7 +23,7 @@ angular.module('wwwApp').controller('EntryCtrl', ['$scope', '$routeParams', '$lo
                                     for (var x = 0; x < $scope.entry.tags.length; x++) {
                                         $scope.entry.tag += $scope.entry.tags[x] + ' ';
                                     }
-                                    $scope.entry.tag.trim();
+                                    $scope.entry.tag = $scope.entry.tag.trim();
                                 }
                         );
                     }
