@@ -617,7 +617,7 @@ public class UsersController {
     try {
       authUser = userRepository.findByUsername(Login.currentLoginName(session));
     } catch (final Exception e) {
-      log.trace(e.getMessage(), e);
+      if (log.isTraceEnabled()) log.trace(e.getMessage(), e);
     }
 
     try {
