@@ -29,11 +29,14 @@ package com.justjournal.model;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import java.io.Serial;
 import java.io.Serializable;
 
 /** @author Lucas Holt */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class LoginResponse implements Serializable {
+  @Serial
   private static final long serialVersionUID = 6809817814936626615L;
   private String status = null;
   private String username = null;

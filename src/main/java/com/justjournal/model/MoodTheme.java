@@ -26,20 +26,22 @@
 package com.justjournal.model;
 
 
+import java.io.Serial;
 import java.io.Serializable;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 /** @author Lucas Holt */
 @Entity
 @Table(name = "mood_themes")
 public class MoodTheme implements Serializable {
+  @Serial
   private static final long serialVersionUID = -3177089710241240593L;
 
   @Id

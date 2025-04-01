@@ -3,7 +3,7 @@ package com.justjournal.utility;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import static org.mockito.Mockito.mock;
 

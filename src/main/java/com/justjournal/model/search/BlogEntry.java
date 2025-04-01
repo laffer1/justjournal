@@ -28,6 +28,8 @@ package com.justjournal.model.search;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -53,6 +55,7 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BlogEntry implements Serializable, Comparable<BlogEntry> {
+  @Serial
   private static final long serialVersionUID = 3452319081969591585L;
 
   @Id @Getter @Setter private Integer id;

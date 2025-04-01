@@ -54,6 +54,8 @@ package com.justjournal.model.api;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 import lombok.Getter;
@@ -67,14 +69,18 @@ import lombok.Setter;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public final class CommentTo implements Serializable {
 
+  @Serial
   private static final long serialVersionUID = 3594701186407268256L;
 
   private int id = 0;
 
+  @Setter
   private String username;
 
+  @Setter
   private int eid;
 
+  @Setter
   private Date date;
 
   private String subject = "";
@@ -102,17 +108,13 @@ public final class CommentTo implements Serializable {
     return date;
   }
 
-  public void setDate(final Date dateTime) {
-    this.date = dateTime;
-  }
-
-  public String getSubject() {
+    public String getSubject() {
     return subject;
   }
 
   public void setSubject(final String subjectText) {
 
-    if (subjectText.length() == 0) this.subject = "(no subject)";
+    if (subjectText.isEmpty()) this.subject = "(no subject)";
     else this.subject = subjectText;
   }
 
@@ -130,15 +132,8 @@ public final class CommentTo implements Serializable {
     return username;
   }
 
-  public void setUsername(final String username) {
-    this.username = username;
-  }
-
-  public int getEid() {
+    public int getEid() {
     return eid;
   }
 
-  public void setEid(final int eid) {
-    this.eid = eid;
-  }
 }

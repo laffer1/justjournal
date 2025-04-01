@@ -28,13 +28,15 @@ package com.justjournal.model;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
+
+import java.io.Serial;
 import java.io.Serializable;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 /**
  * Represents a mood
@@ -46,6 +48,7 @@ import javax.persistence.Table;
 @Table(name = "mood")
 public class Mood implements Serializable, Comparable<Mood> {
 
+  @Serial
   private static final long serialVersionUID = 6121574687739275660L;
 
   @Id

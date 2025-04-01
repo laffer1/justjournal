@@ -30,8 +30,10 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.io.Serial;
 import java.io.Serializable;
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 /**
  * Friend
@@ -42,6 +44,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "friends")
 public class Friend implements Serializable {
+  @Serial
   private static final long serialVersionUID = 7855723158129346426L;
 
   @Id

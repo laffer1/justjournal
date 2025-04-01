@@ -28,14 +28,17 @@ package com.justjournal.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.io.Serial;
 import java.io.Serializable;
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 /** @author Lucas Holt */
 @Entity
 @Table(name = "favorites")
 public class Favorite implements Serializable {
 
+  @Serial
   private static final long serialVersionUID = 4304617243861178238L;
 
   @Id

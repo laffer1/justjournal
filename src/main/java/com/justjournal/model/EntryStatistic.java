@@ -30,18 +30,25 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.proxy.HibernateProxy;
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.*;
-import lombok.Data;
+import java.util.Objects;
 
 /** @author Lucas Holt */
-@Data
+@Getter
+@Setter
+@ToString
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Entity
 @Table(name = "entry_statistics")
 public class EntryStatistic implements Serializable, Comparable<EntryStatistic> {
 
+  @Serial
   private static final long serialVersionUID = 7280767109218766181L;
 
   @Id
@@ -71,5 +78,21 @@ public class EntryStatistic implements Serializable, Comparable<EntryStatistic> 
   @Override
   public int compareTo(final EntryStatistic o) {
     return Integer.compare(o.getYear(), getYear());
+  }
+
+  @Override
+  public final boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null) return false;
+    Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+    Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+    if (thisEffectiveClass != oEffectiveClass) return false;
+    EntryStatistic that = (EntryStatistic) o;
+    return  Objects.equals(getId(), that.getId());
+  }
+
+  @Override
+  public final int hashCode() {
+    return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
   }
 }

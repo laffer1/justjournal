@@ -29,9 +29,11 @@ package com.justjournal.model;
 import com.fasterxml.jackson.annotation.*;
 import com.justjournal.model.api.CommentTo;
 import com.justjournal.utility.HTMLUtil;
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.*;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -49,6 +51,7 @@ import lombok.Setter;
 @Table(name = "comments")
 public final class Comment implements Serializable {
 
+  @Serial
   private static final long serialVersionUID = 3594701186407268256L;
 
   @Id

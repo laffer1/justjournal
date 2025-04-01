@@ -27,8 +27,10 @@ package com.justjournal.model;
 
 
 import com.fasterxml.jackson.annotation.*;
+
+import java.io.Serial;
 import java.io.Serializable;
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 /**
  * Entry To Tags relationship
@@ -40,6 +42,7 @@ import javax.persistence.*;
 @Table(name = "entry_tags")
 public class EntryTag implements Serializable {
 
+  @Serial
   private static final long serialVersionUID = -1338174937085787799L;
 
   @Id

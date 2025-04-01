@@ -27,12 +27,15 @@ package com.justjournal.model.api;
 
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+
+import java.io.Serial;
 import java.io.Serializable;
 
 /** @author Lucas Holt */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class NewUser implements Serializable {
 
+  @Serial
   private static final long serialVersionUID = 5834793509695822815L;
 
   private String username;

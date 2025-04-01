@@ -25,11 +25,11 @@
  */
 package com.justjournal.repository;
 
-
 import com.justjournal.model.Tag;
 import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -39,7 +39,7 @@ import org.springframework.stereotype.Repository;
  * @author Lucas Holt
  */
 @Repository
-public interface TagRepository extends PagingAndSortingRepository<Tag, Integer> {
+public interface TagRepository extends JpaRepository<Tag, Integer> {
   @Query("SELECT t FROM Tag t WHERE LOWER(t.name) = LOWER(:name)")
   public Tag findByName(@Param("name") String name);
 

@@ -27,12 +27,12 @@ package com.justjournal.repository;
 
 
 import com.justjournal.model.UserBio;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /** Manage biography for users */
 @Repository
-public interface UserBioRepository extends PagingAndSortingRepository<UserBio, Integer> {
+public interface UserBioRepository extends JpaRepository<UserBio, Integer> {
 
   UserBio findByUserId(int userId);
 }

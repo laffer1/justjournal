@@ -27,15 +27,17 @@ package com.justjournal.model;
 
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+
+import java.io.Serial;
 import java.io.Serializable;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 /**
  * Emoticon resource data transfer object. Basic properties including the filename, height, width,
@@ -48,6 +50,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "mood_theme_data")
 public class MoodThemeData implements Serializable {
+  @Serial
   private static final long serialVersionUID = 8664963658480263224L;
 
   @Id

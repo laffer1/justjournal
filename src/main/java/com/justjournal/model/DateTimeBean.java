@@ -52,7 +52,7 @@ public final class DateTimeBean implements DateTime {
   private int year = 1969;
   private int hour = 23;
   private int minutes = 59;
-  private TimeZone tz = TimeZone.getTimeZone("UTC");
+  private final TimeZone tz = TimeZone.getTimeZone("UTC");
 
   public DateTimeBean() {
     super();

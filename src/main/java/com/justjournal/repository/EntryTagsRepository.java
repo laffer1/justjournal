@@ -31,13 +31,13 @@ import com.justjournal.model.EntryTag;
 import com.justjournal.model.Tag;
 import java.util.List;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /** @author Lucas Holt */
 @Repository
-public interface EntryTagsRepository extends PagingAndSortingRepository<EntryTag, Integer> {
+public interface EntryTagsRepository extends JpaRepository<EntryTag, Integer> {
 
   @Query(
       "select et from EntryTag et, Entry e, User u where et.entry = e and e.user = u and"

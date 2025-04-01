@@ -28,7 +28,7 @@ package com.justjournal.repository;
 
 import com.justjournal.model.Friend;
 import com.justjournal.model.User;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -38,7 +38,7 @@ import org.springframework.stereotype.Repository;
  * @author Lucas Holt
  */
 @Repository
-public interface FriendsRepository extends PagingAndSortingRepository<Friend, Integer> {
+public interface FriendsRepository extends JpaRepository<Friend, Integer> {
 
   Friend findOneByUserAndFriend(@Param("user") User user, @Param("friend") User friend);
 }

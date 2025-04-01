@@ -27,9 +27,9 @@ package com.justjournal.repository;
 
 
 import com.justjournal.model.State;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /** @author Lucas Holt */
 @Repository
-public interface StateRepository extends PagingAndSortingRepository<State, Integer> {}
+public interface StateRepository extends JpaRepository<State, Integer> {}

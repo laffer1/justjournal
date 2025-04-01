@@ -25,12 +25,12 @@
  */
 package com.justjournal.rss;
 
-
 import java.io.InputStream;
 import java.net.URL;
+import org.w3c.dom.Document;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import org.w3c.dom.Document;
 
 /** @author Lucas Holt */
 public class HeadlineContext {

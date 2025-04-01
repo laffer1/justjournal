@@ -27,9 +27,11 @@ package com.justjournal.model;
 
 
 import com.fasterxml.jackson.annotation.*;
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.*;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -46,6 +48,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "journal")
 public class Journal implements Serializable {
+  @Serial
   @JsonIgnore private static final long serialVersionUID = 9106701690730308047L;
 
   @Id

@@ -28,7 +28,9 @@ package com.justjournal.repository;
 
 import com.justjournal.model.Mood;
 import java.util.List;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -37,6 +39,8 @@ import org.springframework.stereotype.Repository;
  * @author Lucas Holt
  */
 @Repository
-public interface MoodRepository extends PagingAndSortingRepository<Mood, Integer> {
+public interface MoodRepository extends JpaRepository<Mood, Integer> {
   List<Mood> findAll();
+
+  Mood findById(int id);
 }

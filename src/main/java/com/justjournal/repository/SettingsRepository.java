@@ -25,14 +25,13 @@
  */
 package com.justjournal.repository;
 
-
 import com.justjournal.model.Settings;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /** @author Lucas Holt */
 @Repository
-public interface SettingsRepository extends PagingAndSortingRepository<Settings, Integer> {
+public interface SettingsRepository extends JpaRepository<Settings, Integer> {
 
-  public Settings findByName(String name);
+   Settings findByName(String name);
 }

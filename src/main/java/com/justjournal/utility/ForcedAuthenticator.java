@@ -27,13 +27,13 @@ package com.justjournal.utility;
 
 
 import com.justjournal.repository.SettingsRepository;
-import javax.mail.PasswordAuthentication;
+import jakarta.mail.PasswordAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /** @author Lucas Holt */
 @Component
-public class ForcedAuthenticator extends javax.mail.Authenticator {
+public class ForcedAuthenticator extends jakarta.mail.Authenticator {
 
   @Autowired private SettingsRepository settingsDao;
 

@@ -54,11 +54,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class BlogSearchService {
 
-  private BlogEntryRepository blogEntryRepository;
+  private final BlogEntryRepository blogEntryRepository;
 
-  private EntryRepository entryRepository;
+  private final EntryRepository entryRepository;
 
-  private SecurityRepository securityDao;
+  private final SecurityRepository securityDao;
 
   @Autowired
   public BlogSearchService(

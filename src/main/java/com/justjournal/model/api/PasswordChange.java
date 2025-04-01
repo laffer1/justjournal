@@ -27,6 +27,8 @@ package com.justjournal.model.api;
 
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -36,6 +38,7 @@ import java.io.Serializable;
  */
 public class PasswordChange implements Serializable {
 
+  @Serial
   private static final long serialVersionUID = -5074915770855596258L;
   private String passCurrent;
   private String passNew;

@@ -29,11 +29,12 @@ package com.justjournal.repository;
 import com.justjournal.model.RssSubscription;
 import com.justjournal.model.User;
 import java.util.List;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface RssSubscriptionsRepository
-    extends PagingAndSortingRepository<RssSubscription, Integer> {
-  public List<RssSubscription> findByUser(User user);
+    extends JpaRepository<RssSubscription, Integer> {
+
+  List<RssSubscription> findByUser(User user);
 }

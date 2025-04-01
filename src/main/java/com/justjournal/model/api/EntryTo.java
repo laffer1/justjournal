@@ -61,6 +61,8 @@ POSSIBILITY OF SUCH DAMAGE.
 
 
 import com.fasterxml.jackson.annotation.*;
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
@@ -82,6 +84,7 @@ import org.springframework.hateoas.EntityModel;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class EntryTo extends EntityModel<EntryTo> implements Serializable {
+  @Serial
   private static final long serialVersionUID = 6558001750470601777L;
 
   @Getter @Setter private int entryId = 0;

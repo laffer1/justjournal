@@ -27,6 +27,8 @@ package com.justjournal.model.api;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import java.io.Serial;
 import java.io.Serializable;
 import lombok.*;
 
@@ -38,6 +40,7 @@ import lombok.*;
 @AllArgsConstructor
 public class PublicMember implements Serializable {
 
+  @Serial
   @JsonIgnore private static final long serialVersionUID = -877596710940098083L;
 
   private String username;

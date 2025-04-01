@@ -26,14 +26,20 @@
 package com.justjournal.model;
 
 
+import java.io.Serial;
 import java.io.Serializable;
-import javax.persistence.*;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 /** @author Lucas Holt */
+@Setter
+@Getter
 @Entity
 @Table(name = "queue_mail")
 public class QueueMail implements Serializable {
 
+  @Serial
   private static final long serialVersionUID = -243775616584090923L;
 
   @Id
@@ -54,51 +60,4 @@ public class QueueMail implements Serializable {
   @Column(length = 150)
   private String purpose;
 
-  public int getId() {
-    return id;
-  }
-
-  public void setId(final int id) {
-    this.id = id;
-  }
-
-  public String getTo() {
-    return to;
-  }
-
-  public void setTo(final String to) {
-    this.to = to;
-  }
-
-  public String getFrom() {
-    return from;
-  }
-
-  public void setFrom(final String from) {
-    this.from = from;
-  }
-
-  public String getSubject() {
-    return subject;
-  }
-
-  public void setSubject(final String subject) {
-    this.subject = subject;
-  }
-
-  public String getBody() {
-    return body;
-  }
-
-  public void setBody(final String body) {
-    this.body = body;
-  }
-
-  public String getPurpose() {
-    return purpose;
-  }
-
-  public void setPurpose(final String purpose) {
-    this.purpose = purpose;
-  }
 }

@@ -51,7 +51,7 @@ class MoodRepositoryTests {
 
   @Test
   void get() {
-    Mood moodTo = moodRepository.findById(1).orElse(null);
+    Mood moodTo = moodRepository.findById(1);
     Assertions.assertNotNull(moodTo);
     Assertions.assertEquals(1, moodTo.getId());
     Assertions.assertNotNull(moodTo.getTitle());

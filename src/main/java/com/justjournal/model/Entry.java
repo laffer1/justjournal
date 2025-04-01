@@ -35,29 +35,16 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.justjournal.model.api.EntryTo;
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -69,22 +56,27 @@ import lombok.Setter;
  * @version 1.0
  * @see com.justjournal.repository.EntryRepository
  */
+@Getter
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name = "entry")
 public class Entry implements Serializable {
+  @Serial
   private static final long serialVersionUID = 6558001750470601772L;
 
+  @Setter
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int id = 0;
 
+  @Setter
   @Column(name = "date")
   @Temporal(value = TemporalType.TIMESTAMP)
   private Date date = new Date();
 
+  @Setter
   @Column(name = "modified")
   @Temporal(value = TemporalType.TIMESTAMP)
   private Date modified;
@@ -94,7 +86,8 @@ public class Entry implements Serializable {
   @JoinColumn(name = "location")
   private Location location;
 
-  @Column(name = "location", nullable = true, insertable = false, updatable = false)
+  @Setter
+  @Column(name = "location", insertable = false, updatable = false)
   private int locationId = 0;
 
   @JsonProperty("mood")
@@ -102,9 +95,11 @@ public class Entry implements Serializable {
   @JoinColumn(name = "mood", nullable = true)
   private Mood mood;
 
-  @Column(name = "mood", nullable = true, insertable = false, updatable = false)
+  @Setter
+  @Column(name = "mood", insertable = false, updatable = false)
   private int moodId = 0;
 
+  @Setter
   @JsonProperty("user")
   @ManyToOne
   @JoinColumn(name = "uid")
@@ -115,48 +110,56 @@ public class Entry implements Serializable {
   @JoinColumn(name = "security")
   private Security security;
 
-  @Column(name = "security", nullable = true, insertable = false, updatable = false)
+  @Setter
+  @Column(name = "security", insertable = false, updatable = false)
   private int securityId = 0;
 
+  @Setter
   @JsonProperty("subject")
-  @Column(name = "subject", length = 255, nullable = true)
+  @Column(name = "subject", length = 255)
   private String subject = "";
 
+  @Setter
   @Basic(fetch = FetchType.LAZY)
   @JsonProperty("body")
   @Column(name = "body")
   @Lob
   private String body = "";
 
+  @Setter
   @JsonProperty("music")
   @Column(name = "music", length = 125)
   private String music = "";
 
+  @Setter
   @JsonProperty("autoFormat")
   @Column(name = "autoformat", nullable = false, length = 1)
-  @Enumerated(EnumType.STRING)
+  @Convert(converter = PrefBoolConverter.class)
   private PrefBool autoFormat = PrefBool.Y;
 
+  @Setter
   @JsonProperty("format")
   @Column(name = "format", nullable = false, length = 8)
   @Enumerated(EnumType.STRING)
   private FormatType format = FormatType.TEXT;
 
+  @Setter
   @JsonProperty("allowComments")
   @Column(name = "allow_comments", nullable = false, length = 1)
-  @Enumerated(EnumType.STRING)
+  @Convert(converter = PrefBoolConverter.class)
   private PrefBool allowComments = PrefBool.Y;
 
+  @Setter
   @JsonProperty("emailComments")
   @Column(name = "email_comments", nullable = false, length = 1)
-  @Enumerated(EnumType.STRING)
+  @Convert(converter = PrefBoolConverter.class)
   private PrefBool emailComments = PrefBool.Y;
 
+  @Setter
   @Column(name = "draft", nullable = false, length = 1)
-  @Enumerated(EnumType.STRING)
+  @Convert(converter = PrefBoolConverter.class)
   private PrefBool draft = PrefBool.N;
 
-  @Getter
   @Setter
   @Column(name = "trackback", length = 1024)
   private String trackback;
@@ -171,6 +174,7 @@ public class Entry implements Serializable {
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "entry", fetch = FetchType.EAGER) // TODO: why!
   private Set<EntryTag> tags = new HashSet<>();
 
+  @Setter
   @JsonManagedReference(value = "entry-comment")
   @JsonProperty("comments")
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "entry", fetch = FetchType.EAGER)
@@ -345,31 +349,15 @@ public class Entry implements Serializable {
     this.attachImage = attachImage;
   }
 
-  public int getAttachFile() {
-    return attachFile;
-  }
-
-  public void setAttachFile(final int attachFile) {
+    public void setAttachFile(final int attachFile) {
     this.attachFile = attachFile;
   }
 
-  public Set<EntryTag> getTags() {
-    return tags;
-  }
-
-  public void setTags(final Set<EntryTag> tags) {
+    public void setTags(final Set<EntryTag> tags) {
     this.tags = tags;
   }
 
-  public Set<Comment> getComments() {
-    return comments;
-  }
-
-  public void setComments(final Set<Comment> comments) {
-    this.comments = comments;
-  }
-
-  public Entry(final EntryTo entryTo) {
+    public Entry(final EntryTo entryTo) {
     if (entryTo.getMood() == 0) entryTo.setMood(12); // DEFAULT NOT SPECIFIED
 
     if (entryTo.getDate() == null) entryTo.setDate(Calendar.getInstance().getTime());
@@ -384,9 +372,9 @@ public class Entry implements Serializable {
     setMusic(entryTo.getMusic());
     setModified(Calendar.getInstance().getTime());
 
-    setAllowComments(entryTo.getAllowComments().booleanValue() ? PrefBool.Y : PrefBool.N);
-    setDraft(entryTo.getDraft().booleanValue() ? PrefBool.Y : PrefBool.N);
-    setEmailComments(entryTo.getEmailComments().booleanValue() ? PrefBool.Y : PrefBool.N);
+    setAllowComments(entryTo.getAllowComments() ? PrefBool.Y : PrefBool.N);
+    setDraft(entryTo.getDraft() ? PrefBool.Y : PrefBool.N);
+    setEmailComments(entryTo.getEmailComments() ? PrefBool.Y : PrefBool.N);
 
     if (entryTo.getFormat().equals("MARKDOWN")) {
       setFormat(FormatType.MARKDOWN);

@@ -28,9 +28,11 @@ package com.justjournal.model;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 /**
  * ISO Country Codes
@@ -42,6 +44,7 @@ import javax.persistence.*;
 @Table(name = "country")
 public class Country implements Serializable {
 
+  @Serial
   private static final long serialVersionUID = 5582600657460126447L;
 
   @Id

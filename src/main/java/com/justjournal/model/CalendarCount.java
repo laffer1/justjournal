@@ -25,33 +25,15 @@
  */
 package com.justjournal.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /** @author Lucas Holt */
+@Setter
+@Getter
 public class CalendarCount {
   private int year;
   private int month;
   private long count;
 
-  public long getCount() {
-    return count;
-  }
-
-  public void setCount(final long count) {
-    this.count = count;
-  }
-
-  public int getMonth() {
-    return month;
-  }
-
-  public void setMonth(final int month) {
-    this.month = month;
-  }
-
-  public int getYear() {
-    return year;
-  }
-
-  public void setYear(final int year) {
-    this.year = year;
-  }
 }

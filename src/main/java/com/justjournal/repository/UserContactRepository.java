@@ -28,12 +28,12 @@ package com.justjournal.repository;
 
 import com.justjournal.model.User;
 import com.justjournal.model.UserContact;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /** @author Lucas Holt */
 @Repository
-public interface UserContactRepository extends PagingAndSortingRepository<UserContact, Integer> {
+public interface UserContactRepository extends JpaRepository<UserContact, Integer> {
 
   void deleteByUser(User user);
 }

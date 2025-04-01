@@ -27,12 +27,12 @@ package com.justjournal.repository;
 
 
 import com.justjournal.model.MoodThemeData;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MoodThemeDataRepository
-    extends PagingAndSortingRepository<MoodThemeData, Integer> {
+    extends JpaRepository<MoodThemeData, Integer> {
 
-  public MoodThemeData findByThemeIdAndMoodId(int themeId, int moodId);
+   MoodThemeData findByThemeIdAndMoodId(int themeId, int moodId);
 }

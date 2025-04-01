@@ -30,7 +30,7 @@ import com.justjournal.model.User;
 import com.justjournal.model.UserLink;
 import java.util.List;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -40,7 +40,7 @@ import org.springframework.stereotype.Repository;
  * @author Lucas Holt
  */
 @Repository
-public interface UserLinkRepository extends PagingAndSortingRepository<UserLink, Integer> {
+public interface UserLinkRepository extends JpaRepository<UserLink, Integer> {
 
   @Query(
       "select ul from UserLink ul, User u where ul.user = u and LOWER(u.username) ="

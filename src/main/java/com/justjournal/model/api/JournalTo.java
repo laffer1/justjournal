@@ -30,6 +30,8 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 import lombok.AllArgsConstructor;
@@ -41,6 +43,7 @@ import lombok.Builder;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class JournalTo implements Serializable {
+  @Serial
   @JsonIgnore private static final long serialVersionUID = 9106701690730308099L;
 
   private int id;

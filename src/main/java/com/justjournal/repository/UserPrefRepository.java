@@ -27,9 +27,9 @@ package com.justjournal.repository;
 
 
 import com.justjournal.model.UserPref;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /** @author Lucas Holt */
 @Repository
-public interface UserPrefRepository extends PagingAndSortingRepository<UserPref, Integer> {}
+public interface UserPrefRepository extends JpaRepository<UserPref, Integer> {}
