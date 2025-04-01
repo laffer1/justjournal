@@ -23,16 +23,15 @@
     <properties>
         <java-version>17</java-version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <mysql.driver.version>8.0.33</mysql.driver.version>
+        <mysql.version>8.0.33</mysql.version>
         <commonmark.version>0.23.0</commonmark.version>
         <esapi.version>2.6.0.0</esapi.version>
         <spotless.version>2.32.0</spotless.version>
         <argLine>-Xmx786m</argLine>
-        <log4j2.version>2.20.0</log4j2.version>
-        <okhttp3.version>4.9.3</okhttp3.version>
+        <log4j2.version>2.24.0</log4j2.version>
+        <okhttp3.version>4.10.0</okhttp3.version>
         <logback.version>1.4.14</logback.version>
         <tomcat.version>10.1.39</tomcat.version>
-        <elasticsearch.version>7.17.28</elasticsearch.version>
         <netty.version>4.1.101.Final</netty.version>
     </properties>
 
@@ -258,7 +257,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>${mysql.driver.version}</version>
+            <version>${mysql.version}</version>
         </dependency>
 
         <dependency>
@@ -387,7 +386,7 @@
         <dependency>
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-impl</artifactId>
-            <version>3.0.1</version>
+            <version>4.0.5</version>
             <scope>runtime</scope>
         </dependency>
 
@@ -400,7 +399,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.module</groupId>
             <artifactId>jackson-module-jakarta-xmlbind-annotations</artifactId>
-            <version>2.13.0</version> <!-- Use the version compatible with your Jackson core -->
+            <version>2.14.0</version> <!-- Use the version compatible with your Jackson core -->
         </dependency>
 
         <dependency>
@@ -436,7 +435,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>
-            <version>4.8.1</version>
+            <version>5.3.1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
