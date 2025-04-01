@@ -100,6 +100,10 @@ public class User implements Serializable {
   @Column(name = "since", nullable = false)
   private Integer since = 2003;
 
+  @Getter
+  @Setter
+  @Column(name = "email", length = 100, nullable = false)
+  private String email = "";
 
   @Getter
   @Setter
@@ -169,6 +173,8 @@ public class User implements Serializable {
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
   private Set<UserImage> images = new HashSet<>();
 
+  @Getter
+  @Setter
   @JsonManagedReference
   @JsonIgnore
   @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
