@@ -6,7 +6,7 @@
 
     <groupId>com.justjournal</groupId>
     <artifactId>justjournal</artifactId>
-    <version>3.1.7</version>
+    <version>3.1.10</version>
 
     <organization>
         <name>Just Journal</name>
@@ -16,7 +16,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.0.12</version>
+        <version>3.1.12</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -26,15 +26,14 @@
         <mysql.driver.version>8.0.33</mysql.driver.version>
         <commonmark.version>0.23.0</commonmark.version>
         <esapi.version>2.6.0.0</esapi.version>
-        <spotless.version>2.30.0</spotless.version>
+        <spotless.version>2.32.0</spotless.version>
         <argLine>-Xmx786m</argLine>
         <log4j2.version>2.20.0</log4j2.version>
         <okhttp3.version>4.9.3</okhttp3.version>
         <logback.version>1.4.14</logback.version>
         <tomcat.version>10.1.39</tomcat.version>
         <elasticsearch.version>7.17.28</elasticsearch.version>
-        <netty.version>4.1.118.Final</netty.version>
-        <okhttp.version>4.12.0</okhttp.version>
+        <netty.version>4.1.101.Final</netty.version>
     </properties>
 
     <profiles>
@@ -114,7 +113,7 @@
         <dependency>
             <groupId>com.giffing.bucket4j.spring.boot.starter</groupId>
             <artifactId>bucket4j-spring-boot-starter</artifactId>
-            <version>0.8.1</version>
+            <version>0.10.3</version>
         </dependency>
 
         <dependency>
@@ -447,7 +446,7 @@
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
-                <version>2022.0.4</version>
+                <version>2022.0.5</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -456,11 +455,10 @@
 
     <repositories>
         <repository>
-            <id>spring-releases</id>
-            <name>Spring Releases</name>
-            <url>https://repo.spring.io/release</url>
+            <id>central</id>
+            <name>Maven Central</name>
+            <url>https://repo.maven.apache.org/maven2</url>
         </repository>
-
         <repository>
             <id>spring-snapshots</id>
             <name>Spring Snapshots</name>
@@ -469,7 +467,6 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
-
         <repository>
             <id>spring-milestones</id>
             <name>Spring Milestones</name>
@@ -477,12 +474,6 @@
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
-        </repository>
-
-        <repository>
-            <id>central</id>
-            <name>Maven Central</name>
-            <url>https://repo.maven.apache.org/maven2</url>
         </repository>
     </repositories>
 
@@ -518,7 +509,7 @@
 
                         <!-- apply a specific flavor of google-java-format and reflow long strings -->
                         <googleJavaFormat>
-                            <version>1.8</version>
+                            <version>1.15</version>
                             <style>GOOGLE</style>
                             <reflowLongStrings>true</reflowLongStrings>
                         </googleJavaFormat>
