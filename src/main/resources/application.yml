@@ -15,7 +15,7 @@ spring:
     uris: http://localhost:9200
   datasource:
     url: jdbc:mysql://localhost:3306/jj
-    driver-class-name: com.mysql.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
     username: jj
     password: 
     max-active: 30
@@ -95,6 +95,7 @@ spring:
     uris: http://localhost:9200
   datasource:
     url: jdbc:mysql://localhost:3306/justjournal_test
+    type: com.zaxxer.hikari.HikariDataSource
     username: travis
     password:
     hikari:
