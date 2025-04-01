@@ -70,62 +70,84 @@ public class User implements Serializable {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int id = 0;
 
-  @Column(name = "username", length = 15, nullable = false)
+    @Getter
+    @Column(name = "username", length = 15, nullable = false)
   private String username = "";
 
-  @Column(name = "name", length = 20, nullable = false)
+    @Getter
+    @Column(name = "name", length = 20, nullable = false)
   private String name = "";
 
-  @Column(name = "lastname", length = 20, nullable = true)
+  @Getter
+  @Setter
+  @Column(name = "lastname", length = 20)
   private String lastName = "";
 
+  @Getter
   @JsonIgnore // don't show password in output
   @Basic(fetch = FetchType.LAZY)
   @Column(name = "password", length = 40, nullable = false)
   private String password = "";
 
-  @Column(name = "password_type", length = 10)
+  @Setter
+  @Getter
+  @Column(name = "password_type", length = 10, nullable = false)
   @Enumerated(EnumType.STRING)
   private PasswordType passwordType = null;
 
+  @Getter
+  @Setter
   @Column(name = "since", nullable = false)
   private Integer since = 2003;
 
-  @Column(name = "lastlogin", nullable = true)
+  @Temporal(TemporalType.TIMESTAMP)
+  @Column(name = "lastlogin")
   private Date lastLogin = null;
 
+  @Setter
   @JsonIgnore
   @Basic(fetch = FetchType.LAZY)
   @Column(name = "modified", nullable = false)
-  private Timestamp modified;
+  private LocalDateTime modified;
 
+  @Setter
+  @Getter
   @Column(name = "type", nullable = false)
   private Integer type;
 
+  @Getter
   @JsonManagedReference(value = "journal-user")
   @JsonIgnore
   @Basic(fetch = FetchType.LAZY)
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
   private Set<Journal> journals = new HashSet<>();
 
+  @Setter
+  @Getter
   @JsonManagedReference(value = "entry-user")
   @JsonIgnore
   @Basic(fetch = FetchType.LAZY)
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
   private Set<Entry> entries = new HashSet<>();
 
+  @Setter
+  @Getter
   @JsonManagedReference(value = "comment-user")
   @JsonIgnore
   @Basic(fetch = FetchType.LAZY)
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
   private Set<Comment> comments = new HashSet<>();
 
+  @Setter
+  @Getter
   @JsonManagedReference
   @JsonIgnore
   @Basic(fetch = FetchType.LAZY)
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
   private Set<Friend> friends = new HashSet<>();
 
+  @Setter
+  @Getter
   @JsonManagedReference
   @JsonIgnore
   @OneToMany(
@@ -134,6 +156,8 @@ public class User implements Serializable {
       fetch = FetchType.EAGER) // TODO: Lazy fetch type
   private Set<UserLink> links = new HashSet<>();
 
+  @Setter
+  @Getter
   @JsonManagedReference
   @JsonIgnore
   @Basic(fetch = FetchType.LAZY)
@@ -145,12 +169,14 @@ public class User implements Serializable {
   @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
   private UserBio bio;
 
+  @Getter
   @JsonManagedReference
   @JsonIgnore
   @Basic(fetch = FetchType.LAZY)
   @OneToOne(mappedBy = "user")
   private UserContact userContact;
 
+  @Getter
   @JsonManagedReference
   @JsonIgnore
   @Basic(fetch = FetchType.LAZY)
@@ -163,6 +189,7 @@ public class User implements Serializable {
   @OneToOne(mappedBy = "user")
   private UserLocation userLocation;
 
+  @Getter
   @JsonIgnore
   @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(
@@ -216,10 +243,6 @@ public class User implements Serializable {
     this.bio = bio;
   }
 
-  public UserContact getUserContact() {
-    return userContact;
-  }
-
   public void setUserContact(UserContact userContact) {
     this.userContact = userContact;
   }
@@ -232,24 +255,7 @@ public class User implements Serializable {
     this.userPref = userPref;
   }
 
-  public Integer getSince() {
-    return since;
-  }
-
-  public void setSince(Integer since) {
-    this.since = since;
-  }
-
-  public void setType(Integer type) {
-    this.type = type;
-  }
-
-  /** First Name */
-  public String getName() {
-    return name;
-  }
-
-  /**
+    /**
    * Set the first name of the user.
    *
    * @param name User's first name
@@ -261,45 +267,11 @@ public class User implements Serializable {
     this.name = name;
   }
 
-  public Date getModified() {
+  public LocalDateTime getModified() {
     return modified;
   }
 
-  public void setModified(Timestamp modified) {
-    this.modified = modified;
-  }
-
-  public Integer getType() {
-    return type;
-  }
-
-  public String getLastName() {
-    return lastName;
-  }
-
-  public void setLastName(String lastName) {
-    this.lastName = lastName;
-  }
-
-  /**
-   * Retrieve the user id.
-   *
-   * @return User id as an int >= 0
-   */
-  public int getId() {
-    return this.id;
-  }
-
-  /**
-   * Set the user id.
-   *
-   * @param id user id
-   */
-  public void setId(int id) {
-    this.id = id;
-  }
-
-  /**
+    /**
    * Retrieve last login date as a <code>DateTimeBean</code>
    *
    * @return last login in a DateTimeBean
@@ -313,16 +285,7 @@ public class User implements Serializable {
     this.lastLogin = dt;
   }
 
-  /**
-   * Retrieve the user name.
-   *
-   * @return username
-   */
-  public String getUsername() {
-    return this.username;
-  }
-
-  /**
+    /**
    * Set the user name.
    *
    * @param username account name
@@ -344,24 +307,12 @@ public class User implements Serializable {
     return this.getName();
   }
 
-  public String getPassword() {
-    return this.password;
-  }
-
-  public void setPassword(String password) {
+    public void setPassword(String password) {
 
     if (!StringUtil.lengthCheck(password, 5, 64)) {
       throw new IllegalArgumentException("Invalid password");
     }
     this.password = password;
-  }
-
-  public PasswordType getPasswordType() {
-    return this.passwordType;
-  }
-
-  public void setPasswordType(PasswordType passwordType) {
-    this.passwordType = passwordType;
   }
 
   public Set<Friend> getFriends() {
@@ -387,20 +338,11 @@ public class User implements Serializable {
   public void setImages(Set<UserImage> images) {
     this.images = images;
   }
-
-  public Set<Journal> getJournals() {
-    return journals;
-  }
-
-  public void setJournals(Set<Journal> journals) {
+    public void setJournals(Set<Journal> journals) {
     this.journals = journals;
   }
 
-  public Set<Role> getRoles() {
-    return roles;
-  }
-
-  public void setRoles(Set<Role> roles) {
+    public void setRoles(Set<Role> roles) {
     this.roles = roles;
   }
 }

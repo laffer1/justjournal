@@ -192,29 +192,6 @@ public class Entry implements Serializable {
     this.subject = subject;
   }
 
-  public int getId() {
-    return id;
-  }
-
-  public void setId(final int id) {
-    this.id = id;
-  }
-
-  public Date getDate() {
-    return date;
-  }
-
-  public void setDate(final Date date) {
-    this.date = date;
-  }
-
-  public Date getModified() {
-    return modified;
-  }
-
-  public void setModified(final Date modified) {
-    this.modified = modified;
-  }
 
   public int getLocationId() {
     return locationId;
@@ -245,7 +222,7 @@ public class Entry implements Serializable {
     return mood;
   }
 
-  public void setMood(final Mood mood) {
+    public void setMood(final Mood mood) {
     this.mood = mood;
 
     if (mood != null) setMoodId(mood.getId());

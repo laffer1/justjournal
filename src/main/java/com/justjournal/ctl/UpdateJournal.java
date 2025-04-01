@@ -472,7 +472,7 @@ public class UpdateJournal extends HttpServlet {
         et.setSecurity(securityRepository.findById(security).orElse(null));
 
         et.setLocation(locationDao.findById(location).orElse(null));
-        et.setMood(moodDao.findById(mood).orElse(null));
+        et.setMood(moodDao.findById(mood));
 
         // assume it's not a draft for the old submit code.
         et.setDraft(PrefBool.N);
