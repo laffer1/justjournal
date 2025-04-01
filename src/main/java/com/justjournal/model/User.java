@@ -225,33 +225,6 @@ public class User implements Serializable {
     this.roles = user.getRoles();
   }
 
-  public UserLocation getUserLocation() {
-    return userLocation;
-  }
-
-  public void setUserLocation(UserLocation userLocation) {
-    this.userLocation = userLocation;
-  }
-
-  public Set<Entry> getEntries() {
-    return entries;
-  }
-
-  public void setEntries(Set<Entry> entries) {
-    this.entries = entries;
-  }
-
-  public Set<Comment> getComments() {
-    return comments;
-  }
-
-  public void setComments(Set<Comment> comments) {
-    this.comments = comments;
-  }
-
-  public UserBio getBio() {
-    return bio;
-  }
 
     /**
    * Set the first name of the user.
