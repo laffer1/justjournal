@@ -100,10 +100,14 @@ public class User implements Serializable {
   @Column(name = "since", nullable = false)
   private Integer since = 2003;
 
+
+  @Getter
+  @Setter
   @Temporal(TemporalType.TIMESTAMP)
   @Column(name = "lastlogin")
   private Date lastLogin = null;
 
+  @Getter
   @Setter
   @JsonIgnore
   @Basic(fetch = FetchType.LAZY)
