@@ -39,7 +39,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-mport org.springframework.http.CacheControl;
+import org.springframework.http.CacheControl;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.time.Duration;
