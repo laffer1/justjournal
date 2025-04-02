@@ -4,13 +4,26 @@ justjournal
 JustJournal.com's Source
 
 Just Journal is a blogging web application that supports multiple users and has clients in
-C#, Java, Apple's Dashboard (javascript), and Unix command line (C)
+C#, Java, Apple's Dashboard (JavaScript), and Unix command line (C)
 
-JustJournal is developed on JDK 13 on Linux
-using MySQL 8.0 and Spring Boot 2.7.x.  It has been successfully
-deployed on MidnightBSD 3.1 with the OpenJDK 17 using MySQL 8.0.32.
+JustJournal is developed on JDK 17 on Linux
+using MySQL 8.0 and Spring Boot 3.1.x.  It has been successfully
+deployed on MidnightBSD 3.2 with the OpenJDK 17 using MySQL 8.0.39.
 
-For more information, see the INSTALL file.
+It also uses minio for avatar storage and redis 7.x
+
+If you would like more information, please look at the INSTALL file.
+
+## Breaking Changes
+
+### 3.1.10
+JJ no longer supports the legacy Blogger XML-RPC API.  The library used for this was not maintained and it wasn't compatible with modern jakarta servlets. 
+
+Support for RTF exports was also dropped due to a licensing change from the library developer we used. PDF is supported. 
+
+JJ now requires Java 17 due to the Spring Boot upgrade.
+
+## Build Status
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=com.justjournal%3Ajustjournal&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=com.justjournal%3Ajustjournal)
 
