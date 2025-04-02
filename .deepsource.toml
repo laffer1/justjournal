@@ -1,0 +1,27 @@
+version = 1
+
+[[analyzers]]
+name = "php"
+
+[[analyzers]]
+name = "java"
+
+  [analyzers.meta]
+  runtime_version = "17"
+
+[[analyzers]]
+name = "shell"
+
+[[analyzers]]
+name = "javascript"
+
+  [analyzers.meta]
+  plugins = [
+    "angularjs",
+    "angular"
+  ]
+  environment = [
+    "jquery",
+    "browser",
+    "jasmine"
+  ]
