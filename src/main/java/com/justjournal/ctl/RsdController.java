@@ -36,6 +36,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * An implementation of Really Simple Discovery (RSD).
@@ -50,7 +51,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  *     <p>User: laffer1 Date: Apr 26, 2008 Time: 10:22:20 AM
  */
 @Slf4j
-@Controller
+@RestController
 @RequestMapping("/rsd")
 public class RsdController {
 
@@ -59,10 +60,13 @@ public class RsdController {
       "<rsd xmlns=\"http://archipelago.phrasewise.com/rsd\" version=\"1.0\">\n";
   private static final String RSD_FOOTER = "</rsd>\n";
 
-  @Autowired private UserRepository userRepository;
+  private final UserRepository userRepository;
+
+  public RsdController(UserRepository userRepository) {
+    this.userRepository = userRepository;
+  }
 
   @GetMapping(produces = "application/rsd+xml")
-  @ResponseBody
   public String get(HttpServletRequest request, HttpServletResponse response) {
     final StringBuilder sb = new StringBuilder();
     try {

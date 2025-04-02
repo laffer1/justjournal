@@ -59,7 +59,7 @@ import org.springframework.stereotype.Service;
 @Scope(value = "request", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class Rss {
 
-  @Autowired private MarkdownService markdownService;
+  private final MarkdownService markdownService;
 
   private final Settings settings;
 
@@ -84,12 +84,13 @@ public class Rss {
   private List<RssItem> items = new ArrayList<>(MAX_LENGTH);
 
   @Autowired
-  public Rss(final JdbcTemplate jdbcTemplate, final Settings settings) {
+  public Rss(final JdbcTemplate jdbcTemplate, final Settings settings, MarkdownService markdownService) {
     this.jdbcTemplate = jdbcTemplate;
     this.settings = settings;
 
     userBaseUrl = settings.getBaseUri() + PATH_USERS;
     albumImageUrl = settings.getBaseUri() + "AlbumImage?id=";
+    this.markdownService = markdownService;
   }
 
   public String getTitle() {

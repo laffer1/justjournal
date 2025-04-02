@@ -28,7 +28,6 @@ package com.justjournal.services;
 import com.justjournal.model.UserImage;
 import com.justjournal.repository.UserImageRepository;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /** @author Lucas Holt */

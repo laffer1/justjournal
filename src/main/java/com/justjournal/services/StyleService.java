@@ -44,7 +44,7 @@ public class StyleService {
 
   private static final String DEFAULT_JOURNAL_THEME = "Journal";
 
-  private StyleRepository styleRepository;
+  private final StyleRepository styleRepository;
 
   @Autowired
   public StyleService(final StyleRepository styleRepository) {

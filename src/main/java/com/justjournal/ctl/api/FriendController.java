@@ -77,7 +77,6 @@ public class FriendController {
   // TODO: refactor to return user objects?
 
   @GetMapping(value = "{username}/friendswith/{other}", produces = MediaType.APPLICATION_JSON_VALUE)
-  @ResponseBody
   public ResponseEntity<Boolean> areWeFriends(
       @PathVariable(Constants.PARAM_USERNAME) final String username,
       @PathVariable("other") final String otherUsername) {
@@ -102,7 +101,6 @@ public class FriendController {
    */
   @Cacheable(value = "friends", key = "username")
   @GetMapping(value = "{username}", produces = MediaType.APPLICATION_JSON_VALUE)
-  @ResponseBody
   public Collection<User> getByUsername(
       @PathVariable(Constants.PARAM_USERNAME) String username, HttpServletResponse response) {
     try {
@@ -121,7 +119,6 @@ public class FriendController {
 
   @CacheEvict(value = "friends", key = "friend")
   @PutMapping(value = "{friend}", produces = MediaType.APPLICATION_JSON_VALUE)
-  @ResponseBody
   public Map<String, String> put(
       @PathVariable("friend") final String friend,
       final HttpSession session,
@@ -153,7 +150,6 @@ public class FriendController {
 
   @CacheEvict(value = "friends", allEntries = true)
   @DeleteMapping(value = "{friend}")
-  @ResponseBody
   public Map<String, String> delete(
       @PathVariable("friend") final String friend,
       final HttpSession session,

@@ -53,7 +53,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/login")
 public class LoginController {
 
-  @Autowired private com.justjournal.Login webLogin;
+  private final com.justjournal.Login webLogin;
+
+  public LoginController(Login webLogin) {
+    this.webLogin = webLogin;
+  }
 
   /**
    * Check the login status of the user
@@ -62,7 +66,6 @@ public class LoginController {
    * @return LoginResponse with login OK or NONE
    */
   @GetMapping(headers = HEADER_ACCEPT_ALL, produces = MediaType.APPLICATION_JSON_VALUE)
-  @ResponseBody
   public LoginResponse getLoginStatus(final HttpSession session) {
     final LoginResponse response = new LoginResponse();
     final String username = (String) session.getAttribute(LOGIN_ATTRNAME);
@@ -75,7 +78,6 @@ public class LoginController {
       consumes = MediaType.APPLICATION_JSON_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE,
       headers = {HEADER_ACCEPT_ALL, "content-type=application/json"})
-  @ResponseBody
   public ResponseEntity<LoginResponse> post(
       @RequestBody final com.justjournal.core.Login login, final HttpServletRequest request) {
     final LoginResponse loginResponse = new LoginResponse();

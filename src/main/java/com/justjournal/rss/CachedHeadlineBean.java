@@ -63,7 +63,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class CachedHeadlineBean extends HeadlineBean {
 
-  private RssCacheRepository rssCacheRepository;
+  private final RssCacheRepository rssCacheRepository;
 
   @Autowired
   public CachedHeadlineBean(final RssCacheRepository rssCacheRepository) {

@@ -43,10 +43,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * List blog entries by year, month and day for display on the site
@@ -54,20 +51,22 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * @author Lucas Holt
  */
 @Slf4j
-@Controller
+@RestController
 @RequestMapping("/api/calendar")
 public class CalendarController {
 
   private static final int MONTHS = 12;
 
-  @Autowired private UserRepository userRepository;
+  private final UserRepository userRepository;
 
-  @Qualifier("entryRepository")
-  @Autowired
-  private EntryRepository entryRepository;
+  private final EntryRepository entryRepository;
+
+  public CalendarController(UserRepository userRepository, @Qualifier("entryRepository") EntryRepository entryRepository) {
+    this.userRepository = userRepository;
+    this.entryRepository = entryRepository;
+  }
 
   @GetMapping(value = "/counts/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
-  @ResponseBody
   public Collection<CalendarCount> getYearCounts(
       @PathVariable(PARAM_USERNAME) final String username, final HttpServletResponse response) {
 
@@ -101,7 +100,6 @@ public class CalendarController {
   }
 
   @GetMapping(value = "/counts/{username}/{year}", produces = MediaType.APPLICATION_JSON_VALUE)
-  @ResponseBody
   public Collection<CalendarCount> getMonthCounts(
       @PathVariable(PARAM_USERNAME) final String username,
       @PathVariable(PARAM_YEAR) final int year,

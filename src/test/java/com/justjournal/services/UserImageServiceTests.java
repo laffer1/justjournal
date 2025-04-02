@@ -54,7 +54,7 @@ class UserImageServiceTests {
     void getUserImages_shouldReturnEmptyList_whenNoImagesFound() {
         // Arrange
         String username = "emptyuser";
-        when(userImageRepository.findByUsernameOrderByTitleTitleAsc(username)).thenReturn(Arrays.asList());
+        when(userImageRepository.findByUsernameOrderByTitleTitleAsc(username)).thenReturn(List.of());
 
         // Act
         List<UserImage> result = userImageService.getUserImages(username);

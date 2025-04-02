@@ -576,7 +576,7 @@ public class UpdateJournal extends HttpServlet {
         // add tags
         if (!blnError) {
           log.debug("Add Tags");
-          if (tags.length() > 0) {
+          if (!tags.isEmpty()) {
             final Collection<String> t = new ArrayList<>();
             final StringTokenizer st = new StringTokenizer(tags, " :,;");
             while (st.hasMoreTokens()) {

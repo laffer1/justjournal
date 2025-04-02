@@ -66,15 +66,23 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/RecentBlogs")
 public class RecentBlogsController {
 
-  @Autowired private EntryRepository entryRepository;
+  private final EntryRepository entryRepository;
 
-  @Autowired private SecurityRepository securityDao;
+  private final SecurityRepository securityDao;
 
-  @Autowired private Settings set;
+  private final Settings set;
 
-  @Autowired private Rss rss;
+  private final Rss rss;
 
-  @Autowired private RecentBlogsRepository recentBlogsRepository;
+  private final RecentBlogsRepository recentBlogsRepository;
+
+  public RecentBlogsController(EntryRepository entryRepository, SecurityRepository securityDao, Settings set, Rss rss, RecentBlogsRepository recentBlogsRepository) {
+    this.entryRepository = entryRepository;
+    this.securityDao = securityDao;
+    this.set = set;
+    this.rss = rss;
+    this.recentBlogsRepository = recentBlogsRepository;
+  }
 
   @GetMapping(produces = MIME_TYPE_RSS)
   @ResponseBody

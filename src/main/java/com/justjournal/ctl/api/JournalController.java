@@ -80,7 +80,6 @@ public class JournalController {
   }
 
   @GetMapping(value = "user/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
-  @ResponseBody
   public ResponseEntity<List<Journal>> listByUser(
       @PathVariable(Constants.PARAM_USERNAME) final String username) {
     try {
@@ -92,7 +91,6 @@ public class JournalController {
   }
 
   @GetMapping(value = "{slug}", produces = MediaType.APPLICATION_JSON_VALUE)
-  @ResponseBody
   public ResponseEntity<Journal> get(@PathVariable("slug") final String slug) {
     try {
       return ResponseEntity.ok(journalRepository.findOneBySlug(slug));
@@ -106,7 +104,6 @@ public class JournalController {
       value = "",
       consumes = MediaType.APPLICATION_JSON_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE)
-  @ResponseBody
   public Map<String, String> post(
       @RequestBody final JournalTo journal,
       final HttpSession session,
@@ -118,7 +115,6 @@ public class JournalController {
       value = "{slug}",
       consumes = MediaType.APPLICATION_JSON_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE)
-  @ResponseBody
   public Map<String, String> put(
       @PathVariable("slug") final String slug,
       @RequestBody JournalTo journalTo,
@@ -180,7 +176,6 @@ public class JournalController {
   }
 
   @DeleteMapping(value = "{slug}", produces = MediaType.APPLICATION_JSON_VALUE)
-  @ResponseBody
   public Map<String, String> delete(
       @PathVariable("slug") final String slug,
       final HttpSession session,

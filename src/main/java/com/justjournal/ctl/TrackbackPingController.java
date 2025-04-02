@@ -63,13 +63,14 @@ public class TrackbackPingController {
 
   TrackBackIpRepository trackBackIpRepository;
 
-  @Autowired EntryRepository entryRepository;
+  final EntryRepository entryRepository;
 
   @Autowired
   public TrackbackPingController(
-      final TrackbackService trackbackService, TrackBackIpRepository trackBackIpRepository) {
+          final TrackbackService trackbackService, TrackBackIpRepository trackBackIpRepository, EntryRepository entryRepository) {
     this.trackbackService = trackbackService;
     this.trackBackIpRepository = trackBackIpRepository;
+    this.entryRepository = entryRepository;
   }
 
   @PostMapping(

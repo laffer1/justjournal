@@ -70,33 +70,50 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/account")
 public class AccountController {
 
-  @Autowired private UserRepository userDao;
+  private final UserRepository userDao;
 
-  @Autowired private Login webLogin;
+  private final Login webLogin;
 
-  @Autowired private CommentRepository commentRepository;
+  private final CommentRepository commentRepository;
 
-  @Autowired private EntryRepository entryRepository;
+  private final EntryRepository entryRepository;
 
-  @Autowired private FriendsRepository friendsDao;
+  private final FriendsRepository friendsDao;
 
-  @Autowired private UserBioRepository userBioDao;
+  private final UserBioRepository userBioDao;
 
-  @Autowired private UserContactRepository userContactRepository;
+  private final UserContactRepository userContactRepository;
 
-  @Autowired private UserLinkRepository userLinkRepository;
+  private final UserLinkRepository userLinkRepository;
 
-  @Autowired private UserLocationRepository userLocationRepository;
+  private final UserLocationRepository userLocationRepository;
 
-  @Autowired private RssSubscriptionsRepository rssSubscriptionsDAO;
+  private final RssSubscriptionsRepository rssSubscriptionsDAO;
 
-  @Autowired private UserImageRepository userImageRepository;
+  private final UserImageRepository userImageRepository;
 
-  @Autowired private UserPrefRepository userPrefRepository;
+  private final UserPrefRepository userPrefRepository;
 
-  @Autowired private FavoriteRepository favoriteRepository;
+  private final FavoriteRepository favoriteRepository;
 
-  @Autowired private JdbcTemplate jdbcTemplate;
+  private final JdbcTemplate jdbcTemplate;
+
+  public AccountController(Login webLogin, UserRepository userDao, CommentRepository commentRepository, EntryRepository entryRepository, JdbcTemplate jdbcTemplate, FriendsRepository friendsDao, UserBioRepository userBioDao, UserContactRepository userContactRepository, UserLinkRepository userLinkRepository, UserLocationRepository userLocationRepository, UserPrefRepository userPrefRepository, RssSubscriptionsRepository rssSubscriptionsDAO, UserImageRepository userImageRepository, FavoriteRepository favoriteRepository) {
+    this.webLogin = webLogin;
+    this.userDao = userDao;
+    this.commentRepository = commentRepository;
+    this.entryRepository = entryRepository;
+    this.jdbcTemplate = jdbcTemplate;
+    this.friendsDao = friendsDao;
+    this.userBioDao = userBioDao;
+    this.userContactRepository = userContactRepository;
+    this.userLinkRepository = userLinkRepository;
+    this.userLocationRepository = userLocationRepository;
+    this.userPrefRepository = userPrefRepository;
+    this.rssSubscriptionsDAO = rssSubscriptionsDAO;
+    this.userImageRepository = userImageRepository;
+    this.favoriteRepository = favoriteRepository;
+  }
 
   private Map<String, String> changePassword(
       final PasswordChange passwordChange,
@@ -154,7 +171,7 @@ public class AccountController {
 
     try {
       final Optional<User> user = userDao.findById(userID);
-      if (!user.isPresent()) {
+      if (user.isEmpty()) {
         throw new RuntimeException("User should always exist at this point");
       }
       commentRepository.deleteAll(commentRepository.findByUser(user.get()));
@@ -196,7 +213,6 @@ public class AccountController {
   }
 
   @PostMapping(value = "/password", produces = MediaType.APPLICATION_JSON_VALUE)
-  @ResponseBody
   public Map<String, String> post(
       @RequestBody final PasswordChange passwordChange,
       final HttpSession session,
@@ -211,7 +227,6 @@ public class AccountController {
   }
 
   @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-  @ResponseBody
   public Map<String, String> post(
       @RequestBody final User user, final HttpSession session, final HttpServletResponse response) {
 
@@ -224,7 +239,6 @@ public class AccountController {
   }
 
   @GetMapping(value = "{username}", produces = MediaType.APPLICATION_JSON_VALUE)
-  @ResponseBody
   public User getByUsername(
       @PathVariable(PARAM_USERNAME) final String username,
       final HttpSession session,

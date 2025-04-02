@@ -63,15 +63,23 @@ import reactor.core.publisher.Flux;
 public class EntryService {
   private static final int MAX_RECENT_ENTRIES = 5;
 
-  @Autowired private EntryRepository entryDao;
+  private final EntryRepository entryDao;
 
-  @Autowired private UserRepository userRepository;
+  private final UserRepository userRepository;
 
-  @Autowired private SecurityRepository securityDao;
+  private final SecurityRepository securityDao;
 
-  @Autowired private TagRepository tagDao;
+  private final TagRepository tagDao;
 
-  @Autowired private EntryTagsRepository entryTagsRepository;
+  private final EntryTagsRepository entryTagsRepository;
+
+  public EntryService(EntryRepository entryDao, UserRepository userRepository, SecurityRepository securityDao, TagRepository tagDao, EntryTagsRepository entryTagsRepository) {
+    this.entryDao = entryDao;
+    this.userRepository = userRepository;
+    this.securityDao = securityDao;
+    this.tagDao = tagDao;
+    this.entryTagsRepository = entryTagsRepository;
+  }
 
   private Flux<RecentEntry> getRecentEntryObservable(Page<Entry> entries) {
     return Flux.fromIterable(entries)
@@ -137,9 +145,9 @@ public class EntryService {
       if (entry == null) return null;
 
       if (entry.getUser().getUsername().equalsIgnoreCase(username)
-          && entry.getSecurity().getId() == 2
-          && entry.getDraft().equals(PrefBool.N)) // public
-      return entry;
+            && entry.getSecurity().getId() == 2
+            && entry.getDraft().equals(PrefBool.N)) // public
+          return entry;
       return null;
     } catch (final Exception e) {
       log.error(e.getMessage());

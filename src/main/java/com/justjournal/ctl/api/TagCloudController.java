@@ -50,7 +50,7 @@ import reactor.core.publisher.ParallelFlux;
 @RequestMapping("/api/tagcloud")
 public class TagCloudController {
 
-  private TagService tagService;
+  private final TagService tagService;
 
   @Autowired
   public TagCloudController(final TagService tagService) {

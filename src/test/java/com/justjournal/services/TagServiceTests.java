@@ -37,7 +37,6 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.thymeleaf.util.StringUtils;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /** @author Lucas Holt */
 @ExtendWith(SpringExtension.class)
@@ -49,7 +48,7 @@ class TagServiceTests {
 
   @Test
   void testGetTags() {
-    List<Tag> tags = tagService.getTags().toStream().collect(Collectors.toList());
+    List<Tag> tags = tagService.getTags().toStream().toList();
 
     Assertions.assertFalse(tags.isEmpty());
 

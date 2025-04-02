@@ -48,10 +48,13 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/entry")
 public class EntryStatisticsController {
 
-  @Autowired public EntryStatisticService entryStatisticService;
+  public final EntryStatisticService entryStatisticService;
+
+  public EntryStatisticsController(EntryStatisticService entryStatisticService) {
+    this.entryStatisticService = entryStatisticService;
+  }
 
   @GetMapping(value = "{username}/statistics", produces = MediaType.APPLICATION_JSON_VALUE)
-  @ResponseBody
   public ResponseEntity<List<EntryStatistic>> getStatistics(
       @PathVariable(PARAM_USERNAME) final String username) {
 

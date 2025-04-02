@@ -47,17 +47,26 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class StatisticsService {
 
-  @Autowired private EntryRepository entryRepository;
+  private final EntryRepository entryRepository;
 
-  @Autowired private UserRepository userRepository;
+  private final UserRepository userRepository;
 
-  @Autowired private CommentRepository commentRepository;
+  private final CommentRepository commentRepository;
 
-  @Autowired private TagRepository tagDao;
+  private final TagRepository tagDao;
 
-  @Autowired private SecurityRepository securityDao;
+  private final SecurityRepository securityDao;
 
-  @Autowired private StyleRepository styleRepository;
+  private final StyleRepository styleRepository;
+
+  public StatisticsService(EntryRepository entryRepository, UserRepository userRepository, CommentRepository commentRepository, TagRepository tagDao, SecurityRepository securityDao, StyleRepository styleRepository) {
+    this.entryRepository = entryRepository;
+    this.userRepository = userRepository;
+    this.commentRepository = commentRepository;
+    this.tagDao = tagDao;
+    this.securityDao = securityDao;
+    this.styleRepository = styleRepository;
+  }
 
   @Transactional
   public UserStatistics getUserStatistics(final String username) throws ServiceException {

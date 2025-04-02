@@ -50,7 +50,6 @@ public class LocationController {
 
   //  @Cacheable(value = "location", key = "id")
   @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-  @ResponseBody
   public ResponseEntity<Location> getById(@PathVariable("id") final Integer id) {
 
     final Location location = locationDao.findById(id).orElse(null);
@@ -61,7 +60,6 @@ public class LocationController {
 
   //  @Cacheable("location")
   @GetMapping(headers = Constants.HEADER_ACCEPT_ALL, produces = MediaType.APPLICATION_JSON_VALUE)
-  @ResponseBody
   public ResponseEntity<List<Location>> getLocationList() {
 
     final List<Location> locations = locationDao.findAll();

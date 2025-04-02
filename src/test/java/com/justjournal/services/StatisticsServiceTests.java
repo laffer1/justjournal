@@ -41,13 +41,13 @@ import org.springframework.test.context.web.WebAppConfiguration;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = Application.class)
 @WebAppConfiguration
-public class StatisticsServiceTests {
+ class StatisticsServiceTests {
   private static final String TEST_USER = "testuser";
 
   @Autowired private StatisticsService statisticsService;
 
   @Test
-  public void testGetStatistics() throws ServiceException {
+   void testGetStatistics() throws ServiceException {
     final Statistics statistics = statisticsService.getStatistics();
     Assertions.assertNotNull(statistics);
     Assertions.assertTrue(statistics.getComments() > 0);
@@ -60,7 +60,7 @@ public class StatisticsServiceTests {
   }
 
   @Test
-  public void testGetUserStatistics() throws ServiceException {
+   void testGetUserStatistics() throws ServiceException {
     final UserStatistics statistics = statisticsService.getUserStatistics(TEST_USER);
     Assertions.assertNotNull(statistics);
     Assertions.assertEquals("testuser", statistics.getUsername());
@@ -69,7 +69,7 @@ public class StatisticsServiceTests {
   }
 
   @Test
-  public void testGetUserStatisticsBadUser() throws ServiceException {
+   void testGetUserStatisticsBadUser() throws ServiceException {
     final UserStatistics statistics = statisticsService.getUserStatistics("root");
     Assertions.assertNull(statistics);
   }

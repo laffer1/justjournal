@@ -44,13 +44,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class SitemapController {
 
-  @Autowired private SettingsRepository settingsRepository;
+  private final SettingsRepository settingsRepository;
 
-  @Autowired private UserRepository userRepository;
+  private final UserRepository userRepository;
+
+  public SitemapController(SettingsRepository settingsRepository, UserRepository userRepository) {
+    this.settingsRepository = settingsRepository;
+    this.userRepository = userRepository;
+  }
 
   @GetMapping(value = "/sitemap.xml", produces = "text/xml")
-  @ResponseBody
-  public UrlSet main() {
+  public UrlSet get() {
 
     final Settings baseUri = settingsRepository.findByName("baseuri");
 

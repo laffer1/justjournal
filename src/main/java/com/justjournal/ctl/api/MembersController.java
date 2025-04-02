@@ -64,7 +64,6 @@ public class MembersController {
    * @return member list
    */
   @GetMapping(headers = Constants.HEADER_ACCEPT_ALL, produces = MediaType.APPLICATION_JSON_VALUE)
-  @ResponseBody
   public ResponseEntity<List<PublicMember>> list() {
 
     try {

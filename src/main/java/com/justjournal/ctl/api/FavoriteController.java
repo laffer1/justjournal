@@ -114,7 +114,6 @@ public class FavoriteController {
   }
 
   @PostMapping(value = "/{entryId}")
-  @ResponseBody
   public Map<String, String> create(
       @PathVariable(Constants.PARAM_ENTRY_ID) final int entryId,
       final HttpSession session,
@@ -137,7 +136,6 @@ public class FavoriteController {
   }
 
   @DeleteMapping(value = "/{entryId}")
-  @ResponseBody
   public Map<String, String> delete(
       @PathVariable(Constants.PARAM_ENTRY_ID) final int entryId,
       final HttpSession session,

@@ -61,7 +61,6 @@ public class TagsController {
    * @return tag list
    */
   @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-  @ResponseBody
   public List<Tag> getTags() {
     return tagService.getTags().collectList().block();
   }
@@ -73,7 +72,6 @@ public class TagsController {
    * @return tag list
    */
   @GetMapping(value = "/api/tags/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-  @ResponseBody
   public ResponseEntity<Tag> getById(@PathVariable(PARAM_ID) final Integer id) {
     final Optional<Tag> tag = tagService.getTag(id);
 

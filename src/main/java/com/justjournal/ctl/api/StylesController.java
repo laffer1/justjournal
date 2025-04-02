@@ -50,7 +50,6 @@ public class StylesController {
 
   //  @Cacheable("styles")
   @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-  @ResponseBody
   public ResponseEntity<List<Style>> getStyles() {
 
     final List<Style> styles = styleService.getStyles();
@@ -60,7 +59,6 @@ public class StylesController {
 
   //   @Cacheable(value = "styles", key = "#id")
   @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-  @ResponseBody
   public ResponseEntity<Style> getById(@PathVariable(PARAM_ID) final Integer id) {
 
     final Style style = styleService.get(id);

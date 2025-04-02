@@ -51,9 +51,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/search")
 public class SearchController {
 
-  private BlogEntrySearchResourceAssembler blogEntrySearchResourceAssembler;
+  private final BlogEntrySearchResourceAssembler blogEntrySearchResourceAssembler;
 
-  private BlogSearchService blogSearchService;
+  private final BlogSearchService blogSearchService;
 
   @Autowired
   public SearchController(

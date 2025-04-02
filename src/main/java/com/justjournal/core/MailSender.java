@@ -56,9 +56,14 @@ import org.springframework.stereotype.Component;
 @Profile("!test")
 public class MailSender {
 
-  @Autowired private QueueMailRepository queueMailRepository;
+  private final QueueMailRepository queueMailRepository;
 
-  @Autowired private Settings set;
+  private final Settings set;
+
+  public MailSender(QueueMailRepository queueMailRepository, Settings set) {
+    this.queueMailRepository = queueMailRepository;
+    this.set = set;
+  }
 
   @Scheduled(fixedDelay = 120000, initialDelay = 30000)
   public void send() {

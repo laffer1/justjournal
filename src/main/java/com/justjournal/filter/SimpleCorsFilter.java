@@ -56,8 +56,10 @@ public class SimpleCorsFilter implements Filter {
   }
 
   /** {@inheritDoc} */
+  @Override
   public void init(FilterConfig filterConfig) {}
 
   /** destroy. */
+  @Override
   public void destroy() {}
 }

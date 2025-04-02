@@ -51,7 +51,6 @@ public class SecurityController {
 
   // @Cacheable(value = "security", key = "id")
   @GetMapping(value = "{id}", produces = APPLICATION_JSON_VALUE)
-  @ResponseBody
   public ResponseEntity<Security> getById(@PathVariable(PARAM_ID) final Integer id) {
     final Security s = securityDao.findById(id).orElse(null);
     if (s == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -61,7 +60,6 @@ public class SecurityController {
 
   //   @Cacheable("security")
   @GetMapping(headers = Constants.HEADER_ACCEPT_ALL, produces = APPLICATION_JSON_VALUE)
-  @ResponseBody
   public ResponseEntity<List<Security>> getSecurityList() {
     final List<Security> securities = securityDao.findAll();
 

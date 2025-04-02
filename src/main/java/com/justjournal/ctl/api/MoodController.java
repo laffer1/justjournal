@@ -57,7 +57,6 @@ public class MoodController {
 
   //  @Cacheable(value = "mood", key = "id")
   @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-  @ResponseBody
   public ResponseEntity<Mood> getById(@PathVariable(PARAM_ID) final Integer id) {
     final Mood m = moodDao.findById(id).orElse(null);
     if (m == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -72,7 +71,6 @@ public class MoodController {
    */
   //   @Cacheable("mood")
   @GetMapping(headers = Constants.HEADER_ACCEPT_ALL, produces = MediaType.APPLICATION_JSON_VALUE)
-  @ResponseBody
   public ResponseEntity<List<Mood>> getMoodList() {
     final List<Mood> list = moodDao.findAll();
     Collections.sort(list);

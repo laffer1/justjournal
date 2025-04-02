@@ -74,7 +74,6 @@ public class BiographyController {
       value = "{username}",
       headers = Constants.HEADER_ACCEPT_ALL,
       produces = MediaType.APPLICATION_JSON_VALUE)
-  @ResponseBody
   public UserBio get(
       @PathVariable(PARAM_USERNAME) String username, final HttpServletResponse response) {
     final User user = userDao.findByUsername(username);
@@ -88,7 +87,6 @@ public class BiographyController {
   // TODO: API is bad for caching.
   @CacheEvict(value = "biography", allEntries = true)
   @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-  @ResponseBody
   public Map<String, String> post(
       @RequestBody final String bio,
       final HttpServletResponse response,

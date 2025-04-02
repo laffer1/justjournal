@@ -64,7 +64,6 @@ public class StatisticsController {
   @Transactional
   //   @Cacheable("statistics")
   @GetMapping(headers = Constants.HEADER_ACCEPT_ALL, produces = MediaType.APPLICATION_JSON_VALUE)
-  @ResponseBody
   public ResponseEntity<Statistics> get() {
 
     try {
@@ -88,12 +87,11 @@ public class StatisticsController {
       value = "{username}",
       headers = Constants.HEADER_ACCEPT_ALL,
       produces = MediaType.APPLICATION_JSON_VALUE)
-  @ResponseBody
   public ResponseEntity<UserStatistics> getById(
       @PathVariable(Constants.PARAM_USERNAME) final String username) {
 
     try {
-      if (username == null || username.equals("") || username.length() < 3) {
+      if (username == null || username.length() < 3) {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
       }
 

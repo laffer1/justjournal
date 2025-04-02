@@ -12,10 +12,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,21 +22,28 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Slf4j
-@Controller
+@RestController
 @RequestMapping("/.well-known/webfinger")
 public class WebFingerController {
 
-    @Autowired
+    final
     ObjectMapper mapper;
 
-    @Autowired
+    final
     Settings settings;
 
-    @Autowired private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired private EntryRepository entryRepository;
+    private final EntryRepository entryRepository;
 
     String baseUri;
+
+    public WebFingerController(ObjectMapper mapper, Settings settings, UserRepository userRepository, EntryRepository entryRepository) {
+        this.mapper = mapper;
+        this.settings = settings;
+        this.userRepository = userRepository;
+        this.entryRepository = entryRepository;
+    }
 
     @PostConstruct
     public void url() {
@@ -48,7 +52,6 @@ public class WebFingerController {
     }
 
     @GetMapping(produces = "application/jrd+json")
-    @ResponseBody
     public String get(@RequestParam("resource") String resource, HttpServletRequest request, HttpServletResponse response) throws JsonProcessingException {
         var webFingerResponse = new WebFingerResponse();
         webFingerResponse.setSubject(resource);

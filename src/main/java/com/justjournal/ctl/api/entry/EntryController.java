@@ -95,37 +95,38 @@ public class EntryController {
 
   private static final int DEFAULT_SIZE = 20;
 
-  @Qualifier("commentRepository")
-  @Autowired
-  private CommentRepository commentDao = null;
+  private final CommentRepository commentDao;
 
-  @Qualifier("entryRepository")
-  @Autowired
-  private EntryRepository entryRepository = null;
+  private final EntryRepository entryRepository;
 
-  @Qualifier("securityRepository")
-  @Autowired
-  private SecurityRepository securityDao;
+  private final SecurityRepository securityDao;
 
-  @Qualifier("locationRepository")
-  @Autowired
-  private LocationRepository locationDao;
+  private final LocationRepository locationDao;
 
-  @Qualifier("moodRepository")
-  @Autowired
-  private MoodRepository moodDao;
+  private final MoodRepository moodDao;
 
-  @Qualifier("userRepository")
-  @Autowired
-  private UserRepository userRepository;
+  private final UserRepository userRepository;
 
-  @Autowired private EntryService entryService;
+  private final EntryService entryService;
 
-  @Autowired private TrackbackService trackbackService;
+  private final TrackbackService trackbackService;
 
-  @Autowired Settings settings;
+  final Settings settings;
 
-  @Autowired private RecentBlogsRepository recentBlogsRepository;
+  private final RecentBlogsRepository recentBlogsRepository;
+
+  public EntryController(@Qualifier("commentRepository") CommentRepository commentDao, @Qualifier("entryRepository") EntryRepository entryRepository, @Qualifier("securityRepository") SecurityRepository securityDao, @Qualifier("locationRepository") LocationRepository locationDao, @Qualifier("moodRepository") MoodRepository moodDao, @Qualifier("userRepository") UserRepository userRepository, EntryService entryService, TrackbackService trackbackService, Settings settings, RecentBlogsRepository recentBlogsRepository) {
+    this.commentDao = commentDao;
+    this.entryRepository = entryRepository;
+    this.securityDao = securityDao;
+    this.locationDao = locationDao;
+    this.moodDao = moodDao;
+    this.userRepository = userRepository;
+    this.entryService = entryService;
+    this.trackbackService = trackbackService;
+    this.settings = settings;
+    this.recentBlogsRepository = recentBlogsRepository;
+  }
 
   /**
    * Get the private list of recent blog entries. If logged in, get the private list otherwise only
@@ -136,7 +137,6 @@ public class EntryController {
    * @return list of recent entries
    */
   @GetMapping(value = "{username}/recent", produces = MediaType.APPLICATION_JSON_VALUE)
-  @ResponseBody
   public ResponseEntity<Iterable<RecentEntry>> getRecentEntries(
       @PathVariable(PARAM_USERNAME) final String username, final HttpSession session) {
     final Flux<RecentEntry> entries;
@@ -162,7 +162,6 @@ public class EntryController {
   @GetMapping(
       value = "{username}/size/{size}/page/{page}",
       produces = MediaType.APPLICATION_JSON_VALUE)
-  @ResponseBody
   public PagedModel<EntryTo> getEntries(
       @PathVariable(PARAM_USERNAME) final String username,
       @PathVariable(PARAM_SIZE) final int size,
@@ -194,7 +193,7 @@ public class EntryController {
 
       final Link link = Link.of(request.getRequestURI());
       return PagedModel.of(
-          entries.stream().map(Entry::toEntryTo).collect(Collectors.toList()), metadata, (Iterable) List.of(link));
+          entries.stream().map(Entry::toEntryTo).toList(), metadata, List.of(link));
     } catch (final ServiceException e) {
       log.error(e.getMessage(), e);
       response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -203,7 +202,6 @@ public class EntryController {
   }
 
   @GetMapping(value = "{username}/page/{page}", produces = MediaType.APPLICATION_JSON_VALUE)
-  @ResponseBody
   public PagedModel<EntryTo> getEntries(
       @PathVariable(PARAM_USERNAME) final String username,
       @PathVariable(PARAM_PAGE) final int page,
@@ -221,7 +219,6 @@ public class EntryController {
    * @return entry
    */
   @GetMapping(value = "{username}/eid/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-  @ResponseBody
   public EntryTo getById(
       @PathVariable(PARAM_USERNAME) final String username,
       @PathVariable(PARAM_ID) final int id,
@@ -266,7 +263,6 @@ public class EntryController {
    * @return list of entries
    */
   @GetMapping(value = "{username}", produces = MediaType.APPLICATION_JSON_VALUE)
-  @ResponseBody
   public Collection<EntryTo> getEntries(
       @PathVariable(PARAM_USERNAME) final String username, final HttpServletResponse response) {
     Collection<EntryTo> entries = null;
@@ -274,7 +270,7 @@ public class EntryController {
       entries =
           entryService.getPublicEntries(username).stream()
               .map(Entry::toEntryTo)
-              .collect(Collectors.toList());
+              .toList();
 
       if (entries.isEmpty()) {
         response.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -289,7 +285,6 @@ public class EntryController {
 
   @Transactional
   @GetMapping(value = "", params = "username", produces = MediaType.APPLICATION_JSON_VALUE)
-  @ResponseBody
   public Collection<EntryTo> getEntriesByUsername(
       @RequestParam(PARAM_USERNAME) final String username, final HttpServletResponse response) {
     Collection<EntryTo> entries = new ArrayList<>();
@@ -305,7 +300,7 @@ public class EntryController {
       entries =
           entryService.getPublicEntries(username).stream()
               .map(Entry::toEntryTo)
-              .collect(Collectors.toList());
+              .toList();
 
       if (entries.isEmpty()) {
         log.warn("entries is null or empty");
@@ -327,7 +322,6 @@ public class EntryController {
    * @return status ok or error
    */
   @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-  @ResponseBody
   public Map<String, String> post(
       @RequestBody final EntryTo entryTo,
       final HttpSession session,
@@ -456,7 +450,6 @@ public class EntryController {
   @PutMapping(
       consumes = MediaType.APPLICATION_JSON_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE)
-  @ResponseBody
   public Map<String, String> put(
       @RequestBody EntryTo entryTo, HttpSession session, HttpServletResponse response) {
     if (!Login.isAuthenticated(session)) {
@@ -521,7 +514,6 @@ public class EntryController {
    * @return errors or entry id if success
    */
   @DeleteMapping(value = "/{entryId}")
-  @ResponseBody
   public Map<String, String> delete(
       @PathVariable(PARAM_ENTRY_ID) final int entryId,
       final HttpSession session,

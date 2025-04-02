@@ -57,7 +57,7 @@ public class BaseSearch {
   }
 
   public void setBaseQuery(final String base) {
-    if (base != null && base.length() > 0) baseQuery = base;
+    if (base != null && !base.isEmpty()) baseQuery = base;
   }
 
   public void setFields(final String fields) {
@@ -66,11 +66,11 @@ public class BaseSearch {
   }
 
   public void setSortAscending(final String field) {
-    if (field != null && field.length() > 0) sort = "ORDER BY " + field;
+    if (field != null && !field.isEmpty()) sort = "ORDER BY " + field;
   }
 
   public void setSortDescending(final String field) {
-    if (field != null && field.length() > 0) sort = "ORDER BY " + field + " DESC";
+    if (field != null && !field.isEmpty()) sort = "ORDER BY " + field + " DESC";
   }
 
   public List<Map<String, Object>> search(final String query) {
@@ -108,7 +108,7 @@ public class BaseSearch {
       sqlStmt.append(") and ");
     }
 
-    sqlStmt.append(" 1=1 " + sort + " LIMIT 0," + maxresults + ";");
+    sqlStmt.append(" 1=1 ").append(sort).append(" LIMIT 0,").append(maxresults).append(";");
 
     try {
       if (log.isDebugEnabled()) {

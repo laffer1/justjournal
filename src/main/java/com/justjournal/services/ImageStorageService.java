@@ -67,15 +67,22 @@ public class ImageStorageService {
   @Value("${bucket.image:jjimages}")
   private String imageBucket;
 
-  @Autowired private MinioClient minioClient;
+  private final MinioClient minioClient;
 
-  @Autowired private UserImageService userImageService;
+  private final UserImageService userImageService;
 
-  @Autowired private UserPicRepository userPicRepository;
+  private final UserPicRepository userPicRepository;
 
-  @Autowired private UserPrefRepository userPrefRepository;
+  private final UserPrefRepository userPrefRepository;
 
   private static final String USER_ID_ARGUMENT = "userId";
+
+  public ImageStorageService(MinioClient minioClient, UserImageService userImageService, UserPicRepository userPicRepository, UserPrefRepository userPrefRepository) {
+    this.minioClient = minioClient;
+    this.userImageService = userImageService;
+    this.userPicRepository = userPicRepository;
+    this.userPrefRepository = userPrefRepository;
+  }
 
   public void deleteAvatar(final int userId) throws ServiceException {
     final Optional<UserPref> pref = userPrefRepository.findById(userId);

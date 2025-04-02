@@ -109,7 +109,7 @@ public class TrackbackController {
 
     try {
       final Optional<TrackbackTo> trackbackTo = trackbackService.getById(id);
-      if (!trackbackTo.isPresent()) {
+      if (trackbackTo.isEmpty()) {
         response.setStatus(HttpServletResponse.SC_NOT_FOUND);
         return ErrorHandler.modelError("Trackback not found.");
       }

@@ -58,7 +58,7 @@ public class TagService {
 
   private final EntryTagsRepository entryTagsRepository;
 
-  private ReactiveRedisTemplate<String, Tag> reactiveRedisTemplateTag;
+  private final ReactiveRedisTemplate<String, Tag> reactiveRedisTemplateTag;
 
   @Autowired
   public TagService(

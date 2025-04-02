@@ -62,16 +62,23 @@ public class GravatarFetcher {
 
   private static final int GRAVATAR_FETCH_PAUSE_MS = 10000;
 
-  @Autowired ImageStorageService imageStorageService;
+  final ImageStorageService imageStorageService;
 
-  @Autowired private ImageService imageService;
+  private final ImageService imageService;
 
-  @Autowired UserPicRepository userPicRepository;
+  final UserPicRepository userPicRepository;
 
-  @Autowired private UserRepository userRepository;
+  private final UserRepository userRepository;
 
-  @Autowired
-  private TransactionTemplate transactionTemplate;
+  private final TransactionTemplate transactionTemplate;
+
+  public GravatarFetcher(ImageStorageService imageStorageService, ImageService imageService, UserPicRepository userPicRepository, UserRepository userRepository, TransactionTemplate transactionTemplate) {
+    this.imageStorageService = imageStorageService;
+    this.imageService = imageService;
+    this.userPicRepository = userPicRepository;
+    this.userRepository = userRepository;
+    this.transactionTemplate = transactionTemplate;
+  }
 
   private byte[] getGravatar(final String email) {
     log.info("Attempting fetch of gravatar for email " + email);
@@ -113,7 +120,7 @@ public class GravatarFetcher {
   }
 
   @Scheduled(fixedDelay = 1000 * 60 * 60 * 24, initialDelay = 30000)
-  public void run() throws ServiceException, IOException {
+  public void run() throws ServiceException {
     transactionTemplate.execute(new TransactionCallbackWithoutResult() {
       protected void doInTransactionWithoutResult(@NotNull TransactionStatus status) {
         for (final User user : userRepository.findAll()) {

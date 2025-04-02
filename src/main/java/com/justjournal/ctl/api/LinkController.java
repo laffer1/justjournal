@@ -68,14 +68,12 @@ public class LinkController {
   }
 
   @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-  @ResponseBody
   public UserLinkTo getById(@PathVariable("id") final Integer id) {
     return userLinkService.get(id).orElse(null);
   }
 
   //   @Cacheable(value = "userlink", key = "#username")
   @GetMapping(value = "user/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
-  @ResponseBody
   public ResponseEntity<List<UserLinkTo>> getByUser(
       @PathVariable(PARAM_USERNAME) final String username) {
     final List<UserLinkTo> links = userLinkService.getByUser(username);
@@ -84,7 +82,6 @@ public class LinkController {
   }
 
   @PutMapping
-  @ResponseBody
   public Map<String, String> create(
       @RequestBody final UserLinkTo link,
       final HttpSession session,
@@ -107,7 +104,6 @@ public class LinkController {
   }
 
   @DeleteMapping
-  @ResponseBody
   public Map<String, String> delete(
       @RequestBody final int linkId,
       final HttpSession session,
@@ -122,7 +118,7 @@ public class LinkController {
       /* valid link id */
       final Optional<UserLinkTo> link = userLinkService.get(linkId);
 
-      if (!link.isPresent()) {
+      if (link.isEmpty()) {
         response.setStatus(HttpServletResponse.SC_NOT_FOUND);
         return Collections.emptyMap();
       }

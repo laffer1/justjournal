@@ -55,12 +55,16 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/signup")
 public class SignUpController {
 
-  @Autowired private AccountService accountService;
+  private final AccountService accountService;
 
-  @Autowired private Settings settings;
+  private final Settings settings;
+
+  public SignUpController(AccountService accountService, Settings settings) {
+    this.accountService = accountService;
+    this.settings = settings;
+  }
 
   @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-  @ResponseBody
   public Map<String, String> post(
       @RequestBody final NewUser user, final HttpServletResponse response) {
 

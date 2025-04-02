@@ -65,21 +65,18 @@ public class RssReaderController {
   }
 
   @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-  @ResponseBody
   public RssSubscription getById(@PathVariable(PARAM_ID) Integer id) {
     return rssSubscriptionsDAO.findById(id).orElse(null);
   }
 
   @Cacheable(value = "rsssubscription", key = "username")
   @GetMapping(value = "user/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
-  @ResponseBody
   public Collection<RssSubscription> getByUser(@PathVariable(PARAM_USERNAME) String username) {
     final User user = userRepository.findByUsername(username);
     return rssSubscriptionsDAO.findByUser(user);
   }
 
   @PutMapping
-  @ResponseBody
   public Map<String, String> create(
       @RequestBody final String uri,
       final HttpSession session,
@@ -107,7 +104,6 @@ public class RssReaderController {
   }
 
   @DeleteMapping
-  @ResponseBody
   public Map<String, String> delete(
       @RequestBody final int subId, final HttpSession session, final HttpServletResponse response) {
     if (!Login.isAuthenticated(session)) {

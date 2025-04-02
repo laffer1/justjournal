@@ -60,7 +60,11 @@ public class RssCacheRefresh {
 
   private static final int MAX_ERROR_FETCH = 5;
 
-  @Autowired private RssCacheRepository rssCacheDao;
+  private final RssCacheRepository rssCacheDao;
+
+  public RssCacheRefresh(RssCacheRepository rssCacheDao) {
+    this.rssCacheDao = rssCacheDao;
+  }
 
   @Scheduled(fixedDelay = 1000 * 60 * 30, initialDelay = 60000)
   public void run() {
