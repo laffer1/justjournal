@@ -29,7 +29,7 @@
         <spotless.version>2.32.0</spotless.version>
         <argLine>-Xmx786m</argLine>
         <log4j2.version>2.24.0</log4j2.version>
-        <okhttp3.version>4.10.0</okhttp3.version>
+        <okhttp3.version>4.11.0</okhttp3.version>
         <logback.version>1.4.14</logback.version>
         <tomcat.version>10.1.39</tomcat.version>
     </properties>
@@ -268,7 +268,7 @@
         <dependency>
             <groupId>io.minio</groupId>
             <artifactId>minio</artifactId>
-            <version>8.5.13</version>
+            <version>8.5.17</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.fasterxml.jackson.core</groupId>
@@ -298,12 +298,14 @@
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
+            <version>${okhttp.version}</version>
         </dependency>
 
+
         <dependency>
-            <groupId>com.timgroup</groupId>
-            <artifactId>jgravatar</artifactId>
-            <version>1.2</version>
+            <groupId>com.github.nathancheshire</groupId>
+            <artifactId>gravatarjavaclient</artifactId>
+            <version>2.0.4</version>
         </dependency>
 
         <dependency>
@@ -464,6 +466,11 @@
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
+        </repository>
+
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
         </repository>
     </repositories>
 

@@ -190,9 +190,15 @@ public class ImageStorageService {
           ErrorResponseException, InvalidResponseException, InternalException, XmlParserException,
           ServerException {
 
+    if (log.isDebugEnabled())
+      log.debug("Make bucket: {}", bucketName);
+
     if (!minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build())) {
       minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
     }
+
+    if (log.isDebugEnabled())
+      log.debug("Upload file bucket: {}  objectName: {}", bucketName, objectName);
 
     if (is instanceof ByteArrayInputStream)
       minioClient.putObject(
@@ -214,8 +220,8 @@ public class ImageStorageService {
           ErrorResponseException, InvalidResponseException, InternalException, XmlParserException,
           ServerException {
 
-    if (log.isTraceEnabled())
-      log.trace("Download file bucket: {}  objectName: {}", bucketName, objectName);
+    if (log.isDebugEnabled())
+      log.debug("Download file bucket: {}  objectName: {}", bucketName, objectName);
 
     return minioClient.getObject(
         GetObjectArgs.builder().bucket(bucketName).object(objectName).build());
@@ -226,8 +232,8 @@ public class ImageStorageService {
           InvalidResponseException, ErrorResponseException, InternalException, XmlParserException,
           ServerException {
 
-    if (log.isTraceEnabled())
-      log.trace("Delete file bucket: {}  objectName: {}", bucketName, objectName);
+    if (log.isDebugEnabled())
+      log.debug("Delete file bucket: {}  objectName: {}", bucketName, objectName);
 
     minioClient.removeObject(
         RemoveObjectArgs.builder().bucket(bucketName).object(objectName).build());

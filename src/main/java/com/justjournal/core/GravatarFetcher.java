@@ -26,6 +26,10 @@
 package com.justjournal.core;
 
 
+import com.github.natche.gravatarjavaclient.avatar.GravatarAvatarRequest;
+import com.github.natche.gravatarjavaclient.enums.GravatarDefaultImageType;
+import com.github.natche.gravatarjavaclient.enums.GravatarRating;
+import com.github.natche.gravatarjavaclient.enums.GravatarUseJpgSuffix;
 import com.justjournal.exception.ServiceException;
 import com.justjournal.model.AvatarSource;
 import com.justjournal.model.User;
@@ -34,10 +38,10 @@ import com.justjournal.repository.UserPicRepository;
 import com.justjournal.repository.UserRepository;
 import com.justjournal.services.ImageService;
 import com.justjournal.services.ImageStorageService;
-import com.timgroup.jgravatar.Gravatar;
-import com.timgroup.jgravatar.GravatarDefaultImage;
-import com.timgroup.jgravatar.GravatarRating;
+
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -46,9 +50,10 @@ import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
+
+import javax.imageio.ImageIO;
 
 /** @author Lucas Holt */
 @Slf4j
@@ -70,14 +75,35 @@ public class GravatarFetcher {
 
   private byte[] getGravatar(final String email) {
     log.info("Attempting fetch of gravatar for email " + email);
-    final Gravatar gravatar =
-        new Gravatar(100, GravatarRating.RESTRICTED, GravatarDefaultImage.HTTP_404);
-    return gravatar.download(email);
+
+    GravatarAvatarRequest request = GravatarAvatarRequest.fromEmail(email)
+            .setSize(100)
+            .setRating(GravatarRating.R)
+            .setShouldAppendJpgSuffix(GravatarUseJpgSuffix.True)
+            .setDefaultImageType(GravatarDefaultImageType._404);
+
+    var image = request.getBufferedImage();
+
+    try {
+      return bufferedImageToByteArray(image, "jpg");
+    } catch (IOException e) {
+      log.error("Error converting BufferedImage to byte array", e);
+      return new byte[0];
+    }
+  }
+
+  private byte[] bufferedImageToByteArray(BufferedImage image, String formatName) throws IOException {
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    ImageIO.write(image, formatName, baos);
+    return baos.toByteArray();
   }
 
   private void upload(
       final int userId, final String type, final AvatarSource source, final byte[] image) {
-    if (image == null) return;
+    if (image == null || image.length == 0) {
+      log.info("Avatar is null or 0 bytes for user id: {}", userId);
+      return;
+    }
 
     try {
       imageStorageService.uploadAvatar(userId, type, source, new ByteArrayInputStream(image));

@@ -27,27 +27,35 @@ package com.justjournal.config;
 
 
 import io.minio.MinioClient;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/** @author Lucas Holt */
+/**
+ * @author Lucas Holt
+ */
+@Slf4j
 @Configuration
 public class MinioConfig {
-  @Value("${app.minio.host}")
-  private String minioHost;
+    @Value("${app.minio.host:http://localhost:9000}")
+    private String minioHost;
 
-  @Value("${app.minio.accessKey}")
-  private String minioAccessKey;
+    @Value("${app.minio.accessKey}")
+    private String minioAccessKey;
 
-  @Value("${app.minio.secretKey}")
-  private String minioSecretKey;
+    @Value("${app.minio.secretKey}")
+    private String minioSecretKey;
 
-  @Bean
-  public MinioClient minioClient() {
-    return MinioClient.builder()
-        .endpoint(minioHost)
-        .credentials(minioAccessKey, minioSecretKey)
-        .build();
-  }
+
+    @Bean
+    public MinioClient minioClient() {
+        if (StringUtils.isEmpty(minioAccessKey) || StringUtils.isEmpty(minioSecretKey)) {
+            log.warn("MinIO access key or secret key not provided. Using anonymous access.");
+            return MinioClient.builder().endpoint(minioHost).build();
+        } else {
+            return MinioClient.builder().endpoint(minioHost).credentials(minioAccessKey, minioSecretKey).build();
+        }
+    }
 }

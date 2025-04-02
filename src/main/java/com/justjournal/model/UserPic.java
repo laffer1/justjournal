@@ -27,6 +27,8 @@ package com.justjournal.model;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 import jakarta.persistence.*;
@@ -40,6 +42,7 @@ import lombok.Setter;
 @Table(name = "user_pic")
 public class UserPic implements Serializable {
 
+  @Serial
   private static final long serialVersionUID = -180763510438968573L;
 
   @Id
