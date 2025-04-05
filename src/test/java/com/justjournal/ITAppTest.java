@@ -27,7 +27,11 @@
  */
 package com.justjournal;
 
+import com.justjournal.model.RssSubscription;
+import com.justjournal.model.User;
+import com.justjournal.repository.RssSubscriptionsRepository;
 import com.justjournal.repository.TrackbackRepository;
+import com.justjournal.repository.UserRepository;
 import com.justjournal.repository.cache.TrackBackIpRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,6 +43,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.Collections;
 
@@ -58,6 +64,12 @@ class ITAppTest {
   @Autowired private TrackbackRepository trackbackRepository;
 
   @Autowired TrackBackIpRepository trackBackIpRepository;
+
+  @Autowired
+  private UserRepository userRepository;
+
+  @Autowired
+  private RssSubscriptionsRepository rssSubscriptionsRepository;
 
   @BeforeEach
   void setup() {
@@ -449,5 +461,101 @@ class ITAppTest {
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED))
         .andExpect(status().is5xxServerError())
         .andExpect(content().contentTypeCompatibleWith("text/xml;charset=UTF-8"));
+  }
+
+  @Test
+  void apiRssReaderGetById() throws Exception {
+    // Assuming there's an RSS subscription with ID 1
+    mockMvc.perform(get("/api/rssreader/1")
+                    .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(content().contentTypeCompatibleWith("application/json"))
+            .andExpect(jsonPath("$.subscriptionId").value(1));
+  }
+
+  @Test
+  void apiRssReaderGetByIdNotFound() throws Exception {
+    mockMvc.perform(get("/api/rssreader/999999")
+                    .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isNotFound());
+  }
+
+  @Test
+  void apiRssReaderGetByUser() throws Exception {
+    // Assuming 'testuser' exists and has RSS subscriptions
+    mockMvc.perform(get("/api/rssreader/user/testuser")
+                    .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(content().contentTypeCompatibleWith("application/json"))
+            .andExpect(jsonPath("$").isArray());
+  }
+
+  @Test
+  void apiRssReaderGetByUserNotFound() throws Exception {
+    mockMvc.perform(get("/api/rssreader/user/nonexistentuser")
+                    .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isNotFound());
+  }
+
+  @Test
+  void apiRssReaderCreate() throws Exception {
+    String uri = "https://example.com/rss";
+    mockMvc.perform(put("/api/rssreader")
+                    .content(uri)
+                    .contentType(MediaType.TEXT_PLAIN)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .sessionAttr("username", "testuser"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentTypeCompatibleWith("application/json"))
+            .andExpect(jsonPath("$.id").exists());
+
+    // Clean up
+    User user = userRepository.findByUsername("testuser");
+    RssSubscription subscription = rssSubscriptionsRepository.findByUserAndUri(user, uri);
+    if (subscription != null) {
+      rssSubscriptionsRepository.delete(subscription);
+    }
+  }
+
+  @Test
+  void apiRssReaderCreateUnauthorized() throws Exception {
+    String uri = "https://example.com/rss";
+    mockMvc.perform(put("/api/rssreader")
+                    .content(uri)
+                    .contentType(MediaType.TEXT_PLAIN)
+                    .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isUnauthorized());
+  }
+
+  @Test
+  void apiRssReaderDelete() throws Exception {
+    // Create a subscription to delete
+    User user = userRepository.findByUsername("testuser");
+    RssSubscription subscription = new RssSubscription();
+    subscription.setUser(user);
+    subscription.setUri("https://example.com/rss-to-delete");
+    subscription = rssSubscriptionsRepository.save(subscription);
+
+    mockMvc.perform(delete("/api/rssreader/" + subscription.getSubscriptionId())
+                    .accept(MediaType.APPLICATION_JSON)
+                    .sessionAttr("username", "testuser"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentTypeCompatibleWith("application/json"))
+            .andExpect(jsonPath("$.id").value(subscription.getSubscriptionId()));
+  }
+
+  @Test
+  void apiRssReaderDeleteNotFound() throws Exception {
+    mockMvc.perform(delete("/api/rssreader/999999")
+                    .accept(MediaType.APPLICATION_JSON)
+                    .sessionAttr("username", "testuser"))
+            .andExpect(status().isNotFound());
+  }
+
+  @Test
+  void apiRssReaderDeleteUnauthorized() throws Exception {
+    mockMvc.perform(delete("/api/rssreader/1")
+                    .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isUnauthorized());
   }
 }

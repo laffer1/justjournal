@@ -37,4 +37,6 @@ public interface RssSubscriptionsRepository
     extends JpaRepository<RssSubscription, Integer> {
 
   List<RssSubscription> findByUser(User user);
+
+  RssSubscription findByUserAndUri(User user, String uri);
 }

@@ -29,6 +29,7 @@ import static com.justjournal.core.Constants.endl;
 
 import com.justjournal.utility.Xml;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.NonNull;
@@ -59,7 +60,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class HeadlineBean {
 
-  protected HeadlineContext getRssDocument(final String uri) throws Exception {
+  protected Optional<HeadlineContext> getRssDocument(final String uri) throws Exception {
 
     final HeadlineContext hc = new HeadlineContext();
 
@@ -76,20 +77,24 @@ public class HeadlineBean {
         hc.builder = hc.factory.newDocumentBuilder();
         hc.document = hc.builder.parse(entity1.getContent());
 
-        return hc;
+        return Optional.of(hc);
       }
     } catch (final IOException e) {
       log.error(e.getMessage(), e);
+      return Optional.empty();
     }
-
-    return hc;
   }
 
   public String parse(@NonNull final String url) {
 
     try {
       log.info("Starting parse");
-      final HeadlineContext hc = getRssDocument(url);
+      final Optional<HeadlineContext> hc = getRssDocument(url);
+
+      if (hc.isEmpty()) {
+        log.error("Failed to fetch RSS content from {}", url);
+        return "<p>RSS Feed is unavailable for url: " + url + "</p>" + endl;
+      }
 
       log.info("Fetched, now create");
 
@@ -104,7 +109,7 @@ public class HeadlineBean {
 
       log.info("Prepare xml nodelists");
 
-      final org.w3c.dom.NodeList channelList = hc.document.getElementsByTagName("channel");
+      final org.w3c.dom.NodeList channelList = hc.get().document.getElementsByTagName("channel");
       final org.w3c.dom.NodeList chnodes = channelList.item(0).getChildNodes();
 
       String imageUrl = null;
@@ -211,7 +216,7 @@ public class HeadlineBean {
       sb.append(endl);
 
       // some rss feeds don't have a last build date
-      if (contentLastBuildDate != null && contentLastBuildDate.length() > 0) {
+      if (contentLastBuildDate != null && !contentLastBuildDate.isEmpty()) {
         sb.append("<p>Updated: ");
         sb.append(contentLastBuildDate);
         sb.append("<br />");
@@ -236,7 +241,7 @@ public class HeadlineBean {
       sb.append(endl);
 
       // Generate the NodeList
-      final org.w3c.dom.NodeList nodeList = hc.document.getElementsByTagName("item");
+      final org.w3c.dom.NodeList nodeList = hc.get().document.getElementsByTagName("item");
 
       sb.append(
           "<div class=\"panel-group\" id=\"accordion\" role=\"tablist\""
@@ -273,7 +278,8 @@ public class HeadlineBean {
           sb.append(
               "<div class=\"panel panel-default\"><div class=\"panel-heading\""
                   + " role=\"tab\" id=\"heading");
-          sb.append(i).append("_").append(guid.hashCode());
+            assert guid != null;
+            sb.append(i).append("_").append(guid.hashCode());
           sb.append("\">");
 
           sb.append("<h4 class=\"panel-title\">");
@@ -290,8 +296,7 @@ public class HeadlineBean {
               .append("\">");
           sb.append(Xml.cleanString(title));
           sb.append("</a></h4></div>");
-          sb.append("<div id=\"collapse")
-              .append(i + "_" + guid.hashCode())
+          sb.append("<div id=\"collapse").append(i).append("_").append(guid.hashCode())
               .append("\" class=\"panel-collapse collapse");
           if (i == 0) sb.append("in");
           sb.append("\" role=\"tabpanel\" aria-labelledby=\"heading");
@@ -333,16 +338,16 @@ public class HeadlineBean {
 
       return sb.toString();
     } catch (final java.io.FileNotFoundException e404) {
-      log.warn("Feed is not available " + url + e404.getMessage(), e404);
+        log.warn("Feed is not available {}{}", url, e404.getMessage(), e404);
       return "<p>404 Not Found. The feed is no longer available. " + url + endl;
     } catch (final org.xml.sax.SAXParseException sp) {
       if (sp.getMessage().contains("Premature end of file")) return "<p>Feed is empty at " + url;
       else {
-        log.error("Bad feed " + sp.getMessage(), sp);
-        return "<p>Bad Feed " + sp.toString() + " for url: " + url + endl;
+          log.error("Bad feed {}", sp.getMessage(), sp);
+        return "<p>Bad Feed " + sp + " for url: " + url + endl;
       }
     } catch (final Exception e) {
-      return "<p>Error, could not process request: " + e.toString() + " for url: " + url + endl;
+      return "<p>Error, could not process request: " + e + " for url: " + url + endl;
     }
   }
 }

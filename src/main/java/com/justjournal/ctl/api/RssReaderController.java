@@ -30,19 +30,24 @@ import static com.justjournal.core.Constants.PARAM_USERNAME;
 
 import com.justjournal.Login;
 import com.justjournal.core.Constants;
-import com.justjournal.ctl.error.ErrorHandler;
+import com.justjournal.exception.BadRequestException;
+import com.justjournal.exception.ForbiddenException;
+import com.justjournal.exception.NotFoundException;
+import com.justjournal.exception.UnauthorizedException;
 import com.justjournal.model.RssSubscription;
 import com.justjournal.model.User;
 import com.justjournal.repository.RssSubscriptionsRepository;
 import com.justjournal.repository.UserRepository;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
-import jakarta.servlet.http.HttpServletResponse;
+
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 /** @author Lucas Holt */
@@ -65,63 +70,64 @@ public class RssReaderController {
   }
 
   @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-  public RssSubscription getById(@PathVariable(PARAM_ID) Integer id) {
-    return rssSubscriptionsDAO.findById(id).orElse(null);
+  public ResponseEntity<RssSubscription> getById(@PathVariable(PARAM_ID) Integer id) {
+    return rssSubscriptionsDAO.findById(id)
+            .map(ResponseEntity::ok)
+            .orElseThrow(() -> new NotFoundException("RSS subscription not found"));
   }
 
-  @Cacheable(value = "rsssubscription", key = "username")
+  @Cacheable(value = "rsssubscription", key = "#username")
   @GetMapping(value = "user/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
-  public Collection<RssSubscription> getByUser(@PathVariable(PARAM_USERNAME) String username) {
-    final User user = userRepository.findByUsername(username);
-    return rssSubscriptionsDAO.findByUser(user);
+  public ResponseEntity<Collection<RssSubscription>> getByUser(@PathVariable(PARAM_USERNAME) String username) {
+    User user = userRepository.findByUsername(username);
+    if (user == null) {
+      throw new NotFoundException("User not found");
+    }
+    Collection<RssSubscription> subscriptions = rssSubscriptionsDAO.findByUser(user);
+    return ResponseEntity.ok(subscriptions);
   }
 
   @PutMapping
-  public Map<String, String> create(
-      @RequestBody final String uri,
-      final HttpSession session,
-      final HttpServletResponse response) {
-
-    try {
-      final RssSubscription to = new RssSubscription();
-
-      if (uri == null || uri.length() < RSS_URL_MIN_LENGTH || uri.length() > RSS_URL_MAX_LENGTH) {
-        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        return ErrorHandler.modelError("Error adding link.");
-      }
-
-      final User user = userRepository.findById(Login.currentLoginId(session)).orElse(null);
-      to.setUser(user);
-      to.setUri(uri);
-      rssSubscriptionsDAO.save(to);
-
-      return java.util.Collections.singletonMap("id", ""); // XXX
-    } catch (final Exception e) {
-      log.error(e.getMessage(), e);
-      response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-      return ErrorHandler.modelError("Error adding link.");
+  public ResponseEntity<Map<String, String>> create(@RequestBody final String uri, final HttpSession session) {
+    if (uri == null || uri.length() < RSS_URL_MIN_LENGTH || uri.length() > RSS_URL_MAX_LENGTH) {
+      throw new BadRequestException("Invalid URI length");
     }
+
+    User user = userRepository.findById(Login.currentLoginId(session))
+            .orElseThrow(() -> new UnauthorizedException("User not found"));
+
+    RssSubscription subscription = new RssSubscription();
+    subscription.setUser(user);
+    subscription.setUri(uri);
+
+    RssSubscription savedSubscription = rssSubscriptionsDAO.save(subscription);
+
+    return ResponseEntity.ok(Collections.singletonMap("id", String.valueOf(savedSubscription.getSubscriptionId())));
   }
 
-  @DeleteMapping
-  public Map<String, String> delete(
-      @RequestBody final int subId, final HttpSession session, final HttpServletResponse response) {
+  @DeleteMapping("/{subId}")
+  public ResponseEntity<Map<String, String>> delete(@PathVariable final int subId, final HttpSession session) {
+
     if (!Login.isAuthenticated(session)) {
-      response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-      return ErrorHandler.modelError(Constants.ERR_INVALID_LOGIN);
+      throw new UnauthorizedException(Constants.ERR_INVALID_LOGIN);
     }
 
-    if (subId > 0) {
-      final User user = userRepository.findById(Login.currentLoginId(session)).orElse(null);
-      final RssSubscription to = rssSubscriptionsDAO.findById(subId).orElse(null);
-
-      if (user != null && to != null && user.getId() == to.getUser().getId()) {
-        rssSubscriptionsDAO.delete(to);
-        return java.util.Collections.singletonMap("id", Integer.toString(subId));
-      }
+    if (subId <= 0) {
+      throw new BadRequestException("Invalid subscription ID");
     }
 
-    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-    return ErrorHandler.modelError("Error deleting the subscription. Bad id.");
+    User user = userRepository.findById(Login.currentLoginId(session))
+            .orElseThrow(() -> new UnauthorizedException("User not found"));
+
+    RssSubscription subscription = rssSubscriptionsDAO.findById(subId)
+            .orElseThrow(() -> new NotFoundException("Subscription not found"));
+
+    if (user.getId() != (subscription.getUser().getId())) {
+      throw new ForbiddenException("User does not own this subscription");
+    }
+
+    rssSubscriptionsDAO.delete(subscription);
+    return ResponseEntity.ok(Collections.singletonMap("id", Integer.toString(subId)));
+
   }
 }
