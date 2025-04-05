@@ -12,16 +12,19 @@
     <link rel="stylesheet" href="static/components/angular-ui/build/angular-ui.css"
           th:href="@{components/angular-ui/build/angular-ui.css}"/>
     <link rel="stylesheet" href="static/styles/main.css" th:href="@{static/styles/main.css}"/>
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-560995-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2V0XXDEWN2"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
 
-  gtag('config', 'UA-560995-1');
-    gtag('send', 'event', 'Authentication', 'LogOut');
-</script>
+        gtag('config', 'G-2V0XXDEWN2');
 
+        gtag('event', 'authentication', {
+            'event_category': 'authentication',
+            'event_label': 'LogOut'
+        });
+    </script>
 </head>
 
 <body>
