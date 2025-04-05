@@ -176,6 +176,7 @@ public class CachedHeadlineBean extends HeadlineBean {
         final StringReader sr = new StringReader(rss.getContent());
         final org.xml.sax.InputSource saxy = new org.xml.sax.InputSource(sr);
         hc.factory.setValidating(false);
+        hc.factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
         hc.builder = hc.factory.newDocumentBuilder();
         hc.document = hc.builder.parse(saxy);
 

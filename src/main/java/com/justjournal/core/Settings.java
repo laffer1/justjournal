@@ -27,6 +27,7 @@ package com.justjournal.core;
 
 
 import com.justjournal.repository.SettingsRepository;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -46,14 +47,18 @@ public class Settings {
   private final SettingsRepository settingsDao;
 
   /* paths */
+  @Getter
   private String baseUri = "http://localhost:8080/";
   private String fsPath = ""; // file storage path.
   private String contextPath = "";
 
   /* site settings */
   private boolean siteEnable = true;
+  @Getter
   private String siteName = "";
+  @Getter
   private String siteAdmin = "";
+  @Getter
   private String siteAdminEmail = "";
   private String siteBlog = ""; // blog about site activities, updates.
   private boolean siteSearch = true; // enable site search feature
@@ -62,8 +67,11 @@ public class Settings {
 
   /* e-mail */
   private boolean mailEnable = true;
+  @Getter
   private String mailHost = "localhost";
+  @Getter
   private int mailPort = 25;
+  @Getter
   private String mailUser = "";
   private String mailPass = "";
   private String mailFrom = siteAdminEmail;
@@ -81,6 +89,7 @@ public class Settings {
   private boolean tzUseGMT = true;
 
   /* Users */
+  @Getter
   private boolean userAllowNew = true;
 
   @Autowired
@@ -146,11 +155,7 @@ public class Settings {
     }
   }
 
-  public String getBaseUri() {
-    return baseUri;
-  }
-
-  public String getFsPath() {
+    public String getFsPath() {
     return fsPath;
   }
 
@@ -162,19 +167,7 @@ public class Settings {
     return siteEnable;
   }
 
-  public String getSiteName() {
-    return siteName;
-  }
-
-  public String getSiteAdmin() {
-    return siteAdmin;
-  }
-
-  public String getSiteAdminEmail() {
-    return siteAdminEmail;
-  }
-
-  public String getSiteBlog() {
+    public String getSiteBlog() {
     return siteBlog;
   }
 
@@ -194,19 +187,7 @@ public class Settings {
     return mailEnable;
   }
 
-  public String getMailHost() {
-    return mailHost;
-  }
-
-  public int getMailPort() {
-    return mailPort;
-  }
-
-  public String getMailUser() {
-    return mailUser;
-  }
-
-  public String getMailPass() {
+    public String getMailPass() {
     return mailPass;
   }
 
@@ -250,7 +231,4 @@ public class Settings {
     return tzUseGMT;
   }
 
-  public boolean isUserAllowNew() {
-    return userAllowNew;
-  }
 }

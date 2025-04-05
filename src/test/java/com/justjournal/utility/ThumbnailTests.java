@@ -28,7 +28,6 @@ package com.justjournal.utility;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-
 /** @author Lucas Holt */
 class ThumbnailTests {
 

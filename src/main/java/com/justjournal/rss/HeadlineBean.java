@@ -74,6 +74,7 @@ public class HeadlineBean {
         hc.factory.setValidating(false);
         hc.factory.setIgnoringComments(true);
         hc.factory.setCoalescing(true);
+        hc.factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
         hc.builder = hc.factory.newDocumentBuilder();
         hc.document = hc.builder.parse(entity1.getContent());
 

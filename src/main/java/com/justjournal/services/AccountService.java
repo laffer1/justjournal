@@ -53,17 +53,26 @@ import org.springframework.stereotype.Service;
 @Service
 public class AccountService {
 
-  @Autowired private UserRepository userRepository;
+  private final UserRepository userRepository;
 
-  @Autowired private UserBioRepository userBioDao;
+  private final UserBioRepository userBioDao;
 
-  @Autowired private UserContactRepository userContactRepository;
+  private final UserContactRepository userContactRepository;
 
-  @Autowired private UserPrefRepository userPrefRepository;
+  private final UserPrefRepository userPrefRepository;
 
-  @Autowired private JournalRepository journalRepository;
+  private final JournalRepository journalRepository;
 
-  @Autowired private StyleService styleService;
+  private final StyleService styleService;
+
+  public AccountService(UserRepository userRepository, UserBioRepository userBioDao, UserContactRepository userContactRepository, UserPrefRepository userPrefRepository, JournalRepository journalRepository, StyleService styleService) {
+    this.userRepository = userRepository;
+    this.userBioDao = userBioDao;
+    this.userContactRepository = userContactRepository;
+    this.userPrefRepository = userPrefRepository;
+    this.journalRepository = journalRepository;
+    this.styleService = styleService;
+  }
 
   public User signup(final NewUser newUser) throws ServiceException {
     final Style style = styleService.getDefaultStyle();

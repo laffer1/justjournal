@@ -99,7 +99,7 @@ public class FriendController {
    * @param response http response
    * @return List of usernames as strings
    */
-  @Cacheable(value = "friends", key = "username")
+  @Cacheable(value = "friends", key = "#p0")
   @GetMapping(value = "{username}", produces = MediaType.APPLICATION_JSON_VALUE)
   public Collection<User> getByUsername(
       @PathVariable(Constants.PARAM_USERNAME) String username, HttpServletResponse response) {
@@ -117,7 +117,7 @@ public class FriendController {
     }
   }
 
-  @CacheEvict(value = "friends", key = "friend")
+  @CacheEvict(value = "friends", key = "#friend")
   @PutMapping(value = "{friend}", produces = MediaType.APPLICATION_JSON_VALUE)
   public Map<String, String> put(
       @PathVariable("friend") final String friend,

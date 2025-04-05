@@ -28,6 +28,8 @@ package com.justjournal.ctl;
 import static com.justjournal.core.Constants.LOGIN_ATTRID;
 import static com.justjournal.core.Constants.PARAM_ID;
 
+import com.justjournal.exception.BadRequestException;
+import com.justjournal.exception.ForbiddenException;
 import com.justjournal.exception.ServiceException;
 import com.justjournal.model.AvatarSource;
 import com.justjournal.services.ImageService;
@@ -62,9 +64,14 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/Avatar")
 public class AvatarController {
 
-  @Autowired private ImageStorageService imageStorageService;
+  private final ImageStorageService imageStorageService;
 
-  @Autowired private ImageService imageService;
+  private final ImageService imageService;
+
+  public AvatarController(ImageStorageService imageStorageService, ImageService imageService) {
+    this.imageStorageService = imageStorageService;
+    this.imageService = imageService;
+  }
 
   @GetMapping("/{id}")
   public ResponseEntity<Resource> getByPath(@PathVariable(PARAM_ID) final int id) {
@@ -90,15 +97,20 @@ public class AvatarController {
 
     /* Make sure we are logged in */
     if (userID < 1) {
-      return new ResponseEntity(HttpStatus.FORBIDDEN);
+      throw new ForbiddenException("You must be logged in to upload an avatar");
     }
 
     final String contentType = file.getContentType();
-    final long sizeInBytes = file.getSize();
+    if (contentType == null || !(contentType.equals(MediaType.IMAGE_JPEG_VALUE) ||
+            contentType.equals(MediaType.IMAGE_PNG_VALUE) || contentType.equals(MediaType.IMAGE_GIF_VALUE) ||
+            contentType.equals("image/tiff") || contentType.equals("image/bmp"))) {
+      throw new BadRequestException("Invalid file type. Only JPEG, PNG and GIF images are allowed.");
+    }
 
+    final long sizeInBytes = file.getSize();
     // must be large enough
     if (file.isEmpty() || sizeInBytes < 500) {
-      return new ResponseEntity(HttpStatus.BAD_REQUEST);
+      throw new BadRequestException("Invalid file");
     }
 
     try {
@@ -113,13 +125,13 @@ public class AvatarController {
 
     } catch (final IllegalStateException e) {
       log.error(e.getMessage(), e);
-      return new ResponseEntity(HttpStatus.BAD_REQUEST);
+      throw new BadRequestException("Invalid file");
     } catch (final IOException | ServiceException e) {
       log.error(e.getMessage(), e);
       return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    return ResponseEntity.created(URI.create(request.getURI().toString() + "/" + userID)).build();
+    return ResponseEntity.created(URI.create(request.getURI() + "/" + userID)).build();
   }
 
   @DeleteMapping("/{id}")

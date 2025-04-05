@@ -35,7 +35,7 @@ import com.justjournal.model.User;
  */
 public class UserContext {
   private final User blogUser; // the blog owner
-  private final User authenticatedUser; // the logged in user
+  private final User authenticatedUser; // the logged-in user
 
   /**
    * Default constructor for User Context. Creates a usable instance.

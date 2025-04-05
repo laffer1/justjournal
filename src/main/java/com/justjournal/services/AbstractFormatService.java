@@ -40,6 +40,7 @@ import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -56,6 +57,22 @@ public class AbstractFormatService {
   private MarkdownService markdownService;
 
   public void format(final UserContext uc, final Document document) throws ServiceException {
+
+    if (uc == null || document == null) {
+      throw new IllegalArgumentException("Invalid input parameters.");
+    }
+
+    var blogUser = uc.getBlogUser();
+    if (blogUser == null) {
+      throw new ServiceException("user not found.");
+    }
+    var journals = blogUser.getJournals();
+    if (journals.isEmpty()) {
+      throw new ServiceException("No journals found.");
+    }
+
+    var journalName = journals.stream().findFirst();
+
     final Font helvetica14 = new Font(Font.HELVETICA, 14.0F);
     final Font helvetica12 = new Font(Font.HELVETICA, 12.0F);
     final Font helvetica8 = new Font(Font.HELVETICA, 8.0F);
@@ -66,19 +83,22 @@ public class AbstractFormatService {
     try {
       document.open();
       document.add(new Paragraph(""));
-      Chunk chunk =
-          new Chunk(new ArrayList<>(uc.getBlogUser().getJournals()).get(0).getName());
-      chunk.setTextRenderMode(PdfContentByte.TEXT_RENDER_MODE_STROKE, 0.4f, blue);
-      document.add(chunk);
-      document.add(Chunk.NEWLINE);
+      Chunk chunk;
+
+      if (StringUtils.isNotBlank(journalName.get().getName())) {
+        chunk = new Chunk(journalName.get().getName());
+        chunk.setTextRenderMode(PdfContentByte.TEXT_RENDER_MODE_STROKE, 0.4f, blue);
+        document.add(chunk);
+        document.add(Chunk.NEWLINE);
+      }
 
       final java.util.List<Entry> entries;
 
       if (uc.isAuthBlog()) {
-        entries = entryRepository.findByUsername(uc.getBlogUser().getUsername());
+        entries = entryRepository.findByUsername(blogUser.getUsername());
       } else {
         entries = entryRepository.findByUsernameAndSecurity(
-                        uc.getBlogUser().getUsername(), securityRepository.findByName("public"));
+                blogUser.getUsername(), securityRepository.findByName("public"));
       }
 
       // Format the current time.

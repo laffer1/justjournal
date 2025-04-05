@@ -90,7 +90,7 @@ public class RestPing {
 
       in.close();
 
-      log.debug(uri + "\n" + input.toString());
+        log.debug("{}\n{}", uri, input);
 
       return true; // todo: parse result and adjust this as necessary.
     } catch (final IOException e) {
