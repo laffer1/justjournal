@@ -65,6 +65,7 @@ public final class AtomEntry {
     return updated != null ? updated.equals(atomEntry.updated) : atomEntry.updated == null;
   }
 
+  @Override
   public int hashCode() {
     int result;
     result = id.hashCode();
