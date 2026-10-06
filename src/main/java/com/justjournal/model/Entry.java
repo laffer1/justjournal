@@ -80,7 +80,7 @@ public class Entry implements Serializable {
   @Setter
   @Column(name = "modified")
   @Temporal(value = TemporalType.TIMESTAMP)
-  private Date modified;
+  private Date modified = new Date();
 
   @Getter
   @JsonProperty("location")

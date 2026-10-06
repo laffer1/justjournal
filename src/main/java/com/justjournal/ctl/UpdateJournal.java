@@ -459,6 +459,7 @@ public class UpdateJournal extends HttpServlet {
         final DateTime dtb = new DateTimeBean();
         dtb.set(date + " " + time);
         et.setDate(dtb.toDate());
+        et.setModified(new java.util.Date());
         et.setSubject(subject);
         et.setMusic(StringUtil.replace(music, '\'', "\\\'"));
 
