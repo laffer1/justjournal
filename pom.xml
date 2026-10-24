@@ -16,7 +16,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.1.12</version>
+        <version>3.2.12</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -32,7 +32,6 @@
         <okhttp3.version>4.11.0</okhttp3.version>
         <logback.version>1.4.14</logback.version>
         <tomcat.version>10.1.61</tomcat.version>
-        <elasticsearch.version>8.7.1</elasticsearch.version>
     </properties>
 
     <profiles>
@@ -281,7 +280,6 @@
         <dependency>
             <groupId>co.elastic.clients</groupId>
             <artifactId>elasticsearch-java</artifactId>
-            <version>${elasticsearch.version}</version>
         </dependency>
 
         <!-- Jackson core for Elasticsearch -->
@@ -487,19 +485,16 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>5.9.3</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.vintage</groupId>
             <artifactId>junit-vintage-engine</artifactId>
-            <version>5.9.3</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>
-            <version>5.3.1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -748,18 +743,6 @@
                     </includes>
                     <argLine>@{argLine} -Dspring.profiles.active=test</argLine>
                 </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.junit.jupiter</groupId>
-                        <artifactId>junit-jupiter-engine</artifactId>
-                        <version>5.9.3</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.junit.platform</groupId>
-                        <artifactId>junit-platform-launcher</artifactId>
-                        <version>1.9.3</version>
-                    </dependency>
-                </dependencies>
             </plugin>
             <plugin>
                   <groupId>org.apache.maven.plugins</groupId>
