@@ -31,10 +31,11 @@ import com.justjournal.exception.ServiceException;
 import com.justjournal.repository.EntryRepository;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
-import com.lowagie.text.pdf.PdfWriter;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+
+import com.lowagie.text.pdf.PdfWriter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -60,7 +61,7 @@ public class PdfFormatService extends AbstractFormatService {
     } catch (NotFoundException notFoundException) {
       log.info(notFoundException.getMessage(), notFoundException);
       throw notFoundException;
-    } catch (final DocumentException|IOException d) {
+    } catch (final DocumentException | IOException d) {
       log.error(d.getMessage(), d);
       throw new ServiceException("Could not generate PDF");
     }

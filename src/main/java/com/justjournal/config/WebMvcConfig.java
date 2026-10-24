@@ -62,10 +62,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
   }
 
   /**
-   * Override default handlers. see
-   * http://stackoverflow.com/questions/24837715/spring-boot-with-angularjs-html5mode
+   * Serve static assets (robots.txt, /static, styles and software downloads) from the classpath
+   * with a short cache period.
    *
-   * @param registry
+   * @param registry resource handler registry
    */
   @Override
   public void addResourceHandlers(ResourceHandlerRegistry registry) {

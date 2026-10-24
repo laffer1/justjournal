@@ -99,25 +99,17 @@ class ITAppTest {
 
   @Test
   void privacy() throws Exception {
-    mockMvc.perform(get("/#!/privacy")).andExpect(status().isOk()).andExpect(view().name("index"));
+    mockMvc.perform(get("/privacy")).andExpect(status().isOk()).andExpect(view().name("index"));
   }
 
   @Test
   void search() throws Exception {
-    mockMvc.perform(get("/#!/search")).andExpect(status().isOk()).andExpect(view().name("index"));
+    mockMvc.perform(get("/search")).andExpect(status().isOk()).andExpect(view().name("index"));
   }
 
   @Test
   void sitemap() throws Exception {
-    mockMvc.perform(get("/#!/sitemap")).andExpect(status().isOk()).andExpect(view().name("index"));
-  }
-
-  @Test
-  void searchEscape() throws Exception {
-    mockMvc
-        .perform(get("/?=_escaped_fragment_=sitemap"))
-        .andExpect(status().isOk())
-        .andExpect(view().name("index"));
+    mockMvc.perform(get("/sitemap")).andExpect(status().isOk()).andExpect(view().name("index"));
   }
 
   @Test

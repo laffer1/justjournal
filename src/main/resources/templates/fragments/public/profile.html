@@ -1,0 +1,18 @@
+<div th:fragment="content" class="container">
+    <h2>Profile for <span id="profile-username-label" th:text="${profileUsername}">username</span></h2>
+    <p id="profile-avatar" style="display:none;"><img class="img-rounded" id="profile-avatar-image" alt="avatar"></p>
+    <h3>General Information</h3>
+    <p id="profile-general"></p>
+    <h3>Biography</h3>
+    <p id="profile-biography"></p>
+    <h3><a id="profile-friends-link" href="#">Friends</a></h3>
+    <p id="profile-friends"></p>
+    <div id="profile-contact-section" style="display:none;">
+        <h3>Contact Information</h3>
+        <div id="profile-contact"></div>
+    </div>
+    <h3>Statistics</h3>
+    <p>Blog entries posted: <span id="profile-entry-count">0</span></p>
+    <p>Comments posted on blogs: <span id="profile-comment-count">0</span></p>
+    <div class="alert alert-danger" id="profile-error" style="display:none;"></div>
+</div>

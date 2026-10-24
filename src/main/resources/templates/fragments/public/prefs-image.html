@@ -1,0 +1,27 @@
+<div th:fragment="content" class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Preferences</h2>
+            <form id="image-form">
+                <fieldset>
+                    <legend>Add Picture</legend>
+                    <p>Pictures can be uploaded in JPEG, GIF or PNG format. All pictures are publicly accessible regardless of your journal security settings. Pictures must not infringe on copyright nor be considered &quot; indecent &quot; under United States law.</p>
+                    <div class="form-group">
+                        <label for="image-title">Title</label>
+                        <input type="text" name="title" id="image-title" size="31" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="image-file">Photo</label>
+                        <input type="file" name="file" id="image-file" accept="image/*" required>
+                    </div>
+                    <p><button type="submit" class="btn btn-primary">Submit</button></p>
+                    <div class="progress" id="image-progress-container" style="display:none;">
+                        <div class="progress-bar" id="image-progress" role="progressbar" style="width: 0;">0%</div>
+                    </div>
+                </fieldset>
+            </form>
+            <div class="alert alert-danger" id="image-error" style="display:none;"></div>
+            <div class="alert alert-success" id="image-success" style="display:none;"></div>
+        </div>
+    </div>
+</div>

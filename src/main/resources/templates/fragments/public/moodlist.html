@@ -1,0 +1,19 @@
+<div th:fragment="content" class="container">
+    <div class="row">
+        <h2>Mood List</h2>
+        <p>This is the complete list of moods that you can choose from when posting a journal entry. Parent moods are used to display an emoticon for a mood if the mood does not have its own emoticon. (smiley, etc) Picking a mood is optional when posting a journal entry.</p>
+    </div>
+    <div class="row">
+        <table border="0" cellpadding="1" cellspacing="1">
+            <thead>
+            <tr style="background: black; color: white; font: Verdana, Arial 12pt;">
+                <th>id</th>
+                <th>parentmood</th>
+                <th>title</th>
+            </tr>
+            </thead>
+            <tbody id="mood-list" style="font: 8pt Verdana, Arial, sans-serif;"></tbody>
+        </table>
+        <div class="alert alert-danger" id="mood-error" style="display:none;"></div>
+    </div>
+</div>

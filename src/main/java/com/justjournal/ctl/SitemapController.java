@@ -58,14 +58,14 @@ public class SitemapController {
     create(xmlUrlSet, baseUri, Url.Priority.HIGH, Url.ChangeFreqency.MONTHLY);
 
     create(xmlUrlSet, baseUri + "RecentBlogs", Url.Priority.LOW, Url.ChangeFreqency.DAILY);
-    create(xmlUrlSet, baseUri + "#!/sitemap", Url.Priority.LOW, Url.ChangeFreqency.YEARLY);
-    create(xmlUrlSet, baseUri + "#!/sitemap", Url.Priority.LOW, Url.ChangeFreqency.YEARLY);
-    create(xmlUrlSet, baseUri + "#!/search", Url.Priority.LOW, Url.ChangeFreqency.YEARLY);
-    create(xmlUrlSet, baseUri + "#!/privacy", Url.Priority.LOW, Url.ChangeFreqency.YEARLY);
-    create(xmlUrlSet, baseUri + "#!/members", Url.Priority.LOW, Url.ChangeFreqency.DAILY);
-    create(xmlUrlSet, baseUri + "#!/support", Url.Priority.LOW, Url.ChangeFreqency.YEARLY);
-    create(xmlUrlSet, baseUri + "#!/support/bugs", Url.Priority.LOW, Url.ChangeFreqency.YEARLY);
-    create(xmlUrlSet, baseUri + "#!/moodlist", Url.Priority.LOW, Url.ChangeFreqency.YEARLY);
+    create(xmlUrlSet, baseUri + "sitemap", Url.Priority.LOW, Url.ChangeFreqency.YEARLY);
+    create(xmlUrlSet, baseUri + "sitemap", Url.Priority.LOW, Url.ChangeFreqency.YEARLY);
+    create(xmlUrlSet, baseUri + "search", Url.Priority.LOW, Url.ChangeFreqency.YEARLY);
+    create(xmlUrlSet, baseUri + "privacy", Url.Priority.LOW, Url.ChangeFreqency.YEARLY);
+    create(xmlUrlSet, baseUri + "members", Url.Priority.LOW, Url.ChangeFreqency.DAILY);
+    create(xmlUrlSet, baseUri + "support", Url.Priority.LOW, Url.ChangeFreqency.YEARLY);
+    create(xmlUrlSet, baseUri + "support/bugs", Url.Priority.LOW, Url.ChangeFreqency.YEARLY);
+    create(xmlUrlSet, baseUri + "moodlist", Url.Priority.LOW, Url.ChangeFreqency.YEARLY);
 
     for (final User user : userRepository.findAll()) {
       for (final Journal journal : user.getJournals()) {

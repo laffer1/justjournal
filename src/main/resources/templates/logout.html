@@ -1,5 +1,5 @@
 <!doctype html>
-<html class="no-js" ng-app="wwwApp" xmlns:th="http://www.thymeleaf.org">
+<html class="no-js" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="utf-8"/>
@@ -7,11 +7,8 @@
     <title>JustJournal.com: Log Out</title>
     <meta name="viewport" content="width=device-width"/>
     <meta http-equiv="content-language" content="en-us"/>
-    <link rel="stylesheet" href="static/styles/bootstrap.min.css" th:href="@{static/styles/bootstrap.min.css}"/>
-
-    <link rel="stylesheet" href="static/components/angular-ui/build/angular-ui.css"
-          th:href="@{components/angular-ui/build/angular-ui.css}"/>
-    <link rel="stylesheet" href="static/styles/main.css" th:href="@{static/styles/main.css}"/>
+    <link rel="stylesheet" href="/static/styles/bootstrap.min.css" th:href="@{/static/styles/bootstrap.min.css}"/>
+    <link rel="stylesheet" href="/static/styles/main.css" th:href="@{/static/styles/main.css}"/>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-2V0XXDEWN2"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -32,7 +29,7 @@
 <!-- Header: Begin -->
 <header>
     <div id="header">
-        <h1><a href="/"><img src="static/images/jj_header.gif" th:src="@{images/jj_header.gif}" alt="JustJournal"
+        <h1><a href="/"><img src="/static/images/jj_header.gif" th:src="@{/images/jj_header.gif}" alt="JustJournal"
                                width="608"/></a></h1>
     </div>
 </header>
@@ -47,7 +44,7 @@
             <p>You are now logged out.</p>
 
 
-            <p>You may <a href="/#!/">login</a> again.</p>
+            <p>You may <a href="/">login</a> again.</p>
 
         </div>
     </div>
@@ -57,9 +54,9 @@
 <div id="footer">
     <p id="copyright">&#169; 2003 - 2025 Lucas Holt. All rights reserved.</p>
 
-    <p><a href="/#!/privacy" title="Privacy Policy">Privacy</a> |
-        <a href="/#!/search" title="Search">Search</a> |
-        <a href="/#!/sitemap" title="Sitemap">Sitemap</a></p>
+    <p><a href="/privacy" title="Privacy Policy">Privacy</a> |
+        <a href="/search" title="Search">Search</a> |
+        <a href="/sitemap" title="Sitemap">Sitemap</a></p>
 </div>
 </footer>
 

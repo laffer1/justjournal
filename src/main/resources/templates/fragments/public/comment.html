@@ -1,0 +1,22 @@
+<div th:fragment="content" class="container">
+    <div class="row">
+        <div class="col-xs-12 col-sm-6 col-md-8">
+            <form role="form" id="frmAddComment" name="AddComment">
+                <fieldset>
+                    <legend><strong>Comment</strong><br/></legend>
+                    <div class="form-group">
+                        <label for="subject">Subject</label>
+                        <input class="form-control" name="subject" type="text" id="subject" size="30" maxlength="150" value="" autofocus>
+                    </div>
+                    <div class="form-group">
+                        <textarea id="commentbody" name="commentbody" style="width: 100%" cols="60" rows="20"></textarea>
+                    </div>
+                </fieldset>
+                <button class="btn btn-primary" type="submit">Save</button>
+                <button class="btn btn-default" type="button" id="comment-cancel">Cancel</button>
+            </form>
+            <div class="alert alert-danger" id="comment-error" style="display:none;"></div>
+            <div class="alert alert-success" id="comment-success" style="display:none;"></div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,13 @@
+<div th:fragment="content" class="container">
+    <h2>Statistics</h2>
+    <p>Below is an overview of usage statistics for this website including the number of users and blog entry types: public, friends, private.</p>
+    <h3>Details</h3>
+    <table style="border: thin solid #F2F2F2; width: 300px;" cellspacing="2" cellpadding="2">
+        <tr style="font-size: 14px; background: #F2F2F2;"><td>Users</td><td id="stats-users"></td></tr>
+        <tr style="font-size: 14px;"><td>Entries</td><td id="stats-entries"></td></tr>
+        <tr style="font-size: 14px; background: #F2F2F2;"><td>Comments</td><td id="stats-comments"></td></tr>
+        <tr style="font-size: 14px;"><td>Blog Styles</td><td id="stats-styles"></td></tr>
+        <tr style="font-size: 14px; background: #F2F2F2;"><td>Tags</td><td id="stats-tags"></td></tr>
+    </table>
+    <div class="alert alert-danger" id="stats-error" style="display:none;"></div>
+</div>

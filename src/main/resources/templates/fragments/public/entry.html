@@ -1,0 +1,64 @@
+<div th:fragment="content" class="container">
+    <div class="row">
+        <div class="col-xs-12 col-sm-6 col-md-8">
+            <form role="form" id="frmUpdateJournal" name="UpdateJournal" novalidate>
+                <fieldset>
+                    <legend><strong>Journal Entry</strong><br></legend>
+                    <div class="form-group">
+                        <label for="subject">Subject</label>
+                        <input class="form-control" name="subject" id="entry-subject" size="30" maxlength="150" value="" autofocus>
+                        (optional)
+                    </div>
+                    <div class="form-group">
+                        <textarea id="body" name="body" style="width: 100%" cols="60" rows="20"></textarea>
+                    </div>
+                    <div class="form-group" id="markdown-explain">
+                        Consult <a href="https://confluence.atlassian.com/bitbucketserver/markdown-syntax-guide-776639995.html">this guide</a> on markdown.
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend><strong>Optional Settings</strong><br/></legend>
+                    <div class="form-group">
+                        <label for="security">Security</label>
+                        <select class="form-control" id="security" name="security" size="1"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="location">Location</label>
+                        <select class="form-control" id="location" name="location" size="1"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="mood"><a href="/moodlist" title="List of Moods">Mood</a></label>
+                        <select class="form-control" id="mood" name="mood" size="1"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="tags">Tags</label>
+                        <input class="form-control" type="text" name="tags" id="tags" size="30" value="">
+                        <span class="help-block">Use lowercase letters and commas between tags.</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="music">Music</label>
+                        <input class="form-control" type="text" name="music" id="music" size="30" value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="trackback">Trackback</label>
+                        <input class="form-control" type="url" name="trackback" id="trackback" size="30" value="">
+                    </div>
+                    <div class="form-group">
+                        <input type="checkbox" name="allow_comment" id="allow_comment" value="checked" checked="checked">
+                        <label for="allow_comment">Allow comments on this entry</label>
+                    </div>
+                    <div class="form-group">
+                        <input type="checkbox" name="email_comment" id="email_comment" value="checked" checked="checked">
+                        <label for="email_comment">Email comments to me</label>
+                    </div>
+                </fieldset>
+
+                <button class="btn btn-primary" type="submit">Save</button>
+                <button class="btn btn-default" type="button" id="entry-cancel">Cancel</button>
+            </form>
+            <div class="alert alert-danger" id="entry-error" style="display:none;"></div>
+            <div class="alert alert-success" id="entry-success" style="display:none;"></div>
+        </div>
+    </div>
+</div>

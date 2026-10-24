@@ -278,7 +278,7 @@ public class CommentController {
         + "View all comments to this entry: "
         + entryUrl
         + "\n\n"
-        + "Reply at the webpage: http://www.justjournal.com/#!/comment/"
+        + "Reply at the webpage: http://www.justjournal.com/comment/"
         + comment.getEid()
         + "\n\n-- JustJournal.com\n\n"
         + "(If you would prefer not to get these updates,"

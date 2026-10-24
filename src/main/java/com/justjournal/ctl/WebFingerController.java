@@ -67,7 +67,7 @@ public class WebFingerController {
                     if (!journal.isOwnerViewOnly()) {
                         webFingerResponse.setAliases(Collections.singletonList(baseUri + USERS_REL + account));
                         var links = new ArrayList<Links>();
-                        links.add(new Links("http://webfinger.net/rel/profile-page", baseUri + "#!/profile/" + account));
+                        links.add(new Links("http://webfinger.net/rel/profile-page", baseUri + "profile/" + account));
                         links.get(0).setType("text/html");
 
                         links.add(new Links("self",baseUri + USERS_REL + account));

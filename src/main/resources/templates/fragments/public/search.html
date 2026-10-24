@@ -1,0 +1,25 @@
+<div th:fragment="content" class="container">
+    <h2>Search</h2>
+    <form id="bsearch">
+        <fieldset>
+            <legend><strong>Search Blogs for</strong><br/></legend>
+            <p>
+                <input type="text" name="bquery" id="bquery" value="">
+                <button type="submit" class="btn btn-primary btn-md">Find</button>
+            </p>
+            <p>Displays first 20 public entries containing the search terms.</p>
+        </fieldset>
+    </form>
+    <div id="search-results"></div>
+    <div class="alert alert-danger" id="search-error" style="display:none;"></div>
+    <h3>Google Search of this site</h3>
+    <form action="http://www.google.com/cse" id="cse-search-box" target="_blank">
+        <div>
+            <input type="hidden" name="cx" value="partner-pub-1321195614665440:ar3t7aj0zxt"/>
+            <input type="hidden" name="ie" value="ISO-8859-1"/>
+            <input type="text" name="q" size="31"/>
+            <input type="submit" name="sa" value="Search"/>
+        </div>
+    </form>
+    <script type="text/javascript" src="http://www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+</div>

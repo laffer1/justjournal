@@ -1200,7 +1200,7 @@ public class UsersController {
 
           if (uc.getAuthenticatedUser() != null
                   && uc.getAuthenticatedUser().getId() == o.getUser().getId()) {
-            sb.append("<td width=\"30\"><a title=\"Edit Entry\" href=\"/#/entry/").append(o.getId());
+            sb.append("<td width=\"30\"><a title=\"Edit Entry\" href=\"/entry/").append(o.getId());
             sb.append("\"><i class=\"fa fa-pencil-square-o\"></i></a></td>");
             sb.append(ENDL);
             sb.append("<td width=\"30\"><a title=\"Delete Entry\" onclick=\"return" + " deleteEntry(")
@@ -1247,7 +1247,7 @@ public class UsersController {
               sb.append(" comments</a> | ");
           }
 
-          sb.append("<a href=\"/#!/comment/");
+          sb.append("<a href=\"/comment/");
           sb.append(o.getId());
           sb.append("\" title=\"Leave a comment on this entry\">comment on this</a>)");
 
@@ -1441,7 +1441,7 @@ public class UsersController {
 
         if (uc.getAuthenticatedUser() != null
             && uc.getAuthenticatedUser().getId() == o.getUser().getId()) {
-          sb.append("<td width=\"30\"><a title=\"Edit Entry\" href=\"/#/entry/").append(o.getId());
+          sb.append("<td width=\"30\"><a title=\"Edit Entry\" href=\"/entry/").append(o.getId());
           sb.append("\"><i class=\"fa fa-pencil-square-o\"></i></a></td>");
           sb.append(ENDL);
           sb.append("<td width=\"30\"><a title=\"Delete Entry\" onclick=\"return" + " deleteEntry(")
@@ -1487,7 +1487,7 @@ public class UsersController {
             sb.append(" comments</a> | ");
         }
 
-        sb.append("<a href=\"/#!/comment/");
+        sb.append("<a href=\"/comment/");
         sb.append(o.getId());
         sb.append("\" title=\"Leave a comment on this entry\">comment on this</a>)");
 
@@ -2072,7 +2072,7 @@ public class UsersController {
     sb.append(ENDL);
 
     if (uc.isAuthBlog()) {
-      sb.append("<td style=\"width: 30px\"><a title=\"Edit Entry\" href=\"/#!/entry/");
+      sb.append("<td style=\"width: 30px\"><a title=\"Edit Entry\" href=\"/entry/");
       sb.append(o.getId());
       sb.append("\"><i class=\"fa fa-pencil-square-o\"></i></a></td>");
       sb.append(ENDL);
@@ -2136,7 +2136,7 @@ public class UsersController {
           sb.append(" comments</a> | ");
       }
 
-      sb.append("<a href=\"/#!/comment/");
+      sb.append("<a href=\"/comment/");
       sb.append(o.getId());
       sb.append(
           "\" title=\"Leave a comment on this entry\"><i class=\"fa" + " fa-comment-o\"></i></a>)");
@@ -2159,7 +2159,7 @@ public class UsersController {
       sb.append(" comments</div>\n");
 
       sb.append("<div class=\"rightflt\">");
-      sb.append("<a href=\"/#!/comment/")
+      sb.append("<a href=\"/comment/")
           .append(o.getId())
           .append("\" title=\"Add Comment\">Add Comment</a></div>\n");
 
@@ -2188,7 +2188,7 @@ public class UsersController {
                 .getUsername()
                 .equalsIgnoreCase(co.getUser().getUsername())) {
           sb.append("<br/><span class=\"actions\">\n");
-          sb.append("<a href=\"/#!/comment/").append(o.getId()).append("/edit/");
+          sb.append("<a href=\"/comment/").append(o.getId()).append("/edit/");
           sb.append(co.getId());
           sb.append("\" title=\"Edit Comment\">");
           sb.append("     <i class=\"fa fa-pencil-square-o\"></i>");

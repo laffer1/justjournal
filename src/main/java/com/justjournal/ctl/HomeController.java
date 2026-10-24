@@ -44,7 +44,10 @@ public final class HomeController {
 
   @GetMapping
   public String home(Model model, HttpSession session) {
-    model.addAttribute("username", Login.currentLoginName(session));
+    model.addAttribute("authenticatedUsername", Login.currentLoginName(session));
+    model.addAttribute("title", "Just Journal: Free Online Journals");
+    model.addAttribute("pageId", "home");
+    model.addAttribute("contentTemplate", "fragments/public/home");
     return "index";
   }
 
@@ -53,6 +56,7 @@ public final class HomeController {
 
     session.invalidate();
 
+    model.addAttribute("authenticatedUsername", null);
     return "logout";
   }
 }
