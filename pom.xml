@@ -483,13 +483,6 @@
             <artifactId>jackson-dataformat-xml</artifactId>
         </dependency>
 
-        <!-- for google search indexing -->
-        <dependency>
-            <groupId>org.htmlunit</groupId>
-            <artifactId>htmlunit</artifactId>
-            <version>4.17.0</version>
-        </dependency>
-
         <!-- For unit testing -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
